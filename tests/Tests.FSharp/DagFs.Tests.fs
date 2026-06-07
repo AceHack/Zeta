@@ -1,6 +1,8 @@
 module Zeta.Tests.DagFsTests
 
 open System
+open System.IO
+open System.Text.Json
 open global.Xunit
 open Zeta.Core
 
@@ -13,6 +15,26 @@ let private encI (i: int) : byte[] =
 
 let private tree () : FS.Tree<ZSet<int>> = FS.create (ZSetMerkle.root encI)
 let private v (xs: (int * int64) list) = ZSet.ofSeq xs
+
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
+let private valueOf (element: JsonElement) : ZSet<int> =
+    [ for entry in element.EnumerateArray() ->
+        entry.GetProperty("key").GetInt32(), entry.GetProperty("weight").GetInt64() ]
+    |> ZSet.ofSeq
+
+let private applyOp (t: FS.Tree<ZSet<int>>) (op: JsonElement) : FS.Tree<ZSet<int>> =
+    let path = op.GetProperty("path").GetString()
+    match op.GetProperty("op").GetString() with
+    | "link" -> FS.link path (valueOf (op.GetProperty("value"))) t
+    | "editLocal" -> FS.editLocal path (valueOf (op.GetProperty("value"))) t
+    | "editEverywhere" -> FS.editEverywhere path (valueOf (op.GetProperty("value"))) t
+    | "unlink" -> FS.unlink path t
+    | other -> failwithf "unknown DagFs op: %s" other
 
 [<Fact>]
 let ``same content under two paths is one node (single-instance) referenced by both (multi-parent)`` () =
@@ -107,3 +129,46 @@ let ``merge is content-convergent: order of merge gives the same nodes (resolver
     let ab = FS.merge r a b
     let ba = FS.merge r b a
     Assert.Equal<ZSet<int> option>(FS.resolve "/k" ab, FS.resolve "/k" ba)
+
+[<Fact>]
+let ``Golden treaty: F# replays shared DagFs edit vectors`` () =
+    let path = Path.Join(repoRoot (), "src", "Core.TypeScript", "dag-fs", "golden-vectors.json")
+    Assert.True(File.Exists path, sprintf "seed not found: %s" path)
+
+    use doc = JsonDocument.Parse(File.ReadAllText path)
+    let cases = doc.RootElement.GetProperty("cases").EnumerateArray() |> Seq.toArray
+    Assert.True(cases.Length >= 5, "expected at least 5 DagFs golden cases")
+
+    for c in cases do
+        let name = c.GetProperty("name").GetString()
+
+        let actual =
+            c.GetProperty("ops").EnumerateArray()
+            |> Seq.fold applyOp (tree ())
+
+        Assert.Equal(c.GetProperty("expectedPathCount").GetInt32(), FS.pathCount actual)
+        Assert.Equal(c.GetProperty("expectedNodeCount").GetInt32(), FS.nodeCount actual)
+
+        for p in c.GetProperty("expectedPaths").EnumerateArray() do
+            let expectedPath = p.GetProperty("path").GetString()
+            let expectedValue = valueOf (p.GetProperty("value"))
+            let expectedAddress = p.GetProperty("address").GetString()
+
+            Assert.Equal<ZSet<int> option>(Some expectedValue, FS.resolve expectedPath actual)
+            Assert.Equal(expectedAddress, (FS.addressAt expectedPath actual).Value.ToHex())
+
+        match c.TryGetProperty("expectedAbsentPaths") with
+        | true, absent ->
+            for p in absent.EnumerateArray() do
+                Assert.Equal<ZSet<int> option>(None, FS.resolve (p.GetString()) actual)
+        | _ -> ()
+
+        match c.TryGetProperty("sameAddressSets") with
+        | true, sets ->
+            for set in sets.EnumerateArray() do
+                let paths = set.EnumerateArray() |> Seq.map (fun p -> p.GetString()) |> Seq.toArray
+                Assert.True(paths.Length >= 2, sprintf "sameAddressSets in '%s' must have at least two paths" name)
+                let first = (FS.addressAt paths.[0] actual).Value
+                for p in paths do
+                    Assert.Equal(first, (FS.addressAt p actual).Value)
+        | _ -> ()

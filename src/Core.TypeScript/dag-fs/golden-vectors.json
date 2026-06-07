@@ -1,0 +1,94 @@
+{
+  "description": "DagFs cross-language edit vectors. F# is the reference oracle: values are ZSet<int> entries, content addresses are ZSetMerkle roots using int32_le key encoding, and tree operations are immutable copy-on-write updates over path -> content-address links.",
+  "valueType": "ZSet<int>",
+  "contentAddress": "ZSetMerkle.root encI; MerkleHash.ToHex() = hi[16] + lo[16] lowercase hex",
+  "operations": {
+    "link": "store value by content address and point path at it; identical values dedup to one node",
+    "editLocal": "copy-on-write edit: only the named path moves to the new content",
+    "editEverywhere": "shared-object edit: every path currently pointing at the named path's old content moves to the new content",
+    "unlink": "remove path link; content node remains stored until a later GC layer"
+  },
+  "cases": [
+    {
+      "name": "multi-parent-link",
+      "ops": [
+        { "op": "link", "path": "/a/file", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "link", "path": "/b/file", "value": [{ "key": 1, "weight": 1 }] }
+      ],
+      "expectedPathCount": 2,
+      "expectedNodeCount": 1,
+      "expectedPaths": [
+        { "path": "/a/file", "value": [{ "key": 1, "weight": 1 }], "address": "baa374ea4ce36f358771013ac7c905d7" },
+        { "path": "/b/file", "value": [{ "key": 1, "weight": 1 }], "address": "baa374ea4ce36f358771013ac7c905d7" }
+      ],
+      "sameAddressSets": [["/a/file", "/b/file"]]
+    },
+    {
+      "name": "edit-local-copy-on-write",
+      "ops": [
+        { "op": "link", "path": "/a", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "link", "path": "/b", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "editLocal", "path": "/a", "value": [{ "key": 1, "weight": 2 }] }
+      ],
+      "expectedPathCount": 2,
+      "expectedNodeCount": 2,
+      "expectedPaths": [
+        { "path": "/a", "value": [{ "key": 1, "weight": 2 }], "address": "3d3d0e128a88d7652415272c4cce670f" },
+        { "path": "/b", "value": [{ "key": 1, "weight": 1 }], "address": "baa374ea4ce36f358771013ac7c905d7" }
+      ]
+    },
+    {
+      "name": "edit-everywhere-shared-object",
+      "ops": [
+        { "op": "link", "path": "/a", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "link", "path": "/b", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "link", "path": "/c", "value": [{ "key": 9, "weight": 9 }] },
+        { "op": "editEverywhere", "path": "/a", "value": [{ "key": 1, "weight": 2 }] }
+      ],
+      "expectedPathCount": 3,
+      "expectedNodeCount": 3,
+      "expectedPaths": [
+        { "path": "/a", "value": [{ "key": 1, "weight": 2 }], "address": "3d3d0e128a88d7652415272c4cce670f" },
+        { "path": "/b", "value": [{ "key": 1, "weight": 2 }], "address": "3d3d0e128a88d7652415272c4cce670f" },
+        { "path": "/c", "value": [{ "key": 9, "weight": 9 }], "address": "8d59e15dabb6d73725929bcadd7a3557" }
+      ],
+      "sameAddressSets": [["/a", "/b"]]
+    },
+    {
+      "name": "edit-local-converges-to-existing-content",
+      "ops": [
+        { "op": "link", "path": "/a", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "link", "path": "/b", "value": [{ "key": 2, "weight": 2 }] },
+        { "op": "editLocal", "path": "/a", "value": [{ "key": 2, "weight": 2 }] }
+      ],
+      "expectedPathCount": 2,
+      "expectedNodeCount": 2,
+      "expectedPaths": [
+        { "path": "/a", "value": [{ "key": 2, "weight": 2 }], "address": "53c4535cab5c28dea82e45397c2ea3a5" },
+        { "path": "/b", "value": [{ "key": 2, "weight": 2 }], "address": "53c4535cab5c28dea82e45397c2ea3a5" }
+      ],
+      "sameAddressSets": [["/a", "/b"]]
+    },
+    {
+      "name": "unlink-removes-path-only",
+      "ops": [
+        { "op": "link", "path": "/a", "value": [{ "key": 1, "weight": 1 }] },
+        { "op": "link", "path": "/b", "value": [{ "key": 2, "weight": 2 }] },
+        { "op": "unlink", "path": "/a" }
+      ],
+      "expectedPathCount": 1,
+      "expectedNodeCount": 2,
+      "expectedPaths": [
+        { "path": "/b", "value": [{ "key": 2, "weight": 2 }], "address": "53c4535cab5c28dea82e45397c2ea3a5" }
+      ],
+      "expectedAbsentPaths": ["/a"]
+    }
+  ],
+  "laws": {
+    "dedup": "linking identical values under multiple paths creates one stored node with multiple parent paths",
+    "copyOnWrite": "editLocal changes only the named path",
+    "sharedObjectEdit": "editEverywhere changes all paths that shared the old address",
+    "contentConvergence": "editing a path to content already present moves it onto the existing address",
+    "pathRemoval": "unlink removes the path but does not garbage-collect the stored node"
+  }
+}
