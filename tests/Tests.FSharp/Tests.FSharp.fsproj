@@ -115,6 +115,7 @@
     <Compile Include="MediatorUnit.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
+    <Compile Include="Observe/ObserveBridge.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
@@ -253,6 +254,7 @@
     <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.TriBoolean\Zeta.Core.FSharp.TriBoolean.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.ObserveBridge\Zeta.Core.FSharp.ObserveBridge.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.AceCanonical\Zeta.Core.FSharp.AceCanonical.fsproj" />

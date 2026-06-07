@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.FSharp.ObserveBridge</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.ObserveBridge</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Bridge A: DynamicValue codec for the observe World/NextAction, so the controller's
+       snapshot + actions can ride the durable substrate (GitDeltaLog / DurableSaga). Kept in
+       its OWN project so the parity-pure Observe oracle (zero external deps, mirrors observe.ts
+       byte-for-byte) is never coupled to Core/DynamicValue. -->
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.fsproj" />
+    <ProjectReference Include="../Core.FSharp.Observe/Zeta.Core.FSharp.Observe.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="ObserveBridge.fs" />
+  </ItemGroup>
+
+</Project>
