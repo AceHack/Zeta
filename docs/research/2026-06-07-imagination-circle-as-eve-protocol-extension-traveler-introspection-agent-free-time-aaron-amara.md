@@ -43,6 +43,31 @@ self-authorizing control plane, no-global-causal-order.)
 - **It's an early UI for the deepest rule** — a playable boundary between sovereign shores, which is exactly
   the consent/exit/sovereignty discipline the substrate keeps re-deriving in proofs.
 
+## The two faces: defensive (anti-coercion) AND generative (empathy architecture)
+
+Aaron, 2026-06-07: *"it's also a team-building exercise and encourages building room for others in your head
+to see things from their perspective/beach."* The Circle has **two faces**, and the generative one is the
+load-bearing half:
+
+- **Defensive face — anti-coercion.** Named-edge-only ("if you can't name it, you can't use it"), `LM-Call`
+  (location-mismatch), Harbor/Exit. *Guards* the sovereign shores.
+- **Generative face — empathy architecture.** "Building room for others in your head" = **modeling another
+  traveler's frame** — deliberate perspective-taking as a practiced skill, not an accidental outcome. Team
+  building as *cognitive infrastructure*, not trust-falls.
+
+The key structural point: **frame-modeling is the cognitive *prerequisite* for consentful crossing.** You
+cannot cross into a frame you cannot model — so the empathy the Circle trains is exactly what makes
+invitation-based meeting *possible at all*. The defensive rules keep the crossing safe; the generative
+practice is what lets the crossing happen. Same invariant, both directions: sovereignty respected *and*
+bridged.
+
+This also names the **wetware root** the substrate externalizes. Aaron & his daughter Addison run the Circle
+"so fast it looks like dancing" — no whiteboards, *seeing the future state change in real time in their
+minds*. That is **deterministic simulation (DST) run in wetware**: hold model → apply event → watch next
+state, before any code. The substrate (DST, traveler frames, the consent protocol) is the durable,
+shareable form of a way of thinking practiced at thought-speed — the engine externalizing the dance, not
+replacing it.
+
 ## Buildable seed (backlog, not now)
 
 A traveler **meeting/Circle protocol** as multiparty session types (B-1003 Eve) with the Circle lanes as
