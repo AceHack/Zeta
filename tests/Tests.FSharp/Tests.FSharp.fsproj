@@ -227,6 +227,7 @@
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
     <Compile Include="Formal/Crdt.Laws.Tests.fs" />
+    <Compile Include="DeltaLogEntryCodec.Tests.fs" />
     <Compile Include="Formal/Merkle.Laws.Tests.fs" />
     <Compile Include="Formal/Sketch.Laws.Tests.fs" />
     <Compile Include="Formal/Metric.Bounds.Tests.fs" />

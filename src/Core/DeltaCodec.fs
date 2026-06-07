@@ -61,3 +61,86 @@ type CborDeltaCodec<'K when 'K : comparison>
             match DynamicValue.fromCanonicalCbor bytes with
             | Ok dv -> ZSetDynamic.ofDynamicValue keyDec dv
             | Error e -> invalidArg (nameof bytes) $"CborDeltaCodec.Decode: non-decodable CBOR: {e}"
+
+
+/// `DeltaLogEntry` ↔ `DynamicValue` mapping — the canonical **Log-entry envelope**, the
+/// `Log` noun's path to the 4-language proven bar (workitem 081KTGD5JMD). A whole entry
+/// `{ Seq; Delta; Captured }` becomes a `DynamicValue.Object` with the keys
+/// `captured` / `delta` / `seq` (ordinal order), so the entry rides DynamicValue's
+/// golden-vector-locked canonical CBOR — the Log entry INHERITS the existing 4-lang
+/// byte-lock rather than inventing a new canonical encoding (it adds no new noun: an
+/// entry is just a `DynamicValue`). `Captured` keys are **ordinal-sorted**
+/// (culture-invariant; B-0969) for cross-language + DST determinism — the prior
+/// `System.Text.Json` `Dictionary` encoding in `GitDeltaLog`/`DiskDeltaLog` is NOT
+/// canonical and is the gap this closes. Lossless round-trip: `ofDynamicValue (toDynamicValue e) = e`.
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module DeltaLogEntryDynamic =
+
+    let toDynamicValue (keyEnc: 'K -> DynamicValue) (entry: DeltaLogEntry<'K>) : DynamicValue =
+        let captured =
+            entry.Captured
+            |> Map.toList
+            |> List.sortWith (fun (a, _) (b, _) -> System.String.CompareOrdinal(a, b))
+            |> List.map (fun (k, v) -> k, DynamicValue.String v)
+        DynamicValue.Object
+            [ "captured", DynamicValue.Object captured
+              "delta", ZSetDynamic.toDynamicValue keyEnc entry.Delta
+              "seq", DynamicValue.Int entry.Seq ]
+
+    let ofDynamicValue (keyDec: DynamicValue -> 'K) (dv: DynamicValue) : DeltaLogEntry<'K> =
+        match dv with
+        | DynamicValue.Object fields ->
+            let find name =
+                match List.tryFind (fun (k, _) -> k = name) fields with
+                | Some(_, v) -> v
+                | None -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: missing field '{name}'"
+            let seq =
+                match find "seq" with
+                | DynamicValue.Int s -> s
+                | o -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: 'seq' not Int: {o}"
+            let delta = ZSetDynamic.ofDynamicValue keyDec (find "delta")
+            let captured =
+                match find "captured" with
+                | DynamicValue.Object kvs ->
+                    kvs
+                    |> List.map (fun (k, v) ->
+                        match v with
+                        | DynamicValue.String s -> k, s
+                        | o -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: captured['{k}'] not String: {o}")
+                    |> Map.ofList
+                | o -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: 'captured' not Object: {o}"
+            { Seq = seq; Delta = delta; Captured = captured }
+        | other -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: expected Object, got {other}"
+
+
+/// Format-parameterized canonical codec for a whole `DeltaLogEntry` (Seq + Delta + Captured), the
+/// 4-language treaty target for the `Log` noun. The format-INDEPENDENT core is the
+/// `DeltaLogEntryDynamic` mapping; each concrete format rides DynamicValue's already-byte-locked
+/// per-format serializer, so the bytes/text are reproducible across F#/C#/Rust/TS.
+///
+/// Per-stream/table format choice (Aaron 2026-06-07): **git check-ins default to YAML** (diffable,
+/// human-readable history) and **filesystem defaults to CBOR** (speed); all formats are optionally
+/// selectable per stream/table at the backend layer. CBOR/JSON/XML round-trip exists today; **YAML is
+/// a prerequisite gap** (DynamicValue has no `toYaml`/`fromYaml` yet — tracked for the git-default path).
+/// These functions are the canonical replacement for the per-backend `System.Text.Json` framing in
+/// `GitDeltaLog`/`DiskDeltaLog`.
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module DeltaLogEntryCodec =
+
+    /// Canonical CBOR (the filesystem default — speed; complete 8/8 shapes, full round-trip).
+    let encodeCbor (keyEnc: 'K -> DynamicValue) (entry: DeltaLogEntry<'K>) : byte[] =
+        DeltaLogEntryDynamic.toDynamicValue keyEnc entry |> DynamicValue.toCanonicalCbor
+
+    let decodeCbor (keyDec: DynamicValue -> 'K) (bytes: byte[]) : DeltaLogEntry<'K> =
+        match DynamicValue.fromCanonicalCbor bytes with
+        | Ok dv -> DeltaLogEntryDynamic.ofDynamicValue keyDec dv
+        | Error e -> invalidArg (nameof bytes) $"DeltaLogEntryCodec.decodeCbor: non-decodable CBOR: {e}"
+
+    /// Canonical JSON (text — a diff-friendly option until the YAML git-default serializer lands).
+    let encodeJson (keyEnc: 'K -> DynamicValue) (entry: DeltaLogEntry<'K>) : Result<string, EncodeError> =
+        DeltaLogEntryDynamic.toDynamicValue keyEnc entry |> DynamicValue.toCanonicalJson
+
+    let decodeJson (keyDec: DynamicValue -> 'K) (json: string) : DeltaLogEntry<'K> =
+        match DynamicValue.fromCanonicalJson json with
+        | Ok dv -> DeltaLogEntryDynamic.ofDynamicValue keyDec dv
+        | Error e -> invalidArg (nameof json) $"DeltaLogEntryCodec.decodeJson: non-decodable JSON: {e}"
