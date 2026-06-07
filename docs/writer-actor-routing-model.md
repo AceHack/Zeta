@@ -68,6 +68,16 @@ discipline as the event store. Continuity and action separated without severing.
 > Excel formulas (which is *why* columnar/Arrow + SSAS-Tabular-style **semantic models** fit so
 > naturally). So below, read **Cell** for "Actor". `Agent` (intelligent, persistent persona) vs
 > `Cell` (dumb, ephemeral state container) is the clean split.
+>
+> **Extension (Aaron, 2026-06-07) — spreadsheet → "A Thousand Brains".** The Excel model
+> extends into the `YinYang.Cell` once we add **geospatial** reference frames: per Jeff
+> Hawkins' *A Thousand Brains* (2021), the neocortex is thousands of **cortical columns**, each
+> building a *model of the world via a reference frame*. Map **each Cell = a column** (a
+> reference-frame model); "each Cell is a column" is both the spreadsheet column AND the cortical
+> column. Geospatial/reference-frame coordinates give the Cells a *where*, so the spreadsheet of
+> Cells becomes a thousand-brains lattice of reference-frame models voting through the bus.
+> (Vision/Beacon — anchor: Hawkins *A Thousand Brains*; the Thousand Brains Theory of
+> reference frames. Not built; recorded as the direction the Cell/columnar frame points.)
 
 Sharper than "persona vs actor": each concern gets exactly one layer, and **only the
 agent carries identity**. Cells (ex-"actors") were still being given too much ontological weight.
