@@ -113,6 +113,15 @@ loop with Aaron's earlier "**soft rainbow tables for our spectral signatures**" 
   an unattended crawl loop** that systematically pulls and stores third-party content into our corpus. Cache is
   for the user's local use (like a browser cache), not a redistributed mirror. We commit the pointer +
   attribution; resolution/rendering happens at the user's edge, on request.
+- **Any crawler MUST respect the crawler-control files (Aaron 2026-06-07).** If/when resolution does involve
+  automated crawling, it must obey the site's bot-directive files: **`robots.txt`** (Robots Exclusion Protocol,
+  now standardized as RFC 9309) — honor `Disallow`/`Allow`, `Crawl-delay`, and per-user-agent rules; **`Sitemap`
+  / `sitemap.xml`** for what's offered; **`X-Robots-Tag`** HTTP headers and `<meta name="robots">` (noindex/
+  nofollow); and the emerging **AI-crawler conventions** (`ai.txt` / `llms.txt`, the IETF "AI preferences" /
+  content-usage signals) — a site's opt-out of AI/agent crawling is binding. Identify the bot honestly (real
+  User-Agent), rate-limit, and back off. This is the *technical* layer under the legal line above: the
+  on-demand user-resolve is browsing; any *crawl* must be a polite, rules-respecting bot — never a stealth or
+  ignore-robots scraper. (Distinct from the single on-behalf-of-user resolve, which is browsing, not crawling.)
 - No claim this launders copyright: it *avoids* the problem by not copying — we store a handle + our own
   attribution, and the protected content is *viewed on demand by the user's agent*, never mirrored by us.
 
@@ -147,3 +156,7 @@ loop with Aaron's earlier "**soft rainbow tables for our spectral signatures**" 
   attributed pointer; the contributions are (a) recognizing it as the same ZetaId-uniform-pointer primitive as
   identity anchors/deps/secrets, (b) MBID≈ZetaId + AcoustID=soft-rainbow as the open grounding, and (c) a
   generative F# type provider keyed by ZetaId for reified, content-addressed types.
+- **Robots Exclusion Protocol / `robots.txt`** (Koster 1994; **RFC 9309**, 2022) · **Sitemaps** (sitemaps.org) ·
+  **`X-Robots-Tag` / `<meta name="robots">`** · emerging **AI-crawler opt-out** conventions (`ai.txt` /
+  `llms.txt`; IETF AI-preferences / content-usage work) — the binding crawler-control discipline for any
+  automated fetch.
