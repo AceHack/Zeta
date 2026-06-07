@@ -27,7 +27,9 @@ open Zeta.Core
 /// **Child-safety floor (load-bearing):** `executeOne` is reached ONLY through `gateAndExecute`'s
 /// `Admit` — at every recursion depth. So a `policy` that denies a gated/child-floor class makes it
 /// *impossible* for the Agent to get such an effect executed by proposing it (it is denied → never
-/// executed). `EmitResponse` / `ExtendGrammar` remain honestly not-wired (Skipped, never silent).
+/// executed). **`EmitResponse`** is the outbound twin of `PersistFerry` (the Agent's reply →
+/// the persona's response stream, attributed `kind="response"`; the operator reads it from there).
+/// `ExtendGrammar` remains honestly not-wired (Skipped, never silent).
 [<Sealed>]
 type SubstrateEffectHandler
     (
@@ -37,7 +39,9 @@ type SubstrateEffectHandler
         ?policy: Effects.Effect -> Effects.Verdict,
         ?ferryType: string,
         ?workRunner: Effects.IWorkRunner,
-        ?maxWorkDepth: int
+        ?maxWorkDepth: int,
+        ?responseSource: unit -> string option,
+        ?responseLog: IDeltaLog<string>
     ) =
 
     let policy = defaultArg policy (fun _ -> Effects.Admit)
@@ -53,13 +57,31 @@ type SubstrateEffectHandler
             | _ -> return Effects.Skipped "PersistFerry: no ferried content on the channel"
         }
 
+    // EmitResponse — the OUTBOUND twin of PersistFerry. The Agent-composed reply (read from
+    // `responseSource`, the bus seam) is appended to this persona's response stream `responseLog`,
+    // attributed `{ kind = "response"; persona }`. The operator reads the reply FROM that durable
+    // stream — so responding stays "behind the DB layer" (no raw bus send). Marker + persona +
+    // gate, symmetric to the inbound ferry. Not wired (no source/log) ⇒ honest Skipped.
+    let emitResponse (ct: CancellationToken) : Task<Effects.EffectResult> =
+        task {
+            match responseSource, responseLog with
+            | Some src, Some log ->
+                match src () with
+                | Some reply when reply <> "" ->
+                    let! _seq =
+                        log.AppendAsync(ZSet.ofSeq [ reply, 1L ], Map.ofList [ "kind", "response"; "persona", persona ], ct).AsTask()
+                    return Effects.Executed
+                | _ -> return Effects.Skipped "EmitResponse: no response to emit"
+            | _ -> return Effects.Skipped "EmitResponse: not wired (no responseSource/responseLog)"
+        }
+
     /// Execute one effect at a given RunWork-nesting `depth`. RunWork's proposed effects re-enter
     /// `gateAndExecute` (inspect→execute) — so the gate guards EVERY depth.
     let rec executeOne (depth: int) (effect: Effects.Effect) (ct: CancellationToken) : Task<Effects.EffectResult> =
         task {
             match effect with
             | Effects.PersistFerry -> return! persistFerry ct
-            | Effects.EmitResponse -> return Effects.Skipped "EmitResponse: not wired in v1 (substrate adapter)"
+            | Effects.EmitResponse -> return! emitResponse ct
             | Effects.ExtendGrammar _ -> return Effects.Skipped "ExtendGrammar: not wired in v1 (substrate adapter)"
             | Effects.RunWork item ->
                 match workRunner with

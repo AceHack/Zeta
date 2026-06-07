@@ -113,3 +113,53 @@ let ``maxWorkDepth bounds runaway RunWork nesting (terminates, no cascade)`` () 
     let h = SubstrateEffectHandler("otto", (fun () -> Some "c"), log, workRunner = runner, maxWorkDepth = 1) :> E.IEffectHandler
     // Terminates (no stack overflow / no infinite loop) and the top-level work ran.
     Assert.Equal(E.Executed, (E.runAsync h (E.RunWork(item "w")) ct).Result)
+
+
+// ── EmitResponse — the outbound twin of PersistFerry (reply → persona response stream) ──────
+let private responseEntries (log: IDeltaLog<string>) = ferryContents log
+
+[<Fact>]
+let ``EmitResponse appends the Agent reply to the persona response stream, attributed kind=response`` () =
+    let rlog = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let h =
+        SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>),
+                               responseSource = (fun () -> Some "here is my reply"), responseLog = rlog)
+        :> E.IEffectHandler
+    Assert.Equal(E.Executed, (E.runAsync h E.EmitResponse ct).Result)
+    Assert.Equal<string list>([ "here is my reply" ], responseEntries rlog)
+    let captured = (rlog.ReplayAsync(0L, ct).AsTask().Result).[0].Captured
+    Assert.Equal(Some "response", Map.tryFind "kind" captured)
+    Assert.Equal(Some "otto", Map.tryFind "persona" captured)
+
+[<Fact>]
+let ``EmitResponse with no reply skips and sends nothing`` () =
+    let rlog = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let h =
+        SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>),
+                               responseSource = (fun () -> None), responseLog = rlog)
+        :> E.IEffectHandler
+    match (E.runAsync h E.EmitResponse ct).Result with
+    | E.Skipped _ -> ()
+    | other -> failwithf "expected Skipped, got %A" other
+    Assert.Empty(responseEntries rlog)
+
+[<Fact>]
+let ``EmitResponse not wired (no responseSource/Log) is honestly skipped`` () =
+    let h = SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>)) :> E.IEffectHandler
+    match (E.runAsync h E.EmitResponse ct).Result with
+    | E.Skipped _ -> ()
+    | other -> failwithf "expected Skipped, got %A" other
+
+[<Fact>]
+let ``a DENIED EmitResponse never reaches the response stream (inspect-before-execute)`` () =
+    let rlog = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let denyResponse =
+        function
+        | E.EmitResponse -> E.Deny "responses gated"
+        | _ -> E.Admit
+    let h =
+        SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>),
+                               policy = denyResponse, responseSource = (fun () -> Some "should NOT send"), responseLog = rlog)
+        :> E.IEffectHandler
+    (E.runAsync h E.EmitResponse ct).Result |> ignore
+    Assert.Empty(responseEntries rlog)
