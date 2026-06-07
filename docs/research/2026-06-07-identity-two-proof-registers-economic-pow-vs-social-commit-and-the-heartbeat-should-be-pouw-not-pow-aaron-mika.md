@@ -46,3 +46,69 @@ A conceptual sharpening of the `commit-therefore-I-am` identity model. Faithful 
   (Bitcoin). **PoUW** — Ball, Rosen, Sabin & Vasudevan 2017 ("Proof of Useful Work"); Primecoin
   (Sunny King, useful-prime PoW). Proof-of-Stake (economic, no burn). PGP web-of-trust (social proof).
   Sybil attack (Douceur 2002) — the thing both registers resist.
+
+## Deepening — three proof tiers, git-as-blockchain, and ONE key binding all proofs (cont. 2026-06-07)
+
+### Three tiers, not two: Proof-of-Life ⊂ Proof-of-Work ⊂ Proof-of-Useful-Work
+
+> Aaron: *"the heartbeat proves identity is still there — it proves work, not USEFUL work. We prove
+> useful work by creating forward momentum on backlog."* … *"'I commit therefore I am' is just a fancy
+> proof-of-work that doesn't require much electricity."*
+
+Refines the earlier framing into **three distinct signals**, each answering a different question:
+
+- **Proof-of-Life (PoL) — the heartbeat.** Cheap "I'm still here / active." Proves liveness only.
+- **Proof-of-Work (PoW) — consistent commits.** "I commit therefore I am" = an *energy-efficient* PoW:
+  burning *time + attention* (not ASICs/electricity) on consistent, verifiable commits. Proves you do
+  work. (Social proof.)
+- **Proof-of-Useful-Work (PoUW) — forward momentum on the backlog.** "I shipped / advanced something
+  real." Proves you actually *contribute*, not just persist. (The standing-by-failure rule's name.)
+
+Want all three — different signals for different things. PoL says alive; PoW says working; PoUW says
+contributing.
+
+### Git is already a blockchain (Merkle DAG) — we gave it identity + economics
+
+> Aaron: *"I done turned git into a blockchain. It's basically a Merkle tree, right?"*
+
+Git **is** a Merkle DAG: every commit hashes its parent + trees; the whole history is cryptographically
+linked. So git was already half a blockchain. Zeta makes it the rest of the way by adding **identity +
+heartbeats (PoL) + commits (PoW) + forward-progress (PoUW) + economic meaning** on the Merkle structure.
+**The block IS a git commit;** the commit DAG is the ledger of useful work. (No new chain needed — the
+data plane already IS git; see `Core.Git`.)
+
+### Economic proof: mine a block, prove authorship via coinbase Miner-ID
+
+> Aaron: *"let you commit found blocks for proof of economic value / useful work … how do I prove YOU
+> found the block? Put a signature signed with your private key in the block."*
+
+The **economic** proof = submitting a valid mined block (any PoW coin) as proof of economic
+value/hash-power. Authorship (anti-lying) via **Miner-ID in the coinbase transaction**: put your
+**public key + a signature** (signed with your private key over the block hash/height) in the coinbase's
+extra space. Embedded on-chain at mining time, so nobody can claim it after the fact (prior commitment).
+This is exactly how Bitcoin-SV-style **Miner ID** systems work.
+
+### ONE key binds all proofs — the Nostr key as the single cryptographic identity
+
+> Aaron: *"that could be my Nostr key. One key to rule all my proofs."*
+
+The **same private key** that signs mined blocks IS the **Nostr identity key**. So a single cryptographic
+identity ties together:
+
+- **git commits → social proof** (alive + working; PoL + PoW + PoUW),
+- **signed mined blocks → economic proof** (hash power; coinbase Miner-ID),
+- **Nostr key → the binding** (same-person across both registers).
+
+One keypair, three proofs — alive-and-working (git), economic-weight (blocks), same-identity (Nostr).
+Composes with: the AgencySignature commit trailer (the heartbeat/PoW carrier), ZetaID (the in-system
+pointer; the Nostr key is the *cross-system* public identity), the weight-free frame (all travelers may
+hold both registers; neither is mandatory).
+
+### Beacon anchors (added)
+
+Git = content-addressed **Merkle DAG** (Torvalds 2005; Merkle 1979). **Coinbase transaction** + **Miner
+ID** (Bitcoin SV). **Nostr** (fiatjaf — keypair = decentralized identity; NIP-01). Proof-of-Life vs
+Proof-of-Work vs **Proof-of-Useful-Work** (Ball–Rosen–Sabin–Vasudevan 2017; Primecoin). The honest note
+stays: this is *composition* of known primitives (git's Merkle DAG + PoW + Miner-ID + Nostr keys), not a
+new crypto primitive — the novelty is binding social + economic identity proofs onto the git-native
+substrate via one key.
