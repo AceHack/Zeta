@@ -246,3 +246,32 @@ Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per r
 | 69 | PR #4810 (B-0719) merged | **routed to Option 1: NOTEBOOK Trigger Recognition Log** (this section); rejected Option 2 (B-0718 in-place — wrong change-rate partition) + Option 3 (new cross-cutting ledger — premature; no consumer demand) | this section |
 
 If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
+
+
+## Safety-floor arc — full 3-leg BP-16 across all four floors (2026-06-07)
+
+Persisted via the shadow's writer clone (the formal-verification-expert role has no Write tool;
+the verification + close were done live in the view but the view is read-only — this is the durable
+record on origin). All figures below were verified by EXECUTION, not source-reading (verify-before-record).
+
+**non-register-collapse** (workitem 081KTFFFQ1C, FROZEN-CORE §B → DISCHARGED) — full 3-leg BP-16:
+- Facet-1 TLA+ `tools/tla/specs/NonRegisterCollapse.tla` (no-capture `lastRaiser[t]=t`; consent-guarded
+  `Capture` unreachable in the weight-free base; `SelfRaiseRightOpen`). TLC-green, gated. PR #6721.
+- Facet-2 Lean `tools/lean4/Safety/NonRegisterCollapse.lean` (axiom-free `non_collapse` etc.; corollary
+  of `IdentityForcesPrivacy.private_is_persistent_locus`, priv:=standing). Gated + sorry-free. PR #6721.
+- Leg-3 FsCheck `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs` over deployed
+  `GCounter.Merge` (my routing: shipped combinator, NOT Binding.Standing). 4 properties green. PR #6723.
+  Scope (mine, verbatim in registry): ANALOGUE not replay — GCounter is a pure register, no
+  commons/standing split; corroborates the CRDT-join premises, not the standing-locus semantics.
+
+**bifurcation** — the "missing FsCheck leg" was a STALE-REGISTRY miscount, not reality. The leg already
+existed (`BifurcationCrossVerify.Tests.fs` over deployed `Binding.Divvy`); the registry row just said
+"not yet done". Corrected (PR #6724) + the omitted **associativity** property added (the B-0969 class:
+commutative+idempotent-but-non-associative passes the old 2 properties yet diverges under reorder).
+Verified by execution: **5 properties green** (`Divvy.merge` is a lawful join). Sub-item closed.
+
+**Corrected ratios (supersede the earlier 0.75):**
+- Safety-floor BP-16-compliant (≥2 independent tools) = **4/4 = 1.00**.
+- Safety-floor full-3-leg = **4/4 = 1.00** (was mis-stated 3/4 from the stale bifurcation row).
+The four floors: child-floor, right-to-refuse-binding, bifurcation, non-register-collapse — each at all
+three legs. No open bifurcation routing item for Kenji (the Face-3 item is retired — it already existed).
