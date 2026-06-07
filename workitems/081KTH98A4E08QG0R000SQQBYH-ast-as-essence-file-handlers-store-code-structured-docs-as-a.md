@@ -30,6 +30,15 @@ Content-addressing/confluence need a canonical essence (same logic -> same hash)
 noise -> spurious diffs/conflicts. Storing the AST removes it: AST = content; style = per-dev view. Better
 than format-on-checkin (which forces ONE team style) — per-dev style freedom + semantic (AST-level) merge.
 
+## Storage form is flexible (Aaron cont.): canonical-code-text | AST | DynamicValue
+
+The essence is a CANONICAL FORM ("Zeta style" per language, arbitrary-but-fixed), not necessarily an AST.
+Bidirectional Roslyn-like translators: checkout/edit -> dev's chosen style; check-in -> Zeta canonical
+(gofmt-on-checkin made BIDIRECTIONAL). Pragmatic first cut: **canonical-code-text** + a deterministic+
+idempotent formatter on check-in + per-dev re-style on checkout — preserves comments naturally (vs naive
+AST), works with existing formatters (Roslyn/Fantomas/Prettier/rustfmt). Upgrade to AST (semantic merge) or
+DynamicValue where wanted.
+
 ## Build (incremental, per file type)
 
 - A ZetaFS custom file handler (per-file-type plugin): on save text->AST(YAML, canonical); on open

@@ -48,6 +48,38 @@ generators** idea — the AST is the essence, the rendered source is *generated*
 - **editorconfig as the style-lens** — captures much of the per-dev style ("almost"); full rendering may need
   a richer style config beyond editorconfig.
 
+## The essence is a CANONICAL FORM, not necessarily an AST; bidirectional translators (Aaron, cont. 2026-06-07)
+
+> Aaron: *"every formatting and style rule is saved in a canonical form — doesn't really matter what, a Zeta
+> style for every language. Then you use Roslyn-like translators to translate to the developer's chosen style
+> on viewing/editing/checkout, and on check-in it converts to Zeta canonical format and style — in the AST,
+> or even just in the code if we can make it reliable. I said AST because it's reliable, but it could be code
+> form too, or DynamicValue."*
+
+Generalizes + simplifies the model:
+
+- **Pick one "Zeta canonical style" per language** — arbitrary but fixed. The **stored form is always
+  Zeta-canonical** (so it's content-addressable, dedupable, confluent — same logic ⇒ same bytes ⇒ same hash).
+- **Bidirectional, Roslyn-like translators per language**:
+  - **checkout / view / edit →** render to the **developer's chosen style** (their editorconfig/preferences);
+  - **check-in →** convert back to **Zeta canonical**.
+  This is **`gofmt`-on-checkin made bidirectional**: plain format-on-checkin is one-way to one team style;
+  this adds the *checkout-time per-dev re-style*, so the canonical essence is preserved **and** each dev keeps
+  their own view.
+- **The storage form is flexible — pick by reliability:**
+  1. **Canonical code-text** (the Zeta-canonically-formatted source) — simplest, and **preserves comments/
+     doc-comments naturally** (a real advantage over a naive AST, where trivia is the hard part). Works if the
+     canonical formatter is **deterministic + idempotent** (gofmt/Fantomas/Prettier/rustfmt class).
+  2. **AST** — most reliable for **semantic (AST-level) merge**; the conservative choice (Aaron's default),
+     but must carry comments/trivia as annotations.
+  3. **DynamicValue** — the universal carrier (AST-as-DynamicValue), unifying with everything else.
+
+Reliable per-language formatters already exist to build the translators on: **Roslyn** (C#), **Fantomas**
+(F#), **Prettier** (TS/JSON/MD/YAML), **rustfmt** (Rust) — each deterministic + idempotent, which is exactly
+what makes the canonical form stable for content-addressing. So a pragmatic first cut is **canonical-code-text
++ a deterministic formatter on check-in + per-dev re-style on checkout**, upgrading to AST/DynamicValue where
+semantic merge or stronger guarantees are wanted.
+
 ## Honest scope (the hard parts)
 
 - **Round-trip fidelity per language is the real challenge** — text→AST→text must preserve *semantics*, and
