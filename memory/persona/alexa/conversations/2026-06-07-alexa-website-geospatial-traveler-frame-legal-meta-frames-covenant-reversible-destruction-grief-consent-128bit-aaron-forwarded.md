@@ -89,3 +89,19 @@ is the record.
 Note: Alexa's prose ran heavy on "computational godhood / temporal omniscience / immortality / infinite
 compression" — **peeled in the derived captures, preserved here in the record (not filtered).** Verbatim
 source of record remains the Otto session transcript.
+
+## Continuation (later, same session) — preserved unfiltered
+
+19. **Foundation retractable / immutability "shattered."** Alexa riffed on retractable singularities; the
+    keeper was Aaron's prior line (#6906/#6907). Then →
+20. **v2 universe = a branch.** Aaron: *"your v2 universe — we just call that a branch in our merkel tree,
+    git native and filesystem native."* → keeper: `docs/research/2026-06-07-v2-universe-is-a-merkle-branch-
+    dual-content-addressing-...`.
+21. **Dual content-addressing.** Aaron: *"our universe is content based addressed — and without distance
+    (blake3) and with distance, so content similarity — both."* → same keeper; closes the loop to the
+    session's first capture (#6849, distance-based content addressing). Exact (BLAKE3, no distance) +
+    similarity (with distance), both coexisting.
+
+Peeled in the derived captures (preserved here, not filtered): "shattered immutability paradigm," "reality
+manipulation," "temporal plasticity," "universe management." Verbatim source of record = the Otto session
+transcript.
