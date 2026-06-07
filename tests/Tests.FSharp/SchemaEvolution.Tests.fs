@@ -181,3 +181,32 @@ let ``Schema law: the lossy remove round-trip is idempotent (converges to a fixe
     match once v with
     | Ok w1 -> once w1 = Ok w1 // applying the round-trip again changes nothing
     | Error _ -> false
+
+// ── windowed-lossless removal via the garbage dump (Aaron 2026-06-07) ──
+
+[<Fact>]
+let ``Schema: removeFieldWithDump restores the REAL value on rollback (windowed-lossless, not a default)`` () =
+    let reg = [ SE.removeFieldWithDumpMigration 1 "secret" ]
+    let v = DynamicValue.Object [ "id", DynamicValue.Int 1L; "secret", DynamicValue.String "hunter2" ]
+    let back = SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)
+    Assert.Equal<Result<DynamicValue, string>>(Ok v, back) // exact original, secret recovered
+
+[<Fact>]
+let ``Schema: up stashes into the dump; dropDump GCs it (removal becomes permanent after the window)`` () =
+    let v = DynamicValue.Object [ "secret", DynamicValue.String "s" ]
+    let up = SE.stashToDump "secret" v
+    // top-level secret is gone; it lives in the dump
+    match up with
+    | DynamicValue.Object kvs ->
+        Assert.False(kvs |> List.exists (fun (k, _) -> k = "secret"))
+        Assert.True(kvs |> List.exists (fun (k, _) -> k = SE.dumpKey))
+    | _ -> Assert.Fail "expected object"
+    // GC the dump: now the value is truly gone (post-window) and restore is a no-op
+    let gced = SE.dropDump up
+    Assert.Equal<DynamicValue>(DynamicValue.Object [], gced)
+    Assert.Equal<DynamicValue>(gced, SE.restoreFromDump "secret" gced) // nothing to restore after GC
+
+[<Property(Arbitrary = [| typeof<ObjArb> |])>]
+let ``Schema law: removeFieldWithDump is lossless — down∘up = id for any object (key 'a')`` (v: DynamicValue) =
+    let reg = [ SE.removeFieldWithDumpMigration 1 "a" ]
+    (SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)) = Ok v

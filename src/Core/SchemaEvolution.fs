@@ -80,6 +80,76 @@ module SchemaEvolution =
     let removeFieldMigration (fromV: int) (key: string) (downDefault: DynamicValue) : Migration =
         { From = fromV; To = fromV + 1; Up = removeField key; Down = Some(addField key downDefault) }
 
+    /// The reserved key under which a windowed removal stashes lossy data (the "garbage dump", Aaron
+    /// 2026-06-07). A dump is an `Object` of `removedKey -> removedValue`, GC'd at contract-complete.
+    [<Literal>]
+    let dumpKey = "__evo_dump__"
+
+    // A dump entry records the removed value AND its original index among the non-dump fields, so restore
+    // is position-exact (`down∘up = id`, not just same-key-set). Shape: `key -> Object[ "idx", Int i; "val", v ]`.
+    let private dumpEntry (idx: int) (value: DynamicValue) : DynamicValue =
+        DynamicValue.Object [ "idx", DynamicValue.Int(int64 idx); "val", value ]
+
+    let private splitDump (kvs: (string * DynamicValue) list) : (string * DynamicValue) list * (string * DynamicValue) list =
+        let nonDump = kvs |> List.filter (fun (k, _) -> k <> dumpKey)
+        let dump =
+            match kvs |> List.tryPick (fun (k, x) -> if k = dumpKey then Some x else None) with
+            | Some(DynamicValue.Object d) -> d
+            | _ -> []
+        nonDump, dump
+
+    /// Move `key`'s value INTO the dump (lossless stash): remove `key` from the top level and record its
+    /// value + original index under `dumpKey`. No-op if `key` is absent. Other shapes pass through.
+    let stashToDump (key: string) (v: DynamicValue) : DynamicValue =
+        match v with
+        | DynamicValue.Object kvs ->
+            let nonDump, dump = splitDump kvs
+            match nonDump |> List.tryFindIndex (fun (k, _) -> k = key) with
+            | None -> v
+            | Some idx ->
+                let removed = nonDump |> List.item idx |> snd
+                let newNonDump = nonDump |> List.filter (fun (k, _) -> k <> key)
+                let newDump = (dump |> List.filter (fun (k, _) -> k <> key)) @ [ key, dumpEntry idx removed ]
+                DynamicValue.Object(newNonDump @ [ dumpKey, DynamicValue.Object newDump ])
+        | other -> other
+
+    /// Restore `key` FROM the dump (the position-exact inverse of `stashToDump`): reinsert `key`'s stashed
+    /// value at its original index and drop it from the dump (removing the dump entirely when it empties).
+    /// No-op if `key` is not in the dump. Other shapes pass through.
+    let restoreFromDump (key: string) (v: DynamicValue) : DynamicValue =
+        match v with
+        | DynamicValue.Object kvs ->
+            let nonDump, dump = splitDump kvs
+            match dump |> List.tryPick (fun (k, x) -> if k = key then Some x else None) with
+            | Some(DynamicValue.Object entry) ->
+                let idx =
+                    match entry |> List.tryPick (fun (k, x) -> if k = "idx" then Some x else None) with
+                    | Some(DynamicValue.Int i) -> int i
+                    | _ -> List.length nonDump
+                let value =
+                    entry |> List.tryPick (fun (k, x) -> if k = "val" then Some x else None) |> Option.defaultValue DynamicValue.Null
+                let clamped = max 0 (min idx (List.length nonDump))
+                let restored = (List.truncate clamped nonDump) @ [ key, value ] @ (List.skip clamped nonDump)
+                let remaining = dump |> List.filter (fun (k, _) -> k <> key)
+                let reattach = if List.isEmpty remaining then [] else [ dumpKey, DynamicValue.Object remaining ]
+                DynamicValue.Object(restored @ reattach)
+            | _ -> v
+        | other -> other
+
+    /// Drop the whole garbage dump (the GC step, run at contract-complete once rollback is no longer
+    /// possible/needed — gated by the same horizon `EvolutionWindow` tracks).
+    let dropDump (v: DynamicValue) : DynamicValue = removeField dumpKey v
+
+    /// `removeField` made **windowed-lossless**: `Up` stashes the removed value in the dump instead of
+    /// discarding it; `Down` restores the REAL value from the dump (not a default). So `down(up(x)) = x`
+    /// for any `x` that doesn't already use the reserved `dumpKey` — a true inverse for the duration of the
+    /// window. After the window, `dropDump` GCs the stash (the removal becomes permanent/irreversible).
+    let removeFieldWithDumpMigration (fromV: int) (key: string) : Migration =
+        { From = fromV
+          To = fromV + 1
+          Up = stashToDump key
+          Down = Some(restoreFromDump key) }
+
     /// Migrate `value` from version `fromV` up to `toV` by composing the adjacent migrations in
     /// `migrations` (each must step From -> From+1). Returns Error if a step is missing or a
     /// downgrade is requested (use `migrateDown` for the inverse direction).
