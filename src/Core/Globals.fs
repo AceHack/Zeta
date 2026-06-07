@@ -1,97 +1,144 @@
 namespace Zeta.Core
 
-/// **Caché / MUMPS-style multidimensional hierarchical "global" — a sparse persistent array addressed by a
-/// subscript PATH (`string list`), with the canonical MUMPS verbs (Aaron 2026-06-07; "like InterSystems
-/// Caché plus its DB features").** A global is one uniform tree: `^G(a,b,c) = v` is the value at path
-/// `["a";"b";"c"]`. This is the storage shape under Caché's multi-model (object/SQL/document) façade — the
-/// same idea as a `DynamicValue` tree / the path-addressed DAG, made into a first-class primitive.
+/// **Caché / MUMPS-style hierarchical-"global" navigation — the canonical MUMPS verbs over `DynamicValue`
+/// directly (Aaron 2026-06-07: "this is just DynamicValue; SoftValue even makes this soft").** A "global"
+/// `^G(a,b,c)` is a node in a `DynamicValue` tree at subscript path `["a";"b";"c"]`; `DynamicValue` already
+/// *is* the ragged, sparse, heterogeneous, path-addressed array (no declared shape) — so these verbs are a
+/// thin navigation API over it, **not** a parallel store. A `DynamicValue` whose leaves are `SoftValue`-
+/// shaped is a *soft* (probabilistic) sparse tensor; the verbs are leaf-agnostic, so that falls out for free.
+/// A model `state_dict` (dotted-path keys → tensors) is a global; navigating it with these verbs is the
+/// human-readable model API.
 ///
-/// **Ordinal subscript collation (B-0969).** F#'s structural string comparison is `String.CompareOrdinal`,
-/// so the backing sorted `Map<string list,'V>` orders subscript paths ordinally by construction — no
-/// culture-sensitivity, DST-stable, 4-language-portable. (MUMPS canonical `$ORDER` collation is
-/// numeric-then-string; numeric-subscript collation is a documented later nuance, not this slice.)
+/// **Leaf-xor-object semantics (DynamicValue's nature).** Children live under `Object` nodes; a scalar leaf
+/// has a value but no children. So a node is a leaf *or* an object — never both. (MUMPS allows a node to
+/// hold a value AND children — `$DATA` 11; that is the one way globals are strictly more expressive than a
+/// JSON-like tree. Reproducing it would need a reserved value-key; out of scope — DynamicValue is the
+/// canonical substrate and its document model is leaf-xor-object, so `data` returns 0 / 1 / 10 only.)
 ///
-/// Pure / immutable: every verb returns a new global. Anchors: MUMPS (Octo Barnett et al., 1966) — the
-/// sparse multidimensional array + `$ORDER`/`$QUERY`/`$DATA`/`KILL`; InterSystems Caché/IRIS (multi-model
-/// over globals). Multi-model views, F#-typed access, and globals-over-the-content-addressed-DAG (CRDT
-/// values, DST replay) layer on top later (backlog).
+/// **Ordinal subscript collation (B-0969).** `$ORDER`/`$QUERY` iterate children in ordinal key order
+/// (`StringComparer.Ordinal` via F# string `compare`), independent of `Object` insertion order — DST-stable,
+/// 4-language-portable. Pure/immutable: every verb returns a new `DynamicValue`.
+///
+/// Anchors: MUMPS (Octo Barnett et al., 1966) — the sparse multidimensional array + `$ORDER`/`$QUERY`/
+/// `$DATA`/`KILL`; InterSystems Caché/IRIS (multi-model over globals); sparse-tensor COO/CSF (Smith &
+/// Karypis 2015) — the scaling layout for the same shape.
 [<RequireQualifiedAccess>]
 module Globals =
 
-    /// A subscript path: `^G(a,b,c)` ↔ `["a"; "b"; "c"]`. The empty path is the root.
+    /// A subscript path: `^G(a,b,c)` ↔ `["a"; "b"; "c"]`. The empty path is the root node itself.
     type Path = string list
 
-    [<NoEquality; NoComparison>]
-    type Global<'V> =
-        private
-            { Nodes: Map<Path, 'V> } // ordinal-collated (F# string comparison is CompareOrdinal)
+    /// The empty global — `Null` (an undefined root).
+    let empty: DynamicValue = DynamicValue.Null
 
-    /// The empty global (no defined nodes).
-    let empty<'V> : Global<'V> = { Nodes = Map.empty }
+    /// Ordinal-sorted, de-duplicated child subscripts of an `Object`; `[]` for any non-object.
+    let private objKeys (dv: DynamicValue) : string list =
+        match dv with
+        | DynamicValue.Object kvs -> kvs |> List.map fst |> List.distinct |> List.sortWith compare
+        | _ -> []
 
-    /// `SET ^G(path) = v` — upsert the value at `path`. Intermediate nodes need not exist (sparse).
-    let set (path: Path) (v: 'V) (g: Global<'V>) : Global<'V> = { Nodes = Map.add path v g.Nodes }
+    /// `$GET(^G(path))` — the `DynamicValue` at `path`, or `None` if undefined (a segment is missing or
+    /// traverses through a non-object). The empty path returns the root unless it is `Null`.
+    let rec get (path: Path) (root: DynamicValue) : DynamicValue option =
+        match path with
+        | [] -> (match root with DynamicValue.Null -> None | v -> Some v)
+        | k :: rest ->
+            match root with
+            | DynamicValue.Object kvs ->
+                match List.tryFind (fun (kk, _) -> compare kk k = 0) kvs with
+                | Some(_, child) -> get rest child
+                | None -> None
+            | _ -> None
 
-    /// `$GET(^G(path))` — the value at `path`, or `None` if no value is defined there.
-    let get (path: Path) (g: Global<'V>) : 'V option = Map.tryFind path g.Nodes
+    /// `SET ^G(path) = v` — functional upsert of `v` at `path`, creating intermediate `Object` nodes as
+    /// needed (any non-object encountered along the path is replaced by a fresh object — SET wins). The
+    /// empty path replaces the whole root with `v`.
+    let rec set (path: Path) (v: DynamicValue) (root: DynamicValue) : DynamicValue =
+        match path with
+        | [] -> v
+        | k :: rest ->
+            let existing =
+                match root with
+                | DynamicValue.Object kvs -> kvs
+                | _ -> []
 
-    /// True iff `prefix` is a (proper or improper) prefix of `path`.
-    let private isPrefixOf (prefix: Path) (path: Path) : bool =
-        List.length prefix <= List.length path
-        && List.forall2 (=) prefix (List.truncate (List.length prefix) path)
+            let child =
+                match List.tryFind (fun (kk, _) -> compare kk k = 0) existing with
+                | Some(_, c) -> c
+                | None -> DynamicValue.Null
 
-    /// `KILL ^G(path)` — delete the node at `path` **and all descendants** (the whole subtree).
-    /// Killing the empty path clears the global.
-    let kill (path: Path) (g: Global<'V>) : Global<'V> =
-        { Nodes = g.Nodes |> Map.filter (fun k _ -> not (isPrefixOf path k)) }
+            let newChild = set rest v child
+            let others = existing |> List.filter (fun (kk, _) -> compare kk k <> 0)
+            DynamicValue.Object(others @ [ k, newChild ])
 
-    /// True iff any defined node is a strict descendant of `path`.
-    let private hasChildren (path: Path) (g: Global<'V>) : bool =
-        let n = List.length path
-        g.Nodes |> Map.exists (fun k _ -> List.length k > n && isPrefixOf path k)
+    /// `KILL ^G(path)` — delete the node at `path` **and its whole subtree** (remove the key from its parent
+    /// object). Killing the empty path clears the global to `Null`. A no-op if the path is undefined.
+    let rec kill (path: Path) (root: DynamicValue) : DynamicValue =
+        match path with
+        | [] -> DynamicValue.Null
+        | [ k ] ->
+            match root with
+            | DynamicValue.Object kvs -> DynamicValue.Object(kvs |> List.filter (fun (kk, _) -> compare kk k <> 0))
+            | other -> other
+        | k :: rest ->
+            match root with
+            | DynamicValue.Object kvs ->
+                match List.tryFind (fun (kk, _) -> compare kk k = 0) kvs with
+                | Some(_, child) ->
+                    let killed = kill rest child
+                    let others = kvs |> List.filter (fun (kk, _) -> compare kk k <> 0)
+                    DynamicValue.Object(others @ [ k, killed ])
+                | None -> root
+            | other -> other
 
-    /// `$DATA(^G(path))` — node status: `0` undefined, `1` value & no descendants, `10` no value but has
-    /// descendants (a pure intermediate), `11` value & has descendants.
-    let data (path: Path) (g: Global<'V>) : int =
-        let hasVal = Map.containsKey path g.Nodes
-        let hasKids = hasChildren path g
-        match hasVal, hasKids with
-        | false, false -> 0
-        | true, false -> 1
-        | false, true -> 10
-        | true, true -> 11
+    /// The immediate-child subscripts of the node at `path`, ordinal-ordered (`[]` if the node is a leaf,
+    /// undefined, or has no children).
+    let children (path: Path) (root: DynamicValue) : string list =
+        match get path root with
+        | Some dv -> objKeys dv
+        | None -> []
 
-    /// The immediate-child subscripts of `prefix`, in ordinal order, deduplicated. A child subscript is the
-    /// element at depth `|prefix|` of any defined node strictly below `prefix`.
-    let children (prefix: Path) (g: Global<'V>) : string list =
-        let n = List.length prefix
-        g.Nodes
-        |> Map.toSeq
-        |> Seq.choose (fun (k, _) -> if List.length k > n && isPrefixOf prefix k then Some(List.item n k) else None)
-        |> Seq.distinct
-        |> Seq.sortWith compare // ordinal (F# string comparison)
-        |> List.ofSeq
+    /// `$DATA(^G(path))` — node status under leaf-xor-object semantics: `0` undefined, `1` a scalar leaf
+    /// (value, no children), `10` an object node (children slot). (`11`/value+children is not representable;
+    /// see the module note.)
+    let data (path: Path) (root: DynamicValue) : int =
+        match get path root with
+        | None -> 0
+        | Some(DynamicValue.Object _) -> 10
+        | Some _ -> 1
 
-    /// `$ORDER(^G(prefix, after))` — the next immediate child subscript of `prefix` in ordinal order:
-    /// `after = None` ⇒ the first child; `after = Some s` ⇒ the first child strictly greater than `s`.
-    /// `None` when there is no such child. Drives sibling iteration.
-    let nextChild (prefix: Path) (after: string option) (g: Global<'V>) : string option =
-        let kids = children prefix g
+    /// `$ORDER(^G(path, after))` — the next immediate child subscript of `path` in ordinal order:
+    /// `after = None` ⇒ the first child; `after = Some s` ⇒ the first child strictly greater than `s`;
+    /// `None` when there is none. Drives sibling iteration.
+    let nextChild (path: Path) (after: string option) (root: DynamicValue) : string option =
+        let kids = children path root
         match after with
         | None -> List.tryHead kids
         | Some s -> kids |> List.filter (fun c -> compare c s > 0) |> List.tryHead
 
-    /// `$QUERY(^G(path))` — the next **defined** node after `path` in global (depth-first / ordinal-path)
-    /// order, or `None` at the end. Walks the entire global one node at a time regardless of depth.
-    let nextNode (path: Path) (g: Global<'V>) : Path option =
-        g.Nodes
-        |> Map.toSeq
+    /// All leaf `(path, value)` pairs in depth-first ordinal-path order (`Null` root ⇒ empty).
+    let toSeq (root: DynamicValue) : (Path * DynamicValue) seq =
+        let rec walk (prefix: Path) (dv: DynamicValue) : (Path * DynamicValue) seq =
+            seq {
+                match dv with
+                | DynamicValue.Null -> ()
+                | DynamicValue.Object kvs when not (List.isEmpty kvs) ->
+                    let ordered = kvs |> List.distinctBy fst |> List.sortWith (fun (a, _) (b, _) -> compare a b)
+
+                    for k, child in ordered do
+                        yield! walk (prefix @ [ k ]) child
+                | leaf -> yield prefix, leaf
+            }
+
+        walk [] root
+
+    /// `$QUERY(^G(path))` — the next **defined leaf** node after `path` in depth-first ordinal-path order,
+    /// or `None` at the end. Walks the whole global one leaf at a time regardless of depth.
+    let nextNode (path: Path) (root: DynamicValue) : Path option =
+        toSeq root
         |> Seq.map fst
-        |> Seq.filter (fun k -> compare k path > 0)
+        |> Seq.filter (fun p -> compare p path > 0)
         |> Seq.tryHead
 
-    /// All defined `(path, value)` pairs in ordinal-path order.
-    let toSeq (g: Global<'V>) : (Path * 'V) seq = Map.toSeq g.Nodes
-
-    /// The number of defined nodes (values), not counting pure intermediates.
-    let count (g: Global<'V>) : int = g.Nodes.Count
+    /// The number of defined leaf nodes.
+    let count (root: DynamicValue) : int = toSeq root |> Seq.length
