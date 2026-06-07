@@ -12,7 +12,7 @@ checklist. Split however suits Vera/Lior.
 |---|---|---|---|---|
 | `Collation` + GSet/ZSet/IndexedZSet/Hierarchy/Residuated/Aggregate ordinal fix (B-0969) | binary/ordinal collation default | ☐ ordinal audit C#/Rust/TS | ☐ non-ASCII ordinal vectors (un-mask ASCII) | ☐ ordinal-order law |
 | `ZSetMerkle` | canonical Merkle-over-Z-set root | ☐ port | ☐ root vectors (incl. non-ASCII keys) | ☐ determinism + retraction + order-indep laws |
-| `Core.Blake3` (`Blake3Hasher`, `ContentHash256`) + `IContentHasher` port | BLAKE3 content hash (128 + full 256) | ☐ adapters (Rust native / TS / C# Blake3) | ☐ known-answer: empty → `af13…` (256 raw) + `49c9…` (128 LE) | ☐ 128 derives-from-256; tiers agree |
+| `Core.FSharp.Blake3` (`Blake3Hasher`, `ContentHash256`) + `IContentHasher` port | BLAKE3 content hash (128 + full 256) | ☐ adapters — `Core.CSharp/Rust/TS.Blake3` (Rust native / TS / C# Blake3) | ☐ known-answer: empty → `af13…` (256 raw) + `49c9…` (128 LE) | ☐ 128 derives-from-256; tiers agree |
 | `ContentStore` | content-addressed single-instance COW | ☐ port | ☐ dedup/COW vectors | ☐ idempotent put; COW isolation |
 | `DagFs` | multi-parent file tree + 2 edit modes | ☐ port | ☐ link/editLocal/editEverywhere vectors | ☐ convergence (edit→same-content dedups) |
 | `DvKey` | content-addressed comparable DynamicValue row | ☐ port | ☐ canonical-CBOR key vectors | ☐ equal-value⇒equal-key |
@@ -23,6 +23,15 @@ checklist. Split however suits Vera/Lior.
 | `LwwMap` | LWW-keyed map CRDT | ☐ port | ☐ convergence vectors | ☐ commutative/assoc/idempotent |
 | `Rga` | sequence CRDT (collaborative text/lists) | ☐ port | ☐ concurrent-insert convergence vectors | ☐ convergence + sibling-order |
 | `CasStore` | per-row compare-and-swap (lock-free runtime) | ☐ port | ☐ CAS success/conflict vectors | ☐ lost-update-prevention law |
+| `Globals` | Caché/MUMPS verbs (set/get/kill/$DATA/$ORDER/$QUERY) over `DynamicValue` | ☐ port | ☐ navigation vectors (ordinal $ORDER/$QUERY; leaf-xor-object $DATA 0/1/10) | ☐ ordinal-collation; kill-subtree; $QUERY-covers-all-leaves laws |
+| `WeightedSet<'K,'W>` (over `ISemiring`) | semiring-generic sparse tensor (ZSet = IntegerRing instance) | ☐ port (incl. `ISemiring` ladder) | ☐ add/scale/inner vectors per semiring (integer; later interval/prob) | ☐ ring laws: retraction (a+(−a)=∅), commut/assoc, distributivity, ×Zero annihilator, inner=contraction |
+| `TensorRef` | content-addressed tensor reference carried in `DynamicValue` (`$tensor` Object) | ☐ port | ☐ toDynamic/tryOfDynamic round-trip vectors (dense+sparse+scalar) | ☐ round-trip = id; sentinel-recognition; resolve-against-store |
+| `DynamicValueAlgebra` + `IMonoid`/`IGroup`/`ISemilattice` (Semiring.fs) | algebra ladder + DynamicValue LWW-register semilattice | ☐ port (interfaces + instance) | ☐ merge/fold convergence vectors | ☐ monoid identity+assoc; semilattice commut+idempotent; order-independence |
+| `ITensor` (`Zeta.Core.Abstractions`, C# neutral contract) | read/enumeration tensor contract (StoredCount/IsSparse/StoredEntries) | ☐ each lang's tensor impl satisfies the contract | — (contract, no wire format) | ☐ contract conformance (sparse support = stored entries) |
+
+(Note: `Core.Blake3`→`Core.FSharp.Blake3` and `Core.Git`→`Core.FSharp.Git` were renamed this session to the
+per-language family — the C#/Rust/TS siblings get `Core.<Lang>.Blake3` etc. Interface/contract libs are
+C#-neutral (`Zeta.Core.Abstractions`); see the naming-convention doc.)
 
 (Already-cross-lang CRDTs — `GCounter`/`PNCounter`/`OrSet`/`LwwRegister` — are F#-done; check parity status
 against B-0959, likely already covered.)
