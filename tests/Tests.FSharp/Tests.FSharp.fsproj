@@ -78,6 +78,7 @@
     <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="Blake3Hasher.Tests.fs" />
+    <Compile Include="ContentHash256.Tests.fs" />
     <Compile Include="ContentStore.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />

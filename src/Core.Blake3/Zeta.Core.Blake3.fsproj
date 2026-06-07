@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="ContentHash256.fs" />
     <Compile Include="Blake3Hasher.fs" />
   </ItemGroup>
 
