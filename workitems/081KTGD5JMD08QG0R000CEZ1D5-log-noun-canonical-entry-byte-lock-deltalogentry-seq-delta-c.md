@@ -38,15 +38,19 @@ B-0969 precedent) for cross-language/DST determinism. This is exactly why `Log` 
 
 ## What (the canonical encoding)
 
-Define ONE canonical entry encoding, CBOR (RFC 8949, matching the DynamicValue/ZSet exemplars), shared
-by every backend and all four oracles. The new byte-lock surface is just the **envelope** around the
-already-locked `Delta`:
-- `Seq : int64` — CBOR integer.
-- `Delta : ZSet<'K>` — reuse the existing canonical ZSet CBOR (already 4/4 locked).
-- `Captured : Map<string,string>` — CBOR map with **ordinal-sorted keys** (deterministic; the one real
-  decision). Empty map when the producer was pure.
-- Entry framing: a fixed 3-element CBOR array `[Seq, DeltaCbor, CapturedCbor]` (order-fixed, not a
-  by-name map, to avoid key-ordering questions on the envelope itself).
+The whole entry maps to a `DynamicValue.Object` and rides DynamicValue's already-byte-locked canonical
+serializers — so the entry INHERITS the 4-language lock with no new canonical encoding (an entry is just
+a DynamicValue; no new noun). As-shipped (F# reference, #6730/#6735):
+
+- `Object` with keys `captured` / `delta` / `seq` (ordinal key order — DynamicValue.Object is
+  order-preserving, so the mapping fixes the order).
+- `seq` → `DynamicValue.Int` (int64).
+- `delta` → `ZSetDynamic.toDynamicValue` (the existing ZSet↔DynamicValue mapping, already 4/4 locked).
+- `captured` → `DynamicValue.Object` with **ordinal-sorted keys** (culture-invariant, B-0969 — the one
+  real decision; deterministic across languages + DST). Empty object when the producer was pure.
+
+Format is per-stream/table (CBOR default for filesystem; YAML for git once a DynamicValue YAML
+serializer lands; JSON/XML also available) — all ride the same `DeltaLogEntryDynamic` mapping.
 
 ## Slices (seed-first, one PR each)
 

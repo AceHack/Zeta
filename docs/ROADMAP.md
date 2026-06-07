@@ -71,6 +71,16 @@ using DynamicValue's byte-locked per-format serializer:
   future custom) is a **plugin** with special handling, registered behind a stable contract: **closed for
   modification, open for extension**. New file types extend via new plugins without touching the core; the
   MD+frontmatter treaty is one such plugin. This is the extensibility model for the whole format roster.
+- **What a plugin IS (Aaron 2026-06-07):** a file-type handler is just a **specific handler mapping that
+  file type ↔ a `ZSet`**. On top of that, a plugin may **optionally auto-define indexes as Rx queries over
+  the ZSet → incremental indexed views** (DBSP/IVM): the **current view table is computed this way, and it
+  *is* git's "main"** — the materialized current state = the incremental view over the Log's ZSets (our
+  mapping to git's working tree/HEAD). The indexed view is **optional per file type**; each file type
+  chooses its own indexes, described by **Rx queries** (ties to the Bonsai serialized-Rx substrate). And
+  the **plugin itself is persisted as a `DynamicValue`, not F#**, so the *same plugin runs in any of the 4
+  languages** (plugin-as-data, language-agnostic — no per-language reimplementation). Composes with: DBSP
+  IVM (`Circuit`/`Operators`/`Incremental`), Bonsai-serialized Rx queries, `DynamicValue` (the plugin
+  carrier), `ZSet` (the core). → backlog to design; clarifies the data-layer shape.
 
 ### Sequence (data plane first)
 

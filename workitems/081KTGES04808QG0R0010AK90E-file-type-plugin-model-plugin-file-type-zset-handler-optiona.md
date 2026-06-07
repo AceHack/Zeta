@@ -1,0 +1,63 @@
+---
+id: 081KTGES04808QG0R0010AK90E
+type: task
+state: backlog
+priority: P2
+slug: file-type-plugin-model-plugin-file-type-zset-handler-optiona
+title: "File-type plugin model — plugin = file-type<->ZSet handler + OPTIONAL Rx-defined incremental indexed views (=git main); plugin persisted as DynamicValue to run in all 4 langs; open/closed"
+created: 2026-06-07T07:11:54.504Z
+depends_on: []
+composes_with: []
+---
+
+# File-type plugin model — plugin = file-type<->ZSet handler + OPTIONAL Rx-defined incremental indexed views (=git main); plugin persisted as DynamicValue to run in all 4 langs; open/closed
+
+<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
+     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
+     Identity is the zetaid prefix — resolve cross-refs by `081KTGES04808QG0R0010AK90E-*.md` glob. -->
+
+## Source (Aaron 2026-06-07, verbatim intent)
+
+> "the file type handlers are just specific handlers for zsets mapped to that file type. most indexes
+> over zsets for file types can be auto-defined too with the plugin as rx queries over the zset into
+> incremental indexed views; current view tables can always be computed this way and matches git's main
+> basically for our mapping here. but even that should be optional over the file type — the indexed view
+> is optional and each file type can choose its indexes and describe with rx queries. and we can persist
+> the plugin as a dynamicvalue instead of f# so it can run in any of our 4 languages."
+
+## The model
+
+A **file-type plugin** has three layers, the last two optional:
+
+1. **Handler = file-type ↔ `ZSet` mapping** (required). Parse a file of this type into a ZSet; emit it
+   back. This is the per-file-type realization of the format/header+body treaty (markdown, yaml, cbor, …).
+2. **Optional Rx-defined incremental indexed views.** A plugin MAY auto-define indexes as **Rx queries
+   over the ZSet** → DBSP/IVM **incremental indexed views**. The **current view table** is computed this
+   way, and it **IS git's "main"** in our mapping (materialized current state = the incremental view over
+   the Log's ZSets = git working tree/HEAD). **Optional per file type**; each type chooses its own indexes,
+   described by Rx queries.
+3. **Plugin persisted as a `DynamicValue`, not F# code.** The plugin is **data**, so the *same plugin runs
+   in any of the 4 languages* (no per-language reimplementation) — Bonsai-serialized Rx + DynamicValue
+   carrier make the index definitions portable.
+
+**Open/Closed:** new file types + new indexes extend via new plugins (data), never by modifying the core.
+
+## Composes with (existing substrate)
+
+- `ZSet` / `IndexedZSet` (the core + keyed index rung), DBSP IVM (`Circuit`/`Operators`/`Incremental`).
+- **Bonsai-serialized Rx** (the self-evolving-saga substrate — serialize the Rx query as DynamicValue;
+  see PRIMITIVE-REGISTRY "serializable deferred execution").
+- `DynamicValue` (plugin-as-data carrier, 4-lang byte-locked), the format/file-type treaty (ROADMAP).
+
+## Open questions
+
+- The plugin contract surface (what a plugin DynamicValue must declare: file-type tag, handler verbs,
+  optional index Rx-query list).
+- How "current view = git main" maps precisely (the fold/IVM ↔ git working-tree correspondence).
+- Registration/discovery of plugins (a plugins-as-rows Log, naturally).
+
+## Anchors
+
+- `docs/ROADMAP.md` (format/file-type treaty + this plugin model) · two-plane DB design doc · B-0959.
+- Depends conceptually on the Log noun byte-lock (081KTGD5JMD) + a DynamicValue YAML serializer +
+  the Bonsai-Rx serialization substrate.
