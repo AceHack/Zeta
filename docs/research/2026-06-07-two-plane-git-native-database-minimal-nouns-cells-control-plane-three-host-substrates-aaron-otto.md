@@ -141,6 +141,25 @@ interface must cover: commit/append, branch, checkout, log/history, diff, status
 the PR/merge control-plane verbs — each is either a noun-verb (`append`/`branch`/`history`) or a
 composition to expose.
 
+### The MCP/CLI surface IS a cell — with request-driven (not scheduled) cadence
+
+> Aaron: *"MCP/CLI can also serve as a type of cell, but one whose cadence is not schedule-based."*
+
+The command surface is not *outside* the cell model — it is itself a cell, keeping the architecture
+**cells all the way**. What distinguishes it is **cadence**, a cell property orthogonal to host
+substrate (§3):
+
+- **Scheduled / tick-driven cells** — tick stream from a clock (cron, systemd timer, the autonomous-loop
+  heartbeat). They advance on time.
+- **Request / event-driven cells** — the "tick" is an *incoming command*. The MCP/CLI cell wakes on an
+  MCP tool-call or CLI invocation, processes it against the data-plane nouns, and quiesces. No clock; the
+  request *is* the tick.
+
+Both are the same cell shape `(identity, Log)` driven by a tick stream; only the *source* of the ticks
+differs. So the MCP/CLI is a request-driven cell over the data-plane core — composing cleanly with the
+scheduled cells rather than being a special external gateway. (Cadence axis pairs with the host-substrate
+axis: a request-driven cell can be hosted on systemd, k8s, or Orleans just as a scheduled one can.)
+
 ## 3. Cell host substrates — three, each cell distinct
 
 > Aaron: *"support 1 systemd (and other OS service) cells, 2 raw kubernetes operator-pattern cells,
