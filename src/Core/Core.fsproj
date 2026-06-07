@@ -85,6 +85,7 @@
     <Compile Include="ZSetMerkle.fs" />
     <Compile Include="ContentHasher.fs" />
     <Compile Include="ContentStore.fs" />
+    <Compile Include="CasStore.fs" />
     <Compile Include="DagFs.fs" />
     <Compile Include="DvKey.fs" />
     <Compile Include="DebeziumCdc.fs" />
