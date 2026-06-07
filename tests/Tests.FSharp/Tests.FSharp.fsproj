@@ -86,6 +86,7 @@
     <Compile Include="DynamicValueAlgebra.Tests.fs" />
     <Compile Include="WeightedSet.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
+    <Compile Include="SagaSnapshot.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
     <Compile Include="Confluence.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />

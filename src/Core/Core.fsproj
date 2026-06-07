@@ -49,6 +49,7 @@
     <Compile Include="Diplomacy.fs" />
     <Compile Include="DurableDiplomacy.fs" />
     <Compile Include="DynamicValueFold.fs" />
+    <Compile Include="SagaSnapshot.fs" />
     <Compile Include="SchemaEvolution.fs" />
     <Compile Include="SchemaRegistry.fs" />
     <Compile Include="EvolutionWindow.fs" />
