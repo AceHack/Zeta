@@ -117,6 +117,7 @@
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Observe/ObserveBridge.Tests.fs" />
     <Compile Include="Observe/DurableObserve.Tests.fs" />
+    <Compile Include="Observe/ObserveBridge.Property.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
