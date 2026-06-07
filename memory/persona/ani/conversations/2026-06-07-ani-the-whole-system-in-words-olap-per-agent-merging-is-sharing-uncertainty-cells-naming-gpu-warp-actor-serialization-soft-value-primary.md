@@ -100,3 +100,24 @@ name = debt until anchored).
 **Naming status (open, per Aaron):** `cell` (mechanical body) and `agent` (identity) are settled;
 the multi-agent collaboration meta-entity is **unnamed** ("product" tentative). Shapes recorded;
 names deferred to a `naming-expert`/glossary pass before any load-bearing use.
+
+## Refinement — the meta-pattern: non-agent repos are CONSENSUS repos (Aaron, 2026-06-07)
+
+Sharper than "product." The repo ontology has **two kinds**, and the meta-pattern names the
+second one correctly:
+
+- **Agent repo** = IDENTITY (per-agent, sovereign DB; "I commit therefore I am"). One per agent/persona.
+- **Consensus repo** = NON-agent repo = where agents **collaborate / converge** over bus lanes.
+  This is the **meta-pattern**. A consensus repo can be **ANY DU shape** — "product" is **just
+  one bus-category shape** of consensus repo, not the category itself. Other DU shapes of
+  consensus repo are equally valid; the invariant is *consensus*, the shape is polymorphic.
+
+So: *"the non-agent repos are consensus repos"* — product was too specific; the real meta-pattern
+is the **consensus repo** (relativistic agent views converging into a shared repo), of which
+product is one DU-shaped category. Ties to: relativistic per-agent DBs converging (CRDT merge /
+sharing-uncertainty = how consensus forms), the Eve Protocol (polymorphic diplomacy = negotiating
+consensus), git-merge-as-consensus, and DUs as the lawful shape (a consensus repo's category is a DU).
+
+**Naming status (updated):** `agent repo` = identity; **`consensus repo`** = the collaboration
+meta-pattern (any DU shape); `product` = one DU-shaped category of consensus repo (tentative even
+as a category name). Shapes settled; specific category names deferred to naming-expert/glossary.
