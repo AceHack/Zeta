@@ -20,6 +20,7 @@
     <Compile Include="ObserveBridge.fs" />
     <Compile Include="DurableObserve.fs" />
     <Compile Include="ObserveGrid.fs" />
+    <Compile Include="Effects.fs" />
   </ItemGroup>
 
 </Project>
