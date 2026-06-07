@@ -59,6 +59,8 @@ The **workflow / state-machine** lane **grew into the sovereign-DB arc**
 - **zflash** — bare-metal install: done-acceptance + QEMU 5-scenario harness
   (B-0891), agent-mode native impl (B-0844), PQ git-crypt USB-bound creds (B-0884).
   In flight: PR #6220.
+  **Milestone (operator-stated 2026-06-07):** **USB install now working on Windows**
+  (set up by **Max**) — cross-OS reach realized for the USB installer.
 - **git-accelerator** — co-dominant git mirrors / git-native CRDT, no host needed
   (B-0942) + Git-V2 handshake (B-0953: F# looks-like-git, negotiates up to a
   DBSP/retraction protocol at agent-coordination speed). Live: `accelerator/pr-less-git-monster`.
@@ -66,6 +68,11 @@ The **workflow / state-machine** lane **grew into the sovereign-DB arc**
   (B-0824) + the one-liner curl-install repo for fast-moving tools (B-0863) +
   cross-OS / Windows reach (B-0806), i.e. how Zeta + its tools get distributed
   beyond macOS/NixOS. Surface: otto-windows (PRs #6330, #6320).
+- **cluster / infra (k8s + ArgoCD)** — **Milestone (operator-stated 2026-06-07):**
+  **Kubernetes pods running on REAL HARDWARE now** (set up by **Max**) — the
+  ArgoCD/k8s cluster end of the Ace external-state-closure stack (NixOS→Ace→ArgoCD)
+  is live on physical metal, not just dev. Grounds the closure/infra arc on running
+  infrastructure.
 
 ## Coordination discipline
 
