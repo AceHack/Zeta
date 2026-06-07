@@ -81,6 +81,7 @@
     <Compile Include="ContentHash256.Tests.fs" />
     <Compile Include="ContentStore.Tests.fs" />
     <Compile Include="CasStore.Tests.fs" />
+    <Compile Include="Globals.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
     <Compile Include="Confluence.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />
