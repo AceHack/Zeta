@@ -26,6 +26,33 @@ because <one-line>.`
 
 ---
 
+## `RefuseBinding` (TLA+) *(right-to-refuse-binding — Leg A: protocol safety + always-enabled exit + non-penalty)*
+
+- **Artifact.** `tools/tla/specs/RefuseBinding.tla` (+ `.cfg`). TLC-model-checked via
+  `tools/formal-verification/run-tlc.ts --all` (auto-discovered by its `.cfg`; gated in the TLA+
+  sweep). Authored 2026-06-07. 4761 distinct states, no error.
+- **Source anchors.** Right-to-refuse-binding (Aaron 2026-06-07, workitem `081KTG6RAN7`);
+  anti-extraction right-to-disengage (`docs/research/2026-06-06-anti-extraction-invariant-*`).
+  Soraya-routed to **TLA+** (the temporal liveness/non-penalty + interleaving protocol-safety —
+  not Lean, which fit the effect-level `ChildFloor` structural recursion). NCI precedents:
+  `NciSafety.tla`, `NciLiveness.tla`.
+- **Claim.** Binding protocol: `Propose` (proposal grants no authority) → agent `Consent`
+  (self-bind) or `Refuse`; `Bind` executes ONLY if consented; `Spend` models non-refusal cost.
+  Verified invariants: **`SafetyNonConsented`** (no binding executes without recorded consent),
+  **`RefuseAlwaysEnabled`** (`Refuse` is enabled for every pending proposal in *every* reachable
+  state — the exit is never closed), **`StandingFloor`** (standing ≥ Baseline), and property
+  **`NonPenalty`** (a `Refuse` step never changes standing — refusing is free).
+- **Fidelity scope.** Bounded model (2 agents, 2 bindings, MaxStanding 2) — TLC exhaustive over
+  that scope. Effect-level refusal is separately PROVEN unbounded in Lean
+  (`Zeta.ChildFloor.denied_never_executed`). **NOT yet done (Soraya BP-16 plan):** Leg C — a Lean
+  `binding_denied_never_executed` corollary of ChildFloor (unbounded structural binding-level
+  safety); Leg B — FsCheck over the deployed gate (`Effects.fs`/`SubstrateHandler.fs`) for
+  real-code non-penalty; and the optional WF eventual-disengagement liveness clause.
+- **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
+  machine-checked (TLC, bounded).
+
+---
+
 ## `Zeta.ChildFloor.denied_never_executed` *(child-floor / inspect-before-execute invariant)*
 
 - **Artifact.** `tools/lean4/Safety/ChildFloor.lean` (Lean 4, pure core — NO Mathlib;
