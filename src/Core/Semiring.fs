@@ -22,6 +22,37 @@ type ISemiring<'W> =
 
 
 // ═══════════════════════════════════════════════════════════════════
+// THE ALGEBRA LADDER below a ring: monoid → group → semilattice
+// (instance-passing, like ISemiring — a value may carry several algebras;
+//  cf. .NET generic-math static-abstract style, the type-IS-its-algebra
+//  alternative used at concrete numeric leaves. We mirror .NET's *names*:
+//  Identity ≈ IAdditiveIdentity.AdditiveIdentity, Combine ≈ IAdditionOperators (+),
+//  Inverse ≈ IUnaryNegationOperators (-).)
+// ═══════════════════════════════════════════════════════════════════
+
+/// **Monoid** `(T, Combine, Identity)` — an associative binary op with a two-sided identity; the minimal
+/// algebra for `fold`/aggregation. `Combine` ≈ .NET `IAdditionOperators` (`+`); `Identity` ≈ .NET
+/// `IAdditiveIdentity.AdditiveIdentity`.
+///   Laws: Combine (Combine a b) c = Combine a (Combine b c);  Combine Identity a = a = Combine a Identity.
+type IMonoid<'T> =
+    abstract member Identity : 'T
+    abstract member Combine  : 'T -> 'T -> 'T
+
+/// **Group** — a monoid in which every element has an inverse. `Inverse` ≈ .NET `IUnaryNegationOperators`
+/// (`-`).  Law (additional): Combine a (Inverse a) = Identity = Combine (Inverse a) a.
+type IGroup<'T> =
+    inherit IMonoid<'T>
+    abstract member Inverse : 'T -> 'T
+
+/// **Bounded join-semilattice** — a *commutative* and *idempotent* monoid; `Combine` is the join (`⊔`),
+/// `Identity` is bottom (`⊥`). Precisely a CRDT merge / the confluence resolver: out-of-order `Combine`
+/// converges to the same result *iff* it is a join-semilattice (see the confluence proof).
+///   Laws (additional to monoid): Combine a b = Combine b a;  Combine a a = a.
+type ISemilattice<'T> =
+    inherit IMonoid<'T>
+
+
+// ═══════════════════════════════════════════════════════════════════
 // INTEGER RING  (ℤ, +, ×)  — the default DBSP weight semiring
 // ═══════════════════════════════════════════════════════════════════
 

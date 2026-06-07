@@ -83,6 +83,7 @@
     <Compile Include="CasStore.Tests.fs" />
     <Compile Include="Globals.Tests.fs" />
     <Compile Include="TensorRef.Tests.fs" />
+    <Compile Include="DynamicValueAlgebra.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
     <Compile Include="Confluence.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />
