@@ -15,6 +15,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="Observe.fs" />
+    <Compile Include="Chooser.fs" />
     <Compile Include="EventLog.fs" />
   </ItemGroup>
 
