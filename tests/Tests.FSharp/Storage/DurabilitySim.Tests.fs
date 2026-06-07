@@ -30,7 +30,7 @@ let ``DST: recovery invariant holds at EVERY crash point (deterministic enumerat
         let logDir = DeterministicTestPath.nextDir (sprintf "dst-log-%d" k)
         let snapDir = DeterministicTestPath.nextDir (sprintf "dst-snap-%d" k)
         try
-            let mkLog () = DiskDeltaLog<int>(logDir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>
+            let mkLog () = DiskDeltaLog<int>(logDir, CborEntryCodec<int>((fun (i: int) -> DynamicValue.Int(int64 i)), (function DynamicValue.Int v -> int v | o -> failwithf "key not Int: %A" o))) :> IDeltaLog<int>
             let mkSnap () = DiskSnapshotStore<int>(snapDir, CheckpointDeltaCodec<int>()) :> ISnapshotStore<int>
             let expected =
                 ops |> List.truncate k |> List.fold (fun acc z -> ZSet.add acc z) ZSet<int>.Empty

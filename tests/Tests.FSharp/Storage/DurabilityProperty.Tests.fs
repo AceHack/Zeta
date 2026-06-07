@@ -47,7 +47,7 @@ type ScenarioArb() =
 let ``recovery reconstructs fold(committed) for any script + cadence`` (s: Scenario) : bool =
     let logDir = DeterministicTestPath.nextDir "dprop-log"
     let snapDir = DeterministicTestPath.nextDir "dprop-snap"
-    let mkLog () = DiskDeltaLog<int>(logDir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>
+    let mkLog () = DiskDeltaLog<int>(logDir, CborEntryCodec<int>((fun (i: int) -> DynamicValue.Int(int64 i)), (function DynamicValue.Int v -> int v | o -> failwithf "key not Int: %A" o))) :> IDeltaLog<int>
     let mkSnap () = DiskSnapshotStore<int>(snapDir, CheckpointDeltaCodec<int>()) :> ISnapshotStore<int>
     try
         // Commit the whole script (with cadence → exercises snapshot + log GC).

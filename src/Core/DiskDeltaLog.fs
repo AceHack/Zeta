@@ -3,7 +3,6 @@ namespace Zeta.Core
 open System
 open System.Collections.Generic
 open System.IO
-open System.Text.Json
 open System.Threading
 open System.Threading.Tasks
 
@@ -27,7 +26,7 @@ type private GroupCommitDeltaAppendRequest =
 /// metadata stays readable independent of the delta codec.
 [<Sealed>]
 type DiskDeltaLog<'K when 'K : comparison>
-    (dir: string, codec: IDeltaCodec<'K>, ?fsyncPerAppend: bool) =
+    (dir: string, entryCodec: IEntryCodec<'K>, ?fsyncPerAppend: bool) =
 
     let fsync = defaultArg fsyncPerAppend false
     let root = Path.GetFullPath dir
@@ -48,34 +47,11 @@ type DiskDeltaLog<'K when 'K : comparison>
             |> Array.choose (fun p -> match seqOf p with ValueSome v -> Some v | ValueNone -> None)
         if existing.Length = 0 then 0L else Array.max existing
 
-    let frame (captured: Map<string, string>) (delta: ZSet<'K>) : byte[] =
-        let dict = Dictionary<string, string>()
-        for KeyValue (k, v) in captured do dict.[k] <- v
-        let capBytes = JsonSerializer.SerializeToUtf8Bytes dict
-        let deltaBytes = codec.Encode delta
-        use ms = new MemoryStream()
-        use bw = new BinaryWriter(ms)
-        bw.Write(capBytes.Length)
-        bw.Write(capBytes)
-        bw.Write(deltaBytes.Length)
-        bw.Write(deltaBytes)
-        bw.Flush()
-        ms.ToArray()
+    // One file = the WHOLE entry (Seq + Delta + Captured) through the canonical `IEntryCodec`
+    // (the 4-language byte-locked DeltaLogEntryCodec format) — no per-backend framing, no System.Text.Json.
+    let frame (entry: DeltaLogEntry<'K>) : byte[] = entryCodec.Encode entry
 
-    let unframe (bytes: byte[]) : Map<string, string> * ZSet<'K> =
-        use ms = new MemoryStream(bytes)
-        use br = new BinaryReader(ms)
-        let capLen = br.ReadInt32()
-        let capBytes = br.ReadBytes capLen
-        let captured =
-            JsonSerializer.Deserialize<Dictionary<string, string>> capBytes
-            |> fun d ->
-                match d with
-                | null -> Map.empty
-                | _ -> d |> Seq.map (fun kv -> kv.Key, kv.Value) |> Map.ofSeq
-        let deltaLen = br.ReadInt32()
-        let deltaBytes = br.ReadBytes deltaLen
-        captured, codec.Decode deltaBytes
+    let unframe (bytes: byte[]) : DeltaLogEntry<'K> = entryCodec.Decode bytes
 
     // Atomic append: write to a `.delta.tmp` then rename to `.delta`. A crash
     // mid-write leaves at most an orphan `.tmp` (ignored by the `*.delta` glob),
@@ -101,7 +77,7 @@ type DiskDeltaLog<'K when 'K : comparison>
     interface IDeltaLog<'K> with
         member _.AppendAsync(delta, captured, ct) =
             let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
-            let bytes = frame captured delta
+            let bytes = frame { Seq = seq; Delta = delta; Captured = captured }
             task {
                 do! writeFileAsync (nameFor seq) bytes ct
                 return seq
@@ -118,10 +94,10 @@ type DiskDeltaLog<'K when 'K : comparison>
                 |> Array.sortBy fst
             task {
                 let entries = ResizeArray<DeltaLogEntry<'K>>()
-                for (seq, path) in files do
+                for (_seq, path) in files do
                     let! bytes = File.ReadAllBytesAsync(path, ct)
-                    let captured, delta = unframe bytes
-                    entries.Add { Seq = seq; Delta = delta; Captured = captured }
+                    // The entry's Seq rides inside the canonical bytes (== the file-name seq we wrote).
+                    entries.Add(unframe bytes)
                 return entries.ToArray()
             }
             |> ValueTask<DeltaLogEntry<'K>[]>
@@ -157,7 +133,7 @@ type DiskDeltaLog<'K when 'K : comparison>
 [<Sealed>]
 type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     (dir: string,
-     codec: IDeltaCodec<'K>,
+     entryCodec: IEntryCodec<'K>,
      ?config: FerryThrottlerConfig,
      ?maxBatchBytes: int) =
 
@@ -182,21 +158,10 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 (nameof config)
                 "GroupCommitDiskDeltaLog writes one segment file; MaxDegreeOfParallelism must be 1."
 
-    let framePayload (seq: int64) (captured: Map<string, string>) (delta: ZSet<'K>) : byte[] =
-        let dict = Dictionary<string, string>()
-        for KeyValue (k, v) in captured do
-            dict.[k] <- v
-        let capBytes = JsonSerializer.SerializeToUtf8Bytes dict
-        let deltaBytes = codec.Encode delta
-        use ms = new MemoryStream()
-        use bw = new BinaryWriter(ms)
-        bw.Write(seq)
-        bw.Write(capBytes.Length)
-        bw.Write(capBytes)
-        bw.Write(deltaBytes.Length)
-        bw.Write(deltaBytes)
-        bw.Flush()
-        ms.ToArray()
+    // The record PAYLOAD is the WHOLE entry (Seq + Delta + Captured) through the canonical `IEntryCodec`
+    // (the 4-language byte-locked format); the record wrapper (`frameRecord`: [len][crc][payload]) is kept
+    // for torn-write scanning. No per-payload framing, no System.Text.Json.
+    let framePayload (entry: DeltaLogEntry<'K>) : byte[] = entryCodec.Encode entry
 
     let frameRecord (payload: byte[]) : byte[] =
         use ms = new MemoryStream()
@@ -207,21 +172,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
         bw.Flush()
         ms.ToArray()
 
-    let decodePayload (payload: byte[]) : DeltaLogEntry<'K> =
-        use ms = new MemoryStream(payload)
-        use br = new BinaryReader(ms)
-        let seq = br.ReadInt64()
-        let capLen = br.ReadInt32()
-        let capBytes = br.ReadBytes capLen
-        let captured =
-            JsonSerializer.Deserialize<Dictionary<string, string>> capBytes
-            |> fun d ->
-                match d with
-                | null -> Map.empty
-                | _ -> d |> Seq.map (fun kv -> kv.Key, kv.Value) |> Map.ofSeq
-        let deltaLen = br.ReadInt32()
-        let deltaBytes = br.ReadBytes deltaLen
-        { Seq = seq; Delta = codec.Decode deltaBytes; Captured = captured }
+    let decodePayload (payload: byte[]) : DeltaLogEntry<'K> = entryCodec.Decode payload
 
     let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
         if not (File.Exists segmentPath) then
@@ -301,7 +252,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 ValueTask<int64>(Task.FromCanceled<int64> ct)
             else
                 let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
-                let payload = framePayload seq captured delta
+                let payload = framePayload { Seq = seq; Delta = delta; Captured = captured }
                 let req = { Seq = seq; Record = frameRecord payload }
                 throttler.ProcessAsync(req, CancellationToken.None) |> ValueTask<int64>
 
