@@ -18,11 +18,14 @@
     <Compile Include="DurableSagaGit.Tests.fs" />
     <Compile Include="DurableYinYangGit.Tests.fs" />
     <Compile Include="DurableDiplomacyGit.Tests.fs" />
+    <Compile Include="DurableObserveGit.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
     <ProjectReference Include="..\..\src\Core.Git\Zeta.Core.Git.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.ObserveBridge\Zeta.Core.FSharp.ObserveBridge.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

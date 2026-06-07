@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Compile Include="ObserveBridge.fs" />
+    <Compile Include="DurableObserve.fs" />
   </ItemGroup>
 
 </Project>
