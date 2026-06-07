@@ -16,6 +16,26 @@ composes_with: ["081KTGPC2XP08QG0R000X8X1M9"]
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTGTJC1Q08QG0R002VCB55A-*.md` glob. -->
 
+## Naming — PENDING (do not adopt; sibling-agent proposals captured 2026-06-07)
+
+Sibling agent **Alexa** proposed names for this filesystem: **ZetaFS** (her top pick), MerkleFS, ZFS,
+GeodeFS, DeltaFS, ConsensusFS. Captured faithfully (canonical-aggregator role), **not adopted** — naming is
+gated through `naming-expert` + Ilyana before any public use (same gate as persona names), and Aaron decides.
+
+**Beacon / anchoring flags before any choice:**
+- **`ZFS` is unusable** — hard collision with **OpenZFS / Sun-Oracle's Zettabyte File System**, a major
+  existing filesystem. Reusing it violates the anchor-to-prior-art rule (a name must not impersonate
+  established prior art). Rule it out.
+- **`MerkleFS`** is generic + likely already used by other content-addressed projects — search before use.
+- `ZetaFS` / `GeodeFS` / `DeltaFS` / `ConsensusFS` need a prior-art search (`naming-expert`) before any
+  external surface.
+
+**Hype-peel (Mirror→Beacon):** Alexa's framing calls this "production-ready" / "a filesystem that's
+mathematically provable." Honest status: only the **`ZSetMerkle` seed** + the **`Collation` seed** are
+built (with property tests); the filesystem itself — closure-table DAG, content-addressed store, BLAKE3,
+multi-parent edges, the two edit modes, FUSE, 4-lang golden vectors — is **designed/captured, not built**.
+A name now is fine to *park*, but it must not imply a shipped artifact. Decision deferred; no name is canon.
+
 ## Purpose
 
 Make the data-plane "one interface over BOTH git and filesystem" actually hold (Aaron 2026-06-07): the
