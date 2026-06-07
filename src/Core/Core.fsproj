@@ -50,6 +50,7 @@
     <Compile Include="DynamicValueFold.fs" />
     <Compile Include="SchemaEvolution.fs" />
     <Compile Include="SchemaRegistry.fs" />
+    <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
     <Compile Include="SoftValue.fs" />
     <Compile Include="BonsaiSoft.fs" />
