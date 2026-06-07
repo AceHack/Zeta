@@ -23,7 +23,7 @@ open Zeta.Core.Git
 
 let private ct = CancellationToken.None
 let private fixedClock () = DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
-let private codec () = CheckpointDeltaCodec<int>() :> IDeltaCodec<int>
+let private codec () = CborEntryCodec<int>((fun (i: int) -> DynamicValue.Int(int64 i)), (function DynamicValue.Int v -> int v | o -> failwithf "key not Int: %A" o)) :> IEntryCodec<int>
 
 let private step (state: int64) (event: int) (weight: int64) : int64 =
     state + weight * int64 event

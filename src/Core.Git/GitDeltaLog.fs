@@ -58,8 +58,9 @@ module internal GitBackend =
 
 /// **Git-native delta log — the log IS git.** Each `AppendAsync` is a commit on
 /// `refs/zeta/deltalog`; the commit tree accumulates one blob per entry under
-/// `deltas/{seq:020}` (a length-framed `[capLen:int32-LE][capturedJson][deltaBytes]`
-/// payload; delta bytes via the byte-verified `IDeltaCodec`). History = the commit DAG
+/// `deltas/{seq:020}` (the WHOLE entry — Seq + Delta + Captured — through the canonical
+/// `IEntryCodec` = the 4-language byte-locked `DeltaLogEntryCodec` format; the blob IS the
+/// cross-language treaty unit, no per-backend framing, no System.Text.Json). History = the commit DAG
 /// = the log for free; Z-set **retraction** = a later commit appending the inverse delta
 /// (git never rewrites history — Landauer-honest, Memory-Preservation §5). Endgame: Zeta
 /// IS a git server, so the DB and the git remote are the same object.
@@ -79,7 +80,7 @@ module internal GitBackend =
 /// is the caller's contract (one clone writes its shard).
 [<Sealed>]
 type GitDeltaLog<'K when 'K : comparison>
-    (repo: Repository, codec: IDeltaCodec<'K>, ?refName: string, ?now: unit -> DateTimeOffset) =
+    (repo: Repository, entryCodec: IEntryCodec<'K>, ?refName: string, ?now: unit -> DateTimeOffset) =
 
     let refName = defaultArg refName "refs/zeta/deltalog"
     let now = defaultArg now (fun () -> DateTimeOffset.UtcNow)
@@ -87,27 +88,12 @@ type GitDeltaLog<'K when 'K : comparison>
 
     let entryPath (seq: int64) = sprintf "deltas/%020d" seq
 
-    // Frame one entry: [capLen:int32-LE][capturedJson][deltaBytes]. BinaryWriter writes
-    // int32 little-endian on every platform, so the framing is byte-deterministic.
-    let encodeEntry (delta: ZSet<'K>) (captured: Map<string, string>) : byte[] =
-        let capJson = GitBackend.mapToJson captured
-        let deltaBytes = codec.Encode delta
-        use ms = new MemoryStream()
-        use bw = new BinaryWriter(ms)
-        bw.Write(capJson.Length)
-        bw.Write(capJson)
-        bw.Write(deltaBytes)
-        bw.Flush()
-        ms.ToArray()
+    // One blob = the WHOLE entry (Seq + Delta + Captured) through the canonical `IEntryCodec`
+    // (the 4-language byte-locked DeltaLogEntryCodec format). The Seq rides inside the bytes, so the
+    // blob is the cross-language treaty unit — no per-backend framing, no System.Text.Json.
+    let encodeEntry (entry: DeltaLogEntry<'K>) : byte[] = entryCodec.Encode entry
 
-    let decodeEntry (seq: int64) (bytes: byte[]) : DeltaLogEntry<'K> =
-        use ms = new MemoryStream(bytes)
-        use br = new BinaryReader(ms)
-        let capLen = br.ReadInt32()
-        let capBytes = br.ReadBytes capLen
-        let captured = GitBackend.mapOfJson capBytes
-        let deltaBytes = br.ReadBytes(int (ms.Length - ms.Position))
-        { Seq = seq; Delta = codec.Decode deltaBytes; Captured = captured }
+    let decodeEntry (bytes: byte[]) : DeltaLogEntry<'K> = entryCodec.Decode bytes
 
     // The `deltas/` subtree of a commit, or None.
     let deltasSubtree (c: Commit) : Tree option =
@@ -161,7 +147,7 @@ type GitDeltaLog<'K when 'K : comparison>
                         match tip with
                         | Some c -> TreeDefinition.From c.Tree
                         | None -> TreeDefinition()
-                    let blob = GitBackend.createBlob repo (encodeEntry delta captured)
+                    let blob = GitBackend.createBlob repo (encodeEntry { Seq = s; Delta = delta; Captured = captured })
                     td.Add(entryPath s, blob, Mode.NonExecutableFile) |> ignore
                     let tree = repo.ObjectDatabase.CreateTree td
                     let commit = commitTree tree (sprintf "delta seq=%d" s) (Option.toList tip)
@@ -179,7 +165,7 @@ type GitDeltaLog<'K when 'K : comparison>
                     | Some sub ->
                         [| for e in sub do
                              match seqOfName e.Name with
-                             | Some s when s > fromSeqExclusive -> yield decodeEntry s (GitBackend.readBlob e)
+                             | Some s when s > fromSeqExclusive -> yield decodeEntry (GitBackend.readBlob e)
                              | _ -> () |]
                         |> Array.sortBy (fun e -> e.Seq))
             ValueTask<DeltaLogEntry<'K>[]> entries

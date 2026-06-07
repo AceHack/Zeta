@@ -16,7 +16,7 @@ open Zeta.Core.FSharp.ObserveBridge
 // ═══════════════════════════════════════════════════════════════════
 
 let private fixedClock () = DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
-let private codec () = CheckpointDeltaCodec<string>() :> IDeltaCodec<string>
+let private codec () = CborEntryCodec<string>((fun (s: string) -> DynamicValue.String s), (function DynamicValue.String s -> s | o -> failwithf "key not String: %A" o)) :> IEntryCodec<string>
 let private item id = { Id = id; Title = id; Ready = true; Ambiguous = false; NeedsNewAction = false }
 
 let mutable private counter = 0

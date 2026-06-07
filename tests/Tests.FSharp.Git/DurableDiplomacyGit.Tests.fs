@@ -17,7 +17,7 @@ module DD = Zeta.Core.DurableDiplomacy
 // ═══════════════════════════════════════════════════════════════════
 
 let private fixedClock () = DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
-let private codec () = CheckpointDeltaCodec<string>() :> IDeltaCodec<string>
+let private codec () = CborEntryCodec<string>((fun (s: string) -> DynamicValue.String s), (function DynamicValue.String s -> s | o -> failwithf "key not String: %A" o)) :> IEntryCodec<string>
 
 let private cellOf (remains: DynamicValue) (names: string list) : YinYang.Cell =
     let acts =

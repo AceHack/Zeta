@@ -18,7 +18,7 @@ module E = Zeta.Core.FSharp.ObserveBridge.Effects
 
 let private ct = CancellationToken.None
 let private fixedClock () = DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
-let private codec () = CheckpointDeltaCodec<string>() :> IDeltaCodec<string>
+let private codec () = CborEntryCodec<string>((fun (s: string) -> DynamicValue.String s), (function DynamicValue.String s -> s | o -> failwithf "key not String: %A" o)) :> IEntryCodec<string>
 
 let mutable private counter = 0
 let private withRepoDir (f: string -> unit) =

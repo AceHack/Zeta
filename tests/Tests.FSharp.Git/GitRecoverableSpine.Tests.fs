@@ -19,7 +19,10 @@ open Zeta.Core.Git
 
 let private ct = CancellationToken.None
 let private fixedClock () = DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
+// Snapshot store still rides the ZSet IDeltaCodec; the delta LOG now rides the canonical whole-entry codec.
 let private codec () = CheckpointDeltaCodec<int>() :> IDeltaCodec<int>
+let private entryCodec () =
+    CborEntryCodec<int>((fun (i: int) -> DynamicValue.Int(int64 i)), (function DynamicValue.Int v -> int v | o -> failwithf "key not Int: %A" o)) :> IEntryCodec<int>
 
 let mutable private counter = 0
 
@@ -35,7 +38,7 @@ let private withRepoDir (f: string -> unit) =
 // Each "process lifetime" gets its own Repository handle over the same on-disk repo.
 let private openBackends (dir: string) : IDeltaLog<int> * ISnapshotStore<int> =
     let repo = new Repository(dir)
-    GitDeltaLog<int>(repo, codec (), now = fixedClock) :> IDeltaLog<int>,
+    GitDeltaLog<int>(repo, entryCodec (), now = fixedClock) :> IDeltaLog<int>,
     GitSnapshotStore<int>(repo, codec (), now = fixedClock) :> ISnapshotStore<int>
 
 
