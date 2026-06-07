@@ -149,11 +149,25 @@ resolution, not about the data's fundamental compressibility.
 has a defined inverse (`+w` / `−w`), DST replays deterministically and reversibly, git-as-event-store only
 *adds corrections* (never destroys), and the Evolution down-direction / garbage-dump make migrations
 reversible. That's a **designed, local echo of CPT reversibility**: by construction, Zeta destroys no
-information except by *deliberate* erasure. And the one true irreversibility — **Landauer's principle**
-(erasing a bit costs energy) — is precisely the **thermal-forgetting / privacy-as-anti-collapse** lane
-(Amara): forgetting is the *chosen* irreversible act (consent-bounded), not an accident. So the physical
-floor lines up with the manifesto: **reversible by default; irreversibility (forgetting) is a deliberate,
-consented, energy-costing choice.**
+information except by *deliberate* erasure — which maps to the **thermal-forgetting / privacy-as-anti-
+collapse** lane (Amara): forgetting is the *chosen* act (consent-bounded), not an accident.
+
+**Even Landauer erasure is LIGHTCONE-LOCAL, not global (Aaron, 2026-06-07).** Landauer's principle (erasing
+a bit costs energy) **only guarantees the bit is erased from YOUR lightcone — not from others'.** The
+information isn't destroyed; it radiates outward (heat / correlations / entanglement) and remains
+recoverable in principle by observers elsewhere — exactly consistent with CPT/unitarity (no *global* info
+loss). So there is **no global irreversibility at all**; "forgetting" is **local inaccessibility**, not
+destruction — the same observer-relativity as the lens/oracle theme, now in spacetime: information leaves
+your lightcone, it doesn't leave the universe.
+
+**Privacy caveat this forces (load-bearing for the consent/forgetting design):** *true global deletion is
+physically impossible.* "Right to deletion" / thermal-forgetting can only erase from your **accessible /
+served lightcone** (your stores, your reach), never from every observer. So privacy must be designed as
+**control over what enters/stays-in-reach + prevention-of-radiation (encryption, never-decrypt-off-device,
+local-only)**, NOT as a promise of universal erasure. (This sharpens the privacy-first capture: "you can't
+be subpoenaed for data you don't hold" is precisely the lightcone-local stance — hold less, radiate less.)
+So the manifesto reads: **reversible by default; forgetting is a deliberate, consented, energy-costing,
+lightcone-LOCAL act — and the honest privacy guarantee is non-radiation, not global erasure.**
 
 (Caveat, kept honest: "if physics is right" + "ultimately." In practice you cannot track the universe's
 microstate, so the second law, decoherence, and practical irreversibility stand — this is the *in-principle*
