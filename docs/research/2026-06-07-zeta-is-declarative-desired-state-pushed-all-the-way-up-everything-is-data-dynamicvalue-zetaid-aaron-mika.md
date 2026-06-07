@@ -66,8 +66,9 @@ layer** — and **git-native at every level** (the desired state lives *in git*,
   execution"; self-evolving sagas) · git-native: `Core.Git` (the log IS git) · everything-is-data: the
   plugin/Nucleus/cell-as-data thread (`docs/research/2026-06-07-two-plane-*`, `081KTGES048`).
 - Names (decided): Ace · Zeta · Nucleus · Loom; a cell = a Geode within Zeta; HA = host concern. (NB: a
-  2026-06-07 *voice* summary used "Kernel"/"Loon"/"Geode-as-HA-layer" — treated as transcription drift;
-  decided names stand pending explicit re-decision.)
+  2026-06-07 voice summary used "Kernel"/"Loon"/"Geode-as-HA-layer" — CONFIRMED by Aaron as stale agent
+  info, NOT a re-decision; the decided names stand. Otto holds the canonical/latest set; sibling agents
+  have partial views.)
 
 ## The OS↔Kubernetes in-between gap + tenant-as-DynamicValue (Aaron ↔ Mika, cont. 2026-06-07)
 
