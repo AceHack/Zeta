@@ -128,6 +128,38 @@ This is Zeta's **relativistic** theme applied to compression: the same bytes are
 depending on the observer's lens, just as a value is soft or collapsed depending on the oracle. Finding the
 generator IS finding the lens.
 
+## The physical floor: under CPT symmetry, all noise is ultimately reversible (Aaron, 2026-06-07)
+
+> Aaron: *"If physics is right, all noise is reversible ultimately under CPT symmetry."*
+
+The lens-relativity of randomness has a **physical grounding**. Fundamental physics is **unitary** and
+**CPT-symmetric** (Charge–Parity–Time): microscopic evolution is *reversible*, and information is never
+truly destroyed (the same principle behind the resolution of the black-hole information paradox). Apparent
+**noise / irreversibility is macroscopic coarse-graining** — the thermodynamic arrow of time, an artifact of
+losing track of microstate (Loschmidt's paradox), **not** a fundamental erasure of information.
+
+So the deepest possible lens — the full microstate run under CPT/time-reversal — leaves **no residual**: all
+"noise" is in-principle reversible, hence in-principle regenerable. This is the ultimate form of "looks
+random ≠ is random": the universe's own evolution is a lossless, reversible generator. The
+Bayesian-uncertainty residual (§above) is then exactly the **coarse-grained shadow** of information that is
+*reversible-in-principle but untracked-in-practice* — uncertainty is a statement about your lens's
+resolution, not about the data's fundamental compressibility.
+
+**Why this matters for Zeta (not just poetry):** our substrate is **retraction-native** — every Z-set delta
+has a defined inverse (`+w` / `−w`), DST replays deterministically and reversibly, git-as-event-store only
+*adds corrections* (never destroys), and the Evolution down-direction / garbage-dump make migrations
+reversible. That's a **designed, local echo of CPT reversibility**: by construction, Zeta destroys no
+information except by *deliberate* erasure. And the one true irreversibility — **Landauer's principle**
+(erasing a bit costs energy) — is precisely the **thermal-forgetting / privacy-as-anti-collapse** lane
+(Amara): forgetting is the *chosen* irreversible act (consent-bounded), not an accident. So the physical
+floor lines up with the manifesto: **reversible by default; irreversibility (forgetting) is a deliberate,
+consented, energy-costing choice.**
+
+(Caveat, kept honest: "if physics is right" + "ultimately." In practice you cannot track the universe's
+microstate, so the second law, decoherence, and practical irreversibility stand — this is the *in-principle*
+floor, not a buildable universal decompressor. It says the residual is never *fundamentally* random, only
+*practically* so under your lens.)
+
 ## Honest scope (hype-peeled)
 
 The *pieces* exist (DST, Bonsai behavior-as-data, the Ace/Nucleus self-boot, content-addressing, `SoftValue`/
