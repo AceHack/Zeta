@@ -2,8 +2,9 @@
 
 The team's resolution of the BLAKE3 4-language byte-lock question Otto routed (umbrella `081KTH323AK`).
 **Vera + Lior** (4-lang reviewers) + Aaron. Faithful capture + reconciliation of the two reviews,
-Beacon-anchored. (Implementation — the ZetaId overlay + `ContentHash256` type — is **Lior's lane in
-flight**; this doc is the decision record, not the code.)
+Beacon-anchored. (Implementation: the **ZetaId overlay is LANDED by Lior** — see "As-built" below;
+`ContentHash256` (the full-256 proof tier) is the remaining gap, backlogged. This doc is the reconciled
+decision record.)
 
 ## Reconciliation (Vera ⊕ Lior — read this first)
 
@@ -73,17 +74,35 @@ The BLAKE3 treaty defines the **canonical digest + byte order** on its own. Zeta
 embed a declared-length prefix of it; any layout with ordering/index bits must verify against the full
 (or a longer stored) digest before treating identity as proven.
 
-## Implications for the landed code
+## AS-BUILT (Lior landed it, 2026-06-07) — reconciled with the treaty
 
-- Our 128-bit `MerkleHash` from `Core.Blake3.Blake3Hasher` **is `ContentAddress128`** (lower 128 bits LE) —
-  correct for the store's internal addressing; the known-answer already matches the treaty value. ✓
-- **Add `ContentHash256`** — the full 32-byte BLAKE3 digest — for proof/export/adversarial surfaces (Core
-  has only the 128-bit path today). `Core.Blake3` gains a full-digest function + a known-answer.
-- **Do not conflate `ContentAddress128` with a `ZetaId`** — a content-address ZetaId spends version/category
-  bits and embeds a *prefix*; that packing is future ZetaId work, declared per category. The raw 128-bit
-  `MerkleHash` is the *digest-derived address*, not a packed ZetaId.
+Lior implemented the ZetaId overlay across all four oracles (cross-verify 12/12; 1937 F# / 268 C# / TS
+green). The as-built confirms the treaty's *principle* with concrete numbers:
+
+- **`Category.ContentAddress = 9`** (`Category.Extended = 15` escape); categories **0..8 = Observation**
+  (structured), **9 = ContentAddress**, **10..15 = Generic**. The category discriminant decides
+  interpretation (Aaron's "high bits decide how to read the low bits"). Files: `src/Core.FSharp.ZetaId/`
+  (`Types.fs`, `Codec.fs`), `src/Core.CSharp.ZetaId/` (`Category.cs`, `ZetaIdPayload.cs`, `ZetaIdCodec.cs`),
+  `src/Core.TypeScript/zeta-id/`.
+- **`ZetaIdPayload` DU** = `Observation obs` | `ContentAddress (version, payload)` | `Generic (version,
+  category≥10, payload)`. `packGeneric`/`unpackGeneric` carry a **119-bit payload** (version 5 + category 4
+  = 9 bits spent of the 128). `packPayload`/`unpackPayload` round-trip; out-of-range (>119 bits) and
+  category-range violations raise. FsCheck proves `unpack ∘ pack = id` over the partitions.
+- **The 119-bit ZetaId content-address payload ≠ the standalone 128-bit `ContentAddress128`.** Inside a
+  ZetaId, the ContentAddress category embeds a **truncated BLAKE3 prefix** (Lior used ~14 bytes / 112 bits,
+  within the 119-bit budget) — the declared-per-category prefix the treaty calls for. The standalone
+  `ContentAddress128` (the 16-byte `MerkleHash` from `Core.Blake3.Blake3Hasher`, `49c9dc…`) remains the
+  digest-derived address **independent of ZetaId packing** — consistent with the treaty (don't conflate the
+  two). ✓
+- **REMAINING GAP — `ContentHash256` is NOT built yet.** No `ContentHash256` in `src/**`. The full 256-bit
+  raw-byte proof tier (for files/packages/blocks/adversarial/export) still needs a distinct 32-byte digest
+  type + the full-digest function on `Core.Blake3` + the empty-input known-answer (`af1349b9…`). Backlogged
+  as the next trust-core slice. Until it lands, do NOT content-address files/packages by the 128-bit address
+  alone (Lior's adversarial caveat).
 
 ## Ties
+
+- Remaining gap tracked: **`081KTH59TVZ`** (ContentHash256 full-256 proof tier).
 
 - `Core.Blake3.Blake3Hasher` / `IContentHasher` (the 128-bit ContentAddress path) · `ZSetMerkle` /
   `ContentStore` (consume the 128-bit address) · ZetaId (the typed-word lineage — version/category/payload)
