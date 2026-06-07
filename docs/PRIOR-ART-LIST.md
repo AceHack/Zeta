@@ -103,6 +103,16 @@ with a ⭐ below and add a row there.
   See `docs/research/2026-06-07-jumprope-vokes-content-addressed-storage-skiplist-hash-prior-art-aaron.md`.
 - **Skip Lists / William Pugh** (1990) — probabilistic balanced structure; the
   Jumprope's hash-as-probability backbone.
+- **Persistent collections — Bagwell / Hickey / Okasaki** ⭐ — HAMT / bitmap
+  vector trie (Bagwell 2000–01), Clojure persistent vector/map/set (Hickey),
+  *Purely Functional Data Structures* (Okasaki 1998); **RRB-trees** (Bagwell &
+  Rompf 2011, O(log n) concat). The structural-sharing/COW mechanism under
+  `ContentStore`/`DagFs` (`ImmutableDictionary` = HAMT) + `ZSet` (`ImmutableArray`).
+  See `docs/research/ip-questionable/2026-06-07-zach-allaun-functional-persistent-vectors-...md`.
+- **FRP taxonomy — Evan Czaplicki / Elm** — *Controlling Time and Space* (FRP
+  formulations); static signal graph → time-travel/hot-swap = our COW/DST
+  time-travel; bounded-state vs infinite-lookback = our retraction discipline.
+  See `docs/research/ip-questionable/2026-06-07-evan-czaplicki-controlling-time-and-space-...md`.
 - **Merkle trees** — Merkle 1979; our `Merkle.fs`.
 - **Blake3 / CRC32C / XxHash** — hashing primitives we use or
   reference.
