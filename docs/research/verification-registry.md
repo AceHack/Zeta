@@ -26,7 +26,7 @@ because <one-line>.`
 
 ---
 
-## `RefuseBinding` (TLA+) *(right-to-refuse-binding — Leg A: protocol safety + always-enabled exit + non-penalty)*
+## `RefuseBinding` *(right-to-refuse-binding — full BP-16: TLA+ protocol + Lean binding-level + FsCheck real-code)*
 
 - **Artifact.** `tools/tla/specs/RefuseBinding.tla` (+ `.cfg`). TLC-model-checked via
   `tools/formal-verification/run-tlc.ts --all` (auto-discovered by its `.cfg`; gated in the TLA+
@@ -42,12 +42,18 @@ because <one-line>.`
   **`RefuseAlwaysEnabled`** (`Refuse` is enabled for every pending proposal in *every* reachable
   state — the exit is never closed), **`StandingFloor`** (standing ≥ Baseline), and property
   **`NonPenalty`** (a `Refuse` step never changes standing — refusing is free).
-- **Fidelity scope.** Bounded model (2 agents, 2 bindings, MaxStanding 2) — TLC exhaustive over
-  that scope. Effect-level refusal is separately PROVEN unbounded in Lean
-  (`Zeta.ChildFloor.denied_never_executed`). **NOT yet done (Soraya BP-16 plan):** Leg C — a Lean
-  `binding_denied_never_executed` corollary of ChildFloor (unbounded structural binding-level
-  safety); Leg B — FsCheck over the deployed gate (`Effects.fs`/`SubstrateHandler.fs`) for
-  real-code non-penalty; and the optional WF eventual-disengagement liveness clause.
+- **Fidelity scope.** Bounded TLA+ model (2 agents, 2 bindings, MaxStanding 2) — TLC exhaustive
+  over that scope. **Full BP-16 now landed (all 3 legs):**
+  - *Leg A* — the TLA+ protocol above (always-enabled exit + non-penalty + non-consented-never-executes).
+  - *Leg C (Lean, unbounded)* — `Zeta.ChildFloor.binding_denied_never_executed` (a non-consented
+    binding executes nothing) + `binding_respects_gate` (a consented binding still honors the
+    per-effect child-floor); sorry-free, audited in `lean-proof.yml`. Lifts the effect-level
+    `denied_never_executed` to binding granularity, unbounded.
+  - *Leg B (FsCheck, real code)* — `tests/Tests.FSharp/Formal/RefuseBindingCrossVerify.Tests.fs`
+    over the deployed `src/Core.FSharp.ObserveBridge/Binding.fs`: RefuseAlwaysEnabled + NonPenalty
+    + SafetyNonConsented + StandingFloor against the actual F# layer (model↔code cross-check).
+  Triage: an FsCheck counterexample ⇒ `Binding.fs` drifted from the TLA+/Lean model. **Open
+  (optional):** the WF eventual-disengagement liveness clause; widening the TLC model beyond 2×2.
 - **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
   machine-checked (TLC, bounded).
 

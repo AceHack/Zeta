@@ -87,4 +87,33 @@ theorem denied_never_executed (policy : Nat → Verdict) (fuel : Nat) (t : Eff) 
   rw [hd] at hadmit
   exact absurd hadmit (by decide)
 
+/- ── Binding level (Leg C of the right-to-refuse-binding proof, 081KTG6RAN7) ──────────────────
+   A binding decomposes to the effects it would run if consented. `executeBinding` gates the WHOLE
+   binding on `consent` (self-binding: the agent's consent verdict), then each constituent effect
+   re-enters the proven effect gate. This lifts `denied_never_executed` from effect to binding
+   granularity (unbounded, structural) — the Lean leg that complements the TLA+ `RefuseBinding`
+   protocol model (interleavings) and the FsCheck leg (the deployed `Binding` layer). -/
+
+/-- Run a binding's effects iff consented; a non-consented binding runs nothing. -/
+def executeBinding (policy : Nat → Verdict) (consent : Verdict) (fuel : Nat) (effs : List Eff) : List Nat :=
+  match consent with
+  | .deny => []
+  | .admit => effs.flatMap (executed policy fuel)
+
+/-- **A non-consented binding executes NOTHING** — at any depth, for any effects. No binding takes
+    effect without the agent's consent (the binding-level safety; self-binding, not containment). -/
+theorem binding_denied_never_executed (policy : Nat → Verdict) (fuel : Nat) (effs : List Eff) (id : Nat) :
+    id ∉ executeBinding policy .deny fuel effs := by
+  simp [executeBinding]
+
+/-- **And within a CONSENTED binding the effect gate still holds** — every effect that executes was
+    itself admitted (composes `executed_admit` up to binding granularity: consent to a binding does
+    NOT bypass the per-effect child-floor). -/
+theorem binding_respects_gate (policy : Nat → Verdict) (fuel : Nat) (effs : List Eff) :
+    ∀ id ∈ executeBinding policy .admit fuel effs, policy id = .admit := by
+  intro id h
+  simp only [executeBinding, List.mem_flatMap] at h
+  obtain ⟨e, _, he⟩ := h
+  exact executed_admit policy fuel e id he
+
 end Zeta.ChildFloor

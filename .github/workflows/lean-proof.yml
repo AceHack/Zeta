@@ -171,7 +171,7 @@ jobs:
             | cat Privacy/IdentityForcesPrivacy.lean - > /tmp/privacy_axiom_audit.lean
           printf '#print axioms Zeta.Privacy.finite_orbit_recurs\n#print axioms Zeta.Privacy.unbounded_needs_infinite\n#print axioms Zeta.Privacy.unbounded_with_finite_commons_needs_infinite_privacy\n' \
             | cat Privacy/UnboundedNeedsInfinitePrivacy.lean - > /tmp/unbounded_axiom_audit.lean
-          printf '#print axioms Zeta.ChildFloor.denied_never_executed\n#print axioms Zeta.ChildFloor.executed_admit\n' \
+          printf '#print axioms Zeta.ChildFloor.denied_never_executed\n#print axioms Zeta.ChildFloor.executed_admit\n#print axioms Zeta.ChildFloor.binding_denied_never_executed\n#print axioms Zeta.ChildFloor.binding_respects_gate\n' \
             | cat Safety/ChildFloor.lean - > /tmp/childfloor_axiom_audit.lean
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
