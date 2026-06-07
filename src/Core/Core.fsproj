@@ -112,6 +112,7 @@
     <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="FileSync.fs" />
     <Compile Include="DeltaLog.fs" />
+    <Compile Include="Command.fs" />
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />
     <Compile Include="SnapshotStore.fs" />
