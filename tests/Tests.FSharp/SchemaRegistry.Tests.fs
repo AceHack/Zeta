@@ -77,3 +77,27 @@ let ``SchemaRegistry: applyOps interprets to the same transform as SchemaEvoluti
     let viaOps = SR.applyOps [ SR.AddField("b", DynamicValue.Int 2L); SR.RenameField("a", "id") ] v
     let viaSE = v |> SchemaEvolution.addField "b" (DynamicValue.Int 2L) |> SchemaEvolution.renameField "a" "id"
     Assert.Equal(viaSE, viaOps)
+
+// ── registry-derived inverses: migrateValueDown (Evolution down-direction over schemas-as-rows) ──
+
+[<Fact>]
+let ``SchemaRegistry: migrateValueDown round-trips a lossless (add+rename) schema back to the original`` () =
+    let v1 = DynamicValue.Object [ "name", DynamicValue.String "Ada" ]
+    let back = SR.migrateValue reg "user" 1 3 v1 |> Result.bind (SR.migrateValueDown reg "user" 3 1)
+    Assert.Equal<Result<DynamicValue, string>>(Ok v1, back)
+
+[<Fact>]
+let ``SchemaRegistry: migrateValueDown errors on a non-invertible (RemoveField) schema`` () =
+    // "order" v1->v2 is a RemoveField (the dropped value is gone) => non-invertible, must error not silently pass.
+    let v2 = DynamicValue.Object [ "id", DynamicValue.Int 1L ]
+    match SR.migrateValueDown reg "order" 2 1 v2 with
+    | Error msg -> Assert.Contains("non-invertible", msg)
+    | Ok _ -> Assert.Fail "expected non-invertible error for the RemoveField migration"
+
+[<Fact>]
+let ``SchemaRegistry: invertOps reverses order and inverts each op; None if any op is non-invertible`` () =
+    Assert.Equal<SR.FieldOp list option>(
+        Some [ SR.RemoveField "b"; SR.RenameField("new", "old") ],
+        SR.invertOps [ SR.RenameField("old", "new"); SR.AddField("b", DynamicValue.Int 0L) ]
+    )
+    Assert.Equal<SR.FieldOp list option>(None, SR.invertOps [ SR.RemoveField "x" ])

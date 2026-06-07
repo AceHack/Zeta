@@ -44,22 +44,51 @@ module SchemaRegistry =
     let applyOps (ops: FieldOp list) (v: DynamicValue) : DynamicValue =
         List.fold (fun acc op -> applyOp op acc) v ops
 
+    /// Invert one op for the DOWN direction. `AddField`/`RenameField` are LOSSLESS-invertible;
+    /// `RemoveField` is **non-invertible at the registry level** (the removed value is gone and the op
+    /// carries no down-default), so it returns `None` — the whole migration's `Down` then becomes `None`
+    /// (rollback there needs compensation, not an inverse — the honest taxonomy).
+    let invertOp (op: FieldOp) : FieldOp option =
+        match op with
+        | AddField (k, _) -> Some(RemoveField k)
+        | RenameField (o, n) -> Some(RenameField(n, o))
+        | RemoveField _ -> None
+
+    /// Invert a migration's op list: invert each op AND reverse the order (the inverse of `f ∘ g` is
+    /// `g⁻¹ ∘ f⁻¹`). `None` if any op is non-invertible.
+    let invertOps (ops: FieldOp list) : FieldOp list option =
+        let rec loop acc =
+            function
+            | [] -> Some acc // already reversed by prepending
+            | op :: rest ->
+                match invertOp op with
+                | Some inv -> loop (inv :: acc) rest
+                | None -> None
+        loop [] ops
+
+    let private seMigsOf (migs: Migration list) : SchemaEvolution.Migration list =
+        migs
+        |> List.map (fun m ->
+            { SchemaEvolution.From = m.From
+              SchemaEvolution.To = m.To
+              SchemaEvolution.Up = applyOps m.Ops
+              // Down derived by inverting the op list (reversed); None if any op is non-invertible.
+              SchemaEvolution.Down = invertOps m.Ops |> Option.map applyOps })
+
     /// Migrate a value of `schemaId` from `fromV` up to `toV` by composing the registered ops.
     /// Clean Error on unknown schema / missing step / downgrade (total).
     let migrateValue (r: Registry) (schemaId: string) (fromV: int) (toV: int) (value: DynamicValue) : Result<DynamicValue, string> =
         match Map.tryFind schemaId r.Schemas with
         | None -> Error(sprintf "unknown schema '%s'" schemaId)
-        | Some migs ->
-            let seMigs =
-                migs
-                |> List.map (fun m ->
-                    { SchemaEvolution.From = m.From
-                      SchemaEvolution.To = m.To
-                      SchemaEvolution.Up = applyOps m.Ops
-                      // Down = None for now: deriving per-op inverses from the registry's FieldOp list
-                      // (so migrateDown works on registry schemas) is the next Evolution-extension slice.
-                      SchemaEvolution.Down = None })
-            SchemaEvolution.migrate seMigs fromV toV value
+        | Some migs -> SchemaEvolution.migrate (seMigsOf migs) fromV toV value
+
+    /// Migrate a value of `schemaId` DOWN from `fromV` to `toV` using the derived per-op inverses.
+    /// Errors (not silent pass) on unknown schema, a missing step, or a non-invertible migration
+    /// (one containing a `RemoveField` — rollback there needs compensation).
+    let migrateValueDown (r: Registry) (schemaId: string) (fromV: int) (toV: int) (value: DynamicValue) : Result<DynamicValue, string> =
+        match Map.tryFind schemaId r.Schemas with
+        | None -> Error(sprintf "unknown schema '%s'" schemaId)
+        | Some migs -> SchemaEvolution.migrateDown (seMigsOf migs) fromV toV value
 
     // ── schemas-as-rows: the registry IS a DynamicValue (rides the proven codecs) ──
     let private opToDynamic (op: FieldOp) : DynamicValue =
