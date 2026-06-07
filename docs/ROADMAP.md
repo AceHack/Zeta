@@ -101,9 +101,13 @@ using DynamicValue's byte-locked per-format serializer:
    WITHIN (strict **CP**), partial/relativistic replication ACROSS (**AP**, eventually-C; escalate to CP
    via a serialized/total-order bus for critical ops). Geo-distribution patterns (Follow-the-Sun,
    Hub-and-Spoke, Active-Passive) map *into* a cell as internal strategies; geo-sharding = deploy distinct
-   cells, never shard within. **Cross-cell = Sagas/DUs as addressable Orleans actors** (grain mailbox =
-   the FIFO serialized bus; DU state = `DynamicValue` frontmatter; compensation = Z-set retraction).
-   Detail: `docs/research/2026-06-07-cells-as-geodes-hierarchical-cp-within-ap-across-*`.
+   cells, never shard within. **Cross-cell coordination DEFAULTS to CRDT/commutative merge** (no
+   serialization — wherever order-independence is *proven*: SoftValue uncertainty-reduction, CRDT merge,
+   belief-convergence, bifurcation, non-register-collapse; two actors, any order, same result = the AP
+   default). **Serialized Sagas/DUs as addressable Orleans actors** (grain mailbox = FIFO bus; DU state =
+   `DynamicValue` frontmatter; compensation = Z-set retraction) are the **escalation ONLY when order
+   matters** — serialization is a bottleneck/resource-constraint, reserved, never default. Detail:
+   `docs/research/2026-06-07-cells-as-geodes-hierarchical-cp-within-ap-across-*`.
 8. **2nd executable — Ace package manager with a DI-injected Zeta cell** (after item #1; workitem
    `081KTGFG5M9`). A file-type plugin per supported package manager (npm/NuGet/Cargo/pip/…) handling its
    declarative dep files — the file-type plugin model applied to dependency manifests; the first real

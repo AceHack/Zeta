@@ -55,12 +55,51 @@ Aaron worked the standard global-topology patterns against the cell boundary. Ma
 | **Active-Passive** | ✅ *compute only, not state* | Can't active-passive-split the `Log` (it'd violate the atomic `Log` noun). But a standby Orleans/k8s actor picks up from the last valid `DeltaLogEntry` checkpoint if the primary executing actor crashes. |
 | **Geo-Sharding** | ❌ | A cell **is** the shard. Segmenting by country/tenant = deploy **distinct cells**, never shard within one. |
 
-## 4. Cross-cell Sagas / DUs = a Zeta cell (Orleans actor) per Saga, serialized over a partitioned bus
+## 4. Cross-cell coordination — TWO modes; the CRDT/commutative mode is the DEFAULT
+
+> Aaron (2026-06-07, correction): *"some cross-cell patterns can be purely two-actor CRDT-based and don't
+> need serialized execution if order is not important — like the places we prove two observers with
+> different orders arrive at the same result (e.g. our uncertainty-reduction proof over SoftValue). **This
+> should be our default.**"*
+
+Cross-cell coordination is **not serialized-by-default.** There are two modes, and the cheap one leads:
+
+### 4a. DEFAULT — CRDT / commutative two-actor merge (NO serialization, fully AP)
+
+When **order does not matter**, cross-cell coordination is just a **commutative CRDT merge**: two actors
+that apply the same set of changes in *different orders* provably converge to the **same** result. No
+serialized bus, no saga orchestrator, no lock — this **IS** the AP-eventually-consistent default (§2),
+and it is scale-free/lock-free by construction. Reach for serialization only when you've *failed* to
+prove order-independence.
+
+**Use it wherever commutativity/order-independence is already PROVEN** — and we have a stack of those:
+
+- **SoftValue uncertainty-reduction** — order-independent evidence/Bayesian fold (two observers,
+  different evidence orders, same posterior; the proof Aaron cites).
+- **CRDT semilattice merge** — G-Set / Z-set / Clock (commutative + associative + idempotent; the proven
+  floor; B-1016).
+- **Belief-convergence** (`BeliefConvergence.fs`) — order-independent for any fixed likelihood.
+- **Bifurcation `reconcile_order_independent`** + **non-register-collapse distinctness-under-merge**
+  (the safety-floor proofs) — merge converges regardless of order.
+
+The rule: **if you can prove the merge is commutative, cross-cell coordination needs no serialization** —
+default to the CRDT path. The proof IS the license to skip the bus.
+
+### 4b. ESCALATION — serialized Saga (Orleans actor + FIFO bus), ONLY when order matters
 
 > Aaron: *"the discriminated unions / sagas basically get a zeta cell (Orleans actor) for it, serialized
 > over an addressable bus partitioned to the cell/actor."*
 
-Each Saga / DU instance **is** an addressable Zeta cell (Orleans grain), partitioned by Actor ID to a
+> Aaron (2026-06-07): *"serialized state should be reserved for where we really need it — it's still a
+> bottleneck and creates resource constraints."*
+
+**Serialization is a cost, not a convenience.** A serialized actor/bus is a single-threaded FIFO: it is a
+throughput **bottleneck** and a **resource constraint** (one mailbox, one ordering point, back-pressure).
+So it is reserved for where order is genuinely required — never the default. Every place we can prove
+commutativity (§4a) we pay none of that cost. Only when **order matters** (global identity reservation,
+cross-cell asset transfer, any non-commutative multi-step intent) do you escalate to the serialized Saga
+path (the CP escalation of §2). Each Saga / DU instance **is** an addressable Zeta cell (Orleans grain),
+partitioned by Actor ID to a
 cell boundary. The actor model gives the cross-cell machinery for free:
 
 - **The addressable actor IS the serializer.** An Orleans grain is single-threaded; its mailbox is a
