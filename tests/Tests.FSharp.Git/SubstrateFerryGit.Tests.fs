@@ -43,7 +43,7 @@ let private contents (log: IDeltaLog<string>) =
 let ``PersistFerry writes the ferry stream to git; it recovers from git alone`` () =
     withRepoDir (fun dir ->
         (let log = openLog dir
-         let h = SubstrateEffectHandler((fun () -> Some "operator ferried verbatim"), log) :> E.IEffectHandler
+         let h = SubstrateEffectHandler("otto", (fun () -> Some "operator ferried verbatim"), log) :> E.IEffectHandler
          Assert.Equal(E.Executed, (E.runAsync h E.PersistFerry ct).Result))
         // "Crash": a fresh GitDeltaLog over the same repo replays the ferry stream.
         let log2 = openLog dir
