@@ -87,6 +87,7 @@
     <Compile Include="DynamicValueAlgebra.Tests.fs" />
     <Compile Include="DynamicValueNumeric.Tests.fs" />
     <Compile Include="SoftValueNumeric.Tests.fs" />
+    <Compile Include="SoftValueInfo.Tests.fs" />
     <Compile Include="WeightedSet.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
