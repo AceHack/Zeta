@@ -129,6 +129,28 @@ new closure table, but **Merkle-hashing the DBSP Z-set so the content-addressed 
 retractable, the DAG itself a Z-set closure table with content-hash single-instance multi-parent nodes**,
 materialized single- or multi-file under one command interface.
 
+## ZetaFS is BRANCH-scoped — a branch is a Merkle root (Aaron, 2026-06-07)
+
+> Aaron: *"in our Merkle tree the filesystem is scoped to branches, right? so the collision would be same
+> branch + filename + different content hash."*
+
+Yes. **Each branch is a Merkle root — a COW tree version** (every content-store `put` / `DagFs` op yields a
+new root; old roots persist as cheap branches). So the scoping is:
+
+- **Filename uniqueness is WITHIN a branch** (a branch-relative path is the unique key); different branches
+  may hold the same path with different content — that's not a conflict until you *merge* them.
+- **The merge collision is `same branch-relative path + different content hash`** — exactly what
+  `DagFs.merge`'s `resolve` handles, with each `DagFs.Tree` standing for **one branch** (one root).
+- **Content is global / branch-independent** (a content node is addressed by its hash regardless of branch),
+  so identical content across branches is already one node — merge dedups it for free; only the *path→content*
+  binding is branch-scoped and can collide.
+
+This unifies the whole stack: a **branch = a Merkle root = a COW version = an Evolution experiment-timeline**
+(`2026-06-07-evolution-...`); merging branches = `DagFs.merge` (content union + per-branch-path resolve);
+"fork from prod" / canary / parallel experiments are all *branches* (roots) of the same content-addressed
+DAG. `CasStore` swaps a *row's* content address; a *branch* swaps the *whole tree's* root — same CAS idea at
+two granularities.
+
 ## Merging two ZetaFS + folder name-uniqueness (Aaron, 2026-06-07)
 
 > Aaron: *"since we have content-based addressing, if we have two single-file ZetaFS we can easily merge
