@@ -63,3 +63,47 @@ let ``editLocal to content identical to an existing file converges — pointers 
     Assert.Equal((FS.addressAt "/a" t2).Value, (FS.addressAt "/b" t2).Value) // converged: same node
     Assert.Equal<ZSet<int> option>(Some c2, FS.resolve "/a" t2)
     Assert.Equal<string list>([ "/a"; "/b" ] |> List.sort, FS.pathsOf (FS.addressAt "/b" t2).Value t2 |> List.sort)
+
+// ── merging two ZetaFS: content union is conflict-free; path collisions are the only conflict ──
+
+[<Fact>]
+let ``merge: identical content under different paths dedups to one node (content union is free)`` () =
+    let shared = v [ 1, 1L ]
+    let a = tree () |> FS.link "/a/photo" shared
+    let b = tree () |> FS.link "/b/photo" shared
+    let m = FS.merge (fun _ x _ -> x) a b
+    Assert.Equal(1, FS.nodeCount m) // same content => one node across both filesystems
+    Assert.Equal(2, FS.pathCount m)
+    Assert.Equal((FS.addressAt "/a/photo" m).Value, (FS.addressAt "/b/photo" m).Value)
+
+[<Fact>]
+let ``merge: disjoint paths just unite; same path + same content = no conflict`` () =
+    let a = tree () |> FS.link "/x" (v [ 1, 1L ]) |> FS.link "/shared" (v [ 9, 9L ])
+    let b = tree () |> FS.link "/y" (v [ 2, 2L ]) |> FS.link "/shared" (v [ 9, 9L ]) // same path, same content
+    let m = FS.merge (fun _ x _ -> failwith "should not conflict") a b
+    Assert.Equal<ZSet<int> option>(Some(v [ 1, 1L ]), FS.resolve "/x" m)
+    Assert.Equal<ZSet<int> option>(Some(v [ 2, 2L ]), FS.resolve "/y" m)
+    Assert.Equal<ZSet<int> option>(Some(v [ 9, 9L ]), FS.resolve "/shared" m)
+
+[<Fact>]
+let ``merge EDGE CASE: same folder+filename, DIFFERENT content -> resolver fires (Aaron 2026-06-07)`` () =
+    // both filesystems have "/docs/report" but with different content => the real conflict
+    let a = tree () |> FS.link "/docs/report" (v [ 1, 1L ])
+    let b = tree () |> FS.link "/docs/report" (v [ 2, 2L ])
+    let mutable conflictedPath = ""
+    let resolve path (x: ZSet<int>) (y: ZSet<int>) =
+        conflictedPath <- path
+        x + y // example policy: merge both (any deterministic resolver works)
+    let m = FS.merge resolve a b
+    Assert.Equal("/docs/report", conflictedPath) // resolver saw the colliding path
+    Assert.Equal<ZSet<int> option>(Some(ZSet.ofSeq [ 1, 1L; 2, 2L ]), FS.resolve "/docs/report" m)
+
+[<Fact>]
+let ``merge is content-convergent: order of merge gives the same nodes (resolver must be commutative for path-convergence)`` () =
+    let a = tree () |> FS.link "/k" (v [ 1, 1L ])
+    let b = tree () |> FS.link "/k" (v [ 2, 2L ])
+    // a commutative resolver (set-union via +) => path-convergent both merge directions
+    let r _ (x: ZSet<int>) (y: ZSet<int>) = x + y
+    let ab = FS.merge r a b
+    let ba = FS.merge r b a
+    Assert.Equal<ZSet<int> option>(FS.resolve "/k" ab, FS.resolve "/k" ba)

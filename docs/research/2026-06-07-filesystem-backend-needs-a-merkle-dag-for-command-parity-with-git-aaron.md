@@ -129,6 +129,31 @@ new closure table, but **Merkle-hashing the DBSP Z-set so the content-addressed 
 retractable, the DAG itself a Z-set closure table with content-hash single-instance multi-parent nodes**,
 materialized single- or multi-file under one command interface.
 
+## Merging two ZetaFS + folder name-uniqueness (Aaron, 2026-06-07)
+
+> Aaron: *"since we have content-based addressing, if we have two single-file ZetaFS we can easily merge
+> them — folders are basically just labels and the content is the real address."* … *"well not exactly
+> labels — you have to support filename uniqueness within the folder, that's why we have the closure table;
+> but you found some other data structures that might fit better."*
+
+**Merge is nearly free at the content layer.** Content-addressing makes merging two filesystems an
+**unconditional, conflict-free union of content nodes** (identical content ⇒ identical hash ⇒ one node;
+auto-dedup). The only real conflict is at the **path/name layer**. **LANDED:** `ContentStore.merge`
+(content union) + `DagFs.merge resolve a b` (content union + path resolution); the path layer's only
+conflict is **same path → different content**, handed to `resolve`. Tested incl. the edge case Aaron named:
+**same folder + filename, different content hashes → the resolver fires** (commutative resolver ⇒
+path-convergent both merge directions).
+
+**But folders are NOT just labels — filename-uniqueness-within-a-folder is a structural constraint.** A flat
+path→hash map enforces it *implicitly* (a full path `folder/name` is a unique key), which is what
+`DagFs.merge` uses today. The **richer model** is folders as a **per-folder name→entry map** (names unique
+per folder) + the **closure table** (`Hierarchy.fs`) for ancestry/DAG. The data-structure candidates from
+the forwarded vids fit the per-folder name-map better than a flat map: **HAMT** (general name keys),
+**Patricia** (compact name prefixes), **Hitchhiker tree** (sorted folder listings / range scans), with the
+**closure table** for the multi-parent DAG ancestry. Merge then becomes: content-union (free) + per-folder
+**name-map merge** (a name collision in a folder = the conflict, resolved like an LWW/OR-map). Backlogged as
+the folder-structured upgrade.
+
 ## Ties
 
 - `docs/research/2026-06-07-command-surface-not-1to1-git-...` (the one-interface-over-git-and-fs steer this

@@ -81,3 +81,27 @@ module DagFs =
 
     /// Number of distinct stored nodes (single-instanced).
     let nodeCount (t: Tree<'V>) : int = ContentStore.count t.store
+
+    /// **Merge two file trees** (same `hashOf`) — content-addressing makes this nearly free (Aaron 2026-06-07).
+    /// The CONTENT layer is an unconditional, conflict-free union (identical content = identical node → dedup).
+    /// The PATH layer enforces name-uniqueness: a path is a unique key (a full path `folder/name` ⇒ per-folder
+    /// name uniqueness is implied), so the only real conflict is **same path → different content**, resolved
+    /// by `resolve path valueA valueB`. (NB folders are not *just* labels — name-uniqueness-within-folder is a
+    /// structural constraint; this flat-path model handles it via full-path keys, the richer folder-structured
+    /// model — closure table / per-folder name-map over HAMT/Patricia/Hitchhiker — is the upgrade. See the
+    /// fs-Merkle research doc.)
+    let merge (resolve: string -> 'V -> 'V -> 'V) (a: Tree<'V>) (b: Tree<'V>) : Tree<'V> =
+        let mutable store = ContentStore.merge a.store b.store
+        let mutable links = a.links
+        for kv in b.links do
+            match a.links.TryGetValue kv.Key with
+            | true, ha when ha = kv.Value -> () // same path, same content — no conflict
+            | true, ha -> // same path, different content — resolve the two values
+                let va = ContentStore.get ha store |> Option.get
+                let vb = ContentStore.get kv.Value store |> Option.get
+                let winner = resolve kv.Key va vb
+                let h, store' = ContentStore.put winner store
+                store <- store'
+                links <- links.SetItem(kv.Key, h)
+            | _ -> links <- links.SetItem(kv.Key, kv.Value) // only in b
+        { store = store; links = links }

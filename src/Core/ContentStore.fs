@@ -57,5 +57,14 @@ module ContentStore =
     /// The number of distinct (single-instanced) nodes.
     let count (s: Store<'V>) : int = s.byHash.Count
 
+    /// **Merge two content stores** (same `hashOf`): union by content address. CONFLICT-FREE — identical
+    /// content has the identical hash (single-instance), so the union just dedups; this is the whole point
+    /// of content-addressing for filesystem merge (Aaron 2026-06-07). Structural sharing via ImmutableDictionary.
+    let merge (a: Store<'V>) (b: Store<'V>) : Store<'V> =
+        let mutable d = a.byHash
+        for kv in b.byHash do
+            if not (d.ContainsKey kv.Key) then d <- d.Add(kv.Key, kv.Value)
+        { a with byHash = d }
+
     /// All content addresses currently stored.
     let addresses (s: Store<'V>) : MerkleHash seq = s.byHash.Keys
