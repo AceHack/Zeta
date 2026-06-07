@@ -226,6 +226,7 @@
     <Compile Include="Crdt/PNCounter.Tests.fs" />
     <Compile Include="Crdt/OrSet.Tests.fs" />
     <Compile Include="Crdt/Lww.Tests.fs" />
+    <Compile Include="Crdt/Rga.Tests.fs" />
     <Compile Include="Crdt/DeltaCrdt.Tests.fs" />
 
     <!-- Plugin/ -->

@@ -21,8 +21,9 @@ composes_with: ["B-0959"]
 Already in `src/Core/Crdt.fs` (with tests): **GCounter, PNCounter, OrSet, LwwRegister** — the workitem
 over-listed LWW-Register/OR-Set as "missing"; they exist + are ordinal-clean. **LWW-Map LANDED** this round
 (`LwwMap<'K,'V>` — per-key LwwRegister, tombstone remove, merge commutative/assoc/idempotent; 4 tests).
-**Genuinely remaining:** (1) **RGA / sequence CRDT** (collaborative ordered list/text — the hard one,
-positions + tombstones + causal order); (2) **PSI** as a private Z-set intersection over the `.zc` transform.
+**RGA / sequence CRDT LANDED** this round (`Rga<'T>` — unique-id elements, After-anchor, tombstone remove,
+sibling-order-by-id-DESC for convergence; merge commutative/assoc/idempotent; 4 tests incl. concurrent-insert
+convergence). **Genuinely remaining:** **PSI** as a private Z-set intersection over the `.zc` transform.
 
 ## Purpose
 

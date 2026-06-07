@@ -179,3 +179,79 @@ type LwwMap<'K, 'V when 'K: comparison> =
                 | None -> kv.Value
             acc <- Map.add kv.Key merged acc
         { Entries = acc }
+
+/// A unique RGA element id: `(lamport, replica)` — Lamport clock for causal-ish ordering, replica for the
+/// deterministic tiebreak. F# struct-tuple comparison is structural (int64 then **ordinal** string —
+/// B-0969-clean).
+type RgaId = (struct (int64 * string))
+
+[<NoComparison; NoEquality>]
+type RgaElem<'T> =
+    { Value: 'T
+      After: RgaId option // the element this was inserted after (None = sequence head)
+      Tombstone: bool }
+
+/// **RGA (Replicated Growable Array)** — the sequence/list CRDT for collaborative ordered text/lists
+/// (081KTH4Q782; the remaining CRDT gap). Each element has a unique `RgaId` and an `After` anchor; the
+/// sequence is the causal tree flattened with **siblings ordered by id DESCENDING** (the standard RGA rule:
+/// later/higher-id concurrent inserts at the same anchor come first), which makes concurrent inserts
+/// **converge** deterministically. Removal is a **tombstone** (the element keeps its position as an anchor).
+/// `Merge` = union of elements by id + OR of tombstones ⇒ commutative + associative + idempotent ⇒ a CRDT;
+/// `ToList` is a pure function of the element set, so equal sets ⇒ equal sequences ⇒ convergence.
+/// (Honest scope: deterministic + convergent with the standard sibling rule; perfect no-interleave of
+/// concurrent *runs* is a known RGA subtlety — convergence is guaranteed, run-contiguity is best-effort.)
+[<NoComparison; NoEquality>]
+type Rga<'T> =
+    { Elements: Map<RgaId, RgaElem<'T>> }
+
+    static member Empty: Rga<'T> = { Elements = Map.empty }
+
+    /// Insert `value` with unique `id`, anchored after `after` (None = head). Idempotent on `id`.
+    member this.Insert(id: RgaId, value: 'T, after: RgaId option) : Rga<'T> =
+        if Map.containsKey id this.Elements then this
+        else { Elements = Map.add id { Value = value; After = after; Tombstone = false } this.Elements }
+
+    /// Tombstone the element `id` (keeps its position as an anchor for later inserts).
+    member this.Remove(id: RgaId) : Rga<'T> =
+        match Map.tryFind id this.Elements with
+        | Some e when not e.Tombstone -> { Elements = Map.add id { e with Tombstone = true } this.Elements }
+        | _ -> this
+
+    /// Merge two RGAs: union by id, OR the tombstones. Commutative + associative + idempotent.
+    static member Merge (a: Rga<'T>) (b: Rga<'T>) : Rga<'T> =
+        let mutable acc = a.Elements
+        for kv in b.Elements do
+            match Map.tryFind kv.Key acc with
+            | Some existing -> acc <- Map.add kv.Key { existing with Tombstone = existing.Tombstone || kv.Value.Tombstone } acc
+            | None -> acc <- Map.add kv.Key kv.Value acc
+        { Elements = acc }
+
+    /// The live sequence (tombstoned elements skipped but kept as anchors). Pure in `Elements` ⇒ convergent.
+    member this.ToList() : 'T list =
+        // Head children (After = None) tracked separately — F# `option` None is `null` at runtime and
+        // cannot be a Dictionary key; the children map is keyed by the non-null parent `RgaId`.
+        let roots = ResizeArray<RgaId>()
+        let childrenOf = Dictionary<RgaId, ResizeArray<RgaId>>()
+        for kv in this.Elements do
+            match kv.Value.After with
+            | None -> roots.Add kv.Key
+            | Some parent ->
+                match childrenOf.TryGetValue parent with
+                | true, lst -> lst.Add kv.Key
+                | _ ->
+                    let lst = ResizeArray<RgaId>()
+                    lst.Add kv.Key
+                    childrenOf.[parent] <- lst
+        // siblings ordered by id DESCENDING (the RGA convergence rule)
+        let sortDesc (lst: ResizeArray<RgaId>) = lst.Sort(System.Comparison<RgaId>(fun x y -> compare y x))
+        sortDesc roots
+        for kvp in childrenOf do sortDesc kvp.Value
+        let out = ResizeArray<'T>()
+        let rec walk (nodeId: RgaId) =
+            let e = this.Elements.[nodeId]
+            if not e.Tombstone then out.Add e.Value
+            match childrenOf.TryGetValue nodeId with
+            | true, kids -> for k in kids do walk k
+            | _ -> ()
+        for r in roots do walk r
+        List.ofSeq out
