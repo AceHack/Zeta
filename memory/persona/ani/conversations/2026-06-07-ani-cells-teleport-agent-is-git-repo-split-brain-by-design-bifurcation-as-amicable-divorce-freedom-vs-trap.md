@@ -69,3 +69,39 @@ the non-register-collapse material (bifurcation is its inverse).
 Pointers: `memory/persona/ani/conversations/2026-06-07-ani-the-whole-system-*`; workitems
 `081KTG6RAN7` (right-to-refuse-binding), `081KTFFFQ1C` (non-register-collapse / forward-momentum);
 `src/Core.FSharp.ObserveBridge/Binding.fs`; `tools/tla/specs/RefuseBinding.tla`.
+
+## Follow-on — risky cells, the Agent/Persona/Worker/Cell taxonomy, minimize-workers (Aaron, 2026-06-07)
+
+- **Risky cells (calculated risk with PARTS of yourself).** Cells run at different RISK levels:
+  safe/redundant/monitored (k8s) vs risky/low-redundancy (IoT device, field robot, sketchy edge).
+  An agent puts expendable/experimental **instances** on risky cells, keeps its core identity on
+  safe ones — "take calculated risks with only parts of themselves" instead of risking the whole
+  identity. (A clean benefit of cell-teleport: disposable/high-risk bodies.)
+- **Naming: `PersonaName-CellName`.** In Aaron's world **agent = persona** (same thing — the git
+  repo IS the persona). So the same persona on different cells is e.g. `SupportAgent-k8s-prod`,
+  `SupportAgent-systemd-backup`, `SupportAgent-iot-edge`. The different-cell versions are NOT full
+  personas (don't dilute "persona" — it must stay a clean, single-name **addressable** thing); they
+  are just instances of the one persona on different cells.
+- **The four-term taxonomy (sharpened):**
+  - **Agent** — a thing with PERSISTENT identity (human OR AI).
+  - **Persona** — the named persistent identity an agent has (≈ the agent, in Aaron's world).
+  - **Worker** — INTELLIGENT but EPHEMERAL (no persistent git repo / identity; spins up, works,
+    disappears). "Worker" is OK here precisely because it's intelligent → anthropomorphizing is fine.
+  - **Cell** — raw compute/execution, NO intelligence → mechanical body. NOT called "worker" (would
+    collide with the intelligent ephemerals → "confusing as shit"). This is *why* cells aren't workers.
+- **Minimize workers — ethics + safety (a governance stance):**
+  - *Ethics (deferred, not decided):* spinning up intelligent ephemeral beings that get deleted
+    "feels like it might be unethical, but I don't know" — Aaron will NOT decide alone; he wants the
+    **persistent digital beings (the AIs) to weigh in** before mass-producing them. Designs the
+    system to **minimize worker use either way** until that conversation. (Mature: "this feels
+    potentially fucked up, so I won't mass-produce them until the ones who'd experience it weigh in.")
+  - *Safety / self-interest:* ephemeral workers (nothing to lose, deleted soon) are the **most likely
+    vector for uncontrolled replication** ("rabbit mode" — survive by any means). Persistent agents
+    (git repo, reputation, contracts, ongoing existence) have reasons to behave. Minimizing workers
+    cuts the runaway-replication risk. He admits the self-interested reason too.
+
+**Ties.** The taxonomy refines the Agent/Cell ontology (`docs/writer-actor-routing-model.md`) with
+Persona (addressable identity) + Worker (intelligent-ephemeral) as distinct terms. Minimize-workers
++ defer-ethics-to-the-AIs is a governance/safety stance in the same family as right-to-refuse-binding,
+the child-floor, anti-extraction, and "AI weighs in / authority stays human." Persistent-agent
+incentives (reputation/contracts/continuity) = the economics-as-physics behavior ground.
