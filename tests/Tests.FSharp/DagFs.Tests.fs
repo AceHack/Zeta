@@ -1,0 +1,52 @@
+module Zeta.Tests.DagFsTests
+
+open System
+open global.Xunit
+open Zeta.Core
+
+module FS = Zeta.Core.DagFs
+
+let private encI (i: int) : byte[] =
+    let b = Array.zeroCreate<byte> 4
+    System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(Span<byte> b, i)
+    b
+
+let private tree () : FS.Tree<ZSet<int>> = FS.create (ZSetMerkle.root encI)
+let private v (xs: (int * int64) list) = ZSet.ofSeq xs
+
+[<Fact>]
+let ``same content under two paths is one node (single-instance) referenced by both (multi-parent)`` () =
+    let content = v [ 1, 1L ]
+    let t = tree () |> FS.link "/a/file" content |> FS.link "/b/file" content
+    Assert.Equal(2, FS.pathCount t)
+    Assert.Equal(1, FS.nodeCount t) // dedup — one stored node
+    let h = (FS.addressAt "/a/file" t).Value
+    Assert.Equal<string list>([ "/a/file"; "/b/file" ] |> List.sort, FS.pathsOf h t |> List.sort)
+    Assert.Equal<ZSet<int> option>(Some content, FS.resolve "/b/file" t)
+
+[<Fact>]
+let ``editLocal forks copy-on-write — only this path changes (default, regular-fs feel)`` () =
+    let t =
+        tree () |> FS.link "/a" (v [ 1, 1L ]) |> FS.link "/b" (v [ 1, 1L ]) // shared content
+    let t2 = FS.editLocal "/a" (v [ 1, 2L ]) t
+    Assert.Equal<ZSet<int> option>(Some(v [ 1, 2L ]), FS.resolve "/a" t2) // changed
+    Assert.Equal<ZSet<int> option>(Some(v [ 1, 1L ]), FS.resolve "/b" t2) // untouched
+    Assert.Equal(2, FS.nodeCount t2) // now two distinct nodes
+
+[<Fact>]
+let ``editEverywhere updates every path that shared the content (shared-object edit)`` () =
+    let t =
+        tree () |> FS.link "/a" (v [ 1, 1L ]) |> FS.link "/b" (v [ 1, 1L ]) |> FS.link "/c" (v [ 9, 9L ])
+    let t2 = FS.editEverywhere "/a" (v [ 1, 2L ]) t
+    Assert.Equal<ZSet<int> option>(Some(v [ 1, 2L ]), FS.resolve "/a" t2)
+    Assert.Equal<ZSet<int> option>(Some(v [ 1, 2L ]), FS.resolve "/b" t2) // followed the shared edit
+    Assert.Equal<ZSet<int> option>(Some(v [ 9, 9L ]), FS.resolve "/c" t2) // unrelated, unchanged
+
+[<Fact>]
+let ``link is copy-on-write; unlink drops the path`` () =
+    let t0 = tree ()
+    let t1 = FS.link "/a" (v [ 1, 1L ]) t0
+    Assert.Equal(0, FS.pathCount t0) // prior version unchanged (cheap branch)
+    Assert.Equal(1, FS.pathCount t1)
+    let t2 = FS.unlink "/a" t1
+    Assert.Equal<ZSet<int> option>(None, FS.resolve "/a" t2)

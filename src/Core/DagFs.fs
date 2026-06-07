@@ -1,0 +1,83 @@
+namespace Zeta.Core
+
+open System.Collections.Immutable
+
+/// **Multi-parent content-addressed file tree — the "same file in many folders" + two edit modes
+/// (Aaron 2026-06-07; 081KTGTJC1Q).** A thin path layer over `ContentStore`: paths map to CONTENT
+/// ADDRESSES, so identical content under N paths is ONE stored node (single-instance / dedup), and a node
+/// can live under many paths at once (multi-parent — hardlink- / git-blob-shaped). Immutable/COW: every
+/// mutation returns a new `Tree` version (old roots persist as cheap branches).
+///
+/// The two edit modes Aaron specified:
+///   - **`editLocal`** (DEFAULT, regular-filesystem feel): copy-on-write fork — only THIS path sees the
+///     change; other paths sharing the old content keep it.
+///   - **`editEverywhere`**: content update — every path that referenced the old content follows the new
+///     content (the shared-object edit).
+[<RequireQualifiedAccess>]
+module DagFs =
+
+    /// A file tree: a content-addressed `store` of nodes + a `links` map from path -> content address.
+    [<NoEquality; NoComparison>]
+    type Tree<'V> =
+        private
+            { store: ContentStore.Store<'V>
+              links: ImmutableDictionary<string, MerkleHash> }
+
+    /// Empty tree over a content store keyed by `hashOf`.
+    let create (hashOf: 'V -> MerkleHash) : Tree<'V> =
+        { store = ContentStore.create hashOf
+          links = ImmutableDictionary.Create<string, MerkleHash>() }
+
+    /// Link `path` to `value`: store the content (dedup) and point `path` at its address. If another path
+    /// already holds identical content, they share the single node (multi-parent). Returns the new tree.
+    let link (path: string) (value: 'V) (t: Tree<'V>) : Tree<'V> =
+        let h, store' = ContentStore.put value t.store
+        { store = store'; links = t.links.SetItem(path, h) }
+
+    /// Resolve `path` to its content, or `None` if unlinked.
+    let resolve (path: string) (t: Tree<'V>) : 'V option =
+        match t.links.TryGetValue path with
+        | true, h -> ContentStore.get h t.store
+        | _ -> None
+
+    /// The content ADDRESS at `path` (without fetching), or `None`.
+    let addressAt (path: string) (t: Tree<'V>) : MerkleHash option =
+        match t.links.TryGetValue path with
+        | true, h -> Some h
+        | _ -> None
+
+    /// Remove the link at `path` (the node stays in the store — it may be shared / GC is separate).
+    let unlink (path: string) (t: Tree<'V>) : Tree<'V> =
+        { t with links = t.links.Remove path }
+
+    /// Every path that currently points at content address `h` (the multi-parent / reverse view — the
+    /// "which folders hold this file" question). Order unspecified.
+    let pathsOf (h: MerkleHash) (t: Tree<'V>) : string list =
+        t.links
+        |> Seq.filter (fun kv -> kv.Value = h)
+        |> Seq.map (fun kv -> kv.Key)
+        |> List.ofSeq
+
+    /// **Edit just this folder (DEFAULT — copy-on-write fork).** Store the new content and repoint ONLY
+    /// `path`; any other path that shared the old content is untouched. No-op if `path` is unlinked.
+    let editLocal (path: string) (value: 'V) (t: Tree<'V>) : Tree<'V> =
+        match t.links.TryGetValue path with
+        | true, _ -> link path value t
+        | _ -> t
+
+    /// **Content update everywhere.** Repoint EVERY path that referenced `path`'s current content to the
+    /// new content (the shared-object edit). No-op if `path` is unlinked.
+    let editEverywhere (path: string) (value: 'V) (t: Tree<'V>) : Tree<'V> =
+        match t.links.TryGetValue path with
+        | true, oldH ->
+            let newH, store' = ContentStore.put value t.store
+            let affected = pathsOf oldH t
+            let links' = affected |> List.fold (fun (m: ImmutableDictionary<string, MerkleHash>) p -> m.SetItem(p, newH)) t.links
+            { store = store'; links = links' }
+        | _ -> t
+
+    /// Number of linked paths.
+    let pathCount (t: Tree<'V>) : int = t.links.Count
+
+    /// Number of distinct stored nodes (single-instanced).
+    let nodeCount (t: Tree<'V>) : int = ContentStore.count t.store
