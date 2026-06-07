@@ -48,3 +48,13 @@ let ``ExecOnlyByOwner: a half only executes a binding it owns`` (moves: (bool * 
 let ``Face-1 convergence: merge is commutative and idempotent (reconciliation order-independent + absorbing)`` (ma: (bool * bool * int) list) (mb: (bool * bool * int) list) =
     let a, b = build ma, build mb
     (Divvy.merge a b = Divvy.merge b a) && (Divvy.merge a a = a)
+
+// Associativity completes the join-semilattice triple (commutative + idempotent + ASSOCIATIVE = the
+// `L.assoc` field the Lean Bifurcation semilattice proves). Kept explicit per the B-0969 precedent:
+// a tie-break/sort that is commutative+idempotent but NOT associative is still NOT a lawful join —
+// exactly the failure class B-0969 exposed in a max-merge. Without it this leg would be blind to the
+// one law most likely to silently break under a key-ordering change.
+[<Property>]
+let ``Face-1 convergence: merge is associative (three-way reconciliation order-independent)`` (ma: (bool * bool * int) list) (mb: (bool * bool * int) list) (mc: (bool * bool * int) list) =
+    let a, b, c = build ma, build mb, build mc
+    Divvy.merge (Divvy.merge a b) c = Divvy.merge a (Divvy.merge b c)

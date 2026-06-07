@@ -67,11 +67,12 @@ because <one-line>.`
 
 ---
 
-## `Bifurcation` *(split-brain — Face-1 Lean convergence + Face-2 TLA+ conservation/no-double-spend)*
+## `Bifurcation` *(split-brain — full BP-16: Lean convergence + TLA+ conservation + FsCheck deployed-divvy)*
 
 - **Artifacts.** `tools/lean4/Safety/Bifurcation.lean` (Face-1, axiom-FREE — `reconcile_converges`,
   `reconcile_absorb`, `reconcile_order_independent`; `lean-proof.yml`) + `tools/tla/specs/Bifurcation.tla`
-  (+ `.cfg`) (Face-2; TLC via `run-tlc.ts --all`, gated). Authored 2026-06-07.
+  (+ `.cfg`) (Face-2; TLC via `run-tlc.ts --all`, gated) + `tests/Tests.FSharp/Formal/BifurcationCrossVerify.Tests.fs`
+  (Leg-B/Face-3, FsCheck over the deployed `Binding.Divvy` ops). Authored 2026-06-07. **Full BP-16 (3 legs).**
 - **Source anchors.** Bifurcation / split-brain (Aaron 2026-06-07; `memory/persona/ani/conversations/2026-06-07-ani-cells-teleport-*`).
   Soraya-routed two faces, two tools (anti-hammer). CRDT-merge-convergence template:
   `Privacy.IdentityForcesPrivacy.commons_converges`; CRDT/G-Set floor.
@@ -83,11 +84,17 @@ because <one-line>.`
   `NoDoubleSpend` (no binding executes twice across halves — the P0), `ExecOnlyByOwner`, and
   liveness `DivvyCompletes` (`<>[]` all assigned, WF on Tag).
 - **Fidelity scope.** Face-1 general over any semilattice (the concrete cell-merge being one is the
-  floor's G-Set result). Face-2 bounded TLA+ model (3 bindings), TLC exhaustive over scope. **NOT yet
-  done (Soraya BP-16):** Leg B — FsCheck over a *deployed* split/divvy/merge in `Binding.fs` (the
-  no-double-spend P0's real-code second leg); needs the divvy/merge ops added to `Binding.fs` first.
+  floor's G-Set result). Face-2 bounded TLA+ model (3 bindings), TLC exhaustive over scope.
+  **Leg-B/Face-3 (FsCheck, deployed) LANDED** — `tests/Tests.FSharp/Formal/BifurcationCrossVerify.Tests.fs`
+  over the deployed `Binding.Divvy` ops (the divvy/merge ops were added to `Binding.fs`; this prior-
+  session leg was previously mis-recorded as "not yet done"): `Conservation`, `NoDoubleSpend` (the P0
+  real-code witness), `ExecOnlyByOwner`, and the Face-1 join-semilattice triple over the deployed
+  `Divvy.merge` — commutative + idempotent + **associative** (associativity added 2026-06-07 to close
+  the B-0969 failure class; `Divvy.merge` confirmed a lawful join). 5 properties green. **Full BP-16
+  (3 legs / 2 tools+empirical).** Triage: an FsCheck counterexample ⇒ `Divvy` drifted from the
+  proven TLA+/Lean model.
 - **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
-  Face-1 axiom-free; Face-2 machine-checked (TLC, bounded).
+  Face-1 axiom-free; Face-2 machine-checked (TLC, bounded); Leg-B FsCheck green (5 properties).
 
 ---
 
