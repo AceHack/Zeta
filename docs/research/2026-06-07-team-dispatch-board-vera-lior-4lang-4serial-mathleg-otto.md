@@ -1,0 +1,49 @@
+# Team dispatch board for Vera + Lior — F# substrate built this session, split by leg (Otto, 2026-06-07)
+
+Aaron asked for a list to hand Vera + Lior to split into **4-lang** (C#/Rust/TS ports), **4-serial**
+(cross-language hex-in-JSON golden vectors / byte-lock over the codecs), **math-leg** (formal/property/proof
+verification), **plus others**. **F# is the reference for every row** (built + tested on `main`); all golden
+vectors are **hex-in-JSON** per `.claude/rules/no-binary-in-proof-lineage.md`; B-0959 is the 4-oracle master
+checklist. Split however suits Vera/Lior.
+
+## The board (✅ = F# done/reference; ☐ = leg to do)
+
+| Component (F# `src/Core[.X]`) | what it is | 4-lang (C#/Rust/TS) | 4-serial (golden vectors) | math-leg (verify) |
+|---|---|---|---|---|
+| `Collation` + GSet/ZSet/IndexedZSet/Hierarchy/Residuated/Aggregate ordinal fix (B-0969) | binary/ordinal collation default | ☐ ordinal audit C#/Rust/TS | ☐ non-ASCII ordinal vectors (un-mask ASCII) | ☐ ordinal-order law |
+| `ZSetMerkle` | canonical Merkle-over-Z-set root | ☐ port | ☐ root vectors (incl. non-ASCII keys) | ☐ determinism + retraction + order-indep laws |
+| `Core.Blake3` (`Blake3Hasher`, `ContentHash256`) + `IContentHasher` port | BLAKE3 content hash (128 + full 256) | ☐ adapters (Rust native / TS / C# Blake3) | ☐ known-answer: empty → `af13…` (256 raw) + `49c9…` (128 LE) | ☐ 128 derives-from-256; tiers agree |
+| `ContentStore` | content-addressed single-instance COW | ☐ port | ☐ dedup/COW vectors | ☐ idempotent put; COW isolation |
+| `DagFs` | multi-parent file tree + 2 edit modes | ☐ port | ☐ link/editLocal/editEverywhere vectors | ☐ convergence (edit→same-content dedups) |
+| `DvKey` | content-addressed comparable DynamicValue row | ☐ port | ☐ canonical-CBOR key vectors | ☐ equal-value⇒equal-key |
+| `DebeziumCdc` | CDC ↔ Z-set delta (read/write) | ☐ port | ☐ change-event ↔ delta vectors | ☐ read∘write = id (delta-level) |
+| `CloudEvents` | CNCF v1.0 envelope over DynamicValue | ☐ port | ☐ envelope round-trip vectors | ☐ toDynamic∘ofDynamic = id |
+| `SchemaEvolution` + `SchemaRegistry` | migration algebra + down + dump + inverses | ☐ port | ☐ migrate/down/dump vectors | ☐ round-trip laws (lossless/lossy/dump position-exact) |
+| `EvolutionWindow` | expand-into gate (backward-projection constraint) | ☐ port | — (logic, no wire format) | ☐ mayExpandInto law |
+| `LwwMap` | LWW-keyed map CRDT | ☐ port | ☐ convergence vectors | ☐ commutative/assoc/idempotent |
+| `Rga` | sequence CRDT (collaborative text/lists) | ☐ port | ☐ concurrent-insert convergence vectors | ☐ convergence + sibling-order |
+| `CasStore` | per-row compare-and-swap (lock-free runtime) | ☐ port | ☐ CAS success/conflict vectors | ☐ lost-update-prevention law |
+
+(Already-cross-lang CRDTs — `GCounter`/`PNCounter`/`OrSet`/`LwwRegister` — are F#-done; check parity status
+against B-0959, likely already covered.)
+
+## Plus others (Lior's flagged B-0959 backlog)
+
+- **Bag primitive** (multiset) — implement F# + TS first, matching G-Set/Z-set patterns.
+- **G-Set 4-oracle parity** — port G-Set to C# + Rust → Tier-1 in `PRIMITIVE-REGISTRY.md`.
+- **YAML serializer** — `DynamicValue.toYaml/fromYaml` across the 4 languages.
+- **ZetaId** (`ContentAddress` category etc.) — Lior already landed across 4 oracles (cross-verify 12/12); a
+  parity-maintenance item only.
+
+## How to read "4-serial"
+
+The four canonical encodings are byte-locked: **CBOR · JSON · XML** (the DynamicValue codecs) cross the four
+oracle **languages** (F#/C#/Rust/TS). A "4-serial golden vector" = a hex-in-JSON fixture each language
+replays to identical bytes/roots. The content-address known-answer (`af13…` / `49c9…`) is the canonical
+example; every component above gets the analogous shared fixture.
+
+## Anchors
+
+- Umbrella `081KTH323AK` (this expands it) · per-module items (`081KTGYWCT7` ZSetMerkle, `081KTGYWCTT`
+  collation, `081KTH0HFZ8` SchemaEvolution, `081KTH4Q782` CRDTs+PSI) · B-0959 (4-oracle master) · B-0969
+  (collation) · the BLAKE3 treaty doc · no-binary-in-proof-lineage (hex-in-JSON).

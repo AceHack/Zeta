@@ -16,6 +16,12 @@ composes_with: ["081KTGYWCT708QG0R001GX6PBN", "081KTGYWCTT08QG0R001G96DXY", "081
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTH323AK08QG0R000ZZ0N93-*.md` glob. -->
 
+## Dispatch board (full split — 4-lang / 4-serial / math-leg / others)
+
+The splittable work-list (every F# component from this session, by leg) is in
+`docs/research/2026-06-07-team-dispatch-board-vera-lior-4lang-4serial-mathleg-otto.md`. Adds since this
+item: ContentHash256, EvolutionWindow, LwwMap, Rga, CasStore (all F#-done, need 4-lang + serial + math-leg).
+
 ## Purpose (for VERA + LIOR — the 4-lang catch-up)
 
 The last several hours landed a large F# substrate (COW store + interop + Evolution + collation) with NO
