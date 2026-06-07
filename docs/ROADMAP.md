@@ -56,6 +56,17 @@ DynamicValue**. So the dependency graph is data (DynamicValue + ZetaID refs), re
 the same address routes the cross-cell partitioned bus (Actor ID = ZetaID). This closes the
 plugin-as-data / DI-as-data loop: deps don't need a side-channel — they live *in* the value, by ZetaID.
 
+**Service discovery is therefore built in — ".NET Aspire inside DynamicValue" (Aaron 2026-06-07).** Once
+deps are ZetaID refs that the value carries, *discovering and wiring services is just resolving those
+refs* — the same job .NET Aspire's app model does (declare services + references → discovery + DI
+composition), but expressed as **data in the value** rather than host-language wiring code. A cell / plugin
+/ package advertises and finds its collaborators by ZetaID; Nucleus is the composition/discovery resolver;
+the cross-cell bus routes by the same ZetaID. So we get Aspire-style service discovery + composition for
+free, cross-language (4 oracles) and deterministic, because it's all DynamicValue + ZetaID — not a
+side-car registry. Beacon anchors: **.NET Aspire** (app model + service discovery), Dapr service
+invocation, Kubernetes service discovery, Consul/etcd. Our twist: the service graph is *self-describing
+data*, not orchestrator config.
+
 ### ITEM #1 — NO USE OF THE GIT CLI
 
 All persistence routes through **our DB layer** (understands filesystem + git, runs git-native:
