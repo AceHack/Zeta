@@ -17,13 +17,21 @@ type ZEntry<'K> =
     new(key: 'K, weight: Weight) = { Key = key; Weight = weight }
 
 
+/// Per-closed-type cached key comparer = the default **binary/ordinal** collation (B-0969): string ordering
+/// is ordinal (never culture-sensitive `Comparer<string>.Default`), every other `'K` keeps the BCL default.
+/// `static member val` on a generic type → one instance per closed `'K`, resolved once in the type's static
+/// ctor, so the hot per-element comparator pays no `forKey` type-check per call (Naledi: hoist out of loops).
+[<AbstractClass; Sealed>]
+type internal KeyComparerCache<'K when 'K : comparison>() =
+    static member val Instance: IComparer<'K> = Collation.forKey<'K> ()
+
 /// Struct comparer for sorting `ZEntry<'K>` by key ascending — monomorphized
 /// per `'K` by `MemoryExtensions.Sort<T, TComparer>`; zero heap allocation.
 [<Struct; NoComparison; NoEquality>]
 type EntryKeyComparer<'K when 'K : comparison> =
     interface IComparer<ZEntry<'K>> with
         member _.Compare(a: ZEntry<'K>, b: ZEntry<'K>) =
-            Comparer<'K>.Default.Compare(a.Key, b.Key)
+            KeyComparerCache<'K>.Instance.Compare(a.Key, b.Key)
 
 
 /// A Z-set `Z[K]`: finitely-supported map `K -> ℤ`, represented as an
@@ -64,7 +72,7 @@ type ZSet<'K when 'K : comparison> =
             let cap = sa.Length + sb.Length
             let rented = Pool.Rent<ZEntry<'K>> cap
             try
-                let cmp = Comparer<'K>.Default
+                let cmp = KeyComparerCache<'K>.Instance
                 let mutable i = 0
                 let mutable j = 0
                 let mutable k = 0
@@ -120,7 +128,7 @@ type ZSet<'K when 'K : comparison> =
             let span = this.AsSpan()
             if span.IsEmpty then 0L
             else
-                let cmp = Comparer<'K>.Default
+                let cmp = KeyComparerCache<'K>.Instance
                 let mutable lo = 0
                 let mutable hi = span.Length - 1
                 let mutable result = 0L
@@ -545,7 +553,7 @@ module ZSet =
                 let total = sources |> Array.sumBy (fun s -> s.Length)
                 let rented = Pool.Rent<ZEntry<'K>> total
                 try
-                    let cmp = Comparer<'K>.Default
+                    let cmp = KeyComparerCache<'K>.Instance
                     // `PriorityQueue<sourceIdx, ZEntry<'K>>` — we use the
                     // entire entry as the priority so the tuple compare
                     // breaks ties on key-then-weight (weight tie doesn't

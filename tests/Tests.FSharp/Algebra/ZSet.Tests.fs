@@ -451,3 +451,19 @@ let ``C14 auto-prune preserves semantics: lookup is an additive homomorphism (dr
         |> Seq.distinct
     let sum = ZSet.add a b
     keys |> Seq.forall (fun k -> ZSet.lookup k sum = ZSet.lookup k a + ZSet.lookup k b)
+
+// ─── B-0969: Z-set key ordering is ORDINAL (binary collation), not culture-sensitive ───
+// Default collation = Collation.binary via KeyComparerCache. 'B'(0x42) < 'a'(0x61), so the canonical
+// sorted run orders uppercase before lowercase — the cross-language byte-consensus order (C#/Rust/TS).
+[<Fact>]
+let ``ofSeq orders string keys ordinally (B-0969 binary collation, not culture-sensitive)`` () =
+    let z = ZSet.ofSeq [ "a", 1L; "B", 1L; "C", 1L; "b", 1L ]
+    let keys = z |> Seq.map (fun e -> e.Key) |> Seq.toArray
+    Assert.Equal<string[]>([| "B"; "C"; "a"; "b" |], keys)
+
+[<Fact>]
+let ``lookup finds string keys under ordinal ordering (B-0969)`` () =
+    let z = ZSet.ofSeq [ "Apple", 3L; "apple", 5L ]
+    // distinct ordinal keys (cap A vs lowercase a) must not collide
+    Assert.Equal(3L, ZSet.lookup "Apple" z)
+    Assert.Equal(5L, ZSet.lookup "apple" z)
