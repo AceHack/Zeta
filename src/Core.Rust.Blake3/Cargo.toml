@@ -1,0 +1,15 @@
+[package]
+name = "zeta-core-blake3"
+version = "0.1.0"
+edition = "2024"
+description = "BLAKE3 adapter for the IContentHasher port -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language multi-oracle consensus."
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+blake3 = "1.5.1"
+zeta-core-merkle = { path = "../Core.Rust.Merkle" }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

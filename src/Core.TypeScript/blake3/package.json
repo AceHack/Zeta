@@ -1,0 +1,22 @@
+{
+  "name": "@zeta/blake3",
+  "version": "0.1.0",
+  "description": "Standalone TypeScript BLAKE3 reference implementation for N-way cross-language oracle verification. Bun-native.",
+  "type": "module",
+  "main": "blake3.ts",
+  "exports": {
+    ".": "./blake3.ts"
+  },
+  "keywords": [
+    "zeta",
+    "blake3",
+    "hash",
+    "cross-language",
+    "bun"
+  ],
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}

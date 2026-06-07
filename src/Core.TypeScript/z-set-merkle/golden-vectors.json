@@ -1,0 +1,65 @@
+{
+  "description": "ZSetMerkle cross-language conformance vectors. F# is the reference oracle for this seed: each case builds a Z-set from entries, removes zero-net weights, sorts leaves by UTF-8 encoded key bytes, encodes each leaf as [uint32_le key_len][key_bytes][int64_le weight], hashes leaves and internal nodes with XxHash128 into MerkleHash(hi, lo), and renders roots as lowercase hi[16] + lo[16] hex.",
+  "algorithm": "ZSetMerkle.root",
+  "hash": "XxHash128 via System.IO.Hashing.XxHash128; MerkleHash reads digest bytes as lo=uint64_le(bytes[0..7]), hi=uint64_le(bytes[8..15]) and renders hi then lo.",
+  "leafEncoding": "uint32_le key byte length, raw UTF-8 key bytes, int64_le signed weight",
+  "ordering": "ascending lexicographic order over raw encoded key bytes, not culture-sensitive string comparison",
+  "vectors": [
+    {
+      "name": "empty",
+      "entries": [],
+      "root": "7f498d4624c30160d8984701d306aa99"
+    },
+    {
+      "name": "singleton-ascii",
+      "entries": [
+        { "key": "a", "weight": 1 }
+      ],
+      "root": "4283b95b5ff11f1ecfc840240b884da4"
+    },
+    {
+      "name": "multi-signed-net",
+      "entries": [
+        { "key": "z-002", "weight": 1 },
+        { "key": "z-005", "weight": 2 },
+        { "key": "z-005", "weight": -2 },
+        { "key": "z-003", "weight": -3 }
+      ],
+      "root": "c3e434ea00f34c29fa1ac852a7212b1b"
+    },
+    {
+      "name": "non-ascii-ordinal-bytes",
+      "entries": [
+        { "key": "é", "weight": 1 },
+        { "key": "e", "weight": 2 },
+        { "key": "Ω", "weight": -4 },
+        { "key": "中", "weight": 7 }
+      ],
+      "root": "06a104fe8b7a53a323eb23760bfe3e9a"
+    },
+    {
+      "name": "order-independence-forward",
+      "entries": [
+        { "key": "b", "weight": 2 },
+        { "key": "a", "weight": 1 },
+        { "key": "c", "weight": -1 }
+      ],
+      "root": "77ccbf36f76b4e46bd8575fd93131ddd"
+    },
+    {
+      "name": "order-independence-reverse",
+      "entries": [
+        { "key": "c", "weight": -1 },
+        { "key": "a", "weight": 1 },
+        { "key": "b", "weight": 2 }
+      ],
+      "root": "77ccbf36f76b4e46bd8575fd93131ddd"
+    }
+  ],
+  "laws": {
+    "determinism": "same net Z-set and same key encoder produce the same root",
+    "retraction": "entries whose signed weights sum to zero are absent from the support and do not affect the root",
+    "orderIndependence": "input order does not affect the root; canonical leaf order is by encoded key bytes",
+    "nonAsciiOrdering": "non-ASCII keys are ordered by UTF-8 bytes for the Merkle leaf order"
+  }
+}

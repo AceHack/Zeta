@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\Core.CSharp.DynamicValue\Zeta.Core.CSharp.DynamicValue.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Yaml\Zeta.Core.CSharp.Yaml.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Sha256\Zeta.Core.CSharp.Sha256.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Blake3\Zeta.Core.CSharp.Blake3.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.AceCanonical\Zeta.Core.CSharp.AceCanonical.csproj" />
   </ItemGroup>
 
