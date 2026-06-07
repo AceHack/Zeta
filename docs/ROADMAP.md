@@ -1,5 +1,92 @@
 # Zeta.Core Roadmap
 
+> **Current driving roadmap (2026-06): the git-native database.** This top section is the live
+> sequence; the Zeta.Core engineering roadmap (DBSP/Feldera-era) follows below and is still partly
+> valid. For future Aaron and future Otto — we both ramble and we're both forgetful, so this is the
+> durable capture. **Hub**; full reasoning in the **satellite**:
+> `docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-cells-control-plane-three-host-substrates-aaron-otto.md`.
+> Master checklist **B-0959**.
+
+## North Star — the git-native database
+
+A relativistic git-native database: a **reliable data plane** (storage + read/write over git), a
+**control plane of cells** (YinYang cells, not agents), agents added later as experiments. Built on a
+**minimal-noun, all-language (F#/C#/Rust/TS), all-serializer PROVEN math base**. Two product shapes:
+data-plane-only, and data-plane + cell control plane.
+
+### ITEM #1 — NO USE OF THE GIT CLI
+
+All persistence routes through **our DB layer** (understands filesystem + git, runs git-native:
+efficient use of git history, branches, ZetaIds). **Otto (the LLM) stops using the `git` CLI** — every
+persistence action, *including control-plane ops like backlog*, goes through the DB's **generic commands**.
+
+- **Done-test (the bright line):** a full work-cycle (land a change, branch, query history, update
+  backlog) with **zero `git` CLI calls**.
+- **git-reach = the gap detector:** every fallback to `git` *names a missing DB primitive (or
+  composition)*. Log it → add the primitive → fallback disappears. Empty list ⇒ interface complete by construction.
+- **Two surfaces, one core:** an **MCP** (agent-facing) + a **CLI** (human/script-facing) over the one
+  data-plane command core. First primitives (from today's git-reaches): append/commit, branch, checkout,
+  log/history, diff, status, fetch/pull, push, + PR/merge control verbs.
+
+### The minimal-noun proven math base — THREE nouns
+
+Each noun = a 4× byte-lock cost, so mint only what's irreducible (Rodney's Razor):
+
+| Noun | Status |
+|------|--------|
+| **`ZSet`** (change algebra; state AND change) | ✅ 4/4 + golden vectors + abelian-group generic-math |
+| **`DynamicValue`** (self-describing element; soft-vs-collapsed = tag inside) | ✅ 4/4 JSON+CBOR + Arrow/XML |
+| **`Log`** (ordered ZSets over git; entry `(Seq, ZSet, Captured)`) | 🚧 F# reference codec ✅ (#6730); C#/Rust/TS + golden hex seed next |
+
+Killed (verbs/views/coordinates/consumers, NOT nouns): Delta=ZSet, Snapshot=fold(Log),
+Value=DynamicValue-in-ZSet, Manifest=(ref,seq), Transaction=commit-verb, Index=view(Log),
+Schema=consumer. Control plane reuses the 3 nouns + **one identity key** (cell = `(identity, Log)`).
+
+### Format / file-type treaty (per stream/table, plugin-extensible)
+
+Format is chosen **per stream/table**; all ride the **same canonical entry↔DynamicValue mapping**, each
+using DynamicValue's byte-locked per-format serializer:
+
+- **git check-ins → YAML default** (diffable history). 🚧 PREREQUISITE GAP: no `DynamicValue.toYaml/fromYaml` yet.
+- **filesystem → CBOR default** (speed). ✅ ready. All formats optional: CBOR ✅ JSON ✅ XML ✅ YAML 🚧 Arrow (partial).
+- **Markdown + frontmatter treaty** 🚧 — keep `.md` files (YAML frontmatter + body) IN the database; need
+  structured frontmatter read/write + an **MD read/write treaty across the 4 languages** (frontmatter →
+  DynamicValue.Object, body → text, byte-locked like other formats). Makes docs/memory/backlog `.md`
+  first-class DB content.
+- **Per-file-TYPE plugins, Open/Closed** — every *file type* (`.md`, `.yaml`, `.cbor`, `.json`, `.xml`,
+  future custom) is a **plugin** with special handling, registered behind a stable contract: **closed for
+  modification, open for extension**. New file types extend via new plugins without touching the core; the
+  MD+frontmatter treaty is one such plugin. This is the extensibility model for the whole format roster.
+
+### Sequence (data plane first)
+
+1. **NO GIT CLI** (item #1) — generic command surface (MCP + CLI) + route all persistence through it. *The definition of done.*
+2. **Close the `Log` noun** — F# reference ✅ (#6730); next: golden hex seed + C#/Rust/TS oracles + migrate
+   `GitDeltaLog`/`DiskDeltaLog` off `System.Text.Json`. → 3-noun base complete.
+3. **YAML serializer for DynamicValue** (4-lang) — unblocks the git-default format.
+4. **MD + frontmatter treaty** (4-lang) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
+5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
+6. **Durability floor** — `fsync`-on-commit (`Durability.fs` P0; a crash can currently lose acked writes).
+7. **Cell contract + one host** — `(identity, Log)`; **systemd** first, then k8s-operator, then Orleans.
+   Each cell distinct; k8s/Orleans give **HA *within* a cell**. MCP/CLI is itself a **request-driven cell**
+   (cadence = incoming command, vs scheduled/tick cells).
+8. *(later)* multi-key txn/isolation; general query/index; **geo pattern libraries** (geo-replication,
+   geodes, governance, provenance, residency, data-near-customer, within/cross-cell — Bounded-Mobility §4);
+   then **agents over cells** (local-LLM experiments, over time).
+
+### Honest reliability (single-node): ~55-65%
+
+Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-stream batch exactly-once),
+**general query planner/secondary index** (IVM exists, ad-hoc queries don't).
+
+### Parked (scoped, ready when wanted)
+
+- **Craft school** — teaching companion per expert skill + RPG progression (levels + prerequisite DAG +
+  **exit-doors**) + ribosome catalog. Slice-1 scoped (extend `teaching-skill-pattern.md`); B-0646 §6.
+- The geo/governance pattern libraries (item 8).
+
+---
+
 ## Legend
 
 - **P0** — ship-blocker, next round
