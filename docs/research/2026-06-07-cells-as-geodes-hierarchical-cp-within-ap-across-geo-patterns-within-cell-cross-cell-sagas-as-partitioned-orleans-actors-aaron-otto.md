@@ -67,7 +67,30 @@ Aaron worked the standard global-topology patterns against the cell boundary. Ma
 > different orders arrive at the same result (e.g. our uncertainty-reduction proof over SoftValue). **This
 > should be our default.**"*
 
-Cross-cell coordination is **not serialized-by-default.** There are two modes, and the cheap one leads:
+Cross-cell coordination is **not serialized-by-default.** There are two modes, and the cheap one leads.
+
+### The decision criterion — a DU either way; the transition function decides the mode
+
+> Aaron (2026-06-07): *"both can be represented as a DU for cross-cell, but it matters whether the DU
+> state is a commutative view over the two independent cells or needs coordination for transitions. If
+> transitions are calculatable by both just on their own stream plus the other's, then no coordination
+> needed."*
+
+A cross-cell workflow is a **DU in both modes** — what differs is the **transition function**. The test:
+
+> **Can each cell compute every DU transition independently, from (its own stream + the other cell's
+> stream)?**
+>
+> - **YES → the DU state is a *commutative view* over the two independent cells → NO coordination** (§4a,
+>   the default). Both cells fold the same two streams and *provably* arrive at the same DU state without
+>   talking — the transition is a deterministic function `f(streamA, streamB)` either side can evaluate.
+>   This is confluence (CALM): a transition that is a pure function of both streams is order-independent.
+> - **NO → transitions need coordination** (§4b, the fallback). A transition that requires a *once-only*
+>   decision or a global order (cannot be derived independently from the two streams) needs the serialized
+>   Saga — pay the bottleneck only here.
+
+So the mode is not a guess: it falls out of the DU's transition function. If you can write the transition
+as `f(ownStream, otherStream)` computable by both, you have your license to skip the bus.
 
 ### 4a. DEFAULT — CRDT / commutative two-actor merge (NO serialization, fully AP)
 
