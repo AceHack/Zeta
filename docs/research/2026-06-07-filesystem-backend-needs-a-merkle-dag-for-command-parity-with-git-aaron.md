@@ -174,6 +174,33 @@ streams by Z-set union — and it's the substrate for the **geo-replicated / any
 (independent edge replicas reconcile without a shared origin). "git-compatible but better": merge is
 ancestry-free.
 
+## The merge WIRE PROTOCOL — request = your fs metadata, response = streamed missing content (Aaron, 2026-06-07)
+
+> Aaron: *"the merge request could be your fs metadata, and their response is a streaming response of missing
+> content."*
+
+The network form of the ancestry-free merge, and content-addressing makes it trivial:
+
+```
+1. requester → responder:  fs METADATA  (the manifest: path→hash links + the set/closure of content hashes
+                                          I have, or my root + a reachable-set summary). Compact — HASHES, not content.
+2. responder:              set-diff against its own store → the nodes the requester LACKS
+3. responder → requester:  a STREAM of just the missing content nodes (pipelined, seekable — Jumprope)
+4. requester:              content-union the received nodes + resolve path collisions → the merged branch
+```
+
+"What's missing" is a **set-difference of content hashes** — no 3-way diff, no merge-base, no ancestor
+(per the ancestry-free property above). You transfer **only the content the other side doesn't already
+have** (deduped by hash globally), so syncing two large filesystems moves minimal bytes. The manifest can
+itself be a content-addressed object (a `DagFs` tree / a hash list / a reachability summary), so the request
+is "here's my root + what I can reach," and the response streams the closure of the missing nodes.
+
+This is the standard CAS-sync shape, which we adopt rather than reinvent: **rsync** (rolling-hash have-list →
+deltas), **git smart protocol** (want/have negotiation → packfile stream), **IPFS Bitswap** (want-list →
+blocks), **Dat/hypercore**, **BitTorrent** (have-bitfield → pieces). Transport rides the bus / CloudEvents
+envelope; for big blobs the streamed nodes are **Jumprope** chunks (seekable, resumable). It's also the
+sync mechanism for the **geo-replicated / anygit edge-replica** vision and the cross-cell AP reconcile.
+
 ## Merging two ZetaFS + folder name-uniqueness (Aaron, 2026-06-07)
 
 > Aaron: *"since we have content-based addressing, if we have two single-file ZetaFS we can easily merge
