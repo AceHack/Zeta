@@ -93,7 +93,36 @@ needs a lossless flat projection of it`. This is the down-direction of the inver
 *temporally*: a write is admissible only when its backward projection to every still-living reader is
 lossless (or no such reader exists). It's a correctness barrier, not a policy convenience — emitting
 richer-only data during the window would owe a lossy down-projection to a flat reader and corrupt it.
-(Mechanizable: track the window/contract state; gate expand-into writes on "no flat reader remains".)
+**LANDED:** `src/Core/EvolutionWindow.fs` mechanizes exactly this — `mayExpandInto`/`guardExpandInto` over a
+live-reader set; `readerLeaves` = contract.
+
+**Reduction-side complement — the temporary GARBAGE DUMP for lossy removals (Aaron 2026-06-07).** The
+expand-into gate covers the *expansion* side; reduction (a forward projection that REMOVES a relation) is
+the dual, and it's where the lossy/non-invertible row of the taxonomy gets its concrete mechanism:
+
+> *"when a forward projection removes a relation then you need a temporary garbage dump on the new schema to
+> hold the lossy data in case a rollback is needed; it can be dropped after full migration including
+> cleaning up the old schema."*
+
+A `removeField`/relation-drop loses the removed data, so its down-migration can only restore a default
+(lossy / "names the loss" — see `removeFieldMigration`). To make the removal **rollback-safe during the
+window**, **stash the removed data in a temporary garbage dump on the new schema** instead of discarding it:
+
+```
+forward (reduce):  remove relation R  →  move R's data into the dump (don't discard)
+rollback:          restore R from the dump  →  LOSSLESS rollback (not just a default)
+GC the dump:       only after FULL migration + old-schema cleanup (the rollback horizon / contract-complete)
+```
+
+This is the taxonomy's *"lossy = invertible only if shadow/history is retained"* row made concrete: **the
+dump IS the retained shadow.** It upgrades a lossy removal to an effectively-lossless rollback *for the
+duration of the window*, then GCs once rollback is no longer possible/needed — the **same contract-complete
+horizon** the `EvolutionWindow` already tracks (so dump-GC and expand-into-enable fire at the same gate).
+Cheap on the COW/content-addressed store (the dump is content-addressed side state, dedup'd, dropped by
+forgetting a root). Implementation sketch: a `removeFieldMigration` variant that stashes the removed value
+under a reserved dump key and whose `Down` restores from the dump (real value, not default) while the dump
+lives — turning the only non-invertible primitive op into a window-scoped lossless one. Together: **expand
+is gated on contract; reduce is made reversible by a contract-scoped dump — full bidirectional safety.**
 
 For zero-downtime rollback of destructive DDL you **retain shadow state** (old column/table/translation
 log/tombstones/derivable indexes) until the **rollback horizon** expires. Keeper: *DDL becomes stream

@@ -41,6 +41,14 @@ algebra + forward/backward compat, 8 tests) into the full capability Amara + Aar
    a lossless flat projection of it`. Mechanizable: track window/contract state, gate expand-into writes.
    A correctness barrier, not policy. Full: the Evolution research doc §1.
 
+1c. **Reduction-side garbage dump for lossy removals (Aaron 2026-06-07).** When a forward projection
+   REMOVES a relation, stash the removed data in a TEMPORARY garbage dump on the new schema so rollback is
+   LOSSLESS (restore from the dump, not a default); GC the dump only after full migration + old-schema
+   cleanup (the rollback horizon = contract-complete, the same gate EvolutionWindow tracks). This is the
+   taxonomy's "lossy = invertible iff shadow retained" made concrete — the dump IS the shadow. Build: a
+   removeFieldMigration variant that stashes the removed value + Down restores from the dump while it lives.
+   LANDED so far: `src/Core/EvolutionWindow.fs` (the expansion-side expand-into gate, 5 tests).
+
 2. **Parallel production experiment-timelines + continual merge contract.** Many experiments forked from
    `main`, each with full code+data+schema+side-effect-sandbox freedom, governed by an `ExperimentContract`
    (baseMainRoot/experimentRoot/code/data/schema/mainToExperimentMerge/experimentToMainProjection/
