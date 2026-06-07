@@ -151,6 +151,29 @@ This unifies the whole stack: a **branch = a Merkle root = a COW version = an Ev
 DAG. `CasStore` swaps a *row's* content address; a *branch* swaps the *whole tree's* root — same CAS idea at
 two granularities.
 
+## Merge is ANCESTRY-FREE — works across independent repos, not just branches (Aaron, 2026-06-07)
+
+> Aaron: *"so you can merge two independent streams / git repos AND within a branch on the same git repo."*
+
+Yes — at **both scopes**, with the **same `DagFs.merge`**, because content addresses are **global and
+history-independent**:
+
+- **Within one repo** — merge two branches (two roots sharing history).
+- **Across independent repos / streams** — merge two roots with **no common ancestor** at all.
+
+Both work identically: a content node's hash is the same regardless of which repo/stream produced it, so the
+content union dedups across *strangers* (identical content in two never-connected repos collapses to one
+node), and only the path→content bindings resolve.
+
+**This is a property git itself does NOT have.** Git's merge is a **3-way merge requiring a common ancestor
+(merge-base)**; you cannot cleanly merge two repos with unrelated histories. Content-addressed merge needs
+**no merge-base** — *any* two trees merge (content union + per-branch-path resolve). Two strangers'
+filesystems merge as easily as two branches of one. This is the same reason **CRDT merge** needs no
+coordination/ancestry (commutative + content-addressed) and why **DBSP** can merge two independent event
+streams by Z-set union — and it's the substrate for the **geo-replicated / anygit edge-replica** vision
+(independent edge replicas reconcile without a shared origin). "git-compatible but better": merge is
+ancestry-free.
+
 ## Merging two ZetaFS + folder name-uniqueness (Aaron, 2026-06-07)
 
 > Aaron: *"since we have content-based addressing, if we have two single-file ZetaFS we can easily merge
