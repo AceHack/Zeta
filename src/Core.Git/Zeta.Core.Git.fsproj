@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Compile Include="GitDeltaLog.fs" />
+    <Compile Include="GitCommand.fs" />
     <Compile Include="GitSnapshotStore.fs" />
   </ItemGroup>
 
