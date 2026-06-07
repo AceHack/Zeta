@@ -169,6 +169,28 @@ be subpoenaed for data you don't hold" is precisely the lightcone-local stance �
 So the manifesto reads: **reversible by default; forgetting is a deliberate, consented, energy-costing,
 lightcone-LOCAL act — and the honest privacy guarantee is non-radiation, not global erasure.**
 
+**The privacy budget makes lightcone-local erasure PRACTICALLY complete (Aaron, 2026-06-07).** "Global
+deletion is impossible" sounds like a defeat, but it isn't — because the **privacy budget keeps information
+from ever entering most other lightcones in the first place.**
+
+> Aaron: *"Our privacy budget can keep information from ever making it into most other light cones, so when
+> you erase it almost no traveler knows it except the universe itself."*
+
+If the budget bounds radiation **up front** (the leakage never reaches other observers), then erasing it
+from your lightcone means **almost no accessible traveler ever held it** — the only "keeper" left is **the
+universe itself** (the CPT-conserved microstate), which is **not a reachable adversary** (you cannot
+subpoena the universe's microstate; the radiated correlations are thermalized beyond practical recovery).
+So the order matters: **prevent-radiation (privacy budget) → then erase = effectively-complete deletion for
+every traveler that matters.** The impossibility is only against an omniscient universe-scale observer that
+does not practically exist.
+
+This makes the design **proactive, not reactive**: privacy is spent as a **budget that caps what enters
+other lightcones** (differential-privacy / thermal-forgetting budget — Amara; the `.zc` privacy transform;
+encryption + never-decrypt-off-device + local-only), so that later erasure is real *for travelers*.
+"Right to deletion" becomes deliverable in the only frame that matters — the frame of reachable observers —
+precisely because the budget kept the radiation from leaving in the first place. The universe knows; no
+traveler does.
+
 (Caveat, kept honest: "if physics is right" + "ultimately." In practice you cannot track the universe's
 microstate, so the second law, decoherence, and practical irreversibility stand — this is the *in-principle*
 floor, not a buildable universal decompressor. It says the residual is never *fundamentally* random, only
