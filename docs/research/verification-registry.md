@@ -26,6 +26,32 @@ because <one-line>.`
 
 ---
 
+## `Zeta.ChildFloor.denied_never_executed` *(child-floor / inspect-before-execute invariant)*
+
+- **Artifact.** `tools/lean4/Safety/ChildFloor.lean` (Lean 4, pure core — NO Mathlib;
+  `denied_never_executed`, `executed_admit`). Machine-checked + axiom-audited (axioms
+  `{propext, Quot.sound}` only — no `sorryAx`, no `Classical.choice`) in `lean-proof.yml`.
+  Authored 2026-06-07. BP-16 cross-check: `tests/Tests.FSharp/Formal/ChildFloorCrossVerify.Tests.fs`
+  (FsCheck over the real `SubstrateEffectHandler`).
+- **Source anchors.** Inspect-before-execute / object-capability discipline; `source ≠
+  authorization` (`.claude/rules/no-directives.md`). Soraya-routed (Lean over TLA+:
+  control-flow reachability over recursion → structural induction, not interleavings).
+- **Claim.** Model the effect-execution gate (`Effects.fs`/`SubstrateHandler.fs`): `executed
+  policy fuel t` returns the effect-ids that reach execution; an id is recorded ONLY in an
+  `admit` branch. Theorem: `policy id = deny ⇒ id ∉ executed policy fuel t`, for ANY policy,
+  ANY effect tree, ANY fuel — i.e. a DENIED effect is never executed at ANY `RunWork` depth.
+  An Agent cannot get a gated/child-floor-class effect executed by *proposing* it.
+- **Fidelity scope.** Proves the structural invariant over the modelled gate+recursion; fuel =
+  the `maxWorkDepth` knob, so `∀ fuel` = "at any depth" incl. unbounded. The Lean model's
+  fidelity to the shipped F# is guarded by the FsCheck cross-check (a counterexample there ⇒
+  the Lean model drifted from `executeOne`/`gateAndExecute`). **NOT claimed:** that any
+  particular deployed `policy` correctly classifies the gated classes — the proof is for ANY
+  policy; classifying child-floor classes is the policy author's obligation.
+- **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
+  machine-checked, sorry-free (axioms `{propext, Quot.sound}`).
+
+---
+
 ## `Privacy.IdentityForcesPrivacy.distinctness_forces_private` *(privacy-from-identity necessity)*
 
 - **Artifact.** `tools/lean4/Privacy/IdentityForcesPrivacy.lean`
