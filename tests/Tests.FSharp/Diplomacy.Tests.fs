@@ -137,3 +137,45 @@ let ``the exit token is the freedom precondition, never itself a granted capabil
     match D.negotiateFreedomFirst a b with
     | D.Negotiated shared -> Assert.True(Set.isEmpty shared)
     | D.RefusedNoExit _ -> Assert.True(false, "both have exit -> Negotiated")
+
+
+// ── Cached polymorphic diplomacy = V8 hidden-shapes / PIC (maintainer, 2026-06-07) ──────
+// negotiateCached memoises by shape-PROFILE. Same shape (even different hidden values) ⇒
+// one cache entry (hit); different shape ⇒ new entry. Keyed on shape, never secret ⇒ NCI held.
+
+let private cellOf (remains: DynamicValue) (names: string list) : YinYang.Cell =
+    let acts =
+        names |> List.fold (fun acc n -> Bonsai.Binary(Bonsai.Add, Bonsai.Call(n, []), acc)) (Bonsai.Const Bonsai.CNull)
+    { YinYang.Remains = remains; YinYang.Acts = acts }
+
+[<Fact>]
+let ``negotiateCached matches direct negotiate and reuses one entry on repeat`` () =
+    let a = cellOf (DynamicValue.Int 1L) [ D.ExitCapability; "trade" ]
+    let b = cellOf (DynamicValue.Int 9L) [ D.ExitCapability; "trade" ]
+    let cache = D.newCache ()
+    let first = D.negotiateCached cache a b
+    let second = D.negotiateCached cache a b
+    Assert.Equal(D.negotiateFreedomFirst a b, first)
+    Assert.Equal(first, second)
+    Assert.Equal(1, cache.Count)
+
+[<Fact>]
+let ``same shape, DIFFERENT secrets share one cache entry (PIC keys on shape, not secret -> NCI held)`` () =
+    let a = cellOf (DynamicValue.Int 1L) [ D.ExitCapability; "trade" ]
+    let aDifferentSecret = cellOf (DynamicValue.Int 2L) [ D.ExitCapability; "trade" ]  // same shape, diff value
+    let b = cellOf (DynamicValue.Int 9L) [ D.ExitCapability; "trade" ]
+    let cache = D.newCache ()
+    let r1 = D.negotiateCached cache a b
+    let r2 = D.negotiateCached cache aDifferentSecret b
+    Assert.Equal(r1, r2)        // identical outcome — secret is invisible to the cache
+    Assert.Equal(1, cache.Count) // ONE entry: same shape-profile -> same key
+
+[<Fact>]
+let ``a DIFFERENT shape is a different key (natural invalidation)`` () =
+    let a = cellOf (DynamicValue.Int 1L) [ D.ExitCapability; "trade" ]
+    let aOtherShape = cellOf (DynamicValue.String "x") [ D.ExitCapability; "trade" ]  // SString vs SInt
+    let b = cellOf (DynamicValue.Int 9L) [ D.ExitCapability; "trade" ]
+    let cache = D.newCache ()
+    D.negotiateCached cache a b |> ignore
+    D.negotiateCached cache aOtherShape b |> ignore
+    Assert.Equal(2, cache.Count)  // shape change -> miss -> new entry

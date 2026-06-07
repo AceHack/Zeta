@@ -116,3 +116,33 @@ module Diplomacy =
         let bExit = hasExit b
         if aExit && bExit then Negotiated(Set.remove ExitCapability (negotiate a b))
         else RefusedNoExit(aExit, bExit)
+
+    // ── Cached polymorphic diplomacy = V8 hidden-shapes / PIC (maintainer, 2026-06-07) ──────
+    //
+    // "Cached polymorphic diplomacy over time" is the V8 hidden-shapes optimization
+    // (polymorphic inline caching keyed by SHAPE) applied to the freedom-first handshake. Two
+    // counterparts with the same shape-profile share ONE cache entry — so a repeated handshake
+    // is a cache hit, not a re-derivation (polymorphic: one site, many shapes). A shape change
+    // is a different key (natural invalidation). The cache keys on the `Profile` (shape +
+    // capability NAMES) — never on hidden values — so the NCI shape-only guarantee is preserved:
+    // same shape, different secrets ⇒ same cache entry ⇒ no side channel. (`shapeOf` = the
+    // hidden class/map; this Dictionary = the polymorphic inline cache.)
+
+    /// A polymorphic inline cache for freedom-first negotiation outcomes, keyed by the pair of
+    /// shape-profiles. Caller-owned (per relationship/site); for the durable "over an infinite
+    /// stream" form, fold an agreement stream (`GitDeltaLog`) into one of these.
+    type NegotiationCache = System.Collections.Generic.Dictionary<Profile * Profile, NegotiationOutcome>
+
+    /// A fresh, empty negotiation cache.
+    let newCache () : NegotiationCache = System.Collections.Generic.Dictionary()
+
+    /// **Cached freedom-first negotiate** — memoise the outcome by the (a, b) shape-profile pair.
+    /// Same shapes (even with different hidden values) ⇒ cache hit; different shape ⇒ recompute.
+    let negotiateCached (cache: NegotiationCache) (a: YinYang.Cell) (b: YinYang.Cell) : NegotiationOutcome =
+        let key = (describe a, describe b)
+        match cache.TryGetValue key with
+        | true, cached -> cached
+        | _ ->
+            let outcome = negotiateFreedomFirst a b
+            cache.[key] <- outcome
+            outcome
