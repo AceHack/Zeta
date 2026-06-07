@@ -109,6 +109,11 @@ with a ⭐ below and add a row there.
   Rompf 2011, O(log n) concat). The structural-sharing/COW mechanism under
   `ContentStore`/`DagFs` (`ImmutableDictionary` = HAMT) + `ZSet` (`ImmutableArray`).
   See `docs/research/ip-questionable/2026-06-07-zach-allaun-functional-persistent-vectors-...md`.
+- **Hitchhiker trees — David Greenberg** ⭐ — functional (path-copying) fractal /
+  B+ tree with per-node write buffers + flush control, optimized for remote
+  storage (datacrypt). The IO-optimized SORTED immutable index for the COW store;
+  complements HAMT (keyed) + Jumprope (blobs). Lineage: B+ → fractal (Bε/Tokutek)
+  → path-copying. See `docs/research/ip-questionable/2026-06-07-david-greenberg-hitchhiker-trees-...md`.
 - **FRP taxonomy — Evan Czaplicki / Elm** — *Controlling Time and Space* (FRP
   formulations); static signal graph → time-travel/hot-swap = our COW/DST
   time-travel; bounded-state vs infinite-lookback = our retraction discipline.
