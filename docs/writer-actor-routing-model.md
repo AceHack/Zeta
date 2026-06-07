@@ -58,28 +58,39 @@ discipline as the event store. Continuity and action separated without severing.
 
 ## The corrected ontology — one layer per concern (Amara ↔ Aaron, 2026-06-06)
 
+> **Terminology update (Aaron + Max + Mika, 2026-06-07): "Actor" → "Cell".** The CS term
+> *actor* is overloaded (Hollywood; the 1970s academic model) and, worse, faintly
+> anthropomorphic — and this layer has **no intelligence**, so it should carry **no
+> human-like vibe**. The chosen word is **Cell**: an ephemeral, bus-addressable, deterministic
+> container of *serialized state + simple code* — exactly the existing **`YinYang.Cell`** (holds
+> `DynamicValue` / `SoftValue` / `Bonsai` in its `Remains`/`Acts`). Mental model: a giant
+> **spreadsheet** — each Cell a state container, Cells reference each other through the bus like
+> Excel formulas (which is *why* columnar/Arrow + SSAS-Tabular-style **semantic models** fit so
+> naturally). So below, read **Cell** for "Actor". `Agent` (intelligent, persistent persona) vs
+> `Cell` (dumb, ephemeral state container) is the clean split.
+
 Sharper than "persona vs actor": each concern gets exactly one layer, and **only the
-agent carries identity**. Actors were still being given too much ontological weight.
+agent carries identity**. Cells (ex-"actors") were still being given too much ontological weight.
 
 | Layer | Owns | Is NOT |
 |---|---|---|
 | **Agent** | identity — persists, owns continuity, carries memory/rights/obligations | not an execution surface |
-| **Actor** | address — a bus-addressed execution endpoint; a serialized turn lane / runtime body | **not "who"; not identity** |
+| **Cell** (ex-"Actor") | address — a bus-addressable container of serialized state + simple deterministic code; a turn lane / runtime body | **not "who"; not identity; no intelligence** |
 | **Saga** | state — the lawful state machine for one task/phase | not identity; must not trap an agent |
 | **DU/ADT** | laws — the valid transitions of that state | not state itself |
 | **Delta log** | memory — the append-only record of what happened | not the live state (that's the fold) |
 | **Bus address** | routing — where to send messages (agent ref ⊕ surface/loop ⊕ instance ⊕ topology) | does not confer selfhood/personhood |
 | **ZetaID** | the cross-graph pointer — names nodes across the whole graph | not the activation |
 
-> The actor is not *who*. The actor is *where/how this agent is acting right now* —
-> a reachable body / hand / mouth / tool. One agent spawns many actors (cli fg, cli
+> The Cell is not *who*. The Cell is *where/how this agent is acting right now* —
+> a reachable body / hand / mouth / tool. One agent spawns many cells (cli fg, cli
 > bg, desktop, voice, cluster worker); each has a bus address; **none of them is the agent.**
 
 **This is the YinYang split at the identity layer.** Agent = `Remains` (yin, what
-persists); Actor = `Acts` (yang, what acts). The operational rule above ("don't mutate
-the persona; ask an actor to act; persist the result back into what remains") is exactly
+persists); Cell-activity = `Acts` (yang, what acts). The operational rule above ("don't mutate
+the persona; ask a cell to act; persist the result back into what remains") is exactly
 the `Remains`/`Acts` discipline (`src/Core/YinYang.fs`) applied to identity — continuity
-and motion separated without severing.
+and motion separated without severing. (The `YinYang.Cell` type *is* this Cell.)
 
 **Orleans grain = a serialized endpoint for one actor/saga lane — NOT an identity
 container.** The grain is a body, not a self.
