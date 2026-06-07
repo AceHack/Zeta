@@ -55,6 +55,31 @@ documented as a "known gap" in `src/Core.TypeScript/{g-set,bag}/golden-vectors.j
 > Accepts the higher churn (public-API change → `public-api-designer`/Ilyana review, all call sites) for
 > the cross-language-consistent end-state. NOT (b)'s internal string special-case.
 
+### Framing — DATABASE COLLATION SELECTION, not a CS comparer parameter (maintainer 2026-06-07)
+
+> *"we don't want to treat it like computer science on the parameters only — we want to treat it like
+> database collation selection: the same ability to select from many different ones, and we just ship with
+> a default, whatever is easiest to support on all 4 lang and common among db people."*
+
+The comparer-is-part-of-identity is a **collation**, modeled the way databases do it (SQL `COLLATE`,
+Postgres `COLLATE`, ICU locales) — NOT a raw `IComparer` knob exposed as CS plumbing:
+
+- **A catalog of named collations** the user selects from (like `utf8mb4_bin`, `*_ci`, ICU `und-x-icu`,
+  Postgres `C`/`ucs_basic`) — selectable, nameable, part of a value's identity.
+- **Ship one default**, chosen for two criteria: **(i) easiest to support identically across all 4 langs**
+  and **(ii) familiar to database people.** Both point to **binary / ordinal collation** (codepoint ≡
+  UTF-8 byte order) — DB people know it as "binary collation" (`*_bin` / `BINARY` / Postgres `C`); all four
+  oracles can produce byte/codepoint order natively (F# ordinal, C# `StringComparer.Ordinal`, TS UTF-16
+  code-unit*, Rust byte `Ord`). This is also exactly the culture-invariant rule's canonical collation. (*TS
+  UTF-16 vs UTF-8/codepoint for astral chars is the known caveat — the treaty picks codepoint/UTF-8 byte
+  order and every oracle conforms; see `.claude/rules/culture-invariant-by-default.md`.)
+- **Other collations are opt-in** entries in the catalog (case-insensitive, locale/ICU-aware) — present for
+  selection, never the silent default. Surfacing them is the "select from many" half; the binary default is
+  the "ships with a sensible one" half.
+
+So strategy (a)'s "explicit comparer param" is really **"select a collation (default = binary/ordinal)"** —
+the comparer carried as identity is the chosen collation. Name + model the API in DB-collation terms.
+
 ### Slice plan (sequenced; parallelizable across Vera/Lior/Otto)
 
 The comparer becomes part of each collection's *identity*, so the type must CARRY it (or take it on every
