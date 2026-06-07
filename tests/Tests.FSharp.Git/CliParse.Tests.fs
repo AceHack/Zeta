@@ -16,6 +16,17 @@ let ``parse maps the git-ref verbs`` () =
     Assert.Equal<Result<GitCommand, string>>(Ok GitCommand.Status, CliParse.parse [| "status" |])
 
 [<Fact>]
+let ``parse maps the network verbs with remote/branch defaults`` () =
+    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Push("origin", None)), CliParse.parse [| "push" |])
+    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Push("upstream", None)), CliParse.parse [| "push"; "upstream" |])
+    Assert.Equal<Result<GitCommand, string>>(
+        Ok(GitCommand.Push("origin", Some "main")),
+        CliParse.parse [| "push"; "origin"; "main" |]
+    )
+    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Fetch "origin"), CliParse.parse [| "fetch" |])
+    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Fetch "upstream"), CliParse.parse [| "fetch"; "upstream" |])
+
+[<Fact>]
 let ``parse errors on empty, bad count, and unknown verbs`` () =
     match CliParse.parse [||] with Error _ -> () | Ok o -> Assert.Fail(sprintf "expected usage error, got %A" o)
     match CliParse.parse [| "log"; "abc" |] with Error _ -> () | Ok o -> Assert.Fail(sprintf "expected count error, got %A" o)

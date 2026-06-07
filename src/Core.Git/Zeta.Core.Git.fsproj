@@ -18,9 +18,9 @@
 
   <ItemGroup>
     <Compile Include="GitDeltaLog.fs" />
+    <Compile Include="CredentialSource.fs" />
     <Compile Include="GitCommand.fs" />
     <Compile Include="CliParse.fs" />
-    <Compile Include="CredentialSource.fs" />
     <Compile Include="GitSnapshotStore.fs" />
   </ItemGroup>
 

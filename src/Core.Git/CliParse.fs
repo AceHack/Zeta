@@ -8,7 +8,8 @@ namespace Zeta.Core.Git
 module CliParse =
 
     let usage =
-        "usage: zeta <commit <msg> | log [n] | branch <name> | checkout <ref> | status>"
+        "usage: zeta <commit <msg> | log [n] | branch <name> | checkout <ref> | status | "
+        + "push [remote] [branch] | fetch [remote]>"
 
     let parse (argv: string[]) : Result<GitCommand, string> =
         match List.ofArray argv with
@@ -21,5 +22,12 @@ module CliParse =
         | [ "branch"; name ] -> Ok(GitCommand.Branch name)
         | [ "checkout"; refName ] -> Ok(GitCommand.Checkout refName)
         | [ "status" ] -> Ok GitCommand.Status
+        // push: remote defaults to origin, branch to current HEAD (None).
+        | [ "push" ] -> Ok(GitCommand.Push("origin", None))
+        | [ "push"; remote ] -> Ok(GitCommand.Push(remote, None))
+        | [ "push"; remote; branch ] -> Ok(GitCommand.Push(remote, Some branch))
+        // fetch: remote defaults to origin.
+        | [ "fetch" ] -> Ok(GitCommand.Fetch "origin")
+        | [ "fetch"; remote ] -> Ok(GitCommand.Fetch remote)
         | [] -> Error usage
         | other -> Error(sprintf "unknown command: '%s'\n%s" (String.concat " " other) usage)

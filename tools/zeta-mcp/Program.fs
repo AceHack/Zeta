@@ -37,6 +37,8 @@ let private toolList () : JsonArray =
     arr.Add(tool "zeta_branch" "Create a branch at the tip (replaces git branch)" [ "name", "string" ] [ "name" ])
     arr.Add(tool "zeta_checkout" "Switch the working tree (replaces git checkout)" [ "ref", "string" ] [ "ref" ])
     arr.Add(tool "zeta_commit" "Stage all + commit (replaces git commit)" [ "message", "string" ] [ "message" ])
+    arr.Add(tool "zeta_push" "Push a branch to a remote (replaces git push); creds via GH_TOKEN/GITHUB_TOKEN" [ "remote", "string"; "branch", "string" ] [])
+    arr.Add(tool "zeta_fetch" "Fetch from a remote (replaces git fetch); creds via GH_TOKEN/GITHUB_TOKEN" [ "remote", "string" ] [])
     arr
 
 let private argStr (args: JsonObject) (k: string) : string =
@@ -54,6 +56,13 @@ let private runTool (name: string) (args: JsonObject) : string =
         | "zeta_branch" -> Some(GitCommand.Branch(argStr args "name"))
         | "zeta_checkout" -> Some(GitCommand.Checkout(argStr args "ref"))
         | "zeta_commit" -> Some(GitCommand.Commit(argStr args "message"))
+        | "zeta_push" ->
+            let remote = match argStr args "remote" with "" -> "origin" | r -> r
+            let branch = match argStr args "branch" with "" -> None | b -> Some b
+            Some(GitCommand.Push(remote, branch))
+        | "zeta_fetch" ->
+            let remote = match argStr args "remote" with "" -> "origin" | r -> r
+            Some(GitCommand.Fetch remote)
         | _ -> None
     match cmd with
     | None -> sprintf "unknown tool: %s" name
@@ -61,15 +70,21 @@ let private runTool (name: string) (args: JsonObject) : string =
         match Repository.Discover(Environment.CurrentDirectory) with
         | null -> "not inside a git repository"
         | path ->
+            // Host-agnostic credentials for network verbs (GH_TOKEN/GITHUB_TOKEN); local verbs ignore it.
+            let credSource = Some(EnvTokenCredentialSource() :> CredentialSource)
             use repo = new Repository(path)
-            match GitCommand.run repo now c with
-            | Branched n -> sprintf "branched %s" n
-            | CheckedOut n -> sprintf "checked out %s" n
-            | Committed sha -> sprintf "committed %s" sha
-            | Logged es -> es |> Array.map (fun (s, m) -> sprintf "%s %s" (s.Substring(0, min 9 s.Length)) m) |> String.concat "\n"
-            | Statused(clean, pending) ->
-                if clean then "clean"
-                else sprintf "dirty (%d pending):\n%s" pending.Length (String.concat "\n" pending)
+            try
+                match GitCommand.run repo now credSource c with
+                | Branched n -> sprintf "branched %s" n
+                | CheckedOut n -> sprintf "checked out %s" n
+                | Committed sha -> sprintf "committed %s" sha
+                | Logged es -> es |> Array.map (fun (s, m) -> sprintf "%s %s" (s.Substring(0, min 9 s.Length)) m) |> String.concat "\n"
+                | Statused(clean, pending) ->
+                    if clean then "clean"
+                    else sprintf "dirty (%d pending):\n%s" pending.Length (String.concat "\n" pending)
+                | Pushed(remote, refspec) -> sprintf "pushed %s -> %s" refspec remote
+                | Fetched remote -> sprintf "fetched %s" remote
+            with ex -> sprintf "error: %s" ex.Message
 
 [<EntryPoint>]
 let main _ =
