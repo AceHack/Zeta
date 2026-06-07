@@ -103,6 +103,12 @@ with a ⭐ below and add a row there.
   See `docs/research/2026-06-07-jumprope-vokes-content-addressed-storage-skiplist-hash-prior-art-aaron.md`.
 - **Skip Lists / William Pugh** (1990) — probabilistic balanced structure; the
   Jumprope's hash-as-probability backbone.
+- **Patricia trees / Abstract interpretation — Sparta (Meta)** ⭐ — immutable
+  integer-keyed maps (Okasaki & Gill, *Fast Mergeable Integer Maps*) — the
+  int-keyed cousin of HAMT for `ZSet`/`IndexedZSet`/seq-keyed state; + lattice
+  fixed-point + **widening/narrowing** (Cousot & Cousot 1977) = the theory under
+  DBSP's fixpoint iteration (`RecursiveSemiNaive`), and Bourdoncle WTO loop
+  scheduling. See `docs/research/ip-questionable/2026-06-07-sparta-abstract-interpretation-...md`.
 - **Persistent collections — Bagwell / Hickey / Okasaki** ⭐ — HAMT / bitmap
   vector trie (Bagwell 2000–01), Clojure persistent vector/map/set (Hickey),
   *Purely Functional Data Structures* (Okasaki 1998); **RRB-trees** (Bagwell &
