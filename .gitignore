@@ -90,6 +90,13 @@ tools/tla/*.jar
 tools/tla/states/
 tools/tla/specs/states/
 
+# JVM fatal-error / replay dumps — the TLC `java` process writes these next to
+# its CWD (i.e. into tools/tla/specs/) when the JVM crashes mid-run. Forensic,
+# regenerated, NOT source — and must never land in the proof-lineage spec dir
+# (a `git add -A` once swept one in: hs_err_pid88237.log via PR #6722).
+hs_err_pid*.log
+replay_pid*.log
+
 # TLAPS proof fingerprint cache — written by tlapm next to the spec it
 # proves (run-tlaps.ts). Regenerated; not source.
 .tlacache/
