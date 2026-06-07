@@ -98,6 +98,36 @@ Ties: `SoftValue` (the soft/uncertain value type) · `Bayesian` / `BeliefConverg
 entropy/cross-entropy residual · prediction≡compression. The generative content node's `Generative` arm
 therefore carries an optional **uncertainty residual** (SoftValue), not just `{generator; seed; params}`.
 
+## Randomness is LENS-RELATIVE — "looks random" ≠ "is random" (Aaron, 2026-06-07)
+
+> Aaron: *"random data from one lens is not random from another — that's how decompression works — so not
+> all data that 'looks' random actually is."*
+
+Incompressibility is **observer/model/basis-relative, not absolute.** Data that looks random under one lens
+(e.g. the identity/raw-bytes lens) is **highly structured under another** (the generator's lens). That's
+*why decompression works at all*: the decompressor holds the **right lens** (the generator/codebook) that
+reveals the structure the raw bytes hid. Compression is therefore a **search for the lens** under which the
+data is sparse/structured — exactly transform coding (data sparse in the right Fourier/wavelet basis),
+reservoir computing (the explicit basis that linearizes the signal — see the Kirsanov capture), and the
+Mirror/Beacon discipline (two lenses on one content).
+
+Consequences that sharpen the prior sections:
+
+- **Most apparently-random data isn't Kolmogorov-random — it just lacks the right lens.** The honest
+  "incompressible" caveat is *relative to the lenses tried so far*, not an absolute verdict. A new lens
+  (generator/basis/oracle) can de-randomize data that "looked random."
+- **The Bayesian-uncertainty residual is lens-relative.** It's what remains after the **best lens found so
+  far**; switching lenses can shrink it. Uncertainty is not a property of the data alone but of the
+  (data, lens) pair — which is precisely `SoftValue` + the **Multi-Oracle Principle** (each oracle is a
+  lens; what's uncertain under one may be certain under another).
+- **True Kolmogorov-randomness** (incompressible under *every* lens) is the rare measure-theoretic limit,
+  not the common case. The substrate's job is to *find the lens*, falling back to materialized bytes only
+  when no known lens helps — and even then, a future lens might.
+
+This is Zeta's **relativistic** theme applied to compression: the same bytes are random or structured
+depending on the observer's lens, just as a value is soft or collapsed depending on the oracle. Finding the
+generator IS finding the lens.
+
 ## Honest scope (hype-peeled)
 
 The *pieces* exist (DST, Bonsai behavior-as-data, the Ace/Nucleus self-boot, content-addressing, `SoftValue`/
