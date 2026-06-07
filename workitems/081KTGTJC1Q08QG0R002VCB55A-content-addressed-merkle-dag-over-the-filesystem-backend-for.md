@@ -35,6 +35,20 @@ Full rationale + property-parity table + hash-strength caveat:
   the fs backend as on the git backend (the parity test: same command sequence → equivalent observable
   history/get/retract results on both backends).
 
+### Design refinement (Aaron 2026-06-07, cont.) — Merkle over Z-sets, closure-table DAG, single/multi-file
+
+- **Merkle leaves = retractable Z-set entries** `(element, weight)`, NOT opaque byte chunks → the
+  content-addressed node IS the differential structure; retraction = a weight-negating Z-set (native, no
+  special undo). Small delta → shared leaves → shared Merkle nodes (cheap incremental).
+- **DAG ancestry = a closure table** (ancestor/descendant/depth), itself a **Z-set of edges** → Z-sets all
+  the way down (leaves + structure), so the recursive/self-similar property (manifesto §9/§10) is free and
+  the same DBSP incremental-view machinery maintains the history graph.
+- **Two physical layouts, one logical structure** (pick per deployment, identical commands on top):
+  **single-file** (whole fs in ONE file, closure-table-over-Z-sets self-contained, SQLite-shaped + a VFS)
+  OR **multi-file** (ride the OS filesystem; dirs/files ARE nodes, git-loose-object-shaped). Mirrors git's
+  loose-vs-packfile duality. Both must pass the same backend-parity test.
+- Beacon add: closure table (Karwin, *SQL Antipatterns* 2010); single-file DB + VFS (SQLite).
+
 ## Open decision (Aaron's call — real, not a detail)
 
 **Hash strength.** `Merkle.fs` is XxHash128 (non-crypto: fast, dedup+history-safe, NOT tamper-proof). Git

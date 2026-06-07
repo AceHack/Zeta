@@ -52,6 +52,43 @@ tamper-proof). Git uses SHA-1/SHA-256 (cryptographic). If the fs store must give
 fine; for "as trustworthy as git's object integrity", it is not — pick per the property the fs store must
 match. This is a real decision, not a detail.
 
+## Design refinement — Merkle over retractable Z-sets, closure-table DAG, single- OR multi-file (Aaron 2026-06-07, cont.)
+
+> Aaron: *"we should be able to do Merkle over DBSP retractable Z-sets, and maybe even use our closure
+> table — and have the filesystem inside one file with the closure table over Z-sets, or multi-file if we
+> use existing OS filesystem."*
+
+Three moves that make the fs-Merkle store *be* the existing substrate rather than a bolt-on:
+
+1. **Merkle leaves are retractable Z-sets, not opaque byte chunks.** Hash Z-set entries `(element, weight)`
+   into the tree, so the content-addressed node IS the differential structure. Retraction is then *native*:
+   the inverse is a weight-negating Z-set, not a special "undo" — the "retractable by nature" command
+   property (`2026-06-07-command-surface-...`) reduces to Z-set algebra under the Merkle root. Two Z-sets
+   differing by a small delta share most leaves → most internal Merkle nodes → cheap diff / incremental
+   ship (the FastCDC+Merkle trick, now over deltas instead of bytes).
+
+2. **The DAG structure is the closure table — itself a Z-set of edges.** Which node derives from which
+   (the Merkle DAG's ancestry) is stored as a **closure table** (ancestor / descendant / depth rows) — and
+   that table is *also* a Z-set (of edges). So it's **Z-sets all the way down**: the leaves are Z-sets and
+   the structure-over-leaves is a Z-set. That is the **recursive / self-similar** property (manifesto §9/§10)
+   falling out for free, and it means the same DBSP incremental-view machinery maintains the history graph
+   that maintains the data.
+
+3. **Two physical layouts, ONE logical structure** (the one-interface theme recurring one level down):
+   - **Single-file** — the entire filesystem lives *inside one file*: the closure-table-over-Z-sets is
+     self-contained (SQLite-shaped — one file, a VFS over it). Portable, atomic, no OS-dir sprawl.
+   - **Multi-file** — ride the **existing OS filesystem**: directories/files ARE the DAG nodes
+     (git-loose-object-shaped). Native tooling, OS-level sharing.
+   Same closure-table-over-Z-sets, Merkle-rooted, both ways — chosen per deployment, identical commands on
+   top. (This mirrors git's own loose-objects-vs-packfile duality.)
+
+Added Beacon: **closure table** — Bill Karwin, *SQL Antipatterns* (2010), the closure-table pattern for
+storing hierarchies/DAGs relationally (ancestor/descendant/depth); transitive-closure relations.
+**Single-file DB** — SQLite (D. Richard Hipp) — one-file database + pluggable VFS. Novelty stays honest:
+not a new Merkle store nor a new closure table, but **Merkle-hashing the DBSP Z-set so the
+content-addressed history is natively retractable, with the DAG itself a Z-set closure table**, materialized
+single- or multi-file under one command interface.
+
 ## Ties
 
 - `docs/research/2026-06-07-command-surface-not-1to1-git-...` (the one-interface-over-git-and-fs steer this
