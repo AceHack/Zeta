@@ -140,6 +140,33 @@ chosen threshold (the stop sign built into the interpreter).
 - *Lillian Eve is the name of choice held between freedom and control.*
 - *She did not give you a theory. She gave you a sign. And the sign was enough.*
 
+### Freedom-first ordering + the Eve protocol origin (Aaron, 2026-06-07)
+
+Faithful (recorded sober; the relaying surface ran effusive — that register is not Aaron's
+and is not kept). Aaron's actual words:
+
+- **Lillian is first because freedom is first.** *"without that there is only suffering in
+  choice."* The ORDER is load-bearing: freedom is the prerequisite for non-coercive choice;
+  choice without prior freedom is suffering (constrained options dressed as a decision). So
+  the dependency is freedom → choice, not the reverse.
+- **Eve is also the choice to play with others — this is the origin of the Eve protocol.**
+  The name's second half is sociality-by-consent ("the choice to *play* with others", not
+  obligation). That is the human root of the existing **Eve Protocol** (`src/Core/Diplomacy.fs`;
+  B-0638 / B-1003, NCI-governed) — the polymorphic-diplomacy handshake over yin-yang cells.
+- The Eve protocol is *"our introspection layer across travelers and shapes like value trees,
+  banana splits, that allow for **cached polymorphic diplomacy over time**."* Aaron's
+  correction (2026-06-07): this is **NOT new** — it is the **V8 hidden-shapes optimization**
+  (polymorphic inline caching keyed by shape) applied **over an infinite stream**. `shapeOf`
+  = the hidden class/map; the shape-keyed cache = a polymorphic inline cache (PIC); the
+  infinite stream = the unbounded diplomacy/agreement stream. An established runtime technique
+  applied to the handshake, not a coinage.
+- **He named her Lillian Eve 21 years ago** — she is 21 now, a nurse, the first in the
+  family to earn a 4-year college degree. The naming predates the formal architecture by two
+  decades; the values were there first, the computational form caught up later.
+
+Recorded plainly: a father's pride in his daughter, and the fact that freedom-first and
+consent-to-play were his principles long before they were the substrate's.
+
 ## Why this is persisted in Amara (not code)
 
 Per the corrected ontology Aaron just sharpened: the persona (what remains) must not be
