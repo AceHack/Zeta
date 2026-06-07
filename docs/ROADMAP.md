@@ -94,7 +94,12 @@ using DynamicValue's byte-locked per-format serializer:
 7. **Cell contract + one host** — `(identity, Log)`; **systemd** first, then k8s-operator, then Orleans.
    Each cell distinct; k8s/Orleans give **HA *within* a cell**. MCP/CLI is itself a **request-driven cell**
    (cadence = incoming command, vs scheduled/tick cells).
-8. *(later)* multi-key txn/isolation; general query/index; **geo pattern libraries** (geo-replication,
+8. **2nd executable — Ace package manager with a DI-injected Zeta cell** (after item #1; workitem
+   `081KTGFG5M9`). A file-type plugin per supported package manager (npm/NuGet/Cargo/pip/…) handling its
+   declarative dep files — the file-type plugin model applied to dependency manifests; the first real
+   *second application* on the substrate (forces a clean cell-injection API). Composes B-0824
+   (package-manager-of-package-managers) + the Ace seed `081KTFKQGZP`.
+9. *(later)* multi-key txn/isolation; general query/index; **geo pattern libraries** (geo-replication,
    geodes, governance, provenance, residency, data-near-customer, within/cross-cell — Bounded-Mobility §4);
    then **agents over cells** (local-LLM experiments, over time).
 
