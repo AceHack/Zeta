@@ -70,3 +70,33 @@ let ``a fresh cell on an empty git repo is at its initial Remains`` () =
         let resumed = DurableSaga<DynamicValue, string>.ResumeAsync(log, stepFn, DynamicValue.Int 0L).Result
         resumed.State |> dvShould (DynamicValue.Int 0L)
         if resumed.AppliedSeq <> 0L then failwithf "expected AppliedSeq 0, got %d" resumed.AppliedSeq)
+
+
+// ── Soft-Remains cell on the git DB: persists + recovers the full DISTRIBUTION ──────────
+module SV = Zeta.Core.SoftValue
+
+let private stepSoftFn = DurableYinYang.stepSoft accumulate  // Acts = remains + input, no snap
+
+let private softShould (expected: (DynamicValue * float) list) (sv: SV.SoftValue) =
+    let norm xs = xs |> List.sortBy (fun (d, _) -> sprintf "%A" d)
+    let a = norm (SV.candidates sv)
+    let e = norm expected
+    if List.length a <> List.length e then failwithf "size: expected %A got %A" e a
+    List.iter2 (fun (d1, w1) (d2, w2) ->
+        if d1 <> d2 || abs (w1 - w2) > 1e-9 then failwithf "expected %A got %A" e a) a e
+
+[<Fact>]
+let ``soft cell persists + recovers its full distribution from git alone`` () =
+    withRepoDir (fun dir ->
+        let remains0 = SV.certain (DynamicValue.Int 0L)
+        let softInput = SV.ofWeighted [ DynamicValue.Int 1L, 0.5; DynamicValue.Int 2L, 0.5 ] |> Option.get
+        (let log = openLog dir
+         let cell = DurableSaga.start log stepSoftFn remains0
+         cell.AppendAsync(DurableYinYang.encodeSoftInput softInput).Wait()  // -> {1:0.5, 2:0.5}
+         cell.State |> softShould [ DynamicValue.Int 1L, 0.5; DynamicValue.Int 2L, 0.5 ])
+        // "Crash": recover the SOFT distribution from git alone.
+        let log2 = openLog dir
+        let resumed = DurableSaga<SV.SoftValue, string>.ResumeAsync(log2, stepSoftFn, remains0).Result
+        resumed.State |> softShould [ DynamicValue.Int 1L, 0.5; DynamicValue.Int 2L, 0.5 ]
+        // held under uncertainty: stays soft until read-time snap
+        if DurableYinYang.readSharp 0.6 resumed.State <> None then failwith "expected held (None) above confidence")

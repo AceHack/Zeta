@@ -74,3 +74,79 @@ module DurableYinYang =
     /// `GitDeltaLog<string>` to get a crash-durable, git-recoverable cell.
     let step (acts: Bonsai.Expr) (threshold: float) : DynamicValue -> string -> int64 -> DynamicValue =
         fun remains encoded _weight -> evolve acts threshold remains (decodeInput encoded)
+
+    // ── Soft-Remains evolution (maintainer's "soft version of persistence", 2026-06-07) ────
+    //
+    // The genuinely-soft cell: `Remains` is a `SoftValue` (a distribution), persisted SOFT.
+    // Evolution does NOT snap — it folds the soft input through `Acts` and keeps the resulting
+    // distribution (the cell HOLDS the superposition). `resolve threshold` is a READ-time
+    // operation (the execution edge) — "snap into the sharp version for execution," never baked
+    // into state. This is where the threshold genuinely gates: a low-confidence cell stays soft
+    // until enough evidence accrues to snap (free will = refuse a forced collapse).
+
+    /// `SoftValue` ⇄ `DynamicValue`: a distribution serialises as an array of `[value, weight]`
+    /// pairs (canonical, so it rides the byte-locked CBOR codec like any `DynamicValue`).
+    let softToDynamicValue (sv: SoftValue.SoftValue) : DynamicValue =
+        DynamicValue.Array
+            [ for d, w in SoftValue.candidates sv -> DynamicValue.Array [ d; DynamicValue.Float w ] ]
+
+    let softOfDynamicValue (dv: DynamicValue) : Result<SoftValue.SoftValue, string> =
+        match dv with
+        | DynamicValue.Array pairs ->
+            let parsed =
+                pairs
+                |> List.map (fun p ->
+                    match p with
+                    | DynamicValue.Array [ v; DynamicValue.Float w ] -> Ok(v, w)
+                    | other -> Error(sprintf "softOfDynamicValue: expected [value, Float weight], got %A" other))
+            let rec seqr acc =
+                function
+                | [] -> Ok(List.rev acc)
+                | Ok x :: t -> seqr (x :: acc) t
+                | Error e :: _ -> Error e
+            match seqr [] parsed with
+            | Error e -> Error e
+            | Ok xs ->
+                match SoftValue.ofWeighted xs with
+                | Some sv -> Ok sv
+                | None -> Error "softOfDynamicValue: degenerate/empty distribution"
+        | other -> Error(sprintf "softOfDynamicValue: expected Array, got %A" other)
+
+    /// **Soft evolve** — fold a soft input through `Acts`, keeping the resulting distribution
+    /// (NO snap). The persisted/wonder-holding step.
+    let evolveSoft
+        (acts: Bonsai.Expr)
+        (remains: SoftValue.SoftValue)
+        (input: SoftValue.SoftValue)
+        : Result<SoftValue.SoftValue, string> =
+        let env = Map.ofList [ RemainsParam, remains; InputParam, input ]
+        BonsaiSoft.evalSoft env acts
+
+    /// **The read-time snap** — `resolve threshold` on the soft `Remains`: a definite value iff
+    /// confidence ≥ threshold, else `None` (held). Execution edge only; state stays soft.
+    let readSharp (threshold: float) (remains: SoftValue.SoftValue) : DynamicValue option =
+        SoftValue.resolve threshold remains
+
+    /// Encode a soft input (a `SoftValue`) as a canonical-CBOR hex string for the delta-log event.
+    let encodeSoftInput (sv: SoftValue.SoftValue) : string =
+        System.Convert.ToHexString(DynamicValue.toCanonicalCbor (softToDynamicValue sv))
+
+    /// Decode a soft-input hex string back to a `SoftValue`. Undecodable ⇒ `invalidArg`.
+    let decodeSoftInput (s: string) : SoftValue.SoftValue =
+        let dv =
+            match DynamicValue.fromCanonicalCbor (System.Convert.FromHexString s) with
+            | Ok dv -> dv
+            | Error e -> invalidArg (nameof s) $"DurableYinYang.decodeSoftInput: undecodable: {e}"
+        match softOfDynamicValue dv with
+        | Ok sv -> sv
+        | Error e -> invalidArg (nameof s) $"DurableYinYang.decodeSoftInput: {e}"
+
+    /// A `DurableSaga` `step` for SOFT cell evolution: fold encoded soft inputs through `Acts`,
+    /// keeping the distribution (no snap). Malformed `Acts` ⇒ keep the prior soft `Remains`.
+    /// Compose with `DurableSaga.start log (DurableYinYang.stepSoft acts) remains0Soft` over a
+    /// `GitDeltaLog<string>` — the soft cell persists and recovers its full distribution.
+    let stepSoft (acts: Bonsai.Expr) : SoftValue.SoftValue -> string -> int64 -> SoftValue.SoftValue =
+        fun remains encoded _weight ->
+            match evolveSoft acts remains (decodeSoftInput encoded) with
+            | Ok next -> next
+            | Error _ -> remains
