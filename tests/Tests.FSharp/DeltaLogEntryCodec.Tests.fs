@@ -1,5 +1,7 @@
 module Zeta.Tests.DeltaLogEntryCodecTests
 
+open System.IO
+open System.Text.Json
 open global.Xunit
 open Zeta.Core
 
@@ -68,3 +70,46 @@ let ``Captured keys serialize in ORDINAL order regardless of insertion order`` (
             Assert.Equal<string list>([ "Z"; "a"; "b" ], kvs |> List.map fst)
         | _ -> Assert.True(false, "captured field missing or not Object")
     | o -> Assert.True(false, sprintf "entry not Object: %A" o)
+
+// ── The cross-language TREATY: F# is the reference oracle for the shared golden seed
+//    (src/Core.TypeScript/delta-log-entry/golden-vectors.json). C#/Rust/TS oracles MUST reproduce
+//    byte-identical CBOR. This locks F# encode→hex AND decode(hex)→round-trip against the seed. ──
+
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
+let private toHex (b: byte[]) = b |> Array.map (sprintf "%02x") |> String.concat ""
+let private ofHex (s: string) =
+    [| for i in 0 .. 2 .. s.Length - 2 -> System.Convert.ToByte(s.Substring(i, 2), 16) |]
+
+let private entryOfJson (e: JsonElement) : DeltaLogEntry<string> =
+    let seq = (e.GetProperty "seq").GetInt64()
+    let delta =
+        [ for pair in (e.GetProperty "delta").EnumerateArray() ->
+            let arr = pair.EnumerateArray() |> Seq.toArray
+            arr.[0].GetString(), arr.[1].GetInt64() ]
+        |> ZSet.ofSeq
+    let captured =
+        [ for p in (e.GetProperty "captured").EnumerateObject() -> p.Name, p.Value.GetString() ]
+        |> Map.ofList
+    { Seq = seq; Delta = delta; Captured = captured }
+
+[<Fact>]
+let ``Golden treaty: F# reproduces the shared seed's canonical CBOR + round-trips it`` () =
+    let path = Path.Join(repoRoot (), "src", "Core.TypeScript", "delta-log-entry", "golden-vectors.json")
+    Assert.True(File.Exists path, sprintf "seed not found: %s" path)
+    use doc = JsonDocument.Parse(File.ReadAllText path)
+    let vectors = doc.RootElement.GetProperty("vectors").EnumerateArray() |> Seq.toArray
+    Assert.True(vectors.Length >= 5, "expected at least 5 golden vectors")
+    for v in vectors do
+        let name = (v.GetProperty "name").GetString()
+        let expectedHex = (v.GetProperty "cbor").GetString()
+        let e = entryOfJson (v.GetProperty "entry")
+        // encode → must equal the seed hex (the byte-lock the other oracles conform to)
+        Assert.Equal(expectedHex, toHex (DeltaLogEntryCodec.encodeCbor keyEnc e))
+        // decode(seed hex) → must round-trip back to the structured entry
+        let decoded = DeltaLogEntryCodec.decodeCbor keyDec (ofHex expectedHex)
+        Assert.True(eq e decoded, sprintf "round-trip mismatch for vector '%s'" name)

@@ -1,0 +1,30 @@
+{
+  "_comment": "Cross-language byte-lock treaty for the Log noun's DeltaLogEntry { Seq; Delta; Captured } (workitem 081KTGD5JMD). The entry maps to a DynamicValue.Object with ordinal-ordered keys captured/delta/seq, then rides DynamicValue's canonical CBOR (RFC 8949) — so the Log entry inherits DynamicValue's existing 4-language byte-lock with no new canonical encoding (an entry is just a DynamicValue; no new noun). `cbor` is the canonical CBOR encoding as a lowercase hex string (hex-in-JSON per no-binary-in-proof-lineage). The F# reference oracle produced these (src/Core/DeltaCodec.fs DeltaLogEntryCodec.encodeCbor); C#/Rust/TS oracles MUST reproduce byte-identical. `captured` keys are ORDINAL-sorted in the encoding regardless of input order (culture-invariant; B-0969). Keys here are strings (DynamicValue.String); delta weights are int64.",
+  "vectors": [
+    {
+      "name": "empty",
+      "entry": { "seq": 0, "delta": [], "captured": {} },
+      "cbor": "a3686361707475726564a06564656c7461806373657100"
+    },
+    {
+      "name": "single_insert",
+      "entry": { "seq": 1, "delta": [["a", 1]], "captured": {} },
+      "cbor": "a3686361707475726564a06564656c746181826161016373657101"
+    },
+    {
+      "name": "multi_key_retract",
+      "entry": { "seq": 2, "delta": [["a", 1], ["b", -2], ["c", 3]], "captured": {} },
+      "cbor": "a3686361707475726564a06564656c7461838261610182616221826163036373657102"
+    },
+    {
+      "name": "captured_present",
+      "entry": { "seq": 7, "delta": [["x", -1]], "captured": { "seed": "42", "actor": "otto" } },
+      "cbor": "a3686361707475726564a2656163746f72646f74746f64736565646234326564656c746181826178206373657107"
+    },
+    {
+      "name": "captured_ordinal",
+      "entry": { "seq": 9, "delta": [["k", 5]], "captured": { "b": "2", "a": "1", "Z": "26" } },
+      "cbor": "a3686361707475726564a3615a62323661616131616261326564656c74618182616b056373657109"
+    }
+  ]
+}
