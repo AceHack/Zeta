@@ -48,16 +48,38 @@ from the other three, breaking the 4-oracle byte-consensus that is the entire
 point of the primitive registry. The ASCII fixtures **mask** the bug today; it's
 documented as a "known gap" in `src/Core.TypeScript/{g-set,bag}/golden-vectors.json`.
 
-## Concrete actions (in order)
+## DECISION — comparer strategy = (a), explicit comparer-is-part-of-identity (maintainer 2026-06-07)
 
-1. **Fix the F# G-Set string ordering → ordinal.** Decide the generic-comparison
-   strategy: either (a) take an explicit comparer param (as the C# G-Set #6363 and
-   the TS `compare` do — comparer-is-part-of-identity), defaulting strings to
-   `StringComparer.Ordinal`; or (b) special-case `string` to ordinal while
-   keeping `Comparer<'T>.Default` for other `T` (numbers etc. are already
-   ordinal-equivalent). Option (a) is the cross-language-consistent choice (TS/C#
-   already take an explicit comparator). Update the "known gap" notes in both
-   fixtures once F# is ordinal.
+> Strategy **(a)** is chosen: the comparer is an **explicit parameter, part of identity**, defaulting
+> strings to `StringComparer.Ordinal` — matching how the C# G-Set (#6363) and TS `compare` already work.
+> Accepts the higher churn (public-API change → `public-api-designer`/Ilyana review, all call sites) for
+> the cross-language-consistent end-state. NOT (b)'s internal string special-case.
+
+### Slice plan (sequenced; parallelizable across Vera/Lior/Otto)
+
+The comparer becomes part of each collection's *identity*, so the type must CARRY it (or take it on every
+operation). Land additively, oldest-consumer-safe, with golden vectors regenerated ordinal at the end:
+
+1. **F# G-Set** (`src/Core/GSet.fs`) — `ofSeqWith`/op variants taking `IComparer<'K>`; the G-Set carries
+   its comparer; `Comparer<'K>.Default` retained only as the explicit default for non-string `T`. String
+   callers pass `StringComparer.Ordinal`. (Ilyana review — public surface.)
+2. **F# Z-set** (`src/Core/ZSet.fs`) — same: `ofSeqWith` + carry the comparer; thread through `(+)`/merge/
+   lookup/`EntryKeyComparer` (sites `ZSet.fs:26/67/123/548`). Highest blast radius (hot path, formally
+   specified) — Naledi (perf) + Soraya (formal) in the loop. `ZSetMerkle` already re-sorts ordinally, so
+   it is unaffected and is the reference for the target order.
+3. **Bag / other algebra-ladder primitives** built on G-Set/Z-set — inherit the comparer param.
+4. **Regenerate the 4-oracle golden vectors** with non-ASCII keys so the byte-consensus actually exercises
+   ordinal (the ASCII fixtures masked the bug); remove the "known gap" notes in the TS fixtures.
+5. **Mechanize** (action 3 below) so it can't regress.
+
+Cross-language: C# (`StringComparer.Ordinal`) + TS (`compare`/UTF-16 code-unit) already take a comparator;
+Rust `Ord` is byte order — F# is the language being brought into line. The comparator contract (ordinal /
+codepoint ≡ UTF-8 byte order) is the **collation treaty** all four conform to + lock in golden vectors.
+
+### Original framing (retained)
+
+1. **Fix the F# G-Set string ordering → ordinal** per strategy (a) above. Update the "known gap" notes in
+   both fixtures once F# is ordinal.
 2. **Audit existing .NET code** (`src/Core.FSharp.*`, `src/Core.CSharp.*`, `src/Core/`,
    `tools/**/*.cs`/`*.fs`) for culture-sensitive defaults: bare `string.Compare` /
    `CompareTo` / `Comparer<string>.Default` / `ToString()` / `Parse` / `ToUpper`/
