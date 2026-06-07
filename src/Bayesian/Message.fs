@@ -47,7 +47,7 @@ namespace Zeta.Bayesian
 /// are cross-checked against `Zeta.Bayesian.BayesianAggregate`.
 
 /// An exponential-family message algebra as a dictionary value
-/// (cf. `Zeta.Core.IAlgebra`): `Product` combines (= add natural
+/// (cf. `Zeta.Core.IStarRing`): `Product` combines (= add natural
 /// parameters), `Divide` forms the EP cavity (= subtract), `Uniform` is
 /// the identity. The generic-math static members on each family are the
 /// SRTP twin of this; this interface is the *runtime-polymorphic* form
