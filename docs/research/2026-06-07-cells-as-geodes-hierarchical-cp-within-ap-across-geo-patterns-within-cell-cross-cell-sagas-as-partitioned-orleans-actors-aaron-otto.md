@@ -27,8 +27,13 @@ item #8 is **not** a heavyweight global-sync engine — it's a **selective strea
 
 ## 2. Hierarchical PACELC/CAP — CP within a cell, AP (eventually C) across, sometimes CP via a serialized bus
 
+**Canonical keeper (Aaron 2026-06-07):** *within a cell = **CP**; cross-cell DEFAULT = **AP with eventual
+C** (CRDT/commutative, §4a); the Saga = **CP with serialized A** is the **fallback** (§4b), reserved for
+where order truly matters.*
+
 > Aaron: *"within a cell it's CP; across cells it's AP, eventually-C by default, and sometimes CP with a
-> serialized-message-bus-based A[P escalation]."*
+> serialized-message-bus-based A[P escalation]."* … *"our default cross-cell is AP with eventual C, where
+> the saga CP with serialized A is the fallback."*
 
 - **Within the cell = strict CP (default).** Consistency beats availability: the durability floor's
   fsync-on-commit makes the local `Log` **linearizable**; the cell stalls/rejects a write it can't
