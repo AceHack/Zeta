@@ -15,6 +15,7 @@
     <Compile Include="GitDeltaLog.Tests.fs" />
     <Compile Include="GitCommand.Tests.fs" />
     <Compile Include="CliParse.Tests.fs" />
+    <Compile Include="CredentialSource.Tests.fs" />
     <Compile Include="GitSnapshotStore.Tests.fs" />
     <Compile Include="GitRecoverableSpine.Tests.fs" />
     <Compile Include="DurableSagaGit.Tests.fs" />

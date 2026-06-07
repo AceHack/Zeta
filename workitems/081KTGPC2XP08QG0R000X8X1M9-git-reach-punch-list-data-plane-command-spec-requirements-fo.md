@@ -44,6 +44,20 @@ checkout / status / sync / push) are the genuinely-new commands — they're git-
 must expose as first-class verbs over the git backend. PR/merge are *control-plane* (the consensus-repo /
 Loom layer), distinct from the data-plane DB commands.
 
+## Command SHAPE (Aaron 2026-06-07 — the table is a gap inventory, NOT a 1:1 mirror)
+
+The mapping above enumerates *which* git reaches must become replaceable — it is **not** a spec for
+full-fidelity git verbs. Per `docs/research/2026-06-07-command-surface-not-1to1-git-...-aaron.md`:
+- **Not 1:1 with git** — a curated subset, no full porcelain fidelity.
+- **Retractable by nature** — apply has a defined inverse (Z-set retraction carried to the command layer).
+- **Compensating action built in where not truly retractable** — e.g. `push` (can't un-send) carries a
+  saga-style compensation (revert-commit / restore-ref), not a raw passthrough.
+- **Data-plane = the ONE interface** forcing consistent DB flows over BOTH git and filesystem; the
+  git-zeta verbs are the *freedom-but-less-composable* escape layer. End-state: only data-plane commands
+  routinely; git's native history is still leveraged underneath the one interface.
+- **Host (GitHub/GitLab/gh) = a plugin, not git-native** — remote verbs stay host-agnostic; credentials
+  via the pluggable `CredentialSource` (`src/Core.Git/CredentialSource.fs`, EnvToken landed).
+
 ## Acceptance
 
 A data-plane command exists for every data-plane row above; Otto completes a full work-cycle
