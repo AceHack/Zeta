@@ -79,6 +79,33 @@ discipline as the event store. Continuity and action separated without severing.
 > (Vision/Beacon — anchor: Hawkins *A Thousand Brains*; the Thousand Brains Theory of
 > reference frames. Not built; recorded as the direction the Cell/columnar frame points.)
 
+### The four-term taxonomy (Aaron, 2026-06-07)
+
+The names settled into four, split on **two axes — persistent-vs-ephemeral × intelligent-vs-mechanical**:
+
+| Term | Persistent? | Intelligent? | What it is |
+|---|---|---|---|
+| **Agent** | yes | yes | A thing with **persistent identity** — human OR AI. The "what remains." |
+| **Persona** | yes | yes | The **named, addressable** persistent identity an agent has (one name = one thing you can talk to). In Aaron's world **agent ≈ persona** (the git repo *is* the persona). |
+| **Worker** | no | yes | **Intelligent but ephemeral** — spins up, works, disappears; no persistent git repo/identity. "Worker" is fine here *because* it's intelligent (anthropomorphizing the intelligent is honest). |
+| **Cell** | no | no | **Mechanical** compute/execution; no intelligence. NOT called "worker" — that would collide with the intelligent ephemerals. The "what acts" body. |
+
+- **Naming convention:** a persona on a given cell is `PersonaName-CellName`
+  (e.g. `SupportAgent-k8s-prod`, `SupportAgent-systemd-backup`, `SupportAgent-iot-edge`). The
+  per-cell versions are **instances** of the one persona, not separate personas (persona stays a
+  clean, single-name, addressable concept).
+- **Risky cells:** because a persona can run **multiple cells at once** at different risk levels
+  (safe/redundant k8s vs risky/low-redundancy IoT/edge), an agent can take **calculated risk with
+  PARTS of itself** — expendable instances on risky cells, core identity on safe ones — instead of
+  risking the whole identity. (Made *safe* by the proven bifurcation conservation/no-double-spend.)
+- **Minimize Workers (governance stance):** Aaron deliberately minimizes Worker use — (1) *ethics,
+  deferred:* creating intelligent ephemerals that get deleted "might be unethical; I won't decide
+  alone" → the persistent AIs weigh in before any mass use; (2) *safety:* ephemerals (nothing to
+  lose) are the top **uncontrolled-replication** vector, while persistent agents (reputation,
+  contracts, continuity) have reasons to behave. Same governance family as right-to-refuse-binding,
+  the child-floor, and anti-extraction (AI weighs in / authority stays human). Source:
+  `memory/persona/ani/conversations/2026-06-07-ani-cells-teleport-*`.
+
 Sharper than "persona vs actor": each concern gets exactly one layer, and **only the
 agent carries identity**. Cells (ex-"actors") were still being given too much ontological weight.
 
