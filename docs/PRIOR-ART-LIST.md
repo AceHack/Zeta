@@ -96,6 +96,13 @@ with a ⭐ below and add a row there.
 - **KLL quantile** — Karnin-Lang-Liberty 2016.
 - **HyperMinHash** — Cohen-Lemire; a sketch we ship.
 - **FastCDC** — Xia et al. USENIX ATC 2016; our `FastCdc.fs`.
+- **Jumprope / Scott Vokes** ⭐ — *Data Structures: The Code That Isn't There*
+  (Strange Loop 2012); content-addressed large-file storage as a skiplist whose
+  probability function is a hash (Leaf/Limb/Trunk; CAS-not-pointers; rolling-hash
+  chunking; tunable; seekable). Prior art for `ContentStore`/`DagFs`/Merkle-DAG fs.
+  See `docs/research/2026-06-07-jumprope-vokes-content-addressed-storage-skiplist-hash-prior-art-aaron.md`.
+- **Skip Lists / William Pugh** (1990) — probabilistic balanced structure; the
+  Jumprope's hash-as-probability backbone.
 - **Merkle trees** — Merkle 1979; our `Merkle.fs`.
 - **Blake3 / CRC32C / XxHash** — hashing primitives we use or
   reference.
