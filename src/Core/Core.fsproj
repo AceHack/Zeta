@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
+    <Compile Include="Collation.fs" />
     <Compile Include="Predicate.fs" />
     <Compile Include="Policy.fs" />
     <Compile Include="PolicyKind.fs" />

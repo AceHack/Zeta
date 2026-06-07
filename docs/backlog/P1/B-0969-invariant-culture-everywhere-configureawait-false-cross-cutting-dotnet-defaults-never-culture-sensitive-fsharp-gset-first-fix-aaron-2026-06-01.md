@@ -80,6 +80,20 @@ Postgres `COLLATE`, ICU locales) — NOT a raw `IComparer` knob exposed as CS pl
 So strategy (a)'s "explicit comparer param" is really **"select a collation (default = binary/ordinal)"** —
 the comparer carried as identity is the chosen collation. Name + model the API in DB-collation terms.
 
+### Landed seed + parameterized model (2026-06-07)
+
+- **Seed LANDED:** `src/Core/Collation.fs` — DB-style collation selection: shipped default `binary`
+  (= `StringComparer.Ordinal`, codepoint/byte order), a named catalog (`binary`/`ordinal`/`ordinal-ci`/
+  `invariant`/`invariant-ci`), and **`Collation.forKey<'T>`** (ordinal for string — the fix — else
+  `Comparer<'T>.Default`). 5 tests. This is the stable seed every primitive slice consumes; it does not
+  move as the catalog grows.
+- **Design direction = SQL-Server parameterized model + application levels:**
+  `docs/research/2026-06-07-collation-as-sql-server-parameterized-model-with-application-levels-stable-binary-seed-aaron.md`
+  — collation = locale + code page + sensitivity flags (`_CI/_CS/_AI/_AS/_KI/_KS/_WI/_WS/_VSS/_BIN/_UTF8`),
+  selectable at server/database/column/query levels (our analog: shipped default → cell default → value
+  carries it (strategy (a)) → per-op override `ofSeqWith`). Mismatched-collation merge is an error to
+  surface, not a silent reinterpret.
+
 ### Slice plan (sequenced; parallelizable across Vera/Lior/Otto)
 
 The comparer becomes part of each collection's *identity*, so the type must CARRY it (or take it on every
