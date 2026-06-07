@@ -29,6 +29,26 @@ End to end, the *whole environment* is one declarative, pointer-based map: **Nix
 + ArgoCD (cluster)** = the complete external-state closure. Everything the agent/system depends on is closed
 over declaratively, by reference, in one map.
 
+## Refinement: Ace pointers span ALL layers — OS and cluster deps too, not just the middle (Aaron, cont.)
+
+> Aaron: *"oh — Ace pointers can point to OS deps like NixOS, and k8s/ArgoCD/Flux deps too."*
+
+This flattens the layering above. The metal→between→cluster table is the **runtime topology** (where each tool
+*operates*), but the **pointer topology is flat**: Ace's declarative pointers can point **into every layer** —
+
+- **OS deps** (NixOS packages/derivations/flake inputs),
+- **app deps** (npm/cargo/pip/nuget/brew/…),
+- **cluster deps** (k8s manifests, ArgoCD Applications, **Flux** kustomizations/HelmReleases).
+
+So Ace is the **single unifying pointer namespace over the whole dependency space** — NixOS, k8s, ArgoCD, and
+Flux are just *ecosystems Ace points into*, exactly like npm or cargo. The "one env/dep map across everything"
+(#6939) is therefore even more literal: it's **one map** whose pointers reach OS, app, and cluster alike, not
+three stacked maps. (NixOS isn't only "below" Ace and ArgoCD/Flux only "above" — Ace references both as
+first-class pointer targets.) This is the uniform-pointer thesis (#6916/#6925) at full reach: *any* dependency,
+any layer, one declarative pointer kind, one resolver, one compile-time conflict check (#6940 — now spanning OS
+and cluster conflicts too, e.g. an OS-lib pin clashing with a cluster image's requirement surfaces at compile
+time).
+
 ## Why this is the right read (it composes the whole arc)
 
 - **Closures over external state (#6932), realized.** Ace is *the* external-state closure; NixOS and ArgoCD are
