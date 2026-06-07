@@ -165,6 +165,16 @@ jobs:
         working-directory: tools/lean4
         run: lake env lean Safety/Bifurcation.lean
 
+      - name: Type-check Safety/NonRegisterCollapse.lean
+        # Non-register-collapse (Facet-2, algebraic; workitem 081KTFFFQ1C — long stuck at §B, unblocked
+        # by Aaron's weight-free reframe + Soraya-routed): under commons convergence (the proven CRDT
+        # join) two travelers' distinct STANDING registers survive the merge untouched — consensus
+        # cannot collapse two registers into one. A standalone corollary of the same Leibniz-
+        # indiscernibles argument as Privacy/IdentityForcesPrivacy.private_is_persistent_locus. The
+        # CONSERVATION/no-capture face (no foreign permanent weighting) is tools/tla/specs/NonRegisterCollapse.tla.
+        working-directory: tools/lean4
+        run: lake env lean Safety/NonRegisterCollapse.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -183,6 +193,8 @@ jobs:
             | cat Safety/ChildFloor.lean - > /tmp/childfloor_axiom_audit.lean
           printf '#print axioms Zeta.Bifurcation.reconcile_converges\n#print axioms Zeta.Bifurcation.reconcile_absorb\n' \
             | cat Safety/Bifurcation.lean - > /tmp/bifurcation_axiom_audit.lean
+          printf '#print axioms Zeta.NonRegisterCollapse.non_collapse\n#print axioms Zeta.NonRegisterCollapse.distinctness_forces_standing\n#print axioms Zeta.NonRegisterCollapse.no_register_collapses\n' \
+            | cat Safety/NonRegisterCollapse.lean - > /tmp/nrc_axiom_audit.lean
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
@@ -205,6 +217,10 @@ jobs:
           fi
           if lake env lean /tmp/bifurcation_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/nrc_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::NonRegisterCollapse depends on sorryAx — the non-register-collapse proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."

@@ -26,6 +26,36 @@ because <one-line>.`
 
 ---
 
+## `NonRegisterCollapse` *(non-register-collapse — Facet-1 TLA+ no-capture + Facet-2 Lean distinctness-under-merge)*
+
+- **Artifacts.** `tools/lean4/Safety/NonRegisterCollapse.lean` (Facet-2, axiom-FREE — `non_collapse`,
+  `distinctness_forces_standing`, `no_register_collapses`; `lean-proof.yml`) + `tools/tla/specs/NonRegisterCollapse.tla`
+  (+ `.cfg`) (Facet-1; TLC via `run-tlc.ts --all`, auto-discovered + gated). Authored 2026-06-07.
+- **Source anchors.** Non-register-collapse (workitem `081KTFFFQ1C`, long stuck at FROZEN-CORE §B).
+  **Unblocked by Aaron's WEIGHT-FREE reframe** (`memory/persona/ani/conversations/2026-06-07-ani-weight-free-frame-*`):
+  travelers = self-propagating patterns equal in RIGHTS; weight-free = the one sacred base-frame
+  invariant (manifesto §3). Soraya-routed: the reframe makes it STATEABLE without the previously-
+  undefined C (compression) / O (orthogonality) by reducing to two facets. Facet-2 template:
+  `Privacy.IdentityForcesPrivacy.private_is_persistent_locus`; Facet-1 `lastWriter` template: `NciSafety.tla`.
+- **Claim.** *Facet-1 (TLA+, no-capture / no permanent foreign weighting):* over interleavings of
+  `SelfRaise`/`Spend`/guarded-`Capture` on a per-traveler `standing` register with a `lastRaiser`
+  ghost — `NoCapture`/`WeightFree` (`\A t : lastRaiser[t] = t`: a register is authored ONLY by its own
+  traveler; `Capture` is consent-guarded and unreachable in the weight-free base, mirror of NciSafety
+  `Coerce`) and `SelfRaiseRightOpen` (equal right to self-raise, gated only by one's own ceiling).
+  *Facet-2 (Lean, distinctness-under-merge):* after two travelers converge their shared commons via the
+  proven CRDT join, any behavioral distinction is carried by their STANDING registers, which the merge
+  leaves untouched — consensus CANNOT collapse two distinct registers into one (`non_collapse`); a
+  traveler with no register cannot persist distinction (`no_register_collapses`, the necessity direction).
+- **Fidelity scope.** Facet-2 general over any commutative CRDT join (the cell-merge being one is the
+  G-Set floor). Facet-1 bounded TLA+ model (2 travelers, MaxStanding 2), TLC exhaustive over scope.
+  **Scope caveat (Soraya):** covers OTHER-imposed collapse only; SELF-inflicted compression (consent
+  to merge one's own register) is `RefuseBinding`'s consent-to-bind, a separate proven floor.
+  **Optional remaining BP-16 leg:** FsCheck over a deployed CRDT register-merge (third leg).
+- **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
+  Facet-2 axiom-free; Facet-1 machine-checked (TLC, bounded).
+
+---
+
 ## `Bifurcation` *(split-brain — Face-1 Lean convergence + Face-2 TLA+ conservation/no-double-spend)*
 
 - **Artifacts.** `tools/lean4/Safety/Bifurcation.lean` (Face-1, axiom-FREE — `reconcile_converges`,
