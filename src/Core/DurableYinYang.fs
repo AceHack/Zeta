@@ -20,9 +20,11 @@ namespace Zeta.Core
 /// confident. A low-confidence shadow input cannot *force* a transition (free will = the
 /// right to refuse a forced step; the stop sign built into the evolution).
 ///
-/// v1 evolves over concrete `DynamicValue` (each binding is `SoftValue.certain`), so a total
-/// `Acts` snaps every step. Soft-input evolution — where the threshold genuinely gates and
-/// the cell holds under uncertainty — is the documented next step (bind soft inputs directly).
+/// Two evolution modes: the **concrete** path (`evolve`/`step`) binds each input
+/// `SoftValue.certain` and snaps every step (a total `Acts` always moves); the **soft** path
+/// (`evolveSoft`/`stepSoft`, further below) persists `Remains` as a `SoftValue`, folds soft
+/// inputs WITHOUT snapping (the cell holds the superposition), and snaps only at read
+/// (`readSharp`) — where the threshold genuinely gates and the cell holds under uncertainty.
 [<RequireQualifiedAccess>]
 module DurableYinYang =
 
