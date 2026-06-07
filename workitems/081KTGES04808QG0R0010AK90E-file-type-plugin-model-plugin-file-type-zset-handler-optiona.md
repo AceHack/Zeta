@@ -56,6 +56,23 @@ A **file-type plugin** has three layers, the last two optional:
 - How "current view = git main" maps precisely (the fold/IVM ↔ git working-tree correspondence).
 - Registration/discovery of plugins (a plugins-as-rows Log, naturally).
 
+## Performance parity + dual-implementation benchmark (Aaron 2026-06-07)
+
+> "the plugin that loads the dynamic value should be as fast as our hand-written F# we have without the
+> plugin. we can always keep both the plugin version and the F# version for benchmark testing to look for
+> regression. we could do this in all 4 langs — that would test our interpreter in each host for
+> performance too."
+
+- **Perf-parity target:** the DynamicValue-interpreted plugin path must be **as fast as the hand-written
+  native** (no-plugin) path. Interpreter overhead → ~zero is the bar, not "acceptable."
+- **Dual implementation as a regression harness:** keep BOTH the plugin (DynamicValue) version AND the
+  hand-written native version of each handler; benchmark them head-to-head so any interpreter drift shows
+  as a regression. (The native version is also the correctness reference for the plugin output.)
+- **All 4 languages:** run the pair in F#/C#/Rust/TS — this doubles as a **per-host interpreter
+  performance test** (each host's DynamicValue/Rx interpreter is benchmarked, not just F#'s).
+- Owner: Naledi (performance-engineer) for the benchmark shape + regression gate; composes with the
+  determinism/alloc/Big-O contract (workitem `081KTGEVV75`).
+
 ## Anchors
 
 - `docs/ROADMAP.md` (format/file-type treaty + this plugin model) · two-plane DB design doc · B-0959.
