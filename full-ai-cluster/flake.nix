@@ -183,6 +183,18 @@
           default = self.packages.${system}.installer-iso;
         };
 
+        # QEMU-backed NixOS VM tests. Gated to x86_64-linux because the
+        # nixosTest driver boots an x86_64 VM (and our cluster nodes are
+        # x86_64). Run one with:
+        #   nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L
+        checks = nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
+          # Regression test for the k3s --cluster-init token deadlock:
+          # boots the control-plane k3s module in QEMU and asserts the API
+          # comes all the way up (see nixos/tests/k3s-cluster-init.nix).
+          k3s-control-plane-cluster-init =
+            import ./nixos/tests/k3s-cluster-init.nix { inherit pkgs; };
+        };
+
         devShells.default = pkgs.mkShell {
           name = "zeta-ai-cluster-admin";
           # Nix-managed admin tooling (k8s + age/sops + nix observability).

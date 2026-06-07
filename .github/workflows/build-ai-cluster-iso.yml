@@ -141,6 +141,23 @@ jobs:
         # to keep this cheap.
         run: nix flake check --no-build --show-trace
 
+      # Regression test for the k3s --cluster-init token deadlock
+      # (k3s-server.nix). Boots the control-plane k3s module in a QEMU VM
+      # via nixosTest and asserts the Kubernetes API comes all the way up:
+      # k3s.service reaches `active`, --cluster-init GENERATES the cluster
+      # token, the kubeconfig is written, the API answers /readyz, and the
+      # node registers. Pre-fix this would FAIL at wait_for_unit("k3s.service")
+      # because the unit crash-looped on the token-read timeout.
+      #
+      # Runs early (before the ~15-min ISO build) so a broken k3s fails
+      # fast. Hermetic — no internet, so it does NOT assert node Ready /
+      # pods Running (those need the Cilium CNI image); that is an online
+      # cluster-integration lane (B-0831 Slice 2+). ubuntu-24.04 runners
+      # expose /dev/kvm; the nixosTest driver falls back to TCG if absent.
+      - name: NixOS test — k3s control-plane reaches active (token-deadlock regression)
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs
+
       - name: Build installer ISO
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs

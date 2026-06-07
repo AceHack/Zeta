@@ -12,7 +12,28 @@
   services.k3s = {
     enable = true;
     role = "server";
-    tokenFile = lib.mkDefault "/var/lib/rancher/k3s/server/token";
+
+    # Do NOT set `tokenFile` on the --cluster-init founding node.
+    #
+    # k3s treats `--token-file` as "READ the cluster token from this path",
+    # NOT "write it here". On a fresh single-node `--cluster-init` the file
+    # does not exist yet, so k3s sits in
+    #   "Waiting for /var/lib/rancher/k3s/server/token to be available"
+    # and after ~4 min exits with
+    #   fatal "Error: Timeout while trying to read the file"
+    # systemd then restarts it into the same wait — a permanent crash-loop
+    # in which the API server never comes up and /etc/rancher/k3s/k3s.yaml
+    # is never written.
+    #
+    # With no `tokenFile`, `--cluster-init` GENERATES the cluster token and
+    # persists it to /var/lib/rancher/k3s/server/{token,node-token} at that
+    # same default path — which is exactly what workers copy into
+    # /var/lib/rancher/k3s/agent/token to join (see hosts/worker-gpu/README).
+    # So removing this line fixes first-boot without changing the join flow.
+    #
+    # Empirically caught on node-115f93 first-boot install (2026-06-05):
+    # k3s-server crash-looped on the token-read timeout; removing the
+    # explicit tokenFile is the fix.
     clusterInit = lib.mkDefault true;
 
     extraFlags = [
