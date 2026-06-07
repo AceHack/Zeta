@@ -11,14 +11,48 @@ the physical-presence gate; Windows Hello applies if configured):
 
 ```powershell
 # Right-click PowerShell -> Run as administrator, then:
-bun full-ai-cluster\tools\flash-usb-windows.ts            # auto-discovers newest %USERPROFILE%\Downloads\zeta-installer-*.iso
+bun full-ai-cluster\tools\flash-usb-windows.ts                       # auto-discovers newest %USERPROFILE%\Downloads\zeta-installer-*.iso
 bun full-ai-cluster\tools\flash-usb-windows.ts C:\path\to\zeta-installer-25.11.iso
-bun full-ai-cluster\tools\flash-usb-windows.ts --short    # shorter `yes <4-hex>` confirm
-bun full-ai-cluster\tools\flash-usb-windows.ts --dry-run  # print device + planned commands, write NOTHING
+bun full-ai-cluster\tools\flash-usb-windows.ts --short              # shorter `yes <4-hex>` confirm
+bun full-ai-cluster\tools\flash-usb-windows.ts --dry-run            # print device + planned commands, write NOTHING
+bun full-ai-cluster\tools\flash-usb-windows.ts --ssh-key C:\k\x.pub # inject a specific public key
+bun full-ai-cluster\tools\flash-usb-windows.ts --no-inject          # skip key injection (password-only login)
 ```
 
 It prints the selected device + its volumes + a `*** WILL BE DESTROYED ***`
 warning, then a random nonce you must type back before it writes.
+
+## SSH-key injection (on by default — zero-typing first boot)
+
+Mirrors the macOS path (`zflash.ts` iter-4.2): after the raw write the tool
+**mounts the freshly-flashed USB's EFI System Partition and drops your SSH
+public key on it** as `zeta-authorized-keys.pub`. The on-node `zeta-install.sh`
+reads that file off the boot media and injects it into `operator-ssh-keys.nix`
+before `nixos-install`, so the installed node trusts your key with no typing.
+
+- **Key source**: `--ssh-key <path>`, else the first of `~\.ssh\id_ed25519.pub`,
+  `id_ecdsa.pub`, `id_rsa.pub` that exists and validates.
+- **Resolved *before* the destructive write** — a missing/malformed key aborts
+  the run **before** the USB is wiped, not after.
+- **Private-key guard** — refuses anything that looks like a private key
+  (you can never accidentally write `id_ed25519` instead of `id_ed25519.pub`).
+- **Fail-loud + read-back verify** — the tool writes the key, **reads it back**,
+  and treats any failure (couldn't mount the ESP, write failed, read-back
+  mismatch) as a **hard error (exit 1)**. The macOS path was once burned by a
+  *silent* inject failure (bootable USB, no key); this never green-by-skips.
+- **`--no-inject`** opts out explicitly (password-only first boot).
+
+### Mounting the ESP on Windows
+
+An EFI System Partition is often hidden (no auto drive-letter), so the tool
+mounts it via a fallback ladder, most-reliable first:
+
+1. partition already has a drive letter (removable FAT auto-mount);
+2. `diskpart assign letter=` (works on `System`-type partitions where the
+   Storage cmdlets refuse) — the reliable path for a USB ESP;
+3. `Add-PartitionAccessPath -AssignDriveLetter` (last resort).
+
+It un-mounts the letter it assigned when done.
 
 ## Safety rails (identical to the macOS tool)
 
@@ -32,6 +66,9 @@ warning, then a random nonce you must type back before it writes.
 | Target size 4 GiB – 256 GiB | `selectUsbCandidate()` |
 | Exactly one USB candidate (else refuse) | `selectUsbCandidate()` |
 | Per-run random nonce, typed back | `makeNonce()` / `buildShortChallenge()` |
+| SSH key resolved + validated **before** wipe | `resolveSshPubkey()` / `validatePubkeyContent()` |
+| Refuses to inject a **private** key | `validatePubkeyContent()` |
+| Inject failure is a **hard error**, read-back verified | `injectPubkeyIntoEsp()` |
 
 macOS → Windows mapping: `diskutil list` → `Get-Disk`; `BusProtocol=USB` →
 `BusType=USB`; `Internal` → `IsBoot`/`IsSystem`; `diskutil unmountDisk` →
@@ -56,13 +93,21 @@ exported TypeScript so `flash-usb-windows.test.ts` validates it via
   runs on Windows (node can open `\\.\PhysicalDriveN` after the disk is
   offline).
 - **Command construction, nonce, ISO discovery** — all unit-tested.
+- **SSH-key injection** — `validatePubkeyContent()` (accepts ed25519/rsa/ecdsa/sk,
+  rejects empty/multi/unknown-type/non-base64 and, critically, **private keys**),
+  `resolveSshPubkey()` (search order + explicit-path), `selectEspPartition()`
+  (picks the tiny FAT ESP, **never** the 1.5 GiB ISO9660 data region, on both
+  GPT and MBR layouts), and the **whole `injectPubkeyIntoEsp()` orchestration**
+  driven by a fake runner that simulates `Get-Partition`, `diskpart assign`, and
+  an in-memory ESP filesystem — including the **corrupt-write → read-back
+  mismatch → `ok=false`** case (proves no silent green-by-skip).
 
 What the unit tests *cannot* cover on macOS: opening the literal
-`\\.\PhysicalDriveN` handle, `Set-Disk -IsOffline`, and the UAC prompt —
-those are thin wrappers around the tested logic and require a Windows
-box (or a Windows VM with a virtual USB disk) for an end-to-end run.
-`--dry-run` on a Windows machine exercises the full selection + planning
-path without writing.
+`\\.\PhysicalDriveN` handle, `Set-Disk -IsOffline`, the real `diskpart`/ESP
+mount, and the UAC prompt — those are thin wrappers around the tested logic and
+require a Windows box (or a Windows VM with a virtual USB disk) for an
+end-to-end run. `--dry-run` on a Windows machine exercises the full selection +
+key-resolution + planning path without writing.
 
 ## Follow-ups
 
