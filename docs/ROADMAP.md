@@ -49,10 +49,16 @@ using DynamicValue's byte-locked per-format serializer:
 
 - **git check-ins → YAML default** (diffable history). 🚧 PREREQUISITE GAP: no `DynamicValue.toYaml/fromYaml` yet.
 - **filesystem → CBOR default** (speed). ✅ ready. All formats optional: CBOR ✅ JSON ✅ XML ✅ YAML 🚧 Arrow (partial).
-- **Markdown + frontmatter treaty** 🚧 — keep `.md` files (YAML frontmatter + body) IN the database; need
-  structured frontmatter read/write + an **MD read/write treaty across the 4 languages** (frontmatter →
-  DynamicValue.Object, body → text, byte-locked like other formats). Makes docs/memory/backlog `.md`
-  first-class DB content.
+- **Frontmatter is a GENERAL pattern, not markdown-only** — frontmatter = a **structured metadata header
+  + a body** (`(metadata: DynamicValue.Object, body)`). Roots predate markdown: RFC 822 email
+  (headers + blank line + body) and HTTP (headers + body) are the same shape; Jekyll/Hugo just popularized
+  the `---`-delimited YAML-over-markdown form. It's also the same shape as a `DeltaLogEntry` (`Captured` =
+  metadata header, `Delta` = body). So model header+body generally; each file-type plugin realizes it
+  (markdown = YAML `---` header + md body; a pure `.yaml`/`.json` file may be all-header, no body).
+- **Markdown + frontmatter treaty** 🚧 — keep `.md` files (frontmatter + body) IN the database; need an
+  **MD read/write treaty across the 4 languages** (frontmatter → DynamicValue.Object, body → text,
+  byte-locked like other formats) — one realization of the general header+body pattern above. Makes
+  docs/memory/backlog `.md` first-class DB content.
 - **Per-file-TYPE plugins, Open/Closed** — every *file type* (`.md`, `.yaml`, `.cbor`, `.json`, `.xml`,
   future custom) is a **plugin** with special handling, registered behind a stable contract: **closed for
   modification, open for extension**. New file types extend via new plugins without touching the core; the
