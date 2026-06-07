@@ -152,9 +152,15 @@ using DynamicValue's byte-locked per-format serializer:
 3. **YAML serializer for DynamicValue** (4-lang) — unblocks the git-default format.
 4. **MD + frontmatter treaty** (4-lang) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
-6. **Durability floor** — `fsync`-on-commit (`Durability.fs` P0). **ELEVATED:** this is the mechanism of
-   **CP-within-a-cell** (linearizable local `Log`), not just a reliability gap — load-bearing for the cell
-   consistency model (§ design doc 2026-06-07-cells-as-geodes).
+6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
+   crash-durable `Log` — is ALREADY REAL**: the delta-log backends fsync on append (`DiskDeltaLog`
+   `fsyncPerAppend` → `FileOptions.WriteThrough` + `Flush(flushToDisk=true)` + `FileSync.fsyncDir`; the
+   git backend's commit is its own durable publish). So the source-of-truth Log is crash-durable today.
+   The remaining `Durability.fs` P0 (sync `StableStorage` → `OsBuffered`) is the **Spine spill *cache*
+   store** (`DiskSpine.fs` `DiskBackingStore`) — a *derived/regenerable* cache, so it is **lower-stakes**,
+   not the CP foundation. (The async backing store already honours `StableStorage` with real fsync.) Fix
+   when convenient: add `fsyncPerSave` to the sync `DiskBackingStore` mirroring `DiskAsyncBackingStore`,
+   OR make sync `StableStorage` throw/point-to-async instead of silently downgrading. Not blocking CP.
 7. **Cell contract + one host** — `(identity, Log)`; **systemd** first, then k8s-operator, then Orleans.
    Each cell distinct; k8s/Orleans give **HA *within* a cell** (active-passive for COMPUTE only — never
    split the `Log`). MCP/CLI is itself a **request-driven cell**. **Cells are geodes:** full replication
