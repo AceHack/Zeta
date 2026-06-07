@@ -68,6 +68,36 @@ module Effects =
         abstract InspectAsync: effect: Effect * ct: CancellationToken -> ValueTask<Verdict>
         abstract ExecuteAsync: effect: Effect * ct: CancellationToken -> ValueTask<EffectResult>
 
+    // ── RunWork: the agent hook (the one place a Cell invokes an Agent) ──────────────────────
+    //
+    // The outcome an Agent returns for a do_item. The Agent never commits or touches git/gh — it
+    // PROPOSES further effects (`Progressed`), each re-gated through inspect-before-execute, OR
+    // names a block, OR escalates a gated class to the human. (Maintainer 2026-06-07: start with
+    // this three-way; expand for the math proof of invariants if needed.)
+
+    /// What an Agent's work produced.
+    type WorkOutcome =
+        /// Work advanced → these further effects to apply (each is re-gated; the Agent proposes,
+        /// the gate disposes — the Agent cannot widen its own authority).
+        | Progressed of effects: Effect list
+        /// A named dependency/block — no false progress (forward-momentum honesty).
+        | Blocked of reason: string
+        /// Hit a gated class (budget / WONT-DO / HARD LIMITS / non-reversible / force-push /
+        /// large-external) → the human must authorize; the loop does NOT proceed.
+        | NeedsAuthorization of gatedClass: string
+
+    /// The Agent hook for `RunWork`. The substrate handler delegates a `do_item`'s real work here;
+    /// the LLM-backed runner is a much-later increment — the recording runner below is for tests.
+    type IWorkRunner =
+        abstract RunAsync: item: BacklogItem * ct: CancellationToken -> ValueTask<WorkOutcome>
+
+    /// A constant work-runner (tests / experimentation): always returns `outcome`, does no real
+    /// work. (DST note: a real runner's output is CAPTURED in the log; replay replays the captured
+    /// effects, never re-invokes the Agent — kept deterministic around the non-deterministic oracle.)
+    let constantRunner (outcome: WorkOutcome) : IWorkRunner =
+        { new IWorkRunner with
+            member _.RunAsync(_item, _ct) = ValueTask<WorkOutcome>(outcome) }
+
     /// Run one effect through the gate: inspect → (admit ⇒ execute | deny ⇒ skip). A denied
     /// effect is NEVER executed — the load-bearing inspect-before-execute guarantee.
     let runAsync (handler: IEffectHandler) (effect: Effect) (ct: CancellationToken) : Task<EffectResult> =

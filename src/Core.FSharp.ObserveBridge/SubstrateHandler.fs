@@ -6,22 +6,28 @@ open Zeta.Core
 
 /// **Bridge D (substrate) — the `IEffectHandler` adapter that performs real I/O via the substrate.**
 ///
-/// The ONE place that touches the durable substrate. v1 wires **`PersistFerry`** (maintainer
-/// calls: *marker + dedicated, **persona-scoped** ferry stream*): the operator's ferried verbatim
-/// content is read from `ferrySource` (the bus seam — a `unit -> string option` injected by the
-/// caller, so the adapter is bus-agnostic) and appended to **this persona's** dedicated ferry
-/// stream `ferryLog` — an `IDeltaLog<string>`; pass the `GitDeltaLog<string>` opened under the
-/// persona (e.g. its ref/path) for git durability, or an in-memory log for tests. The append is
-/// attributed to `persona` via the captured map, so the ferry history is owned, not anonymous.
-/// `PersistFerry` stays a MARKER: the content is sourced here, never carried in the effect.
+/// The ONE place that touches the durable substrate. Wires:
 ///
-/// The handler is **per-agent** (the agent running the loop), so `persona` = that agent's persona
-/// and `ferryLog` = that persona's stream — a persona-ferry lands under its own persona.
+/// **`PersistFerry`** (marker + dedicated, **persona-scoped** ferry stream): the operator's ferried
+/// verbatim content is read from `ferrySource` (the bus seam — `unit -> string option`, injected so
+/// the adapter is bus-agnostic) and appended to **this persona's** stream `ferryLog`
+/// (`IDeltaLog<string>`; a `GitDeltaLog` for git durability), attributed `{ ferryType; persona }`.
+/// A ferry is a PATTERN; persona-ferry is one `ferryType`.
 ///
-/// The capability / inspect-before-execute gate is `policy` (default: admit all) — the shadow
-/// proposes; the handler admits. `EmitResponse` / `RunWork` / `ExtendGrammar` are NOT wired in v1
-/// — they return an honest `Skipped`, never a silent success (Result-over-exception). Honest async:
-/// the ferry append is genuine I/O (awaited); the not-wired arms complete synchronously.
+/// **`RunWork`** (the Agent hook — the one place a Cell invokes an Agent): delegates a `do_item`'s
+/// real work to an injected `IWorkRunner`. The Agent never commits / never touches git/gh — it
+/// returns a `WorkOutcome`:
+///   - `Progressed effects` → each proposed effect **re-enters the gate** (inspect→admit?execute)
+///     at `depth+1`, so the Agent's work is itself capability-gated and CANNOT self-authorize.
+///   - `Blocked reason` → a named block (forward-momentum honesty).
+///   - `NeedsAuthorization class` → the human must authorize; the loop does NOT proceed.
+/// `maxWorkDepth` bounds RunWork nesting (None = unbounded, for experimentation; Some n = bounded —
+/// nested work beyond the bound is skipped, never a runaway cascade).
+///
+/// **Child-safety floor (load-bearing):** `executeOne` is reached ONLY through `gateAndExecute`'s
+/// `Admit` — at every recursion depth. So a `policy` that denies a gated/child-floor class makes it
+/// *impossible* for the Agent to get such an effect executed by proposing it (it is denied → never
+/// executed). `EmitResponse` / `ExtendGrammar` remain honestly not-wired (Skipped, never silent).
 [<Sealed>]
 type SubstrateEffectHandler
     (
@@ -29,42 +35,60 @@ type SubstrateEffectHandler
         ferrySource: unit -> string option,
         ferryLog: IDeltaLog<string>,
         ?policy: Effects.Effect -> Effects.Verdict,
-        ?ferryType: string
+        ?ferryType: string,
+        ?workRunner: Effects.IWorkRunner,
+        ?maxWorkDepth: int
     ) =
 
     let policy = defaultArg policy (fun _ -> Effects.Admit)
-    // A ferry is a PATTERN — preserved verbatim content routed to a durable, attributed stream.
-    // The PERSONA ferry is just one TYPE; future types (e.g. cross-agent, system) reuse the same
-    // pattern with a different `ferryType`. Defaulting to "persona" since that is the v1 type.
     let ferryType = defaultArg ferryType "persona"
+
+    let persistFerry (ct: CancellationToken) : Task<Effects.EffectResult> =
+        task {
+            match ferrySource () with
+            | Some content when content <> "" ->
+                let! _seq =
+                    ferryLog.AppendAsync(ZSet.ofSeq [ content, 1L ], Map.ofList [ "ferryType", ferryType; "persona", persona ], ct).AsTask()
+                return Effects.Executed
+            | _ -> return Effects.Skipped "PersistFerry: no ferried content on the channel"
+        }
+
+    /// Execute one effect at a given RunWork-nesting `depth`. RunWork's proposed effects re-enter
+    /// `gateAndExecute` (inspect→execute) — so the gate guards EVERY depth.
+    let rec executeOne (depth: int) (effect: Effects.Effect) (ct: CancellationToken) : Task<Effects.EffectResult> =
+        task {
+            match effect with
+            | Effects.PersistFerry -> return! persistFerry ct
+            | Effects.EmitResponse -> return Effects.Skipped "EmitResponse: not wired in v1 (substrate adapter)"
+            | Effects.ExtendGrammar _ -> return Effects.Skipped "ExtendGrammar: not wired in v1 (substrate adapter)"
+            | Effects.RunWork item ->
+                match workRunner with
+                | None -> return Effects.Skipped "RunWork: no work runner wired"
+                | Some runner ->
+                    match maxWorkDepth with
+                    | Some maxD when depth > maxD -> return Effects.Skipped(sprintf "RunWork: max work depth %d reached" maxD)
+                    | _ ->
+                        let! outcome = runner.RunAsync(item, ct).AsTask()
+                        match outcome with
+                        | Effects.Blocked r -> return Effects.Skipped("blocked: " + r)
+                        | Effects.NeedsAuthorization c -> return Effects.Skipped("needs authorization: " + c)
+                        | Effects.Progressed effects ->
+                            // Re-gate each proposed effect at depth+1: the Agent proposes, the gate disposes.
+                            for e in effects do
+                                let! _ = gateAndExecute (depth + 1) e ct
+                                ()
+                            return Effects.Executed
+        }
+
+    /// The gate: inspect → (admit ⇒ execute | deny ⇒ skip). The SOLE path to `executeOne`, so a
+    /// denied effect is never executed — at any depth (the child-floor invariant).
+    and gateAndExecute (depth: int) (effect: Effects.Effect) (ct: CancellationToken) : Task<Effects.EffectResult> =
+        task {
+            match policy effect with
+            | Effects.Admit -> return! executeOne depth effect ct
+            | Effects.Deny r -> return Effects.Skipped("denied by inspect: " + r)
+        }
 
     interface Effects.IEffectHandler with
         member _.InspectAsync(effect, _ct) = ValueTask<Effects.Verdict>(policy effect)
-
-        member _.ExecuteAsync(effect, ct) =
-            match effect with
-            | Effects.PersistFerry ->
-                match ferrySource () with
-                | Some content when content <> "" ->
-                    // Append the ferried content to this persona's dedicated ferry stream (durable;
-                    // the ferry history). Content rides as a weight-1 ZSet<string> entry, attributed
-                    // to the owning persona via the captured map.
-                    let t =
-                        task {
-                            let! _seq =
-                                ferryLog.AppendAsync(
-                                    ZSet.ofSeq [ content, 1L ],
-                                    Map.ofList [ "ferryType", ferryType; "persona", persona ],
-                                    ct
-                                )
-                                    .AsTask()
-                            return Effects.Executed
-                        }
-                    ValueTask<Effects.EffectResult>(t)
-                | _ -> ValueTask<Effects.EffectResult>(Effects.Skipped "PersistFerry: no ferried content on the channel")
-            | Effects.EmitResponse ->
-                ValueTask<Effects.EffectResult>(Effects.Skipped "EmitResponse: not wired in v1 (substrate adapter)")
-            | Effects.RunWork _ ->
-                ValueTask<Effects.EffectResult>(Effects.Skipped "RunWork: not wired in v1 (agent hook pending)")
-            | Effects.ExtendGrammar _ ->
-                ValueTask<Effects.EffectResult>(Effects.Skipped "ExtendGrammar: not wired in v1 (substrate adapter)")
+        member _.ExecuteAsync(effect, ct) = ValueTask<Effects.EffectResult>(executeOne 0 effect ct)
