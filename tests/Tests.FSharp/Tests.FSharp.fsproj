@@ -119,6 +119,7 @@
     <Compile Include="Observe/DurableObserve.Tests.fs" />
     <Compile Include="Observe/ObserveBridge.Property.Tests.fs" />
     <Compile Include="Observe/Chooser.Tests.fs" />
+    <Compile Include="Observe/ObserveGrid.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
