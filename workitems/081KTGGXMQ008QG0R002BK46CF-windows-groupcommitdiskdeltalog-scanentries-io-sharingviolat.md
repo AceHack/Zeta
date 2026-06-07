@@ -31,20 +31,31 @@ Zeta.Tests.Storage.DiskDeltaLogTests."group-commit segment log truncates torn tr
 **Pre-existing + windows-specific** — NOT introduced by the Log-noun work; reproduces only on Windows
 (Unix file semantics don't enforce share-mode, so macOS/Linux CI is green). It keeps Windows CI red.
 
-## Diagnosis
+## Diagnosis (CORRECTED 2026-06-07 after reading the source)
 
-`scanEntries` (recovery path) opens `delta.segment` while another handle on the same file is still
-open (the writer/append handle, or the torn-write truncation re-open). Windows enforces file
-share-mode; a second open without a compatible `FileShare` flag → `IO_SharingViolation`. Unix ignores
-this, masking the bug off-Windows. It's in the **data-plane durability/recovery path** (`Log` noun
+The `scanEntries` open at `DiskDeltaLog.fs:231` **already** uses `FileShare.ReadWrite`:
+
+```fsharp
+use fs = new FileStream(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
+```
+
+So the failing open is NOT the culprit — the `IO_SharingViolation` means **another live handle on
+`delta.segment` is open with a share mode that excludes this open** (i.e. the **writer/append
+FileStream** held elsewhere — likely the ctor/append path — was opened *without* `FileShare.ReadWrite`,
+or is not disposed before recovery scans). Windows enforces share-mode intersection across all open
+handles; Unix ignores it, masking the bug off-Windows. Data-plane durability/recovery path (`Log` noun
 backend), so it matters for the "reliable single-node DB" claim.
 
-## Fix direction
+## Fix direction (CORRECTED)
 
-- Open the segment with `FileShare.ReadWrite` (or `Read`) on the recovery scan, **and/or** ensure the
-  prior writer handle is flushed + disposed before `scanEntries` re-opens (deterministic handle
-  lifetime). Prefer `using`/`use` scoping so no handle outlives the read.
-- Add a Windows-aware test assertion (the test already exercises the path; the fix is in the open call).
+- **The fix is on the WRITER side, not the scan.** Find the append/writer `FileStream` open (the group-
+  commit writer; ctor `DiskDeltaLog.fs:~181` and the append path) and ensure it is opened with
+  `FileShare.ReadWrite` so a concurrent recovery read is allowed — **and/or** ensure the writer handle
+  is flushed + disposed before `scanEntries` runs (deterministic `use`/`using` lifetime; no writer
+  handle outliving a recovery scan).
+- Needs **Windows verification** — the failure only reproduces on Windows, so the fix can't be confirmed
+  on macOS/Linux locally; a Windows CI run (or a Windows owner) must verify. (This is why it was filed,
+  not blind-fixed: the scan's own open was already correct; the writer-handle lifecycle is the subtle part.)
 
 ## Anchors
 

@@ -56,6 +56,43 @@ A **file-type plugin** has three layers, the last two optional:
 - How "current view = git main" maps precisely (the fold/IVM ↔ git working-tree correspondence).
 - Registration/discovery of plugins (a plugins-as-rows Log, naturally).
 
+## DI / interface contract as DynamicValue + what else can be a plugin (Aaron 2026-06-07)
+
+> "is there anything else we can make plugins given the data constraint of plugins? the thought is the
+> plugins depend on the interfaces and the DI setup can be part of the dynamicvalue too — or at least the
+> negotiated base; the host may have additional DI injections or requirements."
+
+**DI/wiring is also data.** A plugin depends on *interfaces*; that dependency contract can itself be a
+`DynamicValue` — at least a **negotiated base**: the plugin declares (as data) the interfaces it
+requires, the host's DI container resolves them, and the host **may inject additional** host-specific
+capabilities/requirements. This is the **Eve Protocol / QueryInterface** ("what shape do you support?")
+applied to plugin wiring: the DI contract is negotiated data, not compiled-in.
+
+This is also how a *deterministic* plugin can still reach effectful capability **without breaking the
+data-plane determinism contract** (`081KTGEVV75`): the plugin's pure core declares an effectful
+capability as a **required interface** (a DECLARED dependency); the host injects a concrete impl; the
+plugin logic stays DST-replayable given the same injected behavior (record/replay the injected calls).
+The determinism boundary becomes explicit — pure expression tree + declared injected deps — rather than
+"no effects at all." Negotiated base = the minimum interface set any host must satisfy; host extras are
+additive.
+
+**What else can be a plugin** (given plugin = deterministic restricted `DynamicValue` expression tree +
+declared interface deps — anything that fits this shape):
+
+- File-type handlers / codecs (the seed case) and their optional Rx indexed views.
+- Validators / schema mappers / migration (schema-evolution) rules — deterministic transforms.
+- Reducers / fold functions over a Log; access/redaction predicates (deterministic).
+- Query/transform pipelines (Rx/DBSP over ZSets); negotiation/diplomacy shapes (Eve Protocol as data).
+- **The DI/wiring contract itself** (the negotiated interface base) — data, not code.
+
+NOT a plugin (must be a host-injected capability the plugin *declares*, not embeds): anything inherently
+non-deterministic (clock, randomness, network/IO, ambient state) — surfaced as a required interface and
+recorded for DST replay.
+
+Open: the negotiated-base schema (how a plugin declares required interfaces in DynamicValue), and the
+host-extension protocol (how a host advertises additional injectables). Composes with Eve Protocol
+(`Diplomacy.fs`), the determinism contract (`081KTGEVV75`), and `DynamicValue` as the carrier.
+
 ## Performance parity + dual-implementation benchmark (Aaron 2026-06-07)
 
 > "the plugin that loads the dynamic value should be as fast as our hand-written F# we have without the
