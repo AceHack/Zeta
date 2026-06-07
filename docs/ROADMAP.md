@@ -22,6 +22,25 @@ backlog** — and the backlog selection criterion is *"does it help us see the s
 clearly?"* Anything that converts to none of the four is drift. (Detail:
 `memory/feedback_aaron_triage_every_input_toward_roadmap_via_code_proof_treaty_seed_or_backlog_*`.)
 
+### Layer names — TENTATIVE (pending naming-expert + Ilyana review; unanchored coinage = debt)
+
+Proposed set (Amara 2026-06-07) for the stack layers — **NOT yet load-bearing**; a naming-expert +
+public-API (Ilyana) pass decides before any public/glossary use:
+
+| Layer | Tentative name | Settled? |
+|-------|----------------|----------|
+| package-manager-of-package-managers | **Ace** | ✅ settled |
+| data plane + cell substrate | **Zeta** | ✅ settled |
+| DI/plugin **microcore** (MEF-like) | **Kernel** (or `Nucleus` — Kernel is OS-overloaded) | tentative |
+| within-cell HA / resilience | **Geode**? | ⚠️ **collision** |
+| cross-cell saga / control layer | **Loom** (weaves cells without collapsing them) | tentative |
+
+⚠️ **Naming collision to resolve:** we already established *cells ARE geodes* (full-replication-within /
+partial-across — see this doc's §1). So **`Geode` most naturally names the cell / its replication model,
+not the within-cell HA shell.** Using `Geode` for HA collides with that. The within-cell HA layer likely
+wants a different name (e.g. the resilience *shell* / *vault* / *anchor*); `Geode` should stay attached to
+the cell-as-geode concept. Flag for the naming pass.
+
 ### ITEM #1 — NO USE OF THE GIT CLI
 
 All persistence routes through **our DB layer** (understands filesystem + git, runs git-native:

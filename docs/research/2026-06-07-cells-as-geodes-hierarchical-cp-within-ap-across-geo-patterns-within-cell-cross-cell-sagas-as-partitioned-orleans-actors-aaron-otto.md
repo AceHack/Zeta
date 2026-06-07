@@ -92,6 +92,30 @@ A cross-cell workflow is a **DU in both modes** — what differs is the **transi
 So the mode is not a guess: it falls out of the DU's transition function. If you can write the transition
 as `f(ownStream, otherStream)` computable by both, you have your license to skip the bus.
 
+**Make it a DECLARED, CHECKED property (Amara 2026-06-07).** Don't leave the mode implicit — a cross-cell
+DU **declares its coordination class**, and the default must be justified-away to escalate:
+
+- `CommutativeView` — **the default**. State = a fold over the cell streams; order-independent.
+- `SerializedSaga` — **requires justification**: *which transition is not computable from the streams?*
+
+This gives a future **admission gate** (a lint/proof check before a cross-cell DU is admitted):
+
+1. list the input streams,
+2. define the transition / fold,
+3. prove/check **commutativity · associativity · idempotence · confluence**,
+4. proof passes → `CommutativeView` (AP, eventual-C, no coordination),
+5. proof fails or impossible → `SerializedSaga` (CP, serialized-A — and you must name the non-derivable
+   transition).
+
+The DU is the *state shape*; the coordination class is a *property of the transition function*, declared
+and checked — never a silent default to serialization. (Same posture as the data-plane plugin determinism
+contract `081KTGEVV75`: admitted because *checked*, not because clever.)
+
+Class examples — *CommutativeView:* uncertainty reduction, read-model/index convergence, evidence/
+reputation accumulation, replicated package-graph observations, CRDT merge, belief-convergence.
+*SerializedSaga:* global unique reservation, asset transfer, exactly-once irreversible side-effect,
+"only one winner" decisions, non-commutative phase transitions.
+
 ### 4a. DEFAULT — CRDT / commutative two-actor merge (NO serialization, fully AP)
 
 When **order does not matter**, cross-cell coordination is just a **commutative CRDT merge**: two actors
