@@ -18,8 +18,8 @@ composes_with: []
 
 ## Symptom (observed 2026-06-07)
 
-The `gate` workflow went red across multiple consecutive `main` commits (#6734/#6735/#6736 and the
-#6737 tip run). Every failing job failed in the **same step** — `Install toolchain via three-way-parity
+The `gate` workflow went red across several consecutive `main` commits (PRs 6734 through 6737). Every
+failing job failed in the **same step** — `Install toolchain via three-way-parity
 script (GOVERNANCE §24)` (`tools/setup/install.sh`) — with:
 
 ```
@@ -41,8 +41,15 @@ signal and blocking auto-merge. The actual content (markdownlint, conflict-marke
 
 ## Fix options (DevOps — Dejan owns the install script per GOVERNANCE §24)
 
+0. **Cache the mise-installed deps across runs (Aaron 2026-06-07 — the primary fix).** Add a GitHub
+   Actions cache for the mise tool store (`~/.local/share/mise` / the aqua/tool cache), keyed on what
+   actually changes — the mise config + lockfile hash — in **every** workflow/action. Then deps re-pull
+   **only when they change**, not every run, so a transient CDN 504 almost never reaches the critical path
+   (a cache hit skips the download entirely). Verbatim: *"cache the results of the dependencies from mise
+   so you don't have to pull them every time, only when they change, in every github action/workflow —
+   then it pulls much less often."* Turns "download on every job" into "download only on dep change."
 1. **Retry on 5xx** — wrap aqua/mise tool installs in a bounded retry-with-backoff for transient
-   HTTP 5xx / timeout (the cheapest, highest-leverage fix; aqua downloads are idempotent).
+   HTTP 5xx / timeout (cheap defense-in-depth for the rare cache-miss-and-504; aqua downloads are idempotent).
 2. **Make `kind` (and other k8s-only tools) optional / lazy** — don't install `kind` in jobs that don't
    need it (lint, markdownlint, conflict-markers, most build-test). Scope the heavy/optional tools to the
    jobs that actually use them, or a separate install profile.
