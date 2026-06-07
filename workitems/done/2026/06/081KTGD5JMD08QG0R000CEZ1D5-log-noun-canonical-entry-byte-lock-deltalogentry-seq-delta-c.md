@@ -1,11 +1,12 @@
 ---
 id: 081KTGD5JMD08QG0R000CEZ1D5
 type: task
-state: backlog
+state: done
 priority: P1
 slug: log-noun-canonical-entry-byte-lock-deltalogentry-seq-delta-c
 title: "Log noun canonical entry byte-lock (DeltaLogEntry: Seq+Delta+Captured) — all-lang/all-ser, replace ad-hoc System.Text.Json; completes the 3-noun data-plane proven base"
 created: 2026-06-07T06:43:49.517Z
+completed: 2026-06-07T09:05:53.946Z
 depends_on: []
 composes_with: []
 ---
@@ -71,3 +72,20 @@ serializer lands; JSON/XML also available) — all ride the same `DeltaLogEntryD
 - Code to migrate: `src/Core/DeltaLog.fs`, `src/Core.Git/GitDeltaLog.fs`, `src/Core/DiskDeltaLog.fs`
 - Discipline: `.claude/rules/culture-invariant-by-default.md` (ordinal `Captured` keys),
   `.claude/rules/no-binary-in-proof-lineage.md` (hex-in-JSON golden vectors)
+
+## DONE (2026-06-07)
+
+All slices complete — the `Log` noun is at the proven bar AND consumed by the real backends:
+
+- **4/4 byte-lock** — F# reference codec + golden seed (#6730/#6735), C# oracle (#6743), TS oracle
+  (#6744), Rust oracle (#6745). All four reproduce the shared seed byte-identical + round-trip.
+- **`IEntryCodec` seam + `CborEntryCodec`** (#6757) — the whole-entry canonical codec the backends adopt.
+- **Backend migration COMPLETE** — `GitDeltaLog` (#6759) + `DiskDeltaLog`/`GroupCommitDiskDeltaLog`
+  (#6763) now serialize the WHOLE entry through the canonical codec, off `System.Text.Json`. The
+  git-native and disk delta logs persist exactly the 4-language byte-locked format. 22 git + 166 storage
+  tests green.
+
+The 3-noun data-plane proven math base (ZSet ✅ + DynamicValue ✅ + Log ✅) is whole, and the delta-log
+backends store the proven format end-to-end. Remaining adjacent (separate workitems, NOT this noun):
+DiskSnapshotStore/GitSnapshotStore still use STJ for snapshot metadata (snapshot-store migration);
+the windows DiskDeltaLog handle-lifecycle bug (081KTGGXMQ0); the no-git-CLI command surface (roadmap #1).
