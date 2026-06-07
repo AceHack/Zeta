@@ -48,6 +48,28 @@ Full rationale + property-parity table + hash-strength caveat:
   OR **multi-file** (ride the OS filesystem; dirs/files ARE nodes, git-loose-object-shaped). Mirrors git's
   loose-vs-packfile duality. Both must pass the same backend-parity test.
 - Beacon add: closure table (Karwin, *SQL Antipatterns* 2010); single-file DB + VFS (SQLite).
+- **F# foundation LANDED (PR #6789):** `src/Core/ZSetMerkle.fs` — hash-parameterized canonical
+  Merkle-over-Z-set (`rootWith`/`root`), ordinal key-byte canonicalization, 7 FsCheck+xUnit properties
+  (retraction-native, order-independent, deterministic, sensitivity). Remaining: 4-lang golden vectors,
+  BLAKE3 dependency, closure-table DAG, store wiring.
+
+### Content-addressed nodes — single-instance + multi-parent + edit-scope choice (Aaron 2026-06-07)
+
+> *"based on content-based hashes a single file is only represented once and it can live under two
+> different folders at the same time; then when you edit a file you choose to save it just to that one
+> folder (the default, like regular filesystems) or to do a content update everywhere."*
+
+- **Single-instance**: content stored ONCE, keyed by content hash (BLAKE3); the `ZSetMerkle` root is the
+  node id. Identical content under many paths = one node (dedup).
+- **Multi-parent**: a content node can sit under N folders at once — many parent edges → one node in the
+  closure table (Z-set of edges allows many-to-one). Hardlink-/git-blob-shaped.
+- **Two edit modes (user chooses scope):** (1) **save-to-this-folder** = DEFAULT, copy-on-write fork —
+  new content node, repoint ONLY this folder's edge (regular-fs feel); (2) **content-update-everywhere** =
+  replace the node, ALL parent edges following the old hash now point at the new hash. Both are pure
+  closure-table edge edits (retraction repoints; idempotent by content hash) → inherit DST + the
+  retractable/compensating discipline.
+- Beacon: Unix hardlinks; git blobs; single-instance storage; COW clones (ZFS/btrfs/APFS).
+- Full: `docs/research/2026-06-07-filesystem-backend-needs-a-merkle-dag-...` §4.
 
 ## Hash strength — DECIDED: BLAKE3 (Aaron 2026-06-07)
 

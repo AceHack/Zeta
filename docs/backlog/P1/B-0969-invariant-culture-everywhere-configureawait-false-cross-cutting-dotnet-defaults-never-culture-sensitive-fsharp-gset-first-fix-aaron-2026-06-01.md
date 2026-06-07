@@ -88,6 +88,35 @@ documented as a "known gap" in `src/Core.TypeScript/{g-set,bag}/golden-vectors.j
   `.claude/rules/`): "Zeta is server/library code — invariant culture / ordinal
   by default; `ConfigureAwait(false)` by default; culture-sensitive is opt-in."
 
+## URGENCY ESCALATION (maintainer 2026-06-07) — do this sooner rather than later
+
+> *"we need to do this sooner rather than later cause it affects all 4 lang and a lot of surface area
+> before we get too far."*
+
+The longer the 4-language surface grows, the more code is written against the culture-sensitive default and
+the more golden vectors bake in ASCII-masked parity — so the fix gets strictly more expensive over time.
+Treat B-0969 as **do-now**, ahead of net-new primitive surface. The collation choice (ordinal / codepoint ≡
+UTF-8 byte order) is the **treaty** every oracle + every golden vector must conform to; landing it early is
+what keeps the 4-oracle byte-consensus cheap. Gating decision (comparer strategy a-vs-b) is in action 1 —
+pin it first so the cross-language fix can proceed.
+
+## Confirmed located instance — ZSet (not just G-Set), empirically verified (Otto 2026-06-07)
+
+The same defect lives in **`ZSet`**, the load-bearing data-plane primitive, not only G-Set:
+`EntryKeyComparer` and the ofSeq/merge paths sort via **`Comparer<'K>.Default`** —
+`src/Core/ZSet.fs:26, 67, 123, 548` — which is **culture-sensitive for `string`**. (Equality uses
+`EqualityComparer<'K>.Default`, which IS ordinal for string, so only the **ordering** diverges — but
+ordering drives the canonical sorted-run invariant, so culture-colliding distinct strings can be
+mis-ordered/merged → an order-dependent net Z-set.)
+
+**Empirically confirmed**, not source-read only: an FsCheck order-independence property over
+`ZSet.ofSeq` with **string** keys is falsifiable (forward-vs-reverse `ofSeq` of culture-colliding strings
+yields different net Z-sets); the same property over **`int`** keys passes. Surfaced while landing the
+canonical Merkle-over-Z-set (PR #6789) — whose own fix is to **re-sort by ordinal key bytes**, sidestepping
+`ZSet`'s culture-sensitive order (the pattern the ZSet fix should adopt). Reaffirmed by the maintainer
+2026-06-07: *"we should be culture insensitive everywhere by default."* Fold ZSet into action 1's
+ordinal-comparison fix alongside G-Set (same comparer-strategy decision).
+
 ## Composes with
 
 - **B-0959** (cross-language substrate master checklist) — the 4-oracle

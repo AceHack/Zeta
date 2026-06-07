@@ -101,12 +101,33 @@ Three moves that make the fs-Merkle store *be* the existing substrate rather tha
    Same closure-table-over-Z-sets, Merkle-rooted, both ways — chosen per deployment, identical commands on
    top. (This mirrors git's own loose-objects-vs-packfile duality.)
 
-Added Beacon: **closure table** — Bill Karwin, *SQL Antipatterns* (2010), the closure-table pattern for
-storing hierarchies/DAGs relationally (ancestor/descendant/depth); transitive-closure relations.
-**Single-file DB** — SQLite (D. Richard Hipp) — one-file database + pluggable VFS. Novelty stays honest:
-not a new Merkle store nor a new closure table, but **Merkle-hashing the DBSP Z-set so the
-content-addressed history is natively retractable, with the DAG itself a Z-set closure table**, materialized
-single- or multi-file under one command interface.
+4. **Content-addressed nodes → single-instance + multi-parent + an explicit edit-scope choice** (Aaron
+   2026-06-07): *"based on content-based hashes, a single file is only represented once and it can live
+   under two different folders at the same time; then when you edit a file you choose to save it just to
+   that one folder (the default, like regular filesystems) or to do a content update everywhere."*
+   - **Single-instance.** Each file's content is stored **once**, keyed by its **content hash (BLAKE3)** —
+     identical content under many paths is one node (dedup / single-instance storage). The content hash
+     *is* the node id; the `ZSetMerkle` root over the node's bytes/entries is the natural key.
+   - **Multi-parent.** A content node can sit under **two (or N) folders simultaneously** — many parent
+     edges to one node in the closure table (a Z-set of edges naturally allows many-to-one). Hardlink- /
+     git-blob-shaped: one blob, multiple tree entries.
+   - **Two edit modes — the user chooses scope:**
+     | Mode | Semantics | Mechanism |
+     |------|-----------|-----------|
+     | **save-to-this-folder** (DEFAULT, regular-fs feel) | copy-on-write fork — only *this* folder sees the change | new content node (new hash); repoint **only this folder's edge**; other referrers keep the old node |
+     | **content-update-everywhere** | every folder referencing the content follows the change | replace the content node; **all parent edges** that pointed at the old hash now point at the new hash |
+   - Both modes are pure closure-table edge edits (retraction repoints an edge; idempotent by content
+     hash) — so they inherit DST-replay + the retractable/compensating command discipline.
+
+Added Beacon: **closure table** — Bill Karwin, *SQL Antipatterns* (2010), hierarchies/DAGs relationally
+(ancestor/descendant/depth). **Single-file DB** — SQLite (D. Richard Hipp), one-file DB + pluggable VFS.
+**Content-addressed single-instance + multi-reference**: Unix **hardlinks** (one inode, many dir entries),
+**git blobs** (content-addressed, shared across trees/commits), single-instance storage (Windows SIS),
+**copy-on-write clones** (ZFS / btrfs / APFS) — the COW-local-vs-propagate choice is exactly "clone the
+blob and repoint one edge" vs "edit the shared object." Novelty stays honest: not a new Merkle store nor a
+new closure table, but **Merkle-hashing the DBSP Z-set so the content-addressed history is natively
+retractable, the DAG itself a Z-set closure table with content-hash single-instance multi-parent nodes**,
+materialized single- or multi-file under one command interface.
 
 ## Ties
 
