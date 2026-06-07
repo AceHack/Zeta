@@ -170,7 +170,7 @@ jobs:
 
       - name: Checkout
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           # Need both PR base and head shas for git diff. fetch-depth: 0
           # gets full history; the 5-minute job timeout above is sized
@@ -321,7 +321,7 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Path-filter result (B-0125)
         shell: bash
@@ -453,7 +453,7 @@ jobs:
     # entirely.
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth for toolchain state. mise installs
@@ -485,7 +485,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         # Comprehensive cache of everything `tools/setup/install.sh`
@@ -587,7 +587,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         # Comprehensive cache — see lint-shell job above for the
@@ -646,7 +646,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         # Comprehensive cache — see lint-shell job above for the
@@ -720,7 +720,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -752,7 +752,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -788,7 +788,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -821,7 +821,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -850,7 +850,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -879,7 +879,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -907,7 +907,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -931,7 +931,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain
         run: ./tools/setup/install.sh
@@ -954,7 +954,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain
         run: ./tools/setup/install.sh
@@ -973,7 +973,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         # Comprehensive cache — see lint-shell job above for the
@@ -1036,7 +1036,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         # Comprehensive cache — see lint-shell job above for the
@@ -1107,7 +1107,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
