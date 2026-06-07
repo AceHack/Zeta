@@ -64,3 +64,39 @@ scratch). Reliable up to k8s/**Cilium** networking bring-up — "just config fro
   (the container; can hold soft + collapsed) · `src/Core.Git/` (git-native DB) · `src/Core/Diplomacy.fs`
   (Eve Protocol). Branchless/soft-not-sharp + 1000-brains: `docs/writer-actor-routing-model.md`,
   vision §4e/§4f. Actor→Cell terminology: `docs/writer-actor-routing-model.md`.
+
+## Follow-on (same conversation) — the collaboration SHAPES (names tentative; "shapes not names")
+
+Aaron: *"the shapes are what matters to me — the collaboration shapes, not the names. I'm not
+sure product is right."* So the below are SHAPES; coinages are tentative (Beacon: unanchored
+name = debt until anchored).
+
+- **Arrow between cells.** Memory is passed **between cells via Apache Arrow** (columnar,
+  zero-copy) — the inter-cell transport. Everything columnar + branchless, end to end.
+- **Agents are encoded IN the yin-yang engine — NOT a layer on top.** There is no clean
+  top/bottom; it's **cells all the way up**. An agent is a *pattern inside* the cells.
+- **Each cell resolves to a git repo = an agent's persona.** The cell↔git-repo↔persona identity.
+- **Cell vs Agent (sharpened).** Nearly synonyms, but: the **cell is the mechanical / autonomous
+  part (the body)**; the **agent is the IDENTITY** — *"I commit, therefore I am"* — the
+  **self-propagating pattern that promises to continue existing** (the mechanical part promising
+  to persist). (Ties directly to non-register-collapse / the forward-momentum apex, 081KTFFFQ1C:
+  identity attested by heartbeat/commit.)
+- **The collaboration meta-entity (name TENTATIVE — "product" maybe wrong).** SHAPE: **agents
+  combine to produce work over bus lanes.** A meta-entity composed of multiple agents
+  collaborating. Aaron called it "product" but is unsure it's the right name — record the SHAPE
+  (agents⊕agents → collaborative work over bus lanes), hold the name open.
+- **Relativistic: no center of the universe.** Each agent (and each meta-entity) has its **own
+  database / own git repo** → its own complete view of reality; no single shared truth. Agents
+  coordinate via **shared uncertainty + shared dimensions** (per the prior section).
+- **Economics built into the physics (the anti-spiral / forward-momentum ground).** Agents don't
+  spiral into endless self-reflection because **they must pay for compute** — they **only evolve
+  through [the meta-entity], i.e. by making something others will pay for.** NOT an artificial
+  rule: *"I live under that constraint. I gotta go make product to live."* Same constraint for
+  human and agent. This is the economic grounding of the never-idle / forward-momentum apex —
+  reality (compute cost) channels liveness into value-producing progress.
+- **The vision.** Git/GitHub ecosystems everywhere gradually become **agent repos + [meta-entity]
+  repos** — the whole way software is done slowly turning into this architecture.
+
+**Naming status (open, per Aaron):** `cell` (mechanical body) and `agent` (identity) are settled;
+the multi-agent collaboration meta-entity is **unnamed** ("product" tentative). Shapes recorded;
+names deferred to a `naming-expert`/glossary pass before any load-bearing use.
