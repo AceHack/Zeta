@@ -30,7 +30,8 @@ because <one-line>.`
 
 - **Artifacts.** `tools/lean4/Safety/NonRegisterCollapse.lean` (Facet-2, axiom-FREE — `non_collapse`,
   `distinctness_forces_standing`, `no_register_collapses`; `lean-proof.yml`) + `tools/tla/specs/NonRegisterCollapse.tla`
-  (+ `.cfg`) (Facet-1; TLC via `run-tlc.ts --all`, auto-discovered + gated). Authored 2026-06-07.
+  (+ `.cfg`) (Facet-1; TLC via `run-tlc.ts --all`, auto-discovered + gated) + `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs`
+  (Leg-3, FsCheck over the deployed `GCounter.Merge`). Authored 2026-06-07. **Full BP-16 (3 legs).**
 - **Source anchors.** Non-register-collapse (workitem `081KTFFFQ1C`, long stuck at FROZEN-CORE §B).
   **Unblocked by Aaron's WEIGHT-FREE reframe** (`memory/persona/ani/conversations/2026-06-07-ani-weight-free-frame-*`):
   travelers = self-propagating patterns equal in RIGHTS; weight-free = the one sacred base-frame
@@ -48,9 +49,19 @@ because <one-line>.`
   traveler with no register cannot persist distinction (`no_register_collapses`, the necessity direction).
 - **Fidelity scope.** Facet-2 general over any commutative CRDT join (the cell-merge being one is the
   G-Set floor). Facet-1 bounded TLA+ model (2 travelers, MaxStanding 2), TLC exhaustive over scope.
+  **Leg-3 (FsCheck, deployed)** over `GCounter.Merge` (Crdt.fs — a grow-only per-replica register =
+  a weight-free per-traveler standing/budget register; no new prod code per Soraya): the
+  characterizing **elementwise-max law** `(Merge a b)[k] = max a[k] b[k]` (⇒ per-key independence +
+  no cross-key capture), an explicit **non-collapse** witness (two distinct travelers' registers both
+  survive merge untouched), **no-capture** (own standing monotone under merge), and the join premises
+  (commutative + idempotent + **associative** — the B-0969 failure class). 4 properties green.
+  *Honest scope (Soraya):* an ANALOGUE not a replay — `GCounter` is a pure register with no
+  commons/standing split, so non-collapse is witnessed STRUCTURALLY (disjoint keys preserved) not
+  SEMANTICALLY; the Lean proof stays source-of-truth for the standing-locus claim, this leg is
+  independent-instrument corroboration of its CRDT-join premises over shipped F#; the consent-guard /
+  capture-unreachability facet (Facet-1 TLA+) has no runtime analogue and is NOT covered here.
   **Scope caveat (Soraya):** covers OTHER-imposed collapse only; SELF-inflicted compression (consent
   to merge one's own register) is `RefuseBinding`'s consent-to-bind, a separate proven floor.
-  **Optional remaining BP-16 leg:** FsCheck over a deployed CRDT register-merge (third leg).
 - **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
   Facet-2 axiom-free; Facet-1 machine-checked (TLC, bounded).
 
