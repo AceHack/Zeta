@@ -159,6 +159,23 @@
       8472    # VXLAN (Cilium can also run native-routing)
     ];
     trustedInterfaces = [ "cilium_host" "cilium_net" "cni0" "lxc+" ];
+
+    # Cilium REQUIRES reverse-path filtering OFF. NixOS' default
+    # `checkReversePath` installs an iptables `-m rpfilter` DROP in the
+    # mangle PREROUTING chain (`nixos-fw-rpfilter`). Cilium's eBPF datapath
+    # delivers pod->host traffic on an asymmetric path that this rpfilter
+    # marks as failing and DROPS *before conntrack* — so every pod->node
+    # packet (pod->apiserver via the kubernetes ClusterIP, kubelet, etc.)
+    # vanishes with no conntrack entry and no counter. Symptom: node goes
+    # Ready, Cilium is healthy, pod->internet and pod->pod work, but CoreDNS
+    # can't reach 10.43.0.1 -> in-cluster DNS dies -> every helm/app chart
+    # CrashLoops on DNS. The sysctl `net.ipv4.conf.*.rp_filter` being loose
+    # is NOT enough; the iptables rpfilter module is separate and must be
+    # disabled. Confirmed on node-09485d (2026-06-07): inserting a RETURN for
+    # the pod/service CIDR ahead of the rpfilter DROP immediately restored
+    # pod->apiserver and the whole cluster recovered.
+    # See Cilium docs: "rp_filter must be disabled".
+    checkReversePath = false;
   };
 
   environment.variables = {

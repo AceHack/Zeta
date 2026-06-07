@@ -35,6 +35,12 @@
       8472
     ];
     trustedInterfaces = [ "cilium_host" "cilium_net" "cni0" "lxc+" ];
+
+    # Cilium REQUIRES reverse-path filtering OFF — NixOS' default
+    # `checkReversePath` rpfilter (mangle PREROUTING) drops Cilium's
+    # asymmetric pod->host traffic before conntrack, black-holing every
+    # pod->node packet. Same fix + rationale as k3s-server.nix.
+    checkReversePath = false;
   };
 
   systemd.tmpfiles.rules = [
