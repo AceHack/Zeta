@@ -277,7 +277,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
-    <ProjectReference Include="..\..\src\Core.Blake3\Zeta.Core.Blake3.fsproj" />
+    <ProjectReference Include="..\..\src/Core.FSharp.Blake3/Zeta.Core.FSharp.Blake3.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Metric\Zeta.Core.CSharp.Metric.csproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />

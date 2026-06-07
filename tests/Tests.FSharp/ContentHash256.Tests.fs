@@ -2,9 +2,9 @@ module Zeta.Tests.ContentHash256Tests
 
 open global.Xunit
 open Zeta.Core
-open Zeta.Core.Blake3
+open Zeta.Core.FSharp.Blake3
 
-module C256 = Zeta.Core.Blake3.ContentHash256
+module C256 = Zeta.Core.FSharp.Blake3.ContentHash256
 
 [<Fact>]
 let ``ContentHash256 known-answer: empty input is the full raw BLAKE3-256 digest (no reversal)`` () =

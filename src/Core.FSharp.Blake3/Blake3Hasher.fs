@@ -1,4 +1,4 @@
-namespace Zeta.Core.Blake3
+namespace Zeta.Core.FSharp.Blake3
 
 open System
 open System.Buffers.Binary

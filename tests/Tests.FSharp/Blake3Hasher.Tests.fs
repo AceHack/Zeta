@@ -2,7 +2,7 @@ module Zeta.Tests.Blake3HasherTests
 
 open global.Xunit
 open Zeta.Core
-open Zeta.Core.Blake3
+open Zeta.Core.FSharp.Blake3
 
 module CH = Zeta.Core.ContentHasher
 

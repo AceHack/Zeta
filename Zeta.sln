@@ -149,9 +149,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.FSharp.ObserveBridge",
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.Core.FSharp.ObserveBridge", "src\Core.FSharp.ObserveBridge\Zeta.Core.FSharp.ObserveBridge.fsproj", "{177D8601-36C6-4AB6-BD7A-F790C96CA458}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Blake3", "Core.Blake3", "{CDEC9628-3A7E-5B06-3B47-67082715C17B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.FSharp.Blake3", "Core.FSharp.Blake3", "{CDEC9628-3A7E-5B06-3B47-67082715C17B}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.Core.Blake3", "src\Core.Blake3\Zeta.Core.Blake3.fsproj", "{D1452D3D-B660-4C3D-B33A-BAAEB9F9A9F1}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.Core.FSharp.Blake3", "src\Core.FSharp.Blake3\Zeta.Core.FSharp.Blake3.fsproj", "{D1452D3D-B660-4C3D-B33A-BAAEB9F9A9F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

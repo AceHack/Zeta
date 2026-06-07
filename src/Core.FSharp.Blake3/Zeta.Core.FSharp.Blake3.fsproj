@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>Zeta.Core.Blake3</RootNamespace>
-    <AssemblyName>Zeta.Core.Blake3</AssemblyName>
+    <RootNamespace>Zeta.Core.FSharp.Blake3</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.Blake3</AssemblyName>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
