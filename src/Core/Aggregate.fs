@@ -261,7 +261,7 @@ type AggregateExtensions =
     static member GroupByMin<'K, 'G, 'V
         when 'K : comparison and 'G : comparison and 'V : comparison and 'G : not null>
         (this: Circuit, s: Stream<ZSet<'K>>, key: Func<'K, 'G>, value: Func<'K, 'V>) : Stream<ZSet<'G * 'V>> =
-        let cmp = Comparer<'V>.Default
+        let cmp = KeyComparerCache<'V>.Instance
         let min = Func<'V, 'V, 'V>(fun a b -> if cmp.Compare(a, b) <= 0 then a else b)
         this.RegisterStream (MinMaxOp(s.Op, key, value, min))
 
@@ -270,7 +270,7 @@ type AggregateExtensions =
     static member GroupByMax<'K, 'G, 'V
         when 'K : comparison and 'G : comparison and 'V : comparison and 'G : not null>
         (this: Circuit, s: Stream<ZSet<'K>>, key: Func<'K, 'G>, value: Func<'K, 'V>) : Stream<ZSet<'G * 'V>> =
-        let cmp = Comparer<'V>.Default
+        let cmp = KeyComparerCache<'V>.Instance
         let max = Func<'V, 'V, 'V>(fun a b -> if cmp.Compare(a, b) >= 0 then a else b)
         this.RegisterStream (MinMaxOp(s.Op, key, value, max))
 

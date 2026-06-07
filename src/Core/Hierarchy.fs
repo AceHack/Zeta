@@ -81,7 +81,7 @@ type ClosurePair<'N when 'N : comparison> =
         member this.CompareTo(other) =
             match other with
             | :? ClosurePair<'N> as p ->
-                let cmp = System.Collections.Generic.Comparer<'N>.Default
+                let cmp = KeyComparerCache<'N>.Instance
                 let c = cmp.Compare(this.Ancestor, p.Ancestor)
                 if c <> 0 then c
                 else
@@ -234,7 +234,7 @@ type HierarchyExtensions =
          closure: Stream<ZSet<ClosurePair<'N>>>,
          root: 'N) : Stream<ZSet<ClosurePair<'N>>> =
         this.Filter(closure, Func<_, _>(fun (p: ClosurePair<'N>) ->
-            System.Collections.Generic.Comparer<'N>.Default.Compare(p.Ancestor, root) = 0))
+            KeyComparerCache<'N>.Instance.Compare(p.Ancestor, root) = 0))
 
     /// Ancestors of `leaf` — from immediate parent up to root.
     [<Extension>]
@@ -243,4 +243,4 @@ type HierarchyExtensions =
          closure: Stream<ZSet<ClosurePair<'N>>>,
          leaf: 'N) : Stream<ZSet<ClosurePair<'N>>> =
         this.Filter(closure, Func<_, _>(fun (p: ClosurePair<'N>) ->
-            System.Collections.Generic.Comparer<'N>.Default.Compare(p.Descendant, leaf) = 0))
+            KeyComparerCache<'N>.Instance.Compare(p.Descendant, leaf) = 0))

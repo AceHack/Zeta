@@ -125,4 +125,4 @@ type ResidualExtensions =
     static member ResidualMax<'T, 'K
         when 'T : comparison and 'K : comparison and 'K : not null>
         (circuit: Circuit, input: Stream<ZSet<'T>>, keyFn: Func<'T, 'K>) : Stream<'K voption> =
-        circuit.RegisterStream (ResidualMaxOp(input.Op, keyFn, Comparer<'K>.Default))
+        circuit.RegisterStream (ResidualMaxOp(input.Op, keyFn, KeyComparerCache<'K>.Instance))

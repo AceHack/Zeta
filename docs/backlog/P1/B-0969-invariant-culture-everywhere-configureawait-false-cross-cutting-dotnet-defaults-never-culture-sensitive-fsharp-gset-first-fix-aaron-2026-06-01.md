@@ -189,12 +189,16 @@ sites are ordinal-for-string already, left as-is). Status:
 | `ZSet.fs` | 4 | ✅ FIXED (#6797) → `KeyComparerCache<'K>` (cached, hot-path-safe) |
 | `IndexedZSet.fs` | 4 | ✅ FIXED (this PR) → `KeyComparerCache` (+ `Collation.forKey` in the `inline join`) |
 | `Bag.fs` | — | ✅ already ordinal (uses F# `compare` / `String.CompareOrdinal` deliberately — no change) |
-| `Hierarchy.fs` (closure table) | 3 (`:84/:237/:246`) | ⏳ TODO — fs-relevant (`Comparer<'N>.Default`; `:237/:246` are equality-via-compare) |
-| `Residuated.fs` | 1 (`:128`) | ⏳ TODO — `ResidualMaxOp(… Comparer<'K>.Default)` |
-| `Aggregate.fs` | 2 (`:264/:273`) | ⏳ TODO — `Comparer<'V>.Default` (value min/max ordering) |
+| `Hierarchy.fs` (closure table) | 3 (`:84/:237/:246`) | ✅ FIXED → `KeyComparerCache<'N>` |
+| `Residuated.fs` | 1 (`:128`) | ✅ FIXED → `KeyComparerCache<'K>` |
+| `Aggregate.fs` | 2 (`:264/:273`) | ✅ FIXED → `KeyComparerCache<'V>` (value min/max now ordinal) |
 
-Remaining: Hierarchy / Residuated / Aggregate (follow-up slices), then the C#/Rust/TS oracle audit + the
-golden-vector regeneration with non-ASCII keys + analyzer enforcement.
+**F# `src/Core` ordering audit COMPLETE** — every culture-sensitive ordering site is now binary/ordinal (or
+was already ordinal, per Bag). Remaining B-0969 work: (1) C#/Rust/TS oracle audit (the other three
+languages); (2) regenerate the 4-oracle golden vectors with **non-ASCII** keys so the byte-consensus
+actually exercises ordinal (un-mask the ASCII fixtures); (3) analyzer enforcement
+(`CA1304/1305/1307/1310/2007` at error level) so it can't regress; (4) the carry-as-identity collation
+*selection* API (strategy (a)) on top of the now-correct default.
 
 ## Composes with
 
