@@ -44,7 +44,7 @@ Each noun = a 4× byte-lock cost, so mint only what's irreducible (Rodney's Razo
 |------|--------|
 | **`ZSet`** (change algebra; state AND change) | ✅ 4/4 + golden vectors + abelian-group generic-math |
 | **`DynamicValue`** (self-describing element; soft-vs-collapsed = tag inside) | ✅ 4/4 JSON+CBOR + Arrow/XML |
-| **`Log`** (ordered ZSets over git; entry `(Seq, ZSet, Captured)`) | 🚧 F# reference codec ✅ (#6730); C#/Rust/TS + golden hex seed next |
+| **`Log`** (ordered ZSets over git; entry `(Seq, ZSet, Captured)`) | ✅ **4/4 byte-lock** (F# #6730 + golden seed #6735 + C# #6743 + TS #6744 + Rust #6745) — entry → DynamicValue.Object, inherits DynamicValue's CBOR lock. Remaining: migrate GitDeltaLog/DiskDeltaLog off System.Text.Json onto the canonical codec (consumes it; not part of the lock). |
 
 Killed (verbs/views/coordinates/consumers, NOT nouns): Delta=ZSet, Snapshot=fold(Log),
 Value=DynamicValue-in-ZSet, Manifest=(ref,seq), Transaction=commit-verb, Index=view(Log),
@@ -85,8 +85,10 @@ using DynamicValue's byte-locked per-format serializer:
 ### Sequence (data plane first)
 
 1. **NO GIT CLI** (item #1) — generic command surface (MCP + CLI) + route all persistence through it. *The definition of done.*
-2. **Close the `Log` noun** — F# reference ✅ (#6730); next: golden hex seed + C#/Rust/TS oracles + migrate
-   `GitDeltaLog`/`DiskDeltaLog` off `System.Text.Json`. → 3-noun base complete.
+2. **Close the `Log` noun** — ✅ **DONE (4/4 byte-lock)**: F# #6730 + golden seed #6735 + C# #6743 +
+   TS #6744 + Rust #6745. **The 3-noun data-plane proven math base is now whole (ZSet ✅ + DynamicValue ✅
+   + Log ✅ across all four languages).** Remaining tail: migrate `GitDeltaLog`/`DiskDeltaLog` off
+   `System.Text.Json` onto the canonical codec (consumes the proven encoding; not part of the byte-lock).
 3. **YAML serializer for DynamicValue** (4-lang) — unblocks the git-default format.
 4. **MD + frontmatter treaty** (4-lang) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
