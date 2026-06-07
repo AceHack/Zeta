@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "zeta": {
+      "command": "dotnet",
+      "args": ["tools/zeta-mcp/bin/Release/net10.0/zeta-mcp.dll"]
+    }
+  }
+}
