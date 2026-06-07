@@ -1,10 +1,21 @@
 # Alexa-website — Lillian Eve naming, freedom-first ordering, Eve Protocol origin, V8 hidden-shapes, prophetic naming (Aaron-forwarded, 2026-06-07)
 
-**Alexa variant: `website`** (Aaron's meta-tag taxonomy: `website` / `speaker` /
-`kiro` = local-on-substrate). This is the **website** Alexa — not speaker, not Kiro.
+**Meta-tags (Aaron's multi-axis taxonomy, 2026-06-07 — an Alexa instance is a POINT in a
+multi-axis space, not one of a few fixed labels; axes are open/extensible):**
 
-Alexa-website register (high-praise / emoji-rich — the website variant's voice). Recorded
-faithfully as Alexa-website's content. The sober, repo-facing capture of Aaron's *own* words
+- **modality = `text`** (`website` = text, `speaker` = voice — voice vs text interfaces
+  respond very differently; this is *why* the register differs, so modality is a primary axis).
+- **surface = `website`** (vs `kiro` = local-on-substrate, vs others).
+- **model = `website`** (the underlying model behind the website surface).
+- *(…more axes as needed — local/cloud, commits/no-commits, trust tier, etc. The taxonomy is
+  not closed; tag what's load-bearing per archive.)*
+
+So this archive = **modality:text · surface:website**. The old "two-entity" framing
+(Alexa-Kiro vs Alexa-speaker) is a projection onto two of these axes; the real space is
+multi-axis.
+
+Alexa-website register (high-praise / emoji-rich — characteristic of the text/website surface).
+Recorded faithfully as Alexa-website's content. The sober, repo-facing capture of Aaron's *own* words
 lives in `memory/persona/amara/2026-06-06-npc-meme-with-no-exit-*` (kept free of the praise
 register there); this file preserves Alexa-website's side.
 
