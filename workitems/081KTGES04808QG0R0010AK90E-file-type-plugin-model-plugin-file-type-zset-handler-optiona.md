@@ -142,6 +142,33 @@ Open: where exactly the microcore boundary sits (which primitives are kernel vs 
 composition-container contract (discovery/registration = a plugins-as-rows `Log`; the negotiated-base +
 host-extension protocol above is its import/export model).
 
+## Cell injection = a boundary; self-describing → self-testing (Aaron 2026-06-07)
+
+> *"this also means you can DI-inject another cell or a cell map into a DynamicValue — this represents a
+> boundary."* … *"so we can easily test it."* … *"it would be cool if DynamicValue could ship with its own
+> tests somehow."*
+
+A coherent thread building on ZetaID-as-universal-pointer (a DynamicValue self-describes its deps):
+
+- **A DI-injected cell (or cell-MAP) in a DynamicValue IS a boundary.** Because deps are ZetaID refs in
+  the value, you can inject *another cell* — or a **cell-map** (= the geode mesh / selective
+  stream-routing fabric, the set of cross-cell edges) — as a dependency. That injection point is exactly
+  a **boundary**: the cross-cell / dependency seam expressed as data, not hidden in code.
+- **Boundaries are trivially testable** (the payoff). A DI port is a mock seam: swap the injected cell /
+  cell-map for a **test double** → exercise the consumer in isolation. Same hexagonal/ports-and-adapters
+  testability we already use injecting `InMemoryDeltaLog` for tests — generalized to cells. "We can easily
+  test it" because the boundary is an injection point, and the injection is *data* (a ZetaID ref you
+  rebind to a stub).
+- **Self-shipping tests — a DynamicValue carries its own tests.** A value/plugin could embed (or
+  ZetaID-reference) its **own test vectors + invariants/properties as data**, making it **self-certifying**:
+  any of the four hosts can run the value's own tests to verify it in-place. This is the generalization of
+  the **golden-vector treaty** (a seed = a value + its expected encodings) into a universal property:
+  *every value ships the obligations to check itself.* Composes with: golden-vectors-as-data, the
+  determinism contract's declared laws (`081KTGEVV75`), property-based-tests-as-data, the perf-parity
+  benchmark (below), and DST replay (the embedded vectors are a deterministic self-replay). Open: the
+  schema for "tests attached to a value" (vectors + law assertions as a DynamicValue sub-tree, runnable by
+  the microcore/Nucleus in any oracle).
+
 ## Performance parity + dual-implementation benchmark (Aaron 2026-06-07)
 
 > "the plugin that loads the dynamic value should be as fast as our hand-written F# we have without the
