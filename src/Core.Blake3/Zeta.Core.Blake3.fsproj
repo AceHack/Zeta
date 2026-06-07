@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.Blake3</RootNamespace>
+    <AssemblyName>Zeta.Core.Blake3</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- BLAKE3 adapter for the IContentHasher port (hexagonal — Aaron 2026-06-07: "own the interface,
+       go generic, many algos not just blake"). The Blake3 NuGet dep (xoofx, managed wrapper over the
+       BLAKE3 Rust SIMD impl) is ISOLATED to this adapter project, never in Core — same pattern as
+       Core.Git isolates LibGit2Sharp. Tamper-evident hash for the git-replacement store. -->
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.fsproj" />
+    <PackageReference Include="Blake3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Blake3Hasher.fs" />
+  </ItemGroup>
+
+</Project>
