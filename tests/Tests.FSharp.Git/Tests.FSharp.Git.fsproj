@@ -19,6 +19,7 @@
     <Compile Include="DurableYinYangGit.Tests.fs" />
     <Compile Include="DurableDiplomacyGit.Tests.fs" />
     <Compile Include="DurableObserveGit.Tests.fs" />
+    <Compile Include="SubstrateFerryGit.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

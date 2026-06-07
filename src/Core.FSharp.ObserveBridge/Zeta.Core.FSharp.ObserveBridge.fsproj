@@ -21,6 +21,7 @@
     <Compile Include="DurableObserve.fs" />
     <Compile Include="ObserveGrid.fs" />
     <Compile Include="Effects.fs" />
+    <Compile Include="SubstrateHandler.fs" />
   </ItemGroup>
 
 </Project>

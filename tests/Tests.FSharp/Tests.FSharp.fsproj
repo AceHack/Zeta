@@ -121,6 +121,7 @@
     <Compile Include="Observe/Chooser.Tests.fs" />
     <Compile Include="Observe/ObserveGrid.Tests.fs" />
     <Compile Include="Observe/Effects.Tests.fs" />
+    <Compile Include="Observe/SubstrateHandler.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
