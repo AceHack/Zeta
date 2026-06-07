@@ -1,0 +1,105 @@
+# Cells as geodes: CP-within / AP-across, geo-patterns map INTO a cell, cross-cell = Sagas as partitioned Orleans actors (Aaron ↔ Otto, 2026-06-07)
+
+Architecture capture from an Aaron steering session (working through global VM-distribution patterns
+against the cell model). Enriches the two-plane DB design doc + ROADMAP items #7 (cell contract) and #8
+(geo pattern libraries). Faithful to what Aaron decided.
+
+## 1. Cells are geodes — full replication WITHIN, partial/relativistic ACROSS
+
+> Aaron: *"cells fully replicate within; across cells they can partially / relativistically replicate — so
+> cells are pretty much geode-ish."*
+
+A **geode** = any node is a fully-autonomous local entry point that eventually syncs out (it does NOT mean
+every node holds all global data forever). A Zeta cell is exactly that:
+
+- **Within a cell — full replication, the anchor.** Internal nodes (under the systemd / k8s-operator /
+  Orleans host) are strictly synced; a write is locked locally via the **fsync-on-commit durability
+  floor** before it's valid. An absolute source-of-truth zone — no internal split-brain.
+- **Across cells — partial + relativistic replication, the geode mesh.** Data moves *selectively* by
+  proximity / access pattern / governance: an EU cell may pull only a subset of streams/`Log`s from a US
+  cell (data-near-customer), not mirror the global disk. Propagation is async, so cells observe global
+  state at slightly different logical times ("relativistic") — each cell has a valid local timeline;
+  cross-cell Sagas reconcile when boundaries intersect.
+
+**Consequence for the geo pattern libraries (roadmap item #8):** because cells are *natively* geode-ish,
+item #8 is **not** a heavyweight global-sync engine — it's a **selective stream-routing fabric** at the
+`IDeltaLog`/`ISnapshotStore` seam: "this stream/table emits its deltas to Cell B, but not Cell C."
+
+## 2. Hierarchical PACELC/CAP — CP within a cell, AP (eventually C) across, sometimes CP via a serialized bus
+
+> Aaron: *"within a cell it's CP; across cells it's AP, eventually-C by default, and sometimes CP with a
+> serialized-message-bus-based A[P escalation]."*
+
+- **Within the cell = strict CP (default).** Consistency beats availability: the durability floor's
+  fsync-on-commit makes the local `Log` **linearizable**; the cell stalls/rejects a write it can't
+  guarantee exactly-once. Zero race conditions / phantom reads intra-cell. (This *elevates the fsync
+  floor, roadmap item #6, from "reliability gap" to "the load-bearing guarantee of CP-within-cell."*)
+- **Across cells = AP, eventually-consistent (default).** Cell A commits locally (CP) and returns
+  success immediately; it streams `DeltaLogEntry` changes to Cell B asynchronously. If the link snaps,
+  both cells keep serving locally; B catches up on the missing log tail when the partition heals.
+- **Across cells = escalated CP (serialized message bus) for critical ops** (global identity
+  reservation, cross-cell asset transfer). NOT a distributed lock (that kills global availability) —
+  instead a **total-order / FIFO serialized bus**: intents are sequenced *before* they touch any cell's
+  state machine; each cell processes them sequentially within its own CP boundary. **This is the answer
+  to the multi-key ACID/isolation gap (roadmap item #8): serialize global intents on the bus rather than
+  build a distributed transaction coordinator.**
+
+## 3. The global VM-distribution patterns map INTO a cell (as internal strategies), not across
+
+Aaron worked the standard global-topology patterns against the cell boundary. Mapping:
+
+| Global pattern | Within a cell? | How it maps |
+|----------------|----------------|-------------|
+| **Follow-the-Sun autoscaling** | ✅ | Internal resource elasticity — scale local stream processors toward zero in dead hours, up on ingestion spikes (request-driven cells need no static 24/7 compute). |
+| **Hub-and-Spoke** | ✅ | The **hub = the data-plane core** (`IDeltaLog`/`ISnapshotStore` + fsync floor = the single source of truth); the **spokes = per-file-type plugins** (`.md`/`.yaml`/`.cbor`) doing low-overhead serialization/frontmatter at the edge. |
+| **Active-Passive** | ✅ *compute only, not state* | Can't active-passive-split the `Log` (it'd violate the atomic `Log` noun). But a standby Orleans/k8s actor picks up from the last valid `DeltaLogEntry` checkpoint if the primary executing actor crashes. |
+| **Geo-Sharding** | ❌ | A cell **is** the shard. Segmenting by country/tenant = deploy **distinct cells**, never shard within one. |
+
+## 4. Cross-cell Sagas / DUs = a Zeta cell (Orleans actor) per Saga, serialized over a partitioned bus
+
+> Aaron: *"the discriminated unions / sagas basically get a zeta cell (Orleans actor) for it, serialized
+> over an addressable bus partitioned to the cell/actor."*
+
+Each Saga / DU instance **is** an addressable Zeta cell (Orleans grain), partitioned by Actor ID to a
+cell boundary. The actor model gives the cross-cell machinery for free:
+
+- **The addressable actor IS the serializer.** An Orleans grain is single-threaded; its mailbox is a
+  strict sequential FIFO. Messages to a given Actor ID are automatically serialized → cross-cell ordering
+  for free, no external broker, no distributed lock.
+- **DUs are the explicit state-machine gates.** The actor reads a message, matches the DU case, does the
+  deterministic local `Log` append, transitions state. Saga state is just a DU →serializes natively to
+  `DynamicValue.Object` → stored as **frontmatter metadata** in the cell's streams (the general
+  header+body shape). Example state DU: `Initiated | PendingRemoteAck | CommittedSuccessfully |
+  Compensating | FailedAndReversed`.
+- **Choreography (log-driven)** — Cell A commits with an **outbox** metadata flag in frontmatter; Cell B
+  watches A's log stream, executes locally, commits to its own `Log`. **Orchestration (request-driven
+  cell)** — a stateless MCP/CLI request-driven cell acts as Saga orchestrator (command A → ack → command B).
+- **Compensation, not rollback** — append-only means you never delete; a failure commits a failure event,
+  and the compensation **writes a NEW entry that reverses Step 1's effect** (Z-set retraction is the
+  natural inverse). Ties to the "operational error is retractable / the future forgives" ethics.
+- **Idempotency at the `IDeltaLog` seam** — a replayed bus message must not double-write; an idempotency
+  key (ZetaId / CorrelationId) guards exact-once (composes with the always-active idempotency discipline).
+
+## 5. Roadmap deltas (this conversation)
+
+- **Item #6 (fsync floor) is elevated** — it is the mechanism of CP-within-cell, not just a reliability
+  gap. Likely sequence it earlier once the cell contract lands.
+- **Item #7 (cell contract)** gains: the CP-within / AP-across posture; intra-cell active-passive for
+  *compute*; the geode replication model.
+- **Item #8 (geo libraries)** sharpens to: a **selective stream-routing fabric** at the `IDeltaLog` seam
+  (per-stream cross-cell subscription/emit rules) + the **serialized-bus CP-escalation** path; geo-sharding
+  = deploy distinct cells, not intra-cell sharding.
+- **Cross-cell Sagas** get a concrete design: Saga/DU = addressable Orleans actor, partitioned bus =
+  the grain mailbox (FIFO serializer), state = DU-as-DynamicValue-frontmatter, compensation = retraction.
+  Composes the existing Bonsai-serialized-saga substrate + DU workflow engine (B-0867) + zeta-on-Orleans (B-0706).
+
+## Anchors
+
+- Two-plane DB design doc (`docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-*`) ·
+  `docs/ROADMAP.md` items #6/#7/#8 · B-0959 (master checklist).
+- Cross-cell saga substrate: B-0867 (DU workflow engine), B-0706 (zeta-on-Orleans, grain=cell identity),
+  B-0253 (Orleans grains), PRIMITIVE-REGISTRY "serializable deferred execution = self-evolving sagas".
+- Beacon (human prior art): Azure **Geode** + **Deployment Stamps** patterns (Microsoft Learn); PACELC
+  (Abadi); Orleans virtual-actor model (Bernstein et al.); Saga (Garcia-Molina & Salem 1987); total-order
+  broadcast. Our twist: the geode node = a cell whose state is an append-only `Log` of ZSets, and the
+  saga coordinator is a grain whose mailbox *is* the serialized bus.

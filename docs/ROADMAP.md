@@ -92,10 +92,18 @@ using DynamicValue's byte-locked per-format serializer:
 3. **YAML serializer for DynamicValue** (4-lang) — unblocks the git-default format.
 4. **MD + frontmatter treaty** (4-lang) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
-6. **Durability floor** — `fsync`-on-commit (`Durability.fs` P0; a crash can currently lose acked writes).
+6. **Durability floor** — `fsync`-on-commit (`Durability.fs` P0). **ELEVATED:** this is the mechanism of
+   **CP-within-a-cell** (linearizable local `Log`), not just a reliability gap — load-bearing for the cell
+   consistency model (§ design doc 2026-06-07-cells-as-geodes).
 7. **Cell contract + one host** — `(identity, Log)`; **systemd** first, then k8s-operator, then Orleans.
-   Each cell distinct; k8s/Orleans give **HA *within* a cell**. MCP/CLI is itself a **request-driven cell**
-   (cadence = incoming command, vs scheduled/tick cells).
+   Each cell distinct; k8s/Orleans give **HA *within* a cell** (active-passive for COMPUTE only — never
+   split the `Log`). MCP/CLI is itself a **request-driven cell**. **Cells are geodes:** full replication
+   WITHIN (strict **CP**), partial/relativistic replication ACROSS (**AP**, eventually-C; escalate to CP
+   via a serialized/total-order bus for critical ops). Geo-distribution patterns (Follow-the-Sun,
+   Hub-and-Spoke, Active-Passive) map *into* a cell as internal strategies; geo-sharding = deploy distinct
+   cells, never shard within. **Cross-cell = Sagas/DUs as addressable Orleans actors** (grain mailbox =
+   the FIFO serialized bus; DU state = `DynamicValue` frontmatter; compensation = Z-set retraction).
+   Detail: `docs/research/2026-06-07-cells-as-geodes-hierarchical-cp-within-ap-across-*`.
 8. **2nd executable — Ace package manager with a DI-injected Zeta cell** (after item #1; workitem
    `081KTGFG5M9`). A file-type plugin per supported package manager (npm/NuGet/Cargo/pip/…) handling its
    declarative dep files — the file-type plugin model applied to dependency manifests; the first real
