@@ -1,11 +1,12 @@
 ---
 id: 081KTFPT7KX08QG0R003CA2SBR
 type: task
-state: backlog
+state: done
 priority: P2
 slug: eve-protocol-cached-polymorphic-diplomacy-over-time-freedom
 title: "Eve protocol: cached polymorphic diplomacy OVER TIME + freedom-first ordering (introspection across travelers/shapes)"
 created: 2026-06-07T00:13:09.117Z
+completed: 2026-06-07T01:52:48.961Z
 depends_on: []
 composes_with: []
 ---
