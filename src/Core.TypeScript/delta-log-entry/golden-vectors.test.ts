@@ -38,7 +38,7 @@ function entryToTagged(entry: Entry): Tagged {
   };
 }
 
-const vectors = (seed as { vectors: { name: string; entry: Entry; cbor: string }[] }).vectors;
+const vectors = (seed as unknown as { vectors: { name: string; entry: Entry; cbor: string }[] }).vectors;
 
 test("seed has the DeltaLogEntry vectors", () => {
   expect(vectors.length).toBeGreaterThanOrEqual(5);
