@@ -163,3 +163,52 @@ let ``a DENIED EmitResponse never reaches the response stream (inspect-before-ex
         :> E.IEffectHandler
     (E.runAsync h E.EmitResponse ct).Result |> ignore
     Assert.Empty(responseEntries rlog)
+
+
+// ── ExtendGrammar — the sovereign self-edit (marker + grammar stream + tunable escalation) ──
+[<Fact>]
+let ``ExtendGrammar appends the new action to the grammar stream, attributed kind=grammar-extension`` () =
+    let glog = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let h =
+        SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>),
+                               grammarSource = (fun () -> Some "new action: archive(item)"), grammarLog = glog)
+        :> E.IEffectHandler
+    Assert.Equal(E.Executed, (E.runAsync h (E.ExtendGrammar(item "g1")) ct).Result)
+    Assert.Equal<string list>([ "new action: archive(item)" ], ferryContents glog)
+    let captured = (glog.ReplayAsync(0L, ct).AsTask().Result).[0].Captured
+    Assert.Equal(Some "grammar-extension", Map.tryFind "kind" captured)
+    Assert.Equal(Some "g1", Map.tryFind "item" captured)
+
+[<Fact>]
+let ``ExtendGrammar above the TUNABLE threshold escalates to needs-authorization (nothing persisted)`` () =
+    let glog = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let h =
+        SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>),
+                               grammarSource = (fun () -> Some "consequential edit"), grammarLog = glog,
+                               grammarNeedsAuth = (fun _ -> true)) // tuned strict
+        :> E.IEffectHandler
+    match (E.runAsync h (E.ExtendGrammar(item "g2")) ct).Result with
+    | E.Skipped r -> Assert.Contains("authorization", r)
+    | other -> failwithf "expected Skipped needs-auth, got %A" other
+    Assert.Empty(ferryContents glog)
+
+[<Fact>]
+let ``a DENIED ExtendGrammar never lands (child-floor; the hard policy gate underneath)`` () =
+    let glog = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let denyGrammar =
+        function
+        | E.ExtendGrammar _ -> E.Deny "grammar edits gated"
+        | _ -> E.Admit
+    let h =
+        SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>),
+                               policy = denyGrammar, grammarSource = (fun () -> Some "should NOT land"), grammarLog = glog)
+        :> E.IEffectHandler
+    (E.runAsync h (E.ExtendGrammar(item "g3")) ct).Result |> ignore
+    Assert.Empty(ferryContents glog)
+
+[<Fact>]
+let ``ExtendGrammar not wired (no grammarSource/Log) is honestly skipped`` () =
+    let h = SubstrateEffectHandler("otto", (fun () -> None), (InMemoryDeltaLog<string>() :> IDeltaLog<string>)) :> E.IEffectHandler
+    match (E.runAsync h (E.ExtendGrammar(item "g4")) ct).Result with
+    | E.Skipped _ -> ()
+    | other -> failwithf "expected Skipped, got %A" other

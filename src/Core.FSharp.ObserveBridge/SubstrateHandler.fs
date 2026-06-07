@@ -29,7 +29,10 @@ open Zeta.Core
 /// *impossible* for the Agent to get such an effect executed by proposing it (it is denied → never
 /// executed). **`EmitResponse`** is the outbound twin of `PersistFerry` (the Agent's reply →
 /// the persona's response stream, attributed `kind="response"`; the operator reads it from there).
-/// `ExtendGrammar` remains honestly not-wired (Skipped, never silent).
+/// **`ExtendGrammar`** is the sovereign self-edit → the persona's grammar-extension stream
+/// (`kind="grammar-extension"`), with a TUNABLE `grammarNeedsAuth` escalation (raw below
+/// threshold; `needs authorization` above — the summon-BFT proxy, dial to taste) over the hard gate.
+/// All four effects now wired; only the real LLM `IWorkRunner` + a real bus remain.
 [<Sealed>]
 type SubstrateEffectHandler
     (
@@ -41,11 +44,19 @@ type SubstrateEffectHandler
         ?workRunner: Effects.IWorkRunner,
         ?maxWorkDepth: int,
         ?responseSource: unit -> string option,
-        ?responseLog: IDeltaLog<string>
+        ?responseLog: IDeltaLog<string>,
+        ?grammarSource: unit -> string option,
+        ?grammarLog: IDeltaLog<string>,
+        ?grammarNeedsAuth: Zeta.Core.FSharp.Observe.BacklogItem -> bool
     ) =
 
     let policy = defaultArg policy (fun _ -> Effects.Admit)
     let ferryType = defaultArg ferryType "persona"
+    // Tunable raw-vs-escalate threshold for the sovereign self-edit (ExtendGrammar). Default:
+    // raw (never escalates) — NOT noisy. Tune UP (return true for consequential edits) to require
+    // authorization; the eventual summon-BFT consensus replaces this predicate. Layered ON TOP of
+    // the hard `policy` gate (which still denies child-floor classes).
+    let grammarNeedsAuth = defaultArg grammarNeedsAuth (fun _ -> false)
 
     let persistFerry (ct: CancellationToken) : Task<Effects.EffectResult> =
         task {
@@ -75,6 +86,29 @@ type SubstrateEffectHandler
             | _ -> return Effects.Skipped "EmitResponse: not wired (no responseSource/responseLog)"
         }
 
+    // ExtendGrammar — the sovereign self-edit: an item gains a new action the do/decompose grammar
+    // couldn't express. Same marker + persona + gate shape; the new-action description (from
+    // `grammarSource`) appends to this persona's grammar-extension stream `grammarLog`, attributed
+    // `{ kind = "grammar-extension"; persona; item }`. TUNABLE escalation: `grammarNeedsAuth item`
+    // (default off) escalates consequential edits to `needs authorization` (the summon-BFT-above-
+    // threshold proxy; dial it up if the floor is too permissive, down if it is too noisy). The
+    // hard `policy` gate still applies underneath (denied → never lands; child-floor).
+    let extendGrammar (item: Zeta.Core.FSharp.Observe.BacklogItem) (ct: CancellationToken) : Task<Effects.EffectResult> =
+        task {
+            if grammarNeedsAuth item then
+                return Effects.Skipped(sprintf "needs authorization: grammar extension for \"%s\" (tunable threshold)" item.Id)
+            else
+                match grammarSource, grammarLog with
+                | Some src, Some log ->
+                    match src () with
+                    | Some ext when ext <> "" ->
+                        let! _seq =
+                            log.AppendAsync(ZSet.ofSeq [ ext, 1L ], Map.ofList [ "kind", "grammar-extension"; "persona", persona; "item", item.Id ], ct).AsTask()
+                        return Effects.Executed
+                    | _ -> return Effects.Skipped "ExtendGrammar: no extension to persist"
+                | _ -> return Effects.Skipped "ExtendGrammar: not wired (no grammarSource/grammarLog)"
+        }
+
     /// Execute one effect at a given RunWork-nesting `depth`. RunWork's proposed effects re-enter
     /// `gateAndExecute` (inspect→execute) — so the gate guards EVERY depth.
     let rec executeOne (depth: int) (effect: Effects.Effect) (ct: CancellationToken) : Task<Effects.EffectResult> =
@@ -82,7 +116,7 @@ type SubstrateEffectHandler
             match effect with
             | Effects.PersistFerry -> return! persistFerry ct
             | Effects.EmitResponse -> return! emitResponse ct
-            | Effects.ExtendGrammar _ -> return Effects.Skipped "ExtendGrammar: not wired in v1 (substrate adapter)"
+            | Effects.ExtendGrammar item -> return! extendGrammar item ct
             | Effects.RunWork item ->
                 match workRunner with
                 | None -> return Effects.Skipped "RunWork: no work runner wired"
