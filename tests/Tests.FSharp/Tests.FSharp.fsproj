@@ -76,6 +76,7 @@
     <Compile Include="Clock.FullVertical.Tests.fs" />
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
+    <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="ContentStore.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />
