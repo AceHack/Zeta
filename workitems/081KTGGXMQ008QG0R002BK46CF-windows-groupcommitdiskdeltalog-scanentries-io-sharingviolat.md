@@ -46,16 +46,33 @@ or is not disposed before recovery scans). Windows enforces share-mode intersect
 handles; Unix ignores it, masking the bug off-Windows. Data-plane durability/recovery path (`Log` noun
 backend), so it matters for the "reliable single-node DB" claim.
 
-## Fix direction (CORRECTED)
+## Fix direction (SHARPENED 2026-06-07 — exact handle pair identified)
 
-- **The fix is on the WRITER side, not the scan.** Find the append/writer `FileStream` open (the group-
-  commit writer; ctor `DiskDeltaLog.fs:~181` and the append path) and ensure it is opened with
-  `FileShare.ReadWrite` so a concurrent recovery read is allowed — **and/or** ensure the writer handle
-  is flushed + disposed before `scanEntries` runs (deterministic `use`/`using` lifetime; no writer
-  handle outliving a recovery scan).
-- Needs **Windows verification** — the failure only reproduces on Windows, so the fix can't be confirmed
-  on macOS/Linux locally; a Windows CI run (or a Windows owner) must verify. (This is why it was filed,
-  not blind-fixed: the scan's own open was already correct; the writer-handle lifecycle is the subtle part.)
+The three `FileStream` opens in `DiskDeltaLog.fs`:
+
+| Line | Purpose | FileAccess | FileShare |
+|------|---------|-----------|-----------|
+| 91  | snapshot temp write | `Write` | `None` (exclusive — fine, temp file) |
+| 231 | recovery `scanEntries` | `ReadWrite` when truncating, else `Read` | `ReadWrite` (already correct) |
+| 275 | **group-commit APPEND writer** | `Write` | **`Read`** ← the incompatible one |
+
+**Root cause:** the append writer (275) shares only `Read`. When a recovery `scanEntries` opens with
+`FileAccess.ReadWrite` (to truncate a torn trailing record) while that append handle is still live,
+Windows intersects share modes and DENIES the write-capable open → `IO_SharingViolation`. (Unix ignores
+share modes, so it never surfaces off-Windows.)
+
+**Do NOT just widen the writer to `FileShare.ReadWrite`.** That would unblock Windows but **allow a second
+concurrent writer**, breaking the single-writer invariant group-commit relies on — a correctness
+regression worse than the test failure. The correct fix is **handle-lifecycle**:
+
+- Ensure the append writer is **flushed + disposed before** any recovery `scanEntries` that needs
+  `FileAccess.ReadWrite` (truncation). I.e. recovery/truncation must not run while an append handle is
+  open; sequence them (close writer → scan/truncate → reopen writer), or
+- have the truncating scan reuse the *existing* writer handle/stream rather than opening a second one.
+
+Either way it is a **single-writer-preserving lifecycle fix**, and it needs **Windows verification** (the
+failure reproduces only on Windows; macOS/Linux can't confirm). This is why it stays filed, not blind-
+fixed — a naive `FileShare` widening is the tempting-but-wrong fix this note guards against.
 
 ## Anchors
 
