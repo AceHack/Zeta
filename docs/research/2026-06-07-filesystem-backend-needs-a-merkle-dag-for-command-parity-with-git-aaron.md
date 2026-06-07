@@ -43,14 +43,33 @@ Properties the fs backend gains from a Merkle DAG (achieving git-parity):
 **Gap to build:** a content-addressed object/blob store + a commit-equivalent (Merkle-rooted history node)
 over the fs, wired so `GitCommand`/`DbCommand` verbs resolve identically on the fs backend as on git.
 
-## Hash-strength caveat (honest)
+## Hash strength — DECIDED: BLAKE3 (Aaron 2026-06-07)
 
-`Merkle.fs` uses **XxHash128 — non-cryptographic** (fast, collision-safe for same-tenant replication, NOT
-tamper-proof). Git uses SHA-1/SHA-256 (cryptographic). If the fs store must give git-equivalent
-**tamper-evidence / Byzantine integrity** (not just dedup + history), upgrade the leaf/node hash to
-**BLAKE3** (already flagged roadmap P2 in `Merkle.fs`). For plain history + dedup parity, XxHash128 is
-fine; for "as trustworthy as git's object integrity", it is not — pick per the property the fs store must
-match. This is a real decision, not a detail.
+> Aaron: *"we want to replace git eventually with our own compatible backend, so we need BLAKE3 — something
+> that respects tamper. We don't want to lose features."*
+
+**Decision: the fs-Merkle store uses BLAKE3 (cryptographic, tamper-respecting) — not XxHash128.** The
+reasoning is the end-goal, not just the parity bar: the fs backend is meant to eventually **replace git
+with a compatible backend**, so it must be *at least as trustworthy as git's object integrity* and **lose
+no features**. XxHash128 (fast, non-crypto — fine for same-tenant dedup/history) would forfeit
+tamper-evidence, which is a git feature we refuse to lose. So:
+
+- **Leaf/node hash = BLAKE3** (cryptographic; faster than SHA-2, tree-/SIMD-friendly — a good fit for a
+  Merkle tree). `Merkle.fs` already flags this as the roadmap-P2 upgrade path; this decision promotes it
+  from "if you need Byzantine guarantees" to **required** for the git-replacement backend.
+- **Current state:** BLAKE3 is *not yet a dependency* (only a comment in `Merkle.fs`); adding it +
+  parameterizing the Merkle hash is part of workitem `081KTGTJC1Q`.
+- XxHash128 may still serve where only same-tenant dedup speed matters (e.g. the CAS-DBSP checkpoint path
+  it was built for); the **git-replacement object store** is BLAKE3.
+
+### Bigger intent: a git-COMPATIBLE replacement backend, feature-non-loss as a hard requirement
+
+This reframes the workitem from "fs parity for the data-plane" to "**our own git-compatible backend that
+eventually replaces git**." Consequences: (a) tamper-evidence is mandatory (→ BLAKE3, above); (b)
+**feature-non-loss** becomes an explicit acceptance bar — the git features we depend on (history, branching,
+content-addressing, integrity verification, diff/merge, packing) must each have an equal-or-better analogue,
+not be silently dropped. "Compatible" is the load-bearing word: it must interoperate with / stand in for git
+where our work-cycle uses git, not merely resemble it.
 
 ## Design refinement — Merkle over retractable Z-sets, closure-table DAG, single- OR multi-file (Aaron 2026-06-07, cont.)
 

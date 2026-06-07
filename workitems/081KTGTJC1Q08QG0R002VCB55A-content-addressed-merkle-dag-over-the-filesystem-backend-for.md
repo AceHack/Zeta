@@ -49,18 +49,31 @@ Full rationale + property-parity table + hash-strength caveat:
   loose-vs-packfile duality. Both must pass the same backend-parity test.
 - Beacon add: closure table (Karwin, *SQL Antipatterns* 2010); single-file DB + VFS (SQLite).
 
-## Open decision (Aaron's call — real, not a detail)
+## Hash strength — DECIDED: BLAKE3 (Aaron 2026-06-07)
 
-**Hash strength.** `Merkle.fs` is XxHash128 (non-crypto: fast, dedup+history-safe, NOT tamper-proof). Git
-uses cryptographic SHA. If the fs store must match git's **tamper-evidence/Byzantine integrity**, upgrade
-leaf/node hash to **BLAKE3** (already roadmap-P2-flagged in `Merkle.fs`). For history+dedup parity only,
-XxHash128 suffices. Pick per the property the fs store must equal.
+> *"we want to replace git eventually with our own compatible backend, so we need BLAKE3 — something that
+> respects tamper. We don't want to lose features."*
+
+**Leaf/node hash = BLAKE3** (cryptographic, tamper-respecting) — NOT XxHash128. Rationale is the end-goal:
+this backend is meant to **replace git with a compatible backend**, so it must be ≥ git's object integrity
+and lose no features; XxHash128 would forfeit tamper-evidence. BLAKE3 is `Merkle.fs`'s P2-flagged path,
+promoted to required. Not yet a dependency — adding it + parameterizing the Merkle hash is part of this
+item. (XxHash128 may stay on the same-tenant CAS-DBSP checkpoint path; the git-replacement object store is
+BLAKE3.)
+
+## Scope widened: a git-COMPATIBLE replacement backend (feature-non-loss is a hard bar)
+
+The intent is not just data-plane parity — it's **our own git-compatible backend that eventually replaces
+git**. So **feature-non-loss** is an explicit acceptance bar: history, branching, content-addressing,
+integrity verification, diff/merge, packing — each needs an equal-or-better analogue, not silent drop.
+"Compatible" is load-bearing: stand in for git where the work-cycle uses git, not merely resemble it.
 
 ## Acceptance
 
-A content-addressed Merkle store backs the fs delta-log; a parity test runs the same command sequence
-against git-backend and fs-backend and asserts equivalent observable results (history, get-by-coordinate,
-retraction/compensation). Hash-strength decision recorded.
+A content-addressed BLAKE3 Merkle store backs the fs delta-log; a parity test runs the same command
+sequence against git-backend and fs-backend and asserts equivalent observable results (history,
+get-by-coordinate, retraction/compensation). Feature-non-loss checklist (vs the git features the work-cycle
+uses) recorded + each item has an analogue or an explicit, justified omission.
 
 ## Anchors
 
