@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Zeta.Core.Abstractions</RootNamespace>
+    <AssemblyName>Zeta.Core.Abstractions</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Language-NEUTRAL contract library (the naming convention, 2026-06-07: interface/contract libs are
+       C# + neutral-named; implementations are language-segmented Core.<Lang>.<X>). C# is the canonical
+       .NET contract language (declaration-site in/out variance F# cannot declare). ZERO dependencies
+       (supply-chain doctrine). First contract: ITensor. The IContentHasher/IDeltaLog/ISnapshotStore
+       extraction into here is the separate API-reviewed step (backlog). -->
+
+</Project>

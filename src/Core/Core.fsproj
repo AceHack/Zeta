@@ -171,6 +171,11 @@
     <PackageReference Include="Apache.Arrow" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Language-neutral contract lib (ITensor); WeightedSet implements it -->
+    <ProjectReference Include="..\Core.Abstractions\Zeta.Core.Abstractions.csproj" />
+  </ItemGroup>
+
   <!-- F# static analyzers. Run via `dotnet msbuild -t:AnalyzeFSharpProject`. -->
   <ItemGroup>
     <PackageReference Include="G-Research.FSharp.Analyzers">

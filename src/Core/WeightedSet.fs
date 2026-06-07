@@ -1,5 +1,8 @@
 namespace Zeta.Core
 
+open System.Collections.Generic
+open Zeta.Core.Abstractions
+
 /// **Semiring-generic sparse tensor — coordinate (`'K`) → weight (`'W` in an `ISemiring`) (Aaron 2026-06-07,
 /// the tensor-algebra tie-in).** The generalization of `ZSet` over the *weight*: `ZSet` is the `IntegerRing`
 /// instance (int64, perf-tuned hot path — kept SEPARATE and unchanged); the **soft tensor** is the
@@ -14,8 +17,18 @@ namespace Zeta.Core
 module WeightedSet =
 
     /// A sparse map of coordinate → weight. Structural equality (needs `'W : equality`); no ordering.
+    /// Implements the language-neutral `ITensor` read contract (semiring-free surface: stored support).
     [<NoComparison>]
-    type WeightedSet<'K, 'W when 'K: comparison and 'W: equality> = private { Entries: Map<'K, 'W> }
+    type WeightedSet<'K, 'W when 'K: comparison and 'W: equality> =
+        private
+            { Entries: Map<'K, 'W> }
+
+        interface ITensor<'K, 'W> with
+            member this.StoredCount = int64 this.Entries.Count
+            member this.IsSparse = true
+
+            member this.StoredEntries =
+                this.Entries |> Map.toSeq |> Seq.map (fun (k, v) -> KeyValuePair(k, v))
 
     /// The empty (all-Zero) sparse tensor.
     let empty<'K, 'W when 'K: comparison and 'W: equality> : WeightedSet<'K, 'W> = { Entries = Map.empty }
