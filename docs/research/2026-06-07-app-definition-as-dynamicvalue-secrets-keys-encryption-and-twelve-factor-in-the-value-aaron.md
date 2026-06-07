@@ -68,3 +68,50 @@ forked/composed like everything else — the same closure as tenant-as-DynamicVa
   never leave hardware. · **Shamir Secret Sharing** (Adi Shamir, 1979) — n-of-m threshold. · **Nostr**
   (fiatjaf, NIP-01) — keypair identity. Honest: composition of known primitives expressed in one
   self-describing value, not new crypto.
+
+## Secrets design — distinct cases, not one blob; pointer-not-leak; license ≠ authority (Amara 2026-06-07)
+
+Amara's review sharpened §1 into a typed design (model secrets as **distinct DynamicValue cases**, not
+one overloaded "secret" blob — they have different semantics):
+
+| Case | Semantics |
+|------|-----------|
+| `PublicKeyRef` | public Nostr id — identity, **safe to expose** |
+| `EncryptedValue` | a confidential subtree, encrypted in place |
+| `SecretPointer` | a ZetaID ref to a secret resolved elsewhere (not embedded) |
+| `HardwareKeyPointer` | points to a key that **never leaves hardware** (HSM/TPM/enclave) |
+| `ThresholdSecretPolicy` | **n-of-m** quorum required before unwrap/sign/use |
+| `LicenseGate` | the value **cannot load/run until a key admits it** |
+| `NonSecretConfig` | plain config, in the clear |
+
+### Blade — self-describing must not become self-LEAKING
+
+> Amara: *"DynamicValue may carry secret *references* or *encrypted branches*. It should NOT casually
+> carry raw private keys."*
+
+Normal operation is **pointer-based**, never raw-key-bearing:
+
+```text
+DynamicValue → SecretPointer (ZetaID) → hardware/enclave/DPAPI/HSM/threshold resolver → capability result
+```
+
+A raw private key in a DynamicValue is **exceptional** — test fixtures or an explicit export/import flow
+only, never in normal values. (Private Nostr key: never plaintext by default; pub side is the
+`PublicKeyRef`.) This keeps "self-describing" from becoming "self-leaking."
+
+### License-gate must bake in pointer-NOT-authority, HARD
+
+> Amara: *"a key should unlock INSPECTION or use; it should not bypass validation."*
+
+```text
+WRONG:  has key  → run
+RIGHT:  has key  → decrypt/load candidate  → VERIFY tests/laws/capabilities  → policy ADMITS  → run
+```
+
+This is the §"ZetaID is a pointer, not authority" invariant applied to encryption/license: possessing
+the key admits the value to *inspection*, then the normal verify→admit gate still runs. Otherwise
+DRM/security becomes **magic authority** (key ⇒ unconditional run), the spooky failure. The
+self-shipping-tests property makes the VERIFY step cheap even for an encrypted/licensed value.
+
+(Beacon add: this is capability-security discipline — possession of a key is *one* input to an admission
+decision, not the decision itself.)
