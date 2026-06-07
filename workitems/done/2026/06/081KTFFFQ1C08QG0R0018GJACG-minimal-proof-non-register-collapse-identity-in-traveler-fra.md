@@ -1,11 +1,12 @@
 ---
 id: 081KTFFFQ1C08QG0R0018GJACG
 type: task
-state: backlog
+state: done
 priority: P2
 slug: minimal-proof-non-register-collapse-identity-in-traveler-fra
 title: "Minimal proof: non-register-collapse = identity-in-traveler-frame via heartbeats + never-idle forward-motion homeostat (§B)"
 created: 2026-06-06T22:05:04.428Z
+completed: 2026-06-07T05:50:57.438Z
 depends_on: []
 composes_with: []
 ---
