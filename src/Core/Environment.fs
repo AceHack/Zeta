@@ -12,22 +12,7 @@ open System.Threading.Tasks
 /// `SystemEnvironment.Default`. No F# code in this library calls
 /// `DateTime.UtcNow`, `Random.Shared`, `Guid.NewGuid`, or
 /// `Task.Delay`/`Thread.Sleep` directly.
-type ISimulationEnvironment =
-    /// Current logical time. `SystemEnvironment` returns wall-clock UTC;
-    /// `VirtualEnvironment` returns the scheduler-controlled clock.
-    abstract UtcNow: unit -> DateTimeOffset
-
-    /// A monotonically-increasing ticks counter (for durations).
-    abstract Ticks: unit -> int64
-
-    /// Next 64-bit integer from the environment's RNG.
-    abstract NextInt64: unit -> int64
-
-    /// Fresh GUID. Virtual envs emit deterministic values; system env uses v4.
-    abstract NewGuid: unit -> Guid
-
-    /// Wait `timeout`. Async; environment may fast-forward.
-    abstract Delay: timeout: TimeSpan * cancellationToken: CancellationToken -> Task
+// ISimulationEnvironment is defined in C# (Zeta.Core.Abstractions).
 
 
 /// Production environment backed by the actual OS clock and a seeded

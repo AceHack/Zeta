@@ -25,12 +25,13 @@ let ``InMemoryCheckpointStore roundtrips operator state`` () =
 
     savedValue <- 0
 
-    let loaded =
+    let (loaded: CheckpointLoadResult) =
         store.LoadCheckpointAsync("test-circuit", System.Threading.CancellationToken.None)
         |> fun vt -> vt.AsTask() |> Async.AwaitTask |> Async.RunSynchronously
 
-    loaded.IsSome |> should be True
-    let struct (tick, readers) = loaded.Value
+    isNull loaded |> should be False
+    let tick = loaded.Tick
+    let readers = loaded.States
     tick |> should equal 1L
     readers.Length |> should equal 1
 
@@ -44,11 +45,11 @@ let ``InMemoryCheckpointStore roundtrips operator state`` () =
 let ``InMemoryCheckpointStore returns ValueNone when empty`` () =
     let store = InMemoryCheckpointStore() :> ICheckpointStore
 
-    let loaded =
+    let (loaded: CheckpointLoadResult) =
         store.LoadCheckpointAsync("nonexistent", System.Threading.CancellationToken.None)
         |> fun vt -> vt.AsTask() |> Async.AwaitTask |> Async.RunSynchronously
 
-    loaded.IsNone |> should be True
+    isNull loaded |> should be True
 
 
 [<Fact>]
@@ -77,11 +78,13 @@ let ``InMemoryCheckpointStore handles multiple operators`` () =
     val1 <- 0L
     val2 <- ""
 
-    let loaded =
+    let (loaded: CheckpointLoadResult) =
         store.LoadCheckpointAsync("multi", System.Threading.CancellationToken.None)
         |> fun vt -> vt.AsTask() |> Async.AwaitTask |> Async.RunSynchronously
 
-    let struct (tick, readers) = loaded.Value
+    isNull loaded |> should be False
+    let tick = loaded.Tick
+    let readers = loaded.States
     tick |> should equal 5L
     readers.Length |> should equal 2
 
@@ -114,11 +117,13 @@ let ``InMemoryCheckpointStore overwrites on second save`` () =
 
     v <- 0
 
-    let loaded =
+    let (loaded: CheckpointLoadResult) =
         store.LoadCheckpointAsync("c", System.Threading.CancellationToken.None)
         |> fun vt -> vt.AsTask() |> Async.AwaitTask |> Async.RunSynchronously
 
-    let struct (tick, readers) = loaded.Value
+    isNull loaded |> should be False
+    let tick = loaded.Tick
+    let readers = loaded.States
     tick |> should equal 2L
     let (_, r) = readers.[0]
     op.LoadState r
@@ -163,7 +168,7 @@ let ``FileCheckpointStore roundtrips operator state`` () =
 
         savedValue <- 0
 
-        let loaded =
+        let (loaded: CheckpointLoadResult) =
             store.LoadCheckpointAsync(
                 "test-circuit",
                 Threading.CancellationToken.None)
@@ -172,8 +177,9 @@ let ``FileCheckpointStore roundtrips operator state`` () =
                 |> Async.AwaitTask
                 |> Async.RunSynchronously
 
-        loaded.IsSome |> should be True
-        let struct (tick, readers) = loaded.Value
+        isNull loaded |> should be False
+        let tick = loaded.Tick
+        let readers = loaded.States
         tick |> should equal 1L
         readers.Length |> should equal 1
 
@@ -191,7 +197,7 @@ let ``FileCheckpointStore returns ValueNone when empty`` () =
     try
         let store = FileCheckpointStore(dir) :> ICheckpointStore
 
-        let loaded =
+        let (loaded: CheckpointLoadResult) =
             store.LoadCheckpointAsync(
                 "nonexistent",
                 Threading.CancellationToken.None)
@@ -200,7 +206,7 @@ let ``FileCheckpointStore returns ValueNone when empty`` () =
                 |> Async.AwaitTask
                 |> Async.RunSynchronously
 
-        loaded.IsNone |> should be True
+        isNull loaded |> should be True
     finally
         cleanupDir dir
 
@@ -242,7 +248,7 @@ let ``FileCheckpointStore handles multiple operators`` () =
         val1 <- 0L
         val2 <- ""
 
-        let loaded =
+        let (loaded: CheckpointLoadResult) =
             store.LoadCheckpointAsync(
                 "multi",
                 Threading.CancellationToken.None)
@@ -251,7 +257,9 @@ let ``FileCheckpointStore handles multiple operators`` () =
                 |> Async.AwaitTask
                 |> Async.RunSynchronously
 
-        let struct (tick, readers) = loaded.Value
+        isNull loaded |> should be False
+        let tick = loaded.Tick
+        let readers = loaded.States
         tick |> should equal 5L
         readers.Length |> should equal 2
 
@@ -300,7 +308,7 @@ let ``FileCheckpointStore overwrites on second save`` () =
 
         v <- 0
 
-        let loaded =
+        let (loaded: CheckpointLoadResult) =
             store.LoadCheckpointAsync(
                 "c",
                 Threading.CancellationToken.None)
@@ -309,7 +317,9 @@ let ``FileCheckpointStore overwrites on second save`` () =
                 |> Async.AwaitTask
                 |> Async.RunSynchronously
 
-        let struct (tick, readers) = loaded.Value
+        isNull loaded |> should be False
+        let tick = loaded.Tick
+        let readers = loaded.States
         tick |> should equal 2L
         let (_, r) = readers.[0]
         op.LoadState r
@@ -347,7 +357,7 @@ let ``FileCheckpointStore survives across instances`` () =
         // Load with a completely new instance.
         let store2 =
             FileCheckpointStore(dir) :> ICheckpointStore
-        let loaded =
+        let (loaded: CheckpointLoadResult) =
             store2.LoadCheckpointAsync(
                 "persist",
                 Threading.CancellationToken.None)
@@ -356,8 +366,9 @@ let ``FileCheckpointStore survives across instances`` () =
                 |> Async.AwaitTask
                 |> Async.RunSynchronously
 
-        loaded.IsSome |> should be True
-        let struct (tick, readers) = loaded.Value
+        isNull loaded |> should be False
+        let tick = loaded.Tick
+        let readers = loaded.States
         tick |> should equal 7L
         readers.Length |> should equal 1
 

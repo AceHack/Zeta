@@ -12,17 +12,17 @@ open Zeta.Core
 /// additive identity, multiplicative identity, annihilator.
 let inline checkMonoidLaws (sr: ISemiring<'W>) (a: 'W) =
     // Zero + a = a  (left identity)
-    sr.Add sr.Zero a |> should equal a
+    sr.Add(sr.Zero, a) |> should equal a
     // a + Zero = a  (right identity)
-    sr.Add a sr.Zero |> should equal a
+    sr.Add(a, sr.Zero) |> should equal a
     // One * a = a   (left identity)
-    sr.Mul sr.One  a |> should equal a
+    sr.Mul(sr.One, a) |> should equal a
     // a * One = a   (right identity)
-    sr.Mul a sr.One  |> should equal a
+    sr.Mul(a, sr.One) |> should equal a
 
 /// Verify additive inverse: a + Negate(a) = Zero.
 let inline checkRingNegate (sr: ISemiring<'W>) (a: 'W) =
-    sr.Add a (sr.Negate a) |> should equal sr.Zero
+    sr.Add(a, sr.Negate(a)) |> should equal sr.Zero
 
 
 // ─── IntegerRing ──────────────────────────────────────────────────
@@ -37,17 +37,17 @@ let ``IntegerRing — One is 1L`` () =
 
 [<Fact>]
 let ``IntegerRing — Add is checked addition`` () =
-    IntegerRing.Instance.Add 3L 4L |> should equal 7L
-    IntegerRing.Instance.Add -2L 5L |> should equal 3L
+    IntegerRing.Instance.Add(3L, 4L) |> should equal 7L
+    IntegerRing.Instance.Add(-2L, 5L) |> should equal 3L
 
 [<Fact>]
 let ``IntegerRing — Mul is checked multiplication`` () =
-    IntegerRing.Instance.Mul 3L 4L |> should equal 12L
+    IntegerRing.Instance.Mul(3L, 4L) |> should equal 12L
 
 [<Fact>]
 let ``IntegerRing — Negate`` () =
-    IntegerRing.Instance.Negate 5L |> should equal -5L
-    IntegerRing.Instance.Negate 0L |> should equal 0L
+    IntegerRing.Instance.Negate(5L) |> should equal -5L
+    IntegerRing.Instance.Negate(0L) |> should equal 0L
 
 [<Fact>]
 let ``IntegerRing — monoid laws`` () =
@@ -90,7 +90,7 @@ let ``IntervalRing — Add widens interval`` () =
     let sr = IntervalRing.Instance
     let a  = IntervalWeight(1.0, 2.0)
     let b  = IntervalWeight(3.0, 5.0)
-    let c  = sr.Add a b
+    let c  = sr.Add(a, b)
     c.Lo |> should equal 4.0
     c.Hi |> should equal 7.0
 
@@ -99,7 +99,7 @@ let ``IntervalRing — Mul positive intervals`` () =
     let sr = IntervalRing.Instance
     let a  = IntervalWeight(2.0, 3.0)
     let b  = IntervalWeight(4.0, 5.0)
-    let c  = sr.Mul a b
+    let c  = sr.Mul(a, b)
     c.Lo |> should equal 8.0    // 2*4
     c.Hi |> should equal 15.0   // 3*5
 
@@ -108,7 +108,7 @@ let ``IntervalRing — Mul with negative interval uses Kaucher hull`` () =
     let sr = IntervalRing.Instance
     let a  = IntervalWeight(-2.0, 3.0)
     let b  = IntervalWeight(1.0, 4.0)
-    let c  = sr.Mul a b
+    let c  = sr.Mul(a, b)
     // products: -2*1=-2, -2*4=-8, 3*1=3, 3*4=12  → hull [-8, 12]
     c.Lo |> should equal -8.0
     c.Hi |> should equal 12.0
@@ -117,7 +117,7 @@ let ``IntervalRing — Mul with negative interval uses Kaucher hull`` () =
 let ``IntervalRing — Negate reverses interval`` () =
     let sr = IntervalRing.Instance
     let a  = IntervalWeight(2.0, 5.0)
-    let n  = sr.Negate a
+    let n  = sr.Negate(a)
     n.Lo |> should equal -5.0
     n.Hi |> should equal -2.0
 
@@ -132,7 +132,7 @@ let ``IntervalRing — point intervals satisfy ring negate law`` () =
     // Point intervals [v,v] behave like real numbers: [v,v] + [-v,-v] = [0,0].
     let sr = IntervalRing.Instance
     checkRingNegate sr (IntervalWeight.Point 3.0)
-    checkRingNegate sr (IntervalWeight.Point -2.0)
+    checkRingNegate sr (IntervalWeight.Point(-2.0))
 
 [<Fact>]
 let ``IntervalRing — non-point negate gives width-doubled result (not zero)`` () =
@@ -141,7 +141,7 @@ let ``IntervalRing — non-point negate gives width-doubled result (not zero)`` 
     // Analogy: Spanner TrueTime can't subtract its uncertainty window away.
     let sr = IntervalRing.Instance
     let a  = IntervalWeight(3.0, 7.0)   // width 4
-    let r  = sr.Add a (sr.Negate a)
+    let r  = sr.Add(a, sr.Negate(a))
     r.Lo |> should equal -4.0           // 3 - 7
     r.Hi |> should equal  4.0           // 7 - 3
     r.Width |> should equal 8.0         // doubled uncertainty
@@ -150,7 +150,7 @@ let ``IntervalRing — non-point negate gives width-doubled result (not zero)`` 
 let ``IntervalRing — uncertainty widens under repeated Add`` () =
     let sr = IntervalRing.Instance
     let uncertain = IntervalWeight(0.9, 1.1)
-    let sum2 = sr.Add uncertain uncertain
+    let sum2 = sr.Add(uncertain, uncertain)
     sum2.Width |> should be (greaterThan uncertain.Width)
 
 [<Fact>]
@@ -159,7 +159,7 @@ let ``IntervalRing — point intervals commute with integer interpretation`` () 
     let sr = IntervalRing.Instance
     let a  = IntervalWeight.Point 3.0
     let b  = IntervalWeight.Point 4.0
-    let c  = sr.Add a b
+    let c  = sr.Add(a, b)
     c.IsCertain |> should be True
     c.Lo |> should equal 7.0
 
@@ -177,15 +177,15 @@ let ``TropicalSemiring — One is TropicalWeight 0L`` () =
 [<Fact>]
 let ``TropicalSemiring — Add is min`` () =
     let sr = TropicalSemiring.Instance
-    sr.Add (TropicalWeight 3L) (TropicalWeight 7L) |> should equal (TropicalWeight 3L)
-    sr.Add (TropicalWeight 7L) (TropicalWeight 3L) |> should equal (TropicalWeight 3L)
+    sr.Add(TropicalWeight 3L, TropicalWeight 7L) |> should equal (TropicalWeight 3L)
+    sr.Add(TropicalWeight 7L, TropicalWeight 3L) |> should equal (TropicalWeight 3L)
 
 [<Fact>]
 let ``TropicalSemiring — Mul is saturating plus`` () =
     let sr = TropicalSemiring.Instance
-    sr.Mul (TropicalWeight 3L) (TropicalWeight 4L) |> should equal (TropicalWeight 7L)
+    sr.Mul(TropicalWeight 3L, TropicalWeight 4L) |> should equal (TropicalWeight 7L)
     // Infinity absorbs
-    sr.Mul TropicalWeight.Infinity (TropicalWeight 5L) |> should equal TropicalWeight.Infinity
+    sr.Mul(TropicalWeight.Infinity, TropicalWeight 5L) |> should equal TropicalWeight.Infinity
 
 [<Fact>]
 let ``TropicalSemiring — monoid laws`` () =
@@ -195,5 +195,5 @@ let ``TropicalSemiring — monoid laws`` () =
 
 [<Fact>]
 let ``TropicalSemiring — Negate raises (no additive inverse)`` () =
-    (fun () -> TropicalSemiring.Instance.Negate (TropicalWeight 1L) |> ignore)
+    (fun () -> TropicalSemiring.Instance.Negate(TropicalWeight 1L) |> ignore)
     |> should throw typeof<System.InvalidOperationException>

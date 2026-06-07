@@ -52,7 +52,10 @@ module PluginHarness =
         // the exactly-one-publish counter).
         let inputOps : Op array =
             plugin.ReadDependencies
-            |> Array.map (fun h -> h.op)
+            |> Array.map (fun h ->
+                match h with
+                | :? StreamHandle as sh -> sh.op
+                | _ -> failwith "Invalid stream handle type")
         let adapter = PluginOperatorAdapter<'TOut>(plugin, inputOps)
         adapter.idField <- 1
 
@@ -111,7 +114,10 @@ module PluginHarness =
 
         let inputOps : Op array =
             plugin.ReadDependencies
-            |> Array.map (fun h -> h.op)
+            |> Array.map (fun h ->
+                match h with
+                | :? StreamHandle as sh -> sh.op
+                | _ -> failwith "Invalid stream handle type")
         let adapter = PluginOperatorAdapter<'TOut>(plugin, inputOps)
         adapter.idField <- 2
 

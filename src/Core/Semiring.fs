@@ -13,43 +13,7 @@ open System.Runtime.CompilerServices
 ///   Mul distributes over Add
 ///   Mul _ Zero = Zero (annihilator)
 ///   Negate a `Add` a = Zero (additive inverse, ring axiom)
-type ISemiring<'W> =
-    abstract member Zero   : 'W                   // additive identity
-    abstract member One    : 'W                   // multiplicative identity
-    abstract member Add    : 'W -> 'W -> 'W       // ⊕
-    abstract member Mul    : 'W -> 'W -> 'W       // ⊗
-    abstract member Negate : 'W -> 'W             // additive inverse (ring)
-
-
-// ═══════════════════════════════════════════════════════════════════
-// THE ALGEBRA LADDER below a ring: monoid → group → semilattice
-// (instance-passing, like ISemiring — a value may carry several algebras;
-//  cf. .NET generic-math static-abstract style, the type-IS-its-algebra
-//  alternative used at concrete numeric leaves. We mirror .NET's *names*:
-//  Identity ≈ IAdditiveIdentity.AdditiveIdentity, Combine ≈ IAdditionOperators (+),
-//  Inverse ≈ IUnaryNegationOperators (-).)
-// ═══════════════════════════════════════════════════════════════════
-
-/// **Monoid** `(T, Combine, Identity)` — an associative binary op with a two-sided identity; the minimal
-/// algebra for `fold`/aggregation. `Combine` ≈ .NET `IAdditionOperators` (`+`); `Identity` ≈ .NET
-/// `IAdditiveIdentity.AdditiveIdentity`.
-///   Laws: Combine (Combine a b) c = Combine a (Combine b c);  Combine Identity a = a = Combine a Identity.
-type IMonoid<'T> =
-    abstract member Identity : 'T
-    abstract member Combine  : 'T -> 'T -> 'T
-
-/// **Group** — a monoid in which every element has an inverse. `Inverse` ≈ .NET `IUnaryNegationOperators`
-/// (`-`).  Law (additional): Combine a (Inverse a) = Identity = Combine (Inverse a) a.
-type IGroup<'T> =
-    inherit IMonoid<'T>
-    abstract member Inverse : 'T -> 'T
-
-/// **Bounded join-semilattice** — a *commutative* and *idempotent* monoid; `Combine` is the join (`⊔`),
-/// `Identity` is bottom (`⊥`). Precisely a CRDT merge / the confluence resolver: out-of-order `Combine`
-/// converges to the same result *iff* it is a join-semilattice (see the confluence proof).
-///   Laws (additional to monoid): Combine a b = Combine b a;  Combine a a = a.
-type ISemilattice<'T> =
-    inherit IMonoid<'T>
+// Algebraic interfaces (ISemiring, IMonoid, IGroup, ISemilattice) are defined in C# (Zeta.Core.Abstractions) to support generic variance.
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -62,11 +26,11 @@ type ISemilattice<'T> =
 [<Sealed>]
 type IntegerRing() =
     interface ISemiring<int64> with
-        member _.Zero     = 0L
-        member _.One      = 1L
-        member _.Add  a b = Checked.(+) a b
-        member _.Mul  a b = Checked.(*) a b
-        member _.Negate a = Checked.(~-) a
+        member _.Zero       = 0L
+        member _.One        = 1L
+        member _.Add(a, b)  = Checked.(+) a b
+        member _.Mul(a, b)  = Checked.(*) a b
+        member _.Negate(a)  = Checked.(~-) a
 
 [<RequireQualifiedAccess>]
 module IntegerRing =
@@ -122,11 +86,11 @@ type IntervalRing() =
         member _.Zero = IntervalWeight.Zero
         member _.One  = IntervalWeight.One
 
-        member _.Add a b =
+        member _.Add(a, b) =
             IntervalWeight(a.Lo + b.Lo, a.Hi + b.Hi)
 
         // Kaucher multiplication: take hull of all corner products.
-        member _.Mul a b =
+        member _.Mul(a, b) =
             let p1 = a.Lo * b.Lo
             let p2 = a.Lo * b.Hi
             let p3 = a.Hi * b.Lo
@@ -135,7 +99,7 @@ type IntervalRing() =
                 min (min p1 p2) (min p3 p4),
                 max (max p1 p2) (max p3 p4))
 
-        member _.Negate a = IntervalWeight(-a.Hi, -a.Lo)
+        member _.Negate(a) = IntervalWeight(-a.Hi, -a.Lo)
 
 [<RequireQualifiedAccess>]
 module IntervalRing =

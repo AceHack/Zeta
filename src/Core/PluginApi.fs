@@ -13,8 +13,8 @@ open System.Threading.Tasks
 /// `Stream<'T>` captured at construction time.
 [<Struct; IsReadOnly; NoComparison; NoEquality>]
 type StreamHandle =
+    interface IStreamHandle
     val internal op: Op
-
     internal new(op: Op) = { op = op }
 
 
@@ -25,6 +25,8 @@ type StreamHandle =
 /// another operator's `OutputBuffer`.
 [<Struct; IsReadOnly; NoComparison; NoEquality>]
 type OutputBuffer<'TOut> =
+    interface IOutputBuffer<'TOut> with
+        member this.Publish(value: 'TOut) = this.Publish(value)
     val internal target: Op<'TOut>
     val internal countRef: int ref
 
@@ -42,130 +44,7 @@ type OutputBuffer<'TOut> =
         System.Threading.Interlocked.Increment(&this.countRef.contents) |> ignore
 
 
-/// Plugin-author contract for a custom operator with a typed
-/// output. External plugin libraries implement this to extend
-/// Zeta's operator catalogue without touching internal scheduler
-/// types. Conformance to an algebra capability tag
-/// (`ILinearOperator`, `IBilinearOperator`, etc.) is verified
-/// in the plugin author's test project via `LawRunner` — see
-/// `docs/PLUGIN-AUTHOR.md` §"Verifying your plugin's algebra tag".
-type IOperator<'TOut> =
-
-    /// Short diagnostic label for the operator instance. Used
-    /// for tracing and visualisation; not identity.
-    abstract Name : string
-
-    /// Every upstream stream this operator reads inside
-    /// `StepAsync`. Populate once at construction — the array
-    /// is read by the scheduler each `Circuit.Build`.
-    abstract ReadDependencies : StreamHandle array
-
-    /// Compute the current tick's output. Must call
-    /// `output.Publish` exactly once before the returned
-    /// `ValueTask` completes. Synchronous implementations
-    /// return `ValueTask.CompletedTask`.
-    abstract StepAsync : output: OutputBuffer<'TOut> * ct: CancellationToken -> ValueTask
-
-
-/// Optional capability: strict operator (feedback-cut).
-/// `StepAsync` publishes the *delayed* output (state captured on
-/// the previous tick); `AfterStepAsync` captures the current
-/// tick's input for publication next tick. `z^-1` is the
-/// canonical strict operator.
-type IStrictOperator<'TOut> =
-    inherit IOperator<'TOut>
-    abstract AfterStepAsync : ct: CancellationToken -> ValueTask
-
-
-/// Optional capability: issues genuinely asynchronous work
-/// (disk I/O, network RPC). Without this, the scheduler uses
-/// the zero-alloc sync fast path. Implementing this forces
-/// the slow async state-machine path — only opt in when
-/// needed.
-type IAsyncOperator =
-    abstract IsAsync : bool
-
-
-/// Optional capability: participates in a nested fixed-point
-/// scope. `scope` numbers the enclosing fixed-point level; the
-/// operator returns `true` iff it has reached its fixed point
-/// in that scope. Default behaviour is `true` (not a fixed-
-/// point participant); override to signal progress.
-type INestedFixpointParticipant =
-    abstract Fixedpoint : scope: int -> bool
-
-
-// ─────────────────────────────────────────────────────────────────────
-//  Algebra capability tags — non-generic markers + typed interfaces.
-//
-//  F# (and the CLR) cannot test `:? IBilinearOperator<obj, obj, 'TOut>`
-//  against a concrete `IBilinearOperator<'A, 'B, 'C>` instance because
-//  generic-interface type tests require exact type-parameter match.
-//  The fix is the BCL pattern used by `IEnumerable` vs `IEnumerable<T>`:
-//  a non-generic marker interface for runtime type tests, and a
-//  generic interface (inheriting the marker) for typed access.
-//
-//  Plugin authors only need to implement the typed interface; the
-//  marker is satisfied automatically via interface inheritance. The
-//  scheduler / fusion engine / IncrementalAuto dispatcher tests
-//  against the marker, not the generic.
-// ─────────────────────────────────────────────────────────────────────
-
-/// Non-generic marker for `ILinearOperator<_, _>`. Used by
-/// `PluginOperatorAdapter` and the scheduler for `:?` runtime tests
-/// that don't need exact generic-parameter match.
-type ILinearMarker = interface end
-
-/// Non-generic marker for `IBilinearOperator<_, _, _>`.
-type IBilinearMarker = interface end
-
-/// Non-generic marker for `ISinkOperator<_, _>`.
-type ISinkMarker = interface end
-
-/// Non-generic marker for `IStatefulStrictOperator<_, _, _>`.
-type IStatefulStrictMarker = interface end
-
-
-/// Algebra capability: the operator is *linear* — `op(a + b) =
-/// op(a) + op(b)` and `op(0) = 0`. Retraction-native: a
-/// negative weight un-accumulates correctly. Declared at the
-/// type level so the scheduler can run `LinearLaw` at
-/// `Circuit.Build()` (test-time, via `LawRunner.checkLinear`).
-type ILinearOperator<'TIn, 'TOut> =
-    inherit IOperator<'TOut>
-    inherit ILinearMarker
-
-
-/// Algebra capability: the operator is *bilinear* in two
-/// inputs (e.g. a join). Incrementalisation generates the
-/// standard `Δa ⋈ Δb + z^-1(I(a)) ⋈ Δb + Δa ⋈ z^-1(I(b))`
-/// form. Verified by `LawRunner.checkBilinear` (when available).
-type IBilinearOperator<'TIn1, 'TIn2, 'TOut> =
-    inherit IOperator<'TOut>
-    inherit IBilinearMarker
-
-
-/// Algebra capability: the operator is a *sink* — terminal,
-/// non-Z-set-emitting, potentially retraction-lossy. Sink
-/// operators are consciously exempt from relational
-/// composition laws and the scheduler enforces terminal
-/// placement (a sink may not feed another operator inside a
-/// relational path) via the `Circuit.Build()` validation pass.
-/// Bayesian aggregates are the canonical example.
-type ISinkOperator<'TIn, 'TOut> =
-    inherit IOperator<'TOut>
-    inherit ISinkMarker
-
-
-/// Algebra capability: the operator carries explicit stateful
-/// strict semantics — init / step / retract triple. Distinct
-/// from `IStrictOperator` (feedback-cut): stateful-strict ops
-/// hold per-key or per-instance state that must retract
-/// cleanly when a negative weight arrives. Verified by
-/// `LawRunner.checkRetractionCompleteness`.
-type IStatefulStrictOperator<'TIn, 'TState, 'TOut> =
-    inherit IOperator<'TOut>
-    inherit IStatefulStrictMarker
+// Plugin-author interfaces (IOperator, IStrictOperator, IAsyncOperator, INestedFixpointParticipant, capabilities) are defined in C# (Zeta.Core.Abstractions).
 
 
 /// Internal adapter: wraps an `IOperator<'T>` inside an
@@ -231,7 +110,7 @@ type internal PluginOperatorAdapter<'TOut>(plugin: IOperator<'TOut>, inputOps: O
 
     override this.StepAsync(ct: CancellationToken) : ValueTask =
         let buffer = OutputBuffer<'TOut>(this, publishCount)
-        plugin.StepAsync(buffer, ct)
+        plugin.StepAsync(buffer :> IOutputBuffer<'TOut>, ct)
 
     override _.AfterStepAsync(ct: CancellationToken) : ValueTask =
         match asStrict with
@@ -252,12 +131,12 @@ module PluginApi =
 
     type Stream<'T> with
 
-        /// Obtain an opaque `StreamHandle` naming this stream's
+        /// Obtain an opaque `IStreamHandle` naming this stream's
         /// producing operator. Plugin authors list handles in
         /// `IOperator.ReadDependencies`; the scheduler resolves
         /// them at `Circuit.Build()` to build the DAG.
-        member this.AsDependency() : StreamHandle =
-            StreamHandle(this.Op :> Op)
+        member this.AsDependency() : IStreamHandle =
+            StreamHandle(this.Op :> Op) :> IStreamHandle
 
     type Circuit with
 
@@ -269,6 +148,10 @@ module PluginApi =
         /// interface-typed path.
         member this.RegisterStream<'TOut>(op: IOperator<'TOut>) : Stream<'TOut> =
             let deps = op.ReadDependencies
-            let inputOps = Array.init deps.Length (fun i -> deps.[i].op)
+            let inputOps =
+                Array.init deps.Length (fun i ->
+                    match deps.[i] with
+                    | :? StreamHandle as h -> h.op
+                    | _ -> failwith "Invalid stream handle type")
             let adapter = PluginOperatorAdapter<'TOut>(op, inputOps)
             this.RegisterStream adapter

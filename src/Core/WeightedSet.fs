@@ -58,7 +58,7 @@ module WeightedSet =
                         | Some c -> c
                         | None -> sr.Zero
 
-                    setW sr k (sr.Add cur w) acc)
+                    setW sr k (sr.Add(cur, w)) acc)
                 Map.empty
 
         { Entries = m }
@@ -76,14 +76,14 @@ module WeightedSet =
                         | Some c -> c
                         | None -> sr.Zero
 
-                    setW sr k (sr.Add cur w) acc)
+                    setW sr k (sr.Add(cur, w)) acc)
                 a.Entries
 
         { Entries = m }
 
     /// Negate every weight (ring inverse — for retraction / subtraction).
     let negate (sr: ISemiring<'W>) (ws: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
-        { Entries = ws.Entries |> Map.map (fun _ w -> sr.Negate w) }
+        { Entries = ws.Entries |> Map.map (fun _ w -> sr.Negate(w)) }
 
     /// `a − b` = `a ⊕ (−b)`.
     let subtract (sr: ISemiring<'W>) (a: WeightedSet<'K, 'W>) (b: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
@@ -91,7 +91,7 @@ module WeightedSet =
 
     /// Scale every weight by `w` on the left (⊗); `Zero` results pruned (`×Zero` annihilates).
     let scale (sr: ISemiring<'W>) (w: 'W) (ws: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
-        let m = ws.Entries |> Map.fold (fun acc k wk -> setW sr k (sr.Mul w wk) acc) Map.empty
+        let m = ws.Entries |> Map.fold (fun acc k wk -> setW sr k (sr.Mul(w, wk)) acc) Map.empty
         { Entries = m }
 
     /// Contraction / inner product over shared coordinates: `Σ_k a[k] ⊗ b[k]` (⊕-folded). Over a 0/1
@@ -102,7 +102,7 @@ module WeightedSet =
         |> Map.fold
             (fun acc k wa ->
                 match Map.tryFind k b.Entries with
-                | Some wb -> sr.Add acc (sr.Mul wa wb)
+                | Some wb -> sr.Add(acc, sr.Mul(wa, wb))
                 | None -> acc)
             sr.Zero
 

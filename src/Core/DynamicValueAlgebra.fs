@@ -42,10 +42,10 @@ module DynamicValueAlgebra =
     let mergeSemilattice: ISemilattice<DynamicValue> =
         { new ISemilattice<DynamicValue> with
             member _.Identity = DynamicValue.Null
-            member _.Combine a b = lwwJoin a b }
+            member _.Combine(a, b) = lwwJoin a b }
 
     /// Fold a sequence under any monoid (generic plumbing): `Combine`-reduce from `Identity`.
-    let fold (m: IMonoid<'T>) (xs: 'T seq) : 'T = Seq.fold m.Combine m.Identity xs
+    let fold (m: IMonoid<'T>) (xs: 'T seq) : 'T = Seq.fold (fun a b -> m.Combine(a, b)) m.Identity xs
 
     /// Merge a sequence of `DynamicValue`s under the merge semilattice (order-independent by construction).
     let mergeAll (xs: DynamicValue seq) : DynamicValue = fold mergeSemilattice xs

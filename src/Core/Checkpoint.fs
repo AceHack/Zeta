@@ -5,65 +5,7 @@ open System.IO
 open System.Threading
 open System.Threading.Tasks
 
-/// Checkpoint state reader — operators load their state
-/// from this during recovery. Mirrors Reaqtor's
-/// IOperatorStateReader pattern.
-type ICheckpointReader =
-    abstract ReadInt32: unit -> int32
-    abstract ReadInt64: unit -> int64
-    abstract ReadFloat: unit -> float
-    abstract ReadBool: unit -> bool
-    abstract ReadBytes: unit -> byte array
-    abstract ReadString: unit -> string
-
-/// Checkpoint state writer — operators save their state
-/// to this during checkpoint. Mirrors Reaqtor's
-/// IOperatorStateWriter pattern.
-type ICheckpointWriter =
-    abstract WriteInt32: int32 -> unit
-    abstract WriteInt64: int64 -> unit
-    abstract WriteFloat: float -> unit
-    abstract WriteBool: bool -> unit
-    abstract WriteBytes: byte array -> unit
-    abstract WriteString: string -> unit
-
-/// An operator that can save and restore its internal
-/// state for durable execution. Operators implementing
-/// this interface participate in circuit-level
-/// checkpointing.
-///
-/// Design lineage:
-/// - Reaqtor IStatefulOperator (Save/Load at yield points)
-/// - Temporal deterministic replay (event history as source
-///   of truth, operator state as optimization)
-/// - Orleans grain persistence (grain = standing query with
-///   durable state)
-///
-/// The checkpoint boundary is Circuit.StepAsync — state
-/// is captured between steps. On recovery, the circuit
-/// can either replay from the event stream (Temporal
-/// model) or restore operator state directly (Reaqtor
-/// model). Both are valid; the interface supports both.
-type ICheckpointable =
-    abstract SaveState: writer: ICheckpointWriter -> unit
-    abstract LoadState: reader: ICheckpointReader -> unit
-    abstract StateVersion: int
-
-/// Checkpoint store — persists operator states keyed by
-/// operator ID. The circuit coordinator calls this after
-/// each step (or at a configured interval).
-type ICheckpointStore =
-    abstract SaveCheckpointAsync:
-        circuitId: string *
-        tick: int64 *
-        states: (int * ICheckpointable) array *
-        ct: CancellationToken ->
-            ValueTask
-
-    abstract LoadCheckpointAsync:
-        circuitId: string *
-        ct: CancellationToken ->
-            ValueTask<struct (int64 * (int * ICheckpointReader) array) voption>
+// Checkpoint interfaces (ICheckpointReader, ICheckpointWriter, ICheckpointable, ICheckpointStore, CheckpointLoadResult) are defined in C# (Zeta.Core.Abstractions).
 
 /// File-based checkpoint store with fsync for crash-safe
 /// operator state persistence. StableStorage mode for
@@ -182,7 +124,7 @@ type FileCheckpointStore(rootDir: string) =
         member _.LoadCheckpointAsync(circuitId, _ct) =
             let path = checkpointPath circuitId
             if not (File.Exists path) then
-                ValueTask.FromResult ValueNone
+                ValueTask.FromResult<CheckpointLoadResult>(null)
             else
                 // Treat corrupt / truncated checkpoint as
                 // missing — safer than crashing recovery.
@@ -195,7 +137,7 @@ type FileCheckpointStore(rootDir: string) =
                     let tick = br.ReadInt64()
                     let count = br.ReadInt32()
                     if count < 0 then
-                        ValueTask.FromResult ValueNone
+                        ValueTask.FromResult<CheckpointLoadResult>(null)
                     else
                         let readers =
                             Array.init count (fun _ ->
@@ -220,12 +162,12 @@ type FileCheckpointStore(rootDir: string) =
                                             opBr.ReadBytes len
                                         member _.ReadString() =
                                             opBr.ReadString() }
-                                (opId, reader))
-                        ValueTask.FromResult(
-                            ValueSome(struct (tick, readers)))
+                                Tuple.Create(opId, reader))
+                        let result = CheckpointLoadResult(tick, readers)
+                        ValueTask.FromResult(result)
                 with
-                | :? EndOfStreamException -> ValueTask.FromResult ValueNone
-                | :? IOException -> ValueTask.FromResult ValueNone
+                | :? EndOfStreamException -> ValueTask.FromResult<CheckpointLoadResult>(null)
+                | :? IOException -> ValueTask.FromResult<CheckpointLoadResult>(null)
 
 
 /// In-memory checkpoint store for testing and DST.
@@ -261,7 +203,7 @@ type InMemoryCheckpointStore() =
 
         member _.LoadCheckpointAsync(_circuitId, _ct) =
             match saved with
-            | ValueNone -> ValueTask.FromResult ValueNone
+            | ValueNone -> ValueTask.FromResult<CheckpointLoadResult>(null)
             | ValueSome(tick, buffers) ->
                 let readers =
                     buffers
@@ -280,6 +222,6 @@ type InMemoryCheckpointStore() =
                                     let len = br.ReadInt32()
                                     br.ReadBytes len
                                 member _.ReadString() = br.ReadString() }
-                        (opId, reader))
-                ValueTask.FromResult(
-                    ValueSome(struct (tick, readers)))
+                        Tuple.Create(opId, reader))
+                let result = CheckpointLoadResult(tick, readers)
+                ValueTask.FromResult(result)

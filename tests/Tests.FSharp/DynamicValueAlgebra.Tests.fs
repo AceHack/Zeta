@@ -22,36 +22,36 @@ let private m = A.mergeSemilattice
 [<Fact>]
 let ``merge monoid: identity is two-sided (Null)`` () =
     for v in samples do
-        Assert.Equal<DynamicValue>(v, m.Combine m.Identity v)
-        Assert.Equal<DynamicValue>(v, m.Combine v m.Identity)
+        Assert.Equal<DynamicValue>(v, m.Combine(m.Identity, v))
+        Assert.Equal<DynamicValue>(v, m.Combine(v, m.Identity))
 
 [<Fact>]
 let ``merge monoid: idempotent (join-semilattice)`` () =
     for v in samples do
-        Assert.Equal<DynamicValue>(v, m.Combine v v)
+        Assert.Equal<DynamicValue>(v, m.Combine(v, v))
 
 [<Fact>]
 let ``merge monoid: commutative`` () =
     for a in samples do
         for b in samples do
-            Assert.Equal<DynamicValue>(m.Combine a b, m.Combine b a)
+            Assert.Equal<DynamicValue>(m.Combine(a, b), m.Combine(b, a))
 
 [<Fact>]
 let ``merge monoid: associative`` () =
     for a in samples do
         for b in samples do
             for c in samples do
-                Assert.Equal<DynamicValue>(m.Combine (m.Combine a b) c, m.Combine a (m.Combine b c))
+                Assert.Equal<DynamicValue>(m.Combine(m.Combine(a, b), c), m.Combine(a, m.Combine(b, c)))
 
 [<Fact>]
 let ``LWW register picks one whole value deterministically (Null is bottom)`` () =
     let a = obj [ "x", i 1L ]
     let b = obj [ "y", i 2L ]
     // combine yields one of the two inputs (max over content-hash), never a deep union
-    let r = m.Combine a b
+    let r = m.Combine(a, b)
     Assert.True(r.Equals a || r.Equals b)
     // Null is the identity / bottom
-    Assert.Equal<DynamicValue>(a, m.Combine DynamicValue.Null a)
+    Assert.Equal<DynamicValue>(a, m.Combine(DynamicValue.Null, a))
 
 [<Fact>]
 let ``mergeAll is order-independent (confluence over a stream)`` () =
