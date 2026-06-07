@@ -53,6 +53,7 @@
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
     <Compile Include="Bonsai/Resume.Tests.fs" />
+    <Compile Include="Bonsai/IntrCtx.Tests.fs" />
     <Compile Include="Bonsai/BonsaiSoft.Tests.fs" />
     <Compile Include="Bonsai/DurableYinYang.Tests.fs" />
     <Compile Include="Core/Codec.Tests.fs" />

@@ -121,6 +121,8 @@
     <Compile Include="Shard.fs" />
     <Compile Include="Metrics.fs" />
     <Compile Include="Tracing.fs" />
+    <Compile Include="IntrCtx.fs" />
+    <Compile Include="SagaBuilder.fs" />
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
     <Compile Include="DiskSpine.fs" />
