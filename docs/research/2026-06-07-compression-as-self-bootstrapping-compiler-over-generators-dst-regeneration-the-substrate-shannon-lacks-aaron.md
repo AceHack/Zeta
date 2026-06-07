@@ -72,13 +72,41 @@ and **verify** the output hashes to the node's `ContentHash256`. This unifies **
 DST + content-addressing** in one node type — and slots straight into the COW Merkle-DAG store
 (`081KTGTJC1Q`) + git-as-event-store (events+fold = a generative regeneration of state). Backlogged.
 
+## The incompressible residual is captured as BAYESIAN UNCERTAINTY (Aaron, 2026-06-07)
+
+> Aaron: *"[random data has no short generator — Kolmogorov says so] … we capture that as Bayesian
+> uncertainty."*
+
+The incompressible part is **not a dead-end** — it's represented as **Bayesian uncertainty** (a `SoftValue`
+distribution), not discarded or hard-failed. The decomposition is:
+
+```
+data  =  generator(seed, params)        // the structured / predictable part — deterministically regenerated (DST)
+       ⊕ residual as a Bayesian distribution   // the surprising / incompressible part — captured as uncertainty (SoftValue)
+```
+
+This closes the loop with **prediction≡compression**: the part the model *can* predict compresses to a
+generator; the part it *can't* is exactly the **residual surprise** — which information theory already
+measures as entropy / cross-entropy, and which Zeta represents not as a bare bit-count but as a **first-class
+`SoftValue` / Bayesian distribution** over the unexplained part. So the substrate handles *all* data
+uniformly: **structured → generator (deterministic, lossless regen); residual → Bayesian uncertainty
+(probabilistic).** A better model shrinks the residual (less uncertainty, smaller cross-entropy); a perfect
+model leaves none. This is the homeostat/belief-convergence stance: compression and uncertainty are two
+readouts of the same model.
+
+Ties: `SoftValue` (the soft/uncertain value type) · `Bayesian` / `BeliefConvergence` · the Shannon
+entropy/cross-entropy residual · prediction≡compression. The generative content node's `Generative` arm
+therefore carries an optional **uncertainty residual** (SoftValue), not just `{generator; seed; params}`.
+
 ## Honest scope (hype-peeled)
 
-The *pieces* exist (DST, Bonsai behavior-as-data, the Ace/Nucleus self-boot, content-addressing); the
-**generative content node + the shared generator codebook + the compile-to-generator compressor are
-designed/captured, NOT built.** This is a strong synthesis, not a shipped feature. The win is real where
-data has generator-capturable structure; it is *not* a general-purpose compressor for incompressible data
-(random data has no short generator — Kolmogorov says so).
+The *pieces* exist (DST, Bonsai behavior-as-data, the Ace/Nucleus self-boot, content-addressing, `SoftValue`/
+`Bayesian` for the residual); the **generative content node + the shared generator codebook + the
+compile-to-generator compressor + the residual-as-SoftValue split are designed/captured, NOT built.** A
+strong synthesis, not a shipped feature. The win is real where data has generator-capturable structure;
+genuinely-random data still has no short generator (Kolmogorov), but instead of "fail" the substrate
+degrades to representing it as **uncertainty** — at the limit, the residual *is* the data (max entropy, a
+uniform Bayesian distribution = "we know nothing about it"), i.e. lossless fallback to materialized bytes.
 
 ## Ties
 

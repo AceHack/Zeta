@@ -26,6 +26,10 @@ content-verified substrate. Full synthesis:
 
 ## Build
 
+- The incompressible RESIDUAL is captured as **Bayesian uncertainty** (`SoftValue`), not a failure (Aaron
+  2026-06-07): `data = generator(seed,params) ⊕ residual-as-Bayesian-distribution`. The `Generative` arm
+  carries an optional uncertainty residual (SoftValue). A better model shrinks the residual; max-entropy
+  residual = lossless fallback to materialized bytes. Ties SoftValue/Bayesian + prediction≡compression.
 - A dual-representation content node: `Materialized of bytes | Generative of {compilerRef; generatorRef;
   seed; params}`; both content-address to the same `ContentHash256` (regenerate -> hash -> verify).
 - A shared library of "common generator functions" (executable codebook; Bonsai expr-trees in DynamicValue),
