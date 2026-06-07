@@ -43,4 +43,3 @@ both anchored in the Beacon register / PRIOR-ART-LIST. Standards adoption — no
 
 - CloudEvents (CNCF) · Debezium/CDC (Red Hat) · Kafka Schema Registry · DBSP (Z-set delta) ·
   src/Core/DeltaLog.fs + ZSet · SchemaEvolution + B-0930 · agent-bus B-0954 · docs/PRIOR-ART-LIST.md.
-

@@ -48,6 +48,7 @@ Loom layer), distinct from the data-plane DB commands.
 
 The mapping above enumerates *which* git reaches must become replaceable — it is **not** a spec for
 full-fidelity git verbs. Per `docs/research/2026-06-07-command-surface-not-1to1-git-...-aaron.md`:
+
 - **Not 1:1 with git** — a curated subset, no full porcelain fidelity.
 - **Retractable by nature** — apply has a defined inverse (Z-set retraction carried to the command layer).
 - **Compensating action built in where not truly retractable** — e.g. `push` (can't un-send) carries a

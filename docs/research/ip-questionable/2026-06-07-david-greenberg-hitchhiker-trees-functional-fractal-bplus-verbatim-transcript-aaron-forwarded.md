@@ -93,7 +93,7 @@ O(1)* (you know the next index). Insert into the root buffer (touch only the roo
 room; at the bottom it triggers the normal B+ insert. Big **write** improvement. **Reads** = find the path,
 then **project the pending operations** (the buffered ops along the path) into the leaf — using *functional*
 nodes to simulate the new leaf without mutating — then search the leaf. For **scans**, only project ops
-*within range* (projecting everything would mis-order). 
+*within range* (projecting everything would mis-order).
 
 **Hitchhiker tree = a fractal tree that uses PATH COPYING** → it's a *functional/immutable* fractal tree
 (fractal trees normally mutate in place for concurrency, incompatible with functional). Also more optimized

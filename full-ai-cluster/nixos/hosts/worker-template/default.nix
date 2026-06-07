@@ -69,7 +69,7 @@
   # ─────────────────────────────────────────────────────────────
 
   # K3S join target — same for every worker in the cluster.
-  services.k3s.serverAddr = "https://control-plane.zeta.local:6443";
+  services.k3s.serverAddr = "https://control-plane:6443";
 
   # GPU device plugin vendor mix. Override per-host if AMD or Intel.
   zeta.gpu-device-plugin = {

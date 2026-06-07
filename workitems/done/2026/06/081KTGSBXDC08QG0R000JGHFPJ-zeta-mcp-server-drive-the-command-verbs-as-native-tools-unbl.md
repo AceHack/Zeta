@@ -67,6 +67,7 @@ as native tools instead of `Bash git …`). Builds on the command core (`DbComma
 ## DONE (2026-06-07)
 
 Server delivered + smoke-tested + self-registered (#6782):
+
 - `tools/zeta-mcp` — minimal from-scratch MCP stdio server (newline-delimited JSON-RPC 2.0; no external
   SDK). Tools over GitCommand: zeta_status/log/branch/checkout/commit. Smoke-tested end-to-end
   (initialize / tools/list / tools/call → real git output via libgit2, zero git CLI).

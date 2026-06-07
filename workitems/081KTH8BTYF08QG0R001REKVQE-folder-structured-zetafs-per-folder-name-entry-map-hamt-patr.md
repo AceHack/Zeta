@@ -42,4 +42,3 @@ folder merge with content-union + name-collision resolution; convergent under co
 
 - fs-Merkle doc (§Merging two ZetaFS) · `DagFs.fs` (flat merge, landed) · `ContentStore.merge` ·
   `Hierarchy.fs` (closure table) · HAMT/Patricia/Hitchhiker prior-art (ip-questionable captures) · 081KTGTJC1Q.
-

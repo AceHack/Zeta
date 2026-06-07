@@ -9,7 +9,7 @@
   services.k3s = {
     enable = true;
     role = "agent";
-    serverAddr = lib.mkDefault "https://control-plane.zeta.local:6443";
+    serverAddr = lib.mkDefault "https://control-plane:6443";
     tokenFile = lib.mkDefault "/var/lib/rancher/k3s/agent/token";
 
     extraFlags = [

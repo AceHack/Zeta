@@ -61,4 +61,3 @@ BLAKE3 known-answer + ZSetMerkle roots + Debezium round-trip + collation ordinal
 
 - the per-module workitems (081KTGYWCT7 / 081KTGYWCTT / 081KTH0HFZ8) · B-0959 (4-oracle master checklist) ·
   B-0969 (collation) · 081KTGTJC1Q (the store) · no-binary-in-proof-lineage (hex-in-JSON).
-

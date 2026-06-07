@@ -40,6 +40,13 @@
       "--write-kubeconfig-mode=0640"
       "--write-kubeconfig-group=wheel"
 
+      # Make the API-server cert valid for the stable name `control-plane`.
+      # Cilium (kubeProxyReplacement) and workers connect to
+      # https://control-plane:6443; without this SAN the TLS handshake
+      # would fail cert verification when the endpoint is addressed by
+      # that name. (127.0.0.1 / the node IP are SAN'd by k3s already.)
+      "--tls-san=control-plane"
+
       # CNI takeover by Cilium — disable flannel + kube-proxy + the
       # built-in network-policy controller. Cilium handles all three.
       "--flannel-backend=none"
@@ -107,6 +114,30 @@
       root-application.source = ../../k8s/bootstrap/root-application.yaml;
     };
   };
+
+  # Stable name for the control-plane (`control-plane`), independent of
+  # this node's per-install hostname (node-<6hex>).
+  #
+  # WHY a fixed name: Cilium runs with kubeProxyReplacement (kube-proxy is
+  # disabled above), so the Cilium agent must reach the API server
+  # directly at `k8sServiceHost: control-plane`
+  # (see k8s/bootstrap/cilium-install.yaml). On the control-plane node
+  # itself the API is local, so we map `control-plane` -> 127.0.0.1 in
+  # /etc/hosts. This is all a single-node cluster needs, and is the
+  # endpoint the control-plane's own Cilium agent uses. Deterministic;
+  # no name-resolution protocol required.
+  #
+  # mDNS is NOT used — `control-plane.zeta.local` was a dangling name that
+  # never resolved (mDNS is single-label `.local`; nothing defined it).
+  #
+  # MULTI-NODE TODO: workers (k3s-agent serverAddr = https://control-plane)
+  # need `control-plane` to resolve to the control-plane's LAN IP. mDNS is
+  # unreliable here and NetBIOS/nss-wins broadcast resolution did not work
+  # in testing (winbindd path). The robust path is to inject a
+  # `control-plane <cp-ip>` /etc/hosts entry on each worker at install
+  # time (zeta-install.sh) once worker provisioning lands. Tracked
+  # separately; single-node bring-up does not depend on it.
+  networking.hosts."127.0.0.1" = [ "control-plane" ];
 
   networking.firewall = {
     allowedTCPPorts = [

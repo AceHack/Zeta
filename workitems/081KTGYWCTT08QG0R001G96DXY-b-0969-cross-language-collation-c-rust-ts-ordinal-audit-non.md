@@ -45,4 +45,3 @@ gap" notes removed; C# globalization analyzers enforced (or a documented reason 
 
 - B-0969 (the standing rule + the completed F# fix) · `.claude/rules/culture-invariant-by-default.md` ·
   `src/Core.TypeScript/{g-set,bag}/golden-vectors.json` (the masked fixtures) · B-0959 (4-oracle checklist).
-

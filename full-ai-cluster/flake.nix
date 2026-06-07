@@ -193,6 +193,13 @@
           # comes all the way up (see nixos/tests/k3s-cluster-init.nix).
           k3s-control-plane-cluster-init =
             import ./nixos/tests/k3s-cluster-init.nix { inherit pkgs; };
+
+          # ONLINE end-to-end: boots the control-plane WITH internet, installs
+          # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/k3s-cluster-online.nix.
+          k3s-cluster-online =
+            import ./nixos/tests/k3s-cluster-online.nix { inherit pkgs; };
         };
 
         devShells.default = pkgs.mkShell {

@@ -43,4 +43,3 @@ reference; cross-verify test green per language.
 
 - `src/Core/SchemaEvolution.fs` (F# reference, built + FsCheck-proven) · `tests/Tests.FSharp/SchemaEvolution.Tests.fs`
   · B-0930 · 081KTGYQ3A5 (Evolution extension) · B-0969 (key collation) · no-binary-in-proof-lineage (hex-in-JSON).
-

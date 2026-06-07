@@ -23,6 +23,7 @@ GeodeFS, DeltaFS, ConsensusFS. Captured faithfully (canonical-aggregator role), 
 gated through `naming-expert` + Ilyana before any public use (same gate as persona names), and Aaron decides.
 
 **Beacon / anchoring flags before any choice:**
+
 - **`ZFS` is unusable** — hard collision with **OpenZFS / Sun-Oracle's Zettabyte File System**, a major
   existing filesystem. Reusing it violates the anchor-to-prior-art rule (a name must not impersonate
   established prior art). Rule it out.

@@ -44,4 +44,3 @@ buffered-write IO count beats a plain B+ over a workload; range scan correct und
 - Greenberg Hitchhiker trees / datacrypt · fractal/Bε-trees (Bender et al., Tokutek) · B+ (Comer) ·
   persistent search trees / path copying (Sarnak-Tarjan, Okasaki) · LSM (O'Neil) · `ContentStore.fs` /
   `DagFs.fs` / `DeltaLog.fs` / DBSP · 081KTGTJC1Q.
-

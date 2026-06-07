@@ -54,4 +54,3 @@ redirected) is enforced; at least the unit + property + bug-repro test modes dem
 - depends on 081KTGTJC1Q (Merkle-DAG store) + B-0969 (determinism) + 081KTGEVV75 (determinism contract) +
   B-0946 (closure-table fs/FUSE) · DST (manifesto §7). Beacon: Dolt/Neon DB-branching, FoundationDB DST,
   QuickCheck shrinking, ZFS/APFS/btrfs COW.
-

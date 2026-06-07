@@ -47,4 +47,3 @@ A property test proving permutation-invariance of final state over the commutati
 
 - confluence-lemma research doc · CRDT laws (Crdt.Laws.Tests/Z3) · ZSetMerkle/ContentStore/DagFs.merge ·
   BeliefConvergence (B-1020) · CALM · cells-as-geodes (CommutativeView vs SerializedSaga) · Soraya portfolio.
-

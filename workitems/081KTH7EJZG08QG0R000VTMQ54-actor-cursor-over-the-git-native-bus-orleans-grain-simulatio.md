@@ -43,4 +43,3 @@ escalates to the serialized bus. Complements the CommutativeView (Z-set/CRDT) la
 
 - B-0954 (git-native bus) · B-0976 (serialized saga / Bonsai deferred exec) · cells-as-geodes (SerializedSaga
   vs CommutativeView) · Loom (cross-cell saga layer) · DST · Orleans/actor-model/Erlang-gen_server/event-sourcing.
-

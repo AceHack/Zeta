@@ -43,4 +43,3 @@ the reference; vectors checked in + cross-verify test green in each language.
 - `src/Core/ZSetMerkle.fs` (F# reference) · `src/Core/Merkle.fs` (MerkleHash/XxHash128) · 081KTGTJC1Q ·
   B-0969 (ordinal collation = the key order) · no-binary-in-proof-lineage rule (hex-in-JSON) · B-0959
   (4-oracle master checklist).
-

@@ -25,7 +25,7 @@
   networking.hostName = "worker-gpu";
 
   # Cluster join target. Override per-site.
-  services.k3s.serverAddr = "https://control-plane.zeta.local:6443";
+  services.k3s.serverAddr = "https://control-plane:6443";
 
   # Vendor mix for the K8s device plugin. Override per-host if
   # this worker has AMD or Intel GPUs alongside (or instead of) NVIDIA.

@@ -158,6 +158,19 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs
 
+      # ONLINE end-to-end proof: boots the control-plane WITH internet,
+      # installs Cilium for real, asserts the node reaches Ready + CoreDNS
+      # Running. This is the gate that catches the full bring-up chain
+      # (token deadlock + Cilium bootstrap + control-plane addressing) in
+      # CI instead of on hardware. `--option sandbox false` lets the QEMU
+      # user-mode NIC reach the internet to pull images (the nix sandbox
+      # blocks network); the GitHub runner user is a trusted nix user, so
+      # the flag is honored. ubuntu-24.04 exposes /dev/kvm. Budget ~20 min.
+      - name: NixOS test — cluster comes ALL the way up (online; node Ready + CoreDNS)
+        timeout-minutes: 35
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --option sandbox false
+
       - name: Build installer ISO
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs

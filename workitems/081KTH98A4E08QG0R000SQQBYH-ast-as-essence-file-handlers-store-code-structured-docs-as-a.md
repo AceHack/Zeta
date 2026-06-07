@@ -59,4 +59,3 @@ produces NO diff; a semantic change merges at the AST level.
 - canonical-essence research doc · ZetaFS per-file-type plugins (081KTGTJC1Q) · confluence (081KTH8RSXS) ·
   bit-perfect serializers / B-0969 · DynamicValue/Bonsai (AST-as-data) · Unison (content-addressed code),
   MPS/Lamdu (projectional), tree-sitter/Roslyn (faithful AST incl. trivia), editorconfig, gofmt/Prettier.
-

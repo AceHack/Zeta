@@ -29,7 +29,7 @@ nixos-install --flake /mnt/etc/zeta/full-ai-cluster#control-plane
 ## Post-install verification
 
 ```bash
-ssh zeta@control-plane.zeta.local
+ssh zeta@control-plane
 sudo kubectl get nodes
 sudo kubectl -n kube-system get pods                    # cilium pods
 sudo kubectl -n argocd get pods

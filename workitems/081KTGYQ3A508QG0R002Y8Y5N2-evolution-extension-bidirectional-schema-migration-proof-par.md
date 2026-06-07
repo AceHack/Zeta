@@ -49,13 +49,13 @@ algebra + forward/backward compat, 8 tests) into the full capability Amara + Aar
    removeFieldMigration variant that stashes the removed value + Down restores from the dump while it lives.
    LANDED so far: `src/Core/EvolutionWindow.fs` (the expansion-side expand-into gate, 5 tests).
 
-2. **Parallel production experiment-timelines + continual merge contract.** Many experiments forked from
+1. **Parallel production experiment-timelines + continual merge contract.** Many experiments forked from
    `main`, each with full code+data+schema+side-effect-sandbox freedom, governed by an `ExperimentContract`
    (baseMainRoot/experimentRoot/code/data/schema/mainToExperimentMerge/experimentToMainProjection/
    conflictPolicy/backfill±/sideEffectPolicy/promotionGate/rollbackRule). Admissible iff it continuously
    reconciles main→experiment without corrupting main and promoted deltas satisfy the contract.
 
-3. **Reindex as a proven projection.** Source sacred; indexes derived. `full(source≤T) ==
+2. **Reindex as a proven projection.** Source sacred; indexes derived. `full(source≤T) ==
    incremental(full(≤T0), Δ T0→T)` — which IS the DBSP incrementalization theorem (`IndexedZSet` is the
    index-as-derived-Z-set). Index experiment = alternate derivation pipeline; promote the winning projection.
 
@@ -88,4 +88,3 @@ index where `full == incremental` is proven (over DBSP). Each composes with the 
   full==incremental) · Z-set retraction · B-0829 (schemas-as-rows/fork) · 081KTGTJC1Q (COW store) ·
   081KTGXPTQ (COW testing) · B-0969 + 081KTGEVV75 (determinism) · Soraya (formal portfolio). Beacon: DBSP,
   expand/contract (Sato/Fowler), gh-ost/pt-osc, event-sourcing upcasting, Dolt/Neon, DDIA derived data.
-

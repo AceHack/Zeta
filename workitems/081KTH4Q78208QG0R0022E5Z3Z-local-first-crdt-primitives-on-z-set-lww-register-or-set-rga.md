@@ -51,4 +51,3 @@ local-first/CRDT Beacon entries.
 
 - CRDTs (Shapiro 2011) · local-first (Ink & Switch 2019) · `GSet`/`GCounter`/`Bag`/`ZSet` · `.zc` privacy
   transform (B-0883/B-0982) · B-0959 (4-oracle checklist) · manifesto §6 consent-first.
-

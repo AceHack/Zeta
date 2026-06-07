@@ -41,4 +41,3 @@ level.
 
 - Vokes Jumprope (Strange Loop 2012) · Pugh skip lists · `FastCdc.fs` · `Merkle.fs` · `ContentStore.fs` ·
   `DagFs.fs` · 081KTGTJC1Q (the store) · PRIOR-ART-LIST.
-

@@ -5,7 +5,7 @@ plugin + VFIO passthrough (optional).
 
 ## What it runs
 
-- K3S agent joining `https://control-plane.zeta.local:6443`
+- K3S agent joining `https://control-plane:6443`
 - NVIDIA proprietary driver + `nvidia-container-toolkit` (so K3S
   pods can request `nvidia.com/gpu` resources)
 - NVIDIA Kubernetes device plugin DaemonSet (advertises GPUs)

@@ -49,4 +49,3 @@ materialized for incompressible/no-generator data.
 - compression-as-self-bootstrapping-compiler research doc · DST (manifesto §7) · Bonsai/behavior-as-data ·
   Ace/Nucleus self-boot · ContentHash256/ContentStore · 081KTGTJC1Q (COW store) · git-as-event-store ·
   Kolmogorov/Solomonoff/Hutter; demoscene .kkrieger; QuickCheck.
-

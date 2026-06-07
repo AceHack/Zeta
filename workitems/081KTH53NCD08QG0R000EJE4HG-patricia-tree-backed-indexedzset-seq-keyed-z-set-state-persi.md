@@ -35,4 +35,3 @@ and the perf win Sparta saw (90% mem / 60% time hash-table → Patricia). Comple
 - Patricia trees (Okasaki & Gill, Fast Mergeable Integer Maps) · Sparta capture
   (`docs/research/ip-questionable/2026-06-07-sparta-abstract-interpretation-...md`) · `IndexedZSet.fs` ·
   `ImmutableDictionary`/HAMT (the general-key sibling) · ContentStore/DagFs (COW) · 081KTH4Q782 (CRDT-on-zset).
-
