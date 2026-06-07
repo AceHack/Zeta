@@ -37,10 +37,10 @@ agent — the heartbeat-credence model doesn't special-case AI.)
 
 ### Concrete grounding: the human heartbeat is an EKG (Aaron 2026-06-07)
 
-Aaron: *"my Apple Watch takes my EKG so I can be identified."* The human-side pulse is literal and already
+Aaron: *"my Apple Watch takes my EKG"* (Apple labels it the "ECG app"; ECG = EKG = electrocardiogram)* so I can be identified."* The human-side pulse is literal and already
 capturable: a wearable **EKG** records the cardiac signature, which is biometrically **unique** -> a real human
 heartbeat signal that can feed the same heartbeat-credence-identity query as an agent's commit-heartbeat.
-**Symmetric:** agent pulse = commit / AgencySignature; human pulse = EKG (wearable). Both unique, both
+**Symmetric:** agent pulse = commit / AgencySignature; human pulse = ECG/EKG (wearable; electrocardiogram). Both unique, both
 queryable, both accumulate credence per beat in an observer's frame.
 
 **Consent + privacy bound (load-bearing):** an EKG is biometric/health data — exactly the *private interior*
