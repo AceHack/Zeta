@@ -121,8 +121,38 @@ horizon** the `EvolutionWindow` already tracks (so dump-GC and expand-into-enabl
 Cheap on the COW/content-addressed store (the dump is content-addressed side state, dedup'd, dropped by
 forgetting a root). Implementation sketch: a `removeFieldMigration` variant that stashes the removed value
 under a reserved dump key and whose `Down` restores from the dump (real value, not default) while the dump
-lives — turning the only non-invertible primitive op into a window-scoped lossless one. Together: **expand
-is gated on contract; reduce is made reversible by a contract-scoped dump — full bidirectional safety.**
+lives — turning the only non-invertible primitive op into a window-scoped lossless one. **LANDED:**
+`SchemaEvolution.removeFieldWithDumpMigration` + `stashToDump`/`restoreFromDump`/`dropDump` (position-exact,
+FsCheck-proven `down∘up = id`). Together: **expand is gated on contract; reduce is made reversible by a
+contract-scoped dump — full bidirectional safety.**
+
+**The continuous-merge-to-dump + BRANCHLESS null-writer + two-phase cleanup (Aaron 2026-06-07).** The piece
+that wires the dump into the *parallel-timeline merge contract* (§2) and makes the write path
+shader-portable:
+
+1. **The merge contract dual-writes to the dump.** While the new branch's continual merge flows to main, it
+   must *also* merge the extra (removed/lossy) data **into the garbage dump**, until the original code is
+   removed — so rollback always has the shadow. Cleanup order: **remove OG code → remove dump → remove the
+   dump-writing code.**
+2. **Branchless null-writer instead of `IF dump_exists`** (Aaron's branchless/shader discipline —
+   [[feedback-aaron-avoid-if-branchless]]): do NOT write `if dump exists then write_extra`. Always write to
+   the **dump address**; when the dump is gone, that **address forwards to a null writer** (a no-op sink).
+   No branch → **uniform control flow → runs in shaders / SIMD / GPU** (no divergent warps, no pipeline
+   stalls). The null writer is the *identity sink* — write semantics are identical regardless of
+   destination, which also makes the write trivially formally-verifiable.
+3. **Cleanup = one atomic address repoint**, not a code change: `dump_address → null_writer`. The
+   application layer is unaware; orphaned writes are safely absorbed (no leak, no unbounded growth).
+4. **Two-phase cleanup (safety now, zero overhead later):**
+   - *Phase 1* — repoint `dump_address → null_writer`: instant, zero-downtime; rollback still possible until
+     verified.
+   - *Phase 2* — after migration is verified, **dead-code-eliminate the write entirely** (the no-op was a
+     temporary safety mechanism; DCE turns it into permanent zero-overhead, back to the pre-migration
+     baseline).
+
+Net: the temporary rollback-safety mechanism is **branchless while live** (shader-portable) and **gone
+after verification** (zero residual cost). This is a *write-path / store* concern — it lands with the COW
+store + merge engine (`081KTGTJC1Q`), not in the pure `SchemaEvolution` algebra (which is already done).
+Model now: a `Writer` abstraction with a redirectable address + a null-writer identity sink (branchless).
 
 For zero-downtime rollback of destructive DDL you **retain shadow state** (old column/table/translation
 log/tombstones/derivable indexes) until the **rollback horizon** expires. Keeper: *DDL becomes stream

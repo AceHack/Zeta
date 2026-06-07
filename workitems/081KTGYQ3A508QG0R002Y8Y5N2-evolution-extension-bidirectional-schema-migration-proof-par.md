@@ -59,6 +59,18 @@ algebra + forward/backward compat, 8 tests) into the full capability Amara + Aar
    incremental(full(≤T0), Δ T0→T)` — which IS the DBSP incrementalization theorem (`IndexedZSet` is the
    index-as-derived-Z-set). Index experiment = alternate derivation pipeline; promote the winning projection.
 
+### Continuous-merge-to-dump + branchless null-writer + two-phase cleanup (Aaron 2026-06-07)
+
+- The parallel-timeline merge contract must ALSO merge the removed/lossy data INTO the dump until OG code is
+  removed; cleanup order: remove OG code -> remove dump -> remove dump-writing code.
+- BRANCHLESS null-writer (not `if dump_exists`): always write to the dump ADDRESS; when the dump is gone the
+  address forwards to a NULL WRITER (no-op identity sink). Uniform control flow -> shader/SIMD/GPU-portable
+  ([[feedback-aaron-avoid-if-branchless]]). Cleanup = one atomic address repoint, no code change.
+- Two-phase cleanup: Phase 1 repoint address->null_writer (instant, zero-downtime, rollback still possible);
+  Phase 2 after verification DCE the write entirely (zero residual overhead).
+- Write-path/store concern -> lands with the COW store + merge engine (081KTGTJC1Q), not the pure algebra.
+  Model: a Writer abstraction with a redirectable address + null-writer identity sink (branchless).
+
 ## Boundary law (all three)
 
 Inside DAG: DDL/indexes/transforms/views/plugins/schema/data → rollback by root selection.
