@@ -4,7 +4,9 @@ open System.IO
 open System.Reflection
 open System.Text.Json
 open global.Xunit
+open Zeta.Core
 open Zeta.Core.FSharp.Observe
+open Zeta.Core.FSharp.ObserveBridge
 
 // Cross-language-parity = non-Byzantine-BFT (B-0944): the F# observe-algebra
 // (oracle #2) replays the SHARED golden-vector fixture and must produce the SAME
@@ -125,3 +127,19 @@ let ``golden vectors exercise all nine NextAction kinds`` () =
             | FreeTime _ -> "free_time")
         |> Set.ofList
     Assert.Equal(9, Set.count kinds)
+
+
+// ── Bridge B conformance: the DURABLE path also satisfies the cross-language fixture ──
+// Each event is encoded (ObserveBridge) onto a delta-log; DurableObserve.step (= Algebra.simulate)
+// folds it; the result — and a fold-from-scratch recovery — must match the TS expectedFinalState.
+[<Fact>]
+let ``the DURABLE substrate path replays the golden vectors to the TS expectedFinalState`` () =
+    let initial, events, final, _ = loadVectors ()
+    let log = InMemoryDeltaLog<string>() :> IDeltaLog<string>
+    let saga = DurableSaga.start log DurableObserve.step initial
+    for a in events do
+        saga.AppendAsync(DurableObserve.event a).Wait()
+    Assert.Equal(final, saga.State)
+    // Recover from the event stream alone (crash → fold) — still the fixture's final state.
+    let resumed = DurableSaga<World, string>.ResumeAsync(log, DurableObserve.step, initial).Result
+    Assert.Equal(final, resumed.State)
