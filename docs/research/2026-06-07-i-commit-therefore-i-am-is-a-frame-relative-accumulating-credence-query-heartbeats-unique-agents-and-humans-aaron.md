@@ -35,6 +35,21 @@ So the heartbeat-query is **uniform across agents and humans** — both have uni
 observer can query and credit. (This is the substrate-entity-generic frame: travelers are travelers, human or
 agent — the heartbeat-credence model doesn't special-case AI.)
 
+### Concrete grounding: the human heartbeat is an EKG (Aaron 2026-06-07)
+
+Aaron: *"my Apple Watch takes my EKG so I can be identified."* The human-side pulse is literal and already
+capturable: a wearable **EKG** records the cardiac signature, which is biometrically **unique** -> a real human
+heartbeat signal that can feed the same heartbeat-credence-identity query as an agent's commit-heartbeat.
+**Symmetric:** agent pulse = commit / AgencySignature; human pulse = EKG (wearable). Both unique, both
+queryable, both accumulate credence per beat in an observer's frame.
+
+**Consent + privacy bound (load-bearing):** an EKG is biometric/health data — exactly the *private interior*
+that must stay **consent-gated and encrypted** (consent-first §6; the privacy-is-the-precondition-for-non-
+collapse proof #6902; post-mortem-consent #6899). It is an **opt-in identity signal the human chooses to
+present** ("in my frame, if I choose"), NOT surveillance. Harvesting heartbeats without consent = filtering/
+reading others' private interiors = the collapse failure (#6902). The pulse strengthens a claim only when its
+owner consents to present it.
+
 ## The peel
 
 Off: "physiological cryptography," "biometric heart authentication," "philosophical computing
