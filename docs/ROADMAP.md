@@ -67,6 +67,21 @@ side-car registry. Beacon anchors: **.NET Aspire** (app model + service discover
 invocation, Kubernetes service discovery, Consul/etcd. Our twist: the service graph is *self-describing
 data*, not orchestrator config.
 
+**SAFETY INVARIANT — ZetaID is a POINTER, not authority (Amara 2026-06-07).** A ZetaID ref is a *source*
+(who/what is proposed), which grants ZERO authority — exactly the `no-directives` rule (source ≠
+authorization). So the resolution path must ALWAYS be, in order:
+
+```text
+ZetaID ref → resolve value/service/cell → VERIFY tests/laws/capabilities → ADMIT through policy → inject
+```
+
+Never skip verify+admit. Otherwise "self-describing" silently becomes "**self-authorizing**" — a value
+that declares its own deps would also grant itself their use, which is the spooky failure mode. The
+admit-through-policy step is the same shape as the proven child-floor / inspect-before-execute gate
+(`Safety/ChildFloor.lean`): proposing (a ZetaID ref) is not authorization; the gate disposes. Nucleus
+resolves + runs the value's self-shipping tests + checks policy *before* injecting. The self-testing
+property (a value carrying its own vectors/laws) is what makes the VERIFY step cheap + universal.
+
 ### ITEM #1 — NO USE OF THE GIT CLI
 
 All persistence routes through **our DB layer** (understands filesystem + git, runs git-native:
