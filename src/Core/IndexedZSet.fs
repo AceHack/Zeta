@@ -18,7 +18,7 @@ type KeyGroup<'K, 'V when 'K : comparison and 'V : comparison> =
 type KeyGroupComparer<'K, 'V when 'K : comparison and 'V : comparison> =
     interface IComparer<KeyGroup<'K, 'V>> with
         member _.Compare(a: KeyGroup<'K, 'V>, b: KeyGroup<'K, 'V>) =
-            Comparer<'K>.Default.Compare(a.Key, b.Key)
+            KeyComparerCache<'K>.Instance.Compare(a.Key, b.Key)
 
 
 /// `IndexedZSet<'K,'V>` is conceptually `Z[K × V]` but stored as a sorted run
@@ -57,7 +57,7 @@ type IndexedZSet<'K, 'V when 'K : comparison and 'V : comparison> =
             let cap = ga.Length + gb.Length
             let rented = Pool.Rent<KeyGroup<'K, 'V>> cap
             try
-                let cmp = Comparer<'K>.Default
+                let cmp = KeyComparerCache<'K>.Instance
                 let mutable i = 0
                 let mutable j = 0
                 let mutable k = 0
@@ -109,7 +109,7 @@ type IndexedZSet<'K, 'V when 'K : comparison and 'V : comparison> =
             let span = this.AsSpan()
             if span.IsEmpty then ZSet<'V>.Empty
             else
-                let cmp = Comparer<'K>.Default
+                let cmp = KeyComparerCache<'K>.Instance
                 let mutable lo = 0
                 let mutable hi = span.Length - 1
                 let mutable result = ZSet<'V>.Empty
@@ -285,7 +285,9 @@ module IndexedZSet =
         let gb = b.AsSpan()
         if ga.IsEmpty || gb.IsEmpty then ZSet<'C>.Empty
         else
-            let cmp = Comparer<'K>.Default
+            // `join` is `inline`, so it can't touch the internal KeyComparerCache — resolve the default
+            // binary/ordinal collation via the public Collation.forKey (once per join; B-0969).
+            let cmp = Collation.forKey<'K> ()
             // Accumulate cap in int64 to avoid 2^31 wrap on wide joins.
             let mutable cap64 = 0L
             let mutable i = 0

@@ -178,6 +178,24 @@ canonical Merkle-over-Z-set (PR #6789) — whose own fix is to **re-sort by ordi
 2026-06-07: *"we should be culture insensitive everywhere by default."* Fold ZSet into action 1's
 ordinal-comparison fix alongside G-Set (same comparer-strategy decision).
 
+## Audit results — src/Core ordering sites (Otto 2026-06-07, action 2 in progress)
+
+Swept `src/Core` for culture-sensitive ORDERING (`Comparer<_>.Default` on ordering; `EqualityComparer`
+sites are ordinal-for-string already, left as-is). Status:
+
+| File | Sites | Status |
+|------|-------|--------|
+| `GSet.fs` | 4 | ✅ FIXED (#6795) → `Collation.forKey` |
+| `ZSet.fs` | 4 | ✅ FIXED (#6797) → `KeyComparerCache<'K>` (cached, hot-path-safe) |
+| `IndexedZSet.fs` | 4 | ✅ FIXED (this PR) → `KeyComparerCache` (+ `Collation.forKey` in the `inline join`) |
+| `Bag.fs` | — | ✅ already ordinal (uses F# `compare` / `String.CompareOrdinal` deliberately — no change) |
+| `Hierarchy.fs` (closure table) | 3 (`:84/:237/:246`) | ⏳ TODO — fs-relevant (`Comparer<'N>.Default`; `:237/:246` are equality-via-compare) |
+| `Residuated.fs` | 1 (`:128`) | ⏳ TODO — `ResidualMaxOp(… Comparer<'K>.Default)` |
+| `Aggregate.fs` | 2 (`:264/:273`) | ⏳ TODO — `Comparer<'V>.Default` (value min/max ordering) |
+
+Remaining: Hierarchy / Residuated / Aggregate (follow-up slices), then the C#/Rust/TS oracle audit + the
+golden-vector regeneration with non-ASCII keys + analyzer enforcement.
+
 ## Composes with
 
 - **B-0959** (cross-language substrate master checklist) — the 4-oracle
