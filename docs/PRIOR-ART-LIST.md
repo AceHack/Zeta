@@ -24,6 +24,12 @@ with a ⭐ below and add a row there.
   closure-table-style `Hierarchy.fs`.
 - **XTDB 2** ⭐ — Arrow bitemporal indexes; temporal-query
   inspiration.
+- **CloudEvents** ⭐ — CNCF event-envelope standard (v1.0); to be the bus
+  envelope over Zeta's busses. See `docs/research/2026-06-07-cloudevents-bus-envelope-and-debezium-cdc-as-zset-delta-anchor-aaron.md`.
+- **Debezium / CDC** ⭐ — Red Hat; the `before/after/op/source/ts_ms` change-event
+  envelope = a **DBSP Z-set delta** (c=+after, d=−before, u=−before+after). Anchor
+  for our `DeltaLog`/`ZSet` deltas + schema-on-stream (Kafka Schema Registry ≅
+  SchemaEvolution/B-0930). Emits CloudEvents (`CloudEventsConverter`).
 - **Reaqtor / IQbservable / Nuqleon / Bonsai** ⭐ — **Bart DeSmet**
   (built for Bing; now under the .NET Foundation). Stateful
   event-processing + the **Bonsai/Nuqleon** serialized-expression-tree
