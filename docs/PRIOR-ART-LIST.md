@@ -103,6 +103,11 @@ with a ⭐ below and add a row there.
   See `docs/research/2026-06-07-jumprope-vokes-content-addressed-storage-skiplist-hash-prior-art-aaron.md`.
 - **Skip Lists / William Pugh** (1990) — probabilistic balanced structure; the
   Jumprope's hash-as-probability backbone.
+- **Local-first / CRDTs / privacy-first** ⭐ — Kleppmann et al. (Ink & Switch
+  2019); CRDTs (Shapiro et al. 2011); Groove (Ozzie); Solid/pods (Berners-Lee);
+  W3C DIDs; PSI; federated learning; SMPC; OPA; Signal. Zeta's manifesto ethos as
+  architecture; CRDT layer = `GSet`/`GCounter`/`Bag`/`ZSet` (do local-first collab
+  in Z-set). See `docs/research/ip-questionable/2026-06-07-catherine-nimisha-privacy-first-...md`.
 - **Patricia trees / Abstract interpretation — Sparta (Meta)** ⭐ — immutable
   integer-keyed maps (Okasaki & Gill, *Fast Mergeable Integer Maps*) — the
   int-keyed cousin of HAMT for `ZSet`/`IndexedZSet`/seq-keyed state; + lattice
