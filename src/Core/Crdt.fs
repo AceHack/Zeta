@@ -135,3 +135,47 @@ with
         elif a.Timestamp < b.Timestamp then b
         elif String.Compare(a.Replica, b.Replica, StringComparison.Ordinal) >= 0 then a
         else b
+
+/// **LWW-Map** — a last-writer-wins keyed map: each key independently holds an `LwwRegister`, merged
+/// per-key via `LwwRegister.Merge`. Inherits commutative + associative + idempotent merge ⇒ a CRDT (the
+/// common local-first keyed-document structure). Keys use F# structural comparison — **ordinal for `string`
+/// (B-0969-clean)**. Composes `LwwRegister` (no duplicate merge logic). Removal is LWW too: `Remove` writes
+/// a tombstone register; readers skip tombstoned keys. (081KTH4Q782 — local-first CRDTs on the substrate.)
+[<NoComparison; NoEquality>]
+type LwwMap<'K, 'V when 'K: comparison> =
+    { Entries: Map<'K, LwwRegister<'V option>> }
+
+    static member Empty: LwwMap<'K, 'V> = { Entries = Map.empty }
+
+    /// Set `key` to `value` at `(timestamp, replica)` — LWW-merged against any existing register for the key.
+    member this.Set(key: 'K, value: 'V, timestamp: int64, replica: string) : LwwMap<'K, 'V> =
+        let reg = LwwRegister<'V option>.Create(Some value, timestamp, replica)
+        let merged =
+            match Map.tryFind key this.Entries with
+            | Some existing -> LwwRegister.Merge existing reg
+            | None -> reg
+        { Entries = Map.add key merged this.Entries }
+
+    /// Remove `key` at `(timestamp, replica)` — a LWW tombstone (a later set wins, a later remove wins).
+    member this.Remove(key: 'K, timestamp: int64, replica: string) : LwwMap<'K, 'V> =
+        let reg = LwwRegister<'V option>.Create(None, timestamp, replica)
+        let merged =
+            match Map.tryFind key this.Entries with
+            | Some existing -> LwwRegister.Merge existing reg
+            | None -> reg
+        { Entries = Map.add key merged this.Entries }
+
+    /// The live value at `key` (None if absent or tombstoned).
+    member this.TryGet(key: 'K) : 'V option =
+        Map.tryFind key this.Entries |> Option.bind (fun r -> r.Value)
+
+    /// Merge two LWW-Maps: union of keys, per-key `LwwRegister.Merge`. Commutative, associative, idempotent.
+    static member Merge (a: LwwMap<'K, 'V>) (b: LwwMap<'K, 'V>) : LwwMap<'K, 'V> =
+        let mutable acc = a.Entries
+        for kv in b.Entries do
+            let merged =
+                match Map.tryFind kv.Key acc with
+                | Some existing -> LwwRegister.Merge existing kv.Value
+                | None -> kv.Value
+            acc <- Map.add kv.Key merged acc
+        { Entries = acc }

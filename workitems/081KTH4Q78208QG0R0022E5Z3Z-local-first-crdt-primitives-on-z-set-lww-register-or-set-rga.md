@@ -16,6 +16,14 @@ composes_with: ["B-0959"]
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTH4Q78208QG0R0022E5Z3Z-*.md` glob. -->
 
+## STATUS (Otto 2026-06-07, corrected against the code)
+
+Already in `src/Core/Crdt.fs` (with tests): **GCounter, PNCounter, OrSet, LwwRegister** — the workitem
+over-listed LWW-Register/OR-Set as "missing"; they exist + are ordinal-clean. **LWW-Map LANDED** this round
+(`LwwMap<'K,'V>` — per-key LwwRegister, tombstone remove, merge commutative/assoc/idempotent; 4 tests).
+**Genuinely remaining:** (1) **RGA / sequence CRDT** (collaborative ordered list/text — the hard one,
+positions + tombstones + causal order); (2) **PSI** as a private Z-set intersection over the `.zc` transform.
+
 ## Purpose
 
 Aaron 2026-06-07 ("we should do it in zset if it makes sense") after the privacy-first/local-first talk:
