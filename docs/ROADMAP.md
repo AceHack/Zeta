@@ -14,6 +14,14 @@ A relativistic git-native database: a **reliable data plane** (storage + read/wr
 **minimal-noun, all-language (F#/C#/Rust/TS), all-serializer PROVEN math base**. Two product shapes:
 data-plane-only, and data-plane + cell control plane.
 
+### Operating principle — convert every input into one of four channels
+
+Aaron 2026-06-07: anything thrown at this work that isn't already moving us toward the roadmap should be
+converted, on the spot, into exactly one of — **code · proof · treaty seed (golden-vector byte-lock) ·
+backlog** — and the backlog selection criterion is *"does it help us see the shape of the data layer
+clearly?"* Anything that converts to none of the four is drift. (Detail:
+`memory/feedback_aaron_triage_every_input_toward_roadmap_via_code_proof_treaty_seed_or_backlog_*`.)
+
 ### ITEM #1 — NO USE OF THE GIT CLI
 
 All persistence routes through **our DB layer** (understands filesystem + git, runs git-native:
