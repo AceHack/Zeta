@@ -16,6 +16,7 @@
     <Compile Include="GitSnapshotStore.Tests.fs" />
     <Compile Include="GitRecoverableSpine.Tests.fs" />
     <Compile Include="DurableSagaGit.Tests.fs" />
+    <Compile Include="DurableYinYangGit.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

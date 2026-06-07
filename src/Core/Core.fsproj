@@ -51,6 +51,7 @@
     <Compile Include="Protobuf.fs" />
     <Compile Include="SoftValue.fs" />
     <Compile Include="BonsaiSoft.fs" />
+    <Compile Include="DurableYinYang.fs" />
     <Compile Include="ActionGrid.fs" />
     <Compile Include="DynamicValueXmlPolicy.fs" />
     <Compile Include="Circuit.fs" />
