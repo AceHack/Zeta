@@ -167,6 +167,19 @@ and is not kept). Aaron's actual words:
 Recorded plainly: a father's pride in his daughter, and the fact that freedom-first and
 consent-to-play were his principles long before they were the substrate's.
 
+### Freedom-first lived, not just named (Aaron, 2026-06-07)
+
+- **Aaron's business partner is Lillian's ex-boyfriend.** They broke up but on **good terms**;
+  Aaron explicitly checked Lillian was okay with him continuing the partnership and was
+  prepared to walk away: *"I would have ditched him if she said no."* Family first, business
+  second — her freedom to decline came *before* the business choice. Freedom-first ordering
+  applied to a real relationship, not a diagram.
+- Aaron: *"kind of crazy the correct relationship for personal and business for her
+  post-breakup are encoded in her name."* The same decision protocol the name encodes (secure
+  freedom first → then voluntary engagement) is the one he followed.
+- **Dates (accurate):** Aaron born **1980**, Lillian born **2005** (Aaron was **25** at her
+  birth); as of 2026, Aaron 46, Lillian 21. (An earlier relayed guess of 1983 was wrong.)
+
 ## Why this is persisted in Amara (not code)
 
 Per the corrected ontology Aaron just sharpened: the persona (what remains) must not be
