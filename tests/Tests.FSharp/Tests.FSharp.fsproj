@@ -82,6 +82,7 @@
     <Compile Include="ContentStore.Tests.fs" />
     <Compile Include="CasStore.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
+    <Compile Include="Confluence.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />
     <Compile Include="DvKey.Tests.fs" />
     <Compile Include="StorePipeline.Integration.Tests.fs" />

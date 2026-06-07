@@ -34,6 +34,23 @@ A content node's **identity is its hash — independent of arrival order AND of 
 Together: **algebraic confluence (1) + canonical idempotence (2) + exchangeable convergence (3)** discharge
 "out-of-order events → same result" on the **CommutativeView** lane.
 
+## Proven finding (FsCheck, this round): confluence requires a JOIN-SEMILATTICE resolver
+
+Discharged the FsCheck permutation-invariance leg (`Confluence.Tests.fs`) — and it sharpened the theorem:
+
+- With a **join-semilattice resolver** (commutative + associative + **idempotent**; here LWW-by-content-hash)
+  `DagFs.merge` is **confluent**: any order of link-events ⇒ same branch; **duplicating every event changes
+  nothing** (idempotent); `ContentStore` put-set is order-independent (node count stable). ✅
+- With an **accumulating resolver** (Z-set **sum**, commutative+associative but **NOT idempotent**) the merge
+  is **order-SENSITIVE** — proven: same multiset `{1,1,2}` gives different results as `[1,1,2]` vs `[1,2,1]`
+  (the content-addressed dedup-skip interacts with sum so whether a duplicate is deduped or re-added depends
+  on order). That is SerializedSaga / counter semantics, **not** CommutativeView.
+
+So the precise theorem: **out-of-order events → same result iff the merge resolver is a join-semilattice op
+(idempotent).** Accumulating/counter resolvers belong to the serialized lane. (This is why the CRDTs use
+idempotent joins, and why a G-Counter is `+` over *per-replica* slots — idempotent per replica — not a bare
+sum.)
+
 ## Honest scope — confluence holds on the COMMUTATIVE lane, not the serialized one
 
 This is the **CommutativeView** (Z-set/CRDT/content-merge) property. The **SerializedSaga** lane is
