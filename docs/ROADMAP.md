@@ -24,22 +24,37 @@ clearly?"* Anything that converts to none of the four is drift. (Detail:
 
 ### Layer names — TENTATIVE (pending naming-expert + Ilyana review; unanchored coinage = debt)
 
-Proposed set (Amara 2026-06-07) for the stack layers — **NOT yet load-bearing**; a naming-expert +
-public-API (Ilyana) pass decides before any public/glossary use:
+Proposed set (Amara 2026-06-07, refined with Aaron) — internal direction **decided**; still pending a
+naming-expert + public-API (Ilyana) pass before any **public/glossary** use (unanchored coinage = debt):
 
-| Layer | Tentative name | Settled? |
-|-------|----------------|----------|
+| Layer | Name | Status |
+|-------|------|--------|
 | package-manager-of-package-managers | **Ace** | ✅ settled |
 | data plane + cell substrate | **Zeta** | ✅ settled |
-| DI/plugin **microcore** (MEF-like) | **Kernel** (or `Nucleus` — Kernel is OS-overloaded) | tentative |
-| within-cell HA / resilience | **Geode**? | ⚠️ **collision** |
-| cross-cell saga / control layer | **Loom** (weaves cells without collapsing them) | tentative |
+| DI/plugin **microcore** (MEF-like) | **Nucleus** | ✅ decided (Aaron — over `Kernel`, which is OS-overloaded) |
+| cross-cell saga / control layer | **Loom** (weaves cells without collapsing them) | ✅ decided |
+| within-cell HA / resilience | *(no layer name)* | resolved — **a host concern, not a named layer** |
+| the cell's replication shape | **Geode** | the cell IS a geode (§1); not the HA shell |
 
-⚠️ **Naming collision to resolve:** we already established *cells ARE geodes* (full-replication-within /
-partial-across — see this doc's §1). So **`Geode` most naturally names the cell / its replication model,
-not the within-cell HA shell.** Using `Geode` for HA collides with that. The within-cell HA layer likely
-wants a different name (e.g. the resilience *shell* / *vault* / *anchor*); `Geode` should stay attached to
-the cell-as-geode concept. Flag for the naming pass.
+**Resolved (Aaron):** within-cell HA is **a host concern, not its own named layer** — k8s/Orleans provide
+it, systemd doesn't; it's a deployment property of a cell. So `Geode` stays attached to the **cell /
+replication concept** (a cell IS a geode — full-within/partial-across), and HA needs no separate coinage.
+Four named layers: **Ace · Zeta · Nucleus · Loom** (a cell = a Geode within Zeta). Public/glossary
+anchoring still goes through the naming-expert + Ilyana pass before any external use.
+
+### ZetaID — the universal cross-layer pointer
+
+> Aaron 2026-06-07: *"ZetaID is the universal pointer across layers — this makes DynamicValue able to even
+> describe its own dependencies."*
+
+**ZetaID** (the 128-bit identity primitive) is the **one address space across every layer** — cells,
+streams/`Log`s, plugins, Saga/Loom actors, packages (Ace), Nucleus-composed components. Because the
+pointer is universal, a `DynamicValue` can **reference anything by ZetaID** — which makes a DynamicValue
+**self-describing including its own dependencies**: a plugin's required interfaces / DI negotiated-base, a
+cell's references, a Saga's correlation, a package's deps are all just **ZetaID pointers embedded in the
+DynamicValue**. So the dependency graph is data (DynamicValue + ZetaID refs), resolvable by Nucleus, and
+the same address routes the cross-cell partitioned bus (Actor ID = ZetaID). This closes the
+plugin-as-data / DI-as-data loop: deps don't need a side-channel — they live *in* the value, by ZetaID.
 
 ### ITEM #1 — NO USE OF THE GIT CLI
 

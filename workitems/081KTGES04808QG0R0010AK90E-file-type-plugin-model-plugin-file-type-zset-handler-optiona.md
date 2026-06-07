@@ -89,9 +89,18 @@ NOT a plugin (must be a host-injected capability the plugin *declares*, not embe
 non-deterministic (clock, randomness, network/IO, ambient state) — surfaced as a required interface and
 recorded for DST replay.
 
-Open: the negotiated-base schema (how a plugin declares required interfaces in DynamicValue), and the
-host-extension protocol (how a host advertises additional injectables). Composes with Eve Protocol
-(`Diplomacy.fs`), the determinism contract (`081KTGEVV75`), and `DynamicValue` as the carrier.
+**Dependencies are ZetaID refs — the value self-describes its own deps (Aaron 2026-06-07).** ZetaID is
+the *universal cross-layer pointer*, so a plugin's declared dependencies (its required interfaces /
+negotiated-base, other plugins, cells, streams it reads) are just **ZetaID references embedded in the
+plugin's `DynamicValue`**. The plugin is therefore **fully self-describing including its dependency
+graph** — no side-channel: deps live *in* the value, addressed by ZetaID, resolved by the microcore
+(Nucleus). The same ZetaID routes the cross-cell partitioned bus (Actor ID = ZetaID). This closes the
+plugin-as-data / DI-as-data loop.
+
+Open: the negotiated-base schema (how a plugin declares required interfaces — as a list of ZetaID/
+interface refs in DynamicValue), and the host-extension protocol (how a host advertises additional
+injectables). Composes with Eve Protocol (`Diplomacy.fs`), the determinism contract (`081KTGEVV75`),
+`ZetaId` (the universal pointer), and `DynamicValue` as the carrier.
 
 ## Serializers + primitives as plugins, and the MEF-like microcore (Aaron 2026-06-07)
 
