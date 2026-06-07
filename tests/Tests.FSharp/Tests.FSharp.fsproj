@@ -124,6 +124,7 @@
     <Compile Include="Observe/SubstrateHandler.Tests.fs" />
     <Compile Include="Formal/ChildFloorCrossVerify.Tests.fs" />
     <Compile Include="Formal/RefuseBindingCrossVerify.Tests.fs" />
+    <Compile Include="Formal/BifurcationCrossVerify.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->

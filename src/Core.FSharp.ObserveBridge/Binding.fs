@@ -81,3 +81,71 @@ module Binding =
     let spend (a: AgentId) (s: State) : State option =
         let cur = standingOf a s
         if cur > Baseline then Some { s with Standing = Map.add a (cur - 1) s.Standing } else None
+
+/// **Bifurcation / split-brain divvy + reconciliation** — the deployed twin of
+/// `tools/tla/specs/Bifurcation.tla` (Face-2) and `tools/lean4/Safety/Bifurcation.lean` (Face-1).
+/// When an identity splits into halves `I1`/`I2`, its consented bindings are partitioned over a
+/// `tag` divvy; `exec` runs a binding ONCE by its owner (no double-spend); `merge` is the CRDT
+/// join that reconciles two cell views (commutative + idempotent → convergence). FsCheck Leg B
+/// (`tests/Tests.FSharp/Formal/BifurcationCrossVerify.Tests.fs`) cross-checks these against the
+/// proven model.
+[<RequireQualifiedAccess>]
+module Divvy =
+
+    type Half =
+        | I1
+        | I2
+
+    /// The split-identity divvy state: owned bindings, still-unassigned, and who has executed each.
+    type State =
+        { Owner: Map<Binding.BindingId, Half>
+          Unassigned: Set<Binding.BindingId>
+          ExecBy: Map<Binding.BindingId, Set<Half>> }
+
+    /// Begin the divvy of an identity's consented bindings at the split (all unassigned).
+    let split (consented: Set<Binding.BindingId>) : State =
+        { Owner = Map.empty; Unassigned = consented; ExecBy = Map.empty }
+
+    /// Tag a still-unassigned binding to a half (monotone; `None` if already owned).
+    let tag (h: Half) (b: Binding.BindingId) (s: State) : State option =
+        if Set.contains b s.Unassigned then
+            Some { s with Owner = Map.add b h s.Owner; Unassigned = Set.remove b s.Unassigned }
+        else
+            None
+
+    let owns (h: Half) (b: Binding.BindingId) (s: State) : bool = Map.tryFind b s.Owner = Some h
+    let private execdBy (b: Binding.BindingId) (s: State) = Map.tryFind b s.ExecBy |> Option.defaultValue Set.empty
+
+    /// Execute a binding — only by its OWNER, and only ONCE across both halves (no double-spend).
+    let exec (h: Half) (b: Binding.BindingId) (s: State) : State option =
+        if owns h b s && Set.isEmpty (execdBy b s) then
+            Some { s with ExecBy = Map.add b (Set.singleton h) s.ExecBy }
+        else
+            None
+
+    let private halfMin (x: Half) (y: Half) : Half = match x, y with | I1, _ | _, I1 -> I1 | _ -> I2
+
+    /// CRDT join of two cell views (reconciliation): owner = union with a deterministic tie-break
+    /// (so a momentary disagreement resolves the same way both directions), execBy = pointwise set
+    /// union, unassigned = both-still-unassigned. Commutative + idempotent ⇒ convergence (Face-1).
+    let merge (a: State) (b: State) : State =
+        let keys = Set.union (Set.ofSeq (Seq.map fst (Map.toSeq a.Owner))) (Set.ofSeq (Seq.map fst (Map.toSeq b.Owner)))
+        let owner =
+            keys
+            |> Set.toList
+            |> List.choose (fun k ->
+                match Map.tryFind k a.Owner, Map.tryFind k b.Owner with
+                | Some x, Some y -> Some(k, halfMin x y)
+                | Some x, None -> Some(k, x)
+                | None, Some y -> Some(k, y)
+                | None, None -> None)
+            |> Map.ofList
+        let execKeys = Set.union (Set.ofSeq (Seq.map fst (Map.toSeq a.ExecBy))) (Set.ofSeq (Seq.map fst (Map.toSeq b.ExecBy)))
+        let execBy =
+            execKeys
+            |> Set.toList
+            |> List.map (fun k -> k, Set.union (execdBy k a) (execdBy k b))
+            |> Map.ofList
+        // a binding stays unassigned only if neither view has tagged it
+        let unassigned = Set.intersect a.Unassigned b.Unassigned |> Set.filter (fun k -> not (Map.containsKey k owner))
+        { Owner = owner; Unassigned = unassigned; ExecBy = execBy }
