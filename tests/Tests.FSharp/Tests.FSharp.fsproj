@@ -43,6 +43,7 @@
     <Compile Include="YinYang.Homoiconic.Tests.fs" />
     <Compile Include="ReflectionEngine.Tests.fs" />
     <Compile Include="Diplomacy.Tests.fs" />
+    <Compile Include="DurableDiplomacy.Tests.fs" />
     <Compile Include="Reconcile.Tests.fs" />
     <Compile Include="Reconcile.Legs.Tests.fs" />
     <Compile Include="EngineLoop.Tests.fs" />
