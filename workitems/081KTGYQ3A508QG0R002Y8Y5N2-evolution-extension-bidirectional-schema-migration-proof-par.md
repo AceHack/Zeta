@@ -33,6 +33,14 @@ algebra + forward/backward compat, 8 tests) into the full capability Amara + Aar
    window (expand/migrate/contract formalized). Invertibility taxonomy: lossless `down(up x)=x` / lossy
    (needs retained shadow) / non-invertible (compensation). Retain shadow state to the rollback horizon.
 
+1b. **Backward-projection constraint (Aaron 2026-06-07) — expand-INTO is gated on contract-complete.**
+   Adding a relation is reversible; *writing data only the new relations can represent* is NOT safe while
+   any old flat reader remains (serving it needs a LOSSY backward projection). Gate:
+   expand-schema → migration window (coexist + backfill, old readers served by lossless down-projection) →
+   CONTRACT (remove last flat reader) → only THEN expand-into. Rule: `mayExpandInto(rel) ⟺ no reader needs
+   a lossless flat projection of it`. Mechanizable: track window/contract state, gate expand-into writes.
+   A correctness barrier, not policy. Full: the Evolution research doc §1.
+
 2. **Parallel production experiment-timelines + continual merge contract.** Many experiments forked from
    `main`, each with full code+data+schema+side-effect-sandbox freedom, governed by an `ExperimentContract`
    (baseMainRoot/experimentRoot/code/data/schema/mainToExperimentMerge/experimentToMainProjection/

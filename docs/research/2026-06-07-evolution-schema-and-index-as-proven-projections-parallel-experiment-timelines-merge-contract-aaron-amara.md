@@ -67,6 +67,34 @@ the safety horizon → rollback by root-switch or reverse/compensating events).
 | lossy | `down(up(x)) ≈ x` only if shadow/history retained | inverse + retained shadow |
 | non-invertible | — | **compensation**, not inverse |
 
+**Backward-projection constraint — you cannot EXPAND-INTO new relations until contract completes (Aaron
+2026-06-07).** A subtle but mathematically-forced *temporal ordering* on expand/migrate/contract:
+
+> *"when you add new relations to the database you can't expand into them until the migration window is
+> complete and the old flat code is removed — because you can't project backwards in a lossless way. So you
+> have to wait to expand until the expanded relations are all that exists."*
+
+Adding a relation (the *schema* expand) is safe and reversible. But **writing data that only the new
+relations can represent** (the *behavioral* expand — "expand-into") is **not** safe while any old flat
+reader still exists, because serving that reader requires projecting the richer shape back down to the flat
+shape — a **lossy backward projection** (the down direction of an `addField`-of-structure is fine, but the
+down of "data that has no flat representation" is information loss). So the gate:
+
+```
+1. expand schema      — add the new relations; nobody writes the richer-only data yet (reversible)
+2. migration window   — old flat + new relational coexist; backfill; old readers still served by lossless down-projection
+3. CONTRACT           — remove the old flat code / the last old reader
+4. expand-INTO         — only NOW write data that only the new relations can hold
+                         (safe because the expanded relations are all that exists — no backward projection owed)
+```
+
+The rule: **expand-into is gated on contract-complete** — `mayExpandInto(relation) ⟺ no reader remains that
+needs a lossless flat projection of it`. This is the down-direction of the invertibility taxonomy applied
+*temporally*: a write is admissible only when its backward projection to every still-living reader is
+lossless (or no such reader exists). It's a correctness barrier, not a policy convenience — emitting
+richer-only data during the window would owe a lossy down-projection to a flat reader and corrupt it.
+(Mechanizable: track the window/contract state; gate expand-into writes on "no flat reader remains".)
+
 For zero-downtime rollback of destructive DDL you **retain shadow state** (old column/table/translation
 log/tombstones/derivable indexes) until the **rollback horizon** expires. Keeper: *DDL becomes stream
 history; migration becomes a reversible-or-explicitly-compensated morphism; backfill becomes replay; zero
