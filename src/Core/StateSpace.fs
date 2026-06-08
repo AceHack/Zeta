@@ -98,6 +98,56 @@ module StateSpace =
     /// Was any cycle detected (a transposition/revisit or a self-loop)? — branching converges/loops in soft mode.
     let hasCycle (g: Graph) : bool = g.Revisits > 0 || g.SelfLoops > 0
 
+    /// **Guarded explore — the invariant constraint** (the don't-die ≡ no-downtime guard, #7119). Same BFS as
+    /// `explore`, but a child that **violates `invariant`** is *never entered* (not indexed, not expanded) — it's
+    /// a forbidden state, pruned (dropped, not indexed). `Revisits`/`SelfLoops`/`Truncated` carry their usual
+    /// meaning over the *safe* subspace. The resulting `Graph` therefore contains **only invariant-satisfying
+    /// states** — every path through it is safe by construction (a winning game line that never dies / a deploy
+    /// sequence that never goes down).
+    let exploreGuarded (invariant: Chip8Cow.Frame -> bool) (cyclesPerFrame: int) (maxStates: int) (actions: bool[] list) (f0: Chip8Cow.Frame) : Graph =
+        let index = Dictionary<_, int>(HashIdentity.Structural)
+        let frames = ResizeArray<Chip8Cow.Frame>()
+        let edges = ResizeArray<int * bool[] * int>()
+        let queue = Queue<int>()
+        let mutable revisits = 0
+        let mutable selfLoops = 0
+        let mutable truncated = false
+
+        let addNew (f: Chip8Cow.Frame) =
+            let id = frames.Count
+            frames.Add f
+            index.[contentKey f] <- id
+            queue.Enqueue id
+            id
+
+        // The root must itself be safe; if not, the safe subspace is empty.
+        if invariant f0 then
+            addNew f0 |> ignore
+
+        while queue.Count > 0 do
+            let fromId = queue.Dequeue()
+            let parent = frames.[fromId]
+            let pk = contentKey parent
+            for a in actions do
+                let child = Chip8Cow.frameStep cyclesPerFrame { parent with Keys = a }
+                if invariant child then // forbidden states are pruned (don't-die / no-downtime)
+                    let ck = contentKey child
+                    if ck = pk then selfLoops <- selfLoops + 1
+                    match index.TryGetValue ck with
+                    | true, toId ->
+                        revisits <- revisits + 1
+                        edges.Add(fromId, a, toId)
+                    | false, _ ->
+                        if frames.Count >= maxStates then truncated <- true
+                        else edges.Add(fromId, a, addNew child)
+
+        { Frames = frames.ToArray()
+          Edges = List.ofSeq edges
+          Revisits = revisits
+          SelfLoops = selfLoops
+          Truncated = truncated }
+
+
     /// **Backward plan recovery:** the shortest input sequence from state 0 to `goal`, by BFS over the edges
     /// (the `(parent,input)` back-trace). `None` if `goal` is unreachable from the root in the explored graph.
     let recoverPlan (goal: int) (g: Graph) : (bool[] list) option =
@@ -128,3 +178,11 @@ module StateSpace =
                         let p, input = pred.[node]
                         back p (input :: acc)
                 Some(back goal [])
+
+    /// **Goal-directed plan:** the shortest input sequence from the root to *any* explored state satisfying
+    /// `goal` (a winning/deployed predicate), by BFS over the edges. `None` if no explored state satisfies it.
+    /// Compose with `exploreGuarded` so the recovered plan is safe by construction (every step held the invariant).
+    let planTo (goal: Chip8Cow.Frame -> bool) (g: Graph) : (bool[] list) option =
+        match g.Frames |> Array.tryFindIndex goal with
+        | None -> None
+        | Some t -> recoverPlan t g
