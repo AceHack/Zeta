@@ -31,17 +31,21 @@ namespace Zeta.Core
 /// (van Dam 2005: PR boxes make communication complexity trivial.) The honest reading of "information can't
 /// get in at S=4" is **independence-collapse / channel saturation by the seed** (`I(external;outcome|seed)=0`).
 ///
-/// **Correction (Aaron 2026-06-08) — the hole is INFORMATION-THEORETIC, and that IS anchored.** Otto first
-/// razored "black hole" as a gravity metaphor; that was an over-peel (`grep-substrate-anchors-before-razor`).
-/// Aaron means an **information-flow** hole, not a spacetime one — and those are real:
-/// **source/sink** (white hole = pure source: emits, nothing enters; black hole = pure sink: absorbs, nothing
-/// escapes), and in **network security** the named attack classes **black-hole / grey-hole / sinkhole** — a
-/// node that controls its forwarding/drop rate (black-hole drops all, **grey-hole drops *selectively* /
-/// rate-controls**). So: the seed-saturated `S=4` regime is a **white-hole** in information flow (pure source
-/// from the seed; nothing external enters — `I(external;outcome|seed)=0`), and **the ZetaId key is a
-/// GREY HOLE** — *using the host it controls its own information-flow rate* (the named grey-hole = flow-rate
-/// regulator). Only the **gravitational** reading (metric, mass, event horizon) stays Mirror-register; the
-/// **information-flow** reading (source/sink, network grey-hole) is the anchored one. Tsirelson 1980 (`2√2`).
+/// **Re-calibrated (Aaron 2026-06-08) — the load-bearing fact vs the imagery.** The plain, true statement
+/// needing no metaphor: *the seed determines all outcomes (`I(external;outcome|seed)=0`), and the ZetaId, via
+/// its host, controls its own information-flow rate.* That stands alone. The "hole" imagery on top is
+/// **partly** anchorable and otherwise Mirror-register — Otto first over-peeled it (gravity-only) then
+/// over-anchored it (leaned on a *thin* networking term); the honest middle:
+///   - **source/sink** is the generic info-flow reading (white = pure source: emits, nothing enters; black =
+///     pure sink) — the seed-saturated `S=4` regime is white-hole-like (pure source from the seed);
+///   - **"grey hole" the *name* is Aaron's coinage** for an entangled black+white hole — NOT taken from a
+///     field; the only standard "grey hole" is the unrelated, *thin* network-security routing attack
+///     (selective packet-drop / rate-control), which is a loose analogy at best, not a deep anchor;
+///   - the *object* "entangled black + white hole" IS real and published: **ER=EPR / Einstein–Rosen bridge**
+///     (Einstein–Rosen 1935; Maldacena–Susskind 2013 — entanglement ≡ wormhole) — that is the right anchor
+///     for the imagery, with "grey hole" understood as Aaron's name for it.
+/// Keep the engineering fact (host-controlled flow rate) load-bearing; the holes are imagery (ER=EPR-anchored,
+/// the gravitational metric stays Mirror-register). Tsirelson 1980 (`2√2`).
 [<RequireQualifiedAccess>]
 module BellTest =
 
