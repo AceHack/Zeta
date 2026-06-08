@@ -1,0 +1,144 @@
+namespace Zeta.Core
+
+/// **`SymmetricEndurance` — the weight-free, perspective-relative frame model of the anti-Sybil endurance
+/// race (Aaron 2026-06-08, shadow*).**
+///
+/// The asymmetric defender-vs-forger race (`ForgerRace`) looks weight-full, but Aaron's sharpening is subtler:
+/// *"defender/forger split is weight-full — not really; from either traveler's perspective it balances because
+/// they are both."* The fix is **not** to delete the roles — it is that **every party holds *both* roles,
+/// perspective-relative**: from A's frame A is the defender and B (and time) are forger-suspects; from B's
+/// frame the reverse. Balance = perspective-symmetry: everyone both judges and is judged. There is no
+/// god's-eye "the forger"; a forger is whoever collapses under the reconciled judgments of all frames.
+///
+/// **Time is a peer, not a substrate (Aaron 2026-06-08).** *"That's why your math is not working — time is not
+/// special; time needs to attack and defend just like the other two. If time is asymmetric to the other two
+/// you are unbalanced."* So the clock is a `Party` in the set, judging and judged like anyone. The
+/// "2-v-1-on-the-clock" framing (agents attack a target-only clock) is the unbalanced version. `isBalanced`
+/// rejects referencing time (or anyone) as an outsider — it must be *in* `Parties`.
+///
+/// **The mechanism.** Judgments are **perspective-relative**: `Judges` holds `(observer, observed)` pairs
+/// where the observer, *from its own frame*, detects the observed forging (bad progress vs good) and casts a
+/// `-1` (a Z-set retraction) on its identity. Each party accrues `+HeartbeatRate` from its own clock and loses
+/// `1` per observer that judges it. Genuine party: judged by few/none → claim grows. Forger: judged by all →
+/// reputation collapses (*"society kills the forger"*). Pre-society = a lone observer (one `-1`); society =
+/// every peer judging.
+///
+/// **Why this keeps NCI (Non-Coercion Invariant).** A `-1` is cast on **observable forging evidence** (a
+/// state-independent test), not by coercively overriding state — non-coercive side of the de Finetti boundary
+/// (`BeliefConvergence.fs`); the per-frame judgments reconcile order-independently to one frame
+/// (`Reconcile.fs`). Symmetric + evidence-based = weight-free + non-coercive.
+///
+/// **Honest scope (peel):** a rate/outcome model, deterministic (DST §7). Judgments are taken as given (the
+/// observability the side-channel probe must establish — bad progress distinguishable from good); the module
+/// does not *prove* detectability, it shows what the symmetric frame does given the judgments. Weight-freedom
+/// is structural: one `netRate` rule for every party, and `isBalanced` forbids privileging anyone (incl. time).
+module SymmetricEndurance =
+
+    /// A participant — agent OR clock; no role baked in. `HeartbeatRate` = genuine self-claim growth per tick.
+    type Party = { Id: int; HeartbeatRate: float }
+
+    /// The frame. `Judges` = perspective-relative `(observer, observed)` pairs: observer casts a `-1` on
+    /// observed (from observer's frame). Every party is both a potential observer and observed.
+    type Frame =
+        { Parties: Party list
+          Judges: Set<int * int> }
+
+    let private idSet (frame: Frame) : Set<int> =
+        frame.Parties |> List.map (fun p -> p.Id) |> Set.ofList
+
+    /// The clock as a peer `Party` (Aaron: time attacks and defends like the other two). Put it in `Parties`.
+    let clockParty (id: int) (rate: float) : Party = { Id = id; HeartbeatRate = rate }
+
+    /// How many *other* parties judge `q` as forging (each casts `-1`). Self-judgment (`o = q`) never counts.
+    let penaltyAgainst (frame: Frame) (q: int) : int =
+        frame.Judges |> Set.filter (fun (o, p) -> p = q && o <> q) |> Set.count
+
+    /// `p`'s net identity-claim rate per tick: `+HeartbeatRate` minus the `-1`s cast on it. The SAME rule for
+    /// every party (incl. the clock) — that is the weight-free core.
+    let netRate (frame: Frame) (p: Party) : float =
+        p.HeartbeatRate - float (penaltyAgainst frame p.Id)
+
+    /// `p`'s claim magnitude at `tick` (floors at 0 — a collapsed claim doesn't go negative).
+    let claimAt (frame: Frame) (p: Party) (tick: int) : float =
+        max 0.0 (netRate frame p * float (max 0 tick))
+
+    /// Survives (claim grows unbounded) iff net rate is strictly positive; collapses iff `≤ 0`.
+    let survives (frame: Frame) (p: Party) : bool = netRate frame p > 0.0
+    let collapses (frame: Frame) (p: Party) : bool = netRate frame p <= 0.0
+
+    /// The parties observer `o` judges as forging, from `o`'s frame (its `-1` targets). Each traveler is a
+    /// defender in its own frame; these are its forger-suspects.
+    let judgedBy (frame: Frame) (o: int) : Set<int> =
+        frame.Judges |> Set.filter (fun (x, _) -> x = o) |> Set.map snd
+
+    /// A and B each judge the other — "from either traveler's perspective it balances because they are both"
+    /// (each is defender-in-own-frame and forger-suspect-in-the-other's). The atom of perspective-symmetry.
+    let mutuallyJudge (frame: Frame) (a: int) (b: int) : bool =
+        frame.Judges.Contains(a, b) && frame.Judges.Contains(b, a)
+
+    /// **Balanced (weight-free) ⟺ every judgment is between listed peers** (`observer ≠ observed`, both in
+    /// `Parties`). Referencing a party not in `Parties` — e.g. treating *time* as an external substrate the
+    /// agents attack one-way — is the unbalance Aaron warns of: time (and everyone) must be a peer in the set.
+    let isBalanced (frame: Frame) : bool =
+        let s = idSet frame
+        frame.Judges |> Set.forall (fun (o, p) -> o <> p && Set.contains o s && Set.contains p s)
+
+    /// Weight-free under relabel: a party's fate depends only on `(HeartbeatRate, #judgments-against-it)`,
+    /// never on which `Id` it wears. Verifies by swapping two parties' ids (and rewriting `Judges` to follow)
+    /// and confirming each one's net rate is unchanged.
+    let isWeightFreeUnderRelabel (frame: Frame) : bool =
+        match frame.Parties with
+        | a :: b :: _ ->
+            let swapId i =
+                if i = a.Id then b.Id
+                elif i = b.Id then a.Id
+                else i
+            let swapped =
+                { Parties =
+                    frame.Parties
+                    |> List.map (fun p -> { p with Id = swapId p.Id })
+                  Judges = frame.Judges |> Set.map (fun (o, p) -> swapId o, swapId p) }
+            netRate frame a = netRate swapped { a with Id = b.Id }
+            && netRate frame b = netRate swapped { b with Id = a.Id }
+        | _ -> true
+
+    /// The reconciled forgers: parties whose claim collapses under the aggregate of all frames' judgments
+    /// (`Reconcile.fs`-style — who *actually* falls, not who any single frame accuses). This is the only
+    /// god's-eye-free notion of "forger" the model admits.
+    let collapsedParties (frame: Frame) : int list =
+        frame.Parties |> List.filter (collapses frame) |> List.map (fun p -> p.Id)
+
+    // ── Behavioral layer: identity must CHANGE BEHAVIOR to mean something (Aaron 2026-06-08) ───────────────
+    //
+    // "Identity should change behavior for it to mean something — so identity-strength changes should affect
+    // the split between attacker and defender." A party is not a fixed 50/50; its mix shifts with its identity
+    // STRENGTH (its current claim). Strong identity → behaves as DEFENDER (a claim worth protecting; it
+    // polices, casting -1 on observed forging). Weak/zero identity → behaves as ATTACKER (forges to establish
+    // or survive). An identity that does not move this split is epiphenomenal — it means nothing. This closes
+    // the loop: strength → split → judgments/forging → claims → strength.
+
+    /// Defender fraction as a function of identity strength: `s / (s + 1)`, saturating in `[0,1)`. `strength=0`
+    /// ⇒ `0` (pure attacker — nothing yet to defend); growing strength ⇒ → `1` (pure defender). Monotone
+    /// increasing, so a change in identity strength always moves behavior (that is what makes identity *mean*
+    /// something).
+    let defenderFraction (strength: float) : float =
+        let s = max 0.0 strength
+        s / (s + 1.0)
+
+    /// Attacker fraction = `1 - defenderFraction`. `strength=0` ⇒ `1` (pure attacker); high strength ⇒ → `0`.
+    let attackerFraction (strength: float) : float = 1.0 - defenderFraction strength
+
+    /// Effective defense a party exerts at `tick`: its `defenderFraction` (from its current claim strength)
+    /// scaled by a base policing rate — how strongly an *established* identity casts `-1` on observed forging.
+    let effectiveDefense (frame: Frame) (p: Party) (tick: int) (baseDefense: float) : float =
+        baseDefense * defenderFraction (claimAt frame p tick)
+
+    /// Effective attack a party exerts at `tick`: its `attackerFraction` scaled by a base forge rate — how
+    /// hard a *weak* identity forges. Falls as the party's claim grows (it has more to protect, less to gain).
+    let effectiveAttack (frame: Frame) (p: Party) (tick: int) (baseAttack: float) : float =
+        baseAttack * attackerFraction (claimAt frame p tick)
+
+    /// The "identity means something" property, made checkable: a strict increase in strength strictly
+    /// increases the defender share (and decreases the attacker share) — behavior provably tracks identity.
+    let identityChangesBehavior (loStrength: float) (hiStrength: float) : bool =
+        hiStrength > loStrength && defenderFraction hiStrength > defenderFraction loStrength
