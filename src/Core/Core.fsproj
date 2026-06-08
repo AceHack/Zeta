@@ -199,6 +199,7 @@
     <Compile Include="SoftController.fs" />
     <Compile Include="SoftDashboard.fs" />
     <Compile Include="SoftEmu.fs" />
+    <Compile Include="AmplitudeEmu.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
