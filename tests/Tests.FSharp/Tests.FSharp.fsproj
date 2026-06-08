@@ -130,6 +130,7 @@
     <Compile Include="Orbit.Tests.fs" />
     <Compile Include="SoftMem.Tests.fs" />
     <Compile Include="SoftDrive.Tests.fs" />
+    <Compile Include="SoftScope.Tests.fs" />
     <Compile Include="SoftEmu.Tests.fs" />
     <Compile Include="SoftFrame.Tests.fs" />
     <Compile Include="ActionGrammar.Tests.fs" />
