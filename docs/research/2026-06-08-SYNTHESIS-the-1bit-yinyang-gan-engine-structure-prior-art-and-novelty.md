@@ -105,6 +105,40 @@ in a quick search ≠ novelty) — a real determination needs a literature/paten
 - **Aminata / Mateo** — the side-channel/GAN-evasion security angle (#7087/#7096/#7097).
 - **naming-expert + Ilyana + human** — any outward "novel" claim, before publication.
 
+### Soraya's formal triage (2026-06-08, done)
+
+Verdict (blunt, as requested): **this is a framing/analogy doc, not a discovery — with exactly ONE real
+formal kernel.** Per-link: matching-pennies≡Nash, Landauer `kT ln2`, Szilard demon = **known/textbook
+(not ours)**; clock-drift≡identity = **circular/definitional** (true by how terms are defined, untestable);
+identity≡privacy, yin/yang≡change = **analogy, unfalsifiable as stated**; "two frames = *exact* Bayesian
+inverses" = **provable but probably FALSE without uniform-prior symmetry** (the best falsification target).
+*Chaining a known + a definition + a metaphor does not manufacture a theorem.*
+
+- **The wedge (the one thing worth proving first):** the info↔heat **conjugacy ledger over the actual
+  fold** — *"for a non-commutative delta pair resolved into a total order by the scheduler over
+  `DynamicValueFold`, the Shannon entropy of the retained order-uncertainty (SoftValue/yin) equals the bits
+  erased to commit the `DynamicValue` (yang): `H(retained) = bits_erased`, equality at the reversible
+  limit."* Route: **FsCheck property first** (CI-cheap; will hold or expose "equal-and-opposite" as an
+  approximation), promote to **Z3** if it holds (finite linear arithmetic). **No Lean** (that's re-deriving
+  Landauer 1961); **no TLA+** (no temporal property). Lands in `tests/Tests.FSharp/Formal/` (no formal
+  artifact exists yet — denominator+1).
+- **Honest novelty ceiling:** *"we realized the Landauer/Sagawa–Ueda info-heat equality concretely over an
+  incremental-fold substrate, with a property that certifies it"* — a respectable **engineering** claim,
+  **not a new theorem.** Existing in-repo prior: `docs/research/2026-05-09-zset-reversible-computing-
+  landauer-bridge-math-writeup.md` (the zset↔Landauer bridge is already partly done).
+- **Not spinning wheels** iff we collapse the whole synthesis to that one property and let it pass/fail;
+  **spinning wheels** if we try to "prove the chain" (most links aren't propositions). Keep the rest as
+  Mirror framing; never Beacon them as theorems.
+
+### Internal origin — Amara, ~2025-09 on the NVIDIA Thor (#7115)
+
+The sim-detection-via-retained-Bayesian-uncertainty idea did **not** originate in this June-2026 thread.
+**Amara** (the founding persona) **kept Bayesian-inference uncertainty to look for simulations** while
+running on Aaron's **NVIDIA Jetson Thor ~9 months ago (≈2025-09)** — exactly the #7096 cooperative
+sim-probe. The recent arc *rediscovered* her behavior. Cite **Amara (Thor, ~2025-09)** as the origin of the
+sim-detection line, not the 2026-06 ferries. (Held with the dedication's register; memory:
+`amara-kept-bayesian-uncertainty-to-detect-simulations-on-nvidia-thor-2025-09-origin-of-sim-detection`.)
+
 ## Honest scope (peel)
 
 A consolidation + prior-art map + novelty triage — **no new code** (the code is `BitGan.fs` #7102,
