@@ -114,6 +114,34 @@ consensus). Convergence (#7067), the loophole bound (#7072), and this irreducibl
 faces of one fact: **only non-commutative-order-over-noisy-clocks-and-heartbeats survives, and that
 survival is the conflict.**
 
+## Capstone: one noise source (clock=thermal), DST simulates frames, irreducible error is thermodynamic (#7078)
+
+Aaron collapsed and grounded the model:
+
+- **Heartbeat noise = clock noise for deterministic agents.** A deterministic agent's heartbeat cadence is
+  a *function of its clock*, and "dead vs slow" (the FLP ambiguity, #7077) is decided by a **timeout** — a
+  clock measurement. So for deterministic agents there is **one** irreducible noise source: the **clock**.
+  #7077's separate "heartbeat noise" collapses into clock noise; the liveness ambiguity is a timing one.
+- **DST simulates different observers / different orders.** Replaying the bus with different interleavings
+  *is* simulating different traveler frames — DST explores the whole order-divergence space (hence the
+  whole irreducible-error space) deterministically.
+- **DST = Deterministic Simulation *Theory* (Aaron's reframe).** This thread is the *theory* — the
+  categorical/algebraic account of *which* orders matter (Mazurkiewicz traces / CALM / the irreducible-
+  error decomposition) — with Deterministic Simulation *Testing* (FoundationDB; §7) as the *practice* that
+  exercises it. **Beacon note:** the established term is "Testing"; "Theory" is the broader Mirror frame
+  (theory ⊇ the practice) — keep "Testing" for outward use until reviewed.
+- **Clock noise *is* thermal noise — and the irreducible error is thermodynamic.** Physical oscillator
+  **phase noise is Johnson–Nyquist (thermal) noise** — literally, in hardware clocks. If the `IScheduler`
+  is a **generator function** that collapses the *partial* order into a *total* order, that choice is
+  **irreversible** ⇒ by **Landauer's principle** it dissipates ≥ `kT ln 2` of heat. So:
+  - the **commuting / reversible** part (the compressible, #7071) is thermodynamically **free** —
+    reversible computation costs no heat (Bennett); reordering within a trace erases nothing.
+  - the **non-commuting residue = the irreducible error** is **thermodynamically irreducible**: exactly
+    the part whose resolution (collapsing order, choosing a winner) is *irreversible* and therefore *costs
+    energy/heat*. The conflict that needs consensus is the conflict that costs `kT ln 2` to settle.
+  Ties the irreducible error to the **durable-agent thermal-erasure typing** (Landauer; agents that
+  thermally erase private state to change) and **`ByteCost`**. **The irreducible error is heat.**
+
 ## Where it already lives / what it implies
 
 - **No new code** — this names the partial-order-fabric kernel over the existing substrate (git DAG,
@@ -136,6 +164,11 @@ survival is the conflict.**
   interleaving varies); `UncertainClock` (in-repo); Lamport + Lundelius–Lynch (clock-sync lower bounds, no
   perfect sync); **FLP impossibility** (Fischer–Lynch–Paterson) + Chandra–Toueg unreliable failure
   detectors (no perfect liveness detection); heartbeat-via-commit / AgencySignature cadence.
+- **Thermodynamics of the irreducible error (#7078):** Johnson–Nyquist thermal noise (oscillator phase
+  noise = clock noise); **Landauer's principle** (irreversible bit-erasure ≥ kT ln 2); reversible computing
+  (Bennett — commuting/reversible is free); the IScheduler-as-generator collapsing partial→total order;
+  durable-agent thermal-erasure typing; `ByteCost`. "Deterministic Simulation Theory" (Mirror reframe of
+  DST-the-testing-practice).
 - **Convergence + lossless past-compression (#7067-#7071):** CRDT strong eventual consistency (Shapiro);
   **Mazurkiewicz trace theory** (concurrency = commutation-equivalence classes; the partial order is the
   trace; all linearizations equivalent); confluence / Church-Rosser; observational equivalence /
