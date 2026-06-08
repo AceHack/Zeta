@@ -1,0 +1,42 @@
+# Agent memory — per-persona durable, Longhorn-backed memory volumes.
+#
+# A StatefulSet whose volumeClaimTemplates bind one `longhorn` PVC per
+# replica, giving AI-agent memory that survives pod restart, reschedule, and
+# node failure. The App-of-Apps root (k8s/bootstrap/root-application.yaml)
+# picks up this Application.yaml; this Application then reconciles the
+# namespace + service + statefulset in this directory.
+#
+# Complements the `hindsight` Application (semantic/vector memory service,
+# also Longhorn-backed). This one is the raw file-memory substrate.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # After longhorn (sync-wave -15) so the `longhorn` StorageClass exists
+    # before these PVCs are created.
+    argocd.argoproj.io/sync-wave: "10"
+  name: agent-memory
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/agent-memory
+    directory:
+      # Apply the manifests, NOT this Application.yaml itself (no recursion).
+      include: '{namespace,service,statefulset}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: agent-memory
+  syncPolicy:
+    automated:
+      # NEVER prune persistent memory — losing the PVC means losing the
+      # agent's memory. Manual delete only.
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

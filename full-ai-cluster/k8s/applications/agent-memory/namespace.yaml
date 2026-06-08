@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agent-memory
+  labels:
+    app.kubernetes.io/part-of: zeta-agents
+    # Exempt from gatekeeper admission so a policy outage can never block
+    # the agents' own memory substrate (matches open-policy-agent exemptions).
+    admission.gatekeeper.sh/ignore: "true"

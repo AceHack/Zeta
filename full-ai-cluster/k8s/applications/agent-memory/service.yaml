@@ -1,0 +1,20 @@
+# Headless service — gives each StatefulSet replica a stable DNS name
+# (agent-memory-0.agent-memory.agent-memory.svc.cluster.local), so an
+# agent's memory endpoint is addressable per-persona and stable across
+# restarts. No load balancing (clusterIP: None) — identity, not spread.
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent-memory
+  namespace: agent-memory
+  labels:
+    app.kubernetes.io/name: agent-memory
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: agent-memory
+  ports:
+    # Placeholder port; the real agent-runtime image exposes its own here.
+    - name: runtime
+      port: 8080
+      targetPort: 8080
