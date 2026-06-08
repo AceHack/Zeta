@@ -193,6 +193,7 @@
     <Compile Include="QubitIso.fs" />
     <Compile Include="BellTest.fs" />
     <Compile Include="FeedbackThrottle.fs" />
+    <Compile Include="Chip8.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
