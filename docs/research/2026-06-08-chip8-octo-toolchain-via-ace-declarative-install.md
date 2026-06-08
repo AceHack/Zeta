@@ -31,6 +31,20 @@ untracked node outside the dependency graph. The win is a *single holistic dep g
 everything) that is queryable, pinnable, hash-verifiable, and diffable. Imperative package commands are the
 anti-pattern this explicitly forbids.
 
+### The deeper why: closing over host→compiler→OS to *replace* the OS (Aaron, 2026-06-08)
+
+> "We are trying to close over the operating system eventually so we can replace it — so tracking every dep is
+> important for closing over host→compiler→os."
+
+Tracking *every* dep declaratively builds the complete **dependency closure**. Once that closure spans
+**host → compiler → OS**, the whole stack is self-described and reproducible — which is the precondition for
+*replacing* the host OS with our own. A single untracked imperative install punches a hole in the very closure
+we're completing. So even a "small" tool like the Octo CHIP-8 assembler must be a declared graph node: it's a
+brick in the host→compiler→OS closure, not a convenience install. Anchors: Nix/Guix closures + **Guix full-source
+bootstrap** / **GNU Mes** / **live-bootstrap** / **stage0** (bootstrappable.org — shrink the trusted seed); Ken
+Thompson, *Reflections on Trusting Trust* (the compiler→OS trust chain must be closed); unikernels (a closed,
+OS-replacing stack).
+
 ## Components (proposed, to be owned by Dejan + ace)
 
 1. **Octo declared in the desired-state dep config (ace).** Octo is **MIT** (John Earnest,
