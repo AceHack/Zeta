@@ -5,7 +5,8 @@ open Zeta.Core
 open Zeta.Core.ZetaCli
 
 // node helper: a command keyed by Noun with the given dependson edges (seam/verb irrelevant to ordering)
-let private n noun deps : ZetaCommand = { Seam = None; Verb = "ensure"; Noun = noun; DependsOn = deps }
+let private n noun deps : ZetaCommand =
+    { Seam = None; Verb = "ensure"; Noun = noun; Fields = Map.empty; DependsOn = deps }
 let private nouns (cmds: ZetaCommand list) = cmds |> List.map (fun c -> c.Noun)
 
 [<Fact>]

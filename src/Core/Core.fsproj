@@ -173,6 +173,7 @@
     <Compile Include="File.fs" />
     <Compile Include="TableStream.fs" />
     <Compile Include="Catalog.fs" />
+    <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>

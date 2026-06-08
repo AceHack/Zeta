@@ -4,7 +4,12 @@ open global.Xunit
 open Zeta.Core
 open Zeta.Core.ZetaCli
 
-let private cmd seam verb noun deps = { Seam = seam; Verb = verb; Noun = noun; DependsOn = deps }
+let private cmd seam verb noun deps =
+    { Seam = seam; Verb = verb; Noun = noun; Fields = Map.empty; DependsOn = deps }
+
+/// Like `cmd` but with named fields (#7045).
+let private cmdF seam verb noun fields deps =
+    { Seam = seam; Verb = verb; Noun = noun; Fields = Map.ofList fields; DependsOn = deps }
 
 [<Fact>]
 let ``zeta explicit seam: zeta git clone <noun>`` () =
@@ -55,6 +60,37 @@ let ``homoiconic round-trip: parse (render c) = Ok c (with deps)`` () =
           cmd (Some "ace") "ensure" "npm[r].bar" [ "compiler.rust" ]
           cmd (Some "test") "message" "otto-cli1" [ "a"; "b"; "c" ] ] do
         Assert.Equal<Result<ZetaCommand, string>>(Ok c, parse (render c))
+
+[<Fact>]
+let ``fields: k=v tokens parse into Fields; positional stays seam/verb/noun`` () =
+    Assert.Equal<Result<ZetaCommand, string>>(
+        Ok(cmdF (Some "table") "upsert" "users.42" [ "value", "alice" ] []),
+        parse "zeta table upsert users.42 value=alice"
+    )
+
+[<Fact>]
+let ``fields: multiple fields incl. qualifiers, with dependson`` () =
+    Assert.Equal<Result<ZetaCommand, string>>(
+        Ok(cmdF (Some "file") "write" "/a" [ "value", "blake3:abc"; "scope", "cell-7" ] [ "/d" ]),
+        parse "zeta file write /a value=blake3:abc scope=cell-7 dependson /d"
+    )
+
+[<Fact>]
+let ``fields: value may contain = (split on first only)`` () =
+    match parse "zeta db write k value=a=b=c" with
+    | Ok c -> Assert.Equal("a=b=c", c.Fields.["value"])
+    | Error e -> failwith e
+
+[<Fact>]
+let ``fields: round-trip parse (render c) = Ok c with fields (sorted)`` () =
+    for c in
+        [ cmdF (Some "table") "upsert" "u.1" [ "value", "x" ] []
+          cmdF (Some "file") "write" "/a" [ "value", "h"; "scope", "s"; "version", "2" ] [ "/d" ] ] do
+        Assert.Equal<Result<ZetaCommand, string>>(Ok c, parse (render c))
+
+[<Fact>]
+let ``fields: no = tokens parse exactly as before (empty Fields, backward-compatible)`` () =
+    Assert.Equal<Result<ZetaCommand, string>>(Ok(cmd (Some "git") "clone" "abc" []), parse "zeta git clone abc")
 
 [<Fact>]
 let ``shorthands canonicalize: render (parse zc) = zeta run cell`` () =

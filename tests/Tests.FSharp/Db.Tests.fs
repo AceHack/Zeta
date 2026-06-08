@@ -7,7 +7,7 @@ open Zeta.Core.Db
 
 // db-seam command helper
 let private db verb noun deps : ZetaCommand =
-    { Seam = Some Db.SeamName; Verb = verb; Noun = noun; DependsOn = deps }
+    { Seam = Some Db.SeamName; Verb = verb; Noun = noun; Fields = Map.empty; DependsOn = deps }
 
 [<Fact>]
 let ``fold: create then update then delete -> empty`` () =
