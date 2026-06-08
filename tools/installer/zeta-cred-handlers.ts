@@ -117,6 +117,43 @@ export const SSH_HOST_KEYS_HANDLER: CredHandler = {
   },
 };
 
+/**
+ * Handler for wifi — NetworkManager .nmconnection content (SSID + PSK). Aaron 2026-06-07: zflash should also
+ * save WiFi credentials. Accept either a JSON object `{ssid, psk}` or raw .nmconnection / wpa_supplicant text;
+ * require that it references an SSID so we don't silently bake junk. SECURITY: never echo the value (the PSK)
+ * in error messages — reference the id only.
+ */
+export const WIFI_HANDLER: CredHandler = {
+  id: "wifi",
+  supportedSources: ["literal", "file", "env"],
+  validateValue(value) {
+    if (value.length === 0) return "wifi value must be non-empty";
+    const s = value.toString("utf8");
+    if (s.trim().length === 0) return "wifi value must be non-whitespace";
+    // JSON form: must be an object carrying an ssid. Text form: must mention an SSID (.nmconnection has
+    // `ssid=` under [wifi]; wpa_supplicant has `ssid="..."`). Either way require an SSID reference.
+    try {
+      const parsed = JSON.parse(s);
+      if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return "wifi JSON value must be an object with at least an 'ssid' field";
+      }
+      if (typeof (parsed as Record<string, unknown>).ssid !== "string") {
+        return "wifi JSON value must include a string 'ssid' field";
+      }
+      return null;
+    } catch {
+      // Not JSON — accept as raw connection text iff it references an SSID.
+      if (!/(^|\n)\s*ssid\s*=/i.test(s)) {
+        return "wifi text value must be a .nmconnection / wpa_supplicant blob containing an 'ssid=' line (or JSON with an 'ssid' field)";
+      }
+      return null;
+    }
+  },
+};
+
+/** Handler for install-answers — saved answers to install prompts; JSON object (Aaron 2026-06-07). */
+export const INSTALL_ANSWERS_HANDLER = makeJsonHandler("install-answers");
+
 /** Default registry of handlers, keyed by manifest id. */
 export const DEFAULT_HANDLERS: Readonly<Record<string, CredHandler>> = {
   "gh-cli": GH_CLI_HANDLER,
@@ -125,6 +162,8 @@ export const DEFAULT_HANDLERS: Readonly<Record<string, CredHandler>> = {
   codex: CODEX_HANDLER,
   "ssh-operator-pubkey": SSH_OPERATOR_PUBKEY_HANDLER,
   "ssh-host-keys": SSH_HOST_KEYS_HANDLER,
+  wifi: WIFI_HANDLER,
+  "install-answers": INSTALL_ANSWERS_HANDLER,
 };
 
 /**

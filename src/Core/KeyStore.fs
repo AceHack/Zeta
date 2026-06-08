@@ -112,16 +112,35 @@ module KeyStore =
         |> Seq.choose (fun ((i, acct), r) -> if i = identity then Some(acct, r) else None)
         |> Map.ofSeq
 
-    /// Install mode (#7004). `Live` = non-destructive (boot without wiping the host) — the **DEFAULT**, since
-    /// erase-by-default is too aggressive. `Erase` = wipe-and-install, opt-in only (must be explicitly chosen).
-    /// Orthogonal to the credential push below (a Live boot still pushes/binds keys); it governs whether the
-    /// host is wiped.
+    /// Install mode — three levels (Aaron #7004/#7009), increasingly destructive:
+    ///   `Live`                = non-destructive boot, host untouched — the **DEFAULT** (erase-by-default is
+    ///                           too aggressive).
+    ///   `ErasePreserveConfig` = erase OS/data, but **preserve config/secrets first** — to hardware, falling
+    ///                           back to the USB if no hardware enclave exists — BEFORE erasing. Secrets survive.
+    ///   `EraseWipeConfig`     = erase including the preserved config/secrets — fully **fresh** (opt-in on top
+    ///                           of erase; the only path that destroys the keyring).
     type InstallMode =
         | Live // non-destructive — DEFAULT
-        | Erase // destructive — opt-in only
+        | ErasePreserveConfig // erase OS/data; preserve config/secrets first (hardware, USB fallback)
+        | EraseWipeConfig // also erase config/secrets — fully fresh
 
-    /// Live by default (#7004): never wipe the host unless `Erase` is explicitly chosen.
+    /// Live by default (#7004): never wipe the host unless an `Erase*` mode is explicitly chosen.
     let defaultInstallMode = Live
+
+    /// Where `ErasePreserveConfig` saves config/secrets before erasing (#7009): **hardware first, USB fallback
+    /// if no hardware enclave exists.** Returns the ordered preserve targets for the given host capability.
+    let preserveTargets (hasHardwareEnclave: bool) : string list =
+        if hasHardwareEnclave then [ PcHardware ] else [ UsbHardware ]
+
+    /// The `ErasePreserveConfig` round-trip (Aaron #7010), in order. Preserve config/secrets BEFORE format,
+    /// **use** them during install so there's no re-login / re-auth / re-config, then **re-persist** them to
+    /// USB/hardware AFTER format. A saga (each phase fenced/idempotent; #6/DurableSaga) so a crash mid-flow
+    /// replays without losing or double-applying secrets.
+    let erasePreserveFlow: string list =
+        [ "preserve" // save config/secrets → hardware (USB fallback) before erasing
+          "use-before-format" // reuse them during install: no relogin / reauth / reconfig
+          "format" // erase OS/data
+          "repersist" ] // write config/secrets back to USB/hardware after format
 
     /// Install-from-medium (#7002/#7003): push the credential DOWN to the host PC's hardware, and — ONLY if the
     /// boot medium is **writable** (a USB, not a read-only ISO) — back into the medium's own hardware too. A

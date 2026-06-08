@@ -96,6 +96,27 @@ export const DEFAULT_MANIFEST: Manifest = {
       required: true,
       notes: "Operator's SSH pubkey injected by iter-4.2 ESP write. Composes with that channel.",
     },
+    {
+      id: "wifi",
+      paths: ["/etc/NetworkManager/system-connections"],
+      personaScoped: false,
+      required: false,
+      notes:
+        "WiFi credentials (Aaron 2026-06-07): NetworkManager .nmconnection files (SSID + PSK under [wifi]/" +
+        "[wifi-security]). Host-level network config, not per-AI. Optional (re-enter acceptable), but persisting " +
+        "means you don't re-type WiFi every install. Reformat-from-scratch ('fresh') re-enters.",
+    },
+    {
+      id: "install-answers",
+      paths: ["/etc/zeta/install-answers.json"],
+      personaScoped: false,
+      required: false,
+      notes:
+        "Saved answers to install prompts (Aaron 2026-06-07): reused across installs so previously-answered " +
+        "questions are NOT re-asked — UNLESS a new question appears, or the operator chooses to reanswer / a " +
+        "'fresh' reformat-from-scratch is selected (B-0891 scenario). Retention ties to install mode: " +
+        "Live/retain reuses; fresh/Erase re-prompts.",
+    },
   ],
 };
 

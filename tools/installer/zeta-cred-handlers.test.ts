@@ -16,8 +16,10 @@ import {
   DEFAULT_HANDLERS,
   GEMINI_HANDLER,
   GH_CLI_HANDLER,
+  INSTALL_ANSWERS_HANDLER,
   SSH_HOST_KEYS_HANDLER,
   SSH_OPERATOR_PUBKEY_HANDLER,
+  WIFI_HANDLER,
   parseBakeCredArg,
   resolveBakeCred,
   resolveValueSource,
@@ -232,9 +234,18 @@ describe("SSH_HOST_KEYS_HANDLER (Phase 1 deferred)", () => {
 });
 
 describe("DEFAULT_HANDLERS registry", () => {
-  it("registers all 6 default manifest entries", () => {
+  it("registers all 8 default manifest entries", () => {
     expect(Object.keys(DEFAULT_HANDLERS).sort()).toEqual(
-      ["claude", "codex", "gemini", "gh-cli", "ssh-host-keys", "ssh-operator-pubkey"].sort(),
+      [
+        "claude",
+        "codex",
+        "gemini",
+        "gh-cli",
+        "install-answers",
+        "ssh-host-keys",
+        "ssh-operator-pubkey",
+        "wifi",
+      ].sort(),
     );
   });
 });
@@ -299,5 +310,53 @@ describe("resolveBakeCred — full pipeline", () => {
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
+  });
+});
+
+describe("WIFI_HANDLER", () => {
+  it("is registered in DEFAULT_HANDLERS", () => {
+    expect(DEFAULT_HANDLERS["wifi"]).toBe(WIFI_HANDLER);
+  });
+
+  it("accepts JSON with an ssid field", () => {
+    expect(WIFI_HANDLER.validateValue(Buffer.from(JSON.stringify({ ssid: "home-net", psk: "secret" })))).toBeNull();
+  });
+
+  it("accepts .nmconnection-style text with an ssid= line", () => {
+    expect(WIFI_HANDLER.validateValue(Buffer.from("[wifi]\nssid=home-net\n[wifi-security]\npsk=secret\n"))).toBeNull();
+  });
+
+  it("rejects empty value", () => {
+    expect(WIFI_HANDLER.validateValue(Buffer.from(""))).not.toBeNull();
+  });
+
+  it("rejects JSON object without an ssid", () => {
+    expect(WIFI_HANDLER.validateValue(Buffer.from(JSON.stringify({ psk: "secret" })))).not.toBeNull();
+  });
+
+  it("rejects text with no ssid reference", () => {
+    expect(WIFI_HANDLER.validateValue(Buffer.from("just some bytes"))).not.toBeNull();
+  });
+
+  it("never echoes the value (PSK) in its error message", () => {
+    const err = WIFI_HANDLER.validateValue(Buffer.from("top-secret-psk-no-ssid"));
+    expect(err).not.toBeNull();
+    expect(err!).not.toContain("top-secret-psk");
+  });
+});
+
+describe("INSTALL_ANSWERS_HANDLER", () => {
+  it("is registered in DEFAULT_HANDLERS", () => {
+    expect(DEFAULT_HANDLERS["install-answers"]).toBe(INSTALL_ANSWERS_HANDLER);
+  });
+
+  it("accepts a JSON object of saved answers", () => {
+    expect(
+      INSTALL_ANSWERS_HANDLER.validateValue(Buffer.from(JSON.stringify({ hostname: "node-1", timezone: "UTC" }))),
+    ).toBeNull();
+  });
+
+  it("rejects non-JSON", () => {
+    expect(INSTALL_ANSWERS_HANDLER.validateValue(Buffer.from("not json"))).not.toBeNull();
   });
 });

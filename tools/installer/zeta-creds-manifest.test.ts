@@ -55,6 +55,19 @@ describe("DEFAULT_MANIFEST", () => {
       expect(entry.paths.length).toBeGreaterThan(0);
     }
   });
+
+  it("declares wifi as optional, host-level (Aaron 2026-06-07: save WiFi creds too)", () => {
+    const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === "wifi");
+    expect(entry).toBeDefined();
+    expect(entry!.required).toBe(false);
+    expect(entry!.personaScoped).toBe(false);
+  });
+
+  it("declares install-answers as optional (reused unless new questions / fresh reformat)", () => {
+    const entry = DEFAULT_MANIFEST.credentials.find((c) => c.id === "install-answers");
+    expect(entry).toBeDefined();
+    expect(entry!.required).toBe(false);
+  });
 });
 
 describe("validateManifest — accepts well-formed input", () => {

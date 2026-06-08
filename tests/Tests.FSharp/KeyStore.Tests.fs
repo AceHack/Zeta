@@ -66,6 +66,15 @@ let ``install mode defaults to Live (non-destructive) — erase is opt-in`` () =
     Assert.Equal(Live, defaultInstallMode)
 
 [<Fact>]
+let ``erase preserves config to hardware first, USB fallback when no enclave`` () =
+    Assert.Equal<string list>([ PcHardware ], preserveTargets true)
+    Assert.Equal<string list>([ UsbHardware ], preserveTargets false)
+
+[<Fact>]
+let ``erase-preserve flow is preserve -> use-before-format -> format -> repersist`` () =
+    Assert.Equal<string list>([ "preserve"; "use-before-format"; "format"; "repersist" ], erasePreserveFlow)
+
+[<Fact>]
 let ``GitHub secret scopes cascade most-specific to broadest`` () =
     Assert.Equal<string list>([ "environment"; "repo"; "org"; "enterprise" ], gitHubSecretScopes)
 
