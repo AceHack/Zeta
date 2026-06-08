@@ -106,3 +106,48 @@ let ``shared clock earns DOUBLE ticks (animates both); separate clocks are even`
 let ``frames built by frameOf are balanced (all peers, incl. clocks, in the set)`` () =
     Assert.True(isBalanced (frameOf SeparateClocks [ 1.0; 1.0 ]))
     Assert.True(isBalanced (frameOf SharedClock [ 1.0; 1.0 ]))
+
+[<Fact>]
+let ``three tick regimes: clock-work falls out as max (constructive) vs sum (the other two)`` () =
+    let equal2 = [ 1.0; 1.0 ]
+    Assert.Equal(2.0, clockWork OneClockTwoTicks equal2) // Σrates
+    Assert.Equal(1.0, clockWork OneClockOneTick equal2) // constructive — one tick advances both (max)
+    Assert.Equal(2.0, clockWork TwoClocksOneTick equal2) // Σrates
+    // Only the constructive regime is sub-additive (doesn't grow with agent count) — when rates align.
+    Assert.Equal(1.0, clockWork OneClockOneTick [ 1.0; 1.0; 1.0; 1.0; 1.0 ])
+    Assert.Equal(5.0, clockWork OneClockTwoTicks [ 1.0; 1.0; 1.0; 1.0; 1.0 ])
+
+[<Fact>]
+let ``unequal agent rates: no equal-rate assumption; constructive needs alignment`` () =
+    let uneven = [ 1.0; 3.0 ] // agents heartbeat at different rates
+    Assert.False(ratesAligned uneven)
+    Assert.True(ratesAligned [ 2.0; 2.0 ])
+    // Shared clock earns the SUM it animates (not a count); constructive paces to the FASTEST.
+    Assert.Equal(4.0, clockWork OneClockTwoTicks uneven) // 1+3
+    Assert.Equal(3.0, clockWork OneClockOneTick uneven) // max — constructive carries at the fastest, lossy when unaligned
+    Assert.Equal(4.0, clockWork TwoClocksOneTick uneven)
+    // frameOfRegime reflects per-agent rates on the clocks.
+    let sep = frameOfRegime TwoClocksOneTick uneven
+    Assert.Equal(1.0, (sep.Parties |> List.find (fun p -> p.Id = 2)).HeartbeatRate)
+    Assert.Equal(3.0, (sep.Parties |> List.find (fun p -> p.Id = 3)).HeartbeatRate)
+
+[<Fact>]
+let ``frameOfRegime builds the right clock peer per regime`` () =
+    let two = frameOfRegime OneClockTwoTicks [ 1.0; 1.0 ]
+    Assert.Equal(2.0, (two.Parties |> List.find (fun p -> p.Id = 2)).HeartbeatRate) // shared, double
+    let one = frameOfRegime OneClockOneTick [ 1.0; 1.0 ]
+    Assert.Equal(1.0, (one.Parties |> List.find (fun p -> p.Id = 2)).HeartbeatRate) // shared, constructive
+    Assert.Equal(3, actorCount one) // still 3 actors (one clock)
+    let sep = frameOfRegime TwoClocksOneTick [ 1.0; 1.0 ]
+    Assert.Equal(4, actorCount sep) // 4 actors (two clocks)
+
+[<Fact>]
+let ``phase: constructive interference depends on sine-wave phase, not just frequency`` () =
+    // Overlap cos²(Δφ/2): 1 in-phase, ½ at 90°, 0 anti-phase.
+    Assert.Equal(1.0, phaseOverlap InPhase, 10)
+    Assert.Equal(0.5, phaseOverlap QuarterPhase, 10)
+    Assert.Equal(0.0, phaseOverlap AntiPhase, 10)
+    // Effective clock-work 2 - overlap: 1 in-phase (full sharing) → 1.5 at 90° → 2 anti-phase (no sharing).
+    Assert.Equal(1.0, constructiveClockWork InPhase, 10)
+    Assert.Equal(1.5, constructiveClockWork QuarterPhase, 10)
+    Assert.Equal(2.0, constructiveClockWork AntiPhase, 10) // degrades to OneClockTwoTicks — tick can't be shared

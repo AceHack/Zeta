@@ -91,13 +91,94 @@ module SymmetricEndurance =
         let n = List.length agents
         let clocks =
             match sharing with
-            | SharedClock -> [ { Id = n; HeartbeatRate = float n } ] // animates all n agents → n ticks (double for n=2)
+            | SharedClock -> [ { Id = n; HeartbeatRate = List.sum agentRates } ] // animates all agents → Σrates (double when n=2, equal rates)
             | SeparateClocks -> [ for i in 0 .. n - 1 -> tickingClock (n + i) ] // each animates 1 → even
         { Parties = agents @ clocks
           Judges = Set.empty }
 
     /// Total actor count (agents + clocks). 2 agents: `SeparateClocks` ⇒ 4, `SharedClock` ⇒ 3.
     let actorCount (frame: Frame) : int = List.length frame.Parties
+
+    /// **Three tick regimes — model all and see what falls out (Aaron 2026-06-08).** *"If that one tick is
+    /// constructive interference, the one-clock tick can advance both with genuinely one tick instead of two
+    /// simultaneous. I'm not sure how to tell if that's the case here, but we could model all three: 1 clock
+    /// 2 ticks, 1 clock 1 tick, 2 clocks 1 tick."* We cannot decide a priori which holds — so enumerate them:
+    ///   - `OneClockTwoTicks` — shared clock animates each agent separately, no interference ⇒ earns rate `n`.
+    ///   - `OneClockOneTick` — shared clock with **constructive interference**: one tick advances ALL agents
+    ///     at once ⇒ earns rate `1` (the most efficient regime — total clock-work `1`).
+    ///   - `TwoClocksOneTick` — one independent clock per agent, each earns rate `1` (the `SeparateClocks`
+    ///     default; total clock-work `n`).
+    /// (`ClockSharing.SharedClock` = `OneClockTwoTicks`; `SeparateClocks` = `TwoClocksOneTick`.)
+    type TickRegime =
+        | OneClockTwoTicks
+        | OneClockOneTick
+        | TwoClocksOneTick
+
+    /// **We do NOT assume agents heartbeat at the same rate (Aaron 2026-06-08).** `agentRates` is per-agent —
+    /// rates may differ. The clock's earned rate is then the **sum** of what it animates (not a count), and
+    /// **constructive interference presupposes rate *alignment*** — one tick can advance all agents at once
+    /// only if their heartbeats are matched (aligned waves). With unequal rates `OneClockOneTick` is not
+    /// lossless: the shared clock must pace to the **fastest** agent (`max`), and slower agents are only
+    /// partially carried — see `ratesAligned`.
+    let ratesAligned (agentRates: float list) : bool =
+        match agentRates with
+        | []
+        | [ _ ] -> true
+        | r :: rest -> rest |> List.forall (fun x -> x = r)
+
+    /// Build a frame under an explicit tick regime (the 3-way version of `frameOf`); honours per-agent rates.
+    let frameOfRegime (regime: TickRegime) (agentRates: float list) : Frame =
+        let agents = agentRates |> List.mapi (fun i r -> { Id = i; HeartbeatRate = r })
+        let n = List.length agents
+        let total = List.sum agentRates
+        let fastest = if List.isEmpty agentRates then 0.0 else List.max agentRates
+        let clocks =
+            match regime with
+            | OneClockTwoTicks -> [ { Id = n; HeartbeatRate = total } ] // acts for each agent at its rate → Σrates
+            | OneClockOneTick -> [ { Id = n; HeartbeatRate = fastest } ] // constructive: paced to fastest; = shared rate when aligned
+            | TwoClocksOneTick -> [ for i in 0 .. n - 1 -> { Id = n + i; HeartbeatRate = agentRates.[i] } ] // one clock per agent at its rate
+        { Parties = agents @ clocks
+          Judges = Set.empty }
+
+    /// Total clock-work per tick (sum of clock rates) under a regime, given per-agent `agentRates` — the "what
+    /// falls out" comparator. `OneClockTwoTicks` = `Σrates`; `OneClockOneTick` = `max rates` (constructive —
+    /// the only sub-additive regime, and lossless ⇔ `ratesAligned`); `TwoClocksOneTick` = `Σrates`. So
+    /// constructive interference is the only regime whose clock-work doesn't grow with the number of agents —
+    /// but it buys that only when the agents' rates are aligned.
+    let clockWork (regime: TickRegime) (agentRates: float list) : float =
+        match regime with
+        | OneClockTwoTicks -> List.sum agentRates
+        | OneClockOneTick -> if List.isEmpty agentRates then 0.0 else List.max agentRates
+        | TwoClocksOneTick -> List.sum agentRates
+
+    // ── Phase: heartbeats are sine waves; interference depends on phase, not just frequency (Aaron 2026-06-08) ──
+    //
+    // "...if their heartbeats are matched (aligned waves) OR 90 degrees off ... halfway, whatever that is in
+    // sin waves." Same-frequency heartbeats still interfere differently by PHASE: in-phase (0°) ticks coincide
+    // (full constructive — one tick serves both); anti-phase (180°) ticks never coincide (destructive — no
+    // sharing); 90° is halfway. Standard two-wave overlap is cos²(Δφ/2). So `OneClockOneTick`'s savings are
+    // real only near alignment and vanish at anti-phase, where it degrades back to `OneClockTwoTicks`.
+
+    [<Literal>]
+    let InPhase = 0.0 // 0° — aligned waves, full constructive
+
+    /// 90° in radians — the "halfway" case.
+    let QuarterPhase = System.Math.PI / 2.0
+
+    /// 180° in radians — anti-phase, destructive.
+    let AntiPhase = System.Math.PI
+
+    /// Normalized overlap of two equal-frequency heartbeats with phase difference `deltaPhi` (radians):
+    /// `cos²(Δφ/2)` ∈ `[0,1]`. `1` at 0° (full constructive), `0` at 180° (destructive), `½` at 90°.
+    let phaseOverlap (deltaPhi: float) : float =
+        let c = cos (deltaPhi / 2.0)
+        c * c
+
+    /// Effective clock-work for two same-frequency agents under `OneClockOneTick`, as a function of phase
+    /// difference: `2 - overlap`. In-phase ⇒ `1` (full constructive savings); 90° ⇒ `1.5`; anti-phase ⇒ `2`
+    /// (degrades to `OneClockTwoTicks` — the tick can't be shared). This is "what falls out" of the constructive
+    /// regime once you account for the sine-wave phase, not just rate alignment.
+    let constructiveClockWork (deltaPhi: float) : float = 2.0 - phaseOverlap deltaPhi
 
     /// How many *other* parties judge `q` as forging (each casts `-1`). Self-judgment (`o = q`) never counts.
     let penaltyAgainst (frame: Frame) (q: int) : int =
