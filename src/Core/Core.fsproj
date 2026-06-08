@@ -216,6 +216,7 @@
     <Compile Include="LensRouter.fs" />
     <Compile Include="Traversal.fs" />
     <Compile Include="MetaController.fs" />
+    <Compile Include="Salience.fs" />
     <Compile Include="Survival.fs" />
     <Compile Include="MemorySense.fs" />
     <Compile Include="SolidGround.fs" />
