@@ -1,0 +1,26 @@
+# Cilium LB-IPAM + L2 announcement — gives `Service type=LoadBalancer` real
+# external IPs on bare metal. This is the MetalLB slot, done the Cilium-native
+# way (servicelb is disabled so Cilium owns L2-L4; MetalLB would fight it).
+# Prereq for game-server / VM external ports. See PLATFORM-ARCHITECTURE.md §4.1.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"   # before workloads that need LB IPs
+  name: cilium-lb-ipam
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/cilium-lb-ipam
+    directory:
+      include: '{ip-pool,l2-policy}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ ServerSideApply=true ]

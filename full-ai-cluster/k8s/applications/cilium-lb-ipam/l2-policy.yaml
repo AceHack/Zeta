@@ -1,0 +1,18 @@
+# Announce LoadBalancer IPs on the LAN via L2 (ARP/NDP), so traffic to a
+# pool IP reaches this node. (Use BGP instead if you peer with a router.)
+#
+# `interfaces` are regexes — adjust if your NIC names differ (the test node's
+# external NIC is enp172s0; en*/eth* covers the common cases).
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: zeta-l2-announce
+spec:
+  loadBalancerIPs: true
+  interfaces:
+    - "^en[ops].*"
+    - "^eth[0-9]+"
+  nodeSelector:
+    matchExpressions:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists

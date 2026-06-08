@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: game-hosting
+  labels:
+    app.kubernetes.io/part-of: zeta-game-hosting
+    # gatekeeper-exempt so a policy outage can't block game workloads
+    admission.gatekeeper.sh/ignore: "true"

@@ -1,0 +1,34 @@
+# External entry point for the GMod server. type=LoadBalancer → Cilium LB-IPAM
+# assigns an IP from the pool (needs the cilium-lb-ipam app). Players connect to
+# <LB-IP>:27015. (Public-internet reachability is a separate physical layer —
+# see PLATFORM-ARCHITECTURE.md §4.1: a home/NAT IP won't serve public players.)
+apiVersion: v1
+kind: Service
+metadata:
+  name: gmod
+  namespace: game-hosting
+  labels:
+    app.kubernetes.io/name: gmod
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local   # preserve client IP; keep traffic on this node
+  selector:
+    app.kubernetes.io/name: gmod
+  ports:
+    - { name: game-udp, port: 27015, targetPort: 27015, protocol: UDP }
+    - { name: game-tcp, port: 27015, targetPort: 27015, protocol: TCP }
+---
+# Separate Service for SFTP (different IP/port lifecycle from the game port).
+apiVersion: v1
+kind: Service
+metadata:
+  name: gmod-sftp
+  namespace: game-hosting
+  labels:
+    app.kubernetes.io/name: gmod
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: gmod
+  ports:
+    - { name: sftp, port: 2222, targetPort: 22, protocol: TCP }

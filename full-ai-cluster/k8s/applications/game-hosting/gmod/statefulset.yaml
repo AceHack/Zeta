@@ -1,0 +1,96 @@
+# Garry's Mod dedicated server — the base test for the game-hosting product.
+# The k8s-native shape (StatefulSet + Longhorn PVC + sidecars) that the
+# GameServer CRD will template per server (PLATFORM-ARCHITECTURE.md §3.2).
+#
+# Status: SCAFFOLD — schema-valid; needs live validation on a healthy cluster
+# (the GMod image install + srcds 32-bit runtime + sidecar permissions are the
+# runtime unknowns). Single instance — game servers are pets, not cattle.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gmod
+  namespace: game-hosting
+  labels:
+    app.kubernetes.io/name: gmod
+spec:
+  serviceName: gmod
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gmod
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gmod
+    spec:
+      securityContext:
+        fsGroup: 1000          # shared group so game + sftp can both write /data
+      initContainers:
+        # Install / update Garry's Mod dedicated server (Steam app 4020) into
+        # the persistent Longhorn volume. First run is slow; subsequent restarts
+        # validate-only (fast) since the files persist.
+        - name: install
+          image: cm2network/steamcmd:root
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -eu
+              mkdir -p /data/gmod
+              /home/steam/steamcmd/steamcmd.sh \
+                +force_install_dir /data/gmod \
+                +login anonymous \
+                +app_update 4020 validate \
+                +quit
+          volumeMounts:
+            - { name: data, mountPath: /data }
+      containers:
+        - name: gmod
+          image: cm2network/steamcmd:root
+          workingDir: /data/gmod
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -eu
+              # Runtime-generated RCON password persisted to the volume — no
+              # secret in git. Panel/agents read it via `kubectl exec ... cat`.
+              RCONF=/data/.rcon_password
+              [ -s "$RCONF" ] || head -c 32 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 24 > "$RCONF"
+              RCON=$(cat "$RCONF")
+              echo "GMod starting; RCON password persisted at /data/.rcon_password"
+              exec ./srcds_run -game garrysmod -console -norestart \
+                -port 27015 +ip 0.0.0.0 \
+                +gamemode sandbox +map gm_construct +maxplayers 16 \
+                +rcon_password "$RCON"
+          ports:
+            - { name: game-udp, containerPort: 27015, protocol: UDP }
+            - { name: game-tcp, containerPort: 27015, protocol: TCP }   # query + RCON
+          volumeMounts:
+            - { name: data, mountPath: /data }
+          resources:
+            requests: { cpu: "1", memory: "2Gi" }
+            limits:   { cpu: "2", memory: "4Gi" }
+        # SFTP sidecar — FTP access to the same game files (the FTP root IS the
+        # Longhorn PVC). Key-based auth: drop operator/tenant pubkeys into the
+        # `gmod-sftp-keys` ConfigMap (the controller injects them per tenant).
+        - name: sftp
+          image: atmoz/sftp:alpine
+          args: ["gmod::1000:1000"]   # user gmod, key-only (no password)
+          ports:
+            - { name: sftp, containerPort: 22, protocol: TCP }
+          volumeMounts:
+            - { name: data, mountPath: /home/gmod/data }
+            - { name: sftp-keys, mountPath: /home/gmod/.ssh/keys, readOnly: true }
+      volumes:
+        - name: sftp-keys
+          configMap:
+            name: gmod-sftp-keys
+            optional: true
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 20Gi

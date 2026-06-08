@@ -1,0 +1,30 @@
+# Garry's Mod base-test game server (PLATFORM-ARCHITECTURE.md §3.2). The
+# App-of-Apps root picks up this Application.yaml; it reconciles the namespace +
+# statefulset + service in this directory. This single hand-written instance
+# becomes the template the `GameServer` controller stamps out per server.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"   # after longhorn + cilium-lb-ipam
+  name: gmod
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/game-hosting/gmod
+    directory:
+      include: '{namespace,statefulset,service}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: game-hosting
+  syncPolicy:
+    automated:
+      prune: false      # never auto-delete a game server + its world volume
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

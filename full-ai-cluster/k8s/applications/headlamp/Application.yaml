@@ -1,0 +1,41 @@
+# Headlamp — the top-down cluster console (the "see everything we have" UI).
+#
+# CNCF, plugin-extensible web dashboard: namespaces, workloads, pods, PVCs,
+# services, CRDs (incl. our GameServer / KubeVirt VirtualMachine once those
+# land), with live logs + exec. This is the near-term Zeta Portal per
+# PLATFORM-ARCHITECTURE.md §3.3 — instant visibility while the bespoke portal
+# is built; Headlamp plugins bridge our CRDs in the meantime.
+#
+# Auth: ships with token/OIDC login. For now reach it via
+#   kubectl -n headlamp port-forward svc/headlamp 8080:80
+# and a service-account token. Wire OIDC (Authentik/Keycloak or Forgejo) +
+# a Cilium Gateway HTTPRoute when the IdP decision (§8) is made.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"   # after CRDs/storage exist
+  name: headlamp
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://kubernetes-sigs.github.io/headlamp/
+    chart: headlamp
+    targetRevision: 0.30.1   # bump as upstream publishes
+    helm:
+      releaseName: headlamp
+      valuesObject:
+        replicaCount: 1
+        # Read-broad by default; actions gated by the caller's RBAC token.
+        config:
+          watchNamespaces: ""   # all namespaces (cluster-wide view)
+        service:
+          type: ClusterIP        # exposed via port-forward / Gateway later
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: headlamp
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
