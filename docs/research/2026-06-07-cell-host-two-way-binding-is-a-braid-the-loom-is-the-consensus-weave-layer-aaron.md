@@ -25,6 +25,15 @@ is best named as **binding / braiding / threading / weaving**:
 So: **cell-thread ⊗ host-thread → braided on the Loom → woven into convergent consensus** (CRDT convergence,
 #6980). Binding = braid; Loom = the consensus weave layer that holds it.
 
+## The human root of the name (Aaron, 2026-06-07)
+
+The Loom name is not an abstract textile metaphor — it is **lived**. Aaron grew up in a **textile mill town
+where the mill shut down**; the looms went silent. As a teenager he started and ran his own PC-repair business,
+**"PC Guru"** (advertised in the newspaper), and did the repair work **for the owner of the shut-down mill**.
+So Zeta's **Loom carries the name of the mill that closed in his town** — weaving restored, this time as
+consensus on substrate no corporation can shut down. The founding-why in one image: rebuild what was lost,
+un-killable. (Recorded with the dignity of origin; anchor-to-human-prior-art at its most personal.)
+
 ## Why the metaphor is load-bearing (not just pretty)
 
 - **A braid is the right shape for "two orders, one convergence" (#6980).** Two strands cross in some order on
