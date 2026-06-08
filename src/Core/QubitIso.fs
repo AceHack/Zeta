@@ -77,3 +77,16 @@ module QubitIso =
 
     /// The imaginary unit as a scalar (so tests can write `scale imagUnit`).
     let imagUnit: Complex = i
+
+    /// **The additive group of qubit states as an `IGroup<JoinState>`** — the numeric-interface citizen
+    /// (Aaron 2026-06-08: "implement the numeric interfaces like we liked"). Matches the
+    /// `ImaginaryStack.complex : IStarRing<Complex>` *value* pattern (dictionary, not type-implements-iface).
+    /// Qubit states form a group under componentwise addition on ℂ² (the vector-space additive structure);
+    /// scalar multiplication is `scale`, the Pauli gates are the operators on this group. (States are NOT a
+    /// ring — there is no natural state×state product — so `IGroup`, not `IStarRing`, is the right floor.)
+    let group: IGroup<JoinState> =
+        { new IGroup<JoinState> with
+            member _.Inverse(x) = { A = c.Negate x.A; B = c.Negate x.B }
+          interface IMonoid<JoinState> with
+              member _.Identity = { A = c.Zero; B = c.Zero }
+              member _.Combine(x, y) = { A = c.Add(x.A, y.A); B = c.Add(x.B, y.B) } }

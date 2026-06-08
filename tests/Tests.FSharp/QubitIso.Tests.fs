@@ -38,3 +38,19 @@ let ``Born + bit-flip: X swaps measurement probabilities`` () =
 let ``state bijection is the identity on ℂ² (round-trip)`` () =
     let a, b = QubitIso.toQubit g
     Assert.True(eq (QubitIso.ofQubit a b) g)
+
+[<Fact>]
+let ``qubit states form an IGroup (numeric-interface citizen): identity, inverse, assoc, commute`` () =
+    let grp = QubitIso.group
+    let a = st 0.6 0.1 0.3 -0.4
+    let b = st -0.2 0.5 0.7 0.0
+    let c = st 0.1 -0.1 -0.3 0.2
+    // identity
+    Assert.True(eq (grp.Combine(a, grp.Identity)) a)
+    Assert.True(eq (grp.Combine(grp.Identity, a)) a)
+    // inverse
+    Assert.True(eq (grp.Combine(a, grp.Inverse a)) grp.Identity)
+    // associativity
+    Assert.True(eq (grp.Combine(grp.Combine(a, b), c)) (grp.Combine(a, grp.Combine(b, c))))
+    // commutativity (additive group)
+    Assert.True(eq (grp.Combine(a, b)) (grp.Combine(b, a)))
