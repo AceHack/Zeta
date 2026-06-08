@@ -5,6 +5,10 @@ open Zeta.Core
 open Zeta.Core.TableStream
 open Zeta.Core.Catalog
 
+// homoiconic catalog values (#7038): table row = Bool true; column row = String <type>
+let private tbl = DynamicValue.Bool true
+let private ty (s: string) = DynamicValue.String s
+
 let private schema1: Schema =
     [ "users", [ "id", "int"; "name", "text" ] ]
 
@@ -13,7 +17,9 @@ let ``ensure on empty catalog: CREATE TABLE collapses to DML upserts`` () =
     let deltas = ensure schema1 emptyTable
     // table row + 2 column rows, all Upserts (no DDL — just DML)
     Assert.Equal<Delta list>(
-        [ Upsert("column:users.id", "int"); Upsert("column:users.name", "text"); Upsert("table:users", "1") ],
+        [ Upsert("column:users.id", ty "int")
+          Upsert("column:users.name", ty "text")
+          Upsert("table:users", tbl) ],
         deltas
     )
 
@@ -26,13 +32,13 @@ let ``ensure is idempotent: re-ensuring a satisfied schema yields [] (apply-N ==
 let ``ALTER (add column) is an Upsert; automatic evolution as a DU over DML`` () =
     let cat = evolve schema1 emptyTable
     let schema2: Schema = [ "users", [ "id", "int"; "name", "text"; "email", "text" ] ]
-    Assert.Equal<Delta list>([ Upsert("column:users.email", "text") ], ensure schema2 cat)
+    Assert.Equal<Delta list>([ Upsert("column:users.email", ty "text") ], ensure schema2 cat)
 
 [<Fact>]
 let ``ALTER (change column type) is an Upsert of the changed row`` () =
     let cat = evolve schema1 emptyTable
     let schema2: Schema = [ "users", [ "id", "bigint"; "name", "text" ] ]
-    Assert.Equal<Delta list>([ Upsert("column:users.id", "bigint") ], ensure schema2 cat)
+    Assert.Equal<Delta list>([ Upsert("column:users.id", ty "bigint") ], ensure schema2 cat)
 
 [<Fact>]
 let ``DROP column is a Retract`` () =

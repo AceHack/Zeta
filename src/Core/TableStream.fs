@@ -22,22 +22,28 @@ namespace Zeta.Core
 ///
 /// Idempotency (#6): `Upsert`/`Retract`/`Meta` are upsert/tombstone ⇒ apply-N == apply-once; the fold is
 /// deterministic + replayable (DST §7). F# reference oracle; C#/Rust/TS ports follow.
+///
+/// **Homoiconic values (Aaron #7038/#7041):** values are `DynamicValue`, not `string` — so metadata and data
+/// share ONE representation (#7038). `DynamicValue` is `NoComparison`, so it can only be a Map *value*, not a
+/// key; **keys stay `string`** (which also keeps the key free to carry version/namespace/scope qualification
+/// later, #7042). Data values and `Meta` values are the same `DynamicValue` shape — homoiconicity made literal.
 module TableStream =
 
     open ZetaCli
 
     /// A stream delta (DBSP Z-set style). Data events (`Upsert`/`Retract`) AND **`Meta` events live on the
     /// SAME stream** (Aaron #7032: stream-metadata is an event within the same stream as the data — in-band).
+    /// Values are `DynamicValue` (homoiconic, #7038); keys stay `string`.
     type Delta =
-        | Upsert of key: string * value: string // data: set a keyed row
+        | Upsert of key: string * value: DynamicValue // data: set a keyed row
         | Retract of key: string // data: remove a keyed row
-        | Meta of key: string * value: string // META: describes the stream itself, in-band, same stream
+        | Meta of key: string * value: DynamicValue // META: describes the stream itself, in-band, same stream
 
     /// The `stream` noun: the ordered changelog of deltas (the primitive).
     type Stream = Delta list
 
-    /// The `table` noun: materialized current state (the fold of a stream).
-    type Table = Map<string, string>
+    /// The `table` noun: materialized current state (the fold of a stream). Values are `DynamicValue` (#7038).
+    type Table = Map<string, DynamicValue>
 
     let emptyTable: Table = Map.empty
 

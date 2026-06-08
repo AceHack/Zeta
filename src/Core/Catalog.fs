@@ -30,10 +30,13 @@ module Catalog =
     let private tableKey (t: string) = TablePrefix + t
     let private columnKey (t: string) (c: string) = ColumnPrefix + t + "." + c
 
-    /// The desired catalog as the flat metadata-table rows it implies (table + column rows).
-    let private desiredRows (schema: Schema) : Map<string, string> =
+    /// The desired catalog as the flat metadata-table rows it implies (table + column rows). Values are
+    /// `DynamicValue` (homoiconic, #7038): a table row is `Bool true` (exists); a column row is `String <type>`.
+    let private desiredRows (schema: Schema) : Map<string, DynamicValue> =
         schema
-        |> List.collect (fun (t, cols) -> (tableKey t, "1") :: (cols |> List.map (fun (c, ty) -> columnKey t c, ty)))
+        |> List.collect (fun (t, cols) ->
+            (tableKey t, DynamicValue.Bool true)
+            :: (cols |> List.map (fun (c, ty) -> columnKey t c, DynamicValue.String ty)))
         |> Map.ofList
 
     /// **`ensure schema current`** — the automatic schema evolution as a **DU over the DML meta-updates**
@@ -98,8 +101,14 @@ module Catalog =
             let cols =
                 current
                 |> Map.toList
-                |> List.choose (fun (k, ty) ->
+                |> List.choose (fun (k, v) ->
                     if k.StartsWith(colPrefix, System.StringComparison.Ordinal) then
+                        // column value is a homoiconic DynamicValue.String <type>; extract the type name
+                        let ty =
+                            match v with
+                            | DynamicValue.String s -> s
+                            | other -> string other
+
                         Some(k.Substring(colPrefix.Length), ty)
                     else
                         None)
