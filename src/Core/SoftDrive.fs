@@ -62,3 +62,31 @@ module SoftDrive =
     /// Convenience: drive toward maximal *empowerment* (the unsupervised objective — agency / forward momentum).
     let driveEmpowerment (lookahead: int) (depth: int) (width: int) (steps: int) (hard: Chip8Cow.Frame) : Chip8Cow.Frame =
         drive (SoftDashboard.empowerment lookahead) depth width steps hard
+
+    // ---- frame-aware (LIVE) variants — the step-based ones above never tick, so they freeze on delay loops ----
+    // (the 2026-06-08 run). These interleave the 60 Hz tick (`Chip8Cow.frameStep` / `SoftEmu.softFrame`) so the
+    // MPC driver actually works on real ROMs. `cyclesPerFrame ≈ 8`. `depth` is now in FRAMES, not CPU steps.
+
+    /// **Frame-aware planner:** best action chosen by a `depth`-FRAME soft rollout (each rollout step a full frame
+    /// with the tick). The live analog of `bestAction`.
+    let bestFrameAction (value: Chip8Cow.Frame -> float) (cyclesPerFrame: int) (depth: int) (width: int) (hard: Chip8Cow.Frame) : bool[] =
+        actions
+        |> List.maxBy (fun keys ->
+            let started = Chip8Cow.frameStep cyclesPerFrame { hard with Keys = keys }
+            let mutable s = SoftEmu.pure1 started
+            for _ in 1 .. max 0 depth do
+                s <- SoftEmu.softFrame cyclesPerFrame s |> SoftEmu.prune width
+            SoftEmu.expect value s)
+
+    /// **One live control step:** plan the best action, commit it to one full `frameStep` (steps + tick). Unlike
+    /// `controlStep` this keeps timers advancing, so delay-wait ROMs don't freeze.
+    let frameControlStep (value: Chip8Cow.Frame -> float) (cyclesPerFrame: int) (depth: int) (width: int) (hard: Chip8Cow.Frame) : Chip8Cow.Frame =
+        let keys = bestFrameAction value cyclesPerFrame depth width hard
+        Chip8Cow.frameStep cyclesPerFrame { hard with Keys = keys }
+
+    /// **Drive the hard emulator for `frames` live control frames** (the live receding-horizon loop). Deterministic.
+    let driveFrames (value: Chip8Cow.Frame -> float) (cyclesPerFrame: int) (depth: int) (width: int) (frames: int) (hard: Chip8Cow.Frame) : Chip8Cow.Frame =
+        let mutable cur = hard
+        for _ in 1 .. max 0 frames do
+            cur <- frameControlStep value cyclesPerFrame depth width cur
+        cur

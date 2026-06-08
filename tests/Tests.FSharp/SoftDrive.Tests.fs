@@ -33,3 +33,24 @@ let ``a control step advances exactly one hard step (PC moves once)`` () =
     let after = SoftDrive.controlStep SoftDashboard.sumMemory 2 4 h
     // one Chip8Cow.step from 0x200 over a 2-byte opcode => PC advanced by 2
     Assert.Equal(int h.PC + 2, int after.PC)
+
+// delay-wait ROM: 6305 F315 F207 3200 1206 — step-based drive would freeze; frame-aware keeps it live
+let private delayWait = [| 0x63uy; 0x05uy; 0xF3uy; 0x15uy; 0xF2uy; 0x07uy; 0x32uy; 0x00uy; 0x12uy; 0x06uy |]
+
+[<Fact>]
+let ``frame-aware driveFrames stays LIVE on a delay-wait ROM (ticks the timer down)`` () =
+    let setup = Chip8Cow.run 2 (Chip8Cow.create 1UL |> Chip8Cow.loadRom delayWait) // delay = 5, in wait loop
+    let driven = SoftDrive.driveFrames SoftDashboard.sumMemory 4 1 4 6 setup
+    Assert.True(int driven.Delay < 5) // the tick fired across frames — not frozen
+
+[<Fact>]
+let ``frame-aware drive is deterministic (DST)`` () =
+    let a = SoftDrive.driveFrames SoftDashboard.sumMemory 8 2 4 5 (hard ())
+    let b = SoftDrive.driveFrames SoftDashboard.sumMemory 8 2 4 5 (hard ())
+    Assert.Equal<byte[]>(a.V, b.V)
+    Assert.Equal(int a.PC, int b.PC)
+
+[<Fact>]
+let ``bestFrameAction returns a valid 16-key vector`` () =
+    let keys = SoftDrive.bestFrameAction SoftDashboard.sumMemory 8 2 4 (hard ())
+    Assert.Equal(16, keys.Length)
