@@ -29,9 +29,19 @@ namespace Zeta.Core
 /// (Pawłowski, Paterek, Kaszlikowski, Scarani, Winter, Żukowski — *Nature* 462, 2009): an information
 /// principle that *derives* Tsirelson's bound, so **crossing Tsirelson = violating Information Causality**.
 /// (van Dam 2005: PR boxes make communication complexity trivial.) The honest reading of "information can't
-/// get in at S=4" is **independence-collapse / channel saturation by the seed** (`I(external;outcome|seed)=0`)
-/// — information theory, NOT a Schwarzschild/event-horizon (that framing is Mirror-register metaphor; razored
-/// here). Tsirelson 1980 (the `2√2` bound). These are the results to cite, not gravity analogies.
+/// get in at S=4" is **independence-collapse / channel saturation by the seed** (`I(external;outcome|seed)=0`).
+///
+/// **Correction (Aaron 2026-06-08) — the hole is INFORMATION-THEORETIC, and that IS anchored.** Otto first
+/// razored "black hole" as a gravity metaphor; that was an over-peel (`grep-substrate-anchors-before-razor`).
+/// Aaron means an **information-flow** hole, not a spacetime one — and those are real:
+/// **source/sink** (white hole = pure source: emits, nothing enters; black hole = pure sink: absorbs, nothing
+/// escapes), and in **network security** the named attack classes **black-hole / grey-hole / sinkhole** — a
+/// node that controls its forwarding/drop rate (black-hole drops all, **grey-hole drops *selectively* /
+/// rate-controls**). So: the seed-saturated `S=4` regime is a **white-hole** in information flow (pure source
+/// from the seed; nothing external enters — `I(external;outcome|seed)=0`), and **the ZetaId key is a
+/// GREY HOLE** — *using the host it controls its own information-flow rate* (the named grey-hole = flow-rate
+/// regulator). Only the **gravitational** reading (metric, mass, event horizon) stays Mirror-register; the
+/// **information-flow** reading (source/sink, network grey-hole) is the anchored one. Tsirelson 1980 (`2√2`).
 [<RequireQualifiedAccess>]
 module BellTest =
 
