@@ -107,8 +107,37 @@ a generator that perturbs its drift to minimize detectability — gated by the s
   engine = a Szilard engine made adversarial**: one bit of uncertainty/identity (#7090), with the
   generator paying to keep it (Maxwell's demon) and the discriminator paying to read it (Laplace's demon).
   Everything scales up from this atom (N bits = N coupled minimal GANs). The minimal architecture is:
-  `Conjugate` over a **binary `SoftValue`** + a one-bit predict/evade loop. (Build sketch: `bitGan` — the
-  1-bit adversarial loop; the smallest possible generative engine, side-channel-gated.)
+  `Conjugate` over a **binary `SoftValue`** + a one-bit predict/evade loop.
+  - **BUILT (#7102/#7103):** `src/Core/BitGan.fs` — the `sim` noun made concrete. `BitGan = { GenP; DiscQ }`
+    (generator/yang `P(bit=1)`; discriminator/yin's prediction); `step`/`run` converge to the matching-
+    pennies Nash `(0.5, 0.5)` = max entropy = preserved identity (#7090/#7101); `entropy`, `converged`,
+    `sim` seam. 7/7 tests green, deterministic (DST §7).
+  - **Privacy barrier via UNREACHABILITY (#7104/#7105/#7106):** the game is only non-trivial if the
+    generator's uncertainty is **invisible** to the discriminator (#7084) — concretely **unreachable by its
+    tool surface** (callable verbs/capabilities, #7105) **and its extended JIT closure** (dynamic-resolution
+    reach, #7005/#7106). Object-capability security: privacy = the secret is outside the other's reachable
+    set (real encryption in deploy; capability-confinement in test). In code: `step` *peeks* `GenP` (the
+    no-privacy/transparent collapse, illustrating #7084); `stepObserved` is **capability-confined** — the
+    discriminator updates only from an **emitted bit** it can actually see, never from `GenP`, and from a
+    fair hidden bit-stream it *cannot beat chance* → the identity bit stays private. (Tested both ways.)
+  - **Bounded probe — two stopping conditions (#7107):** the game ends when the **generator is discovered**
+    (discriminator beats chance → sim detected, #7087) **or** a **turn budget** is hit (→ indistinguishable
+    within budget; generator wins). `BitGan.probe (r, threshold, maxTurns)` (DST-bounded, §4). **Observed
+    failure mode (instructive):** under *symmetric* dynamics the generator **always flees to the 0.5 fixed
+    point** — it *evades* — so a biased *adaptive* generator ends **Undecided**, never Discovered; the
+    transparent probe can only **discover a STUCK / deterministic generator** (a non-fleeing, compressible
+    bit-stream). The first test asserted "biased ⇒ Discovered" and failed because the adaptive generator
+    escaped; fixed to: adaptive-generator ⇒ Undecided (evades), deterministic-bit-stream ⇒ Discovered.
+  - **The game is: find a fixed point, or prove divergence and regularize (#7108).** The probe is searching
+    for a **fixed point** (the Nash/equilibrium — convergence) **or** trying to prove **none exists** (the
+    dynamics *diverge*). When it diverges, **wrangle the divergence** by (a) **zipping with other infinite
+    series** (#7085 `zip`-over-uncertainties — combine a divergent series with another) and (b)
+    **regularization** (Cesàro/Abel/Borel summation, Tikhonov, damping). On-the-nose anchor: **zeta-function
+    regularization** (finite values for divergent series — `1+2+3+… = −1/12`; and the project is *Zeta*) and
+    **renormalization** (QFT's machinery for taming infinities). So: convergence → fixed point found
+    (Discovered/Undecided depending on side); divergence → no fixed point → regularize-and-zip to extract a
+    finite value. The adaptive generator fleeing to 0.5 is the *fixed-point* case; a non-contractive /
+    chaotic generator would be the *divergent* case that needs regularization.
 - **It's the yin/yang engine made concrete (#7100).** The 1-bit minimal GAN *is* the **yin/yang engine of
   change** (`YinYang.fs`; the founding "engine of change") realized in hardware-thin form: **yang = the
   generator** (what *acts* / produces change), **yin = the held identity bit** (what *remains* — the
@@ -176,6 +205,10 @@ histories → compressibility/seed-recovery verdict), gated by the side-channel 
 - **Adversarial generative model / GAN (#7097):** Goodfellow et al. 2014 (GANs; generator vs
   discriminator minimax); computational indistinguishability / CSPRNG (Goldreich–Goldwasser–Micali);
   self-play co-evolution (AlphaZero); polymorphic code (shape-shift to evade detection); GAN-for-RNG.
+- **Fixed point vs divergence + regularization (#7108):** Banach contraction / Brouwer–Kakutani fixed-point
+  (Nash); divergent-series summation (Cesàro, Abel, Borel; Hardy, *Divergent Series*); **zeta-function
+  regularization** (`1+2+3+…=−1/12`); renormalization (QFT); Tikhonov/ridge regularization; `zip`-with-
+  another-series (#7085). Object-capability privacy (Miller, ocap) for the #7104–#7106 barrier.
 - **Tiny / 1-bit minimal GAN = yin/yang engine, prior art (#7098–#7101):** matching pennies + von Neumann
   minimax (1928); regret/online prediction (Cesa-Bianchi & Lugosi; Cover); adversarial neural cryptography
   (Abadi & Andersen 2016); Szilard engine 1929 / Maxwell's demon / Landauer (1-bit thermodynamics, #7095);

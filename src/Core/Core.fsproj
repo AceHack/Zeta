@@ -177,6 +177,7 @@
     <Compile Include="ReactiveSynth.fs" />
     <Compile Include="Optic.fs" />
     <Compile Include="Conjugate.fs" />
+    <Compile Include="BitGan.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
