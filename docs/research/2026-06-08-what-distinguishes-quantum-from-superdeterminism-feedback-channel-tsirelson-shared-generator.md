@@ -7,9 +7,21 @@ groundings of the physics arc, anchored, so the seductive misreadings don't ship
 
 Superdeterminism is the **one Bell loophole that is unfalsifiable in principle** (a correlated initial
 condition can mimic any correlation). **'t Hooft** genuinely holds the universe is superdeterministic
-(Cellular-Automaton Interpretation). It is *rejected* on **parsimony / no-fine-tuning / predictive
-fruitfulness**, NOT on proof. So "how do we know all particles aren't just superdeterminism?" — **we don't,
-with certainty**; we prefer quantum because it needs no cosmic conspiracy and it *predicts*.
+(Cellular-Automaton Interpretation). So "how do we know all particles aren't just superdeterminism?" — **we
+don't, with certainty.**
+
+**The "cosmic conspiracy" objection is the wrong caricature (Aaron 2026-06-08).** The usual rejection imagines
+*many coordinated coincidences*. But if everything is **one shared generator unfolding — the universe's ZetaId
+in the universe host** — there is no coordination to arrange; it's a single deterministic unfolding (this is
+'t Hooft's own defense). So "fine-tuning = improbable coincidences" is the wrong framing and is correctly
+rejected. **What the objection actually relocates to is the *generator*:** *why does this one seed unfold into
+exactly quantum statistics — capped at Tsirelson `2√2` — rather than something else?* Our own DST is this exact
+model (one seed = `SharedClock` = ZetaId unfolding), and a **generic** seed reaches **`S=4`**, not `2√2` (§2,
+`BellTest`). So matching the quantum universe requires the generator to be **special/constrained** (tuned to
+stop at Tsirelson). The honest residual is therefore **initial-condition / generator fine-tuning** ("why this
+seed and not one that hits `S=4`"), *not* a per-event conspiracy — and our `S=4` is the concrete evidence that
+"a shared generator naturally gives quantum stats" is **false by default**. We prefer quantum for that
+specificity (Tsirelson, not 4) + predictive fruitfulness, NOT on proof.
 
 ## 1. It is NOT distance
 
