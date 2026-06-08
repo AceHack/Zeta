@@ -5,6 +5,7 @@ CHIP-8 ROMs that are **either authored by us (CC0) or third-party under a verifi
 in git so unit tests can exercise the emulator against real ROM bytes.
 
 Policy for this folder (maintainer decision, 2026-06-08): a ROM may be committed here **only** if it is
+
 1. **authored by Zeta** (CC0 / public-domain — ours), or
 2. **third-party with an explicitly verified free license** (MIT/CC0/etc.) whose notice travels with it
    (`THIRD-PARTY-LICENSES.md`).
