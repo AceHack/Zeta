@@ -209,6 +209,7 @@
     <Compile Include="SoftScope.fs" />
     <Compile Include="SoftSession.fs" />
     <Compile Include="SoftActionController.fs" />
+    <Compile Include="SoftEvolution.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
