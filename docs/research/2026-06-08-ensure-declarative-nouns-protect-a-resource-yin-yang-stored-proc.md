@@ -42,6 +42,23 @@ special construct. Aaron calls it a **yin/yang stored proc**:
 So: `ensure = { protects: resource-ref; target: DynamicValue (desired); evolution: DU-of-deltas | merge/CAS }`
 — a homoiconic yin/yang stored proc.
 
+### The representation is total: no-DU still encodes, as the SYMMETRIC form (#7048)
+
+Aaron: *"even if you don't need the DU and it's just CRDTs, that will be encoded in the symmetric
+DynamicValue/SoftValue/yin/yang stored proc."* The CRDT/CAS case is **not an absence** of representation —
+it's the **symmetric** encoding of the same stored proc:
+
+- **Asymmetric form (DU):** an *ordered* saga of deltas — sequence matters, applied in order (the
+  imperative lowering, #6998). Used when ops aren't natively idempotent.
+- **Symmetric form (CRDT/CAS):** a *commutative / associative / idempotent merge* — order doesn't matter,
+  convergence is free (#7029). Used when ops are idempotent by construction.
+
+Both are **encoded in the one yin/yang stored-proc value** (`DynamicValue`/`SoftValue`). The `evolution`
+field isn't "a DU or nothing" — it's "asymmetric (DU) **or** symmetric (merge)", both *present* as data.
+So the representation is **total**: every `ensure` carries its evolution explicitly, and "no DU needed"
+means "the symmetric variant," never an unencoded special case. (This mirrors the manifesto's symmetry/
+self-similarity: the value tells you which algebra applies — ordered saga vs commutative merge — in-band.)
+
 ## Honest scope (peel)
 
 Design capture generalizing #7040; the concrete instance exists (`Catalog.ensure` — resource = catalog
