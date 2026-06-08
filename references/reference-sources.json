@@ -809,5 +809,13 @@
     "path": "references/prior-art/boost-outcome",
     "categories": ["boost", "primitive-design", "error-handling", "result"],
     "notes": "Boost.Outcome — Result/Outcome-style error handling (result<T>, outcome<T>); prior art for our Result<T, TFeedback> + monad-propagation substrate. Design-study, ideas-not-code; we own our interfaces."
+  },
+  {
+    "name": "chip8-roms",
+    "url": "https://github.com/kripod/chip8-roms.git",
+    "branch": "master",
+    "path": "references/prior-art/chip8-roms",
+    "categories": ["emulator", "chip8", "roms", "reference-corpus"],
+    "notes": "CHIP-8/SuperChip/MegaChip8 program collection (games/demos/tests; curated by Revival Studios, 2011) — ROM corpus for the DarkHall cell emulator (#6986) and the rom: ZetaId-pointer scheme (#6987). LICENSE CAVEAT: informal — README says 'can be freely distributed in its original form'; NO formal OSS license, modification/commercial rights not granted, individual-ROM copyright varies. LOCAL reference/study mirror only (references/prior-art is gitignored, read-only — NOT redistributed by us); for actually running, use freely-distributable/PD entries or the user's own legal copies, verified by signature (reference-not-copy, #6925/#6987). Many CHIP-8 programs are PD/freeware (cleaner than copyrighted console ROMs)."
   }
 ]
