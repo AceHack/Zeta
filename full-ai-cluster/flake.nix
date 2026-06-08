@@ -194,6 +194,14 @@
           k3s-control-plane-cluster-init =
             import ./nixos/tests/k3s-cluster-init.nix { inherit pkgs; };
 
+          # Boots the control-plane node modules and asserts every node-level
+          # platform fix is live: rpfilter OFF (the pod->host black-hole),
+          # open-iscsi present (Longhorn can attach), k3s --disable=local-storage
+          # (single default StorageClass). Hermetic. See
+          # nixos/tests/k3s-control-plane-platform-fixes.nix.
+          k3s-control-plane-platform-fixes =
+            import ./nixos/tests/k3s-control-plane-platform-fixes.nix { inherit pkgs; };
+
           # ONLINE end-to-end: boots the control-plane WITH internet, installs
           # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
           # REQUIRES internet -> build with `--option sandbox false`.
