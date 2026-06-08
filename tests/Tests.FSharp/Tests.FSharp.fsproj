@@ -124,6 +124,7 @@
     <Compile Include="SoftChip8.Tests.fs" />
     <Compile Include="SoftController.Tests.fs" />
     <Compile Include="SoftDashboard.Tests.fs" />
+    <Compile Include="PolarityFilter.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
