@@ -59,3 +59,36 @@ module FeedbackThrottle =
 
     /// Does this latency still beat the classical bound at all (any quantum-like correlation maintainable)?
     let canExceedClassical (latency: float) : bool = maxChsh latency > ClassicalBound + 1e-12
+
+    /// **The latency that sets `maxChsh` to exactly `2√2` (Tsirelson) — it is `√2`** (Aaron 2026-06-08).
+    /// Solve `2 + 2/(1+L) = 2√2` ⇒ `1+L = 1/(√2−1) = √2+1` ⇒ `L = √2`. **Honest caveat:** this clean `√2`
+    /// is *contingent on the `1/(1+latency)` attenuation modeling choice* (see `attenuation` — flagged a
+    /// modeling choice, not derived). A different attenuation form gives a different Tsirelson-crossing latency,
+    /// so `√2` is "the Tsirelson point *of this model*", an artifact of the chosen curve — elegant, not fundamental.
+    let TsirelsonLatency = sqrt 2.0
+
+    /// Invert the model: the latency at which `maxChsh = targetChsh`, for `2 < target < 4`. `L = 2/(target−2) − 1`.
+    /// `None` outside the achievable open interval `(2, 4)` (classical floor / algebraic ceiling are limits, not hit).
+    let latencyFor (targetChsh: float) : float option =
+        if targetChsh <= ClassicalBound + 1e-12 || targetChsh >= AlgebraicMax - 1e-12 then None
+        else Some(2.0 / (targetChsh - ClassicalBound) - 1.0)
+
+    /// The correlation regime a channel of this `latency` sits in (given the model's attenuation):
+    /// **Classical** (`maxChsh ≤ 2`, e.g. git-over-commits — high latency), **Quantum** (`2 < maxChsh ≤ 2√2`,
+    /// the physical no-signalling band), **Signalling** (`maxChsh > 2√2`, super-quantum / PR-box — the channel
+    /// is effectively communicating). The honest read of a measured S: which band the channel's speed allows.
+    type Regime =
+        | Classical
+        | Quantum
+        | Signalling
+
+    /// Classical band tolerance: `maxChsh` asymptotes to 2 but never hits it (finite latency), so "Classical"
+    /// means "within `ClassicalEps` of 2" — practically indistinguishable from shared-randomness.
+    [<Literal>]
+    let ClassicalEps = 1e-5
+
+    let regimeOf (latency: float) : Regime =
+        let s = maxChsh latency
+        if s <= ClassicalBound + ClassicalEps then Classical
+        elif s <= Tsirelson + 1e-9 then Quantum
+        else Signalling
