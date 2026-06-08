@@ -51,3 +51,18 @@ let ``superposition: in-phase magnitude 2 (constructive), anti-phase 0 (destruct
 [<Fact>]
 let ``deterministic / replayable (DST)`` () =
     Assert.Equal(overlap 0.3 1.7, overlap 0.3 1.7, 12)
+
+[<Fact>]
+let ``T (retraction) has NO fixed point in the bulk except 0 — the "time = fixed point of T" picture is decorative`` () =
+    // Soraya's falsifier (#5): retract z = z ⟺ Negate z = z ⟺ z = 0. So for ANY nonzero phasor, retraction
+    // moves it — "time is the unreversed fixed point of T" is FALSE as literally stated on PhasorEndurance.
+    // The holographic/CPT framing is Mirror-register decoration, not structure (kept honest).
+    for phi in [ 0.0; pi / 4.0; pi / 2.0; pi; 1.2345 ] do
+        let z = heartbeat phi // unit phasor (nonzero)
+        let r = retract z
+        Assert.False(abs (r.Real - z.Real) < 1e-12 && abs (r.Imag - z.Imag) < 1e-12)
+    // The ONLY fixed point is 0 (the origin), which is not a phasor/identity.
+    let zero = { Real = 0.0; Imag = 0.0 }
+    let rz = retract zero
+    Assert.Equal(0.0, rz.Real, 12)
+    Assert.Equal(0.0, rz.Imag, 12)

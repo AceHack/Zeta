@@ -20,8 +20,19 @@ namespace Zeta.Core
 /// **Honest scope (peel):** this reproduces the **observable correlation** by **shared cause**, NOT spatial
 /// entanglement of physical states — but for a simulation the correlation *is* the whole observable, so it is
 /// genuinely achievable (quantum-LIKE, staged). The price is superdeterminism's: the agents' "free choice" is
-/// not free — time arranges it. Whether that is a **feature** (staged consensus coincidence) or a **threat**
-/// (a malicious time-controller faking agreement → NCI violation) is a security question for Aminata/Nadia.
+/// not free — time arranges it.
+///
+/// **The DST | production boundary resolves the feature/threat question (Aaron 2026-06-08).** *"Once things
+/// are stageable we have a roadmap — the two real deployed agents can agree to it, and they can assume time is
+/// who it says it is in the system; it's not faked outside of DST."* Staging is a **DST-only power**: in the
+/// simulator we *are* the time-controller, so we can stage every correlation — which gives the **roadmap**
+/// (exhaustive, deterministic scenario testing: drive consensus through every coincidence/Byzantine-timing
+/// case). In **production** no one controls the seed — time is the real, non-fungible physical clocks — so the
+/// superdeterminism capability **does not transfer to a deployed attacker**: real agents may **assume time is
+/// genuine** and the anti-Sybil non-fungibility holds. So `CoincidenceClock` is a **test instrument** (stage
+/// any scenario), not a deployed surface; the "malicious time-controller faking agreement" only exists inside
+/// DST. (Aminata/Nadia: confirm the boundary — that nothing ships a production path where an agent's seed is
+/// externally controllable.)
 /// Deterministic (DST §7); pure phasor math on the imaginary stack.
 module CoincidenceClock =
 

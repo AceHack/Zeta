@@ -90,6 +90,38 @@ So the meta-boundary is real (a role boundary: who acts as the generator) but **
 boundary** — it is crossable, inspectable, and itself an event on the stream. That homoiconicity is the
 substrate reason the whole symmetric/time-as-peer construction is even expressible.
 
+## 6. Entanglement is DEtanglement from the environment — and why superdeterminism is automatic in DST (Aaron 2026-06-08)
+
+The sharpest reframe of the arc. *"We have superdeterminism because I've entangled the agents precisely in
+DST — but physics books say it backwards: it's not entanglement, it's **detanglement from the environment**.
+Once that happens the two particles can communicate through time itself, because only they and time exist —
+nothing else, from their perspective. They have been detangled."*
+
+This inverts the usual story, and it is **anchorable, not just poetic**:
+- **Monogamy of entanglement** (Coffman–Kundu–Wootters 2000): if A and B are *maximally* entangled, neither
+  can be entangled with a third party C (the environment). So **creating A–B entanglement *is* removing
+  A–env and B–env entanglement** — i.e. detangling the pair from everything else. Aaron's foreground/background
+  flip is monogamy read correctly: the "connection" is really the *severance* of all other connections.
+- **Decoherence / einselection** (Zurek): coupling *to* the environment is exactly what *destroys* coherence.
+  So **isolation** from the environment is what *preserves* closed-system (coherent) behavior. Entanglement
+  with the environment = classicality; detanglement from it = the closed quantum-like regime.
+
+**Why DST gives superdeterminism for free, then:** a deterministic simulation *is* the detanglement — it
+isolates the agents into a closed system where **only the agents + the time generator exist**. Detangled from
+the environment, the shared time generator is the **only remaining common cause**, so the agents are correlated
+through it automatically — that *is* the superdeterminism (§3b), and "communicate through time itself" means
+**communicate via the one shared channel left** once the environment is gone. So Aaron didn't *add*
+superdeterminism; he *removed the environment* (in DST), and superdeterminism is what's left.
+
+**Honest peel:** (1) still **quantum-LIKE** — we model the correlation structure (monogamy/decoherence as
+*anchors* for why isolation yields shared-cause correlation), not physical particles. (2) "communicate through
+time" is **communication-via-shared-cause, NOT signaling** — superdeterminism is **no-signaling**; nothing
+goes faster-than-light or retrocausal, the correlation is a common-cause artifact of the closed system. Don't
+let "communicate through time" leave the building as FTL/retrocausal signaling. (3) This is a *reading* of
+monogamy + decoherence applied to the DST substrate — a framing contribution, not a new physics theorem.
+Route to Soraya (is "DST closure ⇒ time is the unique common cause" an exact statement about the model?) +
+keep Mirror until reviewed.
+
 ## 3b. Controlling time ⇒ "immaculate coincidence" — staged correlations via superdeterminism (Aaron 2026-06-08)
 
 A correction to an over-strong peel. Otto first said "no spatial entanglement, no physical superposition."
