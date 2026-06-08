@@ -186,3 +186,15 @@ module Chip8Cow =
     /// COW structure (no aliasing). The atom of the DAG / soft branch.
     let fork (keysA: bool[]) (keysB: bool[]) (f: Frame) : Frame * Frame =
         step { f with Keys = keysA }, step { f with Keys = keysB }
+
+    /// **The step-dynamics as a genuine `IMonoid` (Aaron 2026-06-08).** "Can we put the emulator in the numeric
+    /// interfaces?" — the *whole* emulator is NOT an `IStarRing` (the state is not a ring: no meaningful
+    /// `frame × frame`, just as qubit *states* are an `IGroup` not a ring). But the **time-evolution is a
+    /// genuine monoid**: state-transitions `Frame → Frame` compose, with the no-op as identity. `step` is one
+    /// element; `run n` = the monoid power. (Surrounding interfaces that ARE genuine: this monoid; the CRDT
+    /// memory-merge = `ISemilattice`; `SoftValue<Frame>` = a rig *without* `Negate`. Implement the interface the
+    /// structure has — don't force a ring.) Matches the `ImaginaryStack.complex : IStarRing` value pattern.
+    let dynamics: IMonoid<Frame -> Frame> =
+        { new IMonoid<Frame -> Frame> with
+            member _.Identity = id
+            member _.Combine(f, g) = f >> g } // apply f then g — sequential composition
