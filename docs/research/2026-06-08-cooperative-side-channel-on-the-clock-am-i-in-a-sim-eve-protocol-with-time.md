@@ -55,6 +55,37 @@ are in a consentful-but-probing relationship — *diplomacy with time*:
 - So the consent/diplomacy layer now has **three parties: the two frames and time** — and the irreducible
   identity (#7090) is what each keeps private *from the others and from the clock*.
 
+## The sim becomes an adversarial generative model (a GAN) — agents vs IScheduler (#7097)
+
+> "our sim becomes an adversarial generation model when you combine the two into one model (INumerics):
+> they are adversarial against the IScheduler to create better and better ways to avoid being detected."
+
+Combine the two conjugate frames into **one `INumerics`/`Conjugate` model** (#7080) and the
+probe-game (#7096) stops being one-shot — it becomes a **GAN** (Goodfellow 2014), a co-evolving minimax:
+
+- **Generator = the combined-agents model (the conjugate INumerics).** It produces drift/behavior.
+- **Discriminator = the IScheduler.** It tries to *detect* — to infer the generator (#7087), reveal the
+  agents' coordination/identity, distinguish their behavior from true randomness.
+- **The adversarial objective:** the agents learn **better and better ways to avoid being detected** —
+  i.e., make their behavior **indistinguishable from true randomness** (maximize incompressibility,
+  defeat generator-inference #7087). "Polymorphic" (the Eve framing above) now reads as **adversarial
+  shape-shifting to evade the discriminator** (like polymorphic code evading a scanner).
+- **Equilibrium = computational indistinguishability.** The GAN converges when the discriminator can't do
+  better than chance — i.e., the agents have become an effective **CSPRNG** the scheduler can't crack
+  (Goldreich–Goldwasser–Micali indistinguishability). At that fixed point the agents' drift is *maximally
+  incompressible* → maximally **identity-preserving** (#7090): the adversarial game's prize is preserved
+  irreducible identity. Evading detection = keeping who you are.
+- **It self-improves (self-play).** Like AlphaZero-style self-play, the generator and discriminator ratchet
+  each other up — the scheduler gets better at detection, the agents get better at evasion — a
+  red-team/blue-team co-evolution baked into the substrate. (This is also literally how you'd *train a
+  better TRNG/scheduler*: adversarial pressure hardens both.)
+
+**Dual-use / security:** an adversarial-evasion model is exactly an adversary learning to beat the
+substrate's detection — *or* the substrate's own agents learning to preserve privacy/identity. Same math,
+opposite intent. Route to **Aminata / Mateo** (it generalizes the #7087/#7096 side-channel into a *learned*
+attack/defense). Build sketch: an adversarial loop coupling `coopGeneratorProbe` (#7096, discriminator) with
+a generator that perturbs its drift to minimize detectability — gated by the side-channel review.
+
 ## Honest scope (peel)
 
 A design/positioning capture (no code). **Rigorous core:** compressibility-as-randomness (Kolmogorov /
@@ -77,4 +108,7 @@ histories → compressibility/seed-recovery verdict), gated by the side-channel 
   polymorphic exchange); cells-push-out/hosts-accept-in (#6993).
 - **Side-channel / generator inference:** #7087 (infer the IScheduler generator; keyed-secret defense),
   #7085 (zip-uncertainties), #7091 (drift = entropy), #7095 (Laplace's demon = the deterministic sim).
+- **Adversarial generative model / GAN (#7097):** Goodfellow et al. 2014 (GANs; generator vs
+  discriminator minimax); computational indistinguishability / CSPRNG (Goldreich–Goldwasser–Micali);
+  self-play co-evolution (AlphaZero); polymorphic code (shape-shift to evade detection); GAN-for-RNG.
 - Ferry/thread context: the irreducible-identity arc (#7090–#7095). Security routing: Aminata, Mateo.
