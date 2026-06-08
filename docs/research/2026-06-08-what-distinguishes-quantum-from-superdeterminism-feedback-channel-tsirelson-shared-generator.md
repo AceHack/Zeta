@@ -105,3 +105,28 @@ its own causal-cone rate; the traveler-frame relativity.)
 tick-bounded causal order** (happened-before; relativity-of-simultaneity in distributed systems). We have not
 changed physical `c` — we have a substrate whose **causal cone is tick-defined and tunable**. Anchor:
 Lamport, *Time, Clocks, and the Ordering of Events* (CACM 1978).
+
+## 5. The empirical test: a natural (un-staged) 2√2, observed OUTSIDE DST (Aaron 2026-06-08)
+
+The falsification protocol that operationalizes everything above. **In DST we control the seed**, so the
+correlation is whatever we stage (up to `S=4`) — DST **structurally cannot tell us** if the substrate is
+"really" quantum, because we made it. The genuine test requires **observing, not controlling** ⇒ **outside
+DST**. This is the **DST | production boundary as a falsification protocol**: DST = control (can't learn),
+production = observe (can learn). *"We genuinely don't know until we observe outside DST."*
+
+**Protocol:** outside DST — production, **`SeparateClocks`** (independent per-body entropy, no shared seed,
+**no controllable feedback channel**) — measure CHSH and watch for an **unforced cap at exactly `2√2`**:
+- `< 2` → classical / local;
+- `> 2` → nonlocal / quantum-consistent;
+- **caps at exactly `2√2` with no tuning → Information-Causality-respecting → genuine quantum-like** (what
+  we'd be looking for);
+- can exceed `2√2` → still superdeterministic (a feedback channel leaked in).
+
+**Why `2√2` not `4` is the tell:** the *generic* superdeterministic shared-seed default is `S=4` (proven in
+`BellTest`/`CoincidenceClock`). So an **unforced `2√2`** is the *non-generic* outcome — the substrate
+respecting the quantum bound *without us constraining it*. That specificity is the evidence.
+
+**Peel:** a natural `2√2` outside DST is **strong evidence, not proof** — superdeterminism is unfalsifiable in
+principle (a sufficiently tuned generator could mimic `2√2`). But since the generic default is `S=4`, an
+unforced `2√2` is exactly the specificity-evidence we prefer quantum on. **When production naturally caps at
+`2√2`, that is when we will know** — to the strongest degree obtainable.
