@@ -168,6 +168,7 @@
     <Compile Include="Maji.fs" />
     <Compile Include="ZetaCli.fs" />
     <Compile Include="ZetaGraph.fs" />
+    <Compile Include="Db.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>
