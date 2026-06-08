@@ -126,6 +126,7 @@
     <Compile Include="SoftController.Tests.fs" />
     <Compile Include="SoftDashboard.Tests.fs" />
     <Compile Include="Cl3.Tests.fs" />
+    <Compile Include="SoftMem.Tests.fs" />
     <Compile Include="SoftEmu.Tests.fs" />
     <Compile Include="AmplitudeEmu.Tests.fs" />
     <Compile Include="PolarityFilter.Tests.fs" />
