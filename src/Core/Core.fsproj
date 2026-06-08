@@ -170,6 +170,7 @@
     <Compile Include="ZetaGraph.fs" />
     <Compile Include="Db.fs" />
     <Compile Include="KeyStore.fs" />
+    <Compile Include="Crypto.fs" />
     <Compile Include="File.fs" />
     <Compile Include="TableStream.fs" />
     <Compile Include="Catalog.fs" />
