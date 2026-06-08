@@ -20,14 +20,26 @@ source-only `.8o`) into buildable, *legitimately third-party* games — which is
 needs for credibility (we don't author the game we learn on). It also makes CHIP-8 a first-class target handled
 the same way as the four language oracles: declared once, bootstrapped by `install.sh`, reproducible.
 
+## Bedrock principle (Aaron, 2026-06-08): declarative desired-state ONLY — never imperative
+
+> "We would never `npm install` directly. We do our deps **declaratively** — everything is **desired-state
+> config** for deps so we can holistically track our dependency graph."
+
+So Octo is **declared**, like every other dep, in the desired-state config; `install.sh` **realizes** that desired
+state (converges the machine to it). There is **no imperative `npm install`** step anywhere — that would create an
+untracked node outside the dependency graph. The win is a *single holistic dep graph* (4-lang toolchains + Octo +
+everything) that is queryable, pinnable, hash-verifiable, and diffable. Imperative package commands are the
+anti-pattern this explicitly forbids.
+
 ## Components (proposed, to be owned by Dejan + ace)
 
-1. **Octo as a managed tool dependency (ace, declarative).** Octo is **MIT** (John Earnest,
-   `github.com/JohnEarnest/Octo`); there's a CLI (`octo-cli`, Node) that compiles `.8o` → `.ch8`. Declare it in
-   ace's tool manifest like any pinned toolchain dep (version-pinned, hash-checked) — the same posture as the
-   4-lang toolchains.
-2. **`install.sh` bootstraps it** (Dejan, GOVERNANCE §24 — the one install script, consumed by dev laptops / CI /
-   devcontainer). After install, `octo-cli` (or a vendored build) is on PATH so `.8o` builds work everywhere.
+1. **Octo declared in the desired-state dep config (ace).** Octo is **MIT** (John Earnest,
+   `github.com/JohnEarnest/Octo`); compiles `.8o` → `.ch8`. It enters the **same declarative desired-state
+   manifest** as the 4-lang toolchains — version-pinned + hash-checked — so it's a node in the one holistic dep
+   graph, not a side-installed tool.
+2. **`install.sh` realizes the desired state** (Dejan, GOVERNANCE §24 — the one install script, consumed by dev
+   laptops / CI / devcontainer): it *converges* the machine to the declared state (fetch pinned source, build/
+   verify), never `npm install`. After convergence the Octo build is available so `.8o` builds work everywhere.
 3. **Sources to prior-art** (`references/prior-art/`, reference-not-copy): the Octo source (MIT) and the
    chip8Archive (CC0). A build step compiles the CC0 `.8o` games → `.ch8` *on demand* (not committed binaries —
    built artifacts, like the 4-lang build outputs).
@@ -43,7 +55,8 @@ the same way as the four language oracles: declared once, bootstrapped by `insta
 
 ## Open questions for Dejan / ace
 
-- Vendor a pinned Octo build vs. `npm`-install `octo-cli` at bootstrap? (CI determinism + offline = lean vendored.)
+- How to *declare* Octo in the desired-state config (pinned source + build recipe, hash-verified) — NOT whether to
+  `npm install` (forbidden; see bedrock principle). The dep is a graph node either way; the question is the recipe.
 - Where do built games live — `roms/chip8/built/` (gitignored, built by install/CI) with only signatures committed?
 - ace cross-repo: ace is the separate TS repo; the declaration lives there, `install.sh` consumes it.
 
