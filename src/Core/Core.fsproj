@@ -207,6 +207,7 @@
     <Compile Include="SoftMem.fs" />
     <Compile Include="SoftDrive.fs" />
     <Compile Include="SoftScope.fs" />
+    <Compile Include="SoftSession.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
