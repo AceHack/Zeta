@@ -33,6 +33,27 @@ operation set (DML), not two languages.
   catalog is privileged/separate. Homoiconic metadata removes the privilege: the catalog is an ordinary
   table, so ordinary DML suffices.
 
+## DDL = `ensure`; schema evolution = a DU over the DML meta-updates (#7040)
+
+Aaron's refinement: *"DDL becomes just `ensure` and automatic schema evolution — a DU over the DML meta
+updates."* So you don't even write the catalog DML by hand:
+
+- **DDL collapses to `ensure`** — the idempotent declarative verb (Ace #6964): you `ensure` the *desired*
+  catalog state (the target schema), not the steps to get there. `ensure(desired schema)` is idempotent
+  (apply-N == apply-once, #6) — running it when already-satisfied is a no-op.
+- **Automatic schema evolution = a DU over the DML meta-updates.** `ensure` **diffs** desired vs current
+  catalog and **emits the meta-DML delta DU automatically** — a discriminated union of
+  `Upsert`/`Retract` (add column, drop column, change type, add index…) over the metadata tables. The
+  *evolution* is that computed DU; you declare the target, the system derives the imperative meta-DML.
+- This is exactly **declarative lowers to a DU over imperative** (#6998) applied to schema: `ensure`
+  (declarative) → diff → DU of DML meta-updates (imperative deltas on the catalog stream). `SchemaEvolution`
+  Up/Down (#6996) *is* the down/up direction of that DU; `SchemaRegistry` holds the catalog state diffed
+  against.
+
+So the full picture: **`ensure` (declare target) → auto-diff → DU of DML deltas on metadata tables →
+events on the one stream.** No DDL, no hand-written migration — a declarative `ensure` whose evolution is
+a derived DU.
+
 ## Consequences
 
 - **Migrations are data deltas** — reviewable as a diff, mergeable as a CRDT, replayable under DST,
