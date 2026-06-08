@@ -20,6 +20,30 @@ raw memory  ──DeltaPattern──▶ changes (not absolute state)
    ⇒ a CLEAR world state + a navigable map  (= what observe.ts is, #7129)
 ```
 
+## Solid ground *is* the context window; the climb expands it (Aaron 2026-06-08)
+
+*"Solid ground is basically our context window… and we are trying to expand our context window."*
+
+The agent can only reliably reason over what it can **depend on** — that is exactly **solid ground** (constants +
+monotonic landmarks + lens-produced structure). So **solid ground = the usable context window**, and **producing
+more solid ground = expanding the context window** — not by raw token count, but by **compressing noise into
+reliable structure** (more dependable world-state per unit of attention). The `LensRouter` bounded top-k working
+set (#7128) *is* the literal context budget — only so many lenses fit at once (MoE), so the win is fitting *more
+solid ground* into that fixed budget. This closes onto the agent's *own* cognition: it is the same discipline as
+our **hub/satellite memory** (`CURRENT-*.md` / `MEMORY.md` hub resident = solid ground; raw logs one hop away =
+noise; `INDEX.md` = the lens) and the carved-sentence cold-start rules. The clarity engine, pointed at itself, is a
+**context-window-expansion engine**: turn what was noise into solid ground and the effective context grows.
+
+**And the window carries pointers, not just contents** (Aaron): *"…and have pointers to the traversals that will
+reduce uncertainty of stuff outside the context window."* You can't hold everything resident, so the window =
+**solid ground (resident) + pointers to the traversals** (the expensive traversal+oscillation resolves of the
+caching tier, #7134) that *reduce uncertainty about what's outside the window*, invoked on demand. This is the
+hub/satellite discipline (the hub holds pointers; following one = a traversal that resolves a satellite),
+retrieval-augmented generation (pointer → retrieve), and **value-of-information** active sensing (run the traversal
+whose uncertainty-reduction most exceeds its cost). So the full shape: **bounded resident solid ground + addressable
+resolution of the rest** — the agent reasons over the solid window and *knows how to go get* the clarity it doesn't
+currently hold.
+
 So: **a memory → world-state transformer.** ("Transformer" both senses — a transform, and the attention/MoE
 selection of what to attend to, `LensRouter`.) Its product is *clarity*: murky memory → a navigable world state.
 
