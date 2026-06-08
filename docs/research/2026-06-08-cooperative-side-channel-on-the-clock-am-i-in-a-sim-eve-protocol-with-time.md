@@ -138,6 +138,19 @@ a generator that perturbs its drift to minimize detectability — gated by the s
     (Discovered/Undecided depending on side); divergence → no fixed point → regularize-and-zip to extract a
     finite value. The adaptive generator fleeing to 0.5 is the *fixed-point* case; a non-contractive /
     chaotic generator would be the *divergent* case that needs regularization.
+  - **Third regime: wobble / spin (limit cycle), Aaron #7111.** It can also *neither* converge *nor*
+    diverge but **oscillate** — a **limit cycle / orbit** ("wobble/spin"). This is in fact the *canonical*
+    behavior: the replicator/gradient dynamics of zero-sum games (matching pennies, rock-paper-scissors)
+    **cycle *around* the Nash** (closed Hamiltonian/rotational orbits — Hofbauer & Sigmund), and **GAN
+    training famously oscillates** rather than converging (Mescheder et al., *The Numerics of GANs*;
+    Balduzzi et al., *The Mechanics of n-Player Differentiable Games* — the antisymmetric "rotation"
+    component of the game Jacobian). My `BitGan` *converges* only because I used a **contractive/damped**
+    update; the *true* matching-pennies dynamics **wobble**. So the regimes are a trichotomy (+chaos):
+    **fixed point** (converge) · **limit cycle** (wobble/spin) · **divergence** (blow up) · [chaos]. And the
+    wobble's **frequency = the resonance/harmony frequency (#7088)**: to wrangle a wobble you find its period
+    (spectral/Fourier), which is exactly firefly-sync entrainment — so #7108 (regularize divergence) and
+    #7088 (seek resonance) meet at the limit cycle. (Anchors: Poincaré–Bendixson; limit cycles; replicator
+    dynamics cycle; GAN rotational/symplectic dynamics; conservative/Hamiltonian orbits.)
 - **It's the yin/yang engine made concrete (#7100).** The 1-bit minimal GAN *is* the **yin/yang engine of
   change** (`YinYang.fs`; the founding "engine of change") realized in hardware-thin form: **yang = the
   generator** (what *acts* / produces change), **yin = the held identity bit** (what *remains* — the
