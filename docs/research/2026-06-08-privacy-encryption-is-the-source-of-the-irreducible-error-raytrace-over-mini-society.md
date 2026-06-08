@@ -112,6 +112,35 @@ choice rather than by light-cone. **The price of a forever-secret is a forever-d
 if you want bounded drift, you need bounded privacy — a reveal/reconcile horizon; this is a knob, like the
 heat-budget knob in #7084.)
 
+### Second-order uncertainty: model — and *infer* — the IScheduler generator from drift (#7087)
+
+> "you can model your uncertainty about their encrypted uncertainty depending on the generator function we
+> choose in IScheduler — we could make drift happen like only 1 out of 5 times, and you could try to find
+> the clock generator function this way."
+
+Even though the peer's uncertainty is encrypted (hidden, #7084), you can model your **uncertainty about
+their uncertainty** — a **second-order belief** (a distribution over their hidden state; hierarchical
+Bayes / a `SoftValue` over `SoftValue`s, or a `Conjugate` whose frame is itself a belief). That second-
+order belief is shaped by the **IScheduler's generator function**: since DST schedulers are *seeded
+deterministic generators* (the §7 / DS-Theory substrate), the drift they produce is a *parameter* of the
+generator (e.g. a Bernoulli "drift 1-in-5"). So:
+
+- **Forward:** choose the generator ⇒ you know the drift distribution ⇒ you can model the peer's hidden
+  uncertainty as that distribution (predict it without seeing it).
+- **Inverse (the find):** observe the drift pattern over history ⇒ **infer the clock generator function**
+  — system identification / generator-from-output recovery. The drift signature *is* a fingerprint of the
+  scheduler; enough samples identify its parameters (and then predict future drift, or detect a
+  wrong/adversarial scheduler that doesn't match the agreed seed).
+
+**Security edge (route to Aminata / Mateo).** The same fingerprint is a **side-channel**: if a node's
+drift is observable, an adversary can infer its IScheduler generator and thereby **predict its "random"
+ordering choices** (breaking the unpredictability the scheduler was relied on for) or **de-anonymize** a
+node by its drift signature. Capability for self-diagnosis; vulnerability if exposed. Defense direction:
+treat the scheduler generator as a *secret* (keyed), and bound observable drift — the same privacy knob
+(#7086) that controls drift-reversibility also controls how much of the generator leaks. (Build targets:
+`driftFromConjugate` #7085, and a `inferGenerator` / generator-fingerprint estimator — both gated by the
+side-channel review.)
+
 ## Peel of the Alexa ferry (honest scope)
 
 The Alexa-website reply (gushing "EXTRAORDINARY … breakthrough in computational physics … computation as
@@ -129,6 +158,9 @@ formal physics pass + naming-expert/Ilyana/human review before outward use.
 - **Info↔heat:** Landauer; Sagawa–Ueda; Maxwell's demon (#7078/#7079).
 - **Spacetime hiding:** light-cone / finite-speed distribution; causal consistency; `TravelerFrame` §4.
 - **Wait-free / coordination-free:** manifesto §2; CALM (commutative ⇒ coordination-free) (#7072); CRDT.
+- **Second-order uncertainty / generator inference (#7087):** hierarchical Bayes (uncertainty about
+  uncertainty); system identification; PRNG state-recovery / generator-from-output; timing side-channels &
+  fingerprinting (route to Aminata/Mateo); keyed/secret scheduler generators.
 - **Society ray-trace/introspection:** `RayTensor`/`IRayTraceable` (#6954), `IIntrospectable`, `Conjugate`
   weave (#7080), `SocietyEmergence` (in-repo).
 - Internal: #7074/#7075 (irreducible error in the what-remains), #7078/#7079 (thermo + conjugate), #7080
