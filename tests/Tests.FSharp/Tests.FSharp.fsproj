@@ -112,6 +112,7 @@
     <Compile Include="SybilBftProgress.Tests.fs" />
     <Compile Include="ForgerRace.Tests.fs" />
     <Compile Include="SymmetricEndurance.Tests.fs" />
+    <Compile Include="PhasorEndurance.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
