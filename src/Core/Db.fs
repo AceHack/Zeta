@@ -59,9 +59,9 @@ module Db =
         | DepSetup of noun: string * dependsOn: string list // edges established (the deps are "set up")
         | PushDown of noun: string // declared push-down dep (kernel/OS/global, OUTSIDE the container)
         | JitResolve of noun: string * resolved: string // lazy/dynamic resolution = DI, INSIDE the container
-        // — data events over the (single, infinite) file —
-        | Create of path: string * value: string
-        | Update of path: string * value: string
+        // — data events over the (single, infinite) file (values are homoiconic `DynamicValue`, #7041) —
+        | Create of path: string * value: DynamicValue
+        | Update of path: string * value: DynamicValue
         | Delete of path: string
 
     /// The materialized db state = the incremental FOLD (DBSP IVM) over the stream (event sourcing; #6994).
@@ -69,7 +69,7 @@ module Db =
     /// durability differs.
     type DbState =
         { Backend: Backend
-          Files: Map<string, string> // the infinite file's contents (path → value)
+          Files: Map<string, DynamicValue> // the infinite file's contents (path → value; homoiconic #7041)
           Deps: Map<string, string list> // dependency edges established by DepSetup
           PushedDown: Set<string> // nouns declared push-down (resolved outside the container)
           Resolved: Map<string, string> } // JIT/dynamic resolutions (DI, inside the container)
@@ -107,7 +107,7 @@ module Db =
     /// Interpret a db-seam command as a DATA mutation event. `value` supplies the payload (None for delete /
     /// non-mutating verbs). `write` is an alias for upsert. Non-mutating verbs (read/list/…) → None (queries,
     /// not events). Structural events come from `dependson` edges via `materialize`, not from here.
-    let toEvent (value: string option) (cmd: ZetaCommand) : DbEvent option =
+    let toEvent (value: DynamicValue option) (cmd: ZetaCommand) : DbEvent option =
         match cmd.Verb, value with
         | "create", Some v -> Some(Create(cmd.Noun, v))
         | "update", Some v
@@ -123,7 +123,7 @@ module Db =
     /// same contract as `ZetaGraph.topoOrder`).
     let materialize
         (backend: Backend)
-        (payloadOf: ZetaCommand -> string option)
+        (payloadOf: ZetaCommand -> DynamicValue option)
         (cmds: ZetaCommand list)
         : Result<DbState, string list> =
         match ZetaGraph.topoOrder cmds with

@@ -34,7 +34,7 @@ let ``file move via grammar: to= field is the destination`` () =
 [<Fact>]
 let ``db create via grammar routes to the db state`` () =
     match run [ p "zeta db create users.1 value=v" ] with
-    | Ok ws -> Assert.Equal("v", ws.Db.Files.["users.1"])
+    | Ok ws -> Assert.Equal(DynamicValue.String "v", ws.Db.Files.["users.1"])
     | Error e -> failwith e
 
 [<Fact>]

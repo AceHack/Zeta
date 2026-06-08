@@ -60,7 +60,8 @@ module ZetaExec =
             | v -> Error(sprintf "table: unknown verb '%s'" v)
 
         | Some s when s = Db.SeamName ->
-            match Db.toEvent (valueOf cmd) cmd with
+            // the grammar's `value=` is a string field; wrap as a homoiconic DynamicValue.String (#7041)
+            match Db.toEvent (valueOf cmd |> Option.map DynamicValue.String) cmd with
             | Some ev -> Ok { ws with Db = Db.apply ws.Db ev }
             | None -> Error(sprintf "db: verb '%s' is not a mutation (or missing value=)" cmd.Verb)
 
