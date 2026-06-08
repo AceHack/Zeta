@@ -1,0 +1,71 @@
+module Zeta.Tests.SybilBftTests
+
+open global.Xunit
+open Zeta.Core
+open Zeta.Core.SybilBft
+
+// Deterministic pseudo-random bit stream (DST §7) — same generator as AntiSybil tests.
+let private bits (seed: int) (n: int) : int list =
+    let mutable s = uint64 seed * 2862933555777941757UL + 3037000493UL
+    [ for _ in 1 .. n ->
+          s <- s * 6364136223846793005UL + 1442695040888963407UL
+          int ((s >>> 33) &&& 1UL) ]
+
+let private vote claimed seed value =
+    { Claimed = claimed; Stream = bits seed 500; Value = value }
+
+[<Fact>]
+let ``quorum/maxFaults track the classical BFT bound`` () =
+    Assert.Equal(1, quorumSize 0)
+    Assert.Equal(3, quorumSize 1)
+    Assert.Equal(7, quorumSize 3)
+    Assert.Equal(0, maxFaults 1)
+    Assert.Equal(1, maxFaults 4) // 3f+1 = 4 ⇒ f = 1
+    Assert.Equal(2, maxFaults 7)
+
+[<Fact>]
+let ``honest 4-source agreement decides the value (d=4, f=1, quorum=3)`` () =
+    let votes =
+        [ vote 0 1 "commit"; vote 1 2 "commit"; vote 2 3 "commit"; vote 3 4 "commit" ]
+    let t = tally 0.5 votes
+    Assert.Equal(4, t.DistinctSources)
+    Assert.Equal(Some "commit", decide t)
+
+[<Fact>]
+let ``THE GUARANTEE: one Byzantine clock forging 5 identities cannot reach quorum`` () =
+    // Attacker has ONE clock (seed 9), claims 5 identities all voting "evil".
+    // 3 honest distinct sources vote "good".
+    let evil = bits 9 500
+    let votes =
+        [ { Claimed = 0; Stream = evil; Value = "evil" }
+          { Claimed = 1; Stream = evil; Value = "evil" }
+          { Claimed = 2; Stream = evil; Value = "evil" }
+          { Claimed = 3; Stream = evil; Value = "evil" }
+          { Claimed = 4; Stream = evil; Value = "evil" }
+          vote 5 1 "good"; vote 6 2 "good"; vote 7 3 "good" ]
+    let t = tally 0.5 votes
+    // 5 forged claims collapse to 1 source; 3 honest = 4 distinct sources total.
+    Assert.Equal(4, t.DistinctSources)
+    Assert.Equal(1, t.VotesByValue.["evil"]) // NOT 5 — Sybil inflation defeated before counting
+    Assert.Equal(3, t.VotesByValue.["good"])
+    // f = maxFaults 4 = 1, quorum = 3: "good" wins, "evil" never had the votes.
+    Assert.Equal(Some "good", decide t)
+    Assert.False(hasQuorum 1 "evil" t)
+
+[<Fact>]
+let ``equivocating source (same clock, conflicting votes) is detected and excluded`` () =
+    let clk = bits 11 500
+    let votes =
+        [ { Claimed = 0; Stream = clk; Value = "A" }
+          { Claimed = 1; Stream = clk; Value = "B" } // same clock, different vote ⇒ equivocation
+          vote 2 1 "A"; vote 3 2 "A" ]
+    let t = tally 0.5 votes
+    Assert.Equal(3, t.DistinctSources)
+    Assert.Equal(1, t.Equivocators)
+    Assert.Equal(2, t.VotesByValue.["A"]) // only the two honest sources; equivocator excluded
+    Assert.False(t.VotesByValue.ContainsKey "B")
+
+[<Fact>]
+let ``deterministic / replayable (DST)`` () =
+    let votes = [ vote 0 1 "x"; vote 1 2 "x"; vote 2 3 "y" ]
+    Assert.Equal(decide (tally 0.5 votes), decide (tally 0.5 votes))

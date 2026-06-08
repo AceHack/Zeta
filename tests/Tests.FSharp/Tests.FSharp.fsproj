@@ -105,6 +105,7 @@
     <Compile Include="Conjugate.Tests.fs" />
     <Compile Include="BitGan.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
+    <Compile Include="SybilBft.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
