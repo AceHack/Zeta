@@ -127,6 +127,84 @@ module Files =
 
         up [] path
 
+    // ── Folder-layout templates (Aaron #7024) ──────────────────────────────────────────────────────────
+    //
+    // A folder-layout template like `yyyy/mm/dd` is an ordered list of segments — each a fixed literal or a
+    // named placeholder. An INSTANCE binds the placeholders to values, yielding a concrete folder chain. A
+    // file then `dependson` an *instance* of that template chain (its parent folders, #7021) — the same
+    // DepSetup / topo-order machinery, with the parent chain produced by the template.
+
+    /// A template segment: a fixed `Lit` or a named `Placeholder` (e.g. `Placeholder "yyyy"`).
+    type Segment =
+        | Lit of string
+        | Placeholder of string
+
+    /// A folder-layout template, e.g. `[ Placeholder "yyyy"; Placeholder "mm"; Placeholder "dd" ]`.
+    type FolderTemplate = Segment list
+
+    /// Resolve each segment against `bindings` (placeholder name → value). `Error name` for the first unbound
+    /// placeholder. Literals pass through. Deterministic.
+    let private resolveSegments (bindings: Map<string, string>) (tmpl: FolderTemplate) : Result<string list, string> =
+        let rec go acc segs =
+            match segs with
+            | [] -> Ok(List.rev acc)
+            | Lit s :: rest -> go (s :: acc) rest
+            | Placeholder p :: rest ->
+                match Map.tryFind p bindings with
+                | Some v -> go (v :: acc) rest
+                | None -> Error p
+
+        go [] tmpl
+
+    /// Instantiate a template under `root` with `bindings`, yielding the concrete folder path
+    /// (e.g. root="/logs", yyyy/mm/dd + {yyyy=2026;mm=06;dd=07} → "/logs/2026/06/07"). `Error name` if a
+    /// placeholder is unbound. Ordinal/deterministic.
+    let instantiate (root: string) (bindings: Map<string, string>) (tmpl: FolderTemplate) : Result<string, string> =
+        resolveSegments bindings tmpl
+        |> Result.map (fun parts ->
+            let suffix = String.concat "/" parts
+            if root = "/" then "/" + suffix
+            elif suffix = "" then root
+            else root + "/" + suffix)
+
+    /// The full `dependson` chain for a file placed at `name` under a template instance: every folder of the
+    /// instantiated chain (root-most first) followed by the file path itself. `Error name` if unbound. This is
+    /// what the file `dependson` — the instance of the template chain (#7024), resolved by topo-order (#6984).
+    let fileUnderTemplate
+        (root: string)
+        (bindings: Map<string, string>)
+        (tmpl: FolderTemplate)
+        (name: string)
+        : Result<string list, string> =
+        instantiate root bindings tmpl
+        |> Result.map (fun folder ->
+            let filePath = if folder = "/" then "/" + name else folder + "/" + name
+            ancestors filePath @ [ filePath ])
+
+    [<Literal>]
+    let private BranchPrefix = "branch:"
+
+    /// A `dependson` token for a **git branch** (Aaron #7025: *"file entries can depend on branches"*). Beyond
+    /// parent folders (#7021), a `FileEntry`'s `dependson` may reference a branch (a git ref — the git-native
+    /// control-plane backend, #6994), e.g. `dependson branch:main`. The git backend resolves it; this is the
+    /// "git-ref ZetaId pointer" convention (per-repo registries) applied to file deps. `branchRef "main"`
+    /// → `"branch:main"`.
+    let branchRef (name: string) : string = BranchPrefix + name
+
+    /// Does this `dependson` token name a branch (vs a folder path)? True for `branch:<name>`.
+    let isBranchDep (dep: string) : bool = dep.StartsWith(BranchPrefix, System.StringComparison.Ordinal)
+
+    /// The well-known path of the filesystem's **own metadata, stored AS a file within itself** (Aaron #7027:
+    /// *"self-hosted … meta-recursive filesystem"*). The fs is self-describing: its graph/metadata is a
+    /// `FileEntry` at this path (content hash → the serialized graph, git-native #7026). Recursive / self-
+    /// similar (manifesto §9/§10) — the same as git storing its own refs, or a compiler that compiles itself.
+    [<Literal>]
+    let MetaPath = "/.zeta/fs.meta"
+
+    /// True when the filesystem is **self-hosted**: its metadata exists as a `FileEntry` within itself
+    /// (meta-recursive). The meta file's content hash addresses the serialized graph.
+    let isSelfHosted (st: FileState) : bool = Map.containsKey MetaPath st.Entries
+
     [<Literal>]
     let SeamName = "file"
 

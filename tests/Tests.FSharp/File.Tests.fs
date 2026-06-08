@@ -68,6 +68,46 @@ let ``default backend is DagFs (internal single-file); ExternalFs is opt-in`` ()
     Assert.Equal(DagFs, defaultBackend)
 
 [<Fact>]
+let ``folder template yyyy/mm/dd instantiates to a concrete folder path`` () =
+    let tmpl = [ Placeholder "yyyy"; Placeholder "mm"; Placeholder "dd" ]
+    let bindings = Map [ "yyyy", "2026"; "mm", "06"; "dd", "07" ]
+    Assert.Equal(Ok "/logs/2026/06/07", instantiate "/logs" bindings tmpl)
+
+[<Fact>]
+let ``template instantiation errors on an unbound placeholder`` () =
+    let tmpl = [ Placeholder "yyyy"; Placeholder "mm" ]
+    Assert.Equal(Error "mm", instantiate "/logs" (Map [ "yyyy", "2026" ]) tmpl)
+
+[<Fact>]
+let ``a file dependson an instance of the template chain (folders root-first, then the file)`` () =
+    let tmpl = [ Placeholder "yyyy"; Placeholder "mm"; Placeholder "dd" ]
+    let bindings = Map [ "yyyy", "2026"; "mm", "06"; "dd", "07" ]
+    let chain = fileUnderTemplate "/logs" bindings tmpl "app.log"
+    Assert.Equal<Result<string list, string>>(
+        Ok [ "/logs"; "/logs/2026"; "/logs/2026/06"; "/logs/2026/06/07"; "/logs/2026/06/07/app.log" ],
+        chain
+    )
+
+[<Fact>]
+let ``literal segments mix with placeholders in a template`` () =
+    let tmpl = [ Lit "logs"; Placeholder "yyyy" ]
+    Assert.Equal(Ok "/srv/logs/2026", instantiate "/srv" (Map [ "yyyy", "2026" ]) tmpl)
+
+[<Fact>]
+let ``file entries can dependson a branch (git ref)`` () =
+    Assert.Equal("branch:main", branchRef "main")
+    Assert.True(isBranchDep (branchRef "main"))
+    Assert.False(isBranchDep "/d/x") // a folder path is not a branch dep
+
+[<Fact>]
+let ``self-hosted meta-recursive fs: metadata is a file within the filesystem itself`` () =
+    let bare = fold defaultBackend [ Write("/d/x", "h1") ]
+    Assert.False(isSelfHosted bare)
+    let selfHosted = fold defaultBackend [ Write("/d/x", "h1"); Write(MetaPath, "blake3:graph") ]
+    Assert.True(isSelfHosted selfHosted)
+    Assert.Equal(Some "blake3:graph", readHash MetaPath selfHosted)
+
+[<Fact>]
 let ``name is unique within a folder: two same-named files under one folder are one node (last wins)`` () =
     // #7022: two files with the same name can't both depend on the same folder — same path = same node.
     let st = fold defaultBackend [ Write("/d/x", "h1"); Write("/d/x", "h2") ]
