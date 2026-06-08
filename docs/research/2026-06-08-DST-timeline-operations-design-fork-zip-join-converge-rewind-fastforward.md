@@ -105,3 +105,20 @@ So: the four-op algebra is a **homoiconic query over our owned Rx port**, not a 
 operators are the *reference semantics*, Bonsai/DynamicValue is the *homoiconic representation*, and we own
 the interface so backends (System.Reactive / DBSP / ferry) swap underneath. Composes B-0640 (Bonsai+Rx) +
 `Rx.fs`/`RxAdapter` (IQbservable/Reaqtor) + `StoredProc` (native-vs-interpreted).
+
+## What it unlocks: LINQ over generator functions (Aaron 2026-06-08)
+
+The payoff of homoiconic-over-owned-Rx: **LINQ over generator functions.** Because the ops are `IQbservable`
+expression trees (queries *as data*), the **DST generators themselves** — the seeds, the clocks
+(`tickingClock`), the qubit/phasor two-stream joins (`QubitIso`/`PhasorEndurance`), the `CoincidenceClock` —
+become **first-class queryable**. You compose, filter, and transform the *generators* with the full LINQ
+surface (`where`/`select`/`zip`/`join`/`groupBy`/`selectMany`/`aggregate`), and the resulting query is **data**
+(serializable via Bonsai, DST-replayable, fork/join/rewind-able as a timeline).
+
+This is the **IQbservable / Reaqtor** value proposition (LINQ over push-streams as expression trees) aimed at
+**our DST generators** rather than generic observables. It closes a loop with the earlier arc: `BitGan.probe`
+*discovers* a generator; now LINQ *composes over* generators — query the generators, not just their outputs.
+**Peel:** LINQ-over-observables-as-expression-trees is De Smet's IQbservable (anchored, not novel); ours is
+the application — LINQ over the *DST seed/clock/qubit generators* on the homoiconic zset substrate, where the
+query is itself an event on the stream. Anchors: De Smet, *Observations on IQbservable*; Reaqtor; Meijer,
+*Your Mouse is a Database* (LINQ-to-Observable).
