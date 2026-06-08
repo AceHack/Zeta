@@ -184,6 +184,7 @@
     <Compile Include="SybilBftProtocol.fs" />
     <Compile Include="SybilBftLiveness.fs" />
     <Compile Include="SybilBftProgress.fs" />
+    <Compile Include="ForgerRace.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
