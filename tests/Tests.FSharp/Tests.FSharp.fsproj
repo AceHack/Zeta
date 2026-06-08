@@ -95,6 +95,7 @@
     <Compile Include="ZetaGraph.Tests.fs" />
     <Compile Include="Db.Tests.fs" />
     <Compile Include="KeyStore.Tests.fs" />
+    <Compile Include="File.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
