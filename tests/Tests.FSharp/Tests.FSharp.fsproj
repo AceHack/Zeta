@@ -133,6 +133,7 @@
     <Compile Include="SoftScope.Tests.fs" />
     <Compile Include="SoftSession.Tests.fs" />
     <Compile Include="SoftActionController.Tests.fs" />
+    <Compile Include="RomFixtures.Tests.fs" />
     <Compile Include="SoftEmu.Tests.fs" />
     <Compile Include="SoftStationary.Tests.fs" />
     <Compile Include="SoftFrame.Tests.fs" />

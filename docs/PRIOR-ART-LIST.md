@@ -487,3 +487,21 @@ citation.
 See `references/README.md` for how we manage external references
 and `references/reference-sources.json` for the machine-readable
 manifest.
+
+## ROM-verification / signature databases (game-DB index tools)
+
+For tracking ROMs by signature — the standard is the **DAT** file (per-ROM `size` + `crc32` + `md5`/`sha1`).
+Anchors (the "game db index tools"):
+
+- **No-Intro** — <https://no-intro.org/> — cartridge-ROM DATs (CRC32/MD5/SHA1/size); the de-facto signature standard.
+- **Redump** — <http://redump.org/> — disc-based (CD/DVD) preservation DATs.
+- **TOSEC** (The Old School Emulation Center) — <https://www.tosecdev.org/> — broad multi-platform DATs.
+- **MAME** software-list XML / **clrmamepro** / **RomVault** — DAT tooling (validate a ROM set against a DAT).
+- **John Earnest's chip8Archive** — <https://github.com/JohnEarnest/chip8Archive> — original CHIP-8 games,
+  **CC0** (public-domain dedication); source-only (`.8o`/Octo), compile to `.ch8`. The free-game source for
+  learning demos (third-party, for fairness — not authored by us).
+
+Zeta convention (`roms/chip8/MANIFEST.md`): we use **SHA-256** as the canonical strong signature (stronger than
+DAT-legacy MD5/SHA-1) plus `crc32` for cross-checking against the above. Signatures are text/hex (the
+`no-binary-in-proof-lineage` discipline). If we adopt full DAT import (hexagonal/use their data), it lands as a
+satellite under `references/prior-art/` + a backlog item — not vendored into the build.

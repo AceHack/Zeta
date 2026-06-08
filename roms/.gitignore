@@ -48,3 +48,9 @@
 !/README.md
 !/*/README.md
 !/*/*/README.md
+
+# Committed CHIP-8 test fixtures (maintainer decision 2026-06-08): the ONE exception to "never commit ROMs" —
+# ROMs that are authored by us (CC0) or third-party under a verified permissive license (notice in
+# roms/chip8/THIRD-PARTY-LICENSES.md). Tracked so unit tests run against real ROM bytes. See roms/chip8/README.md.
+!/chip8/*.ch8
+!/chip8/*.md

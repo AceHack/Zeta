@@ -150,3 +150,12 @@ protocol beyond the safe-ROM scope. Both are out of scope
 for this tree. When a clean-room open-source BIOS matures
 for one of these platforms (e.g. if OpenROMs grows to
 cover C64 game libraries), the platform can be added back.
+
+## Exception: `roms/chip8/` — committed test fixtures (2026-06-08)
+
+The "never committed" rule has **one maintainer-approved exception**: `roms/chip8/` holds a small set of CHIP-8
+ROMs kept in git so the emulator's **unit tests** run against real ROM bytes. A ROM may live there only if it is
+**authored by us (CC0)** or **third-party under a verified permissive license** (MIT/CC0) whose notice travels
+with it. Every file is signature-tracked (`roms/chip8/MANIFEST.md`, sha256+crc32+size). The `.gitignore` un-ignores
+only `roms/chip8/*.ch8` and `roms/chip8/*.md`. Everything else in `roms/` stays local-only as before.
+See `roms/chip8/README.md`.
