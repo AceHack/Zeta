@@ -54,3 +54,18 @@ module SoftScope =
 
     /// The full scope frame: the observable line, then the ghost-screen heatmap.
     let render (s: SoftEmu.Soft) : string = observables s + "\n" + renderGhost s
+
+    /// **Render a concrete (hard) frame's actual display** — `#` for a lit pixel, space for unlit, as a
+    /// `DisplayH`-line `DisplayW`-wide screen. This is the *definite* screen (what the emulator is really showing),
+    /// vs `renderGhost`'s probability heatmap. Use to *watch* a `SoftSession` / `SoftActionController` play.
+    let renderFrame (f: Chip8Cow.Frame) : string =
+        [ for y in 0 .. Chip8.DisplayH - 1 ->
+              System.String(
+                  [| for x in 0 .. Chip8.DisplayW - 1 -> if Chip8Cow.pixel x y f then '#' else ' ' |]
+              ) ]
+        |> String.concat "\n"
+
+    /// A bordered screen with a caption line above it (for a labelled filmstrip frame).
+    let renderFrameCaptioned (caption: string) (f: Chip8Cow.Frame) : string =
+        let bar = System.String('-', Chip8.DisplayW)
+        caption + "\n" + bar + "\n" + renderFrame f + "\n" + bar
