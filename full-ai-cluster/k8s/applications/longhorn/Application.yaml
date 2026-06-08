@@ -21,10 +21,15 @@ spec:
       valuesObject:
         defaultSettings:
           defaultDataPath: /var/lib/longhorn
-          defaultReplicaCount: 2   # bump to 3 once 3+ workers exist
+          # Single control-plane node today. A replica count > the number of
+          # schedulable nodes leaves every volume permanently "Degraded"
+          # (Longhorn can't place the extra replicas), which surfaces as
+          # unhappy PVCs on a fresh single-node install. Keep this == node
+          # count; bump to 2 (then 3) as workers join for real HA.
+          defaultReplicaCount: 1
         persistence:
           defaultClass: false
-          defaultClassReplicaCount: 2
+          defaultClassReplicaCount: 1   # match defaultReplicaCount (single-node)
           reclaimPolicy: Retain
         ingress:
           enabled: false   # turn on after cert-manager + ingress-nginx

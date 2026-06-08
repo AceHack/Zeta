@@ -17,11 +17,32 @@ spec:
     helm:
       releaseName: gatekeeper
       valuesObject:
-        replicas: 3
+        replicas: 1   # single control-plane node; bump for HA once workers exist
         controllerManager:
           metricsPort: 8888
-        validatingWebhookFailurePolicy: Fail
-        mutatingWebhookFailurePolicy: Ignore   # safer default while iterating
+          # Never let admission control touch system/infra namespaces — these
+          # carry the control plane, CNI, storage and GitOps that gatekeeper
+          # itself depends on. Defence-in-depth alongside the fail-open policy.
+          exemptNamespaces:
+            - kube-system
+            - kube-node-lease
+            - kube-public
+            - gatekeeper-system
+            - cilium
+            - longhorn-system
+            - argocd
+        # FAIL-OPEN, not fail-closed. With failurePolicy: Fail the validating
+        # webhook intercepts EVERY write cluster-wide — including k3s's own
+        # cluster-scoped CRD updates (e.g. addons.k3s.cattle.io). If gatekeeper
+        # has no ready endpoints (pods still starting, or any outage) those
+        # writes are rejected and k3s aborts controller startup → the whole
+        # control plane crash-loops. Observed on node-09485d (2026-06-07): 41
+        # k3s restarts in 10 min, API permanently 503, cluster bricked. A
+        # policy engine must never be able to take down the API server, so it
+        # fails OPEN (admit when the engine is unreachable). Namespaced policy
+        # enforcement still applies whenever gatekeeper is up (the normal case).
+        validatingWebhookFailurePolicy: Ignore
+        mutatingWebhookFailurePolicy: Ignore
   destination:
     server: https://kubernetes.default.svc
     namespace: gatekeeper-system

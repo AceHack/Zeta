@@ -62,6 +62,15 @@
       "--disable=servicelb"
       "--disable=traefik"
 
+      # Disable the bundled local-path-provisioner. local-storage.nix
+      # re-declares it as `zeta-local-path` (the single default class) with
+      # a fixed path; leaving k3s' built-in enabled creates a SECOND
+      # StorageClass *also* marked default (`local-path (default)` AND
+      # `zeta-local-path (default)`), which is an invalid/ambiguous config —
+      # a class-less PVC then binds non-deterministically. Observed on
+      # node-09485d (2026-06-07). Keep exactly one default.
+      "--disable=local-storage"
+
       # Cluster CIDR — give Cilium a /16 to work with.
       "--cluster-cidr=10.42.0.0/16"
       "--service-cidr=10.43.0.0/16"
