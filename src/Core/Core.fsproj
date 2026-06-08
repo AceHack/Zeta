@@ -20,6 +20,7 @@
     <Compile Include="RetryPolicy.fs" />
     <Compile Include="CayleyDickson.fs" />
     <Compile Include="Cl3.fs" />
+    <Compile Include="Fixpoint.fs" />
     <Compile Include="AdinkraCode.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
