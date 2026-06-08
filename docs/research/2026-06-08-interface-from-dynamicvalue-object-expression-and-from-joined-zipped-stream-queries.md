@@ -47,6 +47,31 @@ So an interface = **a bundle of fold-queries over one stream, joined/zipped, new
 unifies: the noun-class interface (#7051), the table↔stream fold (#7029), the forced-RX observation
 (#7050), and the everything-is-edges graph (#7036 — joins/zips are graph edges between queries).
 
+## 3. Weak-reference mixins for on-demand state access (#7053)
+
+> "you can add weakreference-like mixins to the interface too, and have it access the stored proc for state
+> access of the DUs if it needs, or CRDTs or actions."
+
+Beyond the reactive query members, the synthesized interface can carry **mixins held by weak reference**
+that reach into the **stored-proc** for *on-demand state access*:
+
+- **Mixin** — an attachable extra capability spliced into the object expression (extra members delegating
+  to the stored-proc), not a query over the stream — a side-channel into the proc's state.
+- **Weak reference (non-owning)** — the mixin does **not** keep the stored-proc / its state alive. The
+  **stream / Bonsai owns the state** (the forced-RX substrate, #7050); the interface only *borrows* it. A
+  weak ref means a GC can reclaim the backing state when nothing else holds it, and the mixin degrades
+  gracefully (state gone → the member returns "unavailable", never a leak). This keeps the interface
+  cheap and non-pinning — it observes/queries by default, and only reaches for concrete state through the
+  weak mixin *if it needs to*.
+- **What it accesses — DUs / CRDTs / actions** (the yin/yang stored proc's two forms, #7048):
+  - **DUs** (asymmetric / ordered) — read the imperative delta state (the saga so far).
+  - **CRDTs** (symmetric / commutative #7048) — read/merge the convergent state directly.
+  - **actions** — invoke the proc's effectful verbs (the engine-of-change side).
+
+So the full picture: **interface = reactive fold-queries (joined/zipped over one stream) + weak-ref mixins
+that borrow the stored-proc for on-demand DU/CRDT/action state.** Queries are the default (cheap, reactive,
+observe-only); the weak mixin is the escape hatch to concrete state, non-owning so it never pins or leaks.
+
 ## Honest scope (peel)
 
 #7051 is **built + differential-tested** (`ITableProc`, `nativeProc`, `dynamicProc` via object expression).
