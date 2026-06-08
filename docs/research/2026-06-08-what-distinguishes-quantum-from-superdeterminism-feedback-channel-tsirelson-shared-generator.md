@@ -151,3 +151,25 @@ real-part; Riemann stays razored, no numerology). `2√2` is special via the **T
 amplitude/meta space. The two-space framing (Born `|·|²` between them) is the defensible structure — not a
 number-theory identity. Anchors: Born rule; von Neumann matching-pennies / Nash; max-entropy; the
 amplitude-vs-probability (meta-vs-regular) split = `PhasorEndurance`'s Born-shadow (#7057).
+
+## 7. Why 1/2 is critical in regular space: it's the symmetry-breaking threshold for identity (Aaron 2026-06-08)
+
+Aaron: *"you need over 1/2 to win the identity — just slightly more than the other, or else it's a tie,
+perfect symmetry."* This is the deepest reading of the regular-space `1/2`, and it's already in our code.
+
+- **`1/2` = perfect symmetry = a TIE = no distinct identity** (indistinguishable — matching-pennies Nash,
+  max-entropy bit). **To win identity you must BREAK the symmetry: be `ε > 1/2`.** **Identity is a
+  broken-symmetry state.**
+- This is **spontaneous symmetry breaking**: the symmetric `1/2` state is degenerate/undecided; a definite
+  identity requires picking a direction off it. (Anchors: spontaneous symmetry breaking; majority/voting
+  `>1/2`; Buridan's ass — perfect symmetry → no decision.)
+- **Already encoded (the same threshold three times):** `BitGan.discriminatorEdge = |DiscQ − 0.5|` (the edge
+  *over the 1/2 tie* — at 0.5 no edge/no distinguish, over 0.5 = identity); `ForgerRace.DeadHeat` (the *exact
+  tie* = unsafe / no winner / no distinct identity); `SymmetricEndurance` equal-rates → tie (asymmetry needed
+  for a distinct claim).
+
+So **`1/2` is the regular-space identity symmetry-breaking threshold**, and the `ε` over it is the **winning
+margin** (the broken-symmetry direction). It explains §6's "1/2 is the regular-space inequality": the
+inequality is *strict* (`> 1/2`) — at equality it's a tie. The Born map carries the meta-space generator bound
+(`2√2`) down to this regular-space symmetry-breaking point (`1/2`). (Still not Riemann; this `1/2` is the
+Nash/symmetry-breaking probability, §6 peel stands.)
