@@ -119,3 +119,38 @@ module SoftEmu =
     /// empowerment.
     let probLitGrid (s: Soft) : float[][] =
         [| for y in 0 .. Chip8.DisplayH - 1 -> [| for x in 0 .. Chip8.DisplayW - 1 -> probLit x y s |] |]
+
+    /// A fully-comparable content key for a frame (for distribution distance / dedup — `Frame` itself isn't
+    /// comparable because of its `byte[]` fields).
+    let private frameKey (f: Chip8Cow.Frame) =
+        (int f.PC,
+         [ for v in f.V -> int v ],
+         int f.I,
+         Map.toList f.Mem,
+         Map.toList f.Display,
+         f.Stack,
+         int f.Delay,
+         int f.Sound,
+         [ for k in f.Keys -> k ],
+         f.Rng)
+
+    /// **Total-variation distance** between two soft ensembles: `½ Σ |p_a(f) − p_b(f)|` over all frames. 0 =
+    /// identical distributions, 1 = disjoint support. The metric for the `t0=t∞` self-consistency search.
+    let softDistance (a: Soft) (b: Soft) : float =
+        let tally (s: Soft) =
+            s
+            |> List.fold (fun m (f, w) -> let k = frameKey f in Map.add k (w + (Map.tryFind k m |> Option.defaultValue 0.0)) m) Map.empty
+        let ma, mb = tally a, tally b
+        let keys = Set.union (ma |> Map.toSeq |> Seq.map fst |> Set.ofSeq) (mb |> Map.toSeq |> Seq.map fst |> Set.ofSeq)
+        0.5
+        * (keys
+           |> Seq.sumBy (fun k ->
+               abs ((Map.tryFind k ma |> Option.defaultValue 0.0) - (Map.tryFind k mb |> Option.defaultValue 0.0))))
+
+    /// **The `t0=t∞` stationary soft state:** iterate the (caller-supplied, bounded) soft step to its
+    /// self-consistent fixed point `s = step s` under `softDistance` — the closed-time-loop state of the soft
+    /// emulator (Aaron's t0=t∞ on the ensemble; the soft analog of `Fixpoint`/`Orbit`). Use a *pruned* step
+    /// (e.g. `fun s -> softFrame cyc s |> prune width`) so the ensemble stays bounded and a fixed point can exist.
+    /// Returns the `Fixpoint.FixResult` (state + whether it converged + residual + iterations).
+    let stationary (step: Soft -> Soft) (tol: float) (maxIter: int) (s0: Soft) : Fixpoint.FixResult<Soft> =
+        Fixpoint.solve softDistance step tol maxIter s0
