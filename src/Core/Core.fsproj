@@ -216,6 +216,7 @@
     <Compile Include="LensRouter.fs" />
     <Compile Include="Survival.fs" />
     <Compile Include="MemorySense.fs" />
+    <Compile Include="SolidGround.fs" />
     <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
