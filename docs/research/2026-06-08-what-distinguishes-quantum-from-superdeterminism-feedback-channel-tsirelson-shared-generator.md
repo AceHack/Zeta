@@ -85,3 +85,23 @@ Bell 1964 (measurement-independence); Tsirelson 1980 (`2√2`); Information Caus
 Wiesner 1992 (superdense coding); Holevo 1973 (bound); Shannon 1948 (capacity); Kolmogorov/Solomonoff/Chaitin
 (algorithmic information). Internal: B-0864 four-corner ownership; `BellTest`, `CoincidenceClock`,
 `SymmetricEndurance` (`ClockSharing` = loophole switch); the superdeterminism-closure ≡ anti-Sybil note (#7072).
+
+## 4. Our information-causality *speed* = the heartbeat rate (Lamport causal cone), not constant c (Aaron 2026-06-08)
+
+Refinement to §2/§3. In physics Information Causality is tied to a fixed `c`. **In our event-stream / DST
+substrate there is no physical `c`: the maximum information-propagation rate is one tick per step = the
+HEARTBEAT rate.** That is the **Lamport logical-clock causal cone** (Lamport 1978 — happened-before; the
+"logical light cone" of distributed systems, where causality is *message/tick-propagation-bounded*, not
+lightspeed-bounded). Unlike `c`, the heartbeat is a **knob** (per-agent rates, DoP, the tick regimes of
+`SymmetricEndurance`) — so **our light-cone is variable**.
+
+**Keep the two quantities apart:** the Tsirelson *value* `2√2` is **geometric** (set by the algebra /
+Information Causality), but the causal *reach / horizon* — how fast a correlation can propagate to be
+established — is **heartbeat-set**. So our Information-Causality *constraint scales with the heartbeat*: same
+cap value, tunable propagation speed. (This also re-frames "no global clock" / `SeparateClocks` = each body
+its own causal-cone rate; the traveler-frame relativity.)
+
+**Peel:** "our speed of light = the heartbeat" is the analogy; the anchored reality is **Lamport's
+tick-bounded causal order** (happened-before; relativity-of-simultaneity in distributed systems). We have not
+changed physical `c` — we have a substrate whose **causal cone is tick-defined and tunable**. Anchor:
+Lamport, *Time, Clocks, and the Ordering of Events* (CACM 1978).
