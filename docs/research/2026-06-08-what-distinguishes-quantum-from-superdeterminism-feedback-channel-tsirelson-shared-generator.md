@@ -130,3 +130,24 @@ respecting the quantum bound *without us constraining it*. That specificity is t
 principle (a sufficiently tuned generator could mimic `2√2`). But since the generic default is `S=4`, an
 unforced `2√2` is exactly the specificity-evidence we prefer quantum on. **When production naturally caps at
 `2√2`, that is when we will know** — to the strongest degree obtainable.
+
+## 6. Two spaces: 2√2 (meta/time, the generator) vs 1/2 (regular, the inequality) — Born maps between (Aaron 2026-06-08)
+
+Aaron: *"2√2 is the generator; 1/2 is the inequality that holds in regular space, not meta/time space."* This
+**resolves** the Riemann worry instead of reviving it — the claim is that `2√2` and `1/2` are **different
+quantities in different spaces**, NOT the same number (numerology would be equating them; this separates them).
+
+- **Meta / time space (the generator):** `2√2` = the **generator's correlation bound** (Tsirelson) — the
+  amplitude/phase space where the interrupt's long-division generator (#7081) and the staged correlations live.
+- **Regular / observable space (the inequality):** `1/2` = the **symmetric point** — and it is a real value
+  throughout this arc: the **matching-pennies Nash** (`0.5`, #7101 BitGan/yin-yang), the **max-entropy bit**,
+  the **equal-superposition Born probability** `|α|²=|β|²=1/2`.
+- **The map between them is the Born rule `|·|²`** — meta (amplitude, `2√2` bound) → regular (probability,
+  `1/2` symmetric point). Two distinct quantities, two spaces, one map.
+
+**Peel (now narrow):** our `1/2` is the **probability / Nash / max-entropy symmetric point in regular space**,
+**not** the Riemann zeta critical line `Re(s)=1/2` (same digit, unrelated objects — a probability vs a complex
+real-part; Riemann stays razored, no numerology). `2√2` is special via the **Tsirelson operator-norm**, in the
+amplitude/meta space. The two-space framing (Born `|·|²` between them) is the defensible structure — not a
+number-theory identity. Anchors: Born rule; von Neumann matching-pennies / Nash; max-entropy; the
+amplitude-vs-probability (meta-vs-regular) split = `PhasorEndurance`'s Born-shadow (#7057).
