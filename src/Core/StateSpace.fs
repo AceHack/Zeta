@@ -98,6 +98,56 @@ module StateSpace =
     /// Was any cycle detected (a transposition/revisit or a self-loop)? — branching converges/loops in soft mode.
     let hasCycle (g: Graph) : bool = g.Revisits > 0 || g.SelfLoops > 0
 
+    /// **Generic guarded explore** — like `exploreGuarded`, but indexes states by an arbitrary `keyOf` projection
+    /// (not just the full `contentKey`). Pass `contentKey` for the exact (sound, conservative) state; pass
+    /// `MemoryLens.lensKey classes` for the lens-reduced state (finite where exact is infinite).
+    ///
+    /// **Soundness caveat (load-bearing):** `keyOf` must retain every cell the `invariant` depends on. If `keyOf`
+    /// drops a cell that is *autonomous yet lethal* (a doom timer), a cycle in key-space can be **spurious** — it
+    /// merges states differing only in the hidden lethal cell → a false "loops forever". The `invariant` is still
+    /// checked on the *full* child frame (so a violating step is pruned), but the *cycle* is only meaningful if the
+    /// key separates survival-relevant states. Use `contentKey` when in doubt.
+    let exploreKeyed (keyOf: Chip8Cow.Frame -> 'k) (invariant: Chip8Cow.Frame -> bool) (cyclesPerFrame: int) (maxStates: int) (actions: bool[] list) (f0: Chip8Cow.Frame) : Graph =
+        let index = Dictionary<'k, int>(HashIdentity.Structural)
+        let frames = ResizeArray<Chip8Cow.Frame>()
+        let edges = ResizeArray<int * bool[] * int>()
+        let queue = Queue<int>()
+        let mutable revisits = 0
+        let mutable selfLoops = 0
+        let mutable truncated = false
+
+        let addNew (f: Chip8Cow.Frame) =
+            let id = frames.Count
+            frames.Add f
+            index.[keyOf f] <- id
+            queue.Enqueue id
+            id
+
+        if invariant f0 then addNew f0 |> ignore
+
+        while queue.Count > 0 do
+            let fromId = queue.Dequeue()
+            let parent = frames.[fromId]
+            let pk = keyOf parent
+            for a in actions do
+                let child = Chip8Cow.frameStep cyclesPerFrame { parent with Keys = a }
+                if invariant child then
+                    let ck = keyOf child
+                    if ck = pk then selfLoops <- selfLoops + 1
+                    match index.TryGetValue ck with
+                    | true, toId ->
+                        revisits <- revisits + 1
+                        edges.Add(fromId, a, toId)
+                    | false, _ ->
+                        if frames.Count >= maxStates then truncated <- true
+                        else edges.Add(fromId, a, addNew child)
+
+        { Frames = frames.ToArray()
+          Edges = List.ofSeq edges
+          Revisits = revisits
+          SelfLoops = selfLoops
+          Truncated = truncated }
+
     /// **Guarded explore — the invariant constraint** (the don't-die ≡ no-downtime guard, #7119). Same BFS as
     /// `explore`, but a child that **violates `invariant`** is *never entered* (not indexed, not expanded) — it's
     /// a forbidden state, pruned (dropped, not indexed). `Revisits`/`SelfLoops`/`Truncated` carry their usual

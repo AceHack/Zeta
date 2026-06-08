@@ -138,6 +138,7 @@
     <Compile Include="StateSpaceGuarded.Tests.fs" />
     <Compile Include="DeltaPattern.Tests.fs" />
     <Compile Include="MemoryLens.Tests.fs" />
+    <Compile Include="Survival.Tests.fs" />
     <Compile Include="RomFixtures.Tests.fs" />
     <Compile Include="SoftEmu.Tests.fs" />
     <Compile Include="SoftStationary.Tests.fs" />
