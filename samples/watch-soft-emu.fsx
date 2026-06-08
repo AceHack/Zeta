@@ -6,7 +6,7 @@
 //
 // ROMs are reference-only (gitignored under references/prior-art/chip8-roms/) — pass your own path.
 
-#r "src/Core/bin/Release/net10.0/Zeta.Core.dll"
+#r "../src/Core/bin/Release/net10.0/Zeta.Core.dll"
 open Zeta.Core
 
 let argv = System.Environment.GetCommandLineArgs()
