@@ -1,0 +1,21 @@
+# The default agent-autonomy Policy every Resource references unless a tenant
+# overrides it. Encodes Zeta's no-directives defaults: routine ops on standing
+# authority (auto), spend/mods need a human (propose), data deletion is gated
+# (forbidden). The gatedClasses are exactly the no-directives gated classes.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Policy
+metadata:
+  name: default
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"   # after the CRDs (wave -20)
+spec:
+  domains:
+    - { name: lifecycle, autonomy: auto }     # restart / heal a crashed resource
+    - { name: scaling, autonomy: auto }       # scale within quota
+    - { name: config, autonomy: auto }        # in-bounds config tweaks
+    - { name: mods, autonomy: propose }       # install addons/mods (tenant-content side effects)
+    - { name: spend, autonomy: propose }      # anything that increases cost / quota
+    - { name: data, autonomy: forbidden }     # delete data / volumes — human-only
+    - { name: security, autonomy: forbidden } # security-floor changes — human-only
+  gatedClasses: [budget, non-reversible, wont-do, hard-limits, force-push, external-repo]

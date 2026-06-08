@@ -1,0 +1,64 @@
+# Policy — agent scope, made declarative. The operational form of Zeta's
+# "no directives" model: standing authority vs gated classes
+# (.claude/rules/no-directives.md). See COLLABORATION-MODEL.md §4. Each Resource
+# references a Policy; a persona checks it before acting (defence-in-depth with
+# gatekeeper). Namespaced => per-tenant.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: policies.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Namespaced
+  names:
+    kind: Policy
+    plural: policies
+    singular: policy
+    shortNames: [pol]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                domains:
+                  type: array
+                  description: per-domain autonomy. 'auto' = act on standing authority then notify; 'propose' = request human authorization and wait; 'forbidden' = never.
+                  items:
+                    type: object
+                    required: [name, autonomy]
+                    properties:
+                      name:
+                        type: string
+                        description: e.g. lifecycle, scaling, config, mods, spend, data, security
+                      autonomy:
+                        type: string
+                        enum: [auto, propose, forbidden]
+                  default:
+                    - { name: lifecycle, autonomy: auto }
+                    - { name: scaling, autonomy: auto }
+                    - { name: config, autonomy: auto }
+                    - { name: mods, autonomy: propose }
+                    - { name: spend, autonomy: propose }
+                    - { name: data, autonomy: forbidden }
+                    - { name: security, autonomy: forbidden }
+                gatedClasses:
+                  type: array
+                  description: classes that ALWAYS require fresh human authorization (no-directives gated classes). Agents may inherit standing authority but never extend into these.
+                  items: { type: string }
+                  default: [budget, non-reversible, wont-do, hard-limits, force-push, external-repo]
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - { name: Domains, type: integer, jsonPath: ".spec.domains.length()" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }

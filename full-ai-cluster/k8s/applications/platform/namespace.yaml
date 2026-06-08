@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zeta-platform
+  labels:
+    app.kubernetes.io/part-of: zeta-platform
+    admission.gatekeeper.sh/ignore: "true"

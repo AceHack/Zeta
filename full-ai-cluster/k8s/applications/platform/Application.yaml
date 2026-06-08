@@ -1,0 +1,36 @@
+# Zeta platform — the base resource vocabulary the portal + agents operate on:
+#   GameServer (game servers) · App (regular k8s app pods) · WebApp (UI app hosts)
+# plus Policy (agent scope), with AI woven into every type by design (the `ai`
+# block: a persona operates each resource within a Policy, with a collaboration
+# Room). See PLATFORM-ARCHITECTURE.md + COLLABORATION-MODEL.md.
+#
+# This installs the CRDs (the contract) + the default Policy. The controllers /
+# agent operating-loop that reconcile these CRs, and the portal UI that renders
+# them, are the next builds (COLLABORATION-MODEL.md §10). Headlamp already shows
+# them as soon as the CRDs register.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"   # CRDs early — before anything that creates these resources
+  name: platform
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/platform
+    directory:
+      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,policy-default}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zeta-platform
+  syncPolicy:
+    automated:
+      prune: false      # never auto-delete the platform CRDs / default Policy
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true   # CRDs: server-side apply handles large schemas + ordering

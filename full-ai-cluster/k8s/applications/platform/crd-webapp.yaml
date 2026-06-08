@@ -1,0 +1,64 @@
+# WebApp — a UI / web application host: a workload exposed on a public hostname
+# over HTTPS via the Cilium Gateway (+ cert-manager TLS). The "host my site/UI"
+# resource. See PLATFORM-ARCHITECTURE.md. AI-native: operated by a persona.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: webapps.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Namespaced
+  names:
+    kind: WebApp
+    plural: webapps
+    singular: webapp
+    shortNames: [web]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [image, host]
+              properties:
+                image: { type: string, description: "web app container image (serves on `port`)" }
+                host: { type: string, description: "public hostname, e.g. app.example.com (routed via Cilium Gateway)" }
+                port: { type: integer, default: 8080, description: "container port the app serves on" }
+                path: { type: string, default: "/", description: "URL path prefix to route" }
+                tls: { type: boolean, default: true, description: "terminate HTTPS via cert-manager" }
+                replicas: { type: integer, default: 1, minimum: 0 }
+                env:
+                  type: object
+                  additionalProperties: { type: string }
+                resources:
+                  type: object
+                  properties:
+                    cpu: { type: string, default: "250m" }
+                    memory: { type: string, default: "256Mi" }
+                ai:
+                  type: object
+                  description: "AI-native operation — a persona watches + operates this resource within a Policy, with a collaboration Room. See COLLABORATION-MODEL.md."
+                  properties:
+                    admin: { type: string, default: otto }
+                    policy: { type: string, default: default }
+                    room: { type: string, enum: [enabled, disabled], default: enabled }
+                  default: {}
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - { name: Host, type: string, jsonPath: ".spec.host" }
+        - { name: Image, type: string, jsonPath: ".spec.image" }
+        - { name: TLS, type: boolean, jsonPath: ".spec.tls" }
+        - { name: Admin, type: string, jsonPath: ".spec.ai.admin" }
+        - { name: Phase, type: string, jsonPath: ".status.phase" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }

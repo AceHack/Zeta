@@ -1,0 +1,60 @@
+# GameServer — a rented game server (the GMod base test is the first template).
+# See PLATFORM-ARCHITECTURE.md §3.2 + COLLABORATION-MODEL.md. AI-native: every
+# GameServer is watched + operated by a persona within a Policy, with a Room.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: gameservers.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Namespaced
+  names:
+    kind: GameServer
+    plural: gameservers
+    singular: gameserver
+    shortNames: [gs]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [game]
+              properties:
+                game: { type: string, description: "gmod, minecraft, valheim, rust, …" }
+                gamemode: { type: string, default: sandbox }
+                map: { type: string, default: gm_construct }
+                maxPlayers: { type: integer, default: 16, minimum: 1, maximum: 128 }
+                memory: { type: string, default: "4Gi" }
+                cpu: { type: string, default: "2" }
+                storage: { type: string, default: "20Gi", description: "Longhorn PVC size for world/addons (the FTP root)" }
+                runtime: { type: string, enum: [pod, vm], default: pod, description: "pod (default) or KubeVirt VM for full-OS/anti-cheat games" }
+                ftp: { type: boolean, default: true }
+                workshopCollection: { type: string, description: "Steam workshop collection id (optional)" }
+                ai: &ai
+                  type: object
+                  description: "AI-native operation — a persona watches + operates this resource within a Policy, with a collaboration Room. See COLLABORATION-MODEL.md."
+                  properties:
+                    admin: { type: string, default: otto, description: "persona that operates this resource (otto/lior/vera/…)" }
+                    policy: { type: string, default: default, description: "name of the Policy CR governing agent autonomy here" }
+                    room: { type: string, enum: [enabled, disabled], default: enabled }
+                  default: {}
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - { name: Game, type: string, jsonPath: ".spec.game" }
+        - { name: Players, type: integer, jsonPath: ".spec.maxPlayers" }
+        - { name: Runtime, type: string, jsonPath: ".spec.runtime" }
+        - { name: Admin, type: string, jsonPath: ".spec.ai.admin" }
+        - { name: Phase, type: string, jsonPath: ".status.phase" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }

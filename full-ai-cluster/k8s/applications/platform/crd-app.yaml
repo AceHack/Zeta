@@ -1,0 +1,70 @@
+# App — a regular Kubernetes application (a containerized workload: pods +
+# service + optional storage). The generic "run my container" resource.
+# See PLATFORM-ARCHITECTURE.md. AI-native: operated by a persona within a Policy.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: apps.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Namespaced
+  names:
+    kind: App
+    plural: apps
+    singular: app
+    shortNames: [zapp]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [image]
+              properties:
+                image: { type: string, description: "container image to run" }
+                replicas: { type: integer, default: 1, minimum: 0 }
+                command: { type: array, items: { type: string } }
+                args: { type: array, items: { type: string } }
+                ports:
+                  type: array
+                  items:
+                    type: object
+                    required: [containerPort]
+                    properties:
+                      containerPort: { type: integer }
+                      protocol: { type: string, enum: [TCP, UDP], default: TCP }
+                env:
+                  type: object
+                  additionalProperties: { type: string }
+                resources:
+                  type: object
+                  properties:
+                    cpu: { type: string, default: "500m" }
+                    memory: { type: string, default: "512Mi" }
+                storage: { type: string, description: "optional Longhorn PVC size; mounted at /data when set" }
+                ai:
+                  type: object
+                  description: "AI-native operation — a persona watches + operates this resource within a Policy, with a collaboration Room. See COLLABORATION-MODEL.md."
+                  properties:
+                    admin: { type: string, default: otto }
+                    policy: { type: string, default: default }
+                    room: { type: string, enum: [enabled, disabled], default: enabled }
+                  default: {}
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - { name: Image, type: string, jsonPath: ".spec.image" }
+        - { name: Replicas, type: integer, jsonPath: ".spec.replicas" }
+        - { name: Admin, type: string, jsonPath: ".spec.ai.admin" }
+        - { name: Phase, type: string, jsonPath: ".status.phase" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }
