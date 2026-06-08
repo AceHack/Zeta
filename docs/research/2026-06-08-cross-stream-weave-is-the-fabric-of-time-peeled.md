@@ -75,6 +75,45 @@ divergence on the concurrent frontier; convergence to the same fold once observa
 lossless past-compression by canonicalizing commuting events (Mazurkiewicz trace ⇒ the future is
 invariant).** Every step is named prior art; the synthesis is Zeta's.
 
+## Order is the sole divergence source; the residue is the irreducible error = clock noise (#7073-#7076)
+
+Aaron closed the loop into an exact identity:
+
+- **(#7073) In a closed system — two agents, a bus, no external influence, the *same seed/registers* —
+  order is the *only* divergence source.** Determinism + same seed ⇒ the entire outcome space is the set
+  of bus interleavings (the DST / FoundationDB foundation; Lamport's point that the partial order is the
+  *only* thing the distributed setting adds over the sequential). "Without the order divergence there
+  would be no register divergence."
+- **(#7074) When order divergence *does* cause divergence, their *what-remains* (yin) differs.** It only
+  does so for **non-commuting** ops (commuting order-divergence is register-invisible — it converges,
+  #7067/#7071). So register/what-remains divergence ⟺ **non-commutative** order divergence.
+- **(#7075) That residue is the irreducible error.** Quotient the divergence by commutation (lossless-
+  compress the commuting part to zero, #7071) and what's *left* is incompressible — the **non-commutative
+  residue**, the genuine information content of the conflict (a Kolmogorov-style incompressible remainder;
+  the part no reordering can remove). This is exactly the consensus-needing region (#7072).
+- **(#7076) It includes clock noise.** Which order two *genuinely concurrent* non-commuting events land
+  in is decided by **physical clock noise** — skew, jitter, drift; the `UncertainClock` (in-repo); no
+  global now (§4; Lamport relativity). That noise is **irreducible**: you cannot perfectly synchronize
+  clocks (Lamport; Lundelius–Lynch clock-sync lower bounds). **This is *why* you can't timestamp-order a
+  contested non-commutative claim and must use consensus (#7072):** "who was first" needs a shared clock,
+  and the shared clock has irreducible noise — so first-wins is undecidable from clocks alone, and the
+  conflict must be *agreed*, not timed.
+- **(#7077) And heartbeat noise** — the *liveness* analog of clock noise. Heartbeats (the heartbeat-via-
+  commit liveness pulse / AgencySignature cadence) **jitter**: delayed, missed, bursty. So *which agent is
+  considered present/alive at a moment* — and therefore the ordering of presence/membership events and
+  whether a peer is "down or just slow" — is itself noisy and **irreducible**: in an asynchronous system
+  you **cannot** perfectly detect failure (the **FLP impossibility**; Chandra–Toueg unreliable failure
+  detectors). Clock noise corrupts *timing order*; heartbeat noise corrupts *liveness/membership order*.
+  Both feed the irreducible error, and both are exactly why exclusive/non-monotone claims need **agreed**
+  consensus (with failure detectors + timeouts), not measured time or measured liveness.
+
+**The identity:** in a closed deterministic same-seed system, total divergence = (commuting part →
+compresses to zero) + (non-commuting residue = **the irreducible error**, whose ordering is set by
+**clock noise + heartbeat noise** and therefore can't be reduced or fairly timed/detected → needs
+consensus). Convergence (#7067), the loophole bound (#7072), and this irreducible-error identity are three
+faces of one fact: **only non-commutative-order-over-noisy-clocks-and-heartbeats survives, and that
+survival is the conflict.**
+
 ## Where it already lives / what it implies
 
 - **No new code** — this names the partial-order-fabric kernel over the existing substrate (git DAG,
@@ -93,6 +132,10 @@ invariant).** Every step is named prior art; the synthesis is Zeta's.
   (within=one-clock/push-down vs cross=many-clocks/JIT).
 - **Consensus over the fabric:** the Loom (#6980); symmetric Bayesian fold (#7065, de Finetti +
   exponential-family monoid); zip-over-two-CRDTs (#6993).
+- **Irreducible error = clock + heartbeat noise (#7073-#7077):** DST / FoundationDB (determinism ⇒ only
+  interleaving varies); `UncertainClock` (in-repo); Lamport + Lundelius–Lynch (clock-sync lower bounds, no
+  perfect sync); **FLP impossibility** (Fischer–Lynch–Paterson) + Chandra–Toueg unreliable failure
+  detectors (no perfect liveness detection); heartbeat-via-commit / AgencySignature cadence.
 - **Convergence + lossless past-compression (#7067-#7071):** CRDT strong eventual consistency (Shapiro);
   **Mazurkiewicz trace theory** (concurrency = commutation-equivalence classes; the partial order is the
   trace; all linearizations equivalent); confluence / Church-Rosser; observational equivalence /
