@@ -147,9 +147,13 @@ let ``group-commit segment log truncates torn trailing record on recovery`` () =
          dlog.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().Wait())
         let segment = Path.Combine(dir, "delta.segment")
         let before = FileInfo(segment).Length
-        use fs = new FileStream(segment, FileMode.Append, FileAccess.Write, FileShare.Read)
-        fs.Write([| 0x7uy; 0x8uy; 0x9uy |], 0, 3)
-        fs.Flush()
+        // Scope the torn-write handle so it is DISPOSED before recovery reopens the segment. On Windows the
+        // share modes are enforced strictly: a still-open `FileShare.Read` write handle blocks the recovery's
+        // truncate-reopen with IO_SharingViolation (Linux ignores share modes, so the leak only failed on
+        // Windows runners). Same `(use … )` scoping idiom this test already uses for `log` above.
+        (use fs = new FileStream(segment, FileMode.Append, FileAccess.Write, FileShare.Read)
+         fs.Write([| 0x7uy; 0x8uy; 0x9uy |], 0, 3)
+         fs.Flush())
         FileInfo(segment).Length |> should equal (before + 3L)
         use recovered = new GroupCommitDiskDeltaLog<int>(dir, CborEntryCodec<int>(keyEnc, keyDec))
         let dlog = recovered :> IDeltaLog<int>
