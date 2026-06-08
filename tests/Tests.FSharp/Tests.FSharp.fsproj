@@ -107,6 +107,7 @@
     <Compile Include="AntiSybil.Tests.fs" />
     <Compile Include="SybilBft.Tests.fs" />
     <Compile Include="SybilBftProtocol.Tests.fs" />
+    <Compile Include="SybilBftLiveness.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
