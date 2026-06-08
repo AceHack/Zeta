@@ -215,6 +215,7 @@
     <Compile Include="MemoryLens.fs" />
     <Compile Include="Survival.fs" />
     <Compile Include="MemorySense.fs" />
+    <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
