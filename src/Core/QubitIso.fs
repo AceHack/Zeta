@@ -30,6 +30,17 @@ namespace Zeta.Core
 /// algebra on the concrete construction (cross-checks the eventual Z3/Lean per BP-16). A passing suite is
 /// strong evidence the operations leg holds; the *universal* statement + novelty of the construction still go
 /// to Tariq/Soraya + a quantum-info reviewer (Mirror-register until then). Deterministic (DST §7).
+///
+/// **Anchor — a qubit IS a "lightlike object" (Beacon; Aaron 2026-06-08).** `IQbservable<'T>` can target any
+/// type; the natural family our phase substrate produces is the **spinor / null** family — and that is real
+/// geometry, not metaphor: a **2-spinor (= a qubit) ↔ a null (lightlike) direction** on **Penrose's celestial
+/// sphere** (Penrose–Rindler, *Spinors and Space-Time* — a spinor is a "null flag": a null direction + a
+/// phase), with the **Bloch sphere ≅ the celestial sphere** of null directions; cf. **conformal geometric
+/// algebra** (Euclidean points → null vectors on a cone). So "IQbservable → any lightlike object" is anchored:
+/// the query produces spinor/null-family objects (qubit canonical, phasors/rays alongside). **Peel:** what's
+/// real is the *geometric* correspondence (Bloch ≅ celestial sphere; qubit = null flag); literal photon
+/// *dynamics* / relativistic propagation stays Mirror-register — we have the null *geometry*, not light's
+/// physics.
 [<RequireQualifiedAccess>]
 module QubitIso =
 
