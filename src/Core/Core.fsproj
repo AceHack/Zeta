@@ -187,6 +187,7 @@
     <Compile Include="ForgerRace.fs" />
     <Compile Include="SymmetricEndurance.fs" />
     <Compile Include="PhasorEndurance.fs" />
+    <Compile Include="CoincidenceClock.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
