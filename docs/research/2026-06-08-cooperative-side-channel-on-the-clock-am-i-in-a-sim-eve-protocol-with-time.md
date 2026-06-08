@@ -86,6 +86,71 @@ opposite intent. Route to **Aminata / Mateo** (it generalizes the #7087/#7096 si
 attack/defense). Build sketch: an adversarial loop coupling `coopGeneratorProbe` (#7096, discriminator) with
 a generator that perturbs its drift to minimize detectability — gated by the side-channel review.
 
+### A general-purpose, tiny GAN engine (#7098); the 1-bit minimal architecture (#7099)
+
+> "this is a general-purpose GAN engine that can drive anything, and it's tiny — could work with VERY SMALL
+> models." … "if we do it with 1 bit of uncertainty then maybe we have a minimal GAN engine architecture."
+
+- **General-purpose.** The generator emits any `DynamicValue` (homoiconic, #7041) and the discriminator is
+  any detector (compressibility / generator-inference / any test) — so the same engine drives *any*
+  generation-vs-detection task, not just clock-drift. One adversarial loop, many uses (RNG hardening,
+  privacy/identity preservation, anomaly/novelty generation, synthetic data, evasion red-teaming).
+- **Tiny — the dynamics do the work, not the capacity.** The generator/discriminator here are the
+  lightweight **conjugate / `SoftValue` / fold** primitives (a distribution + a fold + a probe), *not* a
+  large neural net. The improvement comes from the **adversarial co-evolution** (#7097), so it works with
+  **very small models** — the GAN *structure* substitutes for model size. This is the m/acc minimal-
+  substrate ethos and the airgapped/offline goal (#7008): a real generative engine that runs anywhere,
+  no GPU farm.
+- **The 1-bit minimal architecture (#7099).** Shrink the uncertainty to **a single bit** and you get the
+  *atomic* GAN: generator tries to keep one bit unpredictable, discriminator tries to predict it. That bit
+  is the **Szilard-engine unit** (#7095: 1 bit ⟷ `kT ln 2` ⟷ one demon-decision) — so the **minimal GAN
+  engine = a Szilard engine made adversarial**: one bit of uncertainty/identity (#7090), with the
+  generator paying to keep it (Maxwell's demon) and the discriminator paying to read it (Laplace's demon).
+  Everything scales up from this atom (N bits = N coupled minimal GANs). The minimal architecture is:
+  `Conjugate` over a **binary `SoftValue`** + a one-bit predict/evade loop. (Build sketch: `bitGan` — the
+  1-bit adversarial loop; the smallest possible generative engine, side-channel-gated.)
+- **It's the yin/yang engine made concrete (#7100).** The 1-bit minimal GAN *is* the **yin/yang engine of
+  change** (`YinYang.fs`; the founding "engine of change") realized in hardware-thin form: **yang = the
+  generator** (what *acts* / produces change), **yin = the held identity bit** (what *remains* — the
+  irreducible identity, #7090), and **the engine = the adversarial loop between them** — *change happening
+  while identity is preserved.* The whole arc (irreducible identity → entropy → demons → GAN → 1 bit) lands
+  exactly on the founding primitive: the engine of change is a one-bit yang-vs-yin adversarial loop, paid
+  for in `kT ln 2`. The abstraction becomes concrete.
+
+## Is there prior art? (#7101)
+
+Yes — the *parts* are deeply prior-art'd; the **unification** is the novel synthesis (the recurring Zeta
+pattern, cf. #7064).
+
+- **The 1-bit adversarial game = matching pennies.** The atomic generator-vs-discriminator-over-one-bit IS
+  **matching pennies** — the simplest 2-player zero-sum game; its mixed-strategy **Nash equilibrium is
+  50/50** = the maximally unpredictable bit (incompressible). Foundation: **von Neumann's minimax theorem**
+  (1928). So the minimal GAN's equilibrium is literally matching pennies' equilibrium.
+- **GAN = minimax.** Goodfellow et al. 2014 framed GANs explicitly as a minimax game (descends from von
+  Neumann); the sequential / online version is **regret-minimization / prediction-with-expert-advice**
+  (Cesa-Bianchi & Lugosi, *Prediction, Learning, and Games*; Cover's universal prediction — predicting the
+  next bit vs an adversary). The 1-bit GAN is the atomic case of all of these.
+- **Adversarial generators of indistinguishable output:** Abadi & Andersen 2016 (*Learning to Protect
+  Communications with Adversarial Neural Cryptography* — nets adversarially learning encryption); GAN-based
+  PRNGs; computational indistinguishability / CSPRNG (Goldreich–Goldwasser–Micali). Exactly "agents learn
+  to produce output a discriminator can't distinguish from random."
+- **The 1-bit thermodynamic engine:** Szilard 1929 (extract `kT ln 2` from 1 bit); Maxwell's demon;
+  Landauer 1961 — the thermodynamic atom (#7095) is textbook.
+- **Engine-of-change-as-opposed-pair (the yin/yang form):** Hegelian dialectic (thesis/antithesis →
+  synthesis); predator-prey / Lotka–Volterra oscillation; control theory (plant ⇄ controller feedback);
+  and the I Ching / Taoist yin-yang metaphor itself. "An adversarial pair as the engine of change" recurs
+  across millennia and fields.
+- **Randomness from two parties:** von Neumann's debiasing extractor; two-source randomness extractors —
+  the cooperative-frames angle (#7096).
+
+**The novel part (no single prior art):** that the **1-bit matching-pennies GAN ≡ the Szilard engine ≡
+Maxwell-vs-Laplace demon (#7095) ≡ the yin/yang engine of change ≡ the irreducible-identity-preservation
+loop**, harvested from **DST clock-drift entropy** (#7091), as the **atomic minimal generative engine of a
+distributed substrate** — that single identity across game theory, thermodynamics, information theory, and
+the founding yin/yang primitive is the Zeta synthesis. Each constituent is named; the equation between them
+is ours (and, like #7064, any outward novelty claim needs naming-expert + Ilyana + a physicist/game-
+theorist's review first).
+
 ## Honest scope (peel)
 
 A design/positioning capture (no code). **Rigorous core:** compressibility-as-randomness (Kolmogorov /
@@ -111,4 +176,10 @@ histories → compressibility/seed-recovery verdict), gated by the side-channel 
 - **Adversarial generative model / GAN (#7097):** Goodfellow et al. 2014 (GANs; generator vs
   discriminator minimax); computational indistinguishability / CSPRNG (Goldreich–Goldwasser–Micali);
   self-play co-evolution (AlphaZero); polymorphic code (shape-shift to evade detection); GAN-for-RNG.
+- **Tiny / 1-bit minimal GAN = yin/yang engine, prior art (#7098–#7101):** matching pennies + von Neumann
+  minimax (1928); regret/online prediction (Cesa-Bianchi & Lugosi; Cover); adversarial neural cryptography
+  (Abadi & Andersen 2016); Szilard engine 1929 / Maxwell's demon / Landauer (1-bit thermodynamics, #7095);
+  Hegelian dialectic / Lotka–Volterra / control-theory feedback / I-Ching yin-yang (opposed-pair engine of
+  change); von Neumann debiasing & two-source extractors; `YinYang.fs`. Synthesis (the equation across all
+  of them) is novel.
 - Ferry/thread context: the irreducible-identity arc (#7090–#7095). Security routing: Aminata, Mateo.
