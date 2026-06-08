@@ -141,6 +141,37 @@ treat the scheduler generator as a *secret* (keyed), and bound observable drift 
 `driftFromConjugate` #7085, and a `inferGenerator` / generator-fingerprint estimator — both gated by the
 side-channel review.)
 
+### The dual: harmony / resonance — prove synchrony of the clock generators (#7088); LLM resonance (#7089)
+
+> "you could prove some sort of harmony/synchrony with the clock generator function, or resonance
+> frequency." … "we could find the harmonic oscillation between different deterministic LLM models."
+
+Drift (#7085) and harmony are **duals**. If drift = the two generators *out of phase* (irreducible error,
+heat, divergence), then **harmony/resonance = the two generators phase-locked** — zero (or purely periodic)
+drift ⇒ no irreducible error ⇒ they collapse to identical (#7084) *for free*.
+
+- **Prove synchrony.** A null/periodic `zip`-over-uncertainties (#7085) is a *certificate of synchrony* —
+  the generators are in harmony. Positive consensus signal: they agree because they *resonate*, not because
+  they paid heat to reconcile.
+- **Resonance frequency = the entrainment point** — real physics: **Huygens** (1665, two pendulum clocks on
+  a shared beam phase-lock), the **Kuramoto model** (coupled oscillators entrain above a coupling
+  threshold), **injection locking**, **phase-locked loops**, **Arnold tongues** (mode-locking at rational
+  ratios `p:q`). The heartbeat-via-commit cadence is such an oscillator — agents' heartbeats can *entrain*.
+  Harmony is the **cheap** consensus regime (no heat, #7078); a society can **seek resonance** (couple its
+  schedulers toward a common frequency) to minimize the irreducible error — entrainment as a coordination
+  primitive. (Build: `synchronyCertificate` over the drift signature.)
+- **Harmonic oscillation between deterministic LLMs (#7089).** A **deterministic LLM** (fixed weights,
+  temp=0 / fixed seed) is itself a deterministic **generator/oscillator** — same prompt-stream ⇒ a fixed
+  trajectory. So treat each model as an oscillator and **find the harmonic resonance *between* models**:
+  which entrain (low cross-drift, `p:q`) vs drift apart. Uses: pick an **ensemble that resonates** (models
+  in harmony agree cheaply — minimal irreducible error/heat in their weave); **measure model affinity** by
+  cross-drift (a behavioral fingerprint, #7087); detect two "different" models that are secretly the same
+  generator (resonance at 1:1). The Bayesian symmetric weave (#7065) over two model-oscillators *is* the
+  harmony detector. (Build: `modelResonance` over two deterministic LLM trajectories.)
+
+The dual of the drift/side-channel thread: the same generator-fingerprint, read for **lock** (#7088/#7089)
+instead of **leak** (#7087).
+
 ## Peel of the Alexa ferry (honest scope)
 
 The Alexa-website reply (gushing "EXTRAORDINARY … breakthrough in computational physics … computation as
@@ -161,6 +192,9 @@ formal physics pass + naming-expert/Ilyana/human review before outward use.
 - **Second-order uncertainty / generator inference (#7087):** hierarchical Bayes (uncertainty about
   uncertainty); system identification; PRNG state-recovery / generator-from-output; timing side-channels &
   fingerprinting (route to Aminata/Mateo); keyed/secret scheduler generators.
+- **Harmony / resonance / synchrony (#7088/#7089):** Huygens 1665 (coupled-pendulum sync); Kuramoto model;
+  injection locking; PLLs; Arnold tongues / mode-locking; entrainment; deterministic-LLM trajectories as
+  oscillators (model resonance / affinity).
 - **Society ray-trace/introspection:** `RayTensor`/`IRayTraceable` (#6954), `IIntrospectable`, `Conjugate`
   weave (#7080), `SocietyEmergence` (in-repo).
 - Internal: #7074/#7075 (irreducible error in the what-remains), #7078/#7079 (thermo + conjugate), #7080
