@@ -211,6 +211,7 @@
     <Compile Include="SoftActionController.fs" />
     <Compile Include="SoftEvolution.fs" />
     <Compile Include="StateSpace.fs" />
+    <Compile Include="DeltaPattern.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
