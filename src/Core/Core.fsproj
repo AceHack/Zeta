@@ -213,6 +213,7 @@
     <Compile Include="StateSpace.fs" />
     <Compile Include="DeltaPattern.fs" />
     <Compile Include="MemoryLens.fs" />
+    <Compile Include="LensRouter.fs" />
     <Compile Include="Survival.fs" />
     <Compile Include="MemorySense.fs" />
     <Compile Include="ControlMerge.fs" />
