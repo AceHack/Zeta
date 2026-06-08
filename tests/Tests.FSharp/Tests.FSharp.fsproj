@@ -101,6 +101,7 @@
     <Compile Include="ZetaExec.Tests.fs" />
     <Compile Include="StoredProc.Tests.fs" />
     <Compile Include="ReactiveSynth.Tests.fs" />
+    <Compile Include="Optic.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
