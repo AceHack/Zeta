@@ -505,3 +505,27 @@ Zeta convention (`roms/chip8/MANIFEST.md`): we use **SHA-256** as the canonical 
 DAT-legacy MD5/SHA-1) plus `crc32` for cross-checking against the above. Signatures are text/hex (the
 `no-binary-in-proof-lineage` discipline). If we adopt full DAT import (hexagonal/use their data), it lands as a
 satellite under `references/prior-art/` + a backlog item — not vendored into the build.
+
+## Game-playing AI / RL environments (the emulator-learner's prior art)
+
+Anchors for the soft-emulator game-learner (Aaron 2026-06-08). Ours is *not* learn-by-trial value approximation —
+it leans **exhaustive/omniscient state-space search + provable survival (control theory)** on small machines — but
+these are the lineage and the standard interfaces to anchor against / interop with:
+
+- **Q-learning** (Watkins 1989) — the value-based RL baseline (learn `Q(s,a)`); our `Survival`/`planTo` *compute*
+  the value exactly when the state space is tractable (omniscient) instead of learning it.
+- **OpenAI Gym → Gymnasium** (Farama Foundation) — the standard RL env interface (`reset`/`step`/`action_space`/
+  `observation`). The shape our emulator could expose (`Chip8Cow.step` + the action grammar = `step`/`action_space`).
+- **Gym Retro** — Gym hooked directly into game **emulators** (1000+ retro titles). Most directly analogous: our
+  CHIP-8/Atari emulator *as an RL environment*.
+- **OpenSpiel** (DeepMind) — general RL + search (MCTS, AlphaZero, DQN), perfect & imperfect information. Our
+  `StateSpace.explore` (transposition-table search) is the MCTS/AlphaZero-family search; their MCTS ≈ our
+  best-first over the indexed DAG.
+- **easyAI** — negamax + alpha-beta generic engine; you define `possible_moves`/`make_move`/`is_over`/`scoring`
+  (≈ our actions / `frameStep` / alive-invariant / value-loop). Beginner-grade but the same hook shape.
+- **OpenAI Universe** (2016, historical) — VNC-desktop RL (any app); the ambitious "play anything" precursor.
+
+**How ours differs (the contribution):** exhaustive/omniscient *proof* of optimum/survival while tractable (vs
+learned approximation); **control-theory survival-veto / subsumption** (`ControlMerge`, stay-alive has final say);
+**DST-deterministic** (seed-replayable, the omniscient-observer caveat #7125); **lens/sense abstraction**
+(`MemoryLens`/`MemorySense`) + **delta-pattern** state (content-address the change, #7121) to keep the space finite.
