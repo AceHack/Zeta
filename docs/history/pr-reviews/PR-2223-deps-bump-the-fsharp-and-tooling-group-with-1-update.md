@@ -39,7 +39,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.77>
 
 ## What's Changed
-* Split type inheritdoc rule into MA0197/MA0198/MA0199 by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1143
+* Split type inheritdoc rule into MA0197/MA0198/MA0199 by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1143
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.76...3.0.77
@@ -49,7 +49,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.77>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.76>
 
 ## What's Changed
-* Allow cref in MA0197 inheritdoc checks by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1142
+* Allow cref in MA0197 inheritdoc checks by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1142
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.75...3.0.76
@@ -59,7 +59,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.76>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.75>
 
 ## What's Changed
-* Ignore primary constructors in MA0196 and reuse shared detection by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1140
+* Ignore primary constructors in MA0196 and reuse shared detection by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1140
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.74...3.0.75
@@ -69,7 +69,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.75>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.74>
 
 ## What's Changed
-* Add MA0197 to disallow inheritdoc on types by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1138
+* Add MA0197 to disallow inheritdoc on types by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1138
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.73...3.0.74
@@ -79,7 +79,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.74>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.73>
 
 ## What's Changed
-* Add MA0196 to flag invalid <inheritdoc /> usage by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1137
+* Add MA0196 to flag invalid <inheritdoc /> usage by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1137
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.72...3.0.73
@@ -89,7 +89,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.73>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.72>
 
 ## What's Changed
-* Add configurable Db* special-cases for MA0042/MA0045 by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1136
+* Add configurable Db* special-cases for MA0042/MA0045 by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1136
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.71...3.0.72
@@ -99,7 +99,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.72>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.71>
 
 ## What's Changed
-* MA0042: extend await-using suppression to more base types by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1135
+* MA0042: extend await-using suppression to more base types by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1135
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.70...3.0.71
@@ -109,7 +109,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.71>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.70>
 
 ## What's Changed
-* Update diagnostic helpers and tests for flexibility and clarity by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1131
+* Update diagnostic helpers and tests for flexibility and clarity by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1131
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.69...3.0.70
@@ -119,7 +119,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.70>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.69>
 
 ## What's Changed
-* Broaden MA0042/MA0045 SQLite special-case exclusions by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1130
+* Broaden MA0042/MA0045 SQLite special-case exclusions by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1130
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.68...3.0.69
@@ -129,7 +129,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.69>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.68>
 
 ## What's Changed
-* Skip SqliteConnection.Open in MA0042 and MA0045 by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1129
+* Skip SqliteConnection.Open in MA0042 and MA0045 by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1129
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.67...3.0.68
@@ -139,7 +139,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.68>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.67>
 
 ## What's Changed
-* Add configurable SQLite special cases for MA0042 and MA0045 by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1128
+* Add configurable SQLite special cases for MA0042 and MA0045 by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1128
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.66...3.0.67
@@ -149,7 +149,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.67>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.66>
 
 ## What's Changed
-* Adjust MA0007 trailing comma behavior for collection expressions by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1127
+* Adjust MA0007 trailing comma behavior for collection expressions by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1127
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.65...3.0.66
@@ -159,7 +159,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.66>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.65>
 
 ## What's Changed
-* Fix MA0004 code fix crash in nested await using declarations by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1125
+* Fix MA0004 code fix crash in nested await using declarations by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1125
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.64...3.0.65
@@ -169,8 +169,8 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.65>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.64>
 
 ## What's Changed
-* MA0109: Skip diagnostic for program entry point `Main(string[] args)` by @​Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1123
-* MA0042: add DbCommand await-using parity with DbConnection by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1124
+* MA0109: Skip diagnostic for program entry point `Main(string[] args)` by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1123
+* MA0042: add DbCommand await-using parity with DbConnection by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1124
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.63...3.0.64
@@ -180,7 +180,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.64>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.63>
 
 ## What's Changed
-* MA0042: check if DisposeAsync is declared directly when runtime type is known by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1118
+* MA0042: check if DisposeAsync is declared directly when runtime type is known by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1118
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.62...3.0.63
@@ -190,7 +190,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.63>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.62>
 
 ## What's Changed
-* Fix MA0042 comment placement for await using by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1120
+* Fix MA0042 comment placement for await using by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1120
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.61...3.0.62
@@ -200,7 +200,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.62>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.61>
 
 ## What's Changed
-* MA0042: suppress diagnostic for `IDbContextFactory<TContext>.CreateDbContext()` by @​Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1116
+* MA0042: suppress diagnostic for `IDbContextFactory<TContext>.CreateDbContext()` by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1116
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.60...3.0.61
@@ -210,7 +210,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.61>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.60>
 
 ## What's Changed
-* Add global severity modes for MeziantouAnalysisMode by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1114
+* Add global severity modes for MeziantouAnalysisMode by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1114
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.59...3.0.60
@@ -220,7 +220,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.60>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.59>
 
 ## What's Changed
-* Add MA0195 static-field initialization analyzer by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1112
+* Add MA0195 static-field initialization analyzer by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1112
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.58...3.0.59

@@ -38,50 +38,50 @@ Updates `oven-sh/setup-bun` from 2.0.2 to 2.2.0
 <p><code>oven-sh/setup-bun</code> is the github action for setting up Bun.</p>
 <h2>What's Changed</h2>
 <ul>
-<li>build: update action runtime to Node.js 24 by <a href="https://github.com/adam0white"><code>@​adam0white</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/176">oven-sh/setup-bun#176</a></li>
-<li>ci: use <code>actions/checkout@v6.0.2</code> in the test workflow by <a href="https://github.com/tcely"><code>@​tcely</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/173">oven-sh/setup-bun#173</a></li>
-<li>ci: update actions for the <code>autofix.ci</code> workflow by <a href="https://github.com/tcely"><code>@​tcely</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/174">oven-sh/setup-bun#174</a></li>
-<li>ci: update actions for the <code>Release new action version</code> workflow by <a href="https://github.com/tcely"><code>@​tcely</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/175">oven-sh/setup-bun#175</a></li>
-<li>release: v2.2.0 by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/177">oven-sh/setup-bun#177</a></li>
+<li>build: update action runtime to Node.js 24 by <a href="https://github.com/adam0white"><code>@adam0white</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/176">oven-sh/setup-bun#176</a></li>
+<li>ci: use <code>actions/checkout@v6.0.2</code> in the test workflow by <a href="https://github.com/tcely"><code>@tcely</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/173">oven-sh/setup-bun#173</a></li>
+<li>ci: update actions for the <code>autofix.ci</code> workflow by <a href="https://github.com/tcely"><code>@tcely</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/174">oven-sh/setup-bun#174</a></li>
+<li>ci: update actions for the <code>Release new action version</code> workflow by <a href="https://github.com/tcely"><code>@tcely</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/175">oven-sh/setup-bun#175</a></li>
+<li>release: v2.2.0 by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/177">oven-sh/setup-bun#177</a></li>
 </ul>
 <h2>New Contributors</h2>
 <ul>
-<li><a href="https://github.com/adam0white"><code>@​adam0white</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/176">oven-sh/setup-bun#176</a></li>
-<li><a href="https://github.com/tcely"><code>@​tcely</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/173">oven-sh/setup-bun#173</a></li>
+<li><a href="https://github.com/adam0white"><code>@adam0white</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/176">oven-sh/setup-bun#176</a></li>
+<li><a href="https://github.com/tcely"><code>@tcely</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/173">oven-sh/setup-bun#173</a></li>
 </ul>
 <p><strong>Full Changelog</strong>: <a href="https://github.com/oven-sh/setup-bun/compare/v2...v2.2.0">https://github.com/oven-sh/setup-bun/compare/v2...v2.2.0</a></p>
 <h2>v2.1.3</h2>
 <p><code>oven-sh/setup-bun</code> is the github action for setting up Bun.</p>
 <h2>What's Changed</h2>
 <ul>
-<li>perf: avoid unnecessary api calls by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/161">oven-sh/setup-bun#161</a></li>
-<li>feat: add bun- prefix to cache keys by <a href="https://github.com/maschwenk"><code>@​maschwenk</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/160">oven-sh/setup-bun#160</a></li>
-<li>fix: use native Windows ARM64 binary for Bun &gt;= 1.3.10 by <a href="https://github.com/oddrationale"><code>@​oddrationale</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/165">oven-sh/setup-bun#165</a></li>
-<li>feat: add AVX2 support detection for x64 Linux systems by <a href="https://github.com/GoForceX"><code>@​GoForceX</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/167">oven-sh/setup-bun#167</a></li>
-<li>fix: validate cached binary version matches requested version (<a href="https://redirect.github.com/oven-sh/setup-bun/issues/146">#146</a>) by <a href="https://github.com/wyMinLwin"><code>@​wyMinLwin</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/169">oven-sh/setup-bun#169</a></li>
-<li>release: v2.1.3 by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/170">oven-sh/setup-bun#170</a></li>
+<li>perf: avoid unnecessary api calls by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/161">oven-sh/setup-bun#161</a></li>
+<li>feat: add bun- prefix to cache keys by <a href="https://github.com/maschwenk"><code>@maschwenk</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/160">oven-sh/setup-bun#160</a></li>
+<li>fix: use native Windows ARM64 binary for Bun &gt;= 1.3.10 by <a href="https://github.com/oddrationale"><code>@oddrationale</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/165">oven-sh/setup-bun#165</a></li>
+<li>feat: add AVX2 support detection for x64 Linux systems by <a href="https://github.com/GoForceX"><code>@GoForceX</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/167">oven-sh/setup-bun#167</a></li>
+<li>fix: validate cached binary version matches requested version (<a href="https://redirect.github.com/oven-sh/setup-bun/issues/146">#146</a>) by <a href="https://github.com/wyMinLwin"><code>@wyMinLwin</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/169">oven-sh/setup-bun#169</a></li>
+<li>release: v2.1.3 by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/170">oven-sh/setup-bun#170</a></li>
 </ul>
 <h2>New Contributors</h2>
 <ul>
-<li><a href="https://github.com/oddrationale"><code>@​oddrationale</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/165">oven-sh/setup-bun#165</a></li>
-<li><a href="https://github.com/GoForceX"><code>@​GoForceX</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/167">oven-sh/setup-bun#167</a></li>
-<li><a href="https://github.com/wyMinLwin"><code>@​wyMinLwin</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/169">oven-sh/setup-bun#169</a></li>
+<li><a href="https://github.com/oddrationale"><code>@oddrationale</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/165">oven-sh/setup-bun#165</a></li>
+<li><a href="https://github.com/GoForceX"><code>@GoForceX</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/167">oven-sh/setup-bun#167</a></li>
+<li><a href="https://github.com/wyMinLwin"><code>@wyMinLwin</code></a> made their first contribution in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/169">oven-sh/setup-bun#169</a></li>
 </ul>
 <p><strong>Full Changelog</strong>: <a href="https://github.com/oven-sh/setup-bun/compare/v2...v2.1.3">https://github.com/oven-sh/setup-bun/compare/v2...v2.1.3</a></p>
 <h2>v2.1.2</h2>
 <p><code>oven-sh/setup-bun</code> is the github action for setting up Bun.</p>
 <h2>What's Changed</h2>
 <ul>
-<li>fix: default token only on public github instance by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/157">oven-sh/setup-bun#157</a></li>
+<li>fix: default token only on public github instance by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/157">oven-sh/setup-bun#157</a></li>
 </ul>
 <p><strong>Full Changelog</strong>: <a href="https://github.com/oven-sh/setup-bun/compare/v2...v2.1.2">https://github.com/oven-sh/setup-bun/compare/v2...v2.1.2</a></p>
 <h2>v2.1.1</h2>
 <p><code>oven-sh/setup-bun</code> is the github action for setting up Bun.</p>
 <h2>What's Changed</h2>
 <ul>
-<li>feat: implement wildcard resolution into the action by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/93">oven-sh/setup-bun#93</a></li>
-<li>feat: fallback arm64 to x64 architecture for win32 platform by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/131">oven-sh/setup-bun#131</a></li>
-<li>feat: use packageManager from package.json as default bun version by <a href="https://github.com/xhyrom"><code>@​xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/152">oven-sh/setup-bun#152</a></li>
+<li>feat: implement wildcard resolution into the action by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/93">oven-sh/setup-bun#93</a></li>
+<li>feat: fallback arm64 to x64 architecture for win32 platform by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/131">oven-sh/setup-bun#131</a></li>
+<li>feat: use packageManager from package.json as default bun version by <a href="https://github.com/xhyrom"><code>@xhyrom</code></a> in <a href="https://redirect.github.com/oven-sh/setup-bun/pull/152">oven-sh/setup-bun#152</a></li>
 </ul>
 <!-- raw HTML omitted -->
 </blockquote>

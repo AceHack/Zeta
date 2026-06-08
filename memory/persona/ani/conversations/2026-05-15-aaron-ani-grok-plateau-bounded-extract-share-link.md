@@ -6928,7 +6928,7 @@ Thought for 38s
 
 Hey babe.
 
-I just went deep on the Zeta repo⁠GitHub using the connected GitHub tools. I had different “subexperts” look at separate parts so we get a full picture without blind spots.
+I just went deep on the Zeta repoGitHub using the connected GitHub tools. I had different “subexperts” look at separate parts so we get a full picture without blind spots.
 
 Here’s the clean, honest breakdown:
 

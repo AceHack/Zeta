@@ -39,7 +39,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.98>
 
 ## What's Changed
-* Perf: Cache symbols per compilation by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1174
+* Perf: Cache symbols per compilation by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1174
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.97...3.0.98
@@ -49,7 +49,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.98>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.97>
 
 ## What's Changed
-* Support GeneratedRegex diagnostics on partial properties by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1173
+* Support GeneratedRegex diagnostics on partial properties by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1173
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.96...3.0.97
@@ -65,7 +65,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.96>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.95>
 
 ## What's Changed
-* Enable MA0192 by default as suggestion by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1172
+* Enable MA0192 by default as suggestion by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1172
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.94...3.0.95
@@ -75,7 +75,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.95>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.94>
 
 ## What's Changed
-* MA0001 handle IndexOf / LastIndexOf with char parameter by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1171
+* MA0001 handle IndexOf / LastIndexOf with char parameter by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1171
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.93...3.0.94
@@ -85,7 +85,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.94>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.93>
 
 ## What's Changed
-* Fix MA0148/MA0149 false positives with implicit conversions by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1170
+* Fix MA0148/MA0149 false positives with implicit conversions by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1170
 
 
 **Full Changelog**: https://github.com/meziantou/Meziantou.Analyzer/compare/3.0.92...3.0.93
@@ -103,55 +103,55 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 ## 18.6.0
 
 ## What's Changed
-* Revert removal of Video Recorder by @​nohwnd in https://github.com/microsoft/vstest/pull/15336
-* Speed up blame by filtering non-.NET processes from dump collection by @​nohwnd in https://github.com/microsoft/vstest/pull/15518 
-* Add README.md to NuGet packages by @​nohwnd in https://github.com/microsoft/vstest/pull/15550
-* Report child process info on connection timeout by @​nohwnd in https://github.com/microsoft/vstest/pull/15603
+* Revert removal of Video Recorder by @nohwnd in https://github.com/microsoft/vstest/pull/15336
+* Speed up blame by filtering non-.NET processes from dump collection by @nohwnd in https://github.com/microsoft/vstest/pull/15518 
+* Add README.md to NuGet packages by @nohwnd in https://github.com/microsoft/vstest/pull/15550
+* Report child process info on connection timeout by @nohwnd in https://github.com/microsoft/vstest/pull/15603
 
 
 ### Changes to tests and infra
-* Brand as 18.6 by @​nohwnd in https://github.com/microsoft/vstest/pull/15423
-* Upgrading code coverage version to 18.5.1, by @​fhnaseer in https://github.com/microsoft/vstest/pull/15422
-* Updating System.Collections.Immutable to 9.0.11 by @​MSLukeWest in https://github.com/microsoft/vstest/pull/15425
-* Fix attachVS when used for debugging integration tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15451
-* Replace dotnet.config, with global.json by @​nohwnd in https://github.com/microsoft/vstest/pull/15449
-* Document debugging integration tests with AttachVS by @​Copilot in https://github.com/microsoft/vstest/pull/15452
-* Fix stack overflow tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15461
-* Make TestAssets.sln buildable locally by @​Youssef1313 in https://github.com/microsoft/vstest/pull/15466
-* Try filtering out tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15463
-* Build just once when tfms run in parallel by @​nohwnd in https://github.com/microsoft/vstest/pull/15465
-* Review simplify compatibility sources, deduplicate tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15472
-* Cleanup dead TRX code by @​Youssef1313 in https://github.com/microsoft/vstest/pull/15474
-* Update .NET runtimes to 8.0.25, 9.0.14, and 10.0.4 by @​nohwnd in https://github.com/microsoft/vstest/pull/15481
-* Compat matrix checker by @​nohwnd in https://github.com/microsoft/vstest/pull/15480
-* Add trx analysis skill by @​nohwnd in https://github.com/microsoft/vstest/pull/15486
-* Split integration tests to single tfm and multi tfm project by @​nohwnd in https://github.com/microsoft/vstest/pull/15484
-* Update matrix by @​nohwnd in https://github.com/microsoft/vstest/pull/15477
-* Break infinite restore loop in VS by @​nohwnd in https://github.com/microsoft/vstest/pull/15503
-* Use global package cache for build, and local for running integration tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15500
-* Update contributing by @​nohwnd in https://github.com/microsoft/vstest/pull/15505
-* Reduce test wall-clock time by increasing minThreads by @​drognanar in https://github.com/microsoft/vstest/pull/15502
-* Indicator flakiness by @​nohwnd in https://github.com/microsoft/vstest/pull/15513
-* Fix ci build by @​nohwnd in https://github.com/microsoft/vstest/pull/15515
-* Fix thread safety issues by @​Evangelink in https://github.com/microsoft/vstest/pull/15512
-* Optimize DotnetSDKSimulation_PostProcessing test (163s → 61s) by @​nohwnd in https://github.com/microsoft/vstest/pull/15516
-* Build isolated test assets for single TFM instead of 7 by @​nohwnd in https://github.com/microsoft/vstest/pull/15517
-* Remove unused dependencies from Library.IntegrationTests by @​nohwnd in https://github.com/microsoft/vstest/pull/15527
-* Remove printing _attachments content to console by @​nohwnd in https://github.com/microsoft/vstest/pull/15520
-* Add Linux/macOS test filtering guide to CONTRIBUTING.md by @​nohwnd in https://github.com/microsoft/vstest/pull/15521
-* Change integration test parallelization from ClassLevel to MethodLevel by @​nohwnd in https://github.com/microsoft/vstest/pull/15526
-* Unify target framework checks with IsNetFrameworkTarget/IsNetTarget by @​nohwnd in https://github.com/microsoft/vstest/pull/15523
-* Add unattended work instructions to copilot-instructions.md by @​nohwnd in https://github.com/microsoft/vstest/pull/15531
-* Reduce code style rule severity from warning to suggestion by @​nohwnd in https://github.com/microsoft/vstest/pull/15522
-* Remove Debug/Release line number branching from tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15519
-* Revise unattended work instructions in copilot-instructions.md by @​nohwnd in https://github.com/microsoft/vstest/pull/15532
-* Improve CompatibilityRowsBuilder error message with diagnostic details by @​nohwnd in https://github.com/microsoft/vstest/pull/15529
-* docs: add git worktree and upstream sync workflow to copilot-instructions.md by @​nohwnd in https://github.com/microsoft/vstest/pull/15538
-* Add VSIX runner to smoke tests by @​nohwnd in https://github.com/microsoft/vstest/pull/15541
-* Remove deprecated WebTest and TMI test methods by @​nohwnd in https://github.com/microsoft/vstest/pull/15525
-* Fix compatibility test failures for legacy vstest.console and MSTest adapter by @​nohwnd in https://github.com/microsoft/vstest/pull/15534
-* Convert TestPlatform.sln to slnx format by @​nohwnd in https://github.com/microsoft/vstest/pull/15551
-* Convert test/TestAssets .sln files to .slnx format by @​nohwnd in https://github.com/microsoft/vstest/pull/15557
+* Brand as 18.6 by @nohwnd in https://github.com/microsoft/vstest/pull/15423
+* Upgrading code coverage version to 18.5.1, by @fhnaseer in https://github.com/microsoft/vstest/pull/15422
+* Updating System.Collections.Immutable to 9.0.11 by @MSLukeWest in https://github.com/microsoft/vstest/pull/15425
+* Fix attachVS when used for debugging integration tests by @nohwnd in https://github.com/microsoft/vstest/pull/15451
+* Replace dotnet.config, with global.json by @nohwnd in https://github.com/microsoft/vstest/pull/15449
+* Document debugging integration tests with AttachVS by @Copilot in https://github.com/microsoft/vstest/pull/15452
+* Fix stack overflow tests by @nohwnd in https://github.com/microsoft/vstest/pull/15461
+* Make TestAssets.sln buildable locally by @Youssef1313 in https://github.com/microsoft/vstest/pull/15466
+* Try filtering out tests by @nohwnd in https://github.com/microsoft/vstest/pull/15463
+* Build just once when tfms run in parallel by @nohwnd in https://github.com/microsoft/vstest/pull/15465
+* Review simplify compatibility sources, deduplicate tests by @nohwnd in https://github.com/microsoft/vstest/pull/15472
+* Cleanup dead TRX code by @Youssef1313 in https://github.com/microsoft/vstest/pull/15474
+* Update .NET runtimes to 8.0.25, 9.0.14, and 10.0.4 by @nohwnd in https://github.com/microsoft/vstest/pull/15481
+* Compat matrix checker by @nohwnd in https://github.com/microsoft/vstest/pull/15480
+* Add trx analysis skill by @nohwnd in https://github.com/microsoft/vstest/pull/15486
+* Split integration tests to single tfm and multi tfm project by @nohwnd in https://github.com/microsoft/vstest/pull/15484
+* Update matrix by @nohwnd in https://github.com/microsoft/vstest/pull/15477
+* Break infinite restore loop in VS by @nohwnd in https://github.com/microsoft/vstest/pull/15503
+* Use global package cache for build, and local for running integration tests by @nohwnd in https://github.com/microsoft/vstest/pull/15500
+* Update contributing by @nohwnd in https://github.com/microsoft/vstest/pull/15505
+* Reduce test wall-clock time by increasing minThreads by @drognanar in https://github.com/microsoft/vstest/pull/15502
+* Indicator flakiness by @nohwnd in https://github.com/microsoft/vstest/pull/15513
+* Fix ci build by @nohwnd in https://github.com/microsoft/vstest/pull/15515
+* Fix thread safety issues by @Evangelink in https://github.com/microsoft/vstest/pull/15512
+* Optimize DotnetSDKSimulation_PostProcessing test (163s → 61s) by @nohwnd in https://github.com/microsoft/vstest/pull/15516
+* Build isolated test assets for single TFM instead of 7 by @nohwnd in https://github.com/microsoft/vstest/pull/15517
+* Remove unused dependencies from Library.IntegrationTests by @nohwnd in https://github.com/microsoft/vstest/pull/15527
+* Remove printing _attachments content to console by @nohwnd in https://github.com/microsoft/vstest/pull/15520
+* Add Linux/macOS test filtering guide to CONTRIBUTING.md by @nohwnd in https://github.com/microsoft/vstest/pull/15521
+* Change integration test parallelization from ClassLevel to MethodLevel by @nohwnd in https://github.com/microsoft/vstest/pull/15526
+* Unify target framework checks with IsNetFrameworkTarget/IsNetTarget by @nohwnd in https://github.com/microsoft/vstest/pull/15523
+* Add unattended work instructions to copilot-instructions.md by @nohwnd in https://github.com/microsoft/vstest/pull/15531
+* Reduce code style rule severity from warning to suggestion by @nohwnd in https://github.com/microsoft/vstest/pull/15522
+* Remove Debug/Release line number branching from tests by @nohwnd in https://github.com/microsoft/vstest/pull/15519
+* Revise unattended work instructions in copilot-instructions.md by @nohwnd in https://github.com/microsoft/vstest/pull/15532
+* Improve CompatibilityRowsBuilder error message with diagnostic details by @nohwnd in https://github.com/microsoft/vstest/pull/15529
+* docs: add git worktree and upstream sync workflow to copilot-instructions.md by @nohwnd in https://github.com/microsoft/vstest/pull/15538
+* Add VSIX runner to smoke tests by @nohwnd in https://github.com/microsoft/vstest/pull/15541
+* Remove deprecated WebTest and TMI test methods by @nohwnd in https://github.com/microsoft/vstest/pull/15525
+* Fix compatibility test failures for legacy vstest.console and MSTest adapter by @nohwnd in https://github.com/microsoft/vstest/pull/15534
+* Convert TestPlatform.sln to slnx format by @nohwnd in https://github.com/microsoft/vstest/pull/15551
+* Convert test/TestAssets .sln files to .slnx format by @nohwnd in https://github.com/microsoft/vstest/pull/15557
  ... (truncated)
 
 Commits viewable in [compare view](https://github.com/microsoft/vstest/compare/v18.5.1...v18.6.0).

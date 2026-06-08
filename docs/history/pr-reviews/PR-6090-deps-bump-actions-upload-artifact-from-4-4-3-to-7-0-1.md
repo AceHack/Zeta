@@ -35,9 +35,9 @@ Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from
 <h2>v7.0.1</h2>
 <h2>What's Changed</h2>
 <ul>
-<li>Update the readme with direct upload details by <a href="https://github.com/danwkennedy"><code>@​danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/795">actions/upload-artifact#795</a></li>
-<li>Readme: bump all the example versions to v7 by <a href="https://github.com/danwkennedy"><code>@​danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/796">actions/upload-artifact#796</a></li>
-<li>Include changes in typespec/ts-http-runtime 0.3.5 by <a href="https://github.com/yacaovsnc"><code>@​yacaovsnc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/797">actions/upload-artifact#797</a></li>
+<li>Update the readme with direct upload details by <a href="https://github.com/danwkennedy"><code>@danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/795">actions/upload-artifact#795</a></li>
+<li>Readme: bump all the example versions to v7 by <a href="https://github.com/danwkennedy"><code>@danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/796">actions/upload-artifact#796</a></li>
+<li>Include changes in typespec/ts-http-runtime 0.3.5 by <a href="https://github.com/yacaovsnc"><code>@yacaovsnc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/797">actions/upload-artifact#797</a></li>
 </ul>
 <p><strong>Full Changelog</strong>: <a href="https://github.com/actions/upload-artifact/compare/v7...v7.0.1">https://github.com/actions/upload-artifact/compare/v7...v7.0.1</a></p>
 <h2>v7.0.0</h2>
@@ -48,13 +48,13 @@ Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from
 <p>To support new versions of the <code>@actions/*</code> packages, we've upgraded the package to ESM.</p>
 <h2>What's Changed</h2>
 <ul>
-<li>Add proxy integration test by <a href="https://github.com/Link"><code>@​Link</code></a>- in <a href="https://redirect.github.com/actions/upload-artifact/pull/754">actions/upload-artifact#754</a></li>
-<li>Upgrade the module to ESM and bump dependencies by <a href="https://github.com/danwkennedy"><code>@​danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/762">actions/upload-artifact#762</a></li>
-<li>Support direct file uploads by <a href="https://github.com/danwkennedy"><code>@​danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/764">actions/upload-artifact#764</a></li>
+<li>Add proxy integration test by <a href="https://github.com/Link"><code>@Link</code></a>- in <a href="https://redirect.github.com/actions/upload-artifact/pull/754">actions/upload-artifact#754</a></li>
+<li>Upgrade the module to ESM and bump dependencies by <a href="https://github.com/danwkennedy"><code>@danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/762">actions/upload-artifact#762</a></li>
+<li>Support direct file uploads by <a href="https://github.com/danwkennedy"><code>@danwkennedy</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/764">actions/upload-artifact#764</a></li>
 </ul>
 <h2>New Contributors</h2>
 <ul>
-<li><a href="https://github.com/Link"><code>@​Link</code></a>- made their first contribution in <a href="https://redirect.github.com/actions/upload-artifact/pull/754">actions/upload-artifact#754</a></li>
+<li><a href="https://github.com/Link"><code>@Link</code></a>- made their first contribution in <a href="https://redirect.github.com/actions/upload-artifact/pull/754">actions/upload-artifact#754</a></li>
 </ul>
 <p><strong>Full Changelog</strong>: <a href="https://github.com/actions/upload-artifact/compare/v6...v7.0.0">https://github.com/actions/upload-artifact/compare/v6...v7.0.0</a></p>
 <h2>v6.0.0</h2>
@@ -67,9 +67,9 @@ actions/upload-artifact@v6 now runs on Node.js 24 (<code>runs.using: node24</cod
 <p>This release updates the runtime to Node.js 24. v5 had preliminary support for Node.js 24, however this action was by default still running on Node.js 20. Now this action by default will run on Node.js 24.</p>
 <h2>What's Changed</h2>
 <ul>
-<li>Upload Artifact Node 24 support by <a href="https://github.com/salmanmkc"><code>@​salmanmkc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/719">actions/upload-artifact#719</a></li>
-<li>fix: update <code>@​actions/artifact</code> for Node.js 24 punycode deprecation by <a href="https://github.com/salmanmkc"><code>@​salmanmkc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/744">actions/upload-artifact#744</a></li>
-<li>prepare release v6.0.0 for Node.js 24 support by <a href="https://github.com/salmanmkc"><code>@​salmanmkc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/745">actions/upload-artifact#745</a></li>
+<li>Upload Artifact Node 24 support by <a href="https://github.com/salmanmkc"><code>@salmanmkc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/719">actions/upload-artifact#719</a></li>
+<li>fix: update <code>@actions/artifact</code> for Node.js 24 punycode deprecation by <a href="https://github.com/salmanmkc"><code>@salmanmkc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/744">actions/upload-artifact#744</a></li>
+<li>prepare release v6.0.0 for Node.js 24 support by <a href="https://github.com/salmanmkc"><code>@salmanmkc</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/745">actions/upload-artifact#745</a></li>
 </ul>
 <p><strong>Full Changelog</strong>: <a href="https://github.com/actions/upload-artifact/compare/v5.0.0...v6.0.0">https://github.com/actions/upload-artifact/compare/v5.0.0...v6.0.0</a></p>
 <h2>v5.0.0</h2>

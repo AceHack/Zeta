@@ -54,7 +54,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:56Z on `docs/pr-discussions/PR-4715-deps-bump-yamldotnet-from-17-1-0-to-18-0-0.md`:29 (association: NONE)
 
   <pre>
-  P0: This line contains an invisible Unicode character (U+200B / zero-width space) in the `@​EdwardCooke` handle. The repo’s `invisible-unicode-in-text` check will flag this in `*.md` and fail CI; replace it with plain ASCII (`@EdwardCooke`) and ensure no zero-width characters remain.
+  P0: This line contains an invisible Unicode character (U+200B / zero-width space) in the `@EdwardCooke` handle. The repo’s `invisible-unicode-in-text` check will flag this in `*.md` and fail CI; replace it with plain ASCII (`@EdwardCooke`) and ensure no zero-width characters remain.
 
   </pre>
 
@@ -69,7 +69,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:57Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:52 (association: NONE)
 
   <pre>
-  P0: This thread text includes an actual U+200B zero-width space inside the example `[#​1907]` / `[#​....]` code spans. Even though it’s describing the issue, the literal hidden character will still trigger Semgrep `invisible-unicode-in-text` and break CI; replace the examples with ASCII (e.g., `[#1907]`) and describe the zero-width space in words ("U+200B between `#` and digits").
+  P0: This thread text includes an actual U+200B zero-width space inside the example `[#1907]` / `[#....]` code spans. Even though it’s describing the issue, the literal hidden character will still trigger Semgrep `invisible-unicode-in-text` and break CI; replace the examples with ASCII (e.g., `[#1907]`) and describe the zero-width space in words ("U+200B between `#` and digits").
 
   </pre>
 
@@ -84,7 +84,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:57Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:52 (association: NONE)
 
   <pre>
-  P0: This line contains a U+200B zero-width space inside the `@​meziantou` / `@​Copilot` code spans. Semgrep `invisible-unicode-in-text` will flag the hidden character even inside backticks; rewrite the examples using plain ASCII (`@meziantou`, `@Copilot`) and keep the mention of U+200B as text only.
+  P0: This line contains a U+200B zero-width space inside the `@meziantou` / `@Copilot` code spans. Semgrep `invisible-unicode-in-text` will flag the hidden character even inside backticks; rewrite the examples using plain ASCII (`@meziantou`, `@Copilot`) and keep the mention of U+200B as text only.
 
   </pre>
 
@@ -99,7 +99,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:57Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:58 (association: NONE)
 
   <pre>
-  P0: This line contains an actual U+200B zero-width space inside the `@​Copilot` code span. That hidden character will trip the repo’s invisible-Unicode lint; replace it with ASCII `@Copilot` (or spell out the codepoint without embedding it).
+  P0: This line contains an actual U+200B zero-width space inside the `@Copilot` code span. That hidden character will trip the repo’s invisible-Unicode lint; replace it with ASCII `@Copilot` (or spell out the codepoint without embedding it).
 
   </pre>
 
@@ -114,7 +114,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:57Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:64 (association: NONE)
 
   <pre>
-  P0: This line contains a U+200B zero-width space inside the `@​meziantou` code span. Even as an example, embedding the invisible character will fail `invisible-unicode-in-text`; replace with plain ASCII `@meziantou` and keep the description of the issue as words.
+  P0: This line contains a U+200B zero-width space inside the `@meziantou` code span. Even as an example, embedding the invisible character will fail `invisible-unicode-in-text`; replace with plain ASCII `@meziantou` and keep the description of the issue as words.
 
   </pre>
 
@@ -129,7 +129,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:58Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:82 (association: NONE)
 
   <pre>
-  P0: This line embeds a U+200B zero-width space inside `@​meziantou`. Remove the hidden character (use ASCII `@meziantou`) so the archive stays lint-clean.
+  P0: This line embeds a U+200B zero-width space inside `@meziantou`. Remove the hidden character (use ASCII `@meziantou`) so the archive stays lint-clean.
 
   </pre>
 
@@ -144,7 +144,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:58Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:82 (association: NONE)
 
   <pre>
-  P0: This line includes a U+200B zero-width space inside `@​meziantou`. Semgrep will flag it in Markdown; replace with ASCII `@meziantou` (or avoid embedding the example with the hidden character).
+  P0: This line includes a U+200B zero-width space inside `@meziantou`. Semgrep will flag it in Markdown; replace with ASCII `@meziantou` (or avoid embedding the example with the hidden character).
 
   </pre>
 
@@ -159,7 +159,7 @@ This PR contains only the preserved PR discussions from #4767.
 - **`Copilot` (bot)** at 2026-05-24T01:09:58Z on `docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md`:82 (association: NONE)
 
   <pre>
-  P0: This line embeds a U+200B zero-width space in the `@​meziantou` example. Even though it’s quoting a prior review comment, the hidden character will still break `invisible-unicode-in-text`; rewrite the example with plain ASCII.
+  P0: This line embeds a U+200B zero-width space in the `@meziantou` example. Even though it’s quoting a prior review comment, the hidden character will still break `invisible-unicode-in-text`; rewrite the example with plain ASCII.
 
   </pre>
 

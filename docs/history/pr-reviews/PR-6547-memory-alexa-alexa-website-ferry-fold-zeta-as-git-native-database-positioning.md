@@ -158,7 +158,7 @@ memory(alexa): strip ZWJ from pirate-flag emoji (semgrep invisible-un…
 
 …icode-in-text)
 
-The verbatim Alexa text had 🏴‍☠️ (ZWJ sequence; U+200D zero-width joiner) on 2
+The verbatim Alexa text had 🏴☠️ (ZWJ sequence; U+200D zero-width joiner) on 2
 lines — semgrep invisible-unicode-in-text blocks the invisible U+200D. Stripped
 the ZWJ (flag renders as 🏴☠️, no invisible joiner); FE0F variation selectors
 are allowed. Content otherwise unchanged.
