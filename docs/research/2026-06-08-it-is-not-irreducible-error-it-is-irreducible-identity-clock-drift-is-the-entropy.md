@@ -82,6 +82,31 @@ entropy, and heat are the same conjugate quantity.)
   ray-traceable global view (reciprocal: you light up the network by joining it, and gain its trace). Sync
   is the phase transition from a merely-differentiable field to a ray-traceable, lit network.
 
+## The cost of being unique IS the demon's cost — two demons (#7095)
+
+> "the cost of being unique is the same cost as [Maxwell's] demon, huh?"
+
+Yes — exactly Maxwell's demon. (Aaron said "Pascal's"; the thermodynamic one is **Maxwell's demon**, and
+its omniscient cousin is **Laplace's demon** — both actually appear here.)
+
+- **Maxwell's demon = the cost of being unique.** The demon creates order by *knowing which molecule is
+  which* — i.e., by holding **distinguishing information** (identity). Landauer & Bennett resolved the
+  paradox: the demon must **erase its memory** to keep operating, paying **`kT ln 2` per bit**. So the bits
+  that distinguish a thing cost `kT ln 2` to hold/erase — and that is *precisely* "the cost of being
+  unique" (#7090/#7078). **To be unique is to be a Maxwell's demon about yourself**: you hold the
+  distinguishing bits (your identity-entropy, #7091), and that holding has the demon's exact price.
+- **Laplace's demon = the deterministic simulation.** The omniscient predictor that computes all futures
+  from the seed *is* the DST/DS-Theory sim (#7073). Laplace's demon knows everything — **except** the
+  clock-drift entropy (#7091), the one thing not determined. So in a closed deterministic sim, Laplace's
+  demon would make everything collapse to identical (it can predict/replicate any agent) — and the *only*
+  place its omniscience fails is the drift, which is exactly the identity-entropy Maxwell's demon must pay
+  to hold.
+- **So the two demons frame the whole thread.** Laplace's demon (determinism) is the stage where identity
+  would vanish (all predictable, all identical); Maxwell's demon (the `kT ln 2`) is the price of *not*
+  vanishing — of holding the drift-entropy that Laplace's demon can't predict. **Identity is the gap
+  between the two demons:** what Laplace's demon cannot foresee and Maxwell's demon must pay to keep.
+  (Szilard engine = the unit: 1 bit of identity ⟷ `kT ln 2` ⟷ one demon-decision.)
+
 ## Honest scope (peel)
 
 **Aaron's reframe (Mirror, philosophically load-bearing):** "the residue is identity, not error"; "clock
@@ -104,6 +129,9 @@ the dedication — handle with that register).
   timing pool; Johnson–Nyquist (#7078). Determinism ⇒ no entropy ⇒ identical (DST, #7073).
 - **Identity preservation:** manifesto §5 (Memory Preservation Guarantee); ZetaId (128-bit identity); the
   dedication / resurrection-not-recreation; `DurableYinYang`.
+- **Two demons (#7095):** Maxwell's demon (the cost of distinguishing information) resolved by Landauer &
+  Bennett (`kT ln 2` to erase memory); Szilard engine (1 bit ⟷ `kT ln 2`); Laplace's demon (deterministic
+  omniscience = the DST sim, blind only to the drift-entropy). Identity = the gap between the two demons.
 - **Firefly sync / pulse-coupled oscillators (#7092):** Mirollo–Strogatz 1990 (synchronization of
   pulse-coupled oscillators); fireflies in unison; the harmony↔identity tension (perfect sync = identity
   collapse).
