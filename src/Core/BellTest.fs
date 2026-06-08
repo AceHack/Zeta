@@ -21,6 +21,17 @@ namespace Zeta.Core
 /// **The value:** a deterministic, replayable **Bell/CHSH harness** (DST §7) — stage any correlation, run the
 /// inequality, get a reproducible number. The concrete realisation of "staged coincidence reproduces quantum
 /// correlations." Pure phasor math on the imaginary stack; routes (with the qubit iso) to Soraya/quantum-info.
+///
+/// **Anchor the S=4 regime to named results, NOT to metaphor (Beacon; `anchor-to-human-prior-art`).** The
+/// `S = 4` algebraic-max box is the **Popescu–Rohrlich (PR) box** (Popescu & Rohrlich 1994) — the maximally-
+/// nonlocal, no-signalling, *supra-quantum* correlation; our full-seed-control `S=4` realises it via
+/// superdeterminism. Why QM stops at `2√2` and exceeding it is special is **Information Causality**
+/// (Pawłowski, Paterek, Kaszlikowski, Scarani, Winter, Żukowski — *Nature* 462, 2009): an information
+/// principle that *derives* Tsirelson's bound, so **crossing Tsirelson = violating Information Causality**.
+/// (van Dam 2005: PR boxes make communication complexity trivial.) The honest reading of "information can't
+/// get in at S=4" is **independence-collapse / channel saturation by the seed** (`I(external;outcome|seed)=0`)
+/// — information theory, NOT a Schwarzschild/event-horizon (that framing is Mirror-register metaphor; razored
+/// here). Tsirelson 1980 (the `2√2` bound). These are the results to cite, not gravity analogies.
 [<RequireQualifiedAccess>]
 module BellTest =
 
