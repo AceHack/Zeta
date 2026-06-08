@@ -66,3 +66,42 @@ converge algebra over the one stream with the interrupt as the DST time source.
 Fokkinga 1990 (Banana Split Law); Rx `zip`/`join`/`groupJoin`; CALM / `Reconcile.fs` (converge); event
 sourcing + `rr` + save-states (rewind/ff); manifesto §2 (wait-free), §7 (DST). Internal: `CoincidenceClock`,
 `BellTest`, `SymmetricEndurance`; B-1002 (gated transport). Aaron's settled distinction 2026-06-08.
+
+## Rx-operator realization + homoiconic over the interfaces we own (Aaron 2026-06-08)
+
+Aaron: *"we should make this homoiconic to Rx — or our hexagonal version of Rx, the interfaces we own."* Two
+layers:
+
+### (a) Each abstract op → its concrete Rx operator (when run on System.Reactive)
+
+| our op | Rx operator(s) |
+|---|---|
+| **fork** (banana split) | `Publish`/`Multicast`(+`RefCount`) — one source to many pipelines; `GroupBy` (fork-by-key) |
+| **zip** (wait-free pair) | `Zip` (positional) |
+| **join** (coincidence-gated) | `Join` / `GroupJoin` — **window overlap = coincidence**; `CoincidenceClock` plugs in here |
+| **converge — flatten** (many streams → one) | `SelectMany` / `Merge` |
+| **converge — consensus** (CRDT reconcile to one value) | `Scan`/`Aggregate` + commutative-idempotent (CRDT) merge — **NOT** `SelectMany` |
+| **rewind / fast-forward** | replay/fold over the buffered event log (`Replay`/`Scan` from the start) |
+
+**Correction to keep:** `SelectMany` is the *flatten* converge (stream→stream), **not** the *consensus*
+converge (the CRDT order-independent settle = `Scan` + commutative merge). Two different "converges."
+
+### (b) Homoiconic over the owned interface (not opaque functions)
+
+The ops should be **data, not closures** — a timeline program is a `Bonsai`/`DynamicValue` **expression tree**
+(homoiconic; #7032 meta-events in-band; `all-our-metadata-is-homoiconic-to-our-data`), interpreted over the
+Rx interface **we own** (`bcl-interface-boundary` — own the port, adapt the backend in). The owned port is
+the **`IQbservable` / Reaqtor lineage** already gestured at in `Rx.fs` (`RxAdapter`): Bart De Smet's
+expression-tree-*queryable* Rx — queries as inspectable/serializable trees — with **System.Reactive as one
+backend** (others: our own DBSP `Stream<ZSet>` runtime, the DoP-knobbed ferry). Because the ops are data:
+- the timeline program is **serializable** (Bonsai — B-0640) and **DST-replayable**;
+- it is **meta-homoiconic** — the program is itself an event on the same zset stream, so a *timeline-ops
+  program* can be forked/joined/rewound like any other timeline (the meta-boundary is homoiconic);
+- `fork`/`zip`/`join`/`converge` are DU cases / Bonsai nodes, given meaning by an interpreter over the owned
+  `IQbservable` port (System.Reactive = reference oracle; native DBSP = the fast path), with the
+  native-vs-interpreted differential we already use (`StoredProc` pattern).
+
+So: the four-op algebra is a **homoiconic query over our owned Rx port**, not a pile of functions — Rx
+operators are the *reference semantics*, Bonsai/DynamicValue is the *homoiconic representation*, and we own
+the interface so backends (System.Reactive / DBSP / ferry) swap underneath. Composes B-0640 (Bonsai+Rx) +
+`Rx.fs`/`RxAdapter` (IQbservable/Reaqtor) + `StoredProc` (native-vs-interpreted).
