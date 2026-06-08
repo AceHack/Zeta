@@ -81,3 +81,29 @@ module StoredProc =
             | Some(DynamicValue.String op) -> Error(sprintf "unknown op '%s'" op)
             | _ -> Error "missing 'op'"
         | _ -> Error "stored-proc must be a DynamicValue.Object"
+
+    /// A table operation as an **interface** — the hexagonal port (#7019) both the native fold and the
+    /// DynamicValue-backed interpreter satisfy. Native and interpreted are then *interchangeable behind one
+    /// interface*, and the differential test (#7049) compares two implementations of the SAME interface.
+    type ITableProc =
+        abstract member Apply: Table -> Table
+
+    /// The **native** implementation of the interface (the F# fold).
+    let nativeProc (d: Delta) : ITableProc =
+        { new ITableProc with
+            member _.Apply(t) = applyDelta t d }
+
+    /// The **interpreted** implementation of the SAME interface, backed by a `DynamicValue` stored-proc via an
+    /// F# **object expression** (Aaron #7051: *"implement the interface in DynamicValue in F# — return a
+    /// `{ new Interface with … }`"*). Validates the proc once (`decodeDelta`); `Apply` then runs the
+    /// independent interpreter (`interpretApply`). `Error` if the stored-proc is malformed.
+    let dynamicProc (sp: DynamicValue) : Result<ITableProc, string> =
+        match decodeDelta sp with
+        | Error e -> Error e
+        | Ok _ ->
+            Ok
+                { new ITableProc with
+                    member _.Apply(t) =
+                        match interpretApply t sp with
+                        | Ok r -> r
+                        | Error e -> failwithf "validated stored-proc failed at Apply: %s" e }

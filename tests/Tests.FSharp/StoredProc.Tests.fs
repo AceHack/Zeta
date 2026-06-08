@@ -37,6 +37,28 @@ let ``DIFFERENTIAL: native applyDelta == interpreted stored-proc (the per-test, 
             Assert.Equal<Table>(native, interpreted)
 
 [<Fact>]
+let ``DIFFERENTIAL via interface: nativeProc and dynamicProc agree behind ITableProc (#7051)`` () =
+    // Both implement the SAME interface (the DynamicValue one via an F# object expression); they agree.
+    let tables = [ emptyTable; Map [ "a", dv "old" ] ]
+
+    for t in tables do
+        for d in deltas do
+            let native: ITableProc = nativeProc d
+            let dyn: ITableProc =
+                match dynamicProc (encodeDelta d) with
+                | Ok p -> p
+                | Error e -> failwithf "dynamicProc failed: %s" e
+            Assert.Equal<Table>(native.Apply t, dyn.Apply t)
+
+[<Fact>]
+let ``dynamicProc rejects a malformed stored-proc up front`` () =
+    Assert.True(
+        match dynamicProc (DynamicValue.String "nope") with
+        | Error _ -> true
+        | Ok _ -> false
+    )
+
+[<Fact>]
 let ``interpret surfaces a malformed stored-proc as Error (no silent failure)`` () =
     Assert.True(
         match interpretApply emptyTable (DynamicValue.String "not-an-object") with
