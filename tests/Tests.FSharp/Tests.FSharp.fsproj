@@ -116,6 +116,8 @@
     <Compile Include="CoincidenceClock.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="ForwardMomentum.Tests.fs" />
+    <Compile Include="QubitIso.Tests.fs" />
+    <Compile Include="BellTest.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
