@@ -57,3 +57,33 @@ let ``deterministic / replayable (DST)`` () =
     let m = { PhysicalClocks = 1; ForgeRatePerTick = 0.25 }
     Assert.Equal(certify m 4 12 500, certify m 4 12 500)
     Assert.Equal<ForgerProgress list>(trace m 4 20, trace m 4 20)
+
+[<Fact>]
+let ``rate model: default differential — defender out-rates the forger, lead grows unbounded`` () =
+    let m = defaultRateModel // +1 heartbeat vs -1 forger decay, no fabrication
+    Assert.True(outlastsForger m)
+    Assert.Equal(1.0, defenderNetRate m)
+    Assert.Equal(-1.0, forgerNetRate m) // the "-1": decay with no fabrication
+    // Defender pulls ahead every tick; forger claim floors at 0.
+    Assert.True(defenderClaimAt m 5 > forgerClaimAt m 5)
+    Assert.Equal(0.0, forgerClaimAt m 5)
+
+[<Fact>]
+let ``rate model: equal net rates is a tie — NOT safe (no margin)`` () =
+    // Forger fabricates fast enough to exactly offset decay AND match the heartbeat.
+    let m = { HeartbeatRate = 1.0; ForgerDecay = 1.0; ForgerForgeRate = 2.0 } // forgerNet = 1.0 = defenderNet
+    Assert.False(outlastsForger m)
+    Assert.Equal(defenderNetRate m, forgerNetRate m)
+
+[<Fact>]
+let ``rate model: forger out-fabricating the heartbeat loses the endurance invariant`` () =
+    let m = { HeartbeatRate = 1.0; ForgerDecay = 0.0; ForgerForgeRate = 2.0 } // forgerNet 2 > defender 1
+    Assert.False(outlastsForger m)
+    Assert.True(forgerClaimAt m 10 > defenderClaimAt m 10)
+
+[<Fact>]
+let ``rate model: faster heartbeats restore safety (the settable constant matters)`` () =
+    let losing = { HeartbeatRate = 1.0; ForgerDecay = 0.0; ForgerForgeRate = 1.5 }
+    Assert.False(outlastsForger losing)
+    let winning = { losing with HeartbeatRate = 2.0 } // crank the heartbeat constant
+    Assert.True(outlastsForger winning)

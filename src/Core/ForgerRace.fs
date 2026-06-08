@@ -109,3 +109,44 @@ module ForgerRace =
         | WontSolveInTime _ -> true
         | WillSolveInTime _
         | DeadHeat _ -> false
+
+    // ── Rate model: the endurance differential (Aaron 2026-06-08) ─────────────────────────────────────────
+    //
+    // "The real heartbeats' increase in identity claim should always be more/faster than the -1 by the forger
+    // — it's probably a constant we can set, and for simulation we can control the heartbeat rates; whether
+    // they're equal or different makes a difference." So the endurance race reduces to a CONSTANT rate
+    // differential: a genuine identity claim *grows* at the heartbeat rate (a real clock sustains it,
+    // `SybilBftLiveness.claimStrength` rising with persistence); a forged claim *decays* (no real clock to
+    // hold it — the "-1") even as the forger re-fabricates. Anti-Sybil-as-endurance holds iff the defender's
+    // net rate strictly exceeds the forger's net rate — and then the defender's lead grows without bound, so
+    // the forger NEVER catches up (the strongest `WontSolveInTime`). Equal rates = a tie (unsafe; no margin).
+
+    /// The settable rate model. In simulation all three are knobs (DST §7 — controllable, replayable).
+    type RateModel =
+        { /// Defender identity-claim growth per tick from real heartbeats (the genuine clock sustaining it).
+          HeartbeatRate: float
+          /// Forger claim decay per tick — the "-1": a fabricated identity leaks without a real clock to hold it.
+          ForgerDecay: float
+          /// Forger claim growth per tick from active fabrication (re-forging).
+          ForgerForgeRate: float }
+
+    /// Default differential: genuine heartbeat +1/tick beats a forged claim that decays -1/tick with no
+    /// fabrication — a clean 2-per-tick lead. Both settable; sim controls them.
+    let defaultRateModel =
+        { HeartbeatRate = 1.0
+          ForgerDecay = 1.0
+          ForgerForgeRate = 0.0 }
+
+    /// Defender net claim-rate per tick.
+    let defenderNetRate (m: RateModel) : float = m.HeartbeatRate
+
+    /// Forger net claim-rate per tick (fabrication minus decay — the "-1" works against him).
+    let forgerNetRate (m: RateModel) : float = m.ForgerForgeRate - m.ForgerDecay
+
+    /// **The endurance invariant.** Anti-Sybil-as-endurance holds iff the defender out-rates the forger; then
+    /// the lead is unbounded and the forger never catches up. Equal rates ⇒ NOT safe (a tie has no margin).
+    let outlastsForger (m: RateModel) : bool = defenderNetRate m > forgerNetRate m
+
+    /// Genuine / forged claim magnitudes at `tick` (claims floor at 0 — a decayed claim can't go negative).
+    let defenderClaimAt (m: RateModel) (tick: int) : float = max 0.0 (m.HeartbeatRate * float (max 0 tick))
+    let forgerClaimAt (m: RateModel) (tick: int) : float = max 0.0 (forgerNetRate m * float (max 0 tick))
