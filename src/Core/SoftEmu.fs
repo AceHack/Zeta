@@ -104,3 +104,18 @@ module SoftEmu =
     /// The expected value of any frame-observable over the ensemble (⟨value⟩ — the soft expectation).
     let expect (value: Chip8Cow.Frame -> float) (s: Soft) : float =
         s |> List.sumBy (fun (f, w) -> value f * w)
+
+    /// **The live soft frame-step:** advance every branch a full frame — `cyclesPerFrame` soft steps (forking on
+    /// input), then `tick` every branch (the 60 Hz interrupt). Plain `softStep`/`softRun` never `tick`, so a ROM
+    /// waiting on the delay timer freezes the whole ensemble at one reachable state (empowerment → 1, the bug the
+    /// 2026-06-08 run exposed). This is the unit that keeps the soft emulator *live*. Renormalized.
+    let softFrame (cyclesPerFrame: int) (s: Soft) : Soft =
+        let stepped = [ 1 .. max 1 cyclesPerFrame ] |> List.fold (fun acc _ -> softStep acc) s
+        stepped |> List.map (fun (f, w) -> Chip8Cow.tick f, w) |> normalize
+
+    /// **The ghost screen:** `P(pixel lit)` for every cell as a `DisplayH × DisplayW` float grid — the expected
+    /// display over the whole superposition (intensity = probability). The soft analog of "watching the screen":
+    /// a heatmap, not a bitmap. What you watch when you run the soft version, alongside `support`/`entropy`/
+    /// empowerment.
+    let probLitGrid (s: Soft) : float[][] =
+        [| for y in 0 .. Chip8.DisplayH - 1 -> [| for x in 0 .. Chip8.DisplayW - 1 -> probLit x y s |] |]

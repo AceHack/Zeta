@@ -131,6 +131,7 @@
     <Compile Include="SoftMem.Tests.fs" />
     <Compile Include="SoftDrive.Tests.fs" />
     <Compile Include="SoftEmu.Tests.fs" />
+    <Compile Include="SoftFrame.Tests.fs" />
     <Compile Include="AmplitudeEmu.Tests.fs" />
     <Compile Include="PolarityFilter.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />

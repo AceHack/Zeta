@@ -198,3 +198,15 @@ module Chip8Cow =
         { new IMonoid<Frame -> Frame> with
             member _.Identity = id
             member _.Combine(f, g) = f >> g } // apply f then g — sequential composition
+
+    /// **One frame = `cyclesPerFrame` CPU steps, then the 60 Hz `tick` (the interrupt).** This is the *live*
+    /// unit of execution. `step`/`run` alone never `tick`, so a ROM that waits on the delay timer (set `FX15`,
+    /// loop on `FX07`/`3XNN` until it hits 0 — a very common pattern) **spins forever** because the timer never
+    /// decrements. Empirically (the `SoftEmu` run, 2026-06-08) a step-only soft run froze at one reachable state
+    /// (empowerment collapsed to 1); interleaving `tick` released it and the game animated. `cyclesPerFrame ≈ 8`
+    /// matches the classic ~500 Hz CPU / 60 Hz timer ratio. The keys held are whatever is on the frame.
+    let frameStep (cyclesPerFrame: int) (f: Frame) : Frame =
+        let mutable s = f
+        for _ in 1 .. max 1 cyclesPerFrame do
+            s <- step s
+        tick s
