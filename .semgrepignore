@@ -1,0 +1,9 @@
+# Semgrep ignore. Verbatim PR-review / history archives are NOT live code — they
+# QUOTE code snippets and changelogs from past PRs, so semgrep's `languages: [generic]`
+# rules false-positive on them (e.g. unchecked-weight-multiply on a quoted `.Weight *
+# .Weight` diff; invisible-unicode on GitHub @mention zero-width chars in pasted
+# changelogs). Excluding them scans the LIVE codebase only and narrows NO coverage on
+# real code. Consistent with .markdownlint-cli2.jsonc, which already ignores these
+# machine/archive surfaces. semgrep's built-in ignores (node_modules, .git, etc.) still
+# apply alongside this file (verified: 0 repo-wide findings, no node_modules/references flood).
+docs/history/
