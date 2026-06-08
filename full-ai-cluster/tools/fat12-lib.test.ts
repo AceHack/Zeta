@@ -11,7 +11,6 @@ import {
   fat12Get,
   fat12Set,
   lfnChecksum,
-  buildLfnEntry,
   buildDirEntries,
   reconstructLongName,
   firstFreeCluster,

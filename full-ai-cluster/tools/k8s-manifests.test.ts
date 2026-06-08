@@ -11,7 +11,7 @@
 
 import { test, expect, describe } from "bun:test";
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 
 const REPO = join(import.meta.dir, "..", ".."); // .../full-ai-cluster/..  (repo root)
 const K8S = join(REPO, "full-ai-cluster", "k8s");

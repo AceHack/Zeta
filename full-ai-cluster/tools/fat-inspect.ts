@@ -91,7 +91,7 @@ try {
       free++;
       continue;
     }
-    const attr = e[11];
+    const attr = e[11] ?? 0;
     if (attr === 0x0f) {
       lfn++;
       continue;
@@ -114,7 +114,7 @@ try {
     let val: number;
     if (fatTypeName === "FAT12") {
       const off = Math.floor((c * 3) / 2);
-      const pair = fatBytes[off] | (fatBytes[off + 1] << 8);
+      const pair = (fatBytes[off] ?? 0) | ((fatBytes[off + 1] ?? 0) << 8);
       val = c & 1 ? pair >> 4 : pair & 0x0fff;
     } else {
       val = fatBytes.readUInt16LE(c * 2);
