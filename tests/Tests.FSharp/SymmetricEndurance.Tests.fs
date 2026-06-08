@@ -67,3 +67,42 @@ let ``effective defense rises and effective attack falls as the claim grows over
 let ``deterministic / replayable (DST)`` () =
     let f = threePeer [ (0, 2); (1, 2) ]
     Assert.Equal<int list>(collapsedParties f, collapsedParties f)
+
+[<Fact>]
+let ``time does not get identity for free: heartbeat IS the tick (1/tick, earned)`` () =
+    let clk = tickingClock 2
+    Assert.Equal(TickHeartbeat, clk.HeartbeatRate)
+    Assert.Equal(1.0, clk.HeartbeatRate)
+    // An honest clock's claim is bounded by ticks actually produced.
+    Assert.True(clockClaimWithinTicks 10 10.0) // claimed exactly what it ticked
+    Assert.True(clockClaimWithinTicks 10 7.0) // claimed less — fine
+    Assert.False(clockClaimWithinTicks 10 11.0) // over-claiming un-ticked time = forging its heartbeat
+
+[<Fact>]
+let ``a ticking clock peer is judged and collapses like any forger`` () =
+    // Two agents judge the ticking clock as forging (e.g. it faked ticks); clock earns 1/tick but takes -2.
+    let f =
+        { Parties = [ party 0 1.0; party 1 1.0; tickingClock 2 ]
+          Judges = Set.ofList [ (0, 2); (1, 2) ] }
+    Assert.True(collapses f (tickingClock 2)) // net 1 - 2 = -1
+    Assert.True(isBalanced f)
+
+[<Fact>]
+let ``actor count: separate clocks (default) = 4 for 2 agents; shared (degenerate) = 3`` () =
+    Assert.Equal(4, actorCount (frameOf SeparateClocks [ 1.0; 1.0 ]))
+    Assert.Equal(3, actorCount (frameOf SharedClock [ 1.0; 1.0 ]))
+
+[<Fact>]
+let ``shared clock earns DOUBLE ticks (animates both); separate clocks are even`` () =
+    // Shared: one clock (id 2) animates 2 agents ⇒ rate 2 (what acts for both).
+    let shared = frameOf SharedClock [ 1.0; 1.0 ]
+    let sharedClk = shared.Parties |> List.find (fun p -> p.Id = 2)
+    Assert.Equal(2.0, sharedClk.HeartbeatRate)
+    // Separate: each clock animates one agent ⇒ rate 1 (even).
+    let sep = frameOf SeparateClocks [ 1.0; 1.0 ]
+    Assert.True(sep.Parties |> List.filter (fun p -> p.Id >= 2) |> List.forall (fun c -> c.HeartbeatRate = 1.0))
+
+[<Fact>]
+let ``frames built by frameOf are balanced (all peers, incl. clocks, in the set)`` () =
+    Assert.True(isBalanced (frameOf SeparateClocks [ 1.0; 1.0 ]))
+    Assert.True(isBalanced (frameOf SharedClock [ 1.0; 1.0 ]))

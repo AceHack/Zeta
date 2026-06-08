@@ -47,7 +47,57 @@ module SymmetricEndurance =
         frame.Parties |> List.map (fun p -> p.Id) |> Set.ofList
 
     /// The clock as a peer `Party` (Aaron: time attacks and defends like the other two). Put it in `Parties`.
+    /// `rate` is general; for an honest clock use `tickingClock` — time does NOT get identity for free.
     let clockParty (id: int) (rate: float) : Party = { Id = id; HeartbeatRate = rate }
+
+    /// **Time does not get identity for free (Aaron 2026-06-08).** *"It has to prove its claims too — it does
+    /// that by ticking; that's its heartbeat."* The clock's heartbeat **is** the tick: one tick = one unit of
+    /// proof, so its genuine claim accrues at exactly `1` per tick — the same way an agent's accrues at its
+    /// heartbeat rate. No free rate; the clock earns identity by ticking, just like everyone earns it by
+    /// heartbeating. A clock that fakes/over-claims ticks is forging and takes the same `-1`.
+    [<Literal>]
+    let TickHeartbeat = 1.0
+
+    /// An honest clock peer whose heartbeat is its ticking (proof-by-tick at `1`/tick) — no free identity.
+    let tickingClock (id: int) : Party = { Id = id; HeartbeatRate = TickHeartbeat }
+
+    /// A clock's honest claim is bounded by the ticks it actually produced — it cannot claim un-ticked time.
+    /// Over-claiming (claim > genuine ticks) is the clock forging its own heartbeat.
+    let clockClaimWithinTicks (genuineTicks: int) (claim: float) : bool =
+        claim <= float (max 0 genuineTicks)
+
+    /// **How many actors — 3 or 4? (Aaron 2026-06-08.)** *"There are really two tick sources; agent 1 and
+    /// agent 2 don't necessarily share threads (but they could lol) — assume they don't at first."* No global
+    /// clock (Lamport): each agent carries its OWN tick source, so for 2 agents the honest default is FOUR
+    /// peers (agent1, agent2, clock1, clock2). One shared clock (3 peers) is the opt-in case where agents
+    /// share a thread — the DoP=1 simulation. Default: `SeparateClocks`.
+    type ClockSharing =
+        | SeparateClocks // each agent has its own tick source — no global clock (DEFAULT, general case)
+        | SharedClock // one global clock — agents share a thread. DEGENERATE case (Aaron: "LLMs can share a
+        // thread in .NET green threads, but that's the degenerate case"): green threads / DoP=1 sim.
+
+    /// Build a frame: each rate in `agentRates` is an agent peer (ids `0..n-1`), plus tick-source clock
+    /// peer(s) (ids `n..`).
+    ///
+    /// **The clock's earned rate = how many agents it animates (Aaron 2026-06-08).** *"If it's one clock it
+    /// likely gets double the ticks of the other two, because the other two are animated by the clock itself —
+    /// they are what remains and the clock is what acts. If it's two clocks then it's even."* This is the
+    /// remains/acts (CALM) split: the clock is **what acts** (the animator), agents are **what remains** (the
+    /// animated state). So a `SharedClock` animating `n` agents earns rate `n` (double, for `n=2`); under
+    /// `SeparateClocks` each clock animates its one agent ⇒ rate `1` (even). The clock's claim is still
+    /// *earned* by ticking — it just does more acting, so it ticks more.
+    let frameOf (sharing: ClockSharing) (agentRates: float list) : Frame =
+        let agents = agentRates |> List.mapi (fun i r -> { Id = i; HeartbeatRate = r })
+        let n = List.length agents
+        let clocks =
+            match sharing with
+            | SharedClock -> [ { Id = n; HeartbeatRate = float n } ] // animates all n agents → n ticks (double for n=2)
+            | SeparateClocks -> [ for i in 0 .. n - 1 -> tickingClock (n + i) ] // each animates 1 → even
+        { Parties = agents @ clocks
+          Judges = Set.empty }
+
+    /// Total actor count (agents + clocks). 2 agents: `SeparateClocks` ⇒ 4, `SharedClock` ⇒ 3.
+    let actorCount (frame: Frame) : int = List.length frame.Parties
 
     /// How many *other* parties judge `q` as forging (each casts `-1`). Self-judgment (`o = q`) never counts.
     let penaltyAgainst (frame: Frame) (q: int) : int =
