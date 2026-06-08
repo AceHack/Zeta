@@ -81,3 +81,23 @@ module SoftDashboard =
                 |> List.map (fun (fr', _) -> reach (d - 1) fr')
                 |> Set.unionMany
         reach depth f |> Set.count |> float
+
+    /// **`streamLength` — a common cross-game fitness, but GAMEABLE (Aaron 2026-06-08):** steps survived before
+    /// a self-halt (a `1NNN` jump to its own address), capped at `budget`. Common ("survive longest"), but
+    /// **easy to game (Goodhart's law / reward hacking):** a do-nothing loop that never self-halts maxes it
+    /// without playing (cf. the Tetris-pause bot, the CoastRunners boat looping for points; Krakovna's
+    /// specification-gaming list). Contrast `empowerment`, which a do-nothing loop *minimises* (no agency) — so
+    /// empowerment is robust to exactly this cheat. Kept here to demonstrate the gameability, not as the default.
+    let streamLength (budget: int) (f0: Chip8Cow.Frame) : float =
+        let isHalt (f: Chip8Cow.Frame) =
+            let pc = int f.PC
+            let op =
+                (int (Map.tryFind pc f.Mem |> Option.defaultValue 0uy) <<< 8)
+                ||| int (Map.tryFind (pc + 1) f.Mem |> Option.defaultValue 0uy)
+            (op &&& 0xF000 = 0x1000) && (op &&& 0x0FFF = pc) // jump-to-self = halt
+        let mutable f = f0
+        let mutable n = 0
+        while n < budget && not (isHalt f) do
+            f <- Chip8Cow.step f
+            n <- n + 1
+        float n

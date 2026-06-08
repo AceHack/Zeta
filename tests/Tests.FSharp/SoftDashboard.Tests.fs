@@ -63,3 +63,14 @@ let ``empowerment works as a no-supplied-fitness dashboard objective`` () =
     let f = Chip8Cow.create 1UL |> Chip8Cow.loadRom [| 0x60uy; 0x00uy; 0xE0uy; 0x9Euy |] |> Chip8Cow.step
     let g = SoftDashboard.buttonGlow (SoftDashboard.empowerment 2) 1 f
     Assert.Equal(16, g.Length) // glows by intrinsic agency, no external reward needed
+
+[<Fact>]
+let ``streamLength is gameable; empowerment is robust to the do-nothing-loop cheat`` () =
+    // counter loop: 6000 V0=0 ; 7001 V0+=1 ; 1202 jump 0x202 — runs FOREVER, plays nothing.
+    let cheat = Chip8Cow.create 1UL |> Chip8Cow.loadRom [| 0x60uy; 0x00uy; 0x70uy; 0x01uy; 0x12uy; 0x02uy |]
+    // self-halt: 1200 at 0x200 jumps to its own address.
+    let halted = Chip8Cow.create 1UL |> Chip8Cow.loadRom [| 0x12uy; 0x00uy |]
+    Assert.Equal(50.0, SoftDashboard.streamLength 50 cheat) // GAMED: maxes the survival metric doing nothing
+    Assert.Equal(0.0, SoftDashboard.streamLength 50 halted) // a program that finishes scores low
+    // empowerment is NOT fooled: the do-nothing loop has no agency (your inputs don't change the future).
+    Assert.Equal(1.0, SoftDashboard.empowerment 4 cheat) // 1 reachable state regardless of action = zero agency
