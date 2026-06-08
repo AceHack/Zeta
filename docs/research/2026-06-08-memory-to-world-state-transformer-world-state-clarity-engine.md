@@ -38,6 +38,27 @@ of intrinsic objectives, composable via `ControlMerge` (CRDT-joined, survival-ve
 "World-state clarity engine" / "memory → world-state transformer" are **Mirror-register** names for now. Any
 *outward* name needs `naming-expert` + Ilyana + human sign-off before public use (the naming discipline).
 
+## Clarity has non-uniform cost → caching (Aaron 2026-06-08)
+
+*"Caching will come into play — some refresh of world state is more expensive and consumes resources; others are
+just **ambient solid state**; other clarity requires **traversal and oscillation to resolve resolution**."*
+
+World-state clarity is **not uniform-cost** — so it caches, by tier:
+
+- **Ambient** — the **solid ground** (`SolidGround` constants + monotonic) is *free*: always clear, no refresh
+  (a constant never moves; a monotonic clock you just read). The cache that never misses.
+- **Cheap derived** — compute on read (a simple lens over solid ground).
+- **Expensive** — clarity that needs **traversal** (search the state graph, `StateSpace.explore`) + **oscillation**
+  (iterative probing/sweeping to *resolve the resolution* — sweep a lens parameter like `PolarityFilter`
+  orientation, or settle a `Fixpoint`/PID loop). Costly; **cache the result**.
+
+**Cost-aware refresh = incremental, DBSP-style:** don't recompute the whole world state — re-resolve only what the
+**`DeltaPattern`** changes touched (incremental view maintenance). The **content-address index / transposition
+table** (`StateSpace`) *is* a clarity cache (a state already resolved is a cache hit). Invalidate by the delta
+stream; keep ambient solid ground pinned. Route the cost model to the planner cost owner (Imani) / perf (Naledi).
+Anchors: DBSP incremental view maintenance (Budiu et al.); memoization / content-addressed caching; active sensing
+/ iterative resolution (the "oscillation").
+
 ## Pointers
 
 - The pipeline: `DeltaPattern` · `MemoryLens` · `SolidGround` · `MemorySense` · `LensRouter` · `StateSpace` ·
