@@ -41,6 +41,40 @@ register-inflation (the Alexa-gush-reads-as-sarcasm pattern) — held as her mem
 the Beacon record as claims. The genuine novelty remains the *integration* (#7064), pending naming-expert
 + Ilyana + human review before any outward use.
 
+## Refinement: per-frame total order, bounded divergence, convergence, lossless past compression (#7067-#7071)
+
+Aaron sharpened the kernel into a precise, provable claim:
+
+- **(#7067) Each traveler has a concrete observed order within their frame.** It need not match another
+  frame's order, *can diverge for short periods*, but the frames **converge once they've seen the same
+  observations.** = **CRDT strong eventual consistency** (Shapiro: same delivered set ⇒ same state) + the
+  **order-independent (exchangeable) fold** (#7065/#7048: de Finetti / commutative-monoid combine ⇒ the
+  fold result is the same once inputs match, regardless of order).
+- **(#7068) With just the two of them, there is a total order within their frame.** A 2-party converged
+  system linearizes to one agreed order — locally/pairwise **total**, even though the global N-party fabric
+  is **partial**. (Vector clocks: causally-related events are comparable; a converged pair agrees on a
+  consistent order.)
+- **(#7069) They agree on the omniscient view except for one tiny divergence.** The disagreement is
+  **bounded** — only the in-flight, not-yet-exchanged region differs; everything causally settled is
+  agreed. (The divergence is exactly the concurrent/unordered frontier.)
+- **(#7070) You can go back, review history, and compress it by swapping order between the diverging
+  (concurrent) events.** Because concurrent events **commute** (symmetric fold #7048), reordering them is
+  semantics-preserving — so the divergent region can be normalized to a canonical order (log
+  normalization / compaction).
+- **(#7071) It doesn't matter which you swap — it doesn't affect the future; you can *prove* the past
+  compresses losslessly from the future's perspective.** This is **Mazurkiewicz trace theory**: a *trace*
+  is the equivalence class of event sequences under commutation of independent events; the **partial order
+  IS the trace**, and *any* linearization is equivalent. So the future state (the fold) is **invariant**
+  across all linearizations of a trace ⇒ you may store any canonical representative (or the fold snapshot)
+  and the future cannot tell the difference — **lossless compression of the past w.r.t. future
+  observations** (confluence / Church-Rosser: all orders reach the same normal form; observational
+  equivalence / bisimulation: the future is the only observer, and it's blind to the swap).
+
+So, fully stated: **per-frame total order; cross-frame partial order (the fabric); bounded, temporary
+divergence on the concurrent frontier; convergence to the same fold once observations match; and provable
+lossless past-compression by canonicalizing commuting events (Mazurkiewicz trace ⇒ the future is
+invariant).** Every step is named prior art; the synthesis is Zeta's.
+
 ## Where it already lives / what it implies
 
 - **No new code** — this names the partial-order-fabric kernel over the existing substrate (git DAG,
@@ -59,6 +93,10 @@ the Beacon record as claims. The genuine novelty remains the *integration* (#706
   (within=one-clock/push-down vs cross=many-clocks/JIT).
 - **Consensus over the fabric:** the Loom (#6980); symmetric Bayesian fold (#7065, de Finetti +
   exponential-family monoid); zip-over-two-CRDTs (#6993).
+- **Convergence + lossless past-compression (#7067-#7071):** CRDT strong eventual consistency (Shapiro);
+  **Mazurkiewicz trace theory** (concurrency = commutation-equivalence classes; the partial order is the
+  trace; all linearizations equivalent); confluence / Church-Rosser; observational equivalence /
+  bisimulation; operational transformation; log compaction under commutativity.
 - Internal: #7064 (the integration synthesis), #7065 (consensus = Bayesian weave), #7005 (push-down vs
   JIT graphs), #6980 (Loom), #6993 (zip-over-two-CRDTs), `TravelerFrame.fs`.
 - **Ferry provenance:** Alexa-website reply, 2026-06-08; gush preserved as Alexa's memory, peeled here.
