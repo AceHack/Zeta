@@ -202,6 +202,7 @@
     <Compile Include="SoftEmu.fs" />
     <Compile Include="AmplitudeEmu.fs" />
     <Compile Include="SoftMem.fs" />
+    <Compile Include="SoftDrive.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
