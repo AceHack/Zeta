@@ -78,3 +78,38 @@ let ``decode rejects an unknown op`` () =
         | Error _ -> true
         | Ok _ -> false
     )
+
+// ── db noun-class: native vs interpreted differential (#7049 generalized, sequence step 2) ──
+
+let private dbEvents : Db.DbEvent list =
+    [ Db.DepSetup("/b", [ "/a" ])
+      Db.PushDown "compiler.rust"
+      Db.JitResolve("npm.left-pad", "1.3.0")
+      Db.Create("/a", dv "1")
+      Db.Update("/a", DynamicValue.Int 7L)
+      Db.Delete "/a" ]
+
+[<Fact>]
+let ``db: encode/decode round-trips every DbEvent`` () =
+    for ev in dbEvents do
+        Assert.Equal<Result<Db.DbEvent, string>>(Ok ev, decodeDbEvent (encodeDbEvent ev))
+
+[<Fact>]
+let ``DIFFERENTIAL db: native Db.apply == interpreted stored-proc across all events and states`` () =
+    let states =
+        [ Db.empty Db.defaultBackend
+          Db.fold Db.defaultBackend [ Db.Create("/a", dv "old"); Db.PushDown "x" ] ]
+
+    for st in states do
+        for ev in dbEvents do
+            let native = Db.apply st ev
+            let interpreted =
+                match interpretDbApply st (encodeDbEvent ev) with
+                | Ok r -> r
+                | Error e -> failwithf "interpret failed: %s" e
+            Assert.Equal<Db.DbState>(native, interpreted)
+
+[<Fact>]
+let ``db: interpret/decode reject a malformed proc`` () =
+    Assert.True(match interpretDbApply (Db.empty Db.defaultBackend) (dv "nope") with Error _ -> true | Ok _ -> false)
+    Assert.True(match decodeDbEvent (DynamicValue.Object [ "op", dv "frob" ]) with Error _ -> true | Ok _ -> false)

@@ -107,3 +107,96 @@ module StoredProc =
                         match interpretApply t sp with
                         | Ok r -> r
                         | Error e -> failwithf "validated stored-proc failed at Apply: %s" e }
+
+    // ── db noun-class: native vs interpreted (the per-test #7049 generalized to `db`, sequence step 2) ──
+    //
+    // Same discipline as `table` above, for `Db.DbEvent` (structural DepSetup/PushDown/JitResolve + data
+    // Create/Update/Delete, #6996). `encodeDbEvent`/`decodeDbEvent` are the homoiconic stored-proc form; the
+    // differential test compares `Db.apply` (native fold) with `interpretDbApply` (independent interpreter).
+
+    /// Encode a `Db.DbEvent` as a homoiconic stored-proc (`DynamicValue.Object`). String lists ride as an
+    /// `Array` of `String`; data values ride as-is (already `DynamicValue`, #7041).
+    let encodeDbEvent (ev: Db.DbEvent) : DynamicValue =
+        let s = DynamicValue.String
+
+        match ev with
+        | Db.DepSetup(n, deps) ->
+            DynamicValue.Object
+                [ OpKey, s "depsetup"
+                  KeyKey, s n
+                  "deps", DynamicValue.Array(deps |> List.map s) ]
+        | Db.PushDown n -> DynamicValue.Object [ OpKey, s "pushdown"; KeyKey, s n ]
+        | Db.JitResolve(n, r) -> DynamicValue.Object [ OpKey, s "jitresolve"; KeyKey, s n; ValKey, s r ]
+        | Db.Create(p, v) -> DynamicValue.Object [ OpKey, s "create"; KeyKey, s p; ValKey, v ]
+        | Db.Update(p, v) -> DynamicValue.Object [ OpKey, s "update"; KeyKey, s p; ValKey, v ]
+        | Db.Delete p -> DynamicValue.Object [ OpKey, s "delete"; KeyKey, s p ]
+
+    let private getField k (fields: (string * DynamicValue) list) =
+        fields |> List.tryPick (fun (fk, fv) -> if fk = k then Some fv else None)
+
+    /// Decode a stored-proc back to a `Db.DbEvent` (round-trips with `encodeDbEvent`). `Error` if malformed.
+    let decodeDbEvent (sp: DynamicValue) : Result<Db.DbEvent, string> =
+        match sp with
+        | DynamicValue.Object fields ->
+            let key () =
+                match getField KeyKey fields with
+                | Some(DynamicValue.String k) -> Ok k
+                | _ -> Error "stored-proc missing string 'key'"
+
+            match getField OpKey fields with
+            | Some(DynamicValue.String "depsetup") ->
+                match key (), getField "deps" fields with
+                | Ok n, Some(DynamicValue.Array items) ->
+                    let deps = items |> List.choose (function DynamicValue.String d -> Some d | _ -> None)
+                    Ok(Db.DepSetup(n, deps))
+                | _ -> Error "depsetup requires key:String and deps:Array<String>"
+            | Some(DynamicValue.String "pushdown") -> key () |> Result.map Db.PushDown
+            | Some(DynamicValue.String "jitresolve") ->
+                match key (), getField ValKey fields with
+                | Ok n, Some(DynamicValue.String r) -> Ok(Db.JitResolve(n, r))
+                | _ -> Error "jitresolve requires key:String and value:String"
+            | Some(DynamicValue.String "create") ->
+                match key (), getField ValKey fields with
+                | Ok p, Some v -> Ok(Db.Create(p, v))
+                | _ -> Error "create requires key:String and value"
+            | Some(DynamicValue.String "update") ->
+                match key (), getField ValKey fields with
+                | Ok p, Some v -> Ok(Db.Update(p, v))
+                | _ -> Error "update requires key:String and value"
+            | Some(DynamicValue.String "delete") -> key () |> Result.map Db.Delete
+            | Some(DynamicValue.String op) -> Error(sprintf "unknown db op '%s'" op)
+            | _ -> Error "db stored-proc missing 'op'"
+        | _ -> Error "db stored-proc must be a DynamicValue.Object"
+
+    /// **Interpret** a db stored-proc against a `Db.DbState` — an INDEPENDENT code path from `Db.apply`: it
+    /// reads the `DynamicValue` fields and mutates the state's maps/sets directly, so the differential test
+    /// compares two genuine implementations. `Error` on a malformed proc.
+    let interpretDbApply (st: Db.DbState) (sp: DynamicValue) : Result<Db.DbState, string> =
+        match sp with
+        | DynamicValue.Object fields ->
+            let strKey () =
+                match getField KeyKey fields with
+                | Some(DynamicValue.String k) -> Some k
+                | _ -> None
+
+            match getField OpKey fields, strKey () with
+            | Some(DynamicValue.String "depsetup"), Some n ->
+                match getField "deps" fields with
+                | Some(DynamicValue.Array items) ->
+                    let deps = items |> List.choose (function DynamicValue.String d -> Some d | _ -> None)
+                    Ok { st with Deps = Map.add n deps st.Deps }
+                | _ -> Error "depsetup requires deps:Array<String>"
+            | Some(DynamicValue.String "pushdown"), Some n -> Ok { st with PushedDown = Set.add n st.PushedDown }
+            | Some(DynamicValue.String "jitresolve"), Some n ->
+                match getField ValKey fields with
+                | Some(DynamicValue.String r) -> Ok { st with Resolved = Map.add n r st.Resolved }
+                | _ -> Error "jitresolve requires value:String"
+            | Some(DynamicValue.String "create"), Some p
+            | Some(DynamicValue.String "update"), Some p ->
+                match getField ValKey fields with
+                | Some v -> Ok { st with Files = Map.add p v st.Files }
+                | None -> Error "create/update requires value"
+            | Some(DynamicValue.String "delete"), Some p -> Ok { st with Files = Map.remove p st.Files }
+            | Some(DynamicValue.String op), _ -> Error(sprintf "unknown db op '%s'" op)
+            | _ -> Error "db stored-proc missing 'op'/'key'"
+        | _ -> Error "db stored-proc must be a DynamicValue.Object"
