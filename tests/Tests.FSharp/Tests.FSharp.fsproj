@@ -92,6 +92,7 @@
     <Compile Include="CayleyWeightedSet.Tests.fs" />
     <Compile Include="RayTensor.Tests.fs" />
     <Compile Include="ZetaCli.Tests.fs" />
+    <Compile Include="ZetaGraph.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />

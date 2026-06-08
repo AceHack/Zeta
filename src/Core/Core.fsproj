@@ -167,6 +167,7 @@
     <Compile Include="SignalQuality.fs" />
     <Compile Include="Maji.fs" />
     <Compile Include="ZetaCli.fs" />
+    <Compile Include="ZetaGraph.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>
 
