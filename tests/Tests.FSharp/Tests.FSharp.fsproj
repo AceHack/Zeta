@@ -118,6 +118,7 @@
     <Compile Include="ForwardMomentum.Tests.fs" />
     <Compile Include="QubitIso.Tests.fs" />
     <Compile Include="BellTest.Tests.fs" />
+    <Compile Include="FeedbackThrottle.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
