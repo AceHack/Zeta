@@ -13,8 +13,10 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
 - **skill** vs **hat** — a *skill* is a procedure (`.claude/skills/*/SKILL.md`); a *hat* is a role-scoped bundle a
   persona wears. Not synonyms.
 - **spec** — overloaded: *behavioural* spec (OpenSpec capability) vs *formal* spec (TLA+/proof). Disambiguate which.
-- **persona** vs **actor** — *persona* = the owner / "what remains" (identity); *actor* = a clone/loop/instance /
-  "what acts". A bus address (persona⊕surface⊕instance) is **not** identity.
+- **persona** vs **actor** vs **cell** — *persona* = the thing that **remains** (the durable identity/owner).
+  *actor* = the **ephemeral** thing that **acts**, **on behalf of** a persona, then is gone (a clone/loop/instance);
+  **a persona is NOT an actor**. *cell* = an actor that **knows its boundary (its Markov blanket) and has closed
+  over it** — a boundary-aware, self-contained actor. (A bus address persona⊕surface⊕instance is **not** identity.)
 - **AX / UX / DX** — Agent-experience (autonomous agents, via observe.ts + the action grammar — the *largest*
   audience) / User-experience (regular humans / library consumers) / Developer-experience (contributors, ~10%).
 - **Mirror / Beacon** — two registers: *Mirror* = fast internal high-bandwidth shorthand (everything); *Beacon* =
