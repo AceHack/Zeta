@@ -27,6 +27,16 @@ export class InMemoryPlatform implements PlatformData {
     return { rooms, totalEvents: rooms.reduce((n, r) => n + r.events, 0), totalBytes: rooms.reduce((n, r) => n + r.bytes, 0) };
   }
 
+  /** Save a Blueprint into the catalog (the builder). Upserts by name. */
+  async createBlueprint(bp: { name: string; namespace?: string; spec: { category?: string; image: string; storage?: { size: string }; defaultExpose?: string; variables?: Array<{ name: string; default?: string; description?: string }>; stateful?: boolean } }): Promise<{ ok: boolean; message: string }> {
+    const cr: BlueprintCR = {
+      metadata: { name: bp.name, namespace: bp.namespace ?? "zeta-platform" },
+      spec: { ...(bp.spec.category ? { category: bp.spec.category } : {}), image: bp.spec.image, stateful: bp.spec.stateful ?? !!bp.spec.storage, ...(bp.spec.defaultExpose ? { defaultExpose: bp.spec.defaultExpose } : {}), ...(bp.spec.variables ? { variables: bp.spec.variables } : {}) },
+    };
+    this.blueprints = [...this.blueprints.filter((b) => b.metadata.name !== bp.name), cr];
+    return { ok: true, message: `Blueprint "${bp.name}" saved — it's now in the catalog and ready to deploy.` };
+  }
+
   async listDeployables(): Promise<DeployableCR[]> {
     return this.deployables;
   }

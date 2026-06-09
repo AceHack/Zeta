@@ -109,6 +109,17 @@ export interface ClusterCapacity { nodes: NodeVM[]; totals: { nodeCount: number;
 export interface TenantUsage { namespace: string; displayName?: string; cpu: { allocMilli: number; usedMilli: number }; mem: { allocMi: number; usedMi: number }; storage: { allocMi: number; usedMi: number }; pods: { alloc: number; used: number }; hasQuota: boolean }
 export interface TenantSpecInput { name: string; namespace: string; displayName?: string; quota: { cpu: string; memory: string; storage: string; pods: number }; isolated?: boolean }
 
+export interface BlueprintProposal {
+  name: string; category: string; image: string; install?: string; command?: string[]; args?: string[];
+  env?: Record<string, string>;
+  ports?: Array<{ name: string; port: number; protocol?: "TCP" | "UDP"; web?: boolean }>;
+  storage?: { size: string; mountPath: string };
+  resources?: { cpu?: string; memory?: string };
+  variables?: Array<{ name: string; default?: string; description?: string }>;
+  sidecars?: Array<{ name: string; image: string; mountDataAt?: string }>;
+  defaultExpose?: "none" | "cluster" | "lan" | "public";
+}
+
 export type Dashboard =
   | { kind: "game"; status: string; game: string; map: string; gamemode: string; players: { online: number; max: number }; address: string; tickrate: number; uptime: string; recentJoins: Array<{ name: string; at: string }> }
   | { kind: "database"; status: string; engine: string; connections: { active: number; max: number }; sizeMi: number; tables: number; queriesPerSec: number; cacheHitPct: number; replication: string; topTables: Array<{ name: string; rows: number; sizeMi: number }> }
@@ -143,6 +154,10 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ text, by }),
     }).then((d) => d.room),
+
+  // blueprint builder
+  buildBlueprint: (message: string, draft?: BlueprintProposal) => j<{ reply: string; spec?: BlueprintProposal }>("/api/blueprints/build", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ message, draft }) }),
+  saveBlueprint: (name: string, spec: Omit<BlueprintProposal, "name">) => post("/api/blueprints", { name, spec }),
 
   // admin plane
   cluster: () => j<ClusterCapacity>("/api/admin/cluster"),

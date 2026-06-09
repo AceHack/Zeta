@@ -23,8 +23,11 @@ metadata:
     argocd.argoproj.io/sync-wave: "-10"
 rules:
   - apiGroups: ["platform.zeta.io"]
-    resources: ["deployables", "blueprints"]
+    resources: ["deployables"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["platform.zeta.io"]   # the Blueprint Builder saves blueprints
+    resources: ["blueprints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
   - apiGroups: ["platform.zeta.io"]   # admin: read + apply tenants (set quotas)
     resources: ["tenants"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]

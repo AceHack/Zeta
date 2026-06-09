@@ -53,6 +53,21 @@ export class K8sPlatform implements PlatformData {
   listBlueprints(): Promise<BlueprintCR[]> {
     return this.listCR<BlueprintCR>("blueprints");
   }
+
+  /** Save a Blueprint by server-side-applying the Blueprint CR. */
+  async createBlueprint(bp: { name: string; namespace?: string; spec: Record<string, unknown> }): Promise<{ ok: boolean; message: string }> {
+    const ns = bp.namespace ?? "zeta-platform";
+    const body = { apiVersion: `${GROUP}/${VERSION}`, kind: "Blueprint", metadata: { name: bp.name, namespace: ns }, spec: bp.spec };
+    const path = `/apis/${GROUP}/${VERSION}/namespaces/${ns}/blueprints/${bp.name}`;
+    const r = await fetch(`${this.host}${path}?fieldManager=zeta-portal&force=true`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/apply-patch+yaml", Accept: "application/json" },
+      body: JSON.stringify(body),
+      tls: { ca: this.ca },
+    } as RequestInit);
+    if (!r.ok) return { ok: false, message: `save Blueprint ${bp.name}: ${r.status} ${await r.text()}` };
+    return { ok: true, message: `Blueprint "${bp.name}" applied to ${ns} — it's in the catalog.` };
+  }
   listRooms(): Promise<RoomData[]> {
     return this.rooms.listRooms();
   }

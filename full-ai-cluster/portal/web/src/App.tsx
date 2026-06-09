@@ -117,7 +117,7 @@ export default function App() {
           ) : view === "resources" ? (
             <Resources groups={groups} onOpen={setOpenResource} />
           ) : view === "create" ? (
-            <Create catalog={catalog} />
+            <Create catalog={catalog} onChanged={refresh} />
           ) : view === "memory" ? (
             <Memory />
           ) : view === "admin" ? (

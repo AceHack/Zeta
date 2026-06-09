@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/input";
 import { catIcon, categoryMeta } from "@/components/bits";
+import { BlueprintBuilder } from "@/views/BlueprintBuilder";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -40,14 +41,19 @@ function buildManifest(bp: CatalogEntryVM, f: Form): string {
 }
 
 // ── catalog (step 0) ───────────────────────────────────────────────────
-export function Create({ catalog }: { catalog: CatalogEntryVM[] }) {
+export function Create({ catalog, onChanged }: { catalog: CatalogEntryVM[]; onChanged?: () => void }) {
   const [picked, setPicked] = useState<CatalogEntryVM | null>(null);
+  const [building, setBuilding] = useState(false);
+  if (building) return <BlueprintBuilder onExit={() => setBuilding(false)} onSaved={() => { setBuilding(false); onChanged?.(); }} />;
   if (picked) return <DeployWizard bp={picked} onExit={() => setPicked(null)} />;
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Create a resource</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Choose a blueprint to deploy. New types are data — the same engine renders them all.</p>
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Create a resource</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Choose a blueprint to deploy — or build a new one with an agent.</p>
+        </div>
+        <Button variant="outline" onClick={() => setBuilding(true)}><Sparkles className="size-4" /> Build a blueprint</Button>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {catalog.map((bp) => {

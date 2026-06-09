@@ -90,3 +90,60 @@ spec:
   command: ["/bin/sh", "-c", "echo worker running; sleep infinity"]
   resources: { cpu: "100m", memory: "128Mi" }
   defaultExpose: none
+---
+# Unturned dedicated server (SteamCMD app 1110390). UDP 27015 + query ports.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: unturned
+  namespace: zeta-platform
+spec:
+  category: game
+  stateful: true
+  image: ghcr.io/ich777/steamcmd:unturned
+  install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 1110390 validate +quit"
+  command: ["/data/ServerHelper.sh"]
+  args: ["+InternetServer/${SERVERNAME}", "+map/${MAP}", "+Max_Players/${MAXPLAYERS}"]
+  ports:
+    - { name: game, port: 27015, protocol: UDP }
+    - { name: query, port: 27016, protocol: UDP }
+    - { name: query2, port: 27017, protocol: UDP }
+  storage: { size: "10Gi", mountPath: /data }
+  resources: { cpu: "2", memory: "3Gi" }
+  variables:
+    - { name: SERVERNAME, default: "Zeta" }
+    - { name: MAP, default: "PEI" }
+    - { name: MAXPLAYERS, default: "24" }
+  sidecars:
+    - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
+  defaultExpose: lan
+---
+# Arma Reforger dedicated server (SteamCMD app 1874900). UDP 2001 game + 17777 query.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: arma-reforger
+  namespace: zeta-platform
+spec:
+  category: game
+  stateful: true
+  image: ghcr.io/ich777/steamcmd:armareforger
+  install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 1874900 validate +quit"
+  command: ["/data/ArmaReforgerServer"]
+  args: ["-config", "/data/configs/${CONFIG}", "-maxFPS", "60", "-bindPort", "${GAME_PORT}"]
+  env:
+    SERVER_NAME: "${SERVERNAME}"
+  ports:
+    - { name: game, port: 2001, protocol: UDP }
+    - { name: query, port: 17777, protocol: UDP }
+  storage: { size: "15Gi", mountPath: /data }
+  resources: { cpu: "4", memory: "6Gi" }
+  variables:
+    - { name: SERVERNAME, default: "Zeta Reforger" }
+    - { name: SCENARIO, default: "Conflict-Everon" }
+    - { name: MAXPLAYERS, default: "32" }
+    - { name: CONFIG, default: "server.json" }
+    - { name: GAME_PORT, default: "2001" }
+  sidecars:
+    - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
+  defaultExpose: lan

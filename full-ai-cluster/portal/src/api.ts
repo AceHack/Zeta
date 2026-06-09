@@ -18,6 +18,7 @@ import {
 import type { LifecycleAction, MemoryUsage, ResourceConfig, ResourceOps } from "./ops.ts";
 import type { AdminData, TenantSpecInput } from "./admin.ts";
 import { type ChatOp, DEFAULT_POLICY, decide, respond } from "./room-agent.ts";
+import { type BlueprintProposal, build as buildBlueprint } from "./blueprint-agent.ts";
 
 const LIFECYCLE_ACTIONS = new Set(["restart", "stop", "start", "scale", "delete"]);
 
@@ -51,6 +52,8 @@ export interface PlatformData {
   memoryUsage?(): Promise<MemoryUsage>;
   /** Cluster-admin: capacity + per-tenant allocation. Optional. */
   admin?: AdminData;
+  /** Create/save a Blueprint (the builder). Optional. */
+  createBlueprint?(bp: { name: string; namespace?: string; spec: Omit<BlueprintProposal, "name"> }): Promise<{ ok: boolean; message: string }>;
 }
 
 /** The typed Event bodies the write endpoint accepts (mirrors the Room substrate). */
@@ -82,6 +85,21 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     // GET /api/catalog — the deploy catalog (blueprints + their form variables)
     if (path === "/api/catalog" && req.method === "GET") {
       return json({ catalog: catalog(await data.listBlueprints()) });
+    }
+
+    // POST /api/blueprints/build — the AGENTIC builder: NL request → proposed Blueprint
+    if (path === "/api/blueprints/build" && req.method === "POST") {
+      const b = (await req.json().catch(() => ({}))) as { message?: string; draft?: BlueprintProposal };
+      const r = buildBlueprint(String(b.message ?? ""), b.draft);
+      return json(r);
+    }
+
+    // POST /api/blueprints — save a Blueprint to the catalog (manual or agentic)
+    if (path === "/api/blueprints" && req.method === "POST") {
+      if (!data.createBlueprint) return json({ error: "blueprint creation not available on this backend" }, 405);
+      const b = (await req.json().catch(() => ({}))) as { name?: string; namespace?: string; spec?: Omit<BlueprintProposal, "name"> };
+      if (!b.name || !b.spec?.image) return json({ error: "name + spec.image required" }, 400);
+      return json(await data.createBlueprint({ name: b.name, ...(b.namespace ? { namespace: b.namespace } : {}), spec: b.spec }));
     }
 
     // GET /api/needs-me — pending authorizations across all rooms (the human queue)
