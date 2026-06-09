@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Vocab.Generated.fs" />
+    <Compile Include="ZetaIdol.fs" />
   </ItemGroup>
 </Project>
