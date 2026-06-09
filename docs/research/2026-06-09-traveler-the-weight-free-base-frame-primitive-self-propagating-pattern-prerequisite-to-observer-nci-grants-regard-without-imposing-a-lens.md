@@ -99,9 +99,23 @@ control, applied to the traveler's own jurisdiction. (Cf. ZetaIds as closures ov
 
 Inside its own jurisdiction, **as it sees fit**, a traveler may:
 
-- **Recognize other identities as it sees fit.** No imposed identity registry —
-  *who* a traveler treats as *whom* is its own call (self-sovereign identity; local
-  names, SPKI/SDSI-style — "trust is local," not globally mandated).
+- **Recognize other identities as it sees fit — expressed *via keys*.** No imposed
+  identity registry — *who* a traveler treats as *whom* is its own call
+  (self-sovereign identity; local names, SPKI/SDSI-style — "trust is local," not
+  globally mandated). A traveler **says who it recognizes by which keys it holds /
+  signs** (SSH + PGP): publishing or signing another's key *is* the act of
+  recognition.
+- **Public recognition strengthens the recognized traveler's identity claim.**
+  > Aaron (2026-06-09): *"if a traveler publicly recognizes another it strengthens
+  > the claim of the traveler's identity who the other recognized."*
+  A *public* recognition (a signed, visible attestation by A of B's key/identity)
+  **adds weight to B's identity claim** — identity strength **accrues from the
+  accumulation of public recognitions**. This is the **PGP web-of-trust** made a
+  first-class identity mechanism, and the public counterpart of the
+  **coincidence/inter-subjective self-anchor** (objectivity = independent others
+  agreeing): B's identity is *more* established the more independent travelers
+  publicly recognize it. (Private recognitions, by contrast, are encryptable and
+  cost privacy budget — see below.)
 - **Trust them as it sees fit.** No imposed trust graph — the trust model is the
   traveler's own (web-of-trust, not a central CA; ties to the git-native fork-trust
   / operator-key trust-roots work — each fork/node decides whom to trust).
