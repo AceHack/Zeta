@@ -82,6 +82,17 @@ parallel-reduction / RT-core-shaped), and the *semantics* are proven to lower to
 executes the observer yet.** Shipped: CPU (+ some SIMD), shader-portable semantics. GPU execution is the
 **[next-build]** target, not a current fact. Don't claim it runs on GPU.
 
+**The execution tier, stated plainly (Aaron 2026-06-08):** *"it's **interpreted** today basically by an F# host"* →
+*"we can also easily give it an **intrinsics backend** once it stabilizes."* So the honest current tier is an
+**AST interpreter**: the F# host walks the `Bonsai.Expr` tree over `SoftValue` (`BonsaiSoft.evalSoft`) — no codegen,
+no native/shader emission, just interpretation. The migration path is the soft→sharp story (`BonsaiSoft` snap; the
+native-vs-interpreted stored-procs design): once the soft semantics **stabilize**, swapping in an **intrinsics
+backend** (CPU `System.Runtime.Intrinsics`/SIMD first, then a shader/GPU backend) is *easy* — and it is easy
+*because* of the three properties above (soft ⇒ branchless ⇒ data-parallel; lock-free/no-coordination ⇒ no
+cross-lane sync to preserve). A branchless, lock-free interpreter has the *same* dataflow its compiled backend will
+have, so codegen is a lowering, not a redesign. Tier today: **interpreted (F# host)**. Tier next: **intrinsics
+backend**, then **GPU**. [grounded: interpreted today; next-build: intrinsics → GPU]
+
 ## Peel 3 — "Clifford space" softened (correcting #7173's conjecture flag)
 
 #7173 flagged "Clifford space" as conjecture (docs, not runtime). Correction: **`Cl3.fs` IS built** — the geometric
