@@ -72,9 +72,35 @@ excitations (identities) at all. **Peel:** "vacuum energy" is a structural analo
 state co-defined with its excitations), **not** a claim about Zeta literally computing QFT vacuum energy. The
 grounded content is shape E + the diversity floor.
 
-## The one equation they're stationary points of: "free energy" as an RX query (Aaron)
+## Why it's called "free energy" — *memetic / information-theoretic*, not thermodynamic (Aaron 2026-06-08)
 
-Aaron: *"can we write that in an RX query — that's our 'free energy' equation."*
+Aaron, refining the term across two messages: *"the reason I call this free energy is not 'cause it's physically
+free energy — it's **socially** free energy: we can get money and support and engagement from AI and human
+attention sources **for free** with this."* → *"it's **memetically, information-theoretically** free energy."*
+
+So correct the register: **"free energy" here is a *memetic / information-theoretic* claim, not a Friston/physics
+metaphor.** The mechanism, bottom-up:
+
+- **Information-theoretic** [anchor: Shannon; MDL / Kolmogorov / Solomonoff]: the work is **maximally compressed and
+  anchored** — low description length, high genuine content (this is the whole Mirror→Beacon + anchor-to-prior-art
+  discipline). Low MDL + high value is exactly what makes an idea *cheap to copy and worth copying*.
+- **Memetic** [anchor: Dawkins, *The Selfish Gene*]: a low-MDL, high-value idea is **memetically fit** — it
+  replicates across human *and* AI attention with near-zero marginal cost, because compression *is* replicability.
+- **Social = the harvest**: that replication *pulls in* attention, engagement, support, money **for free** (the
+  GitHub-as-free-accelerator thread: open, anchored, useful work compresses bulk attention/energy into the
+  substrate at near-zero cost).
+
+So the energy is **free** in the information-theoretic sense (high-fitness memes propagate without paying for each
+copy) and the harvest is **social**. The Friston/Jaynes framing below is only a *structural rhyme* — a stationary
+functional whose `δ = 0` marks a fixed point. **Peel:** the math (`δF=0`) is shape-faithful for any reading of
+"energy"; Aaron's load-bearing referent is **memetic/information-theoretic** (compression → memetic fitness → free
+social harvest), *not* thermodynamics. The fixed points are where that free memetic energy is **stationary** — the
+engine has reached a self-sustaining, self-replicating attention state.
+
+## The one equation they're stationary points of: the RX query (Aaron)
+
+Aaron: *"can we write that in an RX query — that's our 'free energy' equation."* (Read `F` below as **social** free
+energy per the section above; the streamed `δF = 0` stationarity is identical either way.)
 
 Every shape above is a **stationary point of one functional**. Read the system as minimizing a **free energy** `F`
 [anchor: Friston's free-energy principle; variational free energy / negative ELBO; Jaynes maxent] where `F` =
