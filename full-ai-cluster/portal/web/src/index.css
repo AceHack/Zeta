@@ -4,27 +4,27 @@
 
 @layer base {
   :root {
-    --background: 222 47% 5%;
-    --foreground: 210 40% 96%;
-    --card: 222 40% 8%;
-    --card-foreground: 210 40% 96%;
-    --popover: 222 44% 7%;
-    --popover-foreground: 210 40% 96%;
-    --primary: 217 91% 60%;
+    --background: 224 44% 4%;
+    --foreground: 210 40% 97%;
+    --card: 222 40% 7%;
+    --card-foreground: 210 40% 97%;
+    --popover: 222 44% 6%;
+    --popover-foreground: 210 40% 97%;
+    --primary: 213 94% 62%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 14%;
+    --secondary: 217 33% 13%;
     --secondary-foreground: 210 40% 96%;
-    --muted: 217 33% 12%;
-    --muted-foreground: 215 20% 60%;
-    --accent: 217 33% 16%;
+    --muted: 217 33% 11%;
+    --muted-foreground: 216 18% 58%;
+    --accent: 216 34% 15%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 72% 51%;
+    --destructive: 0 72% 56%;
     --destructive-foreground: 0 0% 100%;
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    --border: 217 33% 16%;
-    --input: 217 33% 16%;
-    --ring: 217 91% 60%;
+    --success: 142 69% 48%;
+    --warning: 38 95% 54%;
+    --border: 216 34% 14%;
+    --input: 216 34% 16%;
+    --ring: 213 94% 62%;
     --radius: 0.6rem;
   }
 }
@@ -33,9 +33,11 @@
   * { @apply border-border; }
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-family: "Inter Variable", "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    letter-spacing: -0.011em;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   /* subtle scrollbars */
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -46,7 +48,21 @@
 /* a faint grid texture for the app background, very subtle */
 .bg-grid {
   background-image:
-    linear-gradient(to right, hsl(var(--border) / 0.25) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(var(--border) / 0.25) 1px, transparent 1px);
-  background-size: 32px 32px;
+    linear-gradient(to right, hsl(var(--border) / 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border) / 0.18) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+/* a soft top glow for depth behind the content */
+.bg-glow {
+  background:
+    radial-gradient(60rem 32rem at 70% -8rem, hsl(213 94% 62% / 0.08), transparent 70%),
+    radial-gradient(50rem 30rem at 0% -10rem, hsl(263 80% 60% / 0.06), transparent 70%);
+}
+/* elevated card hover */
+.card-hover {
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px -12px hsl(213 94% 50% / 0.25);
 }

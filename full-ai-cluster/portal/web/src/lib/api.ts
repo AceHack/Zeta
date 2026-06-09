@@ -109,7 +109,7 @@ const j = async <T>(p: string, init?: RequestInit): Promise<T> => {
 };
 
 const enc = (resource: string) => resource.replace("/", "~");
-const post = (p: string, body: unknown) => j<LifecycleResult>(p, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+const post = (p: string, body: unknown, method = "POST") => j<LifecycleResult>(p, { method, headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
 
 export const api = {
   resources: () => j<{ groups: CategoryGroupVM[] }>("/api/resources").then((d) => d.groups),
@@ -134,4 +134,7 @@ export const api = {
   config: (r: string) => j<ResourceConfig>(`/api/resources/${enc(r)}/config`),
   applyConfig: (r: string, patch: Partial<ResourceConfig>) => post(`/api/resources/${enc(r)}/config`, patch),
   lifecycle: (r: string, action: LifecycleAction, replicas?: number) => post(`/api/resources/${enc(r)}/lifecycle`, { action, replicas }),
+  exec: (r: string, cmd: string) => j<{ output: LogLine[] }>(`/api/resources/${enc(r)}/exec`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ cmd }) }).then((d) => d.output),
+  upload: (r: string, dir: string, file: { name: string; size: number }) => post(`/api/resources/${enc(r)}/files`, { dir, file }),
+  deleteFile: (r: string, path: string) => post(`/api/resources/${enc(r)}/files?path=${encodeURIComponent(path)}`, {}, "DELETE"),
 };

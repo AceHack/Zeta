@@ -64,6 +64,40 @@ describe("DemoOps", () => {
     expect(c.memory).toBe("8Gi");
     expect(c.values.MAXPLAYERS).toBe("64");
   });
+
+  test("exec answers known commands and rejects unknown ones", async () => {
+    const o = new DemoOps();
+    expect((await o.exec(game, "status")).output.some((l) => l.text.includes("gm_flatgrass"))).toBe(true);
+    expect((await o.exec(game, "players")).output[0]!.text).toContain("acehack");
+    expect((await o.exec(game, "help")).output[0]!.text).toContain("status");
+    const bad = await o.exec(game, "rm -rf /");
+    expect(bad.output[0]!.level).toBe("warn");
+    expect(bad.output[0]!.text).toContain("command not found");
+  });
+
+  test("upload adds a file that the listing then shows; delete removes it", async () => {
+    const o = new DemoOps();
+    await o.upload(game, "/data", { name: "myaddon.gma", size: 4096 });
+    let entries = (await o.files(game, "/data")).entries;
+    expect(entries.some((e) => e.name === "myaddon.gma")).toBe(true);
+    await o.deleteFile(game, "/data/myaddon.gma");
+    entries = (await o.files(game, "/data")).entries;
+    expect(entries.some((e) => e.name === "myaddon.gma")).toBe(false);
+  });
+
+  test("file listing is dirs-first then alphabetical (native-explorer ordering)", async () => {
+    const o = new DemoOps();
+    const entries = (await o.files(game, "/data")).entries;
+    const firstFileIdx = entries.findIndex((e) => e.type === "file");
+    const lastDirIdx = entries.map((e) => e.type).lastIndexOf("dir");
+    expect(lastDirIdx).toBeLessThan(firstFileIdx); // all dirs precede all files
+  });
+
+  test("deleting a base file hides it from the listing", async () => {
+    const o = new DemoOps();
+    await o.deleteFile(game, "/data/server.cfg");
+    expect((await o.files(game, "/data")).entries.some((e) => e.name === "server.cfg")).toBe(false);
+  });
 });
 
 describe("management BFF routes", () => {
@@ -103,6 +137,26 @@ describe("management BFF routes", () => {
   test("POST config applies a patch", async () => {
     await post(`/api/resources/${r}/config`, { memory: "8Gi" });
     expect((await body(await get(`/api/resources/${r}/config`))).memory).toBe("8Gi");
+  });
+
+  test("POST exec returns command output", async () => {
+    const resp = await body(await post(`/api/resources/${r}/exec`, { cmd: "status" }));
+    expect(resp.output.length).toBeGreaterThan(0);
+  });
+
+  test("POST files uploads; the listing then shows it; DELETE removes it", async () => {
+    await post(`/api/resources/${r}/files`, { dir: "/data", file: { name: "pack.gma", size: 2048 } });
+    let entries = (await body(await get(`/api/resources/${r}/files?path=/data`))).entries;
+    expect(entries.some((e: { name: string }) => e.name === "pack.gma")).toBe(true);
+    const del = await handle(new Request(`http://x/api/resources/${r}/files?path=${encodeURIComponent("/data/pack.gma")}`, { method: "DELETE" }), data);
+    expect((await del!.json() as { ok: boolean }).ok).toBe(true);
+    entries = (await body(await get(`/api/resources/${r}/files?path=/data`))).entries;
+    expect(entries.some((e: { name: string }) => e.name === "pack.gma")).toBe(false);
+  });
+
+  test("POST files without file{name,size} → 400", async () => {
+    const resp = await post(`/api/resources/${r}/files`, { dir: "/data" });
+    expect(resp!.status).toBe(400);
   });
 
   test("GET /api/memory aggregates room-log bytes + events", async () => {

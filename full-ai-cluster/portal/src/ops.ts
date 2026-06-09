@@ -86,6 +86,12 @@ export interface ResourceOps {
   config(resource: string): Promise<ResourceConfig>;
   applyConfig(resource: string, patch: Partial<ResourceConfig>): Promise<LifecycleResult>;
   lifecycle(resource: string, action: LifecycleAction, replicas?: number): Promise<LifecycleResult>;
+  /** Run a console/RCON/shell command in the resource; returns output lines. */
+  exec(resource: string, cmd: string): Promise<{ output: LogLine[] }>;
+  /** Record an uploaded file at a path (the file-explorer upload). */
+  upload(resource: string, dir: string, file: { name: string; size: number }): Promise<LifecycleResult>;
+  /** Delete a file at a path. */
+  deleteFile(resource: string, path: string): Promise<LifecycleResult>;
 }
 
 /** Aggregate memory view — the durable Room logs + agent-memory volumes (#5). */

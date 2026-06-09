@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  ArrowLeft, Boxes, FileText, FolderTree, Gauge, ListTree, MessagesSquare,
-  Play, Power, RefreshCw, RotateCw, ScrollText, Settings2, Sliders, Terminal, Trash2, TriangleAlert,
+  ArrowLeft, Boxes, FolderTree, Gauge, ListTree, MessagesSquare,
+  Play, Power, RefreshCw, RotateCw, Settings2, Sliders, TerminalSquare, Trash2, TriangleAlert,
 } from "lucide-react";
 import {
-  api, type FileNode, type K8sEvent, type LogLine, type Metrics, type PodInfo, type ResourceConfig, type ResourceVM,
+  api, type K8sEvent, type Metrics, type PodInfo, type ResourceConfig, type ResourceVM,
 } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,14 +13,15 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle } from "@/c
 import { HealthDot, PersonaAvatar, catIcon } from "@/components/bits";
 import { MetricChart, UsageBar } from "@/components/MetricChart";
 import { RoomTimeline } from "@/components/RoomTimeline";
+import { Terminal } from "@/components/Terminal";
+import { FileExplorer } from "@/components/FileExplorer";
 import { cn } from "@/lib/utils";
 
-type Tab = "overview" | "metrics" | "logs" | "console" | "files" | "config" | "events" | "room" | "danger";
+type Tab = "overview" | "metrics" | "terminal" | "files" | "config" | "events" | "room" | "danger";
 const TABS: Array<{ id: Tab; label: string; icon: typeof Gauge }> = [
   { id: "overview", label: "Overview", icon: Settings2 },
   { id: "metrics", label: "Metrics", icon: Gauge },
-  { id: "logs", label: "Logs", icon: ScrollText },
-  { id: "console", label: "Console", icon: Terminal },
+  { id: "terminal", label: "Terminal", icon: TerminalSquare },
   { id: "files", label: "Files", icon: FolderTree },
   { id: "config", label: "Config", icon: Sliders },
   { id: "events", label: "Events", icon: ListTree },
@@ -109,9 +110,8 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
         <div className="min-w-0 flex-1 overflow-y-auto pb-8">
           {tab === "overview" && <Overview resource={resource} fqn={fqn} />}
           {tab === "metrics" && <MetricsTab fqn={fqn} />}
-          {tab === "logs" && <LogsTab fqn={fqn} />}
-          {tab === "console" && <ConsoleTab fqn={fqn} />}
-          {tab === "files" && <FilesTab fqn={fqn} />}
+          {tab === "terminal" && <TerminalTab fqn={fqn} />}
+          {tab === "files" && <FileExplorer fqn={fqn} category={resource.category} />}
           {tab === "config" && <ConfigTab fqn={fqn} onChanged={onChanged} setToast={setToast} />}
           {tab === "events" && <EventsTab fqn={fqn} />}
           {tab === "room" && <RoomTimeline resource={fqn} />}
@@ -210,98 +210,11 @@ function MetricsTab({ fqn }: { fqn: string }) {
   );
 }
 
-// ── Logs ──────────────────────────────────────────────────────────────────
-function LogsTab({ fqn }: { fqn: string }) {
-  const { data, err, reload } = useAsync<LogLine[]>(() => api.logs(fqn), [fqn]);
-  if (err) return <Empty text="Logs unavailable." />;
-  if (!data) return <Loading />;
-  const color = { info: "text-foreground/80", warn: "text-warning", error: "text-destructive", debug: "text-muted-foreground" };
-  return (
-    <div className="space-y-3">
-      <RefreshRow onClick={reload} />
-      <div className="overflow-x-auto rounded-lg border border-border bg-[#0a0e14] p-3 font-mono text-xs leading-relaxed">
-        {data.map((l, i) => (
-          <div key={i} className="flex gap-3 whitespace-pre">
-            <span className="shrink-0 text-muted-foreground/60">{l.ts}</span>
-            <span className={cn("shrink-0 uppercase", color[l.level])}>{l.level.padEnd(5)}</span>
-            <span className="text-foreground/90">{l.text}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Console ────────────────────────────────────────────────────────────────
-function ConsoleTab({ fqn }: { fqn: string }) {
+// ── Terminal (logs + console unified) ────────────────────────────────────────
+function TerminalTab({ fqn }: { fqn: string }) {
   const { data } = useAsync(() => api.access(fqn), [fqn]);
-  const [history, setHistory] = useState<string[]>([]);
-  const [cmd, setCmd] = useState("");
   if (!data) return <Loading />;
-  const run = () => {
-    if (!cmd.trim()) return;
-    setHistory((h) => [...h, `$ ${cmd}`, "(interactive exec lands with the WebSocket channel — command queued)"]);
-    setCmd("");
-  };
-  return (
-    <div className="space-y-4">
-      <div className="rounded-lg border border-border bg-card/60 p-4 text-sm">
-        <div className="font-medium">{data.console.kind === "rcon" ? "Game console (RCON)" : "Pod shell"}</div>
-        <p className="mt-1 text-muted-foreground">{data.console.note}</p>
-        <code className="mt-2 block rounded bg-background/50 px-2.5 py-1.5 text-xs">{data.console.command}</code>
-      </div>
-      <div className="rounded-lg border border-border bg-[#0a0e14] p-3 font-mono text-xs">
-        <div className="min-h-[140px] space-y-1">
-          {history.length === 0 ? <span className="text-muted-foreground/60">Type a command and press Enter…</span> : history.map((h, i) => <div key={i} className={h.startsWith("$") ? "text-primary" : "text-muted-foreground"}>{h}</div>)}
-        </div>
-        <div className="mt-2 flex items-center gap-2 border-t border-border/40 pt-2">
-          <span className="text-primary">$</span>
-          <input value={cmd} onChange={(e) => setCmd(e.target.value)} onKeyDown={(e) => e.key === "Enter" && run()} className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground/50" placeholder="status" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Files (FTP/SFTP) ────────────────────────────────────────────────────────
-function FilesTab({ fqn }: { fqn: string }) {
-  const [path, setPath] = useState("/data");
-  const { data, err } = useAsync(() => api.files(fqn, path), [fqn, path]);
-  if (err) return <Empty text="File access needs the SFTP sidecar (game servers) or exec." />;
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2 text-sm">
-        <FolderTree className="size-4 text-muted-foreground" />
-        <span className="font-mono text-xs">{path}</span>
-        {path !== "/" && path !== "/data" && (
-          <button className="ml-2 text-xs text-primary hover:underline" onClick={() => setPath(path.split("/").slice(0, -1).join("/") || "/")}>up</button>
-        )}
-      </div>
-      {!data ? <Loading /> : (
-        <div className="overflow-hidden rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40 text-left text-xs text-muted-foreground"><tr><th className="px-3 py-2 font-medium">Name</th><th className="px-3 py-2 font-medium">Size</th><th className="px-3 py-2 font-medium">Modified</th></tr></thead>
-            <tbody>
-              {data.entries.map((f: FileNode) => (
-                <tr key={f.path} className="border-t border-border/60 hover:bg-accent/40">
-                  <td className="px-3 py-2">
-                    {f.type === "dir" ? (
-                      <button className="inline-flex items-center gap-2 text-primary hover:underline" onClick={() => setPath(f.path)}><FolderTree className="size-4" />{f.name}</button>
-                    ) : (
-                      <span className="inline-flex items-center gap-2"><FileText className="size-4 text-muted-foreground" />{f.name}</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2 tabular-nums text-muted-foreground">{f.type === "dir" ? "—" : `${(f.size / 1024).toFixed(1)} KB`}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{f.modified}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      <p className="text-xs text-muted-foreground">Upload / download / edit run over the SFTP sidecar (port 2222 for game servers). Browse is live; transfer UI lands with the file-proxy endpoint.</p>
-    </div>
-  );
+  return <Terminal fqn={fqn} kind={data.console.kind} />;
 }
 
 // ── Config ──────────────────────────────────────────────────────────────────

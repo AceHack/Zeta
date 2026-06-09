@@ -45,56 +45,60 @@ export default function App() {
   }, [refresh]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background bg-grid">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-card/40 backdrop-blur">
-        <div className="flex h-14 items-center gap-2 border-b border-border px-5">
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
+      <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-card/60">
+        <div className="flex h-14 items-center gap-2.5 px-5">
+          <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg shadow-primary/20">
             <Boxes className="size-4" />
           </div>
           <span className="font-semibold tracking-tight">Zeta</span>
-          <span className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">platform</span>
+          <span className="ml-auto rounded-md border border-border/70 bg-muted/50 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">platform</span>
         </div>
-        <nav className="flex-1 space-y-1 p-3">
+        <div className="px-5 pb-2 pt-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">Manage</div>
+        <nav className="flex-1 space-y-0.5 px-3">
           {NAV.map((n) => {
             const Icon = n.icon;
-            const active = view === n.id;
+            const active = view === n.id && !openResource;
             const badge = n.id === "needsme" && needs.length > 0 ? needs.length : null;
             return (
               <button
                 key={n.id}
                 onClick={() => { setOpenResource(null); setView(n.id); }}
                 className={cn(
-                  "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  active ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  "relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                  active ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/40 hover:text-foreground",
                 )}
               >
-                <Icon className="size-4" />
+                {active && <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-primary" />}
+                <Icon className={cn("size-4", active && "text-primary")} />
                 {n.label}
                 {badge && <span className="ml-auto rounded-full bg-warning px-1.5 text-[11px] font-semibold text-background">{badge}</span>}
               </button>
             );
           })}
         </nav>
-        <div className="border-t border-border p-4 text-[11px] leading-relaxed text-muted-foreground">
-          <div className="font-medium text-foreground/70">AI-native · no-directives</div>
+        <div className="m-3 rounded-lg border border-border/60 bg-muted/20 p-3 text-[11px] leading-relaxed text-muted-foreground">
+          <div className="font-medium text-foreground/80">AI-native · no-directives</div>
           humans + agents as peers
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-6">
+      <div className="flex flex-1 flex-col overflow-hidden bg-grid">
+        <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border/70 bg-background/80 px-6">
           <div className="flex items-center gap-2 text-sm">
+            <div className="flex size-6 items-center justify-center rounded-md bg-muted text-[11px] font-semibold text-muted-foreground">A</div>
             <span className="font-medium">acme</span>
-            <span className="text-muted-foreground">/ human + agents</span>
+            <span className="text-muted-foreground/50">/</span>
+            <span className="text-muted-foreground">human + agents</span>
           </div>
-          <button onClick={refresh} className="ml-auto inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground">
+          <button onClick={refresh} className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-border/60 px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
             <RefreshCw className={cn("size-3.5", loading && "animate-spin")} /> Refresh
           </button>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto bg-glow p-6 lg:p-8">
           {error ? (
             <div className="mx-auto mt-20 max-w-md rounded-lg border border-destructive/30 bg-destructive/10 p-6 text-center text-sm text-destructive">
               Failed to reach the platform API: {error}

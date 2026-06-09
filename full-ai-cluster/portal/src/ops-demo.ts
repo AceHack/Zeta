@@ -7,6 +7,7 @@
 
 import type {
   AccessInfo,
+  FileNode,
   K8sEvent,
   LifecycleAction,
   LifecycleResult,
@@ -35,6 +36,8 @@ const DB = (r: string) => /(^|[-/])db($|[-/])|-db$|postgres|sql/.test(r) && !GAM
 
 export class DemoOps implements ResourceOps {
   private overlay = new Map<string, Overlay>();
+  private added = new Map<string, FileNode[]>(); // key: `${resource}\0${dir}`
+  private deleted = new Set<string>(); // key: `${resource}\0${path}`
   private ov(r: string): Overlay {
     let o = this.overlay.get(r);
     if (!o) this.overlay.set(r, (o = {}));
@@ -124,15 +127,52 @@ export class DemoOps implements ResourceOps {
     return base;
   }
 
-  async files(resource: string, path: string): Promise<{ path: string; entries: import("./ops.ts").FileNode[] }> {
+  async files(resource: string, path: string): Promise<{ path: string; entries: FileNode[] }> {
     const p = path || "/data";
-    const mk = (name: string, type: "file" | "dir", size: number) => ({ name, path: `${p.replace(/\/$/, "")}/${name}`, type, size, modified: "2026-06-08 11:42" });
-    if (!GAME(resource) && !DB(resource)) return { path: p, entries: [mk("index.html", "file", 1284), mk("assets", "dir", 0)] };
-    if (DB(resource)) return { path: p, entries: [mk("base", "dir", 0), mk("pg_wal", "dir", 0), mk("postgresql.conf", "file", 28_900), mk("pg_hba.conf", "file", 4_096)] };
-    // game server data root (the SFTP root)
-    if (p === "/data")
-      return { path: p, entries: [mk("garrysmod", "dir", 0), mk("srcds_run", "file", 9_213), mk("steam_appid.txt", "file", 5), mk("server.cfg", "file", 1_842)] };
-    return { path: p, entries: [mk("addons", "dir", 0), mk("maps", "dir", 0), mk("cfg", "dir", 0), mk("settings.lua", "file", 612)] };
+    const mk = (name: string, type: "file" | "dir", size: number): FileNode => ({ name, path: `${p.replace(/\/$/, "")}/${name}`, type, size, modified: "2026-06-08 11:42" });
+    let base: FileNode[];
+    if (!GAME(resource) && !DB(resource)) base = [mk("index.html", "file", 1284), mk("assets", "dir", 0)];
+    else if (DB(resource)) base = [mk("base", "dir", 0), mk("pg_wal", "dir", 0), mk("postgresql.conf", "file", 28_900), mk("pg_hba.conf", "file", 4_096)];
+    else if (p === "/data") base = [mk("garrysmod", "dir", 0), mk("srcds_run", "file", 9_213), mk("steam_appid.txt", "file", 5), mk("server.cfg", "file", 1_842)];
+    else base = [mk("addons", "dir", 0), mk("maps", "dir", 0), mk("cfg", "dir", 0), mk("settings.lua", "file", 612)];
+    // apply the upload/delete overlay
+    const added = this.added.get(`${resource}\0${p}`) ?? [];
+    const merged = [...base, ...added].filter((f) => !this.deleted.has(`${resource}\0${f.path}`));
+    // dirs first, then files, each alphabetical — native-explorer ordering
+    merged.sort((a, b) => (a.type === b.type ? a.name.localeCompare(b.name) : a.type === "dir" ? -1 : 1));
+    return { path: p, entries: merged };
+  }
+
+  async exec(resource: string, cmd: string): Promise<{ output: LogLine[] }> {
+    const line = (level: LogLine["level"], text: string): LogLine => ({ ts: "now", level, text });
+    const c = cmd.trim();
+    const word = c.split(/\s+/)[0]?.toLowerCase() ?? "";
+    if (c === "") return { output: [] };
+    if (word === "help")
+      return { output: [line("info", GAME(resource) ? "commands: status, players, changelevel <map>, say <msg>, ls, exit" : "commands: ls, cat <file>, ps, env, exit")] };
+    if (word === "status" && GAME(resource))
+      return { output: [line("info", "hostname: friday-sandbox"), line("info", "map     : gm_flatgrass"), line("info", "players : 1 / 32"), line("info", "uptime  : 9m")] };
+    if (word === "players" && GAME(resource)) return { output: [line("info", "# 1 \"acehack\" STEAM_0:1:42 00:09 64ms")] };
+    if (word === "ls") return { output: [line("info", (await this.files(resource, GAME(resource) ? "/data" : "/")).entries.map((e) => e.name).join("  "))] };
+    if (word === "ps") return { output: [line("info", "PID  CMD"), line("info", "1    " + (GAME(resource) ? "srcds_linux" : DB(resource) ? "postgres" : "nginx"))] };
+    if (word === "env") return { output: Object.entries((await this.config(resource)).env).map(([k, v]) => line("info", `${k}=${v}`)) };
+    if (word === "exit") return { output: [line("info", "session closed")] };
+    return { output: [line("warn", `command not found: ${word} — type 'help'`)] };
+  }
+
+  async upload(resource: string, dir: string, file: { name: string; size: number }): Promise<LifecycleResult> {
+    const key = `${resource}\0${dir}`;
+    const list = this.added.get(key) ?? [];
+    const path = `${dir.replace(/\/$/, "")}/${file.name}`;
+    this.deleted.delete(`${resource}\0${path}`);
+    const node: FileNode = { name: file.name, path, type: "file", size: file.size, modified: "just now" };
+    this.added.set(key, [...list.filter((f) => f.name !== file.name), node]);
+    return { ok: true, message: `Uploaded ${file.name} (${(file.size / 1024).toFixed(1)} KB) to ${dir}.` };
+  }
+
+  async deleteFile(resource: string, path: string): Promise<LifecycleResult> {
+    this.deleted.add(`${resource}\0${path}`);
+    return { ok: true, message: `Deleted ${path}.` };
   }
 
   async access(resource: string): Promise<AccessInfo> {

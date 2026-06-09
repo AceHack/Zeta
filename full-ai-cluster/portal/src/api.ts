@@ -82,7 +82,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     }
 
     // ── management plane: /api/resources/:resource/* ───────────────────
-    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|metrics|logs|events|files|access|config|lifecycle)$/);
+    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|metrics|logs|events|files|access|config|lifecycle|exec)$/);
     if (mgmt) {
       if (!data.ops) return json({ error: "management ops not available on this backend" }, 405);
       const resource = decodeResource(mgmt[1]!);
@@ -101,11 +101,22 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
       if (req.method === "POST") {
         const b = (await req.json().catch(() => ({}))) as Record<string, unknown>;
         if (op === "config") return json(await data.ops.applyConfig(resource, b as Partial<ResourceConfig>));
+        if (op === "exec") return json(await data.ops.exec(resource, String(b.cmd ?? "")));
+        if (op === "files") {
+          const file = b.file as { name?: string; size?: number } | undefined;
+          if (!file?.name || typeof file.size !== "number") return json({ error: "file{name,size} required" }, 400);
+          return json(await data.ops.upload(resource, String(b.dir ?? "/"), { name: file.name, size: file.size }));
+        }
         if (op === "lifecycle") {
           const action = String(b.action ?? "");
           if (!LIFECYCLE_ACTIONS.has(action)) return json({ error: "action must be restart|stop|start|scale|delete" }, 400);
           return json(await data.ops.lifecycle(resource, action as LifecycleAction, typeof b.replicas === "number" ? b.replicas : undefined));
         }
+      }
+      if (req.method === "DELETE" && op === "files") {
+        const target = url.searchParams.get("path");
+        if (!target) return json({ error: "path required" }, 400);
+        return json(await data.ops.deleteFile(resource, target));
       }
       return json({ error: "method not allowed" }, 405);
     }

@@ -74,7 +74,7 @@ export function Resources({ groups, onOpen }: { groups: CategoryGroupVM[]; onOpe
                     <Card
                       key={`${r.namespace}/${r.name}`}
                       onClick={() => onOpen(r)}
-                      className="group cursor-pointer transition-all hover:border-primary/40 hover:shadow-md hover:shadow-primary/5"
+                      className="card-hover group cursor-pointer hover:border-primary/40"
                     >
                       <div className="flex items-start justify-between p-4">
                         <div className="min-w-0">
