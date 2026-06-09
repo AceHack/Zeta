@@ -1,1 +1,1 @@
-../grams/1/zetadatetime.md
+../words/zetadatetime.md

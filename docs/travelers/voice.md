@@ -1,1 +1,1 @@
-../grams/1/voice.md
+../words/voice.md

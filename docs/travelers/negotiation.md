@@ -1,1 +1,1 @@
-../grams/1/negotiation.md
+../words/negotiation.md

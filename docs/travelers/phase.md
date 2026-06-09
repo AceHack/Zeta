@@ -1,1 +1,1 @@
-../grams/1/phase.md
+../words/phase.md

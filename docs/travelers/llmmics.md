@@ -1,1 +1,1 @@
-../grams/1/llmmics.md
+../words/llmmics.md

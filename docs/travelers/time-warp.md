@@ -1,1 +1,1 @@
-../grams/2/time-warp.md
+../words/time-warp.md

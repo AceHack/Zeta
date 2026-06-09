@@ -1,1 +1,1 @@
-../grams/1/llmtv.md
+../words/llmtv.md

@@ -1,1 +1,1 @@
-../grams/1/attractor.md
+../words/attractor.md

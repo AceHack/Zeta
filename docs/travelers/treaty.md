@@ -1,1 +1,1 @@
-../grams/1/treaty.md
+../words/treaty.md

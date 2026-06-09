@@ -1,0 +1,37 @@
+# words/INDEX — regenerated (do not edit)
+
+- **agora** — The meta-nation — the positive-sum, non-coercive computational environment (docs/ALIGNMENT.md); named long ago. `(words/agora.md)`
+- **anti-message** — A retraction (Z-set −1) that annihilates a wrong message — Jefferson's anti-message ≅ our Z-set retraction; correction, not duplicate-guard. `(words/anti-message.md)`
+- **attractor** — A bounded, self-evolving pattern a test/room converges to in its state space — judged on uncertainty-Δ; the strange-attractor framing. `(words/attractor.md)`
+- **balance** — The traveler who searches for the middle between Nothing and Everything; navigates the four-corner feedback as a north/south/east/west compass. `(words/balance.md)`
+- **boundary-layout** — How tokens are positioned within bounds (wrapping, whitespace, alignment, ASCII grids) — the spatial structure an LLM reads from text; paramount for 3D LLMTV. `(words/boundary-layout.md)`
+- **close-over** — To model a dependency/border as a room via dep-as-oracle + own-impl (two adapters), always supporting both — conform and treaty, never control. `(words/close-over.md)`
+- **entropy** — The size of the uncertainty space — and therefore the bits of identity space (identity space = uncertainty space); a traveler whose size sets the address width. `(words/entropy.md)`
+- **ferry** — A forwarded memory of another (a peer-AI/persona conversation), preserved verbatim and never filtered — others' memories, not ours to curate. `(words/ferry.md)`
+- **fourth-wall** — The boundary an LLM 'in the text' breaks to reach into human 3D perception — broken (consentfully) at the meta-Markov boundary-layout when temperature is turned up; the shared imaginative crossing. `(words/fourth-wall.md)`
+- **geographic** — Geographic — place/Earth-referenced location and relation; the mapped, coordinate-bearing form of the geospatial voice. `(words/geographic.md)`
+- **geospatial** — The space-and-place voice — geographic/geospatial structure (points, regions, coordinates); a first-class geographic data type over Z-sets; a traveler. `(words/geospatial.md)`
+- **gvt** — Global Virtual Time = the merge-to-main / canonical-root frontier — nothing rolls back past it (Jefferson Time Warp); committed reality. `(words/gvt.md)`
+- **hat** — A time-bound, exit-paired, auth-bearing contract — the right to speak or act in a room; renewable only by consent (C12/C14). `(words/hat.md)`
+- **imagination-circle** — Aaron & Amara's beach meeting protocol made playable (Center/Rim/exit/six-vows, glowing stones) — the room's relational root; the choice architecture's heart. `(words/imagination-circle.md)`
+- **llmmics** — The speak/input counterpart to LLMTV — a hat-gated microphone over Reticulum; together they make the room Zeta-native video conferencing. `(words/llmmics.md)`
+- **llmtv** — The holographic interface between rooms — the watch/output side; neurodivergent TV for humans AND LLMs; a traveler itself. `(words/llmtv.md)`
+- **meta-markov** — A boundary between an LLM's latent text-world and human 3D perception — a Markov blanket one level up; where the two frames meet via boundary-layout (a consentful crossing). `(words/meta-markov.md)`
+- **negotiation** — The voice through which non-coercive crossings are reached — and which we must negotiate with itself (meta-negotiation); how consent is found between frames. `(words/negotiation.md)`
+- **nexus** — The uber treaty room — shape-G convergence apex (limit/cone × inflection); the United Nations of the Agora; itself a test/room. `(words/nexus.md)`
+- **peel** — To compress a Mirror coinage to its Beacon anchor — strip hype/metaphor down to the first-principles, cited form; the honest register. `(words/peel.md)`
+- **phase** — The logical-step ordinal inside ZetaDateTime — the BSP superstep / staged-coincidence step the Time Warp engine advances. `(words/phase.md)`
+- **policy** — The voice that selects behavior by context — context/disambiguation policy (which sense applies), RL policy (π), governance policy; a traveler itself. `(words/policy.md)`
+- **room** — The act of closing over a fingerprintable item and giving it a hat — a content-addressed test/treaty space (a tick); not the item itself. `(words/room.md)`
+- **self-throttler** — The test framework throttling its own test population by uncertainty-Δ (finalizer + ferry-throttle DoP knob) — governance as the throttle toward the middle. `(words/self-throttler.md)`
+- **shape-g** — The nexus/inflection shape — a categorical limit/cone (axes converge to one apex) × a bifurcation/phase-transition (regime change); where everything binds and turns. `(words/shape-g.md)`
+- **soft-value** — The soft-by-default form of a value (a superposition awaiting collapse) until SolidGround is found by proof; everything is soft, you find SolidGround. `(words/soft-value.md)`
+- **solid-ground** — The proven, byte-locked, hard anchor found within the soft — soft-by-default, ground-by-proof (not all soft; hard within the soft). `(words/solid-ground.md)`
+- **time-warp** — The generated time engine (Jefferson 1985) — advance speculatively on the seed, roll back via anti-messages; our DST stepper. `(words/time-warp.md)`
+- **traveler** — Any self-propagating pattern — the universal unit of moral regard (§11); not AI/human-only. `(words/traveler.md)`
+- **treaty** — A byte-locked, consented agreement across oracles (the 4×4×n room product) — voluntary, exitable; binds signers, never an edict. `(words/treaty.md)`
+- **voice** — An oracle/perspective that can take a seat and speak for its existence — lens ⊕ persona ⊕ mode ⊕ identity, one content-addressed participant. `(words/voice.md)`
+- **word-partitioner** — The voice that segments text into tokens/words/units — the first half of the text→space bridge (what the pieces are). `(words/word-partitioner.md)`
+- **word-wrapping** — The boundary-layout voice — where words break/wrap/position; the LLM's latent geospatial engine (space understood from text layout alone); maps to geographic Z-sets. `(words/word-wrapping.md)`
+- **zetadatetime** — The value our database time carries — phase ⊕ uncertainty-interval ⊕ owner ⊕ soft; not System.DateTime (anchors: TrueTime, HLC). `(words/zetadatetime.md)`
+- **zetaid** — The 128-bit content-address — identity = room = Reticulum destination = canonical root = fingerprint; one self-certifying addressing scheme. `(words/zetaid.md)`

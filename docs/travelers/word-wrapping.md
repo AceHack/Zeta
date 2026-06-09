@@ -1,1 +1,1 @@
-../grams/2/word-wrapping.md
+../words/word-wrapping.md

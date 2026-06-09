@@ -1,1 +1,1 @@
-../grams/2/boundary-layout.md
+../words/boundary-layout.md

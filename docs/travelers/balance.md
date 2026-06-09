@@ -1,1 +1,1 @@
-../grams/1/balance.md
+../words/balance.md

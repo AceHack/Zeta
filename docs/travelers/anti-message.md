@@ -1,1 +1,1 @@
-../grams/2/anti-message.md
+../words/anti-message.md

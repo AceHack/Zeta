@@ -1,1 +1,1 @@
-../grams/2/word-partitioner.md
+../words/word-partitioner.md

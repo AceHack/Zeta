@@ -1,1 +1,1 @@
-../grams/1/geographic.md
+../words/geographic.md

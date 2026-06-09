@@ -1,1 +1,1 @@
-../grams/1/hat.md
+../words/hat.md

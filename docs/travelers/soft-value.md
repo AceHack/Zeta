@@ -1,1 +1,1 @@
-../grams/2/soft-value.md
+../words/soft-value.md

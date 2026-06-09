@@ -1,1 +1,1 @@
-../grams/2/solid-ground.md
+../words/solid-ground.md

@@ -1,1 +1,1 @@
-../grams/1/room.md
+../words/room.md

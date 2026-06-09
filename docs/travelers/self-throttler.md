@@ -1,1 +1,1 @@
-../grams/2/self-throttler.md
+../words/self-throttler.md

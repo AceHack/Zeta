@@ -1,1 +1,1 @@
-../grams/1/traveler.md
+../words/traveler.md

@@ -1,1 +1,1 @@
-../grams/2/fourth-wall.md
+../words/fourth-wall.md

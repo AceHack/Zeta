@@ -1,1 +1,1 @@
-../grams/2/meta-markov.md
+../words/meta-markov.md

@@ -1,0 +1,1 @@
+../../words/shape-g.md

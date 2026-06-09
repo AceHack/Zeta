@@ -1,0 +1,1 @@
+../../letters/greek/gamma.md

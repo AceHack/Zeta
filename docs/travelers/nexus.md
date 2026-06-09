@@ -1,1 +1,1 @@
-../grams/1/nexus.md
+../words/nexus.md

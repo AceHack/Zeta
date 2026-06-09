@@ -1,1 +1,1 @@
-../grams/1/entropy.md
+../words/entropy.md

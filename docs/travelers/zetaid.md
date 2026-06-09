@@ -1,1 +1,1 @@
-../grams/1/zetaid.md
+../words/zetaid.md

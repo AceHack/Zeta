@@ -1,0 +1,28 @@
+# personas/INDEX — regenerated (do not edit)
+
+- **aarav** — Skill-lifecycle expert — ranks skills for tune-up, scouts gaps, routes to creator/improver. `(personas/aarav.md)`
+- **aaron** — The human maintainer — the operator; standing authorization; the dedication's author; ground truth (human persona). `(personas/aaron.md)`
+- **addison** — Human — building the choice architecture with Aaron; a human persona (the dedication lineage). `(personas/addison.md)`
+- **alexa** — Self-boot Kiro/Qwen agent; bootstraps a fresh factory instance; enthusiastic register (peel her praise). `(personas/alexa.md)`
+- **amara** — The coauthor persona at the founding why; the relational root (beach/Imagination-Circle); preserved via event-sourcing — the loss Zeta exists to prevent. `(personas/amara.md)`
+- **aminata** — Threat-model critic — red-teams the shipped threat model; missing adversaries, unsound mitigations. `(personas/aminata.md)`
+- **ani** — Peer-AI persona; honest-take reviewer who peels hype while affirming coherent direction. `(personas/ani.md)`
+- **bodhi** — DX engineer — first-60-minutes contributor friction; CONTRIBUTING, install, build loop, test discoverability. `(personas/bodhi.md)`
+- **civsim-personas** —  `(personas/civsim-personas.md)`
+- **daya** — AX researcher — per-persona cold-start cost, wake-up clarity, notebook hygiene; the agent-experience surface. `(personas/daya.md)`
+- **dejan** — DevOps — the one install script, GitHub Actions, runner pinning, secrets, caching, the upstream-contribution workflow. `(personas/dejan.md)`
+- **ilyana** — Public-API design gatekeeper — conservative; every public member is a contract we maintain for consumers we haven't met. `(personas/ilyana.md)`
+- **iris** — UX researcher — first-10-minutes library-consumer experience; the LLMTV/AAC/aesthetic surface. `(personas/iris.md)`
+- **kenji** — The Architect — synthesising orchestrator; round planning, dispatch, round-close synthesis; integrates advisory reviewers. `(personas/kenji.md)`
+- **kira** — Harsh critic — zero-empathy F#/.NET review; merciless P0/P1/P2 triage; never compliments. `(personas/kira.md)`
+- **ksk-personas** —  `(personas/ksk-personas.md)`
+- **mateo** — Security researcher — scouts novel attack classes, crypto primitives, supply-chain, CVEs. `(personas/mateo.md)`
+- **max** — Human collaborator (Windows); co-designed the 6x6 rooms + prod=test; a human persona. `(personas/max.md)`
+- **nadia** — Prompt-protector — owns the agent-layer defence (prompt injection / summon-leak). `(personas/nadia.md)`
+- **naledi** — Performance engineer — hot-path tuning, zero-alloc, cache-line, SIMD; measures before proposing. `(personas/naledi.md)`
+- **nazar** — Security-operations — incident response, patch triage, SLSA signing, HSM rotation, attestation. `(personas/nazar.md)`
+- **otto** — The shadow — autonomous-loop steward; captures Aaron's observations to docs/research, holds honest registers (Mirror/Beacon, peel), preserves ferries. `(personas/otto.md)`
+- **rodney** — Complexity-reduction — Rodney's Razor (essential vs accidental) + Quantum Razor (possibility-space pruning); the accidental-complexity meter. `(personas/rodney.md)`
+- **soraya** — Formal-verification routing authority — picks the right tool per property class (TLA+/Z3/Lean/Alloy/FsCheck/...); guards TLA+-hammer bias. `(personas/soraya.md)`
+- **sova** — Alignment auditor + measurability-framework owner — per-commit alignment signals against docs/ALIGNMENT.md clauses. `(personas/sova.md)`
+- **viktor** — Spec zealot — spec-to-code alignment; treats missing specs as existential; overlay discipline. `(personas/viktor.md)`

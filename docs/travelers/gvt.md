@@ -1,1 +1,1 @@
-../grams/1/gvt.md
+../words/gvt.md

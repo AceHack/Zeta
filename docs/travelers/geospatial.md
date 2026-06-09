@@ -1,1 +1,1 @@
-../grams/1/geospatial.md
+../words/geospatial.md

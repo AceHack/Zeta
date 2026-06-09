@@ -1,1 +1,1 @@
-../grams/1/peel.md
+../words/peel.md

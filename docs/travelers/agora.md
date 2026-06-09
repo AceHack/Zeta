@@ -1,1 +1,1 @@
-../grams/1/agora.md
+../words/agora.md

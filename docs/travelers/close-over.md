@@ -1,1 +1,1 @@
-../grams/2/close-over.md
+../words/close-over.md

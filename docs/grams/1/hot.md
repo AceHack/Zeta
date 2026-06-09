@@ -1,0 +1,1 @@
+../../temperatures/hot.md

@@ -1,24 +1,23 @@
-// Vocabulary uniqueness enforcer (Aaron, 2026-06-09): "enforced uniqueness for our
-// model" across the date-agnostic vocabulary folders. A traveler is either a real
-// intake file in travelers/, OR a real file in exactly one category home (grams/<n>,
-// letters/<lang>, shapes, colors, temperatures) — never duplicated — and every symlink
-// resolves. Run: bun tools/hygiene/vocab-uniqueness.ts   (exit 1 on any violation)
-import { readdirSync, lstatSync, existsSync, realpathSync } from "node:fs";
+// Vocabulary uniqueness enforcer (Aaron, 2026-06-09): canonical homes are the TYPE folders
+// (words/, letters/, shapes/, colors/, temperatures/ — real files); grams/ and travelers/ are
+// symlink views. Enforces: one canonical home per term; all symlinks resolve; travelers/
+// intake discipline; multi-sense terms carry a discriminator. Run: bun tools/hygiene/vocab-uniqueness.ts
+import { readdirSync, lstatSync, existsSync, realpathSync, readFileSync } from "node:fs";
 import { join, basename, relative } from "node:path";
 
 const DOCS = new URL("../../docs/", import.meta.url).pathname;
-const HOMES = ["grams", "letters", "shapes", "colors", "temperatures"]; // canonical category roots
+const CANON = ["words", "letters", "shapes", "colors", "temperatures", "personas"]; // canonical type homes (real)
+const VIEWS = ["grams", "travelers"];                                    // symlink views
 const violations: string[] = [];
 const v = (m: string) => violations.push(m);
+const realpathSafe = (p: string) => { try { return realpathSync(p); } catch { return "/__missing__"; } };
 
-/** Recursively list entries; returns {file|symlink, path}. Skips READMEs and the words symlink dir. */
 function walk(dir: string): { path: string; link: boolean }[] {
   const out: { path: string; link: boolean }[] = [];
   if (!existsSync(dir)) return out;
   for (const name of readdirSync(dir)) {
-    if (name === "README.md") continue;
-    const p = join(dir, name);
-    const st = lstatSync(p);
+    if (name === "README.md" || name === "INDEX.md") continue;
+    const p = join(dir, name); const st = lstatSync(p);
     if (st.isSymbolicLink()) out.push({ path: p, link: true });
     else if (st.isDirectory()) out.push(...walk(p));
     else if (name.endsWith(".md")) out.push({ path: p, link: false });
@@ -26,36 +25,41 @@ function walk(dir: string): { path: string; link: boolean }[] {
   return out;
 }
 
-// 1) No dangling symlinks anywhere under docs/ vocab (words, travelers, any).
-for (const root of [...HOMES, "travelers", "words"]) {
-  for (const e of walk(join(DOCS, root))) {
-    if (e.link && !existsSync(realpathSafe(e.path))) v(`dangling symlink: docs/${relative(DOCS, e.path)}`);
-  }
-}
-function realpathSafe(p: string): string { try { return realpathSync(p); } catch { return "/__missing__"; } }
+// 1) No dangling symlinks in the views (grams, travelers) or the top-level type aliases.
+for (const root of [...VIEWS, ...CANON]) for (const e of walk(join(DOCS, root)))
+  if (e.link && !existsSync(realpathSafe(e.path))) v(`dangling symlink: docs/${relative(DOCS, e.path)}`);
 
-// 2) grams term global uniqueness: a term basename is a real file in at most one grams/<n>.
-const gramsTerms = new Map<string, string[]>();
-for (const e of walk(join(DOCS, "grams"))) {
+// 2) Canonical uniqueness: a term basename is a real file in at most one canonical home.
+const canonTerms = new Map<string, string[]>();
+const homeRealTerms = new Set<string>();
+for (const home of CANON) for (const e of walk(join(DOCS, home))) {
   if (e.link) continue;
   const term = basename(e.path, ".md");
-  (gramsTerms.get(term) ?? gramsTerms.set(term, []).get(term)!).push(relative(DOCS, e.path));
+  homeRealTerms.add(term);
+  const arr = canonTerms.get(term) ?? []; arr.push(relative(DOCS, e.path)); canonTerms.set(term, arr);
 }
-for (const [term, paths] of gramsTerms) if (paths.length > 1) v(`grams term not unique: "${term}" in ${paths.join(", ")}`);
+for (const [term, paths] of canonTerms) if (paths.length > 1) v(`term not unique across canonical homes: "${term}" in ${paths.join(", ")} (add a discriminator / pick one home)`);
 
-// 3) travelers/ discipline: a symlink must resolve INTO a category home; a real file is
-//    allowed (intake) but then that term must NOT also be a real file in a category home.
-const homeRealTerms = new Set<string>();
-for (const home of HOMES) for (const e of walk(join(DOCS, home))) if (!e.link) homeRealTerms.add(basename(e.path, ".md"));
+// 3) travelers/ discipline: a symlink must resolve into a canonical home; a real intake file
+//    must NOT duplicate a homed term (once homed it becomes a symlink).
 for (const e of walk(join(DOCS, "travelers"))) {
   const term = basename(e.path, ".md");
   if (e.link) {
-    const tgt = realpathSafe(e.path);
-    const underHome = HOMES.some((h) => tgt.includes(`/docs/${h}/`));
-    if (!underHome) v(`travelers symlink does not point into a category home: docs/${relative(DOCS, e.path)} -> ${tgt}`);
-  } else {
-    // real intake file: must not already be homed (would be a duplicate, not intake)
-    if (homeRealTerms.has(term)) v(`travelers intake "${term}" duplicates a homed term — move to symlink: docs/${relative(DOCS, e.path)}`);
+    if (!CANON.some((h) => realpathSafe(e.path).includes(`/docs/${h}/`)))
+      v(`travelers symlink not into a canonical home: docs/${relative(DOCS, e.path)}`);
+  } else if (homeRealTerms.has(term)) {
+    v(`travelers intake "${term}" duplicates a homed term — move to symlink: docs/${relative(DOCS, e.path)}`);
+  }
+}
+
+// 4) Discriminator: a term with >1 carved sentence (>1 sense) needs context-policy/discriminator/senses.
+for (const home of CANON) for (const e of walk(join(DOCS, home))) {
+  if (e.link) continue;
+  const body = readFileSync(e.path, "utf8");
+  if (body.split("\n").filter((l) => l.startsWith("> ")).length > 1) {
+    const fm = body.startsWith("---") ? body.slice(3, Math.max(3, body.indexOf("\n---", 3))) : "";
+    if (!/(^|\n)\s*(context-policy|discriminator|senses)\s*:/.test(fm))
+      v(`multi-sense term needs a discriminator (frontmatter context-policy/discriminator/senses): docs/${relative(DOCS, e.path)}`);
   }
 }
 
@@ -64,4 +68,4 @@ if (violations.length) {
   for (const m of violations) console.error("  - " + m);
   process.exit(1);
 }
-console.log("vocab-uniqueness: OK — every traveler has one canonical home; all symlinks resolve.");
+console.log("vocab-uniqueness: OK — canonical homes unique; symlinks resolve; travelers + discriminator clean.");

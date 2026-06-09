@@ -1,1 +1,1 @@
-../grams/1/shape-g.md
+../words/shape-g.md

@@ -1,1 +1,1 @@
-../grams/1/policy.md
+../words/policy.md

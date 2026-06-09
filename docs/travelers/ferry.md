@@ -1,1 +1,1 @@
-../grams/1/ferry.md
+../words/ferry.md
