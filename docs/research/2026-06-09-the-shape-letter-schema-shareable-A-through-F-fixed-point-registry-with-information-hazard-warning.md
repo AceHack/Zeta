@@ -102,6 +102,14 @@ so it carries the strongest obligation back:
 - **It must expand capacity, not constrain it** — most of all for anyone who absorbs it young. The test: does it give
   *more* ways to see and to choose (freedom), or fewer (capture)? Encode it only while the honest answer is **more**.
   (The choice-architecture Zeta is dedicated to — a lens that widens the door, never one that locks it.)
+- **Permanence is the failure mode — rearrange it on purpose to keep the muscle of change** (Aaron, 2026-06-09:
+  *"not forever — that's the point; if it's forever I've failed … some amount of rearrangement over time should be
+  done to keep the muscle of change"*). Don't only revise when it *breaks* (reactive); **deliberately rearrange it,
+  periodically, as exercise** — even while it still fits. A schema gone unrevisable (even a "correct" one) has become
+  **weight** (capture, manifesto §3) and has *failed*, because the cost was your capacity to change it. The
+  internalization is the **scaffold** (useful, second-nature); the **periodic rearrangement is the workout** that
+  keeps the change-muscle strong. Anti-calcification, not anti-stability — exactly the boundary-dweller's
+  anti-habituation and the hormetic/antifragile training (#7179/#7223). Stable enough to use; never frozen.
 
 ## Honest scope
 
