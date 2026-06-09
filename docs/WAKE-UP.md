@@ -17,7 +17,7 @@ agent-experience researcher (Daya).**
 
 ## Tier 0 — any persona, cold start
 
-Everyone reads these. Measured cost: ~12k tokens total cold (GLOSSARY.md dominates at ~4.5k; EXPERT-REGISTRY.md ~2k; the rest ~5.5k).
+Everyone reads these. Measured (audit 2026-06-09): the full `GLOSSARY.md` was ~13.6k tok (41% of a ~33k cold-boot) — it moved to **Tier-3 on-demand**; the small **`docs/SEED-VOCABULARY.md`** kernel (carved Zeta-specific senses) replaces it cold. Target ~18-20k.
 
 1. `CLAUDE.md` — already the first file Claude Code reads;
    contains ground rules (agents-not-bots, never-fetch-elder-
@@ -26,9 +26,10 @@ Everyone reads these. Measured cost: ~12k tokens total cold (GLOSSARY.md dominat
    §11 (architect-gate), §12 (bugs-before-features ratio), §13
    (reviewer-count inverse to backlog), §14 (standing off-time
    budget).
-3. `docs/GLOSSARY.md` — shared vocabulary. Resolves overloaded
-   terms: "skill"/"hat", "spec" (behavioural vs formal),
-   "expert", "frontmatter", "AX"/"UX"/"DX".
+3. `docs/SEED-VOCABULARY.md` — the cold-boot vocabulary **kernel**: carved
+   one-liners for the Zeta-specific/overloaded terms only (skill/hat, spec,
+   persona/actor, AX/UX/DX, Mirror/Beacon, NCI, close-over, …). Standard terms
+   you already hold; full prose is on-demand in `GLOSSARY.md` (Tier-3).
 4. `docs/EXPERT-REGISTRY.md` — the 23-person roster. Skim the
    names; every dispatch uses them.
 5. `docs/CURRENT-ROUND.md` — live mid-round state (when it
@@ -88,6 +89,9 @@ Only when you have a specific task.
 
 Only when the task explicitly requires:
 
+- `docs/GLOSSARY.md` — the **full** vocabulary (~13.6k tok, 267 terms, prose).
+  The Seed kernel (Tier-0) covers the load-bearing Zeta-specific senses; read
+  the full glossary only when a specific term's detail is needed.
 - `docs/ROUND-HISTORY.md` — narrative past-tense log; heavy
   tokens. Read when a decision's history matters.
 - `docs/DECISIONS/*.md` — ADRs. When a closed decision is being

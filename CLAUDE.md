@@ -6,7 +6,8 @@ Slash commands: `.claude/commands/`; persona agents: `.claude/agents/`.
 ## 1. Orient
 
 Read: [`AGENTS.md`](AGENTS.md) → [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md) →
-[`docs/GLOSSARY.md`](docs/GLOSSARY.md) → [`GOVERNANCE.md`](GOVERNANCE.md) (scan when §N cited).
+[`docs/SEED-VOCABULARY.md`](docs/SEED-VOCABULARY.md) (cold-boot vocab kernel; full
+[`docs/GLOSSARY.md`](docs/GLOSSARY.md) is on-demand) → [`GOVERNANCE.md`](GOVERNANCE.md) (scan when §N cited).
 Check [`docs/WONT-DO.md`](docs/WONT-DO.md) before proposing work.
 Vision: [`docs/VISION.md`](docs/VISION.md).
 
