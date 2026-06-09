@@ -21,3 +21,6 @@
 # regardless of which machine flashed its USB. Takes effect on next flash / nixos-rebuild;
 # the already-running nodes need this added via console/Comet or rebuild to trust it live.
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGTU+CghueXG43ltkRkD3Ly81/f6Z36oda45TdIvRFB acehack@Mac.lan
+# addison (maintainers/Addisons820/ssh-pubkeys.txt) — locally-generated 2026-06-09; not yet
+# attached to her GitHub (Addisons820) — "we will attach it later".
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGTQkxT8U6CRnvNKZM9hwQZ0WhiCjNZlpqHuNeIGplxw addison-stainback
