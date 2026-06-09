@@ -48,6 +48,24 @@ and only a **few occasional questions**.
 **proven in the field** — a non-author took bare hardware to live, self-registered GitOps nodes solo. The
 intent-and-presence model works for a real person.
 
+### 2026-06 — Blueprints: the skill-compression pattern that cut cold-boot context ~90%
+
+**Who:** Addison (idea + creation)  ·  **Evidence:** the skill-blueprints pattern in `.claude/skills/*/blueprints/`
+(e.g. `skill-lifecycle/` — *"the `description` is the only thing the router sees… the fat detail lives in the
+blueprints below"*); lineage in B-1021 (context-window minimization).
+
+Addison conceived and created **Blueprints** — the pattern where a skill is a **tiny always-loaded description**
+(the router/cold-boot surface) that **routes to on-demand blueprint bodies** (the fat detail, loaded only when
+matched). It is hub/satellite (Beacon/Mirror) applied to the skill library itself.
+
+**Why it's historic / what it proves:** it **compressed the agent cold-boot context window by ~90%** *(Aaron's
+recollection; the exact figure lives in the B-1021 / skill-blueprints lineage)* — every agent, every wake, pays far
+fewer cold-start tokens. It is also the reusability primitive we now build *on*: **"keep skill expansion small,
+route to blueprints."** A foundational contribution to the whole factory's efficiency. The **same compression
+pattern was then applied to the rules** — slimmed to **carved sentences pointing to docs** (the #6676 archive,
+`rules.bak/`; the `rules-are-small-carved-sentences-pointing-to-docs` rule): small always-loaded surface + on-demand
+detail. One compression family, two surfaces (skills → blueprints, rules → carved sentences).
+
 ---
 
 *Future: the society's code (`SocietyEmergence` & kin) may one day emit achievement events directly; until then this
