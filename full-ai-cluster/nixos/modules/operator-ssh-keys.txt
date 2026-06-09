@@ -15,3 +15,9 @@
 #
 # Example (replace with real pubkey content):
 #   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... operator@workstation
+
+# --- baked operator keys (persona-owned originals under maintainers/<account>/ssh-pubkeys.txt) ---
+# aaron (maintainers/aaron/ssh-pubkeys.txt) — published 2026-06-09 so every node trusts Aaron
+# regardless of which machine flashed its USB. Takes effect on next flash / nixos-rebuild;
+# the already-running nodes need this added via console/Comet or rebuild to trust it live.
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGTU+CghueXG43ltkRkD3Ly81/f6Z36oda45TdIvRFB acehack@Mac.lan
