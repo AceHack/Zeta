@@ -77,3 +77,4 @@ r
 # (WebSearch 2026-06-08): brew formula `tectonic`, MIT; idempotent. Symmetric with windows
 # `tectonic` (scoop main). Linux: best-effort gap — see the NOTE in manifests/apt.
 tectonic
+gnupg  # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)

@@ -82,3 +82,4 @@ r-base
 # download-then-exec shape cleanly. Linux tectonic install is therefore a BEST-EFFORT GAP pending an
 # install-graph decision (`cargo install tectonic`, or a GitHub-release extraction onto PATH) —
 # Dejan/devops call (mirrors the kiro-cli Linux gap precedent in manifests/one-liner-tools).
+gnupg           # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)

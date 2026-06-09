@@ -60,3 +60,4 @@ r         winget=RProject.R    choco=R.Project
 # scoop main `tectonic` (winget has NO official package — issue #976; choco unverified — so rely on
 # scoop, the resolver-primary). MIT. `optional` (best-effort): network-bundle fetch on first run.
 tectonic    optional
+gnupg     winget=GnuPG.GnuPG    choco=gnupg    # GPG — commit/artifact signing
