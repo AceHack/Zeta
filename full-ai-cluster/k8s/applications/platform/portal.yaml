@@ -22,18 +22,27 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
 rules:
-  - apiGroups: ["platform.zeta.io"]
+  - apiGroups: ["platform.zeta.io"]   # the resource console: read + edit config/lifecycle
     resources: ["deployables"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "update", "patch", "delete"]
   - apiGroups: ["platform.zeta.io"]   # the Blueprint Builder saves blueprints
     resources: ["blueprints"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
   - apiGroups: ["platform.zeta.io"]   # admin: read + apply tenants (set quotas)
     resources: ["tenants"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
-  - apiGroups: [""]   # admin: cluster capacity + per-namespace usage (read-only)
-    resources: ["nodes", "pods", "namespaces", "resourcequotas"]
+  - apiGroups: [""]   # admin + console: capacity, usage, pods, events
+    resources: ["nodes", "pods", "namespaces", "resourcequotas", "events"]
     verbs: ["get", "list"]
+  - apiGroups: [""]   # live logs (pod log subresource)
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["metrics.k8s.io"]   # live CPU/memory usage
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]   # lifecycle: rollout-restart the workload
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

@@ -9,6 +9,8 @@
 
 import { readFileSync } from "node:fs";
 import type { PlatformData } from "./api.ts";
+import type { ResourceOps } from "./ops.ts";
+import { K8sOps } from "./ops-k8s.ts";
 import type { BlueprintCR, DeployableCR, RoomData } from "./viewmodel.ts";
 
 const SA = "/var/run/secrets/kubernetes.io/serviceaccount";
@@ -29,6 +31,8 @@ export class K8sPlatform implements PlatformData {
   private token: string;
   private ca: string;
   private rooms: RoomSource;
+  /** Live per-resource ops (pods/logs/events/config/lifecycle from the cluster). */
+  readonly ops: ResourceOps = new K8sOps();
 
   constructor(rooms: RoomSource) {
     this.rooms = rooms;

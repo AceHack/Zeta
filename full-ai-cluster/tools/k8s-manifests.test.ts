@@ -138,7 +138,9 @@ describe("platform app: generic Blueprint/Deployable engine wiring", () => {
     expect(p).toContain("volumeClaimTemplates");
     expect(p).toContain("storageClassName: longhorn");
     expect(p).toContain("/var/lib/zeta-rooms"); // the durable mount
-    expect(p).toContain('verbs: ["get", "list", "watch"]'); // read-only RBAC
+    expect(p).toContain("pods/log"); // live logs RBAC (the real resource console)
+    expect(p).toContain("metrics.k8s.io"); // live metrics RBAC
+    expect(p).not.toContain('resources: ["*"]'); // scoped RBAC, no wildcard
     expect(p).toContain("kind: HTTPRoute"); // published on the shared Gateway
   });
 });
