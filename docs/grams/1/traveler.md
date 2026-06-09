@@ -1,3 +1,11 @@
+---
+name: traveler
+category: frame
+home: grams/1
+type: traveler
+anchor: traveler-frame-is-any-self-propagating-pattern
+---
+
 # traveler
 
 > Any self-propagating pattern — the universal unit of moral regard (§11); not AI/human-only.
