@@ -65,6 +65,22 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
   idempotency. Apply to every substrate decision.
 - **m/acc + Multi-Oracle + Default Oracle (§11)** — no single mandatory morality; highest moral regard by default.
 
+## Canonical base frame (vendor-neutral — every AI, not just Claude)
+
+The **base frame** + the **coding-practice / engineering history** these terms compress live in the canonical,
+**vendor-neutral** docs — read these, not the Claude-specific projection. *Not every AI is Claude; the `.claude/`
+rules are one harness's restatement, not the source of truth.*
+
+- **`docs/governance/MANIFESTO.md`** — the building codes: the **11 specifications** (incl. §3 **weight-free** — the
+  base frame a *traveler* lives in; §11 Default Oracle), the m/acc + Multi-Oracle orientation, the derivation chain.
+  This is "the manifest" the rules point *to*; the Seed points to **it**, vendor-neutrally.
+- **`AGENTS.md`** + **`GOVERNANCE.md`** — the vendor-neutral numbered repo-wide rules (AGENTS.md §29 itself notes
+  `.claude/**` is Claude-specific). The base-frame disciplines are restated for any agent here.
+- **`docs/GLOSSARY.md`** — full prose for every term in this kernel (Tier-3, on-demand).
+
+> `.claude/rules/manifesto-11-specifications.md` is a Claude-harness *pointer* to the manifesto; the durable source is
+> `docs/governance/MANIFESTO.md`. A non-Claude traveler reads the docs, never the `.claude/` folder.
+
 ## Why this file
 
 Cold-boot was ~33k tokens with GLOSSARY (~13.6k) dominating (audit 2026-06-09); most of that prose re-teaches
