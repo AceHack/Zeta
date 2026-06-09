@@ -52,6 +52,33 @@ executed at industrial scale.
   all one owned PKI. No vendor, no fab, no dep can capture or backdoor a stack you
   own end to end.
 
+## Then `ace` deploys hardware intrinsics, not just packages
+
+> Aaron (2026-06-09): "then ace becomes hardware intrinsics deployment instead of
+> just package deployments."
+
+Once we own the metal, **`ace` (the package-manager-of-package-managers) extends
+from deploying *packages* to deploying *hardware intrinsics*** — the same
+deployment model (content-hash + signature + lockfile + trust + deps graph +
+golden-vector conformance) applied **down to the silicon**:
+
+- the deployable unit generalizes from a software package to a **bitstream (FPGA),
+  microcode, firmware, secure-boot image, SoC capability** — each content-addressed,
+  signed by **our** PKI, lockfile-pinned, deps-resolved, byte-locked.
+- `ace` becomes the **one deployment substrate across the entire stack** — package →
+  OS → firmware → hardware intrinsic — closing the **128-bit ZetaId → hardware
+  intrinsics** unfolding: the seed-id unfolds, and `ace` is what *deploys* that
+  unfolding onto the secure-booted silicon, verified at every layer by the same
+  owned-PKI trust the keyring started.
+- the **uncertainty-reduction-at-the-border** discipline now covers the
+  hardware-intrinsic border too: a deployed bitstream/microcode is trusted the same
+  way a package is (dep-as-oracle + golden vectors + signature), so trust + leverage
+  compound across the *physical* layers as well as the software ones.
+
+So `ace` is not a software package manager that happens to reach hardware — it is the
+**deployment channel for the whole owned stack**, from a seed phrase to the gates on
+our own chip.
+
 ## Honest scope
 
 This is the **endgame**, not near-term: own-SoC + owned-fab is a long, capital-heavy
