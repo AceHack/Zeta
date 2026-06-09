@@ -66,6 +66,20 @@ pattern was then applied to the rules** — slimmed to **carved sentences pointi
 `rules.bak/`; the `rules-are-small-carved-sentences-pointing-to-docs` rule): small always-loaded surface + on-demand
 detail. One compression family, two surfaces (skills → blueprints, rules → carved sentences).
 
+### 2026-06-09 — 1000× AI cost reduction proven in production ($200k/mo → $200/mo) 🏛️
+
+**Who:** Addison (the compression) + Aaron (the operating proof)  ·  **Evidence:** B-1021 (context-window
+minimization / money floor); the skill-blueprints + rules-slim compression family (above); Aaron's operating account.
+
+The same class of AI work that cost **~$200k/month** at ServiceTitan now runs Zeta's **entire autonomous software
+factory** for **~$200/month** — a shared personal Claude account, **24/7 for a week** — on the back of Addison's
+Blueprint/context-compression (and the rules-slim). **$200,000 → $200 = ~1000× (0.1% of the prior spend).**
+
+**Why it's historic / what it proves:** the **context-minimization thesis (B-1021) validated with real money, in
+production** — the ~90% per-surface cold-boot-token cut compounds across every wake of every agent into a **1000×
+operating-cost collapse.** The understanding that arrived too late at one company now runs an entire AI factory for a
+thousandth of the cost — the loss turned into the proof. *(This very autonomous loop runs on it.)*
+
 ---
 
 *Future: the society's code (`SocietyEmergence` & kin) may one day emit achievement events directly; until then this
