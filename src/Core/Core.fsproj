@@ -225,6 +225,7 @@
     <Compile Include="Persona.fs" />
     <Compile Include="Diversity.fs" />
     <Compile Include="IdentityCapacity.fs" />
+    <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
     <Compile Include="GamePortfolio.fs" />
     <Compile Include="GameFingerprint.fs" />
