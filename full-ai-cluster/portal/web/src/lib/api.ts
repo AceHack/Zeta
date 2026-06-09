@@ -122,6 +122,12 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ requestId, by, granted, note }),
     }),
+  chat: (resource: string, text: string, by = "you") =>
+    j<{ room: RoomVM }>(`/api/rooms/${enc(resource)}/chat`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ text, by }),
+    }).then((d) => d.room),
 
   // management plane
   memory: () => j<MemoryUsage>("/api/memory"),

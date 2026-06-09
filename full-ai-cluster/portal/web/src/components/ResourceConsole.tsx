@@ -114,7 +114,7 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
           {tab === "files" && <FileExplorer fqn={fqn} category={resource.category} />}
           {tab === "config" && <ConfigTab fqn={fqn} onChanged={onChanged} setToast={setToast} />}
           {tab === "events" && <EventsTab fqn={fqn} />}
-          {tab === "room" && <RoomTimeline resource={fqn} />}
+          {tab === "room" && <RoomTimeline resource={fqn} admin={resource.admin} />}
           {tab === "danger" && <DangerTab fqn={fqn} name={resource.name} onDeleted={onBack} />}
         </div>
       </div>

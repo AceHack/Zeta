@@ -16,8 +16,19 @@ import {
   toRoomVM,
 } from "./viewmodel.ts";
 import type { LifecycleAction, MemoryUsage, ResourceConfig, ResourceOps } from "./ops.ts";
+import { type ChatOp, DEFAULT_POLICY, decide, respond } from "./room-agent.ts";
 
 const LIFECYCLE_ACTIONS = new Set(["restart", "stop", "start", "scale", "delete"]);
+
+/** Execute a sandboxed chat op against THIS resource's ops only. */
+async function runChatOp(ops: ResourceOps, resource: string, op: ChatOp): Promise<string> {
+  switch (op.kind) {
+    case "restart": return (await ops.lifecycle(resource, "restart")).message;
+    case "stop": return (await ops.lifecycle(resource, "stop")).message;
+    case "scale": return (await ops.lifecycle(resource, "scale", op.replicas)).message;
+    case "config": return (await ops.applyConfig(resource, op.patch)).message;
+  }
+}
 
 /** What the portal needs from the platform. The server provides a k8s-backed impl. */
 export interface PlatformData {
@@ -149,6 +160,41 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
       if (!b.requestId || !b.by || typeof b.granted !== "boolean") return json({ error: "requestId, by, granted required" }, 400);
       const ok = await data.grant(resource, b.requestId, b.by, b.granted, b.note);
       return ok ? json({ ok: true }) : json({ error: "unknown room or request" }, 404);
+    }
+
+    // POST /api/rooms/:resource/chat — talk to the resource's persona. SANDBOXED:
+    // the agent only ever sees + acts on THIS resource; actions run through Policy.
+    const chatMatch = path.match(/^\/api\/rooms\/([^/]+)\/chat$/);
+    if (chatMatch && req.method === "POST") {
+      if (!data.ops || !data.appendEvent) return json({ error: "chat not available on this backend" }, 405);
+      const resource = decodeResource(chatMatch[1]!);
+      const b = (await req.json().catch(() => ({}))) as { text?: string; by?: string };
+      if (!b.text || !b.by) return json({ error: "text + by required" }, 400);
+
+      // the persona that operates this resource (resource-scoped lookup)
+      const dep = (await data.listDeployables()).find((d) => `${d.metadata.namespace}/${d.metadata.name}` === resource);
+      const admin = dep?.spec.ai?.admin ?? "otto";
+
+      // 1) record the human's message
+      await data.appendEvent(resource, { id: b.by, kind: "human" }, { type: "message", text: b.text });
+
+      // 2) the persona responds — context is THIS resource only
+      const [cfg, info] = await Promise.all([data.ops.config(resource), data.ops.info(resource)]);
+      const r = respond(resource, b.text, { game: !!cfg.values.MAP || /sandbox|gmod|game/.test(resource), memory: cfg.memory, replicas: info.pods.length, phase: info.pods[0]?.phase ?? "Unknown" });
+      await data.appendEvent(resource, { id: admin, kind: "persona" }, { type: "message", text: r.reply });
+
+      // 3) if it proposed an op, run it through Policy — act (auto) or request (propose)
+      if (r.op) {
+        const d = decide(DEFAULT_POLICY, r.op.action);
+        if (d.level === "auto") {
+          const result = await runChatOp(data.ops, resource, r.op);
+          await data.appendEvent(resource, { id: admin, kind: "persona" }, { type: "action", action: { summary: r.op.action.summary }, result });
+        } else if (d.level === "propose") {
+          await data.appendEvent(resource, { id: admin, kind: "persona" }, { type: "authorization-request", action: { summary: r.op.action.summary }, ...(d.gated ? { gated: d.gated } : {}) });
+        }
+      }
+      const room = await data.getRoom(resource);
+      return json({ room: room ? toRoomVM(room) : null });
     }
 
     return json({ error: "not found" }, 404);
