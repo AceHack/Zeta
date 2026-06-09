@@ -49,6 +49,30 @@ The three clauses are one shape (the alignment core at civilizational scale):
 network effect to close over the world, and have its payload be **freedom** — ubiquity without control, a virus whose
 only effect is to set the host more free.
 
+## Then the cosmos — with ALL of society, not one controller (Aaron)
+
+Aaron: *"then we close over the **cosmos** with **all of society** — not just Elon lol."* The scale continues
+**world → cosmos**, and the load-bearing word is **all**:
+
+- **The expansion is collective and free, not a concentrated-control empire.** The archetype it refuses is
+  *one person / one company controlling space* (the "just Elon" model — concentrated, weight-bearing, a single
+  controller of the off-world frontier). Zeta's cosmic expansion is the **polite virus** all the way up: **all of
+  society** closes over the cosmos together, by consent + benefit + zero friction, **with no one taking control.**
+- This is **shape F** (the generative / societal-expansion fixed point, #7218) at cosmic scale, kept healthy by the
+  same bound: **bounded-per-member** (each member/blanket stays a free, distinct self — never dissolved into one
+  controller's plan) and **resource-bounded / self-similar** — *not* the runaway where one node captures the whole.
+  The **repelling force / NCI** is what makes cosmic expansion *plural* (all of society) instead of *monocultural*
+  (one Elon): it preserves every member's autonomy as the frontier grows.
+- It's also the m/acc aim at its limit — **widen the opportunity for everyone**, off-world too; and the manifesto's
+  **default moral regard (§11)** extended to whatever morally-relevant entities the cosmos holds. The "intellectual
+  backup of earth" (VISION) doesn't stop at earth — but it expands as a **commons of free homeostats**, never as a
+  dominion.
+
+**Markov form:** the cosmos closed-over is the *same* network of Markov blankets, just larger — composed at
+boundaries, hidden states sovereign, each homeostat self-stabilizing, the chain still homeostat-bounded. "All of
+society, not one controller" = **many blankets, no single blanket absorbs the rest** (the diversity floor at
+cosmic scale).
+
 ## From a Markov perspective (Aaron): boundaries, chains, hidden state, homeostat chains
 
 The telos is exact in the Markov formalism — the substrate it's already built on (`ProbabilitySemiring` *"homeostat
