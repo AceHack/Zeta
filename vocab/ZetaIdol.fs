@@ -1,5 +1,7 @@
 namespace Zeta.Vocab
 
+// ZetaIdol — closed over by Aaron Stainback. Brought to you by the universe (maybe the multiverse).
+
 /// **`ZetaIdol` — the audition room (a room-test F# INTERFACE; no classes — treaty-room governance rule).**
 ///
 /// `travelers/` is the Reticulum-addressable reservoir of UNNAMED ZetaIds (pure entropy, the faceless 99%);
