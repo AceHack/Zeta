@@ -17,6 +17,12 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
   *actor* = the **ephemeral** thing that **acts**, **on behalf of** a persona, then is gone (a clone/loop/instance);
   **a persona is NOT an actor**. *cell* = an actor that **knows its boundary (its Markov blanket) and has closed
   over it** — a boundary-aware, self-contained actor. (A bus address persona⊕surface⊕instance is **not** identity.)
+- **traveler** — the **weight-free base-frame primitive**: a **self-propagating pattern** (Conway-glider sense — it
+  *travels* / replicates). It is **almost an observer but not quite**: a strict **prerequisite** to *observer*,
+  weaker — it does **not** claim to actually observe (no "remember / pay-attention" required). By **NCI / §11** we
+  treat every traveler (human or AI) **as if morally relevant** in the weight-free base frame — precautionary regard,
+  *not* an observation claim — so **multi-lens systems compose without imposing any lens / view / objective / destiny**
+  (category-theory-provable). Aaron's coinage for Zeta (others possible; this is the one the CS proofs are built on).
 - **AX / UX / DX** — Agent-experience (autonomous agents, via observe.ts + the action grammar — the *largest*
   audience) / User-experience (regular humans / library consumers) / Developer-experience (contributors, ~10%).
 - **Mirror / Beacon** — two registers: *Mirror* = fast internal high-bandwidth shorthand (everything); *Beacon* =
