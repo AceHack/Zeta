@@ -28,8 +28,10 @@ export class K8sPlatform implements PlatformData {
   private host: string;
   private token: string;
   private ca: string;
+  private rooms: RoomSource;
 
-  constructor(private rooms: RoomSource) {
+  constructor(rooms: RoomSource) {
+    this.rooms = rooms;
     const h = process.env.KUBERNETES_SERVICE_HOST;
     const p = process.env.KUBERNETES_SERVICE_PORT_HTTPS ?? process.env.KUBERNETES_SERVICE_PORT ?? "443";
     if (!h) throw new Error("not running in-cluster: KUBERNETES_SERVICE_HOST unset");

@@ -136,7 +136,7 @@ export class Room {
     const action = req.body.action;
     const result = run?.(action);
     const event = this.append(
-      { proposedBy: by, authorizedBy: grant.sig.authorizedBy },
+      { proposedBy: by, ...(grant.sig.authorizedBy !== undefined ? { authorizedBy: grant.sig.authorizedBy } : {}) },
       { type: "action", action, ...(result !== undefined ? { result } : {}) },
     );
     return { kind: "acted", event };

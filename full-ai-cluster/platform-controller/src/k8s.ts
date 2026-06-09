@@ -44,7 +44,10 @@ function resourcePath(group: string, version: string, plural: string, namespace?
 }
 
 export class K8sClient {
-  constructor(private cfg: ClientConfig) {}
+  private cfg: ClientConfig;
+  constructor(cfg: ClientConfig) {
+    this.cfg = cfg;
+  }
 
   private async req(method: string, path: string, init?: { body?: string; contentType?: string; query?: Record<string, string> }): Promise<Response> {
     const url = new URL(this.cfg.host + path);

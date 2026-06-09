@@ -13,11 +13,14 @@ import type { BlueprintCR, DeployableCR, RoomData, RoomEventVM } from "./viewmod
 
 export class InMemoryPlatform implements PlatformData {
   readonly ops: ResourceOps = new DemoOps();
-  constructor(
-    private deployables: DeployableCR[] = [],
-    private blueprints: BlueprintCR[] = [],
-    private rooms: RoomData[] = [],
-  ) {}
+  private deployables: DeployableCR[];
+  private blueprints: BlueprintCR[];
+  private rooms: RoomData[];
+  constructor(deployables: DeployableCR[] = [], blueprints: BlueprintCR[] = [], rooms: RoomData[] = []) {
+    this.deployables = deployables;
+    this.blueprints = blueprints;
+    this.rooms = rooms;
+  }
 
   async memoryUsage(): Promise<MemoryUsage> {
     const rooms = this.rooms.map((r) => ({ resource: r.resource, events: r.events.length, bytes: roomBytes(r) }));

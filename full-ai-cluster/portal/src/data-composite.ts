@@ -18,7 +18,14 @@ export interface ResourceSource {
 }
 
 export class CompositePlatform implements PlatformData {
-  constructor(private resources: ResourceSource, private rooms: RoomSource, readonly ops?: ResourceOps) {}
+  private resources: ResourceSource;
+  private rooms: RoomSource;
+  readonly ops?: ResourceOps;
+  constructor(resources: ResourceSource, rooms: RoomSource, ops?: ResourceOps) {
+    this.resources = resources;
+    this.rooms = rooms;
+    if (ops !== undefined) this.ops = ops;
+  }
 
   async memoryUsage(): Promise<MemoryUsage> {
     const all = await this.rooms.listRooms();

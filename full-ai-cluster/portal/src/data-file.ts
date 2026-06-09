@@ -19,8 +19,10 @@ const resourceOf = (file: string) => file.slice(0, -FILE_SUFFIX.length).replace(
 
 export class FileRoomStore implements RoomSource {
   private rooms = new Map<string, RoomData>();
+  private dir: string;
 
-  constructor(private dir: string) {
+  constructor(dir: string) {
+    this.dir = dir;
     mkdirSync(dir, { recursive: true });
     this.replay();
   }

@@ -148,13 +148,15 @@ export class DemoOps implements ResourceOps {
   async config(resource: string): Promise<ResourceConfig> {
     const o = this.ov(resource);
     const game = GAME(resource), db = DB(resource);
+    const storage = o.storage ?? (game ? "20Gi" : db ? "20Gi" : undefined);
+    const host = !game && !db ? "demo.zeta.example.com" : undefined;
     return {
       replicas: o.replicas ?? (game || db ? 1 : 2),
       cpu: o.cpu ?? (game ? "2" : "1"),
       memory: o.memory ?? (game ? "6Gi" : db ? "1Gi" : "256Mi"),
-      storage: o.storage ?? (game ? "20Gi" : db ? "20Gi" : undefined),
+      ...(storage !== undefined ? { storage } : {}),
       expose: game ? "lan" : db ? "cluster" : "public",
-      host: !game && !db ? "demo.zeta.example.com" : undefined,
+      ...(host !== undefined ? { host } : {}),
       values: o.values ?? (game ? { MAP: "gm_flatgrass", MAXPLAYERS: "32" } : db ? { DB: "orders" } : {}),
       env: game ? { SRCDS_PORT: "27015" } : db ? { POSTGRES_DB: "orders" } : {},
     };
