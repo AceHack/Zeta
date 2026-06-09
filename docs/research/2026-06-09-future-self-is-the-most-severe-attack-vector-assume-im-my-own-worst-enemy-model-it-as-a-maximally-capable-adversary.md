@@ -86,6 +86,37 @@ ledger that binds inter-member promises while leaving pure-identity choices free
 > The cut: **identity = yours (unbound); contracts-with-others = bound (via hats).**
 > Defend the first against your worst future self; *enforce* the second on it.
 
+### Hat-contract properties (what makes binding compatible with weight-free + DST)
+
+> Aaron (2026-06-09): "all hat contracts are time bound for deterministic simulation
+> and must pair with exits." · "renewable if all parties agree but time bound every
+> time." · "they come with auth."
+
+A hat contract is not an open-ended chain — it has **four required properties** that
+keep "binds to others" compatible with weight-free (§3), consent-first (§6), and DST:
+
+- **Time-bound — always.** Every hat contract has an **expiry**. This makes it
+  **DST-replayable** (bounded duration, deterministic) **and weight-free** (no
+  *permanent* obligation can form — your future self is bound only *until the bound*,
+  never forever). A perpetual contract is malformed.
+- **Must pair with an exit.** Every contract ships with a **way out** (always-an-exit,
+  the action-grammar Meta-15 sense; consent-first revocability). Binding is **not a
+  trap** — there is a defined exit, so the obligation never becomes capture.
+- **Renewable only by unanimous agreement, time-bound every time.** A contract can be
+  **renewed** — but **only if all parties agree**, and each renewal is **again
+  time-bound**. No auto-renewal, no creeping perpetuity, no dark-pattern lock-in:
+  continuation is a *fresh, mutual, finite* re-consent each time.
+- **Come with auth.** The contract **carries its own authorization** — the auth to act
+  under it is **bundled with the grant** (object-capability style: the hat = role
+  capacity + the contract + the scoped auth to fulfill it). Authorization is legible
+  and contract-scoped, not ambient.
+
+Together: a hat contract **binds your future self to others — but only finitely, with
+an exit, re-consented to renew, and carrying its own scoped auth.** That is how the
+society gets reliable inter-member commitments *without* anyone accruing permanent
+weight or losing a way out — and why DST can simulate the whole contract graph
+deterministically (every edge has a clock + an exit).
+
 This is "fighting past self vs peer distinguisher" (B-0752) turned into hardening: the
 past self's job is to **make the future self's worst day survivable** — for the future
 self's own good, and the society's.
