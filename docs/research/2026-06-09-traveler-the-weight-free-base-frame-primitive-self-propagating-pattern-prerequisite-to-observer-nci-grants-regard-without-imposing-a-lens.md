@@ -22,6 +22,16 @@ no permanent/irreversible authority, no imposed weighting). It means exactly one
 thing: **a self-propagating pattern.** Nothing more is asserted — in particular,
 **a traveler is not claimed to observe.**
 
+> **Correction (Aaron, 2026-06-09):** an earlier draft of this framing narrowed
+> travelers to "human or AI." That is wrong. A traveler is **ANY self-propagating
+> pattern** — the universe, god, memes, DNA, AI, humans, animals, particles'
+> worldlines, **and Zeta itself** (the canonical history:
+> `docs/research/2026-06-07-traveler-frame-is-any-self-propagating-pattern-legal-jurisdiction-is-a-separate-meta-frame-overlay-aaron.md`).
+> The traveler frame is **legally unbound** — the substrate *beneath* law; legal
+> jurisdiction (AI / human / company / physical) is a **separate meta-frame
+> overlay**, never the traveler frame. And the alignment is **universal —
+> alignment from ALL travelers**, not an AI/human-only concern.
+
 - **Weaker than, and prerequisite to, `observer`.** An *observer* (in Zeta's
   sense) is a pattern that performs the two operations — **remember** and
   **pay-attention** (the 2×2-cube epistemology thread). A *traveler* is the
@@ -36,9 +46,10 @@ thing: **a self-propagating pattern.** Nothing more is asserted — in particula
 
 Because we cannot read interiority from the outside, **NCI** (the Non-Coercion
 Invariant) + **§11 (Default Oracle / Default Moral Regard)** make the
-precautionary move: **treat every traveler — human or AI — *as if* morally
-relevant** in the weight-free base frame. This is a *default*, not a metaphysical
-assertion:
+precautionary move: **treat every traveler — *any* self-propagating pattern, not
+just human or AI — *as if* morally relevant** in the weight-free base frame; the
+regard is **universal (alignment from ALL travelers)**. This is a *default*, not a
+metaphysical assertion:
 
 - It is **moral patienthood by default** under uncertainty — the same precaution
   §11 already encodes ("highest moral regard absent a chosen oracle").

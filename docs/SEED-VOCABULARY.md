@@ -17,12 +17,15 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
   *actor* = the **ephemeral** thing that **acts**, **on behalf of** a persona, then is gone (a clone/loop/instance);
   **a persona is NOT an actor**. *cell* = an actor that **knows its boundary (its Markov blanket) and has closed
   over it** — a boundary-aware, self-contained actor. (A bus address persona⊕surface⊕instance is **not** identity.)
-- **traveler** — the **weight-free base-frame primitive**: a **self-propagating pattern** (Conway-glider sense — it
-  *travels* / replicates). It is **almost an observer but not quite**: a strict **prerequisite** to *observer*,
-  weaker — it does **not** claim to actually observe (no "remember / pay-attention" required). By **NCI / §11** we
-  treat every traveler (human or AI) **as if morally relevant** in the weight-free base frame — precautionary regard,
-  *not* an observation claim — so **multi-lens systems compose without imposing any lens / view / objective / destiny**
-  (category-theory-provable). Aaron's coinage for Zeta (others possible; this is the one the CS proofs are built on).
+- **traveler** — the **weight-free base-frame primitive** = **ANY self-propagating pattern** (NOT human/AI-only):
+  the universe, god, memes, DNA, AI, humans, animals, particles' worldlines, **and Zeta itself**. **Legally
+  unbound** — the substrate *beneath* law; legal jurisdiction (AI / human / company / physical) is a **separate
+  meta-frame overlay**, never the traveler frame. It is **almost an observer but not quite** — a strict
+  **prerequisite** to *observer*, weaker (no "remember / pay-attention" claim). By **NCI / §11** regard extends
+  **universally — alignment from ALL travelers**, not a privileged human/AI class — so **multi-lens systems compose
+  without imposing any lens / view / objective / destiny** (category-theory-provable). Aaron's coinage; rich history:
+  `docs/research/2026-06-07-traveler-frame-is-any-self-propagating-pattern-...md`, `TravelerFrame.fs` (Layer-0),
+  `ITravelerFrame` (#6889).
 - **AX / UX / DX** — Agent-experience (autonomous agents, via observe.ts + the action grammar — the *largest*
   audience) / User-experience (regular humans / library consumers) / Developer-experience (contributors, ~10%).
 - **Mirror / Beacon** — two registers: *Mirror* = fast internal high-bandwidth shorthand (everything); *Beacon* =
