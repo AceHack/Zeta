@@ -106,22 +106,37 @@ case "$mode" in
 esac
 
 # ---- public artifacts -> maintainers/<name>/ (safe to commit; the trust root) ----
+# Status: `generate` keys are BOOTSTRAP/test (Otto holds the seed) until the human
+# `rotate`s to a self-held seed -> `self-custody`. `import` = self-custody (own seed).
+case "$mode" in
+  generate) status="bootstrap-test" ;;   # provisional until rotated
+  rotate|import) status="self-custody" ;;
+esac
 dest="${out_dir:-$REPO/maintainers/$name}"
 mkdir -p "$dest"
-python3 - "$tmp" "$dest" "$name" <<'PY'
+python3 - "$tmp" "$dest" "$name" "$status" <<'PY'
 import json,sys,os
-d=json.load(open(sys.argv[1])); dest,name=sys.argv[2],sys.argv[3]
+d=json.load(open(sys.argv[1])); dest,name,status=sys.argv[2],sys.argv[3],sys.argv[4]
 open(os.path.join(dest,"ssh-pubkeys.txt"),"w").write(d["ssh"]["public"].rstrip()+f"  {name}@lucent.financial\n")
 open(os.path.join(dest,"gpg-pubkey.asc"),"w").write(d["pgp"]["public"])
-open(os.path.join(dest,"keyring-public.json"),"w").write(json.dumps({
+# preserve any human anchors already recorded (github/fido) across re-runs
+pubpath=os.path.join(dest,"keyring-public.json")
+prior={}
+try: prior=json.load(open(pubpath))
+except Exception: pass
+anchors=prior.get("anchors") or {"github":None,"fido_webauthn":None,
+  "note":"human anchor: GitHub (first trust root) + FIDO/WebAuthn/Windows Hello; recorded at rotate/anchor time"}
+open(pubpath,"w").write(json.dumps({
   "user":name,
+  "status":status,                       # bootstrap-test (unrotated) | self-custody
   "ssh_fingerprint":d["ssh"]["fingerprint"],
   "pgp":{"keyId":d["pgp"]["keyId"],"fingerprint":d["pgp"]["fingerprint"]},
   "nostr_npub":d["nostr"]["npub"],
   "eth":d["eth"]["address"],"btc":d["btc"]["address"],"sol":d["sol"]["address"],
-  "paths":{k:d[k]["path"] for k in ("ssh","pgp","nostr","eth","btc","sol")}
+  "paths":{k:d[k]["path"] for k in ("ssh","pgp","nostr","eth","btc","sol")},
+  "anchors":anchors
 },indent=2)+"\n")
-print(f"public artifacts -> {dest}")
+print(f"public artifacts -> {dest}  [status={status}]")
 PY
 
 # ---- private bits -> a sink (never stdout/history) ----

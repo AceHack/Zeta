@@ -21,6 +21,25 @@ decentralized-identity layer, required even if you never touch money.
 **Tier 2 (opt-in, economic freedom):** BTC + ETH + SOL wallets. Generating
 unfunded wallet keys is reversible; **only funding is irreversible.**
 
+## Critical infra: byte-lock (4 langs × 4 serializers) + key status + human anchor
+
+Key derivation is **critical infrastructure** and **a point of certainty in the
+4×4 grid** (4 language oracles × 4 serializers) — a deterministic SolidGround in
+the markov/homeostat chains. So:
+
+- **Byte-lock golden vector** — `golden-vectors-keyring.json` pins a known test
+  seed → exact public outputs (text/hex-in-JSON, per `no-binary-in-proof-lineage`:
+  diffable, DST-replayable, human-auditable). **Every oracle (TS now; F#/C#/Rust
+  next) × serializer (JSON now; CBOR/Arrow/protobuf next) must reproduce it
+  bit-perfect.** `gen.test.ts` is the TS oracle's conformance test (passing).
+- **Key status** — `keyring-public.json` carries `status`: `bootstrap-test`
+  (Otto generated it; the human does NOT hold the seed — provisional) →
+  `self-custody` after the human `rotate`s to a seed they hold. Treat
+  `bootstrap-test` keys as test until rotated.
+- **Human anchor** — `anchors`: the human is anchored to **GitHub (the first trust
+  root)** + a **FIDO/WebAuthn/Windows Hello** biometric credential, recorded at
+  rotate/anchor time.
+
 ## Security invariants
 
 1. **The seed phrase is never a CLI argument** (ps / shell history would capture

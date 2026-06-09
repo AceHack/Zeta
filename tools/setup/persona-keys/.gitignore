@@ -9,3 +9,4 @@ bun.lockb
 *.nsec
 id_*
 !*.pub
+!golden-vectors-keyring.json

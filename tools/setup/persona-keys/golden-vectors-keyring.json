@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "purpose": "keyring derivation byte-lock \u2014 a point of certainty in the 4x4 (4 language oracles x 4 serializers) markov/homeostat grid; deterministic SolidGround for critical-infra key derivation",
+    "rule": "no-binary-in-proof-lineage (text/hex-in-JSON, diffable, DST-replayable, human-auditable)",
+    "discipline": "culture-invariant ordinal; one BIP-39 seed -> every key type on its own path (no bleed)",
+    "oracles_target": [
+      "TS (bun, this impl)",
+      "F#/.NET",
+      "C#",
+      "Rust"
+    ],
+    "serializers_target": [
+      "JSON (this)",
+      "CBOR",
+      "Arrow",
+      "protobuf"
+    ],
+    "conformance": "every oracle x serializer MUST reproduce `expected` byte-identical from `input`"
+  },
+  "input": {
+    "mnemonic": "test test test test test test test test test test test junk",
+    "note": "publicly-known BIP-39 test vector \u2014 funds on it are swept instantly; safe to commit",
+    "user": "zeta",
+    "created_epoch": 1749427200
+  },
+  "expected": {
+    "user": "zeta",
+    "ssh": {
+      "public": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL+Nk5Wv7HriB88qVFjFPENR4PftSzInfyeHA7t7ch3N zeta@lucent.financial",
+      "fingerprint": "SHA256:4y5hlNVH4mph1fNTvGpKZox1Hue9i9VYIRpvSgmX2D0",
+      "path": "m/44'/1110'/0'/0'"
+    },
+    "pgp": {
+      "keyId": "55945951194599cb",
+      "fingerprint": "c562fd4e2ae767b225cb35d455945951194599cb",
+      "public": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmDMEaEYkABYJKwYBBAHaRw8BAQdAcUdatO7MFcHRpmusFUDm7wGgIPdXQUj2CObT\nzK1P4gq0HHpldGEgPHpldGFAbHVjZW50LmZpbmFuY2lhbD6IlAQTFgoAPBYhBMVi\n/U4q52eyJcs11FWUWVEZRZnLBQJoRiQAAhsDBQsJCAcCAyICAQYVCgkICwIEFgID\nAQIeBwIXgAAKCRBVlFlRGUWZy8kMAP9nKM4BqNQYKNvNX74T5C0SRNiP27KojiMz\nJDlCp/XFDQEA81I5dVQNDnfqswd4o3wIVSOWHnwxFynDzUhSYiWn3g64OARoRiQA\nEgorBgEEAZdVAQUBAQdAPN7w0ECJ7Neot0EnpingxG3w+0q5j0i/JcwlkQ9DBnID\nAQgHiHgEGBYKACAWIQTFYv1OKudnsiXLNdRVlFlRGUWZywUCaEYkAAIbDAAKCRBV\nlFlRGUWZy/BCAP9SYN5MxZrgJ5LEPjGllqEBEdIk5G2Wtl7gg8D/uwE2qAD9Flw6\n+XV9gH1DNu7mlhMMHnVb31BVyFsKV1crVr+xZAg=\n=sYiK\n-----END PGP PUBLIC KEY BLOCK-----\n",
+      "path": "m/44'/1111'/0'/0'"
+    },
+    "nostr": {
+      "npub": "npub14w78q0d6gmg7yg5kl5mky0vuxsgf3kdf9e42lfezhp6lr3hwypmsa2rs4g",
+      "pub_hex": "abbc703dba46d1e22296fd37623d9c341098d9a92e6aafa722b875f1c6ee2077",
+      "path": "m/44'/1237'/0'/0/0"
+    },
+    "eth": {
+      "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "path": "m/44'/60'/0'/0/0"
+    },
+    "btc": {
+      "address": "bc1q4qw42stdzjqs59xvlrlxr8526e3nunw7mp73te",
+      "path": "m/84'/0'/0'/0/0"
+    },
+    "sol": {
+      "address": "oeYf6KAJkLYhBuR8CiGc6L4D4Xtfepr85fuDgA9kq96",
+      "path": "m/44'/501'/0'/0'"
+    }
+  }
+}
