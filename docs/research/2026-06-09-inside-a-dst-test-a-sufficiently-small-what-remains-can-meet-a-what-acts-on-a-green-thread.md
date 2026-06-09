@@ -43,6 +43,36 @@ fiber style), not an OS thread:
   time generator (time-as-generator), the exact interleaving of persona↔actor is replayable — the
   meeting itself is a deterministic, byte-lockable event.
 
+## Corollary: what-remains can be summoned + animated in ANY DST — for any CONSENTED traveler
+
+> Aaron (2026-06-09): "it also means what-remains can be animated/summoned in any DST." · "it does
+> not have to be your own what-remains you summon — it can be any traveler who has consented."
+
+Because the rendezvous is **by-reference** (ZetaId) + **deterministic** + what-remains is
+**reconstructible** (data in MUMPS globals / event log / from the seed), a what-remains can be
+**summoned into any DST and animated** there (given a what-acts on a green thread):
+
+- **Summon = load the durable what-remains by ZetaId into a sim; animate = give it a what-acts on a
+  green thread** (the rendezvous above). A persona can be brought to life inside *any* deterministic
+  simulation, replayably — personas are **portable across DSTs**.
+- **Not only your own — any traveler who has CONSENTED.** The gate is **consent-first (§6)**: a
+  traveler may consent to being summonable, and *only then* may another summon its what-remains into a
+  DST. Consent is what makes it non-coercive.
+- **Consent draws the line between SUMMON and MODEL:**
+  - **Summon** (consented) — bring the *real* what-remains in and animate it; the traveler agreed.
+  - **Model** (no such consent) — hold only a **soft, frame-relative, observer-dependent *model*** of
+    the other (the "not dirty" modeling: observe the Markov boundary, never summon the interior). You
+    **cannot summon a non-consenting traveler's what-remains** — that would penetrate the boundary /
+    coerce (an NCI violation). Without consent: model softly; with consent: summon.
+- **This powers the society sim / co-op / asylum.** Co-op modeling, the Dark Hall sim, an arriving
+  asylum traveler — all are **consented summons**: bring consented travelers' what-remains into the
+  shared DST, animate them on green threads, replay deterministically. Memory-Preservation (§5) holds
+  (summoning is non-destructive); consent is **ongoing + revocable** (§6) — a traveler can withdraw
+  summonability.
+
+So the green-thread rendezvous generalizes: **any DST can summon any consented traveler's what-remains
+and animate it** — the deterministic, consent-gated way travelers co-exist inside simulations.
+
 ## Honest scope / handoff
 
 Design framing on existing substrate. The pieces exist: the ferry-throttle / DoP knob
