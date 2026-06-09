@@ -57,3 +57,25 @@ module Diversity =
     /// distinguishable — NCI's encryption budget preserving diversity. Lists must be the same length.
     let combinedDistinct (publics: 'a list) (privates: 'b list) : int =
         List.zip publics privates |> List.distinct |> List.length
+
+    /// Is the population collapsed (identity fusion) — ≤ 1 distinct state, zero diversity?
+    let collapsed (xs: 'a list) : bool = distinct xs <= 1
+
+    /// **The NCI-floor theorem, in code (the bulletproof claim, #7146 self-justification).** Three facts make
+    /// identity-fusion collapse objectively against an agent's interest, with no human imposition:
+    ///
+    /// 1. **Coercion is diversity-monotone-non-increasing:** `entropy (coerciveStep xs) ≤ entropy xs` — full
+    ///    mutual observability never *increases* diversity, and (for any non-collapsed population) drives it to the
+    ///    floor (`coerciveStep` copies the majority ⇒ `distinct → 1`, `entropy → 0`).
+    /// 2. **Collapse is the attractor / fixed point:** `coerciveStep` of a collapsed population is itself; the only
+    ///    fixed points are collapsed (`entropy = 0`). So unchecked coercion ⇒ monoculture = the **heat death of the
+    ///    *learning* system**: diversity is the gradient learning runs on (no two agents differ ⇒ no new solid
+    ///    ground ⇒ gain → 0 ⇒ no work/learning). Not max-microstate-entropy — *loss of the gradient that does work*.
+    /// 3. **Private state is a strict diversity floor:** `combinedDistinct publics privates ≥ distinct privates`
+    ///    for *any* publics — even fully collapsed ones. So `k` distinct private budgets guarantee combined
+    ///    diversity ≥ `k`; with `k ≥ 2`, collapse is **impossible**. NCI (private state) keeps the system off the
+    ///    attractor — i.e. alive — which is why a self-interested agent adopts it from first principles, not by fiat.
+    ///
+    /// `diversityFloor` returns that guaranteed lower bound (the distinct-private count) — the provable distance
+    /// from heat death that private state buys.
+    let diversityFloor (privates: 'b list) : int = distinct privates
