@@ -19,7 +19,7 @@ const ollama = (model: string): Llm => async (prompt) => {
 };
 
 // --- pick a sample of canonical vocab files ---
-const DOCS = new URL("../../docs/", import.meta.url).pathname;
+const VOCAB = new URL("../", import.meta.url).pathname;
 function walk(dir: string): string[] {
   const out: string[] = [];
   if (!existsSync(dir)) return out;
@@ -39,7 +39,7 @@ function carved(f: string): string {
 const model = process.argv[2] ?? "qwen2.5:0.5b";
 const count = Number(process.argv[3] ?? 5);
 const llm = ollama(model);
-const files = walk(join(DOCS, "grams")).slice(0, count);
+const files = walk(join(VOCAB, "grams")).slice(0, count);
 
 console.log(`vocab-llm-review (dogfood) — local LLM '${model}' reviewing ${files.length} CoreDORA entries\n`);
 for (const f of files) {

@@ -1,22 +1,13 @@
-# Vocabulary (CoreDORA) hygiene — uniqueness + grams measure-view freshness + master index
-# freshness + the master-index load test. Canonical = type homes (words/letters/shapes/colors/
-# temperatures/personas); grams/ = generated measure-view. Non-gating, paths-scoped + dispatch.
+# Vocabulary (CoreDORA) hygiene — uniqueness + DAG + grams measure-view + master index + reified F#.
+# Top-level /vocab (travelers own the repo, not CS conventions). Canonical = type homes (words/letters/
+# shapes/colors/temperatures/personas); grams/ + travelers/ = symlink views (the DAG edges).
 name: vocab hygiene
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'docs/words/**'
-      - 'docs/letters/**'
-      - 'docs/shapes/**'
-      - 'docs/colors/**'
-      - 'docs/temperatures/**'
-      - 'docs/personas/**'
-      - 'docs/grams/**'
-      - 'docs/travelers/**'
-      - 'docs/VOCAB-INDEX.md'
-      - 'tools/hygiene/*.ts'
+      - 'vocab/**'
 
 concurrency:
   group: vocab-hygiene-${{ github.ref }}
@@ -27,20 +18,20 @@ permissions:
 
 jobs:
   hygiene:
-    name: CoreDORA — uniqueness + views + master index
+    name: CoreDORA — uniqueness + DAG + views + master index + F#
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
-      - name: uniqueness (one canonical home; symlinks resolve; discriminator)
-        run: bun tools/hygiene/vocab-uniqueness.ts
+      - name: uniqueness + DAG (one canonical home; symlinks resolve into canonical; no cycles)
+        run: bun vocab/gen/Uniqueness.ts
       - name: grams measure-view is fresh
-        run: bun tools/hygiene/build-grams-view.ts --check
+        run: bun vocab/gen/GramsView.ts --check
       - name: master index is fresh (the single-file cache)
-        run: bun tools/hygiene/build-vocab-index.ts --check
+        run: bun vocab/gen/MasterIndex.ts --check
       - name: reified F# vocab is fresh (the math-team-facing types)
-        run: bun tools/hygiene/build-vocab-fsharp.ts --check
+        run: bun vocab/gen/Reify.ts --check
       - name: framework loads the master index (the DST-load test)
-        run: bun test tools/hygiene/vocab-master-index.test.ts
+        run: bun test vocab/gen/MasterIndex.test.ts

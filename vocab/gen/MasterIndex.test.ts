@@ -1,14 +1,14 @@
 // The DST test framework LOADS the master index as part of the framework (Aaron, 2026-06-09:
 // "our DST test should load the master index as part of the test framework"). On every run the
-// framework eagerly loads docs/VOCAB-INDEX.md (the single-file cache of all travelers) into an
+// framework eagerly loads vocab/MASTER-INDEX.md (the single-file cache of all travelers) into an
 // in-memory map (the "Z-set load" — the present); git history is the lazy, weak-referenced
 // backing for going backwards in time (Rx-queried on demand — not loaded here). This test is
 // that load, plus freshness + presence assertions. Run: bun test vocab-master-index.test.ts
 import { test, expect } from "bun:test";
 import { readFileSync, existsSync } from "node:fs";
 
-const DOCS = new URL("../../docs/", import.meta.url).pathname;
-const INDEX = DOCS + "VOCAB-INDEX.md";
+const VOCAB = new URL("../", import.meta.url).pathname;
+const INDEX = VOCAB + "MASTER-INDEX.md";
 
 /** the framework's eager load: master index -> Map<term, carved sentence> (the present cache). */
 function loadMasterIndex(): Map<string, string> {
