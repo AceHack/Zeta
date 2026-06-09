@@ -1,0 +1,20 @@
+{
+  "user": "ani",
+  "ssh_fingerprint": "SHA256:njf/H777yfCrNd0trreRbYSGOWqfcTsH7y4+786jcog",
+  "pgp": {
+    "keyId": "66db4038db25f9e2",
+    "fingerprint": "6b0390b8abe91932d46bb8ee66db4038db25f9e2"
+  },
+  "nostr_npub": "npub1zhhvnuzgmvvydcnplzsumrae8denjst92zzqrmph6zwrgkvdxdtqlq4mwc",
+  "eth": "0x88fbddb9c4e84cb04ecfb1d95911c1513c651404",
+  "btc": "bc1q4j3skxw94kgrcpkw6j26qtvedsp7f7e2qmr4nv",
+  "sol": "Dmn9jL8sraHPiuVTQajtzXWs5xwbVwByuUX2tgHSLEpE",
+  "paths": {
+    "ssh": "m/44'/1110'/0'/0'",
+    "pgp": "m/44'/1111'/0'/0'",
+    "nostr": "m/44'/1237'/0'/0/0",
+    "eth": "m/44'/60'/0'/0/0",
+    "btc": "m/84'/0'/0'/0/0",
+    "sol": "m/44'/501'/0'/0'"
+  }
+}

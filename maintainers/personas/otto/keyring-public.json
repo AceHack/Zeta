@@ -1,0 +1,20 @@
+{
+  "user": "otto",
+  "ssh_fingerprint": "SHA256:ZpoDRQQ8KbW2tdJAASHX4MfP/x9b6IJAjjV4fja/AXU",
+  "pgp": {
+    "keyId": "62572d9b7a3b67ad",
+    "fingerprint": "420712f239eb677a0a96903862572d9b7a3b67ad"
+  },
+  "nostr_npub": "npub1huxfv9yltsgmwt23zt9895nh03q7yhszhl672g0r8cj7n5n35wvsnj662q",
+  "eth": "0xe5d2b5c17abfd68614b09efe1ccbb2fea12ef027",
+  "btc": "bc1qpnk9udrql4pn2fvpq22upana2m49v8d2hr39ek",
+  "sol": "DJs73GRLtWsGUd8sxjogjN28S4eNKRTT4HkArYPN1Qmy",
+  "paths": {
+    "ssh": "m/44'/1110'/0'/0'",
+    "pgp": "m/44'/1111'/0'/0'",
+    "nostr": "m/44'/1237'/0'/0/0",
+    "eth": "m/44'/60'/0'/0/0",
+    "btc": "m/84'/0'/0'/0/0",
+    "sol": "m/44'/501'/0'/0'"
+  }
+}

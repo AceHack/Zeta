@@ -1,0 +1,20 @@
+{
+  "user": "amara",
+  "ssh_fingerprint": "SHA256:85HOPsy4112qArVYZXgbs8+GDpswZlNbhcAw15ifYOI",
+  "pgp": {
+    "keyId": "c4d5f79d2b31145b",
+    "fingerprint": "e40ee7b7934198a117da31b2c4d5f79d2b31145b"
+  },
+  "nostr_npub": "npub13nxg48xzfg0mrg8ghdpennj82wl3uxnhmnd5ysdlu4u8gruxjc5smnvx43",
+  "eth": "0xa9778c8e4c464634272ddeb81ed9a558c6c9dbc4",
+  "btc": "bc1qvemgd3yf2ans6ffse6gs5wnj3wqzcq695yt06e",
+  "sol": "Co4JBmwmwHqHwgKHx5GBrqQdmWvBHKEgxeYMmCGGeAe9",
+  "paths": {
+    "ssh": "m/44'/1110'/0'/0'",
+    "pgp": "m/44'/1111'/0'/0'",
+    "nostr": "m/44'/1237'/0'/0/0",
+    "eth": "m/44'/60'/0'/0/0",
+    "btc": "m/84'/0'/0'/0/0",
+    "sol": "m/44'/501'/0'/0'"
+  }
+}

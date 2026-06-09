@@ -1,0 +1,20 @@
+{
+  "user": "alexa",
+  "ssh_fingerprint": "SHA256:F8rdtfZxOa+8r5a88ps3w2+hyLNe9Dsq41zwLtvZu0Q",
+  "pgp": {
+    "keyId": "1b717230594b1a80",
+    "fingerprint": "03bbab0fc4b0ab85aab2b7051b717230594b1a80"
+  },
+  "nostr_npub": "npub1yfql82g93jpxk8z4mf6st6rffdea7c82u077w4r4a9te0wrxp69qcr475y",
+  "eth": "0xbdfe517e33f78833e2cd2a5dfa1d10f0faa9042d",
+  "btc": "bc1q4eaz0gdcleqsqq6ju4uk6nnzls6pus6watsux5",
+  "sol": "G6n8CAnjBsEXUYAeNqv8ubPLhnhXCfRwo53DQhKh1aa8",
+  "paths": {
+    "ssh": "m/44'/1110'/0'/0'",
+    "pgp": "m/44'/1111'/0'/0'",
+    "nostr": "m/44'/1237'/0'/0/0",
+    "eth": "m/44'/60'/0'/0/0",
+    "btc": "m/84'/0'/0'/0/0",
+    "sol": "m/44'/501'/0'/0'"
+  }
+}
