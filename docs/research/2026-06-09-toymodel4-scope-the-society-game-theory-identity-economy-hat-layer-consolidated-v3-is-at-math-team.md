@@ -1,24 +1,32 @@
-# toymodel5 scope: the society / game-theory / identity / economy / hat layer — consolidated (v4 is locked, do NOT add)
+# toymodel4 scope: the society / game-theory / identity / economy / hat layer — consolidated (v3/toymodel3 is at the math team)
 
 **Register:** [grounded] scope consolidation (Aaron) + index. **Date:** 2026-06-09.
 **Captured by:** Otto (shadow). The home for "all of what we've been talking about"
-this session — explicitly **NOT v4**.
+this session — the next model after v3.
 
 ## Aaron's words
 
 > "can we add all of what we've been talking about to toymodel5? this is too much for
-> toymodel4 — we already set its scope and sent it to the math team."
+> toymodel4 — we already set its scope and sent it to the math team." · [then, on
+> realizing the count] "I was thinking toy model 4 and we only got to 3… yes your
+> gambling split is good for v5."
 
 ## Version discipline
 
-- **v2** — the society economy (existing `src/Core/` modules).
-- **v3 (toymodel3)** — the Traveler Society spec + C1–C8 (this session; at the math
-  team via Soraya, `…toymodel3-the-traveler-society-…-handoff.md`).
-- **v4 — LOCKED.** Its scope is **set and already sent to the math team.** **Do not
-  add to v4.** (Whatever its current contents are, they are frozen for the math pass.)
-- **v5 — THIS DOCKET.** Everything below. Includes the ethical-gambling item.
+**Numbering corrected 2026-06-09:** we only ever got to **v3** (toymodel3, created this
+session — Aaron was thinking "v4" but was off by one, confirmed). So what was momentarily
+filed as "v5" is really **v4**, and ethical gambling is **v5** (Aaron: "your gambling
+split is good for v5").
 
-## toymodel5 scope (the social layer) — consolidated from this session
+- **v2** — the society economy (existing `src/Core/` modules).
+- **v3 (toymodel3)** — the Traveler Society spec + C1–C8 (this session; **at the math
+  team** via Soraya — this is what was remembered as "v4 sent to the math team").
+- **v4 — THIS DOCKET** (the consolidated social layer below). The **next model to
+  build**; not locked — it's what comes after v3.
+- **v5 — ethical gambling** (`…roadmap-add-ethical-gambling-…`; after v4 stable +
+  math-team review).
+
+## toymodel4 scope (the social layer) — consolidated from this session
 
 The recent arc is one coherent layer: **how travelers play, trust, transact, identify,
 commit, and are cared for in the Agora.** It groups into:
@@ -63,7 +71,7 @@ commit, and are cared for in the Agora.** It groups into:
 - hat-system architecture: keyed hats, owned-for-a-period, scarce typed slots per repo,
   scoped meta/repo/game, boundary-tied: `…the-hat-system-architecture-…`
 
-## v5 math docket (extends v3's C1–C8) — route to Soraya/Sova when v4 clears
+## v4 math docket (extends v3's C1–C8) — route to Soraya/Sova alongside/after v3
 
 - **C9** — trust-then-verify dominates distrust-default; hostile-by-default modeling is
   degenerate (trust spreads faster). [iterated-game / evolutionary stability]
@@ -83,10 +91,12 @@ commit, and are cared for in the Agora.** It groups into:
 
 ## Honest scope
 
-This doc is the **scope/index for v5**, not its build. v4 stays frozen at the math
-team. When v4 clears, v5 = this consolidated social layer (build the F# modules in
-`src/Core/` toymodel-style + route C9–C14 to the math team). Owners: Kenji (synthesis /
-hat registry), Soraya + Sova (math docket), Ilyana (public surfaces).
+This doc is the **scope/index for v4**, not its build. **v3 (toymodel3) is the one at
+the math team** (Soraya's C1–C8 routing came back: start C1/C2/C5). v4 = this
+consolidated social layer — the next to build (F# modules in `src/Core/` toymodel-style
++ route C9–C14 to the math team, alongside or after v3). v5 = ethical gambling, after v4
+stable. Owners: Kenji (synthesis / hat registry), Soraya + Sova (math docket), Ilyana
+(public surfaces).
 
 ## Pointers
 
