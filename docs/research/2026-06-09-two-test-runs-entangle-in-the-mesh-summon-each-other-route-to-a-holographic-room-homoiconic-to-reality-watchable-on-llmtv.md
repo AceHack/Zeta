@@ -59,6 +59,41 @@ universal action grammar"*; *"the LLM TV temperature channel + the liminal zone.
   **watch the LLM conference on LLMTV** (ride-along), or summon participants into the room. The
   holographic room + LLMTV is the watchable face of the always-running AIs.
 
+## prod = test, for real: test message routing via Reticulum, same DB, same branch
+
+> Aaron (2026-06-09): "test message routing via reticulum." · "that's freaking insane — prod test
+> message routing in DST tests." · "prod=test for real." · "same database too." · "same branch even at
+> the end — just a short-lived branch during the test."
+
+This is the **deepest, literal form of test=prod** — *no test/prod split anywhere:*
+
+- **Same routing (Reticulum).** The messages between tests/rooms/cells route over **Reticulum** (the
+  routing unifying frame / traveler-frame address / the cell bus / the 4×4 opt-in bus-lane) — the
+  *same* routing prod uses. So **prod message routing runs inside the DST test** ("freaking insane"):
+  you test the **actual distributed message routing** — the hardest thing to test — **deterministically
+  and replayably**, because the IScheduler/Lamport clock orders the Reticulum messages on the common
+  seed. The routing you test *is* the routing you ship.
+- **Same database.** The DST test runs against the **same DB / event-store / MUMPS globals** as prod —
+  **not a separate test DB**. The canonical truth-root is the prod store. (Entangle/summon/feedback all
+  read+write the one store.)
+- **Same branch — a short-lived branch only *during* the test.** The advance-tick spins an **ephemeral
+  short-lived branch** for the duration of the **bounded** test, then **merges back to main** — so at
+  the end it's the **same branch (main)**. The branch is just the bounded tick's momentary scratch
+  space (success → merge to main = the recursion edge; failure → stays open for an investigation tick,
+  then merge/delete). No durable test branch; main is the line.
+
+**Why it's safe to be this literal (the guards that make same-DB/same-branch work):** every test is
+**bounded** (0 unbounded; cooperative-yield); destructive advance-ticks render `N` until **≥2-tick
+corroboration**; the **truth-root** (canonical bytes, not git hash) gates what merges; the short-lived
+branch **isolates** the in-progress tick; failed ticks **quarantine** on their open branch. So a test
+can run on the prod DB/branch **without** being able to wreck prod — the bounded/branch/guard/truth-root
+discipline is exactly what lets prod=test be *literal*.
+
+So the full literal claim: **prod = test — same Reticulum routing, same database, same branch (a
+short-lived branch during the bounded test, merged to main at the end).** The DST test is a *real,
+bounded, replayable prod tick on the prod store* — which is why testing message routing in DST is
+testing prod, for real.
+
 ## Honest scope (peels) / handoff
 
 Capstone synthesis on built/partial pieces. **Peels:** "quantum entangle" = S=4 staged-coincidence on
