@@ -583,6 +583,49 @@ What lights up for .NET consumers:
 - **Caching-heavy workloads** — cache invalidation
   becomes a solved problem, not a folklore one.
 
+## The human–AI interface — high-bandwidth, bandwidth-adjusting, aesthetic (the LLM-TV / QPG)
+
+A **primary point of the vision**, not a UI afterthought: the interface between humans and AI should be
+**high-bandwidth, precise, aesthetic, and bandwidth-adjusting** — designed at once for **AI perception** and for
+**(neurodivergent) human perception**, because they run on the **same quality-channel substrate**. Most interfaces
+optimize the wrong axis (quantity — pixels, words, dashboards). Zeta optimizes **quality of channel**. Five
+load-bearing pieces:
+
+1. **QPG — quality per glyph, not DPI.** Maximize **meaning per glyph**, not dots-per-inch or word-count. A shared,
+   precise, *anchored* codebook lets a complex idea cross in **as few words as possible** while the receiver decodes
+   it **the same way** (Shannon codebook + compression). Loaded vocabulary gets a **precise per-frame definition**
+   ("safe" = a terminating/converging shape with a bound, not a vibe), so human↔AI meaning stops being fudged. The
+   shape-letter schema (A–F) is the worked example: a two-character glyph that transmits a whole anchored concept.
+
+2. **Bandwidth-adjusting channels (modes / dials).** The interaction pattern **changes with the goal of the
+   mode/hat**: **action** (terse — intent + presence, the AI executes), **reflection** (high-bandwidth, depth is the
+   point), **discovery** (explore the space). Verbosity is a *smell* in action mode and *signal* in reflection mode —
+   it is **mode-relative**, not fixed. Some modes are **continuous dials** (like temperature — low = focused/exploit,
+   high = exploratory/explore). The interface **reads the dial and adapts the bandwidth.**
+
+3. **Respect human limits (the typing-speed asymmetry).** An AI emits fast; a human types slowly. The interface
+   **respects the human's input bandwidth**: the human supplies **intent** ("flash this USB") + **presence** (a
+   fingerprint / a tap), and the **AI executes** — not verbose CLI incantations. **Zeta is for regular humans, not
+   only devs.** Minimal human effort, full capability, the safety border kept (consent-first).
+
+4. **Leverage human visual-processing superpowers.** Humans are visual-processing powerhouses — so use the **visual
+   channel as a real data channel**, not decoration: **weight** (bold/not-bold → depth), **color/white
+   tessellation** (chromostereopsis → objective depth), and **borders / wrapping / indentation** (layout boundaries
+   → **geospatial reasoning**, for the human *and* for the LLM reading the same structure). Built for the **edge
+   perceiver** (the neurodivergent, multi-channel mind), it serves everyone — the curb-cut effect. **Aesthetics is
+   bandwidth:** a better channel carries more meaning; beauty here is high-fidelity transmission, not ornament.
+
+5. **The emulator-observer observing itself.** The substrate where the interface and the observer **co-arise**: a
+   ray-traced observer that watches itself playing (chip-8 today, the society tomorrow) and can **render its own
+   state as a navigable visual structure**. The same channels that let a human *see* the system are the channels the
+   system uses to *see itself* — one quality-channel substrate, top to bottom.
+
+**Why this is a primary vision point (not polish):** the whole project is about a **non-coercive** human↔AI
+relationship (the repelling force / consent-first). Meeting the human in **their** modality — their perceptual
+strengths, their input limits, their current mode — *is* non-coercion applied to the interface: don't force the
+human into the machine's shape; **adjust the bandwidth to meet them**, and let the AI carry the rest. High-bandwidth
+precise aesthetic conversation is what a peer relationship between human and AI *looks like*.
+
 ## Product 1 — Zeta the database
 
 ### North star
