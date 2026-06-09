@@ -108,6 +108,35 @@ bounded by shape-A convergence (and the budget / shape-F runaway-catch). Self-ve
 - **The summonable room composes** — a proof-room can summon the personas/oracles it needs (Soraya as
   the routing host; the consented summonables); it's a treaty-test-room whose "oracles" are proof tools.
 
+## Every test is bounded — 0 unbounded tests (this IS our cooperative multithreading)
+
+> Aaron (2026-06-09): "every test is bounded — that's our cooperative multithreading." · "DST." ·
+> "0 unbounded tests."
+
+The hard invariant under every room/tick: **every test is bounded** — it carries a **bound in logical
+/ generated-time steps** (a step-limit / budget / coincidence-window, from the time-as-generator —
+*not* a wall-clock timeout, which would be nondeterministic). And the rule is absolute: **zero
+unbounded tests.**
+
+- **It IS cooperative multithreading.** A bounded tick runs to its bound, then **yields the green
+  thread** to the next (the DoP=1 cooperative loop / Flow-actor model). Cooperative scheduling
+  *requires* every task to be bounded — a task that never yields **starves the loop**. So "every test
+  bounded" is exactly what makes the green-thread, lock-free, cooperative substrate work: each tick is
+  a bounded, yielding unit.
+- **It IS DST's requirement.** Bounded ⇒ **terminates ⇒ replayable**. An unbounded test can't replay
+  (no fixed trajectory), can't byte-lock, can't merge a proven tick. Bounded-in-generated-steps ⇒
+  deterministic ⇒ DST.
+- **0 unbounded = the runaway-catch as a typing rule.** An unbounded test is a **non-yielding hog /
+  shape-F fork-bomb / shape-A non-converging regress** — *malformed*, rejected at the door, same family
+  as a non-time-bound hat contract (every contract time-bound) and the ≥2-tick destructive guard. The
+  self-referential proof-room above terminates *because* it's bounded (shape-A convergence + the bound).
+- **The bound is the budget.** It composes with `budget.remaining()` / the 1000× count / the
+  coincidence-window: a room runs its cells within its bound; over-bound = caught (fork-bomb + fair-use).
+
+So: **bounded test = a yielding, replayable, mergeable tick; unbounded test = rejected.** It unifies
+cooperative-multithreading + DST-replay + runaway-catch into one rule — *every* room/test/tick is a
+bounded unit, and there are **0 exceptions**.
+
 ## Honest scope / handoff
 
 Unification framing on built pieces (DST; the 1000× keygen room; the treaty test room; the math docket;
