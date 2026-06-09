@@ -226,6 +226,7 @@
     <Compile Include="Diversity.fs" />
     <Compile Include="PrivacyEconomy.fs" />
     <Compile Include="GamePortfolio.fs" />
+    <Compile Include="GameFingerprint.fs" />
     <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
