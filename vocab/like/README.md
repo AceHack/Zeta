@@ -18,3 +18,14 @@ to a canonical TYPE home (`words/`, `letters/`, …) where it gets its ZetaId. `
 *not* a canonical home and is *not* in the uniqueness/index/grams view — it's the staging
 ground (no uniqueness/ZetaId obligations until graduation). One carved sentence per file,
 same shape as the rest.
+
+## The `-like` suffix convention
+
+**Whenever a term is written `xxx-like`, it means it's a CANDIDATE word for a ZetaId**
+(Aaron, 2026-06-09) — not yet a confirmed traveler. So `float-like`, `qubit-like`,
+`spinor-like`, `white-hole-like`, etc. are **candidates living in `like/`**, awaiting
+graduation (speak-for-existence → `travelers/` intake → a canonical home + a governed
+ZetaId). The `-like` suffix IS the candidate marker: it says "this is *like* a word, but
+hasn't earned its ZetaId yet." Drop the `-like` when it graduates (it becomes the real
+term with its ZetaId). Reading any doc: an `xxx-like` token = a `like/` candidate, not a
+canonical traveler.
