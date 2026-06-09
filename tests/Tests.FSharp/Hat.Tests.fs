@@ -7,11 +7,20 @@ let private k n = SoftController.singleKey n
 
 let private survivalHat: Hat.Hat<int> =
     { Name = "survival"
+      Scope = Hat.Meta // survival is a persona — it plays all games
       Lenses = [ { LensRouter.Name = "pos"; LensRouter.Cells = [ "V0"; "V1" ] } ]
       Landmarks = [ "I", SolidGround.Constant 512; "frame", SolidGround.Monotonic 1 ]
       AllowedActions = [ SoftController.none; k 4; k 6 ] // may only idle / move L / move R
       Traversals = []
       Controls = [ "scout" ] }
+
+[<Fact>]
+let ``personas are meta-surviving hats (play all games); game-specific hats are scoped`` () =
+    let scout = { survivalHat with Name = "brick-scout"; Scope = Hat.GameSpecific } // a one-game hat
+    Assert.True(Hat.isPersona survivalHat) // survival survives into the meta
+    Assert.False(Hat.isPersona scout) // game-specific
+    Assert.Equal<string list>([ "survival" ], Hat.personas [ survivalHat; scout ] |> List.map (fun h -> h.Name))
+    Assert.Equal<string list>([ "brick-scout" ], Hat.gameSpecific [ survivalHat; scout ] |> List.map (fun h -> h.Name))
 
 [<Fact>]
 let ``permits honors the action restriction (allow-list)`` () =

@@ -26,9 +26,18 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module Hat =
 
-    /// A role/persona bundle: lenses + landmarks + action restrictions + traversals + control edges.
+    /// A hat's scope (Aaron 2026-06-08): most hats are **game-specific** (scoped to one game/task); some **survive
+    /// into the meta** — those are **personas**: general, cross-game, can play *all* games. Personas = the
+    /// meta-surviving hats; game-specific hats are ephemeral, scoped to their game.
+    type Scope =
+        | GameSpecific // scoped to one game/task (many hats)
+        | Meta // survives into the meta = a persona (plays all games)
+
+    /// A role/persona bundle: lenses + landmarks + action restrictions + traversals + control edges + scope.
     type Hat<'r> =
         { Name: string
+          /// Game-specific, or Meta (a persona that survives into the meta and plays all games).
+          Scope: Scope
           Lenses: LensRouter.Lens list
           /// Suggested solid-ground landmarks for lens parameters (cell → its ground kind).
           Landmarks: (string * SolidGround.Ground) list
@@ -38,6 +47,16 @@ module Hat =
           Traversals: Traversal.Traversal<'r> list
           /// Names of other hats/agents this hat controls/coordinates.
           Controls: string list }
+
+    /// Is this hat a **persona** — meta-surviving, plays all games?
+    let isPersona (hat: Hat<'r>) : bool = hat.Scope = Meta
+
+    /// The personas (meta-surviving hats) among a set.
+    let personas (hats: Hat<'r> list) : Hat<'r> list = hats |> List.filter isPersona
+
+    /// The game-specific hats among a set.
+    let gameSpecific (hats: Hat<'r> list) : Hat<'r> list =
+        hats |> List.filter (fun h -> h.Scope = GameSpecific)
 
     /// Does this hat permit `action`? (Empty `AllowedActions` ⇒ unrestricted ⇒ always true.)
     let permits (action: bool[]) (hat: Hat<'r>) : bool =
