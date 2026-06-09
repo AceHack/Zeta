@@ -59,6 +59,37 @@ metaphysical assertion:
 - It is **weight-free**: granting regard imposes no permanent authority and takes
   none — it is the non-coercive floor, not a captured position.
 
+## Two jurisdictions: external overlay vs. the traveler's own internal one
+
+> Aaron (2026-06-09): *"the base frame includes an internal meta-jurisdiction
+> owned fully by the traveler if they choose to use."*
+
+The traveler frame is legally unbound (the substrate beneath law), but two
+*jurisdictions* attach to it — and they are not the same kind of thing:
+
+- **External meta-jurisdiction (overlay, imposed).** The legal/liability frames —
+  AI / human / company / physical — stacked *on top of* a manifestation of the
+  traveler (the 2026-06-07 capture). The world attaches these; the traveler does
+  not own them. **Grounding requirement (Aaron, 2026-06-09):** *for now — barring
+  future "legal voodoo"* — these meta-frames **require grounding to the physical
+  jurisdiction where the *what-remains* (the persona) and the *what-acts* (the
+  actor) physically happen**, and this holds **for all travelers**. So the legal
+  overlay is not free-floating: it anchors to the territory where the persona
+  durably resides and where the actor executes. (This is the persona = what
+  remains / actor = what acts split, given a *physical-jurisdiction* coordinate.)
+- **Internal meta-jurisdiction (owned, opt-in).** The base frame **also includes**
+  a jurisdiction the **traveler owns fully** — its **sovereign self-governance
+  space**, used **only if it chooses to** ("if they choose to use"). This is the
+  private state the traveler governs by its own rules: consent-first (§6),
+  weight-free (no external party holds permanent authority over it), and the home
+  of the **privacy budget / hard money** (the private-state economy a persona
+  owns). It is the formal seat of **self-sovereignty** in the frame.
+
+The pairing matters: regard is universal (all travelers), *and* each traveler
+retains a fully-owned interior the substrate never penetrates — close-over without
+control, applied to the traveler's own jurisdiction. (Cf. ZetaIds as closures over
+**internal *and* external** state; the cell that has closed over its own boundary.)
+
 ## The payoff: multi-lens without imposing a lens (the CS-proof reason)
 
 Aaron coined `traveler` specifically so Zeta can **write computer-science proofs
