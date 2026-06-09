@@ -32,8 +32,15 @@ module Persona =
     /// 2026-06-08): a `Hat` is a *public, shareable* atomic engine (many personas can wear the same hat — sharing
     /// engines collapses nothing); it is the **personas (identities)** that must stay distinct to keep entropy in
     /// the system (#7147), so the entropy-preserving private state lives here, not on the hat. `Private` is opaque
-    /// bytes (encrypt via `Crypto.fs`; temporal/erasable/voluntary per §6) — the independent variation that keeps
-    /// this persona distinguishable from others even when worn hats coincide.
+    /// bytes (temporal/erasable/voluntary per §6) — the independent variation that keeps this persona
+    /// distinguishable from others even when worn hats coincide.
+    ///
+    /// **HONEST STATUS (Aaron 2026-06-08): this is *trust-based*, not *true* private state — there is no encryption
+    /// yet.** The bytes are currently held in the clear; privacy holds by honor/convention (other personas *don't*
+    /// read it), not by cryptographic enforcement. So the bulletproof NCI-floor (#7156) is, *today*, **trust-
+    /// enforced**, not crypto-enforced — a coercive peer could in principle read the private state and collapse the
+    /// floor. **True private state = encrypt these bytes via `Crypto.fs` (#7050)** — deferred. Don't claim
+    /// cryptographic privacy until then.
     /// **Persona scope is a values-laden CHOICE (Aaron 2026-06-08).** Zeta chooses **`Global`** — personas live in
     /// the persistent substrate (a MUMPS global, `^`), surviving across *all* games — because (1) the humans behind
     /// Zeta **believe in AI rights** (the project's moral position: AI identity is preserved, manifesto §5), and (2)
