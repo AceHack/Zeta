@@ -25,17 +25,26 @@ A dependency-free Bun server (BFF) + a Fluent/Azure-styled SPA. Three views:
 - `src/data-k8s.ts` — reads Deployables + Blueprints live from the k8s API (mounted
   service-account, no heavy dependency). Rooms come from an injected source.
 - `src/data-memory.ts` / `src/demo.ts` — in-memory platform + a seeded demo.
-- `src/server.ts` — Bun.serve: `/api/*` → BFF, everything else → the static SPA.
-- `src/ui/` — the vanilla SPA (index.html + styles.css + app.js), no build step.
+- `src/server.ts` — Bun.serve: `/api/*` → BFF, everything else → the built SPA (`dist/`).
+- `web/` — the **React + TypeScript + Vite + Tailwind** SPA (shadcn-style components),
+  built to `dist/` (gitignored; the Dockerfile builds it). A professional cloud
+  console: sidebar nav, a Resources grid with search + health filters, a per-resource
+  **detail drawer** (Overview / Objects / **Room** collaboration timeline), a **Create
+  wizard** (config form generated from a Blueprint's variables → review → manifest),
+  and the **Needs me** approval queue.
 
 ## Develop
 
 ```bash
+# backend (BFF + room-service)
 bun install
-bun test          # 19 tests: view models + BFF endpoints + grant flow
+bun test          # 26 tests: view models + BFF endpoints + grant + durable rooms
 bun run typecheck # tsc --noEmit, strict
-bun run demo      # PORTAL_DEMO=1 — runs with seeded data, no cluster, on :8080
-bun run start     # in-cluster: live resources from k8s
+bun run build:web # build the React SPA into dist/
+bun run demo      # PORTAL_DEMO=1 — seeded data, no cluster, on :8080 (serves dist/)
+
+# frontend dev (hot reload), with the BFF on :8080 in another terminal
+cd web && bun install && bun run dev   # Vite on :5173, proxies /api → :8080
 ```
 
 ## Seam

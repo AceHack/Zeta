@@ -1,2 +1,7 @@
 node_modules/
 *.log
+# built React SPA (Dockerfile builds it; `bun run build:web` locally)
+dist/
+web/node_modules/
+web/dist/
+*.tsbuildinfo

@@ -12,7 +12,8 @@ import { FileRoomStore } from "./data-file.ts";
 import { CompositePlatform } from "./data-composite.ts";
 import { demoPlatform, demoResources } from "./demo.ts";
 
-const UI_DIR = join(import.meta.dir, "ui");
+// The built React SPA (web/ -> dist/). Built by `bun run build` in web/.
+const UI_DIR = join(import.meta.dir, "..", "dist");
 const PORT = Number(process.env.PORT ?? 8080);
 
 function makeData(): PlatformData {
