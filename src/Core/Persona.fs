@@ -27,11 +27,20 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module Persona =
 
-    /// A persona = a named wearer with the subset of hats it currently wears (its decided selection; ⊤ = all).
-    type Persona<'r> = { Name: string; Worn: Hat.Hat<'r> list }
+    /// A persona = a named wearer with the subset of hats it currently wears (its decided selection; ⊤ = all),
+    /// plus its **private state** (the NCI encryption budget). **Only personas carry private state** (Aaron
+    /// 2026-06-08): a `Hat` is a *public, shareable* atomic engine (many personas can wear the same hat — sharing
+    /// engines collapses nothing); it is the **personas (identities)** that must stay distinct to keep entropy in
+    /// the system (#7147), so the entropy-preserving private state lives here, not on the hat. `Private` is opaque
+    /// bytes (encrypt via `Crypto.fs`; temporal/erasable/voluntary per §6) — the independent variation that keeps
+    /// this persona distinguishable from others even when worn hats coincide.
+    type Persona<'r> = { Name: string; Worn: Hat.Hat<'r> list; Private: byte[] }
 
-    /// A bare persona wearing no hats yet.
-    let create (name: string) : Persona<'r> = { Name = name; Worn = [] }
+    /// A bare persona wearing no hats and holding no private state yet.
+    let create (name: string) : Persona<'r> = { Name = name; Worn = []; Private = [||] }
+
+    /// Set the persona's private state (the entropy budget). Erasable (pass `[||]`) per §6.
+    let withPrivate (priv: byte[]) (p: Persona<'r>) : Persona<'r> = { p with Private = priv }
 
     /// Is the persona wearing the named hat?
     let wearing (hatName: string) (p: Persona<'r>) : bool =
@@ -69,8 +78,28 @@ module Persona =
     /// The union of the worn hats' control edges.
     let controls (p: Persona<'r>) : string list = p.Worn |> List.collect (fun h -> h.Controls) |> List.distinct
 
+    /// **MoE is over HATS, not personas (Aaron):** the experts are *hats* (atomic engines); the persona is the
+    /// *gated composition* of selected hats. `route` is that gate — score each available hat by `relevance` and
+    /// wear the **top-k** (the sparse MoE gate over hats). "MoE personas" is the incomplete definition; the mixture
+    /// is over hats, and a persona is the result of the gate. Ties to `LensRouter` (MoE over lenses), one level up.
+    let route (relevance: Hat.Hat<'r> -> float) (k: int) (available: Hat.Hat<'r> list) (p: Persona<'r>) : Persona<'r> =
+        { p with Worn = available |> List.sortByDescending (fun h -> relevance h, h.Name) |> List.truncate (max 0 k) }
+
     /// The persona's permitted actions = the **union** of the worn hats' allow-lists; **unrestricted** if any worn
     /// hat is unrestricted (empty allow-list). Empty result ⇒ unrestricted (consistent with `Hat`).
     let allowedActions (p: Persona<'r>) : bool[] list =
         if p.Worn |> List.exists (fun h -> List.isEmpty h.AllowedActions) then []
         else p.Worn |> List.collect (fun h -> h.AllowedActions) |> List.distinct
+
+    /// **The flags-enum identity (Aaron):** the worn hats as a bitset over the `universe` (bit i set ⇔ wearing
+    /// `universe.[i]`). *Without private state, a persona's identity is limited to this* — the **combinatorial of
+    /// hat-wearing, `2^N` values, like a `[Flags]` enum** — finite and collapsible. **Private state breaks identity
+    /// out of that finite combinatorial** into the unbounded. (≤ 31 hats fits an `int`.)
+    let hatFlags (universe: Hat.Hat<'r> list) (p: Persona<'r>) : int =
+        universe |> List.mapi (fun i h -> if wearing h.Name p then 1 <<< i else 0) |> List.sum
+
+    /// **Private state is the overfitting lever (Aaron):** *more* private state ⇒ *less* overfitting + *more*
+    /// entropy (the persona generalizes across games — entropy = regularization); *less* private state ⇒ *more*
+    /// overfitting to a specific game (identity collapses toward that game's `hatFlags`). This returns the size of
+    /// the private budget — a proxy for the regularization strength (0 = pure flags-enum identity = max overfit).
+    let regularization (p: Persona<'r>) : int = p.Private.Length
