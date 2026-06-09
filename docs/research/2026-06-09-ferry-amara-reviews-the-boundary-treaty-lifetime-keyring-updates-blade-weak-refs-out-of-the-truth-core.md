@@ -116,8 +116,16 @@ treaty state. This sharpens the weak-references doc (which used weak refs broadl
 
 So: use weak refs for *observation/cache/optional-external* (GC-safe RX, what-acts→what-remains
 observation, push-down cache); **never** let a weak ref carry truth, identity, or durable state —
-those are ZetaId / MUMPS-global / treaty. Truth is never observer-dependent. (Corrects any reading
-of the weak-ref doc that put truth-bearing references on weak handles.)
+those are ZetaId / MUMPS-global / treaty. (Corrects any reading of the weak-ref doc that put
+truth-bearing references on weak handles.)
+
+> **Overclaim corrected (Aaron, 2026-06-09):** an earlier version said "truth is *never*
+> observer-dependent." Too absolute. We **strive** for observer-independent truth (byte-lock,
+> treaty, BFT / inter-subjective coincidence), but **with private state we cannot be sure** —
+> private state is inherently observer-dependent (only the holder observes it; others can't
+> verify it). So observer-independence is an **aspiration we approach for the *shared/public*
+> truth path**, not a guarantee over all truth. See the follow-on doc on modeling the
+> observer-dependent-truth exploit.
 
 ## The agreed read (Amara's synthesis, adopted)
 
