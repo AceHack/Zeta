@@ -242,19 +242,6 @@ WINEOF
     ;;
 esac
 
-# Persona keyring tool — close over its deps so `keyring.sh` is ready to run.
-# NO keys are generated here (generation is an explicit, separate operator step).
-# One seed -> type-separated SSH/PGP/Nostr (required) + opt-in BTC/ETH/SOL.
-KEYRING_DIR="$SETUP_DIR/persona-keys"
-if [ -d "$KEYRING_DIR" ] && command -v mise >/dev/null 2>&1; then
-  echo "Preparing persona-keyring tool ($KEYRING_DIR)..."
-  if ( cd "$KEYRING_DIR" && mise exec -- bun install ) >/dev/null 2>&1; then
-    echo "ok keyring tool ready — run tools/setup/persona-keys/keyring.sh (see its README)"
-  else
-    echo "warn: keyring dep install skipped (bun unavailable/offline); run 'bun install' in $KEYRING_DIR later"
-  fi
-fi
-
 echo
 echo "=== Install complete ==="
 echo "If this is your first run, open a new shell or source"

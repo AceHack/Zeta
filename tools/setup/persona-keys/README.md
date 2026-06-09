@@ -62,6 +62,20 @@ keyring.sh generate otto --gh-secret ZETA_PERSONA_OTTO_KEYRING
 keyring.sh import aaron --public-only --out maintainers/aaron
 ```
 
-Closed over in `tools/setup/install.sh` + `install.ps1` (bun + deps + this tool).
+## Closure: self-bootstrapping deps, NOT an install.sh special-case
+
+`keyring.sh` installs its own deps on first run (`[ -d node_modules ] || bun
+install`), so **`install.sh` does NOT need to know this tool exists** — it stays
+persona-agnostic (Aaron 2026-06-09: *"why does install.sh need to know anything
+about personas?"*). No imperative coupling in the installer.
+
+**Declarative target (the right closed-over form):** this tool's deps belong in
+**`ace`'s static deps graph** (Zeta's signed DLC package manager — `tools/ace/`:
+dep edges + z3 solver + lockfile + content-hash + trust), so `ace` resolves the
+whole graph generically and the installer closes over *everything* by naming
+*nothing*. Until this is published as an ace package, first-run self-bootstrap is
+the bridge. See `docs/research/2026-06-09-declarative-keyring-as-an-ace-package-...md`.
+
 Anchors: BIP-39/32/44, BIP-84, SLIP-0010, NIP-06; `@noble`/`@scure`/`micro-key-producer`
-(audited, Paul Miller); Vault, External-Secrets, cert-manager, spire (cluster).
+(audited, Paul Miller); Vault, External-Secrets, cert-manager, spire (cluster);
+`ace` (Zeta DLC package manager, B-0288).
