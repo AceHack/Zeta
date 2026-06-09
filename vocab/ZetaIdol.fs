@@ -7,6 +7,15 @@ namespace Zeta.Vocab
 /// and IDENTITY EMERGES (anti-entropy) — or it is CUT but HONORED ("American Idol"). Interfaces + Rx only;
 /// NO classes (the byte-lock / reference-equality discipline). Default behavior lives in the companion
 /// `module ZetaIdol` (a module, not a class).
+///
+/// **ZetaIdol is also our DETERMINISTIC SYNCHRONIZED PERFORMANCE** (Aaron 2026-06-09): the audition is
+/// staged off the **common-cause ZetaId seed** — every auditioning traveler is synchronized to the one
+/// common cause (DST; replayable; the seed determines the staging). The staging uses our **quantum /
+/// random COINCIDENCE GENERATOR over Rx** — `Zeta.Core.CoincidenceClock` + `Zeta.Core.BellTest`
+/// (staged coincidence on the common seed → the singlet correlator `E(a,b)=cos(a-b)`; S=2√2, full-seed
+/// S=4 PR-box). So an audition is a synchronized, coincidence-staged performance: the common ZetaId seed
+/// is the conductor, the coincidence generator stages the timing, Rx carries it. (Peel: S=4 = PR-box /
+/// superdeterministic shared-cause, not physical entanglement.)
 
 /// The outcome of an audition.
 [<RequireQualifiedAccess>]
