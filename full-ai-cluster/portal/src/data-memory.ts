@@ -6,14 +6,23 @@
 // write the portal performs). Deterministic: event seq derives from length.
 
 import type { PlatformData } from "./api.ts";
+import type { MemoryUsage, ResourceOps } from "./ops.ts";
+import { DemoOps } from "./ops-demo.ts";
+import { roomBytes } from "./memory-usage.ts";
 import type { BlueprintCR, DeployableCR, RoomData, RoomEventVM } from "./viewmodel.ts";
 
 export class InMemoryPlatform implements PlatformData {
+  readonly ops: ResourceOps = new DemoOps();
   constructor(
     private deployables: DeployableCR[] = [],
     private blueprints: BlueprintCR[] = [],
     private rooms: RoomData[] = [],
   ) {}
+
+  async memoryUsage(): Promise<MemoryUsage> {
+    const rooms = this.rooms.map((r) => ({ resource: r.resource, events: r.events.length, bytes: roomBytes(r) }));
+    return { rooms, totalEvents: rooms.reduce((n, r) => n + r.events, 0), totalBytes: rooms.reduce((n, r) => n + r.bytes, 0) };
+  }
 
   async listDeployables(): Promise<DeployableCR[]> {
     return this.deployables;

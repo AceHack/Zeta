@@ -56,6 +56,52 @@ export interface RoomVM {
   pending: NeedsMeItemVM[];
 }
 
+// ── management-plane types (mirror ops.ts) ────────────────────────────
+export interface PodInfo {
+  name: string;
+  phase: string;
+  ready: boolean;
+  restarts: number;
+  node?: string;
+  ip?: string;
+  ageSeconds: number;
+  image: string;
+}
+export interface MetricPoint { t: number; cpu: number; mem: number }
+export interface Metrics {
+  cpuMilli: number;
+  cpuLimitMilli: number;
+  memMi: number;
+  memLimitMi: number;
+  storageUsedMi: number;
+  storageTotalMi: number;
+  series: MetricPoint[];
+}
+export interface LogLine { ts: string; level: "info" | "warn" | "error" | "debug"; text: string }
+export interface K8sEvent { ts: string; type: "Normal" | "Warning"; reason: string; message: string }
+export interface FileNode { name: string; path: string; type: "file" | "dir"; size: number; modified: string }
+export interface ResourceConfig {
+  replicas: number;
+  cpu: string;
+  memory: string;
+  storage?: string;
+  expose: string;
+  host?: string;
+  values: Record<string, string>;
+  env: Record<string, string>;
+}
+export interface AccessInfo {
+  console: { kind: "shell" | "rcon"; command: string; note: string };
+  sftp?: { host: string; port: number; user: string; path: string; note: string };
+}
+export interface MemoryUsage {
+  rooms: Array<{ resource: string; events: number; bytes: number }>;
+  totalEvents: number;
+  totalBytes: number;
+}
+export interface LifecycleResult { ok: boolean; message: string }
+export type LifecycleAction = "restart" | "stop" | "start" | "scale" | "delete";
+
 const j = async <T>(p: string, init?: RequestInit): Promise<T> => {
   const r = await fetch(p, init);
   if (!r.ok) throw new Error(`${init?.method ?? "GET"} ${p} → ${r.status}`);
@@ -63,6 +109,7 @@ const j = async <T>(p: string, init?: RequestInit): Promise<T> => {
 };
 
 const enc = (resource: string) => resource.replace("/", "~");
+const post = (p: string, body: unknown) => j<LifecycleResult>(p, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
 
 export const api = {
   resources: () => j<{ groups: CategoryGroupVM[] }>("/api/resources").then((d) => d.groups),
@@ -75,4 +122,16 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ requestId, by, granted, note }),
     }),
+
+  // management plane
+  memory: () => j<MemoryUsage>("/api/memory"),
+  info: (r: string) => j<{ pods: PodInfo[] }>(`/api/resources/${enc(r)}/info`).then((d) => d.pods),
+  metrics: (r: string) => j<Metrics>(`/api/resources/${enc(r)}/metrics`),
+  logs: (r: string) => j<{ lines: LogLine[] }>(`/api/resources/${enc(r)}/logs`).then((d) => d.lines),
+  events: (r: string) => j<{ events: K8sEvent[] }>(`/api/resources/${enc(r)}/events`).then((d) => d.events),
+  files: (r: string, path: string) => j<{ path: string; entries: FileNode[] }>(`/api/resources/${enc(r)}/files?path=${encodeURIComponent(path)}`),
+  access: (r: string) => j<AccessInfo>(`/api/resources/${enc(r)}/access`),
+  config: (r: string) => j<ResourceConfig>(`/api/resources/${enc(r)}/config`),
+  applyConfig: (r: string, patch: Partial<ResourceConfig>) => post(`/api/resources/${enc(r)}/config`, patch),
+  lifecycle: (r: string, action: LifecycleAction, replicas?: number) => post(`/api/resources/${enc(r)}/lifecycle`, { action, replicas }),
 };

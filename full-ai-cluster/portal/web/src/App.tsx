@@ -1,21 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
-import { Boxes, LayoutGrid, Plus, RefreshCw, ShieldAlert } from "lucide-react";
-import { api, type CatalogEntryVM, type CategoryGroupVM, type NeedsMeItemVM } from "@/lib/api";
+import { Boxes, Brain, LayoutGrid, Plus, RefreshCw, ShieldAlert } from "lucide-react";
+import { api, type CatalogEntryVM, type CategoryGroupVM, type NeedsMeItemVM, type ResourceVM } from "@/lib/api";
 import { Resources } from "@/views/Resources";
 import { Create } from "@/views/Create";
 import { NeedsMe } from "@/views/NeedsMe";
+import { Memory } from "@/views/Memory";
+import { ResourceConsole } from "@/components/ResourceConsole";
 import { cn } from "@/lib/utils";
 
-type View = "resources" | "create" | "needsme";
+type View = "resources" | "create" | "needsme" | "memory";
 
 const NAV: Array<{ id: View; label: string; icon: typeof LayoutGrid }> = [
   { id: "resources", label: "Resources", icon: LayoutGrid },
   { id: "create", label: "Create", icon: Plus },
+  { id: "memory", label: "Memory", icon: Brain },
   { id: "needsme", label: "Needs me", icon: ShieldAlert },
 ];
 
 export default function App() {
   const [view, setView] = useState<View>("resources");
+  const [openResource, setOpenResource] = useState<ResourceVM | null>(null);
   const [groups, setGroups] = useState<CategoryGroupVM[]>([]);
   const [catalog, setCatalog] = useState<CatalogEntryVM[]>([]);
   const [needs, setNeeds] = useState<NeedsMeItemVM[]>([]);
@@ -59,7 +63,7 @@ export default function App() {
             return (
               <button
                 key={n.id}
-                onClick={() => setView(n.id)}
+                onClick={() => { setOpenResource(null); setView(n.id); }}
                 className={cn(
                   "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   active ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
@@ -99,10 +103,14 @@ export default function App() {
             <div className="space-y-3">
               {[0, 1, 2, 3].map((i) => <div key={i} className="h-20 animate-pulse rounded-lg bg-muted/40" />)}
             </div>
+          ) : openResource ? (
+            <ResourceConsole resource={openResource} onBack={() => setOpenResource(null)} onChanged={refresh} />
           ) : view === "resources" ? (
-            <Resources groups={groups} />
+            <Resources groups={groups} onOpen={setOpenResource} />
           ) : view === "create" ? (
             <Create catalog={catalog} />
+          ) : view === "memory" ? (
+            <Memory />
           ) : (
             <NeedsMe items={needs} onChange={refresh} />
           )}

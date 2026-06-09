@@ -8,6 +8,8 @@
 
 import type { PlatformData } from "./api.ts";
 import type { RoomSource } from "./data-k8s.ts";
+import type { MemoryUsage, ResourceOps } from "./ops.ts";
+import { roomBytes } from "./memory-usage.ts";
 import type { BlueprintCR, DeployableCR, RoomData, RoomEventVM } from "./viewmodel.ts";
 
 export interface ResourceSource {
@@ -16,7 +18,13 @@ export interface ResourceSource {
 }
 
 export class CompositePlatform implements PlatformData {
-  constructor(private resources: ResourceSource, private rooms: RoomSource) {}
+  constructor(private resources: ResourceSource, private rooms: RoomSource, readonly ops?: ResourceOps) {}
+
+  async memoryUsage(): Promise<MemoryUsage> {
+    const all = await this.rooms.listRooms();
+    const rooms = all.map((r) => ({ resource: r.resource, events: r.events.length, bytes: roomBytes(r) }));
+    return { rooms, totalEvents: rooms.reduce((n, r) => n + r.events, 0), totalBytes: rooms.reduce((n, r) => n + r.bytes, 0) };
+  }
 
   listDeployables(): Promise<DeployableCR[]> {
     return this.resources.listDeployables();

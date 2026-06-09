@@ -5,14 +5,12 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { HealthDot, PersonaAvatar, catIcon, categoryMeta } from "@/components/bits";
-import { ResourceDetail } from "@/components/ResourceDetail";
 
 const HEALTHS = ["all", "ready", "progressing", "error", "unknown"] as const;
 
-export function Resources({ groups }: { groups: CategoryGroupVM[] }) {
+export function Resources({ groups, onOpen }: { groups: CategoryGroupVM[]; onOpen: (r: ResourceVM) => void }) {
   const [q, setQ] = useState("");
   const [healthFilter, setHealthFilter] = useState<(typeof HEALTHS)[number]>("all");
-  const [selected, setSelected] = useState<ResourceVM | null>(null);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -75,7 +73,7 @@ export function Resources({ groups }: { groups: CategoryGroupVM[] }) {
                   {g.resources.map((r) => (
                     <Card
                       key={`${r.namespace}/${r.name}`}
-                      onClick={() => setSelected(r)}
+                      onClick={() => onOpen(r)}
                       className="group cursor-pointer transition-all hover:border-primary/40 hover:shadow-md hover:shadow-primary/5"
                     >
                       <div className="flex items-start justify-between p-4">
@@ -102,8 +100,6 @@ export function Resources({ groups }: { groups: CategoryGroupVM[] }) {
           })}
         </div>
       )}
-
-      <ResourceDetail resource={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

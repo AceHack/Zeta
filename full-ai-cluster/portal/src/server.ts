@@ -10,6 +10,7 @@ import { handle, type PlatformData } from "./api.ts";
 import { K8sPlatform } from "./data-k8s.ts";
 import { FileRoomStore } from "./data-file.ts";
 import { CompositePlatform } from "./data-composite.ts";
+import { DemoOps } from "./ops-demo.ts";
 import { demoPlatform, demoResources } from "./demo.ts";
 
 // The built React SPA (web/ -> dist/). Built by `bun run build` in web/.
@@ -21,7 +22,7 @@ function makeData(): PlatformData {
   // exercise the durable room-service on a laptop (set ZETA_ROOMS_DIR).
   if (process.env.PORTAL_DEMO === "1") {
     const dir = process.env.ZETA_ROOMS_DIR;
-    if (dir) return new CompositePlatform(demoResources(), new FileRoomStore(dir));
+    if (dir) return new CompositePlatform(demoResources(), new FileRoomStore(dir), new DemoOps());
     return demoPlatform();
   }
   // In-cluster: live resources from k8s; Rooms persisted to a Longhorn-backed

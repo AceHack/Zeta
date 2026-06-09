@@ -15,6 +15,9 @@ import {
   type RoomData,
   toRoomVM,
 } from "./viewmodel.ts";
+import type { LifecycleAction, MemoryUsage, ResourceConfig, ResourceOps } from "./ops.ts";
+
+const LIFECYCLE_ACTIONS = new Set(["restart", "stop", "start", "scale", "delete"]);
 
 /** What the portal needs from the platform. The server provides a k8s-backed impl. */
 export interface PlatformData {
@@ -30,6 +33,10 @@ export interface PlatformData {
    * appended Event's id, or null if appends aren't supported / failed.
    */
   appendEvent?(resource: string, by: { id: string; kind?: "human" | "persona" }, body: RoomEventBody): Promise<string | null>;
+  /** The management-plane operations (info/metrics/logs/files/config/lifecycle). Optional. */
+  ops?: ResourceOps;
+  /** Aggregate memory usage (durable Room logs + agent-memory). Optional. */
+  memoryUsage?(): Promise<MemoryUsage>;
 }
 
 /** The typed Event bodies the write endpoint accepts (mirrors the Room substrate). */
@@ -66,6 +73,41 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     // GET /api/needs-me — pending authorizations across all rooms (the human queue)
     if (path === "/api/needs-me" && req.method === "GET") {
       return json({ items: needsMe(await data.listRooms()) });
+    }
+
+    // GET /api/memory — aggregate durable Room-log / agent-memory usage
+    if (path === "/api/memory" && req.method === "GET") {
+      if (!data.memoryUsage) return json({ rooms: [], totalEvents: 0, totalBytes: 0 });
+      return json(await data.memoryUsage());
+    }
+
+    // ── management plane: /api/resources/:resource/* ───────────────────
+    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|metrics|logs|events|files|access|config|lifecycle)$/);
+    if (mgmt) {
+      if (!data.ops) return json({ error: "management ops not available on this backend" }, 405);
+      const resource = decodeResource(mgmt[1]!);
+      const op = mgmt[2]!;
+      if (req.method === "GET") {
+        switch (op) {
+          case "info": return json(await data.ops.info(resource));
+          case "metrics": return json(await data.ops.metrics(resource));
+          case "logs": return json({ lines: await data.ops.logs(resource, { tail: Number(url.searchParams.get("tail")) || 200 }) });
+          case "events": return json({ events: await data.ops.events(resource) });
+          case "access": return json(await data.ops.access(resource));
+          case "config": return json(await data.ops.config(resource));
+          case "files": return json(await data.ops.files(resource, url.searchParams.get("path") ?? ""));
+        }
+      }
+      if (req.method === "POST") {
+        const b = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+        if (op === "config") return json(await data.ops.applyConfig(resource, b as Partial<ResourceConfig>));
+        if (op === "lifecycle") {
+          const action = String(b.action ?? "");
+          if (!LIFECYCLE_ACTIONS.has(action)) return json({ error: "action must be restart|stop|start|scale|delete" }, 400);
+          return json(await data.ops.lifecycle(resource, action as LifecycleAction, typeof b.replicas === "number" ? b.replicas : undefined));
+        }
+      }
+      return json({ error: "method not allowed" }, 405);
     }
 
     // GET /api/rooms/:resource — one Room's collaboration view (resource is ns~name)
