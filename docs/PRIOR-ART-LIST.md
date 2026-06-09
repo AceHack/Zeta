@@ -14,6 +14,15 @@ with a ⭐ below and add a row there.
   Bartosz Milewski. The foundation for our Observable/duality (IEnumerable⇄IObservable),
   functors/monads, the type-provider/interface≡proof work, and the 2×2-compose structure.
   Pairs with Mac Lane (pure CT, the shape-G limit/cone spine).
+- **Brian Beckman** ⭐ **(REQUIRED READING — Aaron 2026-06-09, "the Brian Beckman in me")** —
+  *Don't Fear the Monad* + the Rx/category-theory + quaternions/physics-from-structure
+  talks. The derive-the-physics-from-the-math-structure style (Rx → Cayley–Dickson →
+  spinor/qubit "fell out of the Rx structure"). Pairs with De Smet (`IQbservable`) + Meijer.
+- **S. James Gates Jr. — SUSY adinkra error-correcting codes** — doubly-even self-dual
+  linear binary block codes found *inside* the adinkras of supersymmetry ("codes in the
+  equations of physics"). The universe's error/erasure coding over time; the real anchor
+  for our entropy-oscillation/erasure coding (vs the generic Azure-LRC analogy). Our
+  coincidence-anchor primitive (B-0623/B-0985) is already Adinkra/Gates-grounded.
 - **Reticulum (RNS)** — Mark Qvist, `markqvist/Reticulum` — the cryptography-based
   overlay networking stack we close over (dep-as-oracle) for the cell/test mesh.
   Identity = X25519 + Ed25519 512-bit keyset; Destination = truncated SHA-256
