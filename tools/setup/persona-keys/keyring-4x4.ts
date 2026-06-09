@@ -7,6 +7,7 @@
 import { deriveKeyring } from "./derive.ts";
 import { canonicalJson, fromCanonicalJson, type Tagged } from "../../../src/Core.TypeScript/dynamic-value/json.ts";
 import { canonicalCbor, fromCanonicalCbor, toHex, fromHex } from "../../../src/Core.TypeScript/dynamic-value/cbor.ts";
+import { canonicalXml, fromCanonicalXml } from "../../../src/Core.TypeScript/dynamic-value/xml.ts";
 
 type Pub = ReturnType<typeof deriveKeyring>["pub"];
 
@@ -19,15 +20,16 @@ export function keyringToTagged(v: unknown): Tagged {
   throw new Error(`keyring Tagged: unexpected non-string leaf: ${typeof v}`);
 }
 
-/** Serialize a public keyring across the locked serializers. CBOR as hex (text-in-JSON). */
+/** Serialize a public keyring across the locked serializers (3 of 4: JSON + CBOR + XML;
+ *  Arrow is the F#/C# shredded-node-table — no TS encoder yet). CBOR as hex (text-in-JSON). */
 export function serializeKeyring(pub: Pub) {
   const tagged = keyringToTagged(pub);
-  return { json: canonicalJson(tagged), cborHex: toHex(canonicalCbor(tagged)) };
+  return { json: canonicalJson(tagged), cborHex: toHex(canonicalCbor(tagged)), xml: canonicalXml(tagged) };
 }
 
 /** Decode each serialized form back to a Tagged (for the commute / round-trip proof). */
-export function deserializeKeyring(json: string, cborHex: string) {
-  return { fromJson: fromCanonicalJson(json), fromCbor: fromCanonicalCbor(fromHex(cborHex)) };
+export function deserializeKeyring(json: string, cborHex: string, xml: string) {
+  return { fromJson: fromCanonicalJson(json), fromCbor: fromCanonicalCbor(fromHex(cborHex)), fromXml: fromCanonicalXml(xml) };
 }
 
 /** Derive + serialize in one step (the treaty's emit path). */

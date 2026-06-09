@@ -19,26 +19,30 @@ const gv = JSON.parse(readFileSync(HERE + "golden-vectors-keyring.json", "utf8")
 const gv4 = JSON.parse(readFileSync(HERE + "golden-vectors-keyring-4x4.json", "utf8"));
 const M = gv.input.mnemonic;
 
-test("COMMUTE: JSON and CBOR decode the keyring to the same value", () => {
-  const { json, cborHex } = keyring4x4(M, "zeta");
-  const { fromJson, fromCbor } = deserializeKeyring(json, cborHex);
+test("COMMUTE: JSON, CBOR and XML all decode the keyring to the same value", () => {
+  const { json, cborHex, xml } = keyring4x4(M, "zeta");
+  const { fromJson, fromCbor, fromXml } = deserializeKeyring(json, cborHex, xml);
   expect(fromJson.ok).toBe(true);
   expect(fromCbor.ok).toBe(true);
+  expect(fromXml.ok).toBe(true);
   expect(JSON.stringify(fromJson)).toBe(JSON.stringify(fromCbor));
+  expect(JSON.stringify(fromCbor)).toBe(JSON.stringify(fromXml));
 });
 
 test("BYTE-LOCK: serialized bytes match the golden vector (the treaty seed)", () => {
-  const { json, cborHex } = keyring4x4(M, "zeta");
+  const { json, cborHex, xml } = keyring4x4(M, "zeta");
   expect(json).toBe(gv4.expected.canonical_json);
   expect(cborHex).toBe(gv4.expected.canonical_cbor_hex);
+  expect(xml).toBe(gv4.expected.canonical_xml);
 });
 
-test("ROUND-TRIP: decode(encode(keyring)) recovers the Tagged for both serializers", () => {
+test("ROUND-TRIP: decode(encode(keyring)) recovers the Tagged for all three serializers", () => {
   const tagged = keyringToTagged(deriveKeyring(M, "zeta").pub);
-  const { json, cborHex } = serializeKeyring(deriveKeyring(M, "zeta").pub);
-  const { fromJson, fromCbor } = deserializeKeyring(json, cborHex);
+  const { json, cborHex, xml } = serializeKeyring(deriveKeyring(M, "zeta").pub);
+  const { fromJson, fromCbor, fromXml } = deserializeKeyring(json, cborHex, xml);
   expect(fromJson.ok && JSON.stringify(fromJson.value)).toBe(JSON.stringify(tagged));
   expect(fromCbor.ok && JSON.stringify(fromCbor.value)).toBe(JSON.stringify(tagged));
+  expect(fromXml.ok && JSON.stringify(fromXml.value)).toBe(JSON.stringify(tagged));
 });
 
 test("DETERMINISM: re-derive + re-serialize is byte-identical", () => {
@@ -46,6 +50,7 @@ test("DETERMINISM: re-derive + re-serialize is byte-identical", () => {
   const b = keyring4x4(M, "zeta");
   expect(a.json).toBe(b.json);
   expect(a.cborHex).toBe(b.cborHex);
+  expect(a.xml).toBe(b.xml);
 });
 
 test("the golden CBOR hex is text (no binary in the proof lineage) + even-length hex", () => {
@@ -53,9 +58,9 @@ test("the golden CBOR hex is text (no binary in the proof lineage) + even-length
   expect(gv4.expected.canonical_cbor_hex.length % 2).toBe(0);
 });
 
-test("no private material leaks into either serialized form", () => {
-  const { json, cborHex } = keyring4x4(M, "zeta");
-  for (const blob of [json, JSON.stringify(deserializeKeyring(json, cborHex))]) {
+test("no private material leaks into any serialized form", () => {
+  const { json, cborHex, xml } = keyring4x4(M, "zeta");
+  for (const blob of [json, xml, JSON.stringify(deserializeKeyring(json, cborHex, xml))]) {
     expect(blob).not.toContain("nsec");
     expect(blob).not.toContain("privkey");
     expect(blob).not.toMatch(/BEGIN .*PRIVATE KEY/);
