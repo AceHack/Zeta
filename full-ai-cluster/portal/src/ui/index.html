@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zeta Portal</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><span class="logo">◆</span> Zeta Portal</div>
+      <div class="tenant">acme · <span class="muted">human + agents</span></div>
+    </header>
+    <div class="shell">
+      <nav class="sidenav">
+        <button class="nav active" data-view="resources">▦ Resources</button>
+        <button class="nav" data-view="catalog">＋ Create</button>
+        <button class="nav" data-view="needsme">⚑ Needs me <span id="needsme-badge" class="badge hidden">0</span></button>
+        <div class="nav-foot muted">AI-native · no-directives</div>
+      </nav>
+      <main id="main" class="content"><div class="loading">Loading…</div></main>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

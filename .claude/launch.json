@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "zeta-portal-demo",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "src/server.ts"],
+      "cwd": "full-ai-cluster/portal",
+      "env": { "PORTAL_DEMO": "1", "PORT": "8080" },
+      "port": 8080
+    }
+  ]
+}
