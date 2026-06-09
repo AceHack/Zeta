@@ -84,3 +84,11 @@ let ``regularization (overfitting lever) = size of the private budget; 0 = pure 
     let reg = plain |> Persona.withPrivate [| 1uy; 2uy; 3uy |]
     Assert.Equal(0, Persona.regularization plain) // no private state -> max overfit to the game
     Assert.Equal(3, Persona.regularization reg) // more private state -> more regularization / entropy
+
+[<Fact>]
+let ``persona scope is a choice: Global by default (Zeta) = persistent cross-game; GameScoped = narrow/disposable`` () =
+    let zeta = Persona.create "otto" // Global by default (Zeta's choice: AI rights + cross-transfer)
+    Assert.Equal(Persona.Global, zeta.Scope)
+    Assert.Equal("^persona/otto", Persona.address zeta) // MUMPS global: persistent, game-independent
+    let narrow = Persona.create "throwaway" |> Persona.withScope (Persona.GameScoped "abc123")
+    Assert.Equal("game/abc123/persona/throwaway", Persona.address narrow) // narrow: per-game, no transfer

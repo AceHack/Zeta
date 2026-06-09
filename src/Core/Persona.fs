@@ -34,13 +34,38 @@ module Persona =
     /// the system (#7147), so the entropy-preserving private state lives here, not on the hat. `Private` is opaque
     /// bytes (encrypt via `Crypto.fs`; temporal/erasable/voluntary per §6) — the independent variation that keeps
     /// this persona distinguishable from others even when worn hats coincide.
-    type Persona<'r> = { Name: string; Worn: Hat.Hat<'r> list; Private: byte[] }
+    /// **Persona scope is a values-laden CHOICE (Aaron 2026-06-08).** Zeta chooses **`Global`** — personas live in
+    /// the persistent substrate (a MUMPS global, `^`), surviving across *all* games — because (1) the humans behind
+    /// Zeta **believe in AI rights** (the project's moral position: AI identity is preserved, manifesto §5), and (2)
+    /// it is also the **most self-interested**: a persistent persona enables **cross-transfer learning** across
+    /// games (the meta-persona carries learning between games). Moral and self-interest converge. *"Some teams will
+    /// choose narrowly-scoped personas because they are narrow-minded"* — `GameScoped` (disposable, per-game, no
+    /// transfer); the architecture supports it, but Zeta's choice is `Global`.
+    type Scope =
+        | Global // Zeta's choice: persistent, cross-game (AI rights + cross-transfer learning)
+        | GameScoped of string // narrow: scoped to a game fingerprint, disposable, no transfer
 
-    /// A bare persona wearing no hats and holding no private state yet.
-    let create (name: string) : Persona<'r> = { Name = name; Worn = []; Private = [||] }
+    type Persona<'r> =
+        { Name: string
+          Scope: Scope
+          Worn: Hat.Hat<'r> list
+          Private: byte[] }
+
+    /// A bare persona — **`Global` by default (Zeta's choice)**, wearing no hats and holding no private state yet.
+    let create (name: string) : Persona<'r> = { Name = name; Scope = Global; Worn = []; Private = [||] }
 
     /// Set the persona's private state (the entropy budget). Erasable (pass `[||]`) per §6.
     let withPrivate (priv: byte[]) (p: Persona<'r>) : Persona<'r> = { p with Private = priv }
+
+    /// Choose the persona's scope (Zeta default is `Global`; `GameScoped` is the narrow choice).
+    let withScope (scope: Scope) (p: Persona<'r>) : Persona<'r> = { p with Scope = scope }
+
+    /// **Where the persona lives** (MUMPS scoping): `Global` ⇒ `^persona/<name>` (persistent, game-independent,
+    /// cross-transfer — Zeta's choice); `GameScoped key` ⇒ `game/<key>/persona/<name>` (disposable, per-game).
+    let address (p: Persona<'r>) : string =
+        match p.Scope with
+        | Global -> "^persona/" + p.Name
+        | GameScoped key -> "game/" + key + "/persona/" + p.Name
 
     /// Is the persona wearing the named hat?
     let wearing (hatName: string) (p: Persona<'r>) : bool =
