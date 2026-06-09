@@ -53,7 +53,7 @@ export function Create({ catalog }: { catalog: CatalogEntryVM[] }) {
         {catalog.map((bp) => {
           const Icon = catIcon(bp.category);
           return (
-            <Card key={bp.blueprint} className="card-hover flex flex-col p-5">
+            <Card key={bp.blueprint} className="flex flex-col p-5">
               <div className="flex items-start gap-3">
                 <div className="flex size-10 items-center justify-center rounded-lg border border-border bg-muted/50"><Icon className="size-5 text-muted-foreground" /></div>
                 <div className="min-w-0 flex-1">

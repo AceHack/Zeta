@@ -78,6 +78,8 @@ export interface Metrics {
   series: MetricPoint[];
 }
 export interface LogLine { ts: string; level: "info" | "warn" | "error" | "debug"; text: string }
+export interface Span { id: string; name: string; service: string; startMs: number; durationMs: number; status: "ok" | "error" }
+export interface Trace { traceId: string; rootName: string; startedAt: string; totalMs: number; status: "ok" | "error"; spans: Span[] }
 export interface K8sEvent { ts: string; type: "Normal" | "Warning"; reason: string; message: string }
 export interface FileNode { name: string; path: string; type: "file" | "dir"; size: number; modified: string }
 export interface ResourceConfig {
@@ -141,6 +143,7 @@ export const api = {
   dashboard: (r: string) => j<Dashboard>(`/api/resources/${enc(r)}/dashboard`),
   metrics: (r: string) => j<Metrics>(`/api/resources/${enc(r)}/metrics`),
   logs: (r: string) => j<{ lines: LogLine[] }>(`/api/resources/${enc(r)}/logs`).then((d) => d.lines),
+  traces: (r: string) => j<{ traces: Trace[] }>(`/api/resources/${enc(r)}/traces`).then((d) => d.traces),
   events: (r: string) => j<{ events: K8sEvent[] }>(`/api/resources/${enc(r)}/events`).then((d) => d.events),
   files: (r: string, path: string) => j<{ path: string; entries: FileNode[] }>(`/api/resources/${enc(r)}/files?path=${encodeURIComponent(path)}`),
   access: (r: string) => j<AccessInfo>(`/api/resources/${enc(r)}/access`),

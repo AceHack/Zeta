@@ -93,7 +93,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     }
 
     // ── management plane: /api/resources/:resource/* ───────────────────
-    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|dashboard|metrics|logs|events|files|access|config|lifecycle|exec)$/);
+    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|dashboard|metrics|logs|traces|events|files|access|config|lifecycle|exec)$/);
     if (mgmt) {
       if (!data.ops) return json({ error: "management ops not available on this backend" }, 405);
       const resource = decodeResource(mgmt[1]!);
@@ -104,6 +104,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
           case "dashboard": return json(await data.ops.dashboard(resource));
           case "metrics": return json(await data.ops.metrics(resource));
           case "logs": return json({ lines: await data.ops.logs(resource, { tail: Number(url.searchParams.get("tail")) || 200 }) });
+          case "traces": return json({ traces: await data.ops.traces(resource) });
           case "events": return json({ events: await data.ops.events(resource) });
           case "access": return json(await data.ops.access(resource));
           case "config": return json(await data.ops.config(resource));
@@ -179,9 +180,21 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
       // 1) record the human's message
       await data.appendEvent(resource, { id: b.by, kind: "human" }, { type: "message", text: b.text });
 
-      // 2) the persona responds — context is THIS resource only
-      const [cfg, info] = await Promise.all([data.ops.config(resource), data.ops.info(resource)]);
-      const r = respond(resource, b.text, { game: !!cfg.values.MAP || /sandbox|gmod|game/.test(resource), memory: cfg.memory, replicas: info.pods.length, phase: info.pods[0]?.phase ?? "Unknown" });
+      // 2) the persona responds — context is THIS resource only, incl. its logs/traces
+      const [cfg, info, logs, traces] = await Promise.all([
+        data.ops.config(resource),
+        data.ops.info(resource),
+        data.ops.logs(resource, { tail: 50 }),
+        data.ops.traces(resource),
+      ]);
+      const r = respond(resource, b.text, {
+        game: !!cfg.values.MAP || /sandbox|gmod|game/.test(resource),
+        memory: cfg.memory,
+        replicas: info.pods.length,
+        phase: info.pods[0]?.phase ?? "Unknown",
+        recentErrors: logs.filter((l) => l.level === "error" || l.level === "warn").map((l) => l.text),
+        slowTraces: traces.map((tr) => ({ name: tr.rootName, ms: tr.totalMs, status: tr.status })),
+      });
       await data.appendEvent(resource, { id: admin, kind: "persona" }, { type: "message", text: r.reply });
 
       // 3) if it proposed an op, run it through Policy — act (auto) or request (propose)

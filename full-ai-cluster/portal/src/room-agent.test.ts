@@ -46,6 +46,16 @@ describe("respond — intent + sandbox", () => {
     expect(res.op).toBeUndefined();
     expect(res.reply).toContain("friday-sandbox");
   });
+  test("analyze logs → reasons over the connected logs/traces, no op", () => {
+    const res = respond(r, "why does it keep crashing? analyze the logs", { ...game, recentErrors: ["OOM: srcds exceeded 6Gi memory limit, container killed"] });
+    expect(res.op).toBeUndefined();
+    expect(res.reply).toMatch(/OOM|memory ceiling|6Gi/);
+    expect(res.reply).toMatch(/more memory/); // suggests the gated fix
+  });
+  test("analyze logs with clean telemetry → reports healthy", () => {
+    const res = respond("acme/orders-db", "check the logs and traces for errors", { ...game, game: false, recentErrors: [], slowTraces: [] });
+    expect(res.reply).toMatch(/nothing abnormal|healthy/);
+  });
   test("the reply only ever names the given resource (sandbox)", () => {
     const res = respond("acme/orders-db", "restart it", { ...game, game: false });
     expect(res.reply).toContain("orders-db");

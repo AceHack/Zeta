@@ -38,6 +38,24 @@ export interface LogLine {
   text: string;
 }
 
+/** A distributed-trace span (for the Traces view + Room-AI reasoning). */
+export interface Span {
+  id: string;
+  name: string;
+  service: string;
+  startMs: number; // offset from trace start
+  durationMs: number;
+  status: "ok" | "error";
+}
+export interface Trace {
+  traceId: string;
+  rootName: string;
+  startedAt: string;
+  totalMs: number;
+  status: "ok" | "error";
+  spans: Span[];
+}
+
 export interface K8sEvent {
   ts: string;
   type: "Normal" | "Warning";
@@ -130,6 +148,8 @@ export interface ResourceOps {
   dashboard(resource: string): Promise<Dashboard>;
   metrics(resource: string): Promise<Metrics>;
   logs(resource: string, opts?: { tail?: number }): Promise<LogLine[]>;
+  /** Recent distributed traces (most recent first). */
+  traces(resource: string): Promise<Trace[]>;
   events(resource: string): Promise<K8sEvent[]>;
   files(resource: string, path: string): Promise<{ path: string; entries: FileNode[] }>;
   access(resource: string): Promise<AccessInfo>;

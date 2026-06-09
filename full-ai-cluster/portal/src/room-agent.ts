@@ -66,6 +66,10 @@ export interface ChatContext {
   memory: string; // current memory limit, e.g. "6Gi"
   replicas: number;
   phase: string;
+  /** Recent log lines (the log connector) — the agent reasons over THESE only. */
+  recentErrors?: string[];
+  /** Recent trace summaries (the trace connector). */
+  slowTraces?: Array<{ name: string; ms: number; status: string }>;
 }
 
 /** An operation the caller executes against THIS resource's ops. */
@@ -99,6 +103,20 @@ export function respond(resource: string, text: string, ctx: ChatContext): ChatR
     return { reply: `${name} is ${ctx.phase}, ${ctx.replicas} replica(s), memory limit ${ctx.memory}. Ask me to restart, scale, give it more memory, or change config — I can only act on this resource.` };
   if (/\b(help|what can you|commands?)\b/.test(t))
     return { reply: `I operate ${name} within its Policy and only this resource. Try: "restart it", "scale to 3", "give it more memory", ${ctx.game ? `"change the map to gm_construct", ` : ""}"stop it". Deleting data is human-only — use the Danger zone.` };
+
+  // ── observability: analyze logs / traces (the log/trace connector) ──
+  if (/\b(analyze|analyse|investigate|diagnose|look at|read|check)\b.*\b(log|logs|error|errors|trace|traces|crash|failure|why)\b|\bwhy.*(fail|crash|error|down|slow|restart)|what('?s| is) wrong\b/.test(t)) {
+    const errs = ctx.recentErrors ?? [];
+    const slow = (ctx.slowTraces ?? []).filter((s) => s.status === "error" || s.ms > 1000);
+    if (errs.length === 0 && slow.length === 0)
+      return { reply: `I pulled ${name}'s recent logs and traces — nothing abnormal: no errors in the log tail and no failing or slow spans. It looks healthy from the telemetry.` };
+    const oom = errs.find((e) => /OOM|out of memory|memory limit/i.test(e));
+    const lines: string[] = [`I read ${name}'s recent logs${slow.length ? " and traces" : ""}. Here's what stands out:`];
+    if (oom) lines.push(`• ${oom.trim()} — the container is hitting its ${ctx.memory} memory ceiling. The fix is more memory; say "give it more memory" and I'll raise it (it's budget-gated, so you'll approve the spend).`);
+    else if (errs[0]) lines.push(`• ${errs[0].trim()}`);
+    for (const s of slow.slice(0, 2)) lines.push(`• trace "${s.name}" took ${s.ms}ms${s.status === "error" ? " and errored" : ""} — worth a look.`);
+    return { reply: lines.join("\n") };
+  }
 
   // delete / destroy — forbidden (data), refused in words
   if (/\b(delete|destroy|wipe|remove|nuke)\b/.test(t))

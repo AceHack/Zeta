@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  ArrowLeft, Boxes, FolderTree, Gauge, ListTree, MessagesSquare,
-  Play, Power, RefreshCw, RotateCw, Settings2, Sliders, TerminalSquare, Trash2, TriangleAlert,
+  Boxes, CalendarClock, FolderTree, Gauge, Globe, ListTree, MessagesSquare, Plug,
+  Play, Power, RefreshCw, RotateCw, ScrollText, Settings2, Sliders, TerminalSquare, Trash2, TriangleAlert, Waypoints,
 } from "lucide-react";
 import {
   api, type K8sEvent, type Metrics, type PodInfo, type ResourceConfig, type ResourceVM,
@@ -16,20 +16,43 @@ import { RoomTimeline } from "@/components/RoomTimeline";
 import { Terminal } from "@/components/Terminal";
 import { FileExplorer } from "@/components/FileExplorer";
 import { ResourceDashboard } from "@/components/Dashboards";
+import { LogsView } from "@/components/LogsView";
+import { TracesView } from "@/components/TracesView";
+import { ConnectionsTab, RoutesTab, ScheduleTab } from "@/components/TypeTabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-type Tab = "overview" | "metrics" | "terminal" | "files" | "config" | "events" | "room" | "danger";
-const TABS: Array<{ id: Tab; label: string; icon: typeof Gauge }> = [
-  { id: "overview", label: "Overview", icon: Settings2 },
-  { id: "metrics", label: "Metrics", icon: Gauge },
-  { id: "terminal", label: "Terminal", icon: TerminalSquare },
-  { id: "files", label: "Files", icon: FolderTree },
-  { id: "config", label: "Config", icon: Sliders },
-  { id: "events", label: "Events", icon: ListTree },
-  { id: "room", label: "Room", icon: MessagesSquare },
-  { id: "danger", label: "Danger zone", icon: TriangleAlert },
-];
+type Tab = "overview" | "metrics" | "logs" | "traces" | "console" | "files" | "query" | "connections" | "routes" | "schedule" | "config" | "events" | "room" | "danger";
+type TabDef = { id: Tab; label: string; icon: typeof Gauge };
+
+const T: Record<string, TabDef> = {
+  overview: { id: "overview", label: "Overview", icon: Settings2 },
+  metrics: { id: "metrics", label: "Metrics", icon: Gauge },
+  logs: { id: "logs", label: "Logs", icon: ScrollText },
+  traces: { id: "traces", label: "Traces", icon: Waypoints },
+  console: { id: "console", label: "Console", icon: TerminalSquare },
+  files: { id: "files", label: "Files", icon: FolderTree },
+  query: { id: "query", label: "Query", icon: TerminalSquare },
+  connections: { id: "connections", label: "Connections", icon: Plug },
+  routes: { id: "routes", label: "Routes", icon: Globe },
+  schedule: { id: "schedule", label: "Schedule", icon: CalendarClock },
+  config: { id: "config", label: "Config", icon: Sliders },
+  events: { id: "events", label: "Events", icon: ListTree },
+  room: { id: "room", label: "Room", icon: MessagesSquare },
+  danger: { id: "danger", label: "Danger zone", icon: TriangleAlert },
+};
+
+/** Per-resource-type tab sets — a database has no Files/shell; a game has RCON+Files; etc. */
+function tabsFor(category: string): TabDef[] {
+  const common = [T.overview!, T.metrics!, T.logs!, T.traces!];
+  const tail = [T.config!, T.events!, T.room!, T.danger!];
+  switch (category) {
+    case "game": return [...common, T.console!, T.files!, ...tail];
+    case "database": return [...common, T.connections!, ...tail]; // no shell/files for a DB
+    case "web": return [...common, T.routes!, T.console!, ...tail];
+    default: return [...common, T.schedule!, T.console!, ...tail];
+  }
+}
 
 const fmtAge = (s: number) => (s >= 86400 ? `${Math.floor(s / 86400)}d` : s >= 3600 ? `${Math.floor(s / 3600)}h` : `${Math.floor(s / 60)}m`);
 
@@ -38,6 +61,7 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
   const [busy, setBusy] = useState<string | null>(null);
   const fqn = `${resource.namespace}/${resource.name}`;
   const Icon = catIcon(resource.category);
+  const tabs = tabsFor(resource.category);
 
   const act = async (label: string, pending: string, fn: () => Promise<{ message: string }>) => {
     setBusy(label);
@@ -51,67 +75,58 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
 
   return (
     <div className="flex h-full flex-col">
-      {/* header */}
-      <div className="mb-5">
-        <button onClick={onBack} className="mb-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="size-4" /> All resources
-        </button>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-xl border border-border bg-muted/50">
-            <Icon className="size-5 text-muted-foreground" />
-          </div>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">{resource.name}</h1>
-            <p className="text-sm text-muted-foreground">{resource.namespace} · {resource.blueprint}</p>
-          </div>
-          <HealthDot health={resource.health} label={resource.phase} className="ml-1" />
-          <div className="ml-auto flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("restart", "Restarting…", () => api.lifecycle(fqn, "restart"))}>
-              <RotateCw className={cn("size-3.5", busy === "restart" && "animate-spin")} /> Restart
-            </Button>
-            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("stop", "Stopping…", () => api.lifecycle(fqn, "stop"))}>
-              <Power className="size-3.5" /> Stop
-            </Button>
-            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("start", "Starting…", () => api.lifecycle(fqn, "start"))}>
-              <Play className="size-3.5" /> Start
-            </Button>
-          </div>
+      {/* header — flat, command-bar style */}
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <div className="flex size-9 items-center justify-center rounded-lg border border-border"><Icon className="size-[18px] text-muted-foreground" /></div>
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">{resource.name}</h1>
+          <p className="text-xs text-muted-foreground">{resource.namespace} · {resource.blueprint}</p>
+        </div>
+        <HealthDot health={resource.health} label={resource.phase} className="ml-1" />
+        <div className="ml-auto flex items-center gap-1.5">
+          <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("restart", "Restarting…", () => api.lifecycle(fqn, "restart"))}><RotateCw className={cn("size-3.5", busy === "restart" && "animate-spin")} /> Restart</Button>
+          <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("stop", "Stopping…", () => api.lifecycle(fqn, "stop"))}><Power className="size-3.5" /> Stop</Button>
+          <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("start", "Starting…", () => api.lifecycle(fqn, "start"))}><Play className="size-3.5" /> Start</Button>
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 gap-6">
-        {/* sub nav */}
-        <nav className="w-44 shrink-0 space-y-0.5">
-          {TABS.map((t) => {
-            const TabIcon = t.icon;
-            const active = tab === t.id;
-            const danger = t.id === "danger";
-            return (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className={cn(
-                  "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  active ? (danger ? "bg-destructive/15 text-destructive" : "bg-accent text-foreground") : cn("text-muted-foreground hover:bg-accent/50 hover:text-foreground", danger && "hover:text-destructive"),
-                )}
-              >
-                <TabIcon className="size-4" /> {t.label}
-              </button>
-            );
-          })}
-        </nav>
+      {/* horizontal tab bar — per resource type */}
+      <div className="mb-5 flex items-center gap-0.5 overflow-x-auto border-b border-border">
+        {tabs.map((t) => {
+          const TabIcon = t.icon;
+          const active = tab === t.id;
+          const danger = t.id === "danger";
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={cn(
+                "-mb-px flex items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-2 text-[13px] transition-colors",
+                active ? (danger ? "border-destructive text-destructive" : "border-foreground text-foreground") : cn("border-transparent text-muted-foreground hover:text-foreground", danger && "hover:text-destructive"),
+              )}
+            >
+              <TabIcon className="size-3.5" /> {t.label}
+            </button>
+          );
+        })}
+      </div>
 
-        {/* content */}
-        <div className="min-w-0 flex-1 overflow-y-auto pb-8">
-          {tab === "overview" && <Overview resource={resource} fqn={fqn} />}
-          {tab === "metrics" && <MetricsTab fqn={fqn} />}
-          {tab === "terminal" && <TerminalTab fqn={fqn} />}
-          {tab === "files" && <FileExplorer fqn={fqn} category={resource.category} />}
-          {tab === "config" && <ConfigTab fqn={fqn} onChanged={onChanged} />}
-          {tab === "events" && <EventsTab fqn={fqn} />}
-          {tab === "room" && <RoomTimeline resource={fqn} admin={resource.admin} />}
-          {tab === "danger" && <DangerTab fqn={fqn} name={resource.name} onDeleted={onBack} />}
-        </div>
+      {/* content */}
+      <div className="min-w-0 flex-1 overflow-y-auto pb-8">
+        {tab === "overview" && <Overview resource={resource} fqn={fqn} />}
+        {tab === "metrics" && <MetricsTab fqn={fqn} />}
+        {tab === "logs" && <LogsView fqn={fqn} admin={resource.admin} />}
+        {tab === "traces" && <TracesView fqn={fqn} />}
+        {tab === "console" && <TerminalTab fqn={fqn} />}
+        {tab === "query" && <TerminalTab fqn={fqn} />}
+        {tab === "files" && <FileExplorer fqn={fqn} category={resource.category} />}
+        {tab === "connections" && <ConnectionsTab fqn={fqn} />}
+        {tab === "routes" && <RoutesTab fqn={fqn} />}
+        {tab === "schedule" && <ScheduleTab fqn={fqn} />}
+        {tab === "config" && <ConfigTab fqn={fqn} onChanged={onChanged} />}
+        {tab === "events" && <EventsTab fqn={fqn} />}
+        {tab === "room" && <RoomTimeline resource={fqn} admin={resource.admin} />}
+        {tab === "danger" && <DangerTab fqn={fqn} name={resource.name} onDeleted={onBack} />}
       </div>
     </div>
   );

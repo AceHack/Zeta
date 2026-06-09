@@ -183,6 +183,27 @@ export class DemoOps implements ResourceOps {
     return lines.slice(-tail);
   }
 
+  async traces(resource: string): Promise<import("./ops.ts").Trace[]> {
+    const span = (id: string, name: string, service: string, startMs: number, durationMs: number, status: "ok" | "error" = "ok") => ({ id, name, service, startMs, durationMs, status });
+    if (DB(resource)) {
+      return [
+        { traceId: "a1f3", rootName: "POST /api/checkout", startedAt: "12:09:41", totalMs: 86, status: "ok", spans: [span("1", "POST /api/checkout", "web", 0, 86), span("2", "BEGIN", "postgres", 6, 2), span("3", "SELECT inventory", "postgres", 9, 18), span("4", "INSERT orders", "postgres", 28, 31), span("5", "COMMIT", "postgres", 60, 9)] },
+        { traceId: "b7c2", rootName: "GET /api/orders/:id", startedAt: "12:09:38", totalMs: 22, status: "ok", spans: [span("1", "GET /api/orders/:id", "web", 0, 22), span("2", "SELECT orders JOIN line_items", "postgres", 4, 15)] },
+      ];
+    }
+    if (!GAME(resource) && !DB(resource)) {
+      const crash = false;
+      return [
+        { traceId: "c9e1", rootName: "GET /", startedAt: "12:09:50", totalMs: 12, status: "ok", spans: [span("1", "GET /", "nginx", 0, 12), span("2", "static asset", "nginx", 2, 8)] },
+        { traceId: "d4a8", rootName: "POST /api/checkout", startedAt: "12:09:44", totalMs: crash ? 5012 : 142, status: crash ? "error" : "ok", spans: [span("1", "POST /api/checkout", "nginx", 0, 142), span("2", "upstream orders-db", "postgres", 20, 110, "ok")] },
+      ];
+    }
+    // game server — a join/spawn trace
+    return [
+      { traceId: "e2b9", rootName: "player connect", startedAt: "12:04:11", totalMs: 240, status: "ok", spans: [span("1", "player connect", "srcds", 0, 240), span("2", "steam auth", "steam", 10, 120), span("3", "load player addons", "lua", 140, 90)] },
+    ];
+  }
+
   async events(resource: string): Promise<K8sEvent[]> {
     const crashing = resource.includes("sandbox");
     const base: K8sEvent[] = [
