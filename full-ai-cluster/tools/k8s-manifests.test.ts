@@ -11,7 +11,7 @@
 
 import { test, expect, describe } from "bun:test";
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 
 const REPO = join(import.meta.dir, "..", ".."); // .../full-ai-cluster/..  (repo root)
 const K8S = join(REPO, "full-ai-cluster", "k8s");
@@ -90,6 +90,45 @@ describe("ArgoCD Applications reference paths/files that exist", () => {
       }
     }
     expect(problems).toEqual([]);
+  });
+});
+
+describe("platform app: generic Blueprint/Deployable engine wiring", () => {
+  const platform = join(K8S, "applications", "platform");
+  const read = (p: string) => readFileSync(join(platform, p), "utf8");
+
+  test("the platform Application's include list references files that all exist", () => {
+    const app = read("Application.yaml");
+    const incM = app.match(/include:\s*'?\{([^}]+)\}'?/);
+    expect(incM).not.toBeNull();
+    const missing: string[] = [];
+    for (const base of incM![1]!.split(",").map((s) => s.trim())) {
+      const file = join(platform, base.endsWith(".yaml") ? base : `${base}.yaml`);
+      if (!existsSync(file)) missing.push(base);
+    }
+    expect(missing).toEqual([]);
+  });
+
+  test("Blueprint + Deployable CRDs register the generic kinds", () => {
+    expect(read("crd-blueprint.yaml")).toContain("kind: Blueprint");
+    expect(read("crd-blueprint.yaml")).toContain("blueprints.platform.zeta.io");
+    expect(read("crd-deployable.yaml")).toContain("kind: Deployable");
+    expect(read("crd-deployable.yaml")).toContain("deployables.platform.zeta.io");
+  });
+
+  test("starter Blueprint library covers game, web, database, and app categories", () => {
+    const lib = read("blueprints.yaml");
+    for (const name of ["name: gmod", "name: web", "name: postgres", "name: worker"]) expect(lib).toContain(name);
+    for (const cat of ["category: game", "category: web", "category: database", "category: app"]) expect(lib).toContain(cat);
+  });
+
+  test("controller ships a ServiceAccount, scoped ClusterRole, binding, and Deployment", () => {
+    const c = read("controller.yaml");
+    for (const kind of ["kind: ServiceAccount", "kind: ClusterRole", "kind: ClusterRoleBinding", "kind: Deployment"]) {
+      expect(c).toContain(kind);
+    }
+    expect(c).toContain("deployables/status"); // status patch permission
+    expect(c).not.toContain('resources: ["*"]'); // least-privilege, no wildcard
   });
 });
 

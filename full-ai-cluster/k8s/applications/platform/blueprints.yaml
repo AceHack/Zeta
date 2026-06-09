@@ -1,0 +1,92 @@
+# Starter Blueprint LIBRARY — pure DATA. Each entry is a new deployable "type"
+# the platform supports, added with ZERO new controller code. This is the
+# concrete proof of "super generic but configurable and buildable on top of":
+# a game server, a web app, and a database are all just Blueprints the same
+# engine renders. Add more by appending YAML here (or letting tenants create
+# their own Blueprint CRs).
+---
+# Garry's Mod — the game-server base test. Stateful (world + addons persist),
+# UDP game port exposed on the LAN, an SFTP sidecar for the FTP-root workflow,
+# a one-time steamcmd install. A Deployable referencing this needs only a name.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: gmod
+  namespace: zeta-platform
+spec:
+  category: game
+  stateful: true
+  image: ghcr.io/ich777/steamcmd:gmod
+  install: "/opt/steamcmd/steamcmd.sh +force_install_dir /data +login anonymous +app_update 4020 validate +quit"
+  command: ["/data/srcds_run"]
+  args: ["-game", "garrysmod", "-port", "${PORT}", "+maxplayers", "${MAXPLAYERS}", "+gamemode", "${GAMEMODE}", "+map", "${MAP}"]
+  env:
+    SRCDS_PORT: "${PORT}"
+  ports:
+    - { name: game, port: 27015, protocol: UDP }
+  storage: { size: "20Gi", mountPath: /data }
+  resources: { cpu: "2", memory: "4Gi" }
+  variables:
+    - { name: PORT, default: "27015", description: "UDP game port" }
+    - { name: MAP, default: "gm_construct" }
+    - { name: GAMEMODE, default: "sandbox" }
+    - { name: MAXPLAYERS, default: "16" }
+  sidecars:
+    - { name: sftp, image: atmoz/sftp:alpine, mountDataAt: /home/zeta/data }
+  defaultExpose: lan
+---
+# Generic web app — stateless, single HTTP port, routable on a public host via
+# the Cilium Gateway + cert-manager TLS. The "host my site/UI" type.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: web
+  namespace: zeta-platform
+spec:
+  category: web
+  stateful: false
+  image: nginx:1.27-alpine
+  ports:
+    - { name: http, port: 8080, web: true }
+  resources: { cpu: "250m", memory: "256Mi" }
+  defaultExpose: public
+---
+# PostgreSQL — stateful, TCP, persistent storage, cluster-internal only.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: postgres
+  namespace: zeta-platform
+spec:
+  category: database
+  stateful: true
+  image: postgres:16-alpine
+  env:
+    POSTGRES_DB: "${DB}"
+    POSTGRES_USER: "${USER}"
+    POSTGRES_PASSWORD: "${PASSWORD}"
+    PGDATA: /var/lib/postgresql/data/pgdata
+  ports:
+    - { name: sql, port: 5432, protocol: TCP }
+  storage: { size: "20Gi", mountPath: /var/lib/postgresql/data }
+  resources: { cpu: "1", memory: "1Gi" }
+  variables:
+    - { name: DB, default: "app" }
+    - { name: USER, default: "app" }
+    - { name: PASSWORD, default: "change-me" }
+  defaultExpose: cluster
+---
+# Plain pod / worker — stateless, no ports, no exposure. The "just run my
+# container" type (batch jobs, background workers, agents).
+apiVersion: platform.zeta.io/v1alpha1
+kind: Blueprint
+metadata:
+  name: worker
+  namespace: zeta-platform
+spec:
+  category: app
+  stateful: false
+  image: busybox:1.36
+  command: ["/bin/sh", "-c", "echo worker running; sleep infinity"]
+  resources: { cpu: "100m", memory: "128Mi" }
+  defaultExpose: none

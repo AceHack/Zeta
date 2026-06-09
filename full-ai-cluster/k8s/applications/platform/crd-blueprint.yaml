@@ -1,0 +1,100 @@
+# Blueprint — a reusable, declarative run-recipe (image, install, startup,
+# ports, variables, storage, sidecars, web). The Pterodactyl-"egg" idea
+# generalized to ANY deployable: game servers, app pods, databases, web/UI
+# hosts. New deployable TYPES are added as Blueprint DATA, never new code — the
+# generic engine (platform-controller renderDeployable) turns a Blueprint + a
+# Deployable instance into concrete Kubernetes objects. See blueprint.ts.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: blueprints.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Namespaced
+  names:
+    kind: Blueprint
+    plural: blueprints
+    singular: blueprint
+    shortNames: [bp]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [image]
+              properties:
+                category: { type: string, description: "game | app | database | web | other — for portal grouping only" }
+                stateful: { type: boolean, description: "StatefulSet (stable id + per-replica volume) vs Deployment; defaults true when storage is set" }
+                image: { type: string }
+                install: { type: string, description: "optional one-time install script (runs as an initContainer)" }
+                command: { type: array, items: { type: string } }
+                args: { type: array, items: { type: string }, description: "templated with ${VAR}" }
+                env:
+                  type: object
+                  additionalProperties: { type: string }
+                  description: "templated with ${VAR}"
+                ports:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, port]
+                    properties:
+                      name: { type: string }
+                      port: { type: integer }
+                      protocol: { type: string, enum: [TCP, UDP], default: TCP }
+                      web: { type: boolean, description: "serves HTTP; eligible for public host routing" }
+                storage:
+                  type: object
+                  required: [size, mountPath]
+                  properties:
+                    size: { type: string }
+                    mountPath: { type: string }
+                resources:
+                  type: object
+                  properties:
+                    cpu: { type: string }
+                    memory: { type: string }
+                variables:
+                  type: array
+                  items:
+                    type: object
+                    required: [name]
+                    properties:
+                      name: { type: string }
+                      default: { type: string }
+                      description: { type: string }
+                sidecars:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, image]
+                    properties:
+                      name: { type: string }
+                      image: { type: string }
+                      command: { type: array, items: { type: string } }
+                      args: { type: array, items: { type: string } }
+                      ports:
+                        type: array
+                        items:
+                          type: object
+                          required: [name, port]
+                          properties:
+                            name: { type: string }
+                            port: { type: integer }
+                            protocol: { type: string, enum: [TCP, UDP], default: TCP }
+                      mountDataAt: { type: string, description: "mount the shared data volume here (e.g. an SFTP sidecar)" }
+                defaultExpose: { type: string, enum: [none, cluster, lan, public], default: none }
+      additionalPrinterColumns:
+        - { name: Category, type: string, jsonPath: ".spec.category" }
+        - { name: Image, type: string, jsonPath: ".spec.image" }
+        - { name: Stateful, type: boolean, jsonPath: ".spec.stateful" }
+        - { name: Expose, type: string, jsonPath: ".spec.defaultExpose" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }

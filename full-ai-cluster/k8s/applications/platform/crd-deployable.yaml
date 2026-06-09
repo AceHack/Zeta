@@ -1,0 +1,68 @@
+# Deployable — an INSTANCE of a Blueprint: a reference to a Blueprint by name +
+# variable values + sizing + exposure + (optional) public host. This is the one
+# generic resource a user (or agent) creates to run anything. The controller
+# resolves the named Blueprint and renders concrete Kubernetes objects.
+#
+# Typed facades (GameServer/App/WebApp) stay as ergonomic sugar; they compile
+# down to the same engine. Deployable is the generic substrate.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: deployables.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Namespaced
+  names:
+    kind: Deployable
+    plural: deployables
+    singular: deployable
+    shortNames: [dep]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [blueprint]
+              properties:
+                blueprint: { type: string, description: "name of the Blueprint to render (same namespace or a library blueprint)" }
+                values:
+                  type: object
+                  additionalProperties: { type: string }
+                  description: "variable values; override the blueprint defaults"
+                replicas: { type: integer, minimum: 0 }
+                size:
+                  type: object
+                  properties:
+                    cpu: { type: string }
+                    memory: { type: string }
+                    storage: { type: string }
+                expose: { type: string, enum: [none, cluster, lan, public], description: "override the blueprint defaultExpose" }
+                host: { type: string, description: "public hostname for web routing (web port + expose=public)" }
+                ai:
+                  type: object
+                  description: "AI-native operation — a persona watches + operates this resource within a Policy, with a collaboration Room. See COLLABORATION-MODEL.md."
+                  properties:
+                    admin: { type: string, default: otto }
+                    policy: { type: string, default: default }
+                    room: { type: string, enum: [enabled, disabled], default: enabled }
+                  default: {}
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - { name: Blueprint, type: string, jsonPath: ".spec.blueprint" }
+        - { name: Expose, type: string, jsonPath: ".spec.expose" }
+        - { name: Host, type: string, jsonPath: ".spec.host" }
+        - { name: Admin, type: string, jsonPath: ".spec.ai.admin" }
+        - { name: Phase, type: string, jsonPath: ".status.phase" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }

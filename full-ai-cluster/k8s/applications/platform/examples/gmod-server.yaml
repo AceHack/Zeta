@@ -1,0 +1,46 @@
+# Example: spin up a Garry's Mod server. This is ALL a user (or an agent) writes
+# — a name, the blueprint, and any variable overrides. The controller resolves
+# the `gmod` Blueprint and renders the StatefulSet + LoadBalancer Service + PVC +
+# SFTP sidecar. NOT applied by Argo (it lives under examples/); apply by hand:
+#   kubectl apply -f gmod-server.yaml
+apiVersion: platform.zeta.io/v1alpha1
+kind: Deployable
+metadata:
+  name: friday-night-sandbox
+  namespace: zeta-platform
+spec:
+  blueprint: gmod
+  values:
+    MAP: gm_flatgrass
+    MAXPLAYERS: "32"
+  size:
+    storage: "40Gi"
+  expose: lan
+  ai:
+    admin: otto
+    policy: default
+    room: enabled
+---
+# Example: a public web app on a hostname (Certificate + HTTPRoute auto-rendered).
+apiVersion: platform.zeta.io/v1alpha1
+kind: Deployable
+metadata:
+  name: landing
+  namespace: zeta-platform
+spec:
+  blueprint: web
+  host: demo.zeta.example.com
+  replicas: 2
+  expose: public
+---
+# Example: a cluster-internal Postgres for an app to use.
+apiVersion: platform.zeta.io/v1alpha1
+kind: Deployable
+metadata:
+  name: orders-db
+  namespace: zeta-platform
+spec:
+  blueprint: postgres
+  values:
+    DB: orders
+    USER: orders

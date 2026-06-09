@@ -1,0 +1,17 @@
+{
+  "name": "zeta-platform-controller",
+  "version": "0.1.0",
+  "description": "Generic data-driven deployment engine for the Zeta platform: reconciles Deployable CRs against Blueprint run-recipes into concrete Kubernetes objects.",
+  "type": "module",
+  "private": true,
+  "module": "src/controller.ts",
+  "scripts": {
+    "start": "bun run src/controller.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}

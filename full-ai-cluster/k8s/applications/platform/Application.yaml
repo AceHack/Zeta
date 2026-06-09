@@ -1,13 +1,16 @@
-# Zeta platform — the base resource vocabulary the portal + agents operate on:
-#   GameServer (game servers) · App (regular k8s app pods) · WebApp (UI app hosts)
-# plus Policy (agent scope), with AI woven into every type by design (the `ai`
+# Zeta platform — the base resource vocabulary the portal + agents operate on.
+# The GENERIC core: Blueprint (a declarative run-recipe — DATA) + Deployable (an
+# instance). One engine (platform-controller) renders any Blueprint into concrete
+# Kubernetes objects, so new deployable TYPES are added as data, not code. The
+# typed facades GameServer/App/WebApp stay as ergonomic sugar over the same core.
+# Plus Policy (agent scope), with AI woven into every type by design (the `ai`
 # block: a persona operates each resource within a Policy, with a collaboration
 # Room). See PLATFORM-ARCHITECTURE.md + COLLABORATION-MODEL.md.
 #
-# This installs the CRDs (the contract) + the default Policy. The controllers /
-# agent operating-loop that reconcile these CRs, and the portal UI that renders
-# them, are the next builds (COLLABORATION-MODEL.md §10). Headlamp already shows
-# them as soon as the CRDs register.
+# This installs the CRDs (the contract), a starter Blueprint library (gmod, web,
+# postgres, worker), the default Policy, and the reconcile controller. The portal
+# UI that renders these is a later build (COLLABORATION-MODEL.md §10). Headlamp
+# shows them as soon as the CRDs register.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -23,7 +26,7 @@ spec:
     targetRevision: main
     path: full-ai-cluster/k8s/applications/platform
     directory:
-      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,policy-default}.yaml'
+      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,crd-blueprint,crd-deployable,policy-default,blueprints,controller}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-platform
