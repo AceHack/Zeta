@@ -16,6 +16,15 @@ namespace Zeta.Vocab
 /// S=4 PR-box). So an audition is a synchronized, coincidence-staged performance: the common ZetaId seed
 /// is the conductor, the coincidence generator stages the timing, Rx carries it. (Peel: S=4 = PR-box /
 /// superdeterministic shared-cause, not physical entanglement.)
+///
+/// **The live stack (Aaron 2026-06-09):** streamed **live via Rx** → **broadcast via Reticulum** →
+/// watched **live on LLMTV** → **live over DBSP** (the Z-set delta substrate) → **recorded via
+/// DynamicValue + Bonsai** (DynamicValue = the soft recorded state; Bonsai = the serialized
+/// expression-tree/closure = the recorded performance as a self-evolving saga) → in a **YinYang
+/// partnership** (`Zeta.Core.YinYang` — live↔recorded / what-acts↔what-remains / stream↔state, the
+/// dual) → **with test as the governance** (prod=test; the test framework governs the performance).
+/// So ZetaIdol is a live, broadcast, recorded, governed performance: Rx streams it, Reticulum carries
+/// it, LLMTV shows it, DBSP runs it, DynamicValue+Bonsai record it, YinYang partners it, test governs it.
 
 /// The outcome of an audition.
 [<RequireQualifiedAccess>]
