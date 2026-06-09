@@ -1,4 +1,4 @@
-namespace Zeta.Vocab
+namespace Zeta.Core
 
 /// Finalizer framework — the prod=test engine (Aaron 2026-06-09, shadow*; Max agrees on temperature).
 /// A bounded tick runs; its FINALIZER decides the end-of-tick action: scale up/down (by TEMPERATURE),
@@ -6,8 +6,8 @@ namespace Zeta.Vocab
 /// stop. Choosable (each test picks an IFinalizer); the default reads metrics (uncertainty-Δ) +
 /// temperature and auto-scales toward the warm middle. Bounded (0-unbounded; the budget caps it;
 /// converges via Stop — not a fork-bomb). Interfaces + currying, no classes (treaty-room governance).
-/// Temperature poles tie vocab/temperatures/ (cold/warm/hot). DST (replayable). [Isolated project;
-/// real home = src/Core when wired.]
+/// Temperature poles tie vocab/temperatures/ (cold/warm/hot). DST (replayable). 
+/// 
 
 /// The result of a bounded tick — the metrics the finalizer reads (metrics = test history).
 type TickResult =

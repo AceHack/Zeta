@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Finalizer.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Collation.fs" />
     <Compile Include="Predicate.fs" />

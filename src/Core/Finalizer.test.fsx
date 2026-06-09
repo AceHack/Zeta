@@ -1,7 +1,7 @@
 // Finalizer framework test — proves the prod=test engine: decide (temperature scaling) + run
 // (the bounded self-scaling loop converges + terminates; not a fork-bomb). Run: dotnet fsi Finalizer.test.fsx
 #load "Finalizer.fs"
-open Zeta.Vocab
+open Zeta.Core
 
 let mutable failed = 0
 let check name cond = if cond then printfn "  ok: %s" name else (failed <- failed + 1; eprintfn "  FAIL: %s" name)
