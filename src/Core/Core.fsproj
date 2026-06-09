@@ -224,6 +224,7 @@
     <Compile Include="Hat.fs" />
     <Compile Include="Persona.fs" />
     <Compile Include="Diversity.fs" />
+    <Compile Include="PrivacyEconomy.fs" />
     <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
