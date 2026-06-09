@@ -1,0 +1,5 @@
+# Ignore EVERYTHING in this dir except the docs — the test-infra SSH keypair is
+# generated locally / per-CI-run and MUST NOT be committed (private key never in git).
+*
+!.gitignore
+!README.md
