@@ -72,6 +72,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "fuse-overlayfs": "Linux rootless overlay storage driver; Windows podman uses WSL2's VM storage",
   opam: "OCaml package manager; only needed on Unix to build tlapm from source. Windows tlapm installs via prebuilt MSI/zip.",
   z3: "SMT solver; on Windows, Z3 is either scoop-installed or used via JS z3-solver npm package.",
+  "r-base":
+    "R statistical runtime (charting/grammar-of-graphics lens-finder); covered on Windows by the `r` manifest line (scoop r / winget RProject.R / choco R.Project). apt names the package r-base; brew + scoop name it r.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {

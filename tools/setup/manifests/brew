@@ -63,3 +63,17 @@ podman
 # idempotent (brew skips if present). The Microsoft.Z3 NuGet is deliberately NOT used (no
 # osx-arm64 native) — the CLI is the real dependency.
 z3
+
+# R statistical runtime — charting / grammar-of-graphics lens-finder family (Aaron 2026-06-08:
+# "the patterns in R are timeless… scatter plots… to find solid ground over memory space").
+# Pin per dep-pin-search-first (WebSearch 2026-06-08): brew formula `r`, GPL-2; brew default
+# version; idempotent (brew skips if present). Symmetric with apt `r-base` + windows `r`.
+r
+
+# tectonic — lean single-binary LaTeX engine (Leslie Lamport's LaTeX on a self-contained XeTeX;
+# Aaron 2026-06-08 "pull in Lamport's LaTeX"). COST-AWARE: a few-MB binary that fetches packages
+# on demand from a bundle — NOT texlive-full's gigabytes on every runner/devcontainer. Math/typeset
+# rendering + LaTeX-source as an LLM-readable math representation. Pin per dep-pin-search-first
+# (WebSearch 2026-06-08): brew formula `tectonic`, MIT; idempotent. Symmetric with windows
+# `tectonic` (scoop main). Linux: best-effort gap — see the NOTE in manifests/apt.
+tectonic

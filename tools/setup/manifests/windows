@@ -49,3 +49,14 @@ ollama    winget=Ollama.Ollama    choco=ollama    optional
 # B-0964: docker = Mac/Win default; podman preferred on the Linux cluster).
 # Both-runtimes-on-Windows shield coverage tracked in B-0968.
 podman    winget=RedHat.Podman    choco=podman-cli
+
+# R statistical runtime — charting / grammar-of-graphics lens-finder family (Aaron 2026-06-08;
+# symmetric with apt `r-base` + brew `r`). Pins per dep-pin-search-first (WebSearch 2026-06-08):
+# scoop `r` | winget `RProject.R` | choco `R.Project` (canonical casing). GPL-2.
+r         winget=RProject.R    choco=R.Project
+
+# tectonic — lean single-binary LaTeX engine (Lamport's LaTeX; cost-aware vs texlive-full; Aaron
+# 2026-06-08). Symmetric with brew `tectonic`. Pin per dep-pin-search-first (WebSearch 2026-06-08):
+# scoop main `tectonic` (winget has NO official package — issue #976; choco unverified — so rely on
+# scoop, the resolver-primary). MIT. `optional` (best-effort): network-bundle fetch on first run.
+tectonic    optional

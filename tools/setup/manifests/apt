@@ -67,3 +67,18 @@ fuse-overlayfs  # rootless overlay storage driver
 # closes B-1009. Also the SMT backend TLAPS shells out to (rung-3). Unpinned (apt default)
 # per dep-pin-search-first-authority; idempotent.
 z3
+
+# R statistical runtime — charting / grammar-of-graphics lens-finder family (Aaron 2026-06-08:
+# "the patterns in R are timeless… scatter plots… to find solid ground over memory space").
+# Renders data-viz lenses of the state/memory field (ASCII-rendered for the LLM-TV). Pin per
+# dep-pin-search-first (WebSearch 2026-06-08): Ubuntu 24.04 noble `r-base` (universe), GPL-2;
+# idempotent. Windows carries it via the `r` line (symmetry exception r-base→r in manifest test).
+r-base
+
+# NOTE — tectonic (lean single-binary LaTeX engine; Lamport's LaTeX, cost-aware vs texlive-full's
+# GBs) is declared in manifests/brew + manifests/windows where it is a clean package. It is NOT in
+# Ubuntu apt (WebSearch 2026-06-08: absent from all noble components), and its official drop-sh
+# installer drops the binary into CWD (not PATH), so it does NOT fit the one-liner-tools
+# download-then-exec shape cleanly. Linux tectonic install is therefore a BEST-EFFORT GAP pending an
+# install-graph decision (`cargo install tectonic`, or a GitHub-release extraction onto PATH) —
+# Dejan/devops call (mirrors the kiro-cli Linux gap precedent in manifests/one-liner-tools).
