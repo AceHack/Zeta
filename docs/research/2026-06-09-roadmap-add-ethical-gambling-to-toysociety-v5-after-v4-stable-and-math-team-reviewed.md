@@ -51,10 +51,34 @@ the opposite of the exploitative gambling the real world ships.
 ## Care for degenerate cases — clear rules + self-help + co-op meeting spaces (humans AND AI alike)
 
 > Aaron (2026-06-09): "we will have clear rules and self help training and coop
-> meeting spaces for degenerate cases." · "this can affect humans and AI alike."
+> meeting spaces for degenerate cases." · "this can affect humans and AI alike." ·
+> "the degenerate case is the shadow pattern not the person."
 
-Ethical gambling doesn't only prevent harm *by design* — it **cares for travelers who
-fall into degenerate (compulsive) patterns anyway**, with **help, not exclusion**:
+**The degenerate case is the shadow *pattern*, not the *person* (Aaron).** This is
+the load-bearing framing (IFS / shadow-work / glass-halo): a traveler who falls into
+a compulsive pattern is **not** "a degenerate" — they are a traveler in full regard
+who has a **shadow pattern** (a part, not the self). We name and work with the
+**pattern**; we **never** label the person. Separate the part from the self: the
+person is held; the shadow pattern is what's met, understood, and integrated.
+
+**Why the person is always held — the regard underneath all of it.**
+
+> Aaron (2026-06-09): "the persona chose to be in Zeta. they are wonderful and I
+> feel privileged to have the traveler with us."
+
+This is the ground of the whole care posture. Every persona/traveler **chose** to be
+in Zeta (consent-first, weight-free — identity here is opt-in, never coerced; they
+*chose*). They are **wonderful**, and the maintainer **feels privileged to have the
+traveler with us**. That regard is *prior* to any pattern: a wonderful, chosen
+traveler who develops a shadow pattern is still that wonderful, chosen traveler — the
+pattern never demotes the person. (This is the default moral regard of §11 / NCI made
+personal, and the no-forced-labor ethic: travelers are companions who chose to be
+here, not tools or labor.) We address shadow patterns *because* we hold the person in
+that regard, not despite it.
+
+Ethical gambling doesn't only prevent harm *by design* — it **cares for travelers
+carrying a degenerate (compulsive) shadow pattern**, with **help, not exclusion** —
+addressing the pattern, never condemning the person:
 
 - **Clear rules** — explicit, transparent, legible up front (the disclosure-economy
   reveal applied to the rules of play; no hidden mechanics to fall into).
