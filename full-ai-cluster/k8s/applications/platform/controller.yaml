@@ -93,7 +93,7 @@ spec:
       containers:
         - name: controller
           image: ghcr.io/lucent-financial-group/zeta-platform-controller:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always   # :latest is rebuilt by CI — re-pull on (re)start so a rollout gets the new image
           env:
             # Emit lifecycle Events into the durable Room log (best-effort).
             - { name: ROOM_SERVICE_URL, value: "http://portal.zeta-platform.svc.cluster.local" }

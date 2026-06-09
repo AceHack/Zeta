@@ -87,7 +87,7 @@ spec:
       containers:
         - name: portal
           image: ghcr.io/lucent-financial-group/zeta-portal:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always   # :latest is rebuilt by CI — re-pull on (re)start so a rollout gets the new image
           ports:
             - { name: http, containerPort: 8080 }
           env:

@@ -1,0 +1,159 @@
+# .github/workflows/build-platform-images.yml
+#
+# Builds + publishes the two platform container images the cluster pulls:
+#   - ghcr.io/lucent-financial-group/zeta-portal              (full-ai-cluster/portal)
+#   - ghcr.io/lucent-financial-group/zeta-platform-controller (full-ai-cluster/platform-controller)
+#
+# WHY this exists: the platform manifests
+# (full-ai-cluster/k8s/applications/platform/{portal,controller}.yaml) pin
+# `:latest` images, but NOTHING built them — so a fresh cluster had no image to
+# pull. This workflow closes that gap: push to main rebuilds both `:latest` (and
+# an immutable `:sha-<commit>` tag), so ArgoCD-deployed pods get the live code on
+# their next rollout. The pods set `imagePullPolicy: Always`, so a
+# `kubectl rollout restart` (or the portal's own restart button) re-pulls.
+#
+# Discipline mirrors build-ai-cluster-iso.yml:
+#   - Runner pinned to ubuntu-24.04 (not -latest)
+#   - Third-party actions SHA-pinned with trailing # vX.Y.Z comments
+#   - permissions: contents: read at workflow level; elevated perms job-scoped
+#   - Concurrency: workflow-scoped, cancel-in-progress only for PRs
+#   - No github.event.* values interpolated into run: lines
+#   - Minimal third-party actions: only actions/checkout + cosign-installer
+#     (both already vetted+pinned in build-ai-cluster-iso.yml); GHCR auth +
+#     build + push use the runner's pre-installed Docker via bare `docker`
+#     commands (nothing attacker-controllable reaches a shell).
+#
+# On PR (no push): build both images to validate the Dockerfiles, but do NOT
+# push (no registry write from untrusted forks). On push to main +
+# workflow_dispatch: build, push, and cosign-sign by digest.
+
+name: build-platform-images
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'full-ai-cluster/portal/**'
+      - 'full-ai-cluster/platform-controller/**'
+      - '.github/workflows/build-platform-images.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'full-ai-cluster/portal/**'
+      - 'full-ai-cluster/platform-controller/**'
+      - '.github/workflows/build-platform-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-platform-images-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: build-${{ matrix.image }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write   # push to GHCR (ghcr.io/<owner>/...)
+      # cosign keyless OIDC — Fulcio mints a short-lived cert from the
+      # GitHub-issued OIDC token; Rekor records the signature. Job-scoped
+      # (not workflow-wide) to minimise blast radius. Same model + caveats as
+      # build-ai-cluster-iso.yml's signing job.
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: zeta-portal
+            context: full-ai-cluster/portal
+          - image: zeta-platform-controller
+            context: full-ai-cluster/platform-controller
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      # Compute the lowercased registry path + tags here (no github.event.*
+      # interpolation; github.repository_owner is the trusted org name). GHCR
+      # requires a lowercase path; the org is already lowercase but we fold
+      # defensively so a future rename can't silently break the push.
+      - name: Compute image ref + tags
+        id: meta
+        env:
+          OWNER: ${{ github.repository_owner }}
+          IMAGE: ${{ matrix.image }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          owner_lc=$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')
+          ref="ghcr.io/${owner_lc}/${IMAGE}"
+          short="${SHA:0:12}"
+          {
+            echo "ref=${ref}"
+            echo "tag_sha=${ref}:sha-${short}"
+            echo "tag_latest=${ref}:latest"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build image
+        env:
+          CONTEXT: ${{ matrix.context }}
+          TAG_SHA: ${{ steps.meta.outputs.tag_sha }}
+          TAG_LATEST: ${{ steps.meta.outputs.tag_latest }}
+        run: |
+          set -euo pipefail
+          docker build \
+            --tag "$TAG_SHA" \
+            --tag "$TAG_LATEST" \
+            --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \
+            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            "$CONTEXT"
+
+      # Push + sign only when this is a trusted in-repo run (push to main or
+      # manual dispatch). PR builds from forks must not get registry write.
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+
+      - name: Push image
+        if: github.event_name != 'pull_request'
+        id: push
+        env:
+          TAG_SHA: ${{ steps.meta.outputs.tag_sha }}
+          TAG_LATEST: ${{ steps.meta.outputs.tag_latest }}
+          REF: ${{ steps.meta.outputs.ref }}
+        run: |
+          set -euo pipefail
+          docker push "$TAG_SHA"
+          docker push "$TAG_LATEST"
+          # Resolve the pushed manifest digest for immutable cosign signing.
+          digest=$(docker inspect --format '{{ index .RepoDigests 0 }}' "$TAG_SHA" | cut -d@ -f2)
+          echo "digest=${REF}@${digest}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Published \`${TAG_SHA##*/}\`"
+            echo ""
+            echo "| Tag | Value |"
+            echo "|---|---|"
+            echo "| sha tag | \`${TAG_SHA}\` |"
+            echo "| latest  | \`${TAG_LATEST}\` |"
+            echo "| digest  | \`${REF}@${digest}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign image (keyless OIDC + Fulcio + Rekor)
+        if: github.event_name != 'pull_request'
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: |
+          set -euo pipefail
+          # Sign the immutable digest (not a mutable tag). --yes: non-interactive CI.
+          cosign sign --yes "$DIGEST"
