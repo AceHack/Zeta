@@ -93,7 +93,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     }
 
     // ── management plane: /api/resources/:resource/* ───────────────────
-    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|metrics|logs|events|files|access|config|lifecycle|exec)$/);
+    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|dashboard|metrics|logs|events|files|access|config|lifecycle|exec)$/);
     if (mgmt) {
       if (!data.ops) return json({ error: "management ops not available on this backend" }, 405);
       const resource = decodeResource(mgmt[1]!);
@@ -101,6 +101,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
       if (req.method === "GET") {
         switch (op) {
           case "info": return json(await data.ops.info(resource));
+          case "dashboard": return json(await data.ops.dashboard(resource));
           case "metrics": return json(await data.ops.metrics(resource));
           case "logs": return json({ lines: await data.ops.logs(resource, { tail: Number(url.searchParams.get("tail")) || 200 }) });
           case "events": return json({ events: await data.ops.events(resource) });

@@ -36,15 +36,14 @@ export function HealthDot({ health, label, className }: { health: Health; label?
   );
 }
 
-const palette = ["bg-blue-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-cyan-500"];
-const hash = (s: string) => [...s].reduce((a, c) => (a * 33 + c.charCodeAt(0)) >>> 0, 5381);
-
+/** Restrained, monochrome identity chip — humans get a filled chip, agents a
+ *  subtle outlined one. No rainbow; enterprise-neutral. */
 export function PersonaAvatar({ id, kind = "persona", size = "sm" }: { id: string; kind?: "human" | "persona"; size?: "sm" | "md" }) {
-  const color = kind === "human" ? "bg-foreground/80 text-background" : `${palette[hash(id) % palette.length]} text-white`;
-  const dim = size === "md" ? "size-7 text-xs" : "size-5 text-[10px]";
+  const style = kind === "human" ? "bg-foreground/85 text-background" : "bg-muted text-muted-foreground border border-border";
+  const dim = size === "md" ? "size-6 text-[11px]" : "size-5 text-[10px]";
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className={cn("inline-flex items-center justify-center rounded-full font-semibold", dim, color)}>{id[0]?.toUpperCase() ?? "?"}</span>
+      <span className={cn("inline-flex items-center justify-center rounded-md font-medium", dim, style)}>{id[0]?.toUpperCase() ?? "?"}</span>
       <span className="text-sm">{id}</span>
     </span>
   );

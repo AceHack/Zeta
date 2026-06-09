@@ -15,7 +15,9 @@ import { MetricChart, UsageBar } from "@/components/MetricChart";
 import { RoomTimeline } from "@/components/RoomTimeline";
 import { Terminal } from "@/components/Terminal";
 import { FileExplorer } from "@/components/FileExplorer";
+import { ResourceDashboard } from "@/components/Dashboards";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 type Tab = "overview" | "metrics" | "terminal" | "files" | "config" | "events" | "room" | "danger";
 const TABS: Array<{ id: Tab; label: string; icon: typeof Gauge }> = [
@@ -34,22 +36,17 @@ const fmtAge = (s: number) => (s >= 86400 ? `${Math.floor(s / 86400)}d` : s >= 3
 export function ResourceConsole({ resource, onBack, onChanged }: { resource: ResourceVM; onBack: () => void; onChanged: () => void }) {
   const [tab, setTab] = useState<Tab>("overview");
   const [busy, setBusy] = useState<string | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
   const fqn = `${resource.namespace}/${resource.name}`;
   const Icon = catIcon(resource.category);
 
-  const act = async (label: string, fn: () => Promise<{ message: string }>) => {
+  const act = async (label: string, pending: string, fn: () => Promise<{ message: string }>) => {
     setBusy(label);
-    try {
-      const r = await fn();
-      setToast(r.message);
-      onChanged();
-    } catch (e) {
-      setToast((e as Error).message);
-    } finally {
-      setBusy(null);
-      setTimeout(() => setToast(null), 4000);
-    }
+    await toast.promise(fn(), {
+      loading: pending,
+      success: (r) => { onChanged(); return r.message; },
+      error: (e) => (e as Error).message,
+    });
+    setBusy(null);
   };
 
   return (
@@ -69,20 +66,18 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
           </div>
           <HealthDot health={resource.health} label={resource.phase} className="ml-1" />
           <div className="ml-auto flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("restart", () => api.lifecycle(fqn, "restart"))}>
+            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("restart", "Restarting…", () => api.lifecycle(fqn, "restart"))}>
               <RotateCw className={cn("size-3.5", busy === "restart" && "animate-spin")} /> Restart
             </Button>
-            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("stop", () => api.lifecycle(fqn, "stop"))}>
+            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("stop", "Stopping…", () => api.lifecycle(fqn, "stop"))}>
               <Power className="size-3.5" /> Stop
             </Button>
-            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("start", () => api.lifecycle(fqn, "start"))}>
+            <Button variant="outline" size="sm" disabled={!!busy} onClick={() => act("start", "Starting…", () => api.lifecycle(fqn, "start"))}>
               <Play className="size-3.5" /> Start
             </Button>
           </div>
         </div>
       </div>
-
-      {toast && <div className="mb-4 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 text-sm text-primary">{toast}</div>}
 
       <div className="flex min-h-0 flex-1 gap-6">
         {/* sub nav */}
@@ -112,7 +107,7 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
           {tab === "metrics" && <MetricsTab fqn={fqn} />}
           {tab === "terminal" && <TerminalTab fqn={fqn} />}
           {tab === "files" && <FileExplorer fqn={fqn} category={resource.category} />}
-          {tab === "config" && <ConfigTab fqn={fqn} onChanged={onChanged} setToast={setToast} />}
+          {tab === "config" && <ConfigTab fqn={fqn} onChanged={onChanged} />}
           {tab === "events" && <EventsTab fqn={fqn} />}
           {tab === "room" && <RoomTimeline resource={fqn} admin={resource.admin} />}
           {tab === "danger" && <DangerTab fqn={fqn} name={resource.name} onDeleted={onBack} />}
@@ -149,8 +144,12 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
 function Overview({ resource, fqn }: { resource: ResourceVM; fqn: string }) {
   const { data: pods } = useAsync<PodInfo[]>(() => api.info(fqn), [fqn]);
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {resource.message && <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">{resource.message}</div>}
+
+      {/* type-specific dashboard — game vs database vs web vs worker */}
+      <ResourceDashboard fqn={fqn} />
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Blueprint"><Badge variant="secondary">{resource.blueprint}</Badge></Stat>
         <Stat label="Exposure">{resource.expose}{resource.host ? ` · ${resource.host}` : ""}</Stat>
@@ -218,7 +217,7 @@ function TerminalTab({ fqn }: { fqn: string }) {
 }
 
 // ── Config ──────────────────────────────────────────────────────────────────
-function ConfigTab({ fqn, onChanged, setToast }: { fqn: string; onChanged: () => void; setToast: (s: string) => void }) {
+function ConfigTab({ fqn, onChanged }: { fqn: string; onChanged: () => void }) {
   const { data, reload } = useAsync<ResourceConfig>(() => api.config(fqn), [fqn]);
   const [draft, setDraft] = useState<ResourceConfig | null>(null);
   const [saving, setSaving] = useState(false);
@@ -227,11 +226,11 @@ function ConfigTab({ fqn, onChanged, setToast }: { fqn: string; onChanged: () =>
 
   const save = async () => {
     setSaving(true);
-    const r = await api.applyConfig(fqn, { replicas: draft.replicas, cpu: draft.cpu, memory: draft.memory, storage: draft.storage, values: draft.values });
+    await toast.promise(
+      api.applyConfig(fqn, { replicas: draft.replicas, cpu: draft.cpu, memory: draft.memory, storage: draft.storage, values: draft.values }),
+      { loading: "Applying configuration…", success: (r) => { onChanged(); reload(); return r.message; }, error: (e) => (e as Error).message },
+    );
     setSaving(false);
-    setToast(r.message);
-    onChanged();
-    reload();
   };
   const setV = (k: string, v: string) => setDraft({ ...draft, values: { ...draft.values, [k]: v } });
 

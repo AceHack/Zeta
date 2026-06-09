@@ -7,6 +7,7 @@
 
 import type {
   AccessInfo,
+  Dashboard,
   FileNode,
   K8sEvent,
   LifecycleAction,
@@ -60,6 +61,76 @@ export class DemoOps implements ResourceOps {
       image,
     }));
     return { pods };
+  }
+
+  async dashboard(resource: string): Promise<Dashboard> {
+    const o = this.ov(resource);
+    const s = seed(resource);
+    const crashing = resource.includes("sandbox") && o.phase !== "Running";
+    if (GAME(resource)) {
+      return {
+        kind: "game",
+        status: crashing ? "offline" : "online",
+        game: "Garry's Mod",
+        map: o.values?.MAP ?? "gm_flatgrass",
+        gamemode: "sandbox",
+        players: { online: crashing ? 0 : (s % 18) + 2, max: Number(o.values?.MAXPLAYERS ?? 32) },
+        address: `10.42.0.40:${o.values?.PORT ?? "27015"}`,
+        tickrate: 66,
+        uptime: crashing ? "—" : `${(s % 12) + 1}h ${(s % 50) + 5}m`,
+        recentJoins: crashing ? [] : [
+          { name: "acehack", at: "12:04" },
+          { name: "buildmaster", at: "11:58" },
+          { name: "freeman", at: "11:41" },
+        ],
+      };
+    }
+    if (DB(resource)) {
+      return {
+        kind: "database",
+        status: "ready",
+        engine: "PostgreSQL 16.2",
+        connections: { active: (s % 40) + 6, max: 100 },
+        sizeMi: 4096 + (s % 8000),
+        tables: (s % 30) + 12,
+        queriesPerSec: (s % 400) + 50,
+        cacheHitPct: 96 + (s % 4),
+        replication: "primary",
+        topTables: [
+          { name: "orders", rows: 1_240_000 + s * 100, sizeMi: 820 },
+          { name: "line_items", rows: 5_800_000 + s * 100, sizeMi: 2400 },
+          { name: "customers", rows: 84_000 + s, sizeMi: 96 },
+        ],
+      };
+    }
+    if (!GAME(resource) && !DB(resource) && resource.includes("worker")) {
+      return {
+        kind: "worker",
+        status: o.phase === "Stopped" ? "idle" : "running",
+        lastRun: "12:00 (3m ago)",
+        nextRun: "13:00",
+        runsToday: (s % 20) + 4,
+        successRatePct: 97 + (s % 3),
+        avgDurationSec: (s % 40) + 8,
+        queueDepth: s % 5,
+      };
+    }
+    // web app
+    return {
+      kind: "web",
+      status: "serving",
+      host: "demo.zeta.example.com",
+      tls: { issuer: "Let's Encrypt", expiresInDays: 64 - (s % 30) },
+      requestsPerMin: (s % 900) + 120,
+      p50ms: (s % 20) + 8,
+      p95ms: (s % 80) + 40,
+      errorRatePct: (s % 100) / 100,
+      routes: [
+        { method: "GET", path: "/", hits: 18_400 + s * 10 },
+        { method: "GET", path: "/api/health", hits: 9_200 + s * 5 },
+        { method: "POST", path: "/api/checkout", hits: 1_120 + s },
+      ],
+    };
   }
 
   async metrics(resource: string): Promise<Metrics> {

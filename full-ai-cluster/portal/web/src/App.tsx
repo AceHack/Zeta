@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Boxes, Brain, LayoutGrid, Plus, RefreshCw, ShieldAlert } from "lucide-react";
 import { api, type CatalogEntryVM, type CategoryGroupVM, type NeedsMeItemVM, type ResourceVM } from "@/lib/api";
+import { Toaster } from "sonner";
 import { Resources } from "@/views/Resources";
 import { Create } from "@/views/Create";
 import { NeedsMe } from "@/views/NeedsMe";
@@ -46,10 +47,11 @@ export default function App() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
+      <Toaster theme="dark" position="bottom-right" richColors closeButton toastOptions={{ style: { background: "hsl(222 40% 9%)", border: "1px solid hsl(216 34% 16%)", color: "hsl(210 40% 96%)" } }} />
       {/* Sidebar */}
       <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-card/60">
         <div className="flex h-14 items-center gap-2.5 px-5">
-          <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg shadow-primary/20">
+          <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Boxes className="size-4" />
           </div>
           <span className="font-semibold tracking-tight">Zeta</span>

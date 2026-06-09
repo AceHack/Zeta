@@ -14,6 +14,32 @@ describe("DemoOps", () => {
   const ops = new DemoOps();
   const game = "acme/friday-sandbox";
 
+  test("dashboard is type-specific: game vs database vs web vs worker", async () => {
+    const o = new DemoOps();
+    const g = await o.dashboard("acme/friday-sandbox");
+    expect(g.kind).toBe("game");
+    if (g.kind === "game") expect(g.players.max).toBeGreaterThan(0);
+    const d = await o.dashboard("acme/orders-db");
+    expect(d.kind).toBe("database");
+    if (d.kind === "database") expect(d.topTables.length).toBeGreaterThan(0);
+    const w = await o.dashboard("acme/landing");
+    expect(w.kind).toBe("web");
+    if (w.kind === "web") expect(w.routes.length).toBeGreaterThan(0);
+    const wk = await o.dashboard("acme/nightly-worker");
+    expect(wk.kind).toBe("worker");
+    if (wk.kind === "worker") expect(wk.successRatePct).toBeGreaterThan(0);
+  });
+
+  test("game dashboard reflects map override + player cap from config", async () => {
+    const o = new DemoOps();
+    await o.applyConfig("acme/friday-sandbox", { values: { MAP: "gm_construct", MAXPLAYERS: "48" } });
+    const g = await o.dashboard("acme/friday-sandbox");
+    if (g.kind === "game") {
+      expect(g.map).toBe("gm_construct");
+      expect(g.players.max).toBe(48);
+    }
+  });
+
   test("info reports crashing game pods with restarts", async () => {
     const { pods } = await ops.info(game);
     expect(pods.length).toBeGreaterThanOrEqual(1);

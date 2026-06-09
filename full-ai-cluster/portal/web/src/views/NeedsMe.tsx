@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PersonaAvatar } from "@/components/bits";
+import { toast } from "sonner";
 
 export function NeedsMe({ items, onChange }: { items: NeedsMeItemVM[]; onChange: () => void }) {
   return (
@@ -35,8 +36,11 @@ function ApprovalCard({ item, onChange }: { item: NeedsMeItemVM; onChange: () =>
   const [busy, setBusy] = useState(false);
   const decide = async (granted: boolean) => {
     setBusy(true);
-    await api.grant(item.resource, item.requestId, "you", granted, note || undefined);
-    onChange();
+    await toast.promise(api.grant(item.resource, item.requestId, "you", granted, note || undefined), {
+      loading: granted ? "Approving…" : "Denying…",
+      success: () => { onChange(); return granted ? `Approved — ${item.summary}` : "Request denied"; },
+      error: (e) => (e as Error).message,
+    });
   };
   return (
     <Card className="border-l-2 border-l-warning p-5">

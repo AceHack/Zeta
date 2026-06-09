@@ -99,6 +99,12 @@ export interface MemoryUsage {
   totalEvents: number;
   totalBytes: number;
 }
+
+export type Dashboard =
+  | { kind: "game"; status: string; game: string; map: string; gamemode: string; players: { online: number; max: number }; address: string; tickrate: number; uptime: string; recentJoins: Array<{ name: string; at: string }> }
+  | { kind: "database"; status: string; engine: string; connections: { active: number; max: number }; sizeMi: number; tables: number; queriesPerSec: number; cacheHitPct: number; replication: string; topTables: Array<{ name: string; rows: number; sizeMi: number }> }
+  | { kind: "web"; status: string; host: string; tls: { issuer: string; expiresInDays: number }; requestsPerMin: number; p50ms: number; p95ms: number; errorRatePct: number; routes: Array<{ method: string; path: string; hits: number }> }
+  | { kind: "worker"; status: string; lastRun: string; nextRun: string; runsToday: number; successRatePct: number; avgDurationSec: number; queueDepth: number };
 export interface LifecycleResult { ok: boolean; message: string }
 export type LifecycleAction = "restart" | "stop" | "start" | "scale" | "delete";
 
@@ -132,6 +138,7 @@ export const api = {
   // management plane
   memory: () => j<MemoryUsage>("/api/memory"),
   info: (r: string) => j<{ pods: PodInfo[] }>(`/api/resources/${enc(r)}/info`).then((d) => d.pods),
+  dashboard: (r: string) => j<Dashboard>(`/api/resources/${enc(r)}/dashboard`),
   metrics: (r: string) => j<Metrics>(`/api/resources/${enc(r)}/metrics`),
   logs: (r: string) => j<{ lines: LogLine[] }>(`/api/resources/${enc(r)}/logs`).then((d) => d.lines),
   events: (r: string) => j<{ events: K8sEvent[] }>(`/api/resources/${enc(r)}/events`).then((d) => d.events),

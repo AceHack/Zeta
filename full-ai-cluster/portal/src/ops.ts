@@ -76,8 +76,58 @@ export interface AccessInfo {
   sftp?: { host: string; port: number; user: string; path: string; note: string };
 }
 
+/** Type-specific dashboard data — each resource kind surfaces its own concerns. */
+export type Dashboard =
+  | {
+      kind: "game";
+      status: "online" | "offline" | "starting";
+      game: string;
+      map: string;
+      gamemode: string;
+      players: { online: number; max: number };
+      address: string; // connect address (ip:port)
+      tickrate: number;
+      uptime: string;
+      recentJoins: Array<{ name: string; at: string }>;
+    }
+  | {
+      kind: "database";
+      status: "ready" | "degraded" | "down";
+      engine: string; // PostgreSQL 16
+      connections: { active: number; max: number };
+      sizeMi: number;
+      tables: number;
+      queriesPerSec: number;
+      cacheHitPct: number;
+      replication: "primary" | "replica" | "standalone";
+      topTables: Array<{ name: string; rows: number; sizeMi: number }>;
+    }
+  | {
+      kind: "web";
+      status: "serving" | "errors" | "down";
+      host: string;
+      tls: { issuer: string; expiresInDays: number };
+      requestsPerMin: number;
+      p50ms: number;
+      p95ms: number;
+      errorRatePct: number;
+      routes: Array<{ method: string; path: string; hits: number }>;
+    }
+  | {
+      kind: "worker";
+      status: "running" | "idle" | "failed";
+      lastRun: string;
+      nextRun: string;
+      runsToday: number;
+      successRatePct: number;
+      avgDurationSec: number;
+      queueDepth: number;
+    };
+
 export interface ResourceOps {
   info(resource: string): Promise<{ pods: PodInfo[] }>;
+  /** Resource-type-specific dashboard (game/database/web/worker). */
+  dashboard(resource: string): Promise<Dashboard>;
   metrics(resource: string): Promise<Metrics>;
   logs(resource: string, opts?: { tail?: number }): Promise<LogLine[]>;
   events(resource: string): Promise<K8sEvent[]>;
