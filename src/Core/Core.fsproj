@@ -199,6 +199,7 @@
     <Compile Include="Chip8.fs" />
     <Compile Include="Chip8Cow.fs" />
     <Compile Include="SoftChip8.fs" />
+    <Compile Include="Chip8Observer.fs" />
     <Compile Include="SoftController.fs" />
     <Compile Include="ActionGrammar.fs" />
     <Compile Include="SoftDashboard.fs" />
