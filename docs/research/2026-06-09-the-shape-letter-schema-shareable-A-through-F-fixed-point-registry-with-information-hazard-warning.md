@@ -48,6 +48,24 @@ are the **same few shapes**. The schema names them **A–F** so they're easy to 
 A fixed point is a **safe / terminating shape**: it's where recursion *converges* instead of running away — which is
 why the catalog is, at root, a catalog of **the shapes that stop infinite regress or infinite ascension.**
 
+## What it's for — a high-bandwidth, precise codec for the text channel (human + AI)
+
+The schema is also a **codec for ideas over the text channel**: it carries a complex idea across in **as few words as
+possible** (one letter) **while guaranteeing the receiver decodes it the same way** (a shared, precise, *anchored*
+definition). That is **QPG — quality per glyph** (#7227/#7231) realized for *transmission*: maximum meaning per
+glyph, for **humans and AI alike**, with **mathematical rigor** — each letter is precise, not a vibe.
+
+- **Few words, guaranteed decode.** A shared codebook (Shannon): once both parties hold the same precise definition,
+  "**shape A**" transmits the whole of *`s=f(s)`-grounded-convergence* in two characters, with **no ambiguity**.
+  Compression **plus** a shared codebook = high bandwidth *and* high fidelity at once.
+- **Loaded words get a precise per-frame definition.** Example: **"safe."** In ordinary English "safe" is a vibe.
+  Here it has a **definition in every frame**: *safe = a terminating / converging fixed-point shape* — it carries a
+  **bound** (A inward / F outward) and **does not run away** (no infinite regress or ascension). So "make it safe"
+  stops being hand-wavy and becomes **checkable**. The schema **disambiguates** exactly the loaded vocabulary
+  ("safe", "stable", "aligned", "done") that human↔AI communication usually fudges.
+- This is the **Beacon register** working as a transmission codec (Mirror→Beacon compression to anchored first
+  principles) — the answer to *"how do a human and an AI share precise meaning cheaply over text?"*
+
 ## The six shapes
 
 | Letter | Name | Canonical relation | Direction / what it does | Human anchor(s) |
