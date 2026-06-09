@@ -1,0 +1,32 @@
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: node-ad1efd
+  namespace: zeta-cluster
+  annotations:
+    zeta.lucent-financial-group.com/registered-at: "2026-06-09T09:09:17Z"
+    zeta.lucent-financial-group.com/flake-commit: "efd4e0056d96"
+    zeta.lucent-financial-group.com/flake-host: "control-plane"
+    zeta.lucent-financial-group.com/registered-via: "iter-5.4.1"
+  labels:
+    zeta.lucent-financial-group.com/maintainer: "Addisons820"
+spec:
+  hostname: node-ad1efd
+  roles:
+    - control-plane
+  registration:
+    maintainer: Addisons820
+    timestamp: "2026-06-09T09:09:17Z"
+    flake-commit: "efd4e0056d96"
+    flake-host: "control-plane"
+    registered-via: "iter-5.4.1"
+  hardware:
+    cpu: "Intel(R) Core(TM) Ultra 9 285H"
+    memory: "66G"
+    cores: 16
+    gpu: "00:02.0 VGA compatible controller [0300]: Intel Corporation Arrow Lake-P [Arc Pro 140T] [8086:7d51] (rev 03)"
+    storage:
+      - "/dev/sda 115.5G"
+      - "/dev/nvme0n1 931.5G"
+    network:
+      mac: "90:10:57:6e:7e:72"
