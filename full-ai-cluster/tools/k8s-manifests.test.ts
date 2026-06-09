@@ -130,6 +130,17 @@ describe("platform app: generic Blueprint/Deployable engine wiring", () => {
     expect(c).toContain("deployables/status"); // status patch permission
     expect(c).not.toContain('resources: ["*"]'); // least-privilege, no wildcard
   });
+
+  test("portal is a StatefulSet with a Longhorn volumeClaimTemplate (durable rooms = agent-memory pattern)", () => {
+    const p = read("portal.yaml");
+    expect(p).toContain("kind: StatefulSet");
+    expect(p).not.toContain("kind: Deployment"); // must be stateful, not a Deployment
+    expect(p).toContain("volumeClaimTemplates");
+    expect(p).toContain("storageClassName: longhorn");
+    expect(p).toContain("/var/lib/zeta-rooms"); // the durable mount
+    expect(p).toContain('verbs: ["get", "list", "watch"]'); // read-only RBAC
+    expect(p).toContain("kind: HTTPRoute"); // published on the shared Gateway
+  });
 });
 
 describe("session-added apps: required objects present", () => {

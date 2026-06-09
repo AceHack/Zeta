@@ -93,3 +93,19 @@ describe("grant (the only write — human authorizes)", () => {
     expect(r!.status).toBe(404);
   });
 });
+
+describe("append events (controller / personas write the room log)", () => {
+  const post = (p: string, b: unknown) => handle(new Request(`http://x${p}`, { method: "POST", body: JSON.stringify(b) }), data);
+
+  test("a state-change event is appended and shows up in the room", async () => {
+    const r = await post(`/api/rooms/${encodeResource("tenant-a", "clan")}/events`, { by: "otto", kind: "persona", body: { type: "state-change", phase: "Ready" } });
+    expect(r!.status).toBe(200);
+    const j = (await body(await get(`/api/rooms/${encodeResource("tenant-a", "clan")}`))) as any;
+    expect(j.room.phase).toBe("Ready"); // the latest state-change wins
+  });
+
+  test("a missing/invalid body → 400", async () => {
+    const r = await post(`/api/rooms/${encodeResource("tenant-a", "clan")}/events`, { by: "otto", body: { type: "bogus" } });
+    expect(r!.status).toBe(400);
+  });
+});

@@ -45,4 +45,20 @@ export class InMemoryPlatform implements PlatformData {
     room.events.push(grant);
     return true;
   }
+
+  async append(resource: string, by: { id: string; kind?: "human" | "persona" }, body: RoomEventVM["body"]): Promise<RoomEventVM> {
+    let room = this.rooms.find((r) => r.resource === resource);
+    if (!room) {
+      room = { resource, events: [] };
+      this.rooms.push(room);
+    }
+    const seq = room.events.length;
+    const ev: RoomEventVM = { id: `evt-${seq}`, seq, weight: body.type === "retraction" ? -1 : 1, proposedBy: { id: by.id, kind: by.kind ?? "persona" }, body };
+    room.events.push(ev);
+    return ev;
+  }
+
+  async appendEvent(resource: string, by: { id: string; kind?: "human" | "persona" }, body: RoomEventVM["body"]): Promise<string | null> {
+    return (await this.append(resource, by, body)).id;
+  }
 }

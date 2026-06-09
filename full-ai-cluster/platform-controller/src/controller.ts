@@ -12,6 +12,31 @@ import { inClusterConfig, K8sClient, KIND_PLURAL } from "./k8s.ts";
 
 export const LIBRARY_NAMESPACE = "zeta-platform";
 
+/** Build the room-service append URL for a resource (ns/name → ns~name path seg). */
+export function roomEventUrl(base: string, namespace: string, name: string): string {
+  return `${base.replace(/\/$/, "")}/api/rooms/${namespace}~${name}/events`;
+}
+
+/**
+ * Emit a state-change Event to the room-service (best-effort: a reconcile must
+ * never fail because the portal is down). The persona that "operates" the
+ * resource is the proposer of the lifecycle Event.
+ */
+async function emitState(cr: Deployable, phase: string, detail?: string): Promise<void> {
+  const base = process.env.ROOM_SERVICE_URL;
+  if (!base) return;
+  const by = cr.spec.ai?.admin ?? "system";
+  try {
+    await fetch(roomEventUrl(base, cr.metadata.namespace, cr.metadata.name), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ by, kind: "persona", body: { type: "state-change", phase, ...(detail ? { detail } : {}) } }),
+    });
+  } catch {
+    // room-service unreachable — the reconcile itself succeeded; skip the Event
+  }
+}
+
 /** A Blueprint indexed by namespace/name, with the shared library as fallback. */
 export type BlueprintIndex = Map<string, Blueprint>;
 const key = (ns: string, name: string) => `${ns}/${name}`;
@@ -57,6 +82,7 @@ async function reconcileOne(client: K8sClient, idx: BlueprintIndex, cr: Deployab
   if (!result.ok) {
     console.error(`[deployable ${ns}/${cr.metadata.name}] ${result.reason}`);
     await client.patchStatus(GROUP, VERSION, "deployables", ns, cr.metadata.name, { phase: "Error", message: result.reason });
+    await emitState(cr, "Error", result.reason);
     return;
   }
   await applyAll(client, result.objects);
@@ -66,6 +92,7 @@ async function reconcileOne(client: K8sClient, idx: BlueprintIndex, cr: Deployab
     blueprint: cr.spec.blueprint,
     children: result.objects.map((o) => `${o.kind}/${o.metadata.name}`),
   });
+  await emitState(cr, "Ready", `applied ${result.objects.length} object(s) from blueprint "${cr.spec.blueprint}"`);
 }
 
 /** Run the controller: load blueprints, then watch Deployables and reconcile. */

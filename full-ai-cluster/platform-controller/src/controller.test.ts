@@ -6,7 +6,7 @@
 import { describe, expect, test } from "bun:test";
 import { API_VERSION } from "./types.ts";
 import type { Blueprint, Deployable } from "./blueprint.ts";
-import { indexBlueprints, LIBRARY_NAMESPACE, reconcile, resolveBlueprint } from "./controller.ts";
+import { indexBlueprints, LIBRARY_NAMESPACE, reconcile, resolveBlueprint, roomEventUrl } from "./controller.ts";
 
 function bpItem(name: string, namespace: string, spec: Partial<Blueprint>) {
   return { metadata: { name, namespace }, spec: { name, image: "img", ...spec } as Blueprint };
@@ -60,5 +60,14 @@ describe("reconcile", () => {
       expect(r.reason).toContain("nope");
       expect(r.reason).toContain(LIBRARY_NAMESPACE);
     }
+  });
+});
+
+describe("roomEventUrl", () => {
+  test("builds the room-service append URL, encoding ns/name as ns~name", () => {
+    expect(roomEventUrl("http://portal.svc", "acme", "clan")).toBe("http://portal.svc/api/rooms/acme~clan/events");
+  });
+  test("tolerates a trailing slash on the base", () => {
+    expect(roomEventUrl("http://portal.svc/", "acme", "clan")).toBe("http://portal.svc/api/rooms/acme~clan/events");
   });
 });

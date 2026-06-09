@@ -24,7 +24,23 @@ export interface PlatformData {
   getRoom(resource: string): Promise<RoomData | undefined>;
   /** Append a human authorization grant to a Room. Returns false if the request is unknown. */
   grant(resource: string, requestId: string, by: string, granted: boolean, note?: string): Promise<boolean>;
+  /**
+   * Append a typed Event to a Room (the room-service write path the controller +
+   * persona runtime use). Optional: not every backend supports writes. Returns the
+   * appended Event's id, or null if appends aren't supported / failed.
+   */
+  appendEvent?(resource: string, by: { id: string; kind?: "human" | "persona" }, body: RoomEventBody): Promise<string | null>;
 }
+
+/** The typed Event bodies the write endpoint accepts (mirrors the Room substrate). */
+export type RoomEventBody =
+  | { type: "message"; text: string }
+  | { type: "state-change"; phase: string; detail?: string }
+  | { type: "action"; action: Record<string, unknown>; result?: string }
+  | { type: "authorization-request"; action: Record<string, unknown>; gated?: string }
+  | { type: "retraction"; retracts: string; note?: string };
+
+const EVENT_TYPES = new Set(["message", "state-change", "action", "authorization-request", "retraction"]);
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -59,6 +75,17 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
       const room = await data.getRoom(resource);
       if (!room) return json({ error: `no room for ${resource}` }, 404);
       return json({ room: toRoomVM(room) });
+    }
+
+    // POST /api/rooms/:resource/events — append a typed Event (controller / personas)
+    const eventsMatch = path.match(/^\/api\/rooms\/([^/]+)\/events$/);
+    if (eventsMatch && req.method === "POST") {
+      if (!data.appendEvent) return json({ error: "append not supported by this backend" }, 405);
+      const resource = decodeResource(eventsMatch[1]!);
+      const b = (await req.json().catch(() => ({}))) as { by?: string; kind?: "human" | "persona"; body?: RoomEventBody };
+      if (!b.by || !b.body || !EVENT_TYPES.has(b.body.type)) return json({ error: "by + a valid body{type,…} required" }, 400);
+      const id = await data.appendEvent(resource, { id: b.by, ...(b.kind ? { kind: b.kind } : {}) }, b.body);
+      return id ? json({ ok: true, id }) : json({ error: "append failed" }, 500);
     }
 
     // POST /api/rooms/:resource/grant — a human authorizes (or denies) a request

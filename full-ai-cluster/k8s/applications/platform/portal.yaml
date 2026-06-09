@@ -1,0 +1,134 @@
+# The Zeta portal — the human+agent UI + room-service. A StatefulSet (NOT a
+# Deployment) because it owns the DURABLE Room/event log: a Longhorn-backed
+# volumeClaimTemplate -> `longhorn` StorageClass, re-bound to the same volume
+# across pod restart / reschedule / node failure. That append-only log is the
+# persistent collaboration + agent-memory substrate (Memory Preservation #5) —
+# the same StatefulSet+PVC->longhorn pattern as agent-memory, here for Rooms.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: portal
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+---
+# Read-only on the platform resources it renders. No write — the only state the
+# portal mutates is its own Room log on the PVC.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: portal
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+rules:
+  - apiGroups: ["platform.zeta.io"]
+    resources: ["deployables", "blueprints"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: portal
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: portal
+subjects:
+  - kind: ServiceAccount
+    name: portal
+    namespace: zeta-platform
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: portal
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: portal
+    app.kubernetes.io/part-of: zeta-platform
+spec:
+  serviceName: portal
+  replicas: 1   # single-writer of the Room log; the volume is the source of truth
+  selector:
+    matchLabels: { app.kubernetes.io/name: portal }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: portal }
+    spec:
+      serviceAccountName: portal
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000   # own the Longhorn rooms volume
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: portal
+          image: ghcr.io/lucent-financial-group/zeta-portal:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { name: http, containerPort: 8080 }
+          env:
+            - { name: PORT, value: "8080" }
+            - { name: ZETA_ROOMS_DIR, value: /var/lib/zeta-rooms }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - name: rooms
+              mountPath: /var/lib/zeta-rooms
+          readinessProbe:
+            httpGet: { path: /api/catalog, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests: { cpu: "50m", memory: "96Mi" }
+            limits: { cpu: "500m", memory: "256Mi" }
+  # The durable Room/event log — one Longhorn-backed volume, re-bound across
+  # restarts. THIS is the StatefulSet PVC -> storageClass the design needs.
+  volumeClaimTemplates:
+    - metadata:
+        name: rooms
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portal
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: portal
+spec:
+  type: ClusterIP
+  selector: { app.kubernetes.io/name: portal }
+  ports:
+    - { name: http, port: 80, targetPort: http }
+---
+# Publish the portal on the shared Cilium Gateway (HTTPS via cert-manager). The
+# hostname is a placeholder — set it to your domain.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: portal
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  parentRefs:
+    - { name: zeta-gateway, namespace: zeta-platform }
+  hostnames: ["portal.zeta.example.com"]
+  rules:
+    - backendRefs:
+        - { name: portal, port: 80 }

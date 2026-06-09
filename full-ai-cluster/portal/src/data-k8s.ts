@@ -20,6 +20,8 @@ export interface RoomSource {
   listRooms(): Promise<RoomData[]>;
   getRoom(resource: string): Promise<RoomData | undefined>;
   grant(resource: string, requestId: string, by: string, granted: boolean, note?: string): Promise<boolean>;
+  /** Append a typed Event; returns its id. Optional (read-only sources may omit). */
+  append?(resource: string, by: { id: string; kind?: "human" | "persona" }, body: import("./viewmodel.ts").RoomEventVM["body"]): Promise<import("./viewmodel.ts").RoomEventVM>;
 }
 
 export class K8sPlatform implements PlatformData {
@@ -57,5 +59,9 @@ export class K8sPlatform implements PlatformData {
   }
   grant(resource: string, requestId: string, by: string, granted: boolean, note?: string): Promise<boolean> {
     return this.rooms.grant(resource, requestId, by, granted, note);
+  }
+  async appendEvent(resource: string, by: { id: string; kind?: "human" | "persona" }, body: import("./viewmodel.ts").RoomEventVM["body"]): Promise<string | null> {
+    if (!this.rooms.append) return null;
+    return (await this.rooms.append(resource, by, body)).id;
   }
 }

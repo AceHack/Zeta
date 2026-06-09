@@ -7,18 +7,27 @@
 
 import { join } from "node:path";
 import { handle, type PlatformData } from "./api.ts";
-import { InMemoryPlatform } from "./data-memory.ts";
 import { K8sPlatform } from "./data-k8s.ts";
-import { demoPlatform } from "./demo.ts";
+import { FileRoomStore } from "./data-file.ts";
+import { CompositePlatform } from "./data-composite.ts";
+import { demoPlatform, demoResources } from "./demo.ts";
 
 const UI_DIR = join(import.meta.dir, "ui");
 const PORT = Number(process.env.PORT ?? 8080);
 
 function makeData(): PlatformData {
-  if (process.env.PORTAL_DEMO === "1") return demoPlatform();
-  // In-cluster: live resources from k8s; Rooms from an in-memory source until the
-  // git-event-store-backed persona runtime lands (COLLABORATION-MODEL §9).
-  return new K8sPlatform(new InMemoryPlatform([], [], []));
+  // Local dev with DURABLE rooms: demo resources + a real FileRoomStore. Lets you
+  // exercise the durable room-service on a laptop (set ZETA_ROOMS_DIR).
+  if (process.env.PORTAL_DEMO === "1") {
+    const dir = process.env.ZETA_ROOMS_DIR;
+    if (dir) return new CompositePlatform(demoResources(), new FileRoomStore(dir));
+    return demoPlatform();
+  }
+  // In-cluster: live resources from k8s; Rooms persisted to a Longhorn-backed
+  // append-only JSONL log (durable across pod restarts — the StatefulSet volume),
+  // which is also the persistent collaboration / agent-memory substrate (#5).
+  const roomsDir = process.env.ZETA_ROOMS_DIR ?? "/var/lib/zeta-rooms";
+  return new K8sPlatform(new FileRoomStore(roomsDir));
 }
 
 const data = makeData();
