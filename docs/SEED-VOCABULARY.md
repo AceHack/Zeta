@@ -39,8 +39,13 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
 - **fixed-point shapes A–F** — the registry of terminating shapes (A self-reference; B idempotent join; C commutative
   fold; D contraction-to-floor / D⁰ heat-death; E co-arising; F generative-expansion). See the A–F schema doc.
 - *(tiny-model-v2 / the society model — the math-grounded society vocabulary, tied to Seed)*
-- **SolidGround** — navigable landmarks in memory: **constants + monotonic cells** — something you can *stand on*
-  (`SolidGround.fs`). Privacy-budget hard money is "the other SolidGround."
+- **SolidGround** — in an **all-soft** system (SoftValue over DynamicValue — every value is a distribution held with
+  confidence), you must **find SolidGround or it's uncertain forever**. SolidGround = the anchors you can *stand on*:
+  cells whose confidence crossed a **threshold** and are **monotonic — never collapse back into uncertainty** — plus
+  true **static constants** (caveat: *static can be code masquerading as data*; static is ground only when it's
+  genuinely data). Found ground is **remembered + logged on the merkle tree / git** (append-only event store — that
+  is *how* it never collapses). The threshold + monotonicity formalization is the math team's. `SolidGround.fs`;
+  privacy-budget hard money is "the other SolidGround."
 - **privacy budget / hard money** — private-state budget as a **self-regulating economy among personas**
   (`PrivacyEconomy`, a rewards-only G-Counter — shape B); a SolidGround you can't lose (pressure trends down only).
 - **coincidence (self-anchor)** — an objective self-fact = a coincidence **measured across *other* personas'**
