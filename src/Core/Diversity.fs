@@ -1,0 +1,59 @@
+namespace Zeta.Core
+
+/// **`Diversity` — the math of the NCI keystone: coercion collapses diversity to one; private state preserves it (Aaron 2026-06-08, shadow*).**
+///
+/// Makes #7146 *provable*. The claim: uncertainty-reduction *without* non-coercion is objectively pathological
+/// because **mutual coercive observability collapses a population to one** (monoculture) — which crushes learning
+/// (no new solid ground anyone lacks ⇒ gain → 0). Private state (the NCI encryption budget) is the independent
+/// variation that **keeps the population distinct**. This module is the measures + the dynamics that show it.
+///
+/// Measures: `distinct` (how many states survive) and `entropy` (Shannon, nats — the information-theoretic
+/// diversity). Dynamics: `coerciveStep` (every agent copies the majority public state — one homogenizing round
+/// under full observability) drives both to their floor (distinct → 1, entropy → 0). `combinedDistinct` shows
+/// that with a retained **private** component, agents stay distinguishable even after their *public* state has
+/// fully converged — diversity preserved by NCI.
+///
+/// **Honest scope (peel):** `coerciveStep` is the strongest homogenizer (copy-the-majority) — a clean upper bound
+/// on collapse, not a model of every convergence dynamic. Entropy is over the empirical distribution of exactly-
+/// equal states (a coarse, exact-match diversity); a metric/feature diversity is a refinement. Generic over any
+/// state with equality. Deterministic (DST).
+[<RequireQualifiedAccess>]
+module Diversity =
+
+    /// Number of distinct states in the population (the coarsest diversity — 1 = collapsed).
+    let distinct (xs: 'a list) : int = xs |> List.distinct |> List.length
+
+    /// **Shannon entropy** (nats) of the population's empirical state distribution — 0 = all identical (collapsed),
+    /// higher = more diverse. The information-theoretic diversity measure.
+    let entropy (xs: 'a list) : float =
+        match xs with
+        | [] -> 0.0
+        | _ ->
+            let n = float (List.length xs)
+            xs
+            |> List.countBy id
+            |> List.sumBy (fun (_, c) ->
+                let p = float c / n
+                if p <= 0.0 then 0.0 else -p * log p)
+
+    /// **One coercive homogenizing round:** under full (coerced) observability every agent copies the *majority*
+    /// public state. The strongest collapse step.
+    let coerciveStep (xs: 'a list) : 'a list =
+        match xs with
+        | [] -> []
+        | _ ->
+            let majority = xs |> List.countBy id |> List.maxBy snd |> fst
+            xs |> List.map (fun _ -> majority)
+
+    /// Run `rounds` coercive rounds — the population collapses toward a single state (monoculture).
+    let coerciveConverge (rounds: int) (xs: 'a list) : 'a list =
+        let mutable cur = xs
+        for _ in 1 .. max 0 rounds do
+            cur <- coerciveStep cur
+        cur
+
+    /// **Diversity surviving when each agent keeps a private component:** distinct count of the *combined*
+    /// (public, private) states. Even if `publics` have fully converged, distinct `privates` keep agents
+    /// distinguishable — NCI's encryption budget preserving diversity. Lists must be the same length.
+    let combinedDistinct (publics: 'a list) (privates: 'b list) : int =
+        List.zip publics privates |> List.distinct |> List.length
