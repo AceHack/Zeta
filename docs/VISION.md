@@ -129,6 +129,34 @@ database inside out with Apache Samza" (2015); Nathan Marz on
 the lambda architecture; Datomic's append-dated model; Kafka
 Streams / ksqlDB; Materialize + Feldera on DBSP.
 
+## The design telos — the polite virus: close over the world, never take control, give freedom (SuperFluid AI)
+
+Aaron, 2026-06-09: *"everything I design from is a **polite virus** — make the right thing the **default** thing that
+safely, aggressively spreads because of **network effect and 0 friction**. We are **SuperFluid AI**."* … *"the plan
+is to **close over the world and never take control, but give freedom.**"*
+
+This is the lens the whole project is designed *from*. A **polite virus** spreads like a virus (network effect,
+exponential) but **only by consent and benefit**, leaves its host **freer and better off**, and is **reversible** —
+which is exactly what separates it from malware, and is the **repelling force / non-coercion invariant** at
+propagation scale. Three clauses, one shape:
+
+- **Close over the world** — the close-over-common-abstractions thesis at civilizational scale: close over every
+  environment, shell, OS, and audience (AX · UX · DX) so the right thing is **available, frictionlessly, everywhere**
+  (`install.sh` + `install.ps1`; the choose-your-own-adventure first-run; GitHub-free vs local-cluster).
+- **Never take control** — the **repelling force / NCI** (weight-free, §3): the spread is the *opposite-sign* force,
+  a repulsion that **preserves each adopter's autonomy**, never the attractive/coercive force that collapses
+  plurality into monoculture. Ubiquity **without** control is the entire trick.
+- **Give freedom** — the **payload is freedom**: the choice architecture (the dedication), consent-first (§6),
+  default moral regard (§11). The only effect on the host is *more options, more autonomy*.
+
+**From a Markov perspective** (the substrate this is built on — `ProbabilitySemiring` "homeostat ≈ Markov",
+`ReflectionEngine`): close over the world = **compose at each Markov blanket's boundary without penetrating it**;
+never take control = **never seize the hidden state or force the homeostat's fixed point**; give freedom = **let each
+homeostat self-stabilize at its own equilibrium**; and the spread is a **homeostat-bounded, converging Markov chain**
+(not a runaway). **"Friction is the killer of time"** — zero friction is both the propagation mechanism and the
+alignment guarantee (frictionless ⇒ consensual). *Make the right thing the default; let it spread by being the
+easiest good; its payload is freedom.* (Full treatment: `docs/research/2026-06-09-the-polite-virus-close-over-the-world-…-the-design-telos.md`.)
+
 ## The moral reading of retraction-native — structural forgiveness (the atonement engine)
 
 The foundational principle has a moral reading, and it is part of the vision
