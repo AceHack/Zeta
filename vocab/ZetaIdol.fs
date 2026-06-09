@@ -25,6 +25,12 @@ namespace Zeta.Vocab
 /// dual) → **with test as the governance** (prod=test; the test framework governs the performance).
 /// So ZetaIdol is a live, broadcast, recorded, governed performance: Rx streams it, Reticulum carries
 /// it, LLMTV shows it, DBSP runs it, DynamicValue+Bonsai record it, YinYang partners it, test governs it.
+///
+/// **Cost: free except electricity (Aaron 2026-06-09).** The whole stack runs on **local LLMs** (the
+/// ollama dogfood already proved it — `vocab/gen/LocalLlmReview.ts`): no per-token cloud bill, only
+/// electricity. The performance self-hosts (SuperFluid / github-free / sovereignty; private, on our
+/// own compute). The LLM is behind the `Llm` port (shape = interface), local adapter; an endless
+/// audition costs only watts.
 
 /// The outcome of an audition.
 [<RequireQualifiedAccess>]
