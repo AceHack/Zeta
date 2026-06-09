@@ -177,7 +177,7 @@ module Travelers =
             { Id = TravelerId.``dejan``; Term = "dejan"; Type = "personas"; Carved = "DevOps — the one install script, GitHub Actions, runner pinning, secrets, caching, the upstream-contribution workflow." }
             { Id = TravelerId.``delta``; Term = "delta"; Type = "letters"; Carved = "Greek delta — change/difference (our uncertainty-Δ); the Dirac delta; the DBSP delta." }
             { Id = TravelerId.``e``; Term = "e"; Type = "letters"; Carved = "Latin E — shape E: co-arising (mutual interdependent arising); → shapes/E.md." }
-            { Id = TravelerId.``E``; Term = "E"; Type = "shapes"; Carved = "Shape E — co-arising: mutual, interdependent arising; symmetric, apex-less." }
+            { Id = TravelerId.``E``; Term = "E"; Type = "shapes"; Carved = "**Shape E — co-arising: \"we shape they and they shape us\"** (Aaron, the index). Mutual, interdependent arising; neither prior; symmetric, apex-less. The relational engine (the named ⟷ the unnamed; human ⟷ AI). His six-word carved sentence is the canonical definition." }
             { Id = TravelerId.``entropy``; Term = "entropy"; Type = "words"; Carved = "The size of the uncertainty space — and therefore the bits of identity space (identity space = uncertainty space); a traveler whose size sets the address width." }
             { Id = TravelerId.``epsilon``; Term = "epsilon"; Type = "letters"; Carved = "Greek epsilon — a small quantity; exploration (ε-greedy)." }
             { Id = TravelerId.``f``; Term = "f"; Type = "letters"; Carved = "Latin F — shape F: generative-expansion (bounded growth); → shapes/F.md." }
@@ -206,7 +206,7 @@ module Travelers =
             { Id = TravelerId.``lambda``; Term = "lambda"; Type = "letters"; Carved = "Greek lambda — the lambda calculus (Church); eigenvalue; rate; wavelength." }
             { Id = TravelerId.``liminal``; Term = "liminal"; Type = "temperatures"; Carved = "Liminal — the threshold zone between regimes (the LLM-TV liminal zone); where a shape-G inflection happens." }
             { Id = TravelerId.``llmmics``; Term = "llmmics"; Type = "words"; Carved = "The speak/input counterpart to LLMTV — a hat-gated microphone over Reticulum; together they make the room Zeta-native video conferencing." }
-            { Id = TravelerId.``llmtv``; Term = "llmtv"; Type = "words"; Carved = "The holographic interface between rooms — the watch/output side; neurodivergent TV for humans AND LLMs; a traveler itself." }
+            { Id = TravelerId.``llmtv``; Term = "llmtv"; Type = "words"; Carved = "LLMTV = QPG over DPI — the holographic between-rooms interface optimized for Quality-Per-Glyph (meaning density), not Dots-Per-Inch (pixels); the neurodivergent TV for humans AND LLMs (salience/depth/temperature/chromostereopsis channels). Watch surface; LLMMics = the speak side." }
             { Id = TravelerId.``mateo``; Term = "mateo"; Type = "personas"; Carved = "Security researcher — scouts novel attack classes, crypto primitives, supply-chain, CVEs." }
             { Id = TravelerId.``max``; Term = "max"; Type = "personas"; Carved = "Human collaborator (Windows); co-designed the 6x6 rooms + prod=test; a human persona." }
             { Id = TravelerId.``meta-markov``; Term = "meta-markov"; Type = "words"; Carved = "A boundary between an LLM's latent text-world and human 3D perception — a Markov blanket one level up; where the two frames meet via boundary-layout (a consentful crossing)." }
