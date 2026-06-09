@@ -29,6 +29,12 @@ jobs:
       - name: install keyring tool deps
         working-directory: tools/setup/persona-keys
         run: bun install
-      - name: keyring DST — golden byte-lock + 1000x determinism + rotation
+      - name: keyring DST — derivation byte-lock + 1000x determinism + rotation
         working-directory: tools/setup/persona-keys
         run: bun test gen.test.ts keyring.dst1000.test.ts keyring.rotate.test.ts
+      - name: dual-key set — no-single-key invariants + 1000x gapless rotation (K3)
+        working-directory: tools/setup/persona-keys
+        run: bun test keyset.test.ts keyset.dst1000.test.ts
+      - name: keyring 4x4 — serializer byte-lock + JSON==CBOR==XML commute
+        working-directory: tools/setup/persona-keys
+        run: bun test keyring-4x4.test.ts
