@@ -93,7 +93,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     }
 
     // ── management plane: /api/resources/:resource/* ───────────────────
-    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|dashboard|metrics|logs|traces|events|files|access|config|lifecycle|exec)$/);
+    const mgmt = path.match(/^\/api\/resources\/([^/]+)\/(info|dashboard|metrics|logs|traces|events|files|access|config|lifecycle|exec|query)$/);
     if (mgmt) {
       if (!data.ops) return json({ error: "management ops not available on this backend" }, 405);
       const resource = decodeResource(mgmt[1]!);
@@ -115,6 +115,7 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
         const b = (await req.json().catch(() => ({}))) as Record<string, unknown>;
         if (op === "config") return json(await data.ops.applyConfig(resource, b as Partial<ResourceConfig>));
         if (op === "exec") return json(await data.ops.exec(resource, String(b.cmd ?? "")));
+      if (op === "query") return json(await data.ops.query(resource, String(b.sql ?? "")));
         if (op === "files") {
           const file = b.file as { name?: string; size?: number } | undefined;
           if (!file?.name || typeof file.size !== "number") return json({ error: "file{name,size} required" }, 400);

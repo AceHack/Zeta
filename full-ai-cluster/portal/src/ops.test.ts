@@ -30,6 +30,18 @@ describe("DemoOps", () => {
     if (wk.kind === "worker") expect(wk.successRatePct).toBeGreaterThan(0);
   });
 
+  test("query: SELECT returns rows; writes are refused; \\dt lists tables", async () => {
+    const o = new DemoOps();
+    const sel = await o.query("acme/orders-db", "SELECT * FROM orders LIMIT 10");
+    expect(sel.columns).toContain("status");
+    expect(sel.rows.length).toBeGreaterThan(0);
+    expect(sel.error).toBeUndefined();
+    const dt = await o.query("acme/orders-db", "\\dt");
+    expect(dt.rows.some((r) => r.includes("orders"))).toBe(true);
+    const write = await o.query("acme/orders-db", "DELETE FROM orders");
+    expect(write.error).toMatch(/read-only|SELECT/);
+  });
+
   test("game dashboard reflects map override + player cap from config", async () => {
     const o = new DemoOps();
     await o.applyConfig("acme/friday-sandbox", { values: { MAP: "gm_construct", MAXPLAYERS: "48" } });

@@ -94,6 +94,15 @@ export interface AccessInfo {
   sftp?: { host: string; port: number; user: string; path: string; note: string };
 }
 
+/** Result of running a SQL query (the database Query console). */
+export interface QueryResult {
+  columns: string[];
+  rows: Array<Array<string | number>>;
+  rowCount: number;
+  durationMs: number;
+  error?: string;
+}
+
 /** Type-specific dashboard data — each resource kind surfaces its own concerns. */
 export type Dashboard =
   | {
@@ -146,6 +155,8 @@ export interface ResourceOps {
   info(resource: string): Promise<{ pods: PodInfo[] }>;
   /** Resource-type-specific dashboard (game/database/web/worker). */
   dashboard(resource: string): Promise<Dashboard>;
+  /** Run a SQL query against a database resource (the Query console). */
+  query(resource: string, sql: string): Promise<QueryResult>;
   metrics(resource: string): Promise<Metrics>;
   logs(resource: string, opts?: { tail?: number }): Promise<LogLine[]>;
   /** Recent distributed traces (most recent first). */

@@ -102,6 +102,8 @@ export interface MemoryUsage {
   totalBytes: number;
 }
 
+export interface QueryResult { columns: string[]; rows: Array<Array<string | number>>; rowCount: number; durationMs: number; error?: string }
+
 export type Dashboard =
   | { kind: "game"; status: string; game: string; map: string; gamemode: string; players: { online: number; max: number }; address: string; tickrate: number; uptime: string; recentJoins: Array<{ name: string; at: string }> }
   | { kind: "database"; status: string; engine: string; connections: { active: number; max: number }; sizeMi: number; tables: number; queriesPerSec: number; cacheHitPct: number; replication: string; topTables: Array<{ name: string; rows: number; sizeMi: number }> }
@@ -141,6 +143,7 @@ export const api = {
   memory: () => j<MemoryUsage>("/api/memory"),
   info: (r: string) => j<{ pods: PodInfo[] }>(`/api/resources/${enc(r)}/info`).then((d) => d.pods),
   dashboard: (r: string) => j<Dashboard>(`/api/resources/${enc(r)}/dashboard`),
+  query: (r: string, sql: string) => j<QueryResult>(`/api/resources/${enc(r)}/query`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sql }) }),
   metrics: (r: string) => j<Metrics>(`/api/resources/${enc(r)}/metrics`),
   logs: (r: string) => j<{ lines: LogLine[] }>(`/api/resources/${enc(r)}/logs`).then((d) => d.lines),
   traces: (r: string) => j<{ traces: Trace[] }>(`/api/resources/${enc(r)}/traces`).then((d) => d.traces),

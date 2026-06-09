@@ -133,6 +133,25 @@ export class DemoOps implements ResourceOps {
     };
   }
 
+  async query(_resource: string, sql: string): Promise<import("./ops.ts").QueryResult> {
+    const t = sql.trim().toLowerCase();
+    const ms = 4 + (seed(sql) % 40);
+    if (!t) return { columns: [], rows: [], rowCount: 0, durationMs: 0 };
+    if (/^(insert|update|delete|create|drop|alter|truncate|grant|revoke)\b/.test(t))
+      return { columns: [], rows: [], rowCount: 0, durationMs: ms, error: "read-only console: only SELECT / \\dt are permitted here. Use a migration for writes." };
+    if (/^\\dt|information_schema|pg_tables|list tables/.test(t))
+      return { columns: ["schema", "name", "rows", "size"], rows: [["public", "orders", 1_240_000, "820 MB"], ["public", "line_items", 5_800_000, "2.4 GB"], ["public", "customers", 84_000, "96 MB"]], rowCount: 3, durationMs: ms };
+    if (/count\(\*\).*orders|count.*from orders/.test(t)) return { columns: ["count"], rows: [[1_240_217]], rowCount: 1, durationMs: ms };
+    if (/from\s+orders/.test(t))
+      return { columns: ["id", "customer_id", "total", "status", "created_at"], rows: [[10241, 88123, "129.00", "shipped", "2026-06-08 11:02"], [10242, 12009, "54.50", "paid", "2026-06-08 11:14"], [10243, 88123, "212.99", "pending", "2026-06-08 11:41"]], rowCount: 3, durationMs: ms };
+    if (/from\s+customers/.test(t))
+      return { columns: ["id", "email", "created_at"], rows: [[88123, "ace@example.com", "2025-12-01"], [12009, "freeman@example.com", "2026-02-14"]], rowCount: 2, durationMs: ms };
+    if (/^select\s+version|version\(\)/.test(t)) return { columns: ["version"], rows: [["PostgreSQL 16.2 on x86_64-pc-linux-gnu"]], rowCount: 1, durationMs: ms };
+    if (/^(insert|update|delete|create|drop|alter|truncate)/.test(t)) return { columns: [], rows: [], rowCount: 0, durationMs: ms, error: "read-only console: only SELECT / \\dt are permitted here. Use a migration for writes." };
+    if (/^select/.test(t)) return { columns: ["?column?"], rows: [["ok"]], rowCount: 1, durationMs: ms };
+    return { columns: [], rows: [], rowCount: 0, durationMs: ms, error: `syntax error near "${t.split(/\s+/)[0]}"` };
+  }
+
   async metrics(resource: string): Promise<Metrics> {
     const base = seed(resource);
     const cpuLimit = GAME(resource) ? 2000 : DB(resource) ? 1000 : 1000;

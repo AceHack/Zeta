@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Boxes, CalendarClock, FolderTree, Gauge, Globe, ListTree, MessagesSquare, Plug,
-  Play, Power, RefreshCw, RotateCw, ScrollText, Settings2, Sliders, TerminalSquare, Trash2, TriangleAlert, Waypoints,
+  Boxes, CalendarClock, FolderTree, Gauge, Globe, HardDriveDownload, ListTree, Map as MapIcon, MessagesSquare, Plug,
+  Play, Power, RefreshCw, RotateCw, ScrollText, Settings2, Sliders, Table2, TerminalSquare, Trash2, TriangleAlert, Users, Waypoints,
 } from "lucide-react";
 import {
   api, type K8sEvent, type Metrics, type PodInfo, type ResourceConfig, type ResourceVM,
@@ -19,10 +19,12 @@ import { ResourceDashboard } from "@/components/Dashboards";
 import { LogsView } from "@/components/LogsView";
 import { TracesView } from "@/components/TracesView";
 import { ConnectionsTab, RoutesTab, ScheduleTab } from "@/components/TypeTabs";
+import { BackupsTab, QueryTab, TablesTab } from "@/components/DatabaseTabs";
+import { MapsTab, PlayersTab } from "@/components/GameTabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-type Tab = "overview" | "metrics" | "logs" | "traces" | "console" | "files" | "query" | "connections" | "routes" | "schedule" | "config" | "events" | "room" | "danger";
+type Tab = "overview" | "metrics" | "logs" | "traces" | "console" | "files" | "query" | "tables" | "backups" | "players" | "maps" | "connections" | "routes" | "schedule" | "config" | "events" | "room" | "danger";
 type TabDef = { id: Tab; label: string; icon: typeof Gauge };
 
 const T: Record<string, TabDef> = {
@@ -33,6 +35,10 @@ const T: Record<string, TabDef> = {
   console: { id: "console", label: "Console", icon: TerminalSquare },
   files: { id: "files", label: "Files", icon: FolderTree },
   query: { id: "query", label: "Query", icon: TerminalSquare },
+  tables: { id: "tables", label: "Tables", icon: Table2 },
+  backups: { id: "backups", label: "Backups", icon: HardDriveDownload },
+  players: { id: "players", label: "Players", icon: Users },
+  maps: { id: "maps", label: "Maps", icon: MapIcon },
   connections: { id: "connections", label: "Connections", icon: Plug },
   routes: { id: "routes", label: "Routes", icon: Globe },
   schedule: { id: "schedule", label: "Schedule", icon: CalendarClock },
@@ -47,9 +53,13 @@ function tabsFor(category: string): TabDef[] {
   const common = [T.overview!, T.metrics!, T.logs!, T.traces!];
   const tail = [T.config!, T.events!, T.room!, T.danger!];
   switch (category) {
-    case "game": return [...common, T.console!, T.files!, ...tail];
-    case "database": return [...common, T.connections!, ...tail]; // no shell/files for a DB
+    // game: live roster + map control + RCON console + SFTP files
+    case "game": return [...common, T.players!, T.maps!, T.console!, T.files!, ...tail];
+    // database: SQL query console + schema browser + connections + backups — no shell/files
+    case "database": return [...common, T.query!, T.tables!, T.connections!, T.backups!, ...tail];
+    // web: routes/domains + a shell console
     case "web": return [...common, T.routes!, T.console!, ...tail];
+    // worker: schedule/runs + a shell console
     default: return [...common, T.schedule!, T.console!, ...tail];
   }
 }
@@ -118,7 +128,11 @@ export function ResourceConsole({ resource, onBack, onChanged }: { resource: Res
         {tab === "logs" && <LogsView fqn={fqn} admin={resource.admin} />}
         {tab === "traces" && <TracesView fqn={fqn} />}
         {tab === "console" && <TerminalTab fqn={fqn} />}
-        {tab === "query" && <TerminalTab fqn={fqn} />}
+        {tab === "query" && <QueryTab fqn={fqn} />}
+        {tab === "tables" && <TablesTab fqn={fqn} />}
+        {tab === "backups" && <BackupsTab fqn={fqn} />}
+        {tab === "players" && <PlayersTab fqn={fqn} />}
+        {tab === "maps" && <MapsTab fqn={fqn} onChanged={onChanged} />}
         {tab === "files" && <FileExplorer fqn={fqn} category={resource.category} />}
         {tab === "connections" && <ConnectionsTab fqn={fqn} />}
         {tab === "routes" && <RoutesTab fqn={fqn} />}
