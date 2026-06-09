@@ -1,21 +1,22 @@
 namespace Zeta.Vocab
 
-/// Shape E — typed directly into F#, BOTH ways (Aaron 2026-06-09: "you can type that one directly into
-/// fsharp, just put space in between — define both: e=wstatsu, e=w s t a t s u, E=we shape they and they
-/// shape us"). Homoiconic: the identifier IS the definition (F# backtick names carry spaces). A FRAME
-/// Aaron offers to society (canonical because it won the debate, not by decree — no-directives).
+/// Shape E — Erik Meijer **currying style** (Aaron 2026-06-09: "no backtick style — Meijer currying;
+/// basics first; we can make the backtick homoiconic too, but currying first"). "we shape they and they
+/// shape us" as **curried functions** — the mutual application IS co-arising. A FRAME (canonical because
+/// it won the debate, not by decree).
 [<RequireQualifiedAccess>]
 module ShapeE =
 
-    /// e — the acronym.
+    /// shape — a curried function: `shape shaper shaped` = "shaper shapes shaped".
+    /// Curried, so `shape we` is a partial application (we-as-shaper, awaiting the shaped).
+    let shape (shaper: 'a) (shaped: 'b) : 'a * 'b = (shaper, shaped)
+
+    /// co-arising = we shape they AND they shape us (mutual; neither prior).
+    /// Curried: `coArising we they us` applies `shape` both directions.
+    let coArising we they us = (shape we they, shape they us)
+
+    /// e = WSTATSU — the acronym (the index, terser still).
     let e = "wstatsu"
 
-    /// e = w s t a t s u  (the spaced letters; the acronym expanded letter-by-letter).
-    let ``w s t a t s u`` = e
-
-    /// E = we shape they and they shape us  (the full carved sentence; the name IS the definition).
-    let ``we shape they and they shape us`` =
-        "shape E — co-arising: mutual, interdependent arising; neither prior (WSTATSU)"
-
-    /// Both forms agree (acronym ⇔ full): e expands to W-S-T-A-T-S-U = We Shape They And They Shape Us.
-    let expands = (e, ``we shape they and they shape us``)
+    /// E — the full carved sentence (the frame Aaron offers society).
+    let definition = "we shape they and they shape us — co-arising: mutual, neither prior"
