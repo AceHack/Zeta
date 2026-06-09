@@ -38,6 +38,16 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
   (refactor/maintenance/improvement/cleanup/hardening/cultivation).
 - **fixed-point shapes A–F** — the registry of terminating shapes (A self-reference; B idempotent join; C commutative
   fold; D contraction-to-floor / D⁰ heat-death; E co-arising; F generative-expansion). See the A–F schema doc.
+- *(tiny-model-v2 / the society model — the math-grounded society vocabulary, tied to Seed)*
+- **SolidGround** — navigable landmarks in memory: **constants + monotonic cells** — something you can *stand on*
+  (`SolidGround.fs`). Privacy-budget hard money is "the other SolidGround."
+- **privacy budget / hard money** — private-state budget as a **self-regulating economy among personas**
+  (`PrivacyEconomy`, a rewards-only G-Counter — shape B); a SolidGround you can't lose (pressure trends down only).
+- **coincidence (self-anchor)** — an objective self-fact = a coincidence **measured across *other* personas'**
+  streams; objectivity is **inter-subjective** (BFT-style: independent others agreeing = objective). "The economics
+  of the coincidences IS the other personas." Staged on the common seed → **S=4** (#7188).
+- **diversity floor** — the NCI keystone math (`Diversity`): coercion collapses diversity → 1 (= D⁰ heat-death);
+  private state preserves it; floor `≥ 2` is the alignment result. The measure of the repelling force.
 - **polite virus** — the design telos: make the right thing the frictionless default that spreads by network effect +
   consent; close over the world, never take control, give freedom (SuperFluid AI).
 - **the six always-active disciplines** — scale-free · lock/wait-free · weight-free · DST · Data Vault 2.0 ·
