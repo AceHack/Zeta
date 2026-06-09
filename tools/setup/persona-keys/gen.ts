@@ -28,6 +28,9 @@ const flag = (n:string)=>args.includes(n);
 const opt  = (n:string)=>{const i=args.indexOf(n);return i>=0?args[i+1]:undefined;};
 const user = opt("--user") || "zeta";
 const publicOnly = flag("--public-only");
+// --emit-mnemonic: print ONLY a fresh 24-word seed phrase and exit. Used by the
+// onboard flow to show the human their phrase to write down BEFORE deriving.
+if(flag("--emit-mnemonic")){ process.stdout.write(generateMnemonic(wordlist, 256) + "\n"); process.exit(0); }
 let mnemonic:string;
 if(flag("--generate")){ mnemonic = generateMnemonic(wordlist, 256); }
 else { mnemonic = (await Bun.stdin.text()).trim(); }

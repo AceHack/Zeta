@@ -51,15 +51,37 @@ spire / trust-manager / headscale / Nostr web-of-trust extend it later.
 eventually.** GitHub is merely the bootstrap provider, never the mandated one
 (traveler frame: recognize as you see fit, no imposed registry).
 
+## New-maintainer onboarding blueprint — GENERATE-THEN-ROTATE
+
+The easy, stupid-proof path (Aaron 2026-06-09: *"act like I'm stupid, should not
+be hard"*). Two steps, and it **exercises both code paths from the jump**:
+
+1. **Otto bootstraps (the awkward bits).** Otto runs `generate <name>` — derives the
+   whole keyring, stores the private bits in the sink, publishes your pubkeys to
+   `maintainers/<name>/`. You're running immediately; you never had to touch a seed.
+2. **You take self-custody — `rotate`.** You run `keyring.sh rotate <name>` and pick:
+   - **[g]enerate** — a fresh seed phrase is **shown to you once**. **Write it on
+     METAL** (fireproof/waterproof) or paper, in 2 safe places. Never photograph it,
+     never paste it anywhere digital. Type `SAVED` to continue. *(No CLI password
+     manager for the root seed — physical/metal is the primary.)*
+   - **[i]mport** — paste a seed you already hold (typed hidden, never logged).
+   Then the keyring is re-derived from *your* seed, re-stored, and your pubkeys
+   re-published — superseding Otto's bootstrap. Now **you** hold the root.
+
+Generate-then-rotate means: Otto does the hard setup, you own the seed, and both
+the `generate` and `rotate` paths are proven working on day one.
+
 ## Usage
 
 ```bash
-# Persona (fresh seed in-process) -> Vault, pubkeys to repo:
+# Persona (fresh seed in-process, seed not shown) -> Vault, pubkeys to repo:
 keyring.sh generate otto --vault zeta/personas/otto
 # Persona, github-free mode:
 keyring.sh generate otto --gh-secret ZETA_PERSONA_OTTO_KEYRING
-# Human resets keys WITHOUT sharing the seed (typed hidden); only pubkeys emitted:
-keyring.sh import aaron --public-only --out maintainers/aaron
+# Maintainer bootstrap (Otto does the awkward bits):
+keyring.sh generate aaron --gh-secret ZETA_MAINTAINER_AARON_KEYRING --out maintainers/aaron
+# Maintainer self-custody (you pick + write down the seed; supersedes bootstrap):
+keyring.sh rotate aaron --gh-secret ZETA_MAINTAINER_AARON_KEYRING --out maintainers/aaron
 ```
 
 ## Closure: self-bootstrapping deps, NOT an install.sh special-case

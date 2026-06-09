@@ -2,24 +2,32 @@
 # Zeta keyring — one BIP-39 seed phrase -> every key type, type-separated paths.
 # SECURITY INVARIANTS:
 #   1. The seed phrase is NEVER passed as a command-line argument (ps / shell
-#      history would capture it). It is either generated in-process (`generate`)
-#      or read with `read -s` (no echo, not added to history) and piped via STDIN.
-#   2. Private key material NEVER goes to stdout/history by default. It goes to
-#      Vault (preferred) or a umask-077 file the operator controls.
+#      history would capture it). It is generated in-process, or read with
+#      `read -s` (no echo, not added to history) and piped via STDIN.
+#   2. Private key material NEVER goes to stdout/history by default. It goes to a
+#      sink (Vault or a GitHub secret). The temp file is umask-077 + shred-on-exit.
 #   3. Public artifacts (pubkeys / addresses / npub) are safe to publish and are
-#      written to maintainers/<name>/ for the human-trust roots in main.
+#      written to maintainers/<name>/ — the GitHub/main human-trust root.
 #
-# Usage:
-#   keyring.sh generate <name> [--public-only] [--vault PATH | --out DIR]
-#   keyring.sh import   <name> [--public-only] [--vault PATH | --out DIR]
-#     generate = fresh 24-word seed made in-process (personas, or a new human).
-#     import   = bring your own seed; you type it hidden (read -s). Nothing leaks.
+# Modes:
+#   generate <name>  fresh seed made in-process, seed NOT shown (personas, or the
+#                    Otto-runs-the-awkward-bootstrap step for a new maintainer).
+#   import   <name>  bring your own seed; typed hidden (read -s). Nothing leaks.
+#   rotate   <name>  the NEW-MAINTAINER self-custody step: choose [g]enerate (the
+#                    seed is SHOWN once so you write it down — physical-first) or
+#                    [i]mport, then re-derive + re-store + re-publish pubkeys.
+#
+# The onboarding blueprint is GENERATE-THEN-ROTATE (Aaron 2026-06-09): Otto runs
+# `generate` (does the hard bits, you're running fast), then you run `rotate` to
+# take a seed you pick and hold — which also proves both code paths from the jump.
+#
+# Sinks:  --vault PATH (equipment/cluster)  |  --gh-secret NAME (github-free)
+# Out:    --out DIR (default maintainers/<name>)   Flags: --public-only
 #
 # Examples:
-#   # Persona otto: fresh seed, private bits straight to Vault, pubkeys to repo
-#   keyring.sh generate otto --vault zeta/personas/otto
-#   # Aaron resets his keys WITHOUT ever sharing the seed; only pubkeys emitted
-#   keyring.sh import aaron --public-only --out maintainers/aaron
+#   keyring.sh generate otto   --vault zeta/personas/otto          # persona bootstrap
+#   keyring.sh generate aaron  --gh-secret ZETA_MAINTAINER_AARON_KEYRING --out maintainers/aaron
+#   keyring.sh rotate   aaron  --gh-secret ZETA_MAINTAINER_AARON_KEYRING --out maintainers/aaron
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -29,17 +37,16 @@ mode="${1:-}"; name="${2:-}"; shift 2 2>/dev/null || true
 public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"
 while [ $# -gt 0 ]; do case "$1" in
   --public-only) public_only="--public-only";;
-  --vault) vault_path="${2:?}"; shift;;       # equipment mode: cluster Vault
-  --gh-secret) gh_secret="${2:?}"; shift;;     # github-free mode: GH Actions secret
+  --vault) vault_path="${2:?}"; shift;;
+  --gh-secret) gh_secret="${2:?}"; shift;;
   --gh-repo) gh_repo="${2:?}"; shift;;
   --out) out_dir="${2:?}"; shift;;
   *) echo "unknown arg: $1" >&2; exit 2;;
 esac; shift; done
 
 [ -n "$mode" ] && [ -n "$name" ] || { sed -n '2,30p' "$0"; exit 2; }
-[ "$mode" = "generate" ] || [ "$mode" = "import" ] || { echo "mode must be generate|import" >&2; exit 2; }
+case "$mode" in generate|import|rotate) ;; *) echo "mode must be generate|import|rotate" >&2; exit 2;; esac
 
-# deps (idempotent; bun installs into this dir only)
 command -v bun >/dev/null || { echo "bun required (closed over in install.sh)"; exit 1; }
 [ -d "$HERE/node_modules" ] || (cd "$HERE" && bun install >/dev/null)
 
@@ -48,15 +55,55 @@ tmp="$(mktemp -t zeta-keyring.XXXXXX.json)"
 cleanup(){ rm -f "$tmp" 2>/dev/null; (command -v shred >/dev/null && shred -u "$tmp" 2>/dev/null) || true; unset SEED; }
 trap cleanup EXIT INT TERM
 
-if [ "$mode" = "generate" ]; then
-  bun "$HERE/gen.ts" --generate --user "$name" $public_only > "$tmp"
-else
-  # import: read the seed hidden; read does not echo and is not added to history
-  printf 'Paste %s seed phrase (hidden, never stored/printed): ' "$name" >&2
-  IFS= read -rs SEED; echo >&2
-  printf '%s' "$SEED" | bun "$HERE/gen.ts" --user "$name" $public_only > "$tmp"
-  unset SEED
-fi
+# Show a freshly-generated seed to the human, physical-first, and require ack.
+show_and_confirm_seed() { # $1 = mnemonic ; prints only to stderr (the tty)
+  {
+    echo
+    echo "============================================================"
+    echo "  YOUR SEED PHRASE — write it on PAPER now (24 words):"
+    echo "============================================================"
+    echo
+    echo "  $1"
+    echo
+    echo "  This is the ONLY thing that recovers ALL your keys + funds."
+    echo "  * Stamp it on METAL (fireproof/waterproof) — or paper — in 2 safe places."
+    echo "  * Do NOT photograph it, screenshot it, or paste it anywhere digital/online."
+    echo "  * No one (not even Otto) can recover it for you if lost."
+    echo "============================================================"
+    printf '  Type SAVED once it is written down: '
+  } >&2
+  local ack; IFS= read -r ack
+  [ "$ack" = "SAVED" ] || { echo "not confirmed (expected SAVED); aborting — nothing stored." >&2; exit 1; }
+}
+
+# Produce the keyring JSON into $tmp from the chosen seed source.
+case "$mode" in
+  generate)
+    bun "$HERE/gen.ts" --generate --user "$name" $public_only > "$tmp"
+    ;;
+  import)
+    printf 'Paste %s seed phrase (hidden, never stored/printed): ' "$name" >&2
+    IFS= read -rs SEED; echo >&2
+    printf '%s' "$SEED" | bun "$HERE/gen.ts" --user "$name" $public_only > "$tmp"; unset SEED
+    ;;
+  rotate)
+    printf '%s: [g]enerate a new seed you will write down, or [i]mport one you already have? [g/i] ' "$name" >&2
+    IFS= read -r choice
+    case "$choice" in
+      g|G)
+        SEED="$(bun "$HERE/gen.ts" --emit-mnemonic)"
+        show_and_confirm_seed "$SEED"
+        printf '%s' "$SEED" | bun "$HERE/gen.ts" --user "$name" $public_only > "$tmp"; unset SEED
+        ;;
+      i|I)
+        printf 'Paste %s seed phrase (hidden): ' "$name" >&2
+        IFS= read -rs SEED; echo >&2
+        printf '%s' "$SEED" | bun "$HERE/gen.ts" --user "$name" $public_only > "$tmp"; unset SEED
+        ;;
+      *) echo "expected g or i; aborting." >&2; exit 2;;
+    esac
+    ;;
+esac
 
 # ---- public artifacts -> maintainers/<name>/ (safe to commit; the trust root) ----
 dest="${out_dir:-$REPO/maintainers/$name}"
@@ -78,9 +125,6 @@ print(f"public artifacts -> {dest}")
 PY
 
 # ---- private bits -> a sink (never stdout/history) ----
-# Two modes (Aaron 2026-06-09):
-#   equipment mode  -> Vault (cluster has it; preferred)
-#   github-free mode -> GitHub Actions secret ("choose your own adventure", no equipment)
 if [ -z "$public_only" ]; then
   if [ -n "$vault_path" ]; then
     command -v vault >/dev/null || { echo "vault CLI not found (set VAULT_ADDR/token)" >&2; exit 1; }
@@ -95,4 +139,7 @@ if [ -z "$public_only" ]; then
     echo "      shredded-on-exit tmp only. Re-run with a sink to persist securely."
   fi
 fi
-echo "done: $name"
+echo "done: $name ($mode)"
+if [ "$mode" = "generate" ] && [ "$name" != "" ]; then
+  case "$dest" in *maintainers*) echo "NEXT (self-custody): run 'keyring.sh rotate $name' to swap to a seed you pick + hold.";; esac
+fi
