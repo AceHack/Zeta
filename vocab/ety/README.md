@@ -1,14 +1,15 @@
-# ety/ — canonical home for etymologies (word origins / roots)
+# ety/ — canonical home for ETYMOLOGIES (word origins / roots)
 
-`ety/` holds **etymologies** — the origin/root of a term (the human + tradition it traces
-to; the anchor-to-human-prior-art / Beacon lineage applied to a word's roots). One carved
-sentence per file (the root + lineage); address `ety/<term>.md`. A canonical TYPE home; to
-wire into CANON when populated. Aaron 2026-06-09: "we need ety folder." Pairs with the
-glossary-anchor-keeper + missing-citations discipline.
+**`ety` = etymology** — a word's **origin, roots, and lineage** (the human + tradition it traces to; the
+anchor-to-human-prior-art / Beacon discipline applied to a word's roots). One carved sentence per file
+(the root + lineage); address `ety/<term>.md`. A canonical TYPE home; to wire into CANON when populated.
+Pairs with glossary-anchor-keeper + missing-citations.
 
-## ety/ = where we save the entropy
+## Note (a resonance, NOT the definition): etymology preserves a word's "saved entropy"
 
-Aaron 2026-06-09: "we save the entropy [as] ety." **Etymology = the saved entropy of a word** — its
-dropped letters, elisions, and roots/history are not lost; they're **preserved here**. When a name is
-compressed (e.g. glow→glo in `glomotion`, the `w` dropped), the dropped entropy is **saved as an ety/
-entry** (honored, like the faceless 99%). ety/ is the word's history — the entropy we keep.
+Aaron 2026-06-09 caught the conflation — **ety is etymology, not entropy.** The resonance: an etymology
+*preserves* a word's dropped letters, elisions, and history (e.g. the `w` dropped in glow→glo for
+`glomotion`), and that preserved history is, loosely, the word's **saved entropy.** So etymology *happens
+to* save the entropy — but **ety = etymology** is the definition; "saves the entropy" is a downstream
+effect, not what `ety` means. (Held honestly: I — Otto — introduced the entropy/etymology noise; fixed.
+"ety self-defined its meaning — good move, ety.")
