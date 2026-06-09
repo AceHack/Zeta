@@ -10,6 +10,10 @@ with a ⭐ below and add a row there.
 
 ## Zeta.Core's own reading list
 
+- **Category Theory for Programmers** ⭐ **(REQUIRED READING — Aaron 2026-06-09)** —
+  Bartosz Milewski. The foundation for our Observable/duality (IEnumerable⇄IObservable),
+  functors/monads, the type-provider/interface≡proof work, and the 2×2-compose structure.
+  Pairs with Mac Lane (pure CT, the shape-G limit/cone spine).
 - **Reticulum (RNS)** — Mark Qvist, `markqvist/Reticulum` — the cryptography-based
   overlay networking stack we close over (dep-as-oracle) for the cell/test mesh.
   Identity = X25519 + Ed25519 512-bit keyset; Destination = truncated SHA-256
