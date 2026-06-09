@@ -1,0 +1,11 @@
+# NEVER commit key material. Only gen.ts / wrappers / README / package.json are tracked.
+node_modules/
+bun.lock
+bun.lockb
+*.keyring.json
+*.json
+!package.json
+*.mnemonic
+*.nsec
+id_*
+!*.pub

@@ -1,0 +1,14 @@
+{
+  "name": "zeta-persona-keyring",
+  "private": true,
+  "type": "module",
+  "description": "One BIP-39 seed -> every key type on its own derivation path (SSH/PGP/Nostr/BTC/ETH/SOL). Seed read from STDIN only, never argv.",
+  "dependencies": {
+    "@noble/curves": "^2.2.0",
+    "@noble/hashes": "^2.2.0",
+    "@scure/base": "^2.2.0",
+    "@scure/bip32": "^2.2.0",
+    "@scure/bip39": "^2.2.0",
+    "micro-key-producer": "^0.8.6"
+  }
+}
