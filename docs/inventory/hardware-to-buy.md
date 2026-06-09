@@ -108,6 +108,36 @@ The **FROST threshold coordinator** is *software* on existing nodes — nothing 
 
 ---
 
+## 3. Power monitoring — 20A smart energy monitor (Goldmate UPS)
+
+**Operator intent (2026-06-09):** *"add a 20-amp smart energy monitor for monitoring Goldmate UPS power
+usage."* The 2nd k8s cluster is now up (booted off the zflash USB) — this is to meter its UPS draw.
+
+**Technical caution — most smart plugs are 15A, not 20A.** A NEMA 5-15 plug rated 15A/1875W is
+*under-rated* for a 20A circuit. For a true 20A path you need either a **20A-rated inline outlet/plug**
+(NEMA 5-20) **or** a **CT-clamp circuit monitor** (no plug rating limit — clamps the conductor). For a
+**UPS specifically**, meter the **input** side (wall → monitor → UPS) so you measure real grid draw on a
+clean sine wave; metering a UPS *output* can see modified-sine waveforms some plugs mis-read.
+
+| Option | Type | ~Price (ballpark — **confirm at purchase**) | Notes |
+|---|---|---|---|
+| **Emporia Vue (Gen 3) + CT clamp** | Circuit-level, CT-clamp | ~$130–170 | **No 20A plug limit** (clamps the feed); local API + Home-Assistant friendly; best for whole-UPS metering |
+| **Shelly EM / Pro EM + CT** | Circuit-level, CT-clamp | ~$40–90 | Local HTTP/MQTT API (no cloud needed), HA-native; great for self-hosted; 1–2 CT channels |
+| **Legrand radiant Smart 20A Outlet (Netatmo)** | Hardwired 20A outlet, NEMA 5-20 | ~$50–70 | True 20A; replaces an existing outlet; app monitoring (cloud) |
+| **Tuya/"kayesmart" WiFi 20A Plug (4400W) + power monitor** | Inline plug, 20A | ~$20–35 | Plug-and-play 20A; use **LocalTuya** for local/HA control (stock app is cloud) |
+| ~~Govee / Emporia / Kasa smart plug~~ | Inline plug, **15A only** | ~$15–30 | **Under-rated for 20A — do not use on a 20A UPS feed** (listed to rule out) |
+
+**Recommendation:** for a UPS, prefer a **CT-clamp circuit monitor** — **Shelly EM** (cheap, fully
+local API, HA-native — best fit for a self-hosted cluster) or **Emporia Vue** (slightly pricier, easy
+app + local). CT-clamp sidesteps the 20A plug-rating problem entirely and gives clean local telemetry
+you can pull into cluster dashboards. If you'd rather plug-and-play, a **20A-rated inline** (Legrand
+radiant or a Tuya 20A via LocalTuya) — **not** a 15A plug. **Avoid cloud-only** (stock Govee/Tuya app)
+for a self-hosted setup; choose local-API (Shelly / Emporia / LocalTuya). Confirm 20A rating, NEMA plug
+type, and the Goldmate's input connector before buying. *(Operator decides — budget gate; this is the
+list, not an order.)*
+
+---
+
 ## Quick decision summary
 
 - **FPGA now:** ~$1,000–1,700, ~8–12 ECP5/Gowin/iCE40 open-bitstream boards (ULX3S-led). Skip Xilinx.
@@ -115,3 +145,6 @@ The **FROST threshold coordinator** is *software* on existing nodes — nothing 
 - **Key custody hardware:** ~$1,300 (2× YubiHSM 2) to start → ~$3,150 (3× YubiHSM 2 + NetHSM) for a
   4-guard root; +~$150 for 2 Tillitis TKey to experiment.
 - **Confidential compute:** later (one SEV-SNP node when the design reaches Layer 4).
+- **Power monitoring now:** ~$40–90 — a **CT-clamp** monitor (Shelly EM, local API, or Emporia Vue) on
+  the Goldmate UPS input; sidesteps the 20A plug-rating problem and gives local telemetry. Avoid 15A
+  smart plugs on a 20A feed; avoid cloud-only apps for the self-hosted cluster.
