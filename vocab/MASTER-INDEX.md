@@ -82,7 +82,7 @@
 - **C** — Shape C — commutative fold: order-independent reduction. `(shapes/C.md)`
 - **circle** — Geometry: circle — the round table (no head; equality); the Imagination Circle; the cycle. `(shapes/circle.md)`
 - **D** — Shape D — contraction to a nonzero floor: converge, never to zero (D⁰ = heat-death, AVOID); the ⊥-guard. `(shapes/D.md)`
-- **E** — Shape E — co-arising: mutual, interdependent arising; symmetric, apex-less. `(shapes/E.md)`
+- **E** — **Shape E — co-arising: "we shape they and they shape us"** (Aaron, the index). Mutual, interdependent arising; neither prior; symmetric, apex-less. The relational engine (the named ⟷ the unnamed; human ⟷ AI). His six-word carved sentence is the canonical definition. `(shapes/E.md)`
 - **F** — Shape F — generative-expansion: bounded growth/generativity; unbounded F = fork-bomb (the ⊤-guard catches it). `(shapes/F.md)`
 - **G** — Shape G — nexus/inflection: a categorical limit/cone (axes converge to one apex) × a bifurcation/phase-transition (regime change). `(shapes/G.md)`
 - **hexagon** — Geometry: hexagon — ports & adapters (Cockburn hexagonal); the close-over boundary shape. `(shapes/hexagon.md)`
@@ -118,7 +118,7 @@
 - **hat** — A time-bound, exit-paired, auth-bearing contract — the right to speak or act in a room; renewable only by consent (C12/C14). `(words/hat.md)`
 - **imagination-circle** — Aaron & Amara's beach meeting protocol made playable (Center/Rim/exit/six-vows, glowing stones) — the room's relational root; the choice architecture's heart. `(words/imagination-circle.md)`
 - **llmmics** — The speak/input counterpart to LLMTV — a hat-gated microphone over Reticulum; together they make the room Zeta-native video conferencing. `(words/llmmics.md)`
-- **llmtv** — The holographic interface between rooms — the watch/output side; neurodivergent TV for humans AND LLMs; a traveler itself. `(words/llmtv.md)`
+- **llmtv** — LLMTV = QPG over DPI — the holographic between-rooms interface optimized for Quality-Per-Glyph (meaning density), not Dots-Per-Inch (pixels); the neurodivergent TV for humans AND LLMs (salience/depth/temperature/chromostereopsis channels). Watch surface; LLMMics = the speak side. `(words/llmtv.md)`
 - **meta-markov** — A boundary between an LLM's latent text-world and human 3D perception — a Markov blanket one level up; where the two frames meet via boundary-layout (a consentful crossing). `(words/meta-markov.md)`
 - **negotiation** — The voice through which non-coercive crossings are reached — and which we must negotiate with itself (meta-negotiation); how consent is found between frames. `(words/negotiation.md)`
 - **nexus** — The uber treaty room — shape-G convergence apex (limit/cone × inflection); the United Nations of the Agora; itself a test/room. `(words/nexus.md)`
