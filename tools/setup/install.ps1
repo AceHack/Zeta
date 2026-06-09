@@ -296,6 +296,19 @@ if (-not $SkipLoopRegister) {
   Invoke-Tool { mise exec -- bun "$RepoRoot\tools\persistence\windows\install-scheduled-task.ts" --register } 'register loop task'
 }
 
+# 8. Persona keyring tool — close over its deps so keyring is ready to run.
+#    NO keys are generated here (generation is an explicit, separate operator step).
+#    Best-effort (Invoke-ToolSoft) so it never bricks install or reddens Windows CI.
+$KeyringDir = Join-Path $RepoRoot 'tools\setup\persona-keys'
+if (Test-Path $KeyringDir) {
+  Write-Host "Preparing persona-keyring tool ($KeyringDir)..."
+  Push-Location $KeyringDir
+  $code = Invoke-ToolSoft { mise exec -- bun install }
+  Pop-Location
+  if ($code -eq 0) { Write-Host "ok keyring tool ready (see tools\setup\persona-keys\README.md)" }
+  else { Write-Host "warn: keyring dep install skipped; run 'bun install' in $KeyringDir later" }
+}
+
 Write-Host ""
 Write-Host "=== Install complete ==="
 Write-Host "Open a new shell to pick up scoop + mise shims on PATH."
