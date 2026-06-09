@@ -10,3 +10,4 @@ bun.lockb
 id_*
 !*.pub
 !golden-vectors-keyring.json
+!golden-vectors-keyring-4x4.json
