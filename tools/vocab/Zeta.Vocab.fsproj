@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Isolated: reified vocab for the math team. NOT in Zeta.sln (won't affect the main build gate). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Vocab.Generated.fs" />
+  </ItemGroup>
+</Project>

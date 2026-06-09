@@ -40,5 +40,7 @@ jobs:
         run: bun tools/hygiene/build-grams-view.ts --check
       - name: master index is fresh (the single-file cache)
         run: bun tools/hygiene/build-vocab-index.ts --check
+      - name: reified F# vocab is fresh (the math-team-facing types)
+        run: bun tools/hygiene/build-vocab-fsharp.ts --check
       - name: framework loads the master index (the DST-load test)
         run: bun test tools/hygiene/vocab-master-index.test.ts

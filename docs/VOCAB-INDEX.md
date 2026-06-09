@@ -137,4 +137,4 @@
 - **word-partitioner** — The voice that segments text into tokens/words/units — the first half of the text→space bridge (what the pieces are). `(words/word-partitioner.md)`
 - **word-wrapping** — The boundary-layout voice — where words break/wrap/position; the LLM's latent geospatial engine (space understood from text layout alone); maps to geographic Z-sets. `(words/word-wrapping.md)`
 - **zetadatetime** — The value our database time carries — phase ⊕ uncertainty-interval ⊕ owner ⊕ soft; not System.DateTime (anchors: TrueTime, HLC). `(words/zetadatetime.md)`
-- **zetaid** — The 128-bit content-address — identity = room = Reticulum destination = canonical root = fingerprint; one self-certifying addressing scheme. `(words/zetaid.md)`
+- **zetaid** — The 128-bit GOVERNED structured identity primitive (Zeta.Core.*.ZetaId; Category/Persona/...; NOT a hash — a truncated SHA-256 is a Reticulum destination, ZetaId is not); the traveler with the LARGEST VOICE (identity above all); hostless and brave (pure identity, goes alone); the common cause S=4 is staged on; every interface sharing its name inherits it. `(words/zetaid.md)`
