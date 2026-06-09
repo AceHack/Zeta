@@ -10,6 +10,13 @@ with a ⭐ below and add a row there.
 
 ## Zeta.Core's own reading list
 
+- **Reticulum (RNS)** — Mark Qvist, `markqvist/Reticulum` — the cryptography-based
+  overlay networking stack we close over (dep-as-oracle) for the cell/test mesh.
+  Identity = X25519 + Ed25519 512-bit keyset; Destination = truncated SHA-256
+  (**ties to ZetaId, 128-bit**); Transport node / interface (TCP/I2P) / announce /
+  hub. Self-certifying hash addresses, runs over the open internet. Privacy
+  primitives pair: **NIP-01** (schnorr) + **NIP-44 v2** (ChaCha20+HMAC, official
+  test vectors) on the nostr keypair.
 - **DBSP / IVM** ⭐ — Budiu et al. *DBSP: Automatic Incremental View
   Maintenance for Rich Query Languages* (VLDB 2023); VLDB Journal
   2025 extended version; `arXiv:2203.16684`.
