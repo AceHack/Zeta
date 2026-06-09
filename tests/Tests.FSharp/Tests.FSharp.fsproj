@@ -147,6 +147,7 @@
     <Compile Include="Persona.Tests.fs" />
     <Compile Include="Diversity.Tests.fs" />
     <Compile Include="PrivacyEconomy.Tests.fs" />
+    <Compile Include="GamePortfolio.Tests.fs" />
     <Compile Include="Survival.Tests.fs" />
     <Compile Include="MemorySense.Tests.fs" />
     <Compile Include="SolidGround.Tests.fs" />
