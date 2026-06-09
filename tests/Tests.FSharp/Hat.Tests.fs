@@ -49,3 +49,13 @@ let ``controls is the coordination edge to other hats/agents`` () =
 let ``a hat bundles lenses + landmarks (the role-scoped engine)`` () =
     Assert.Equal<string list>([ "pos" ], survivalHat.Lenses |> List.map (fun l -> l.Name))
     Assert.Equal<string list>([ "I"; "frame" ], Hat.landmarkCells survivalHat)
+
+[<Fact>]
+let ``hat address: meta hats are GLOBAL (^, persistent substrate); game-specific are scoped to the game fingerprint`` () =
+    let gameKey = "abc123" // a game fingerprint sha256 (truncated)
+    // survivalHat is Scope=Meta -> global, game-independent (gameKey ignored)
+    Assert.Equal("^hat/survival", Hat.address gameKey survivalHat)
+    Assert.Equal("^hat/survival", Hat.address "other-game" survivalHat) // same global address across games
+    // a game-specific hat is scoped under the game fingerprint
+    let gs = { survivalHat with Name = "brick-scout"; Scope = Hat.GameSpecific }
+    Assert.Equal("game/abc123/hat/brick-scout", Hat.address gameKey gs)

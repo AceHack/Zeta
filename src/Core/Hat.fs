@@ -58,6 +58,17 @@ module Hat =
     let gameSpecific (hats: Hat<'r> list) : Hat<'r> list =
         hats |> List.filter (fun h -> h.Scope = GameSpecific)
 
+    /// **Where a hat lives (Aaron 2026-06-08, MUMPS scoping):** a normal (game-specific) hat is **tied to its game
+    /// fingerprint** — game-scoped, transient, like a MUMPS *local*. A **meta hat lives in the persistent
+    /// substrate, outside game scope, in global/meta scope** — a MUMPS *global* (`^`), surviving across games
+    /// (anti-ephemerality, manifesto §5). `address gameKey hat` is the hat's location in the persistent
+    /// multidim array: a meta hat is a global (game-independent); a game-specific hat is scoped under `gameKey`
+    /// (its game fingerprint, `GameFingerprint`).
+    let address (gameKey: string) (hat: Hat<'r>) : string =
+        match hat.Scope with
+        | Meta -> "^hat/" + hat.Name // MUMPS global: persistent, game-independent (meta scope)
+        | GameSpecific -> "game/" + gameKey + "/hat/" + hat.Name // local: scoped to the game fingerprint
+
     /// Does this hat permit `action`? (Empty `AllowedActions` ⇒ unrestricted ⇒ always true.)
     let permits (action: bool[]) (hat: Hat<'r>) : bool =
         List.isEmpty hat.AllowedActions || List.contains action hat.AllowedActions
