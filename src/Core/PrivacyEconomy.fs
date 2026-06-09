@@ -72,3 +72,25 @@ module PrivacyEconomy =
     /// Personas ranked by current budget (the self-regulating outcome — who earned privacy).
     let ranking (ledger: Ledger) : (string * int) list =
         ledger |> Map.toList |> List.sortByDescending snd
+
+    /// **The good/bad asymmetry (Aaron 2026-06-08): `Bad` does NOT exist — "not good" ≠ "bad".** A reveal is either
+    /// confirmed **`Good`** (the mixture's confidence ≥ threshold) or **`Unknown`** — *never* "bad". We can only
+    /// confirm good (with a confidence threshold), never confirm bad; the absence of confirmation is held as
+    /// Unknown, not flipped to a negative. This is the `SoftValue`/`Predicate3`/`TriBoolean.N` never-falsely-certain
+    /// discipline applied to *good*: the middle never collapses. It is **why the economy is rewards-only** — good is
+    /// confirmable (reward it), bad is not (so never punish).
+    type Verdict =
+        | Good // confidence ≥ threshold
+        | Unknown // below threshold — NOT bad, just unconfirmed (there is no Bad case)
+
+    /// Confirm good only above a confidence threshold; otherwise `Unknown` (never `Bad`).
+    let verdict (threshold: float) (confidence: float) : Verdict =
+        if confidence >= threshold then Good else Unknown
+
+    /// **Reward only on a confirmed-`Good` verdict** (mixture `confidence` ≥ `threshold`); `Unknown` ⇒ ledger
+    /// unchanged — **no reward and no punishment** (held). Hard money preserved; the rewards-only / good-is-the-only-
+    /// confirmable-thing invariant in one function.
+    let rewardIfGood (threshold: float) (confidence: float) (gainOf: float -> int) (cap: int) (u: GoodUse) (ledger: Ledger) : Ledger =
+        match verdict threshold confidence with
+        | Good -> reward gainOf cap u ledger
+        | Unknown -> ledger

@@ -62,3 +62,16 @@ let ``HARD MONEY: budget never decreases across any sequence of rewards (G-Count
         Assert.True(now >= prev) // monotonic non-decreasing — never lost
         prev <- now
     Assert.Equal(64, prev) // 3+0+10+1+0+50
+
+[<Fact>]
+let ``good/bad asymmetry: verdict is Good (>= threshold) or Unknown — there is NO Bad`` () =
+    Assert.Equal(PrivacyEconomy.Good, PrivacyEconomy.verdict 0.7 0.8)
+    Assert.Equal(PrivacyEconomy.Unknown, PrivacyEconomy.verdict 0.7 0.5) // below threshold = Unknown, NOT bad
+
+[<Fact>]
+let ``rewardIfGood: rewards confirmed good, HOLDS on Unknown (no reward, no punishment)`` () =
+    let start = Map.ofList [ "otto", 10 ]
+    let confirmed = start |> PrivacyEconomy.rewardIfGood 0.7 0.9 gainOf 1000 { Persona = "otto"; Revealed = 5.0 }
+    Assert.Equal(15, PrivacyEconomy.budget "otto" confirmed) // confidence 0.9 >= 0.7 -> rewarded
+    let held = start |> PrivacyEconomy.rewardIfGood 0.7 0.4 gainOf 1000 { Persona = "otto"; Revealed = 5.0 }
+    Assert.Equal(10, PrivacyEconomy.budget "otto" held) // Unknown -> unchanged (held, NOT punished -> still 10)
