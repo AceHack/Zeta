@@ -8,10 +8,17 @@ to trust those."*
 
 ## The two hard rules
 
-1. **`--test`-scoped trust ONLY.** A regular `zflash` / regular ISO build / regular noun-verb **must never** trust
-   this key. It is injected into the `zeta` user's `authorized_keys` **only** when an explicit **`--test`** flag is
-   passed (a test-build path). It is **not** in `operator-ssh-keys.txt` / `maintainers/*/ssh-pubkeys.txt`
-   (the production trust set).
+1. **`--test`-scoped trust ONLY — trust is asymmetric, one-directional.** A regular `zflash` / regular ISO build /
+   regular noun-verb **must never** trust this key. The test key is injected into the `zeta` user's
+   `authorized_keys` **only** when an explicit **`--test`** flag is passed.
+   - **`--test` build trusts `{prod operator keys} ∪ {zeta-test-infra}`** — so test/QEMU machines are reachable by
+     the **real production credentials** and the QEMU suite exercises the *actual prod-credential path*, not an
+     isolated test-only path. (Aaron: *"--test can also test the prod credentials."*)
+   - **Production build trusts `{prod operator keys}` ONLY** — the test key is **never** in
+     `operator-ssh-keys.txt` / `maintainers/*/ssh-pubkeys.txt`.
+   - **The asymmetry:** *test machines may trust prod; prod never trusts test.* Adding prod keys to a test machine
+     changes nothing (they're already trusted everywhere); adding the test key to prod would be the breach — so it
+     never happens. "No one grants the test key access to real machines; test machines can trust real machines."
 2. **Private key is NEVER committed — it lives in the GH Actions secret `ZETA_TEST_INFRA_SSH_KEY`** (repo scope on
    `Lucent-Financial-Group/Zeta`; a dedicated `test` environment is the cleaner long-term home). The matching
    **public key `zeta-test-infra.pub` IS committed** here (safe — public; `--test`-scoped trust only). The QEMU
