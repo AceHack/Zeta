@@ -10,4 +10,4 @@
 #
 # Format: one OpenSSH pubkey per line; `#` comments + blank lines ignored.
 
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGTQkxT8U6CRnvNKZM9hwQZ0WhiCjNZlpqHuNeIGplxw addison-stainback
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqeJnn44wGaq6cppTSNKOZpzdSEX143/CiI0xnuKYqs addisonstainback@gmail.com (Mac.lan)

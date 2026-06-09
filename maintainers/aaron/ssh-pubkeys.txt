@@ -11,4 +11,4 @@
 #
 # Format: one OpenSSH pubkey per line; `#` comments + blank lines ignored.
 
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGTU+CghueXG43ltkRkD3Ly81/f6Z36oda45TdIvRFB acehack@Mac.lan
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBUZp95D809VZtwIJwTzARs0oKqEQlkoZ5FWxB2Cx/oX aaron_bond@yahoo.com (Mac.lan)
