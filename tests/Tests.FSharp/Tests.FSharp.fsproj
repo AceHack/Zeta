@@ -144,6 +144,7 @@
     <Compile Include="Salience.Tests.fs" />
     <Compile Include="GridBinding.Tests.fs" />
     <Compile Include="Hat.Tests.fs" />
+    <Compile Include="Persona.Tests.fs" />
     <Compile Include="Survival.Tests.fs" />
     <Compile Include="MemorySense.Tests.fs" />
     <Compile Include="SolidGround.Tests.fs" />
