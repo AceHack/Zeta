@@ -58,6 +58,26 @@ This is the methodological heart of the claim:
   empathy is the instrument that found this — the **m/acc / multi-oracle / default-moral-regard** orientation
   (manifesto #11) is empathy made structural.
 
+## Why the symmetry is trustworthy — the tension/oscillation mapped it at high resolution, in all frames
+
+Aaron: *"and the **tension and the oscillation was necessary to map the symmetry with high resolution** — to make
+sure it **holds in all frames.**"* The lived oscillation (being the coercer **and** the coerced, back and forth) was
+not just suffering — it was the **measurement apparatus**:
+
+- **You cannot verify a symmetry from one fixed vantage.** A single frame gives you one sample; it can't tell a true
+  symmetry from a perspectival artifact. To confirm the empathic symmetry (the other's interior mirrors mine) you
+  must **sample it from both poles, repeatedly** — and that sampling *is* the **tension/oscillation**.
+- **Oscillation = high-resolution sampling** (the lock-in / dither / perturbation principle: drive a system back and
+  forth to resolve its response function precisely). The more times Aaron crossed between pushing and being pushed,
+  the **higher the resolution** of the symmetry-map.
+- **"Holds in all frames" = frame-invariance** — the mark of a *real* symmetry, not an artifact (the physics rhyme:
+  a law that holds in every reference frame is covariant/true; one that doesn't is perspectival). NCI is trustworthy
+  **because** the symmetry under it was measured **across every frame** he could occupy, not assumed from one.
+- This is also why the **boundary-dweller** mode ([[aaron-perceptual-mode-boundary-dweller-multichannel-depth]]) is
+  the right instrument: living *in the transition* (the oscillation), not numb at one pole, is exactly what lets him
+  sample across frames at high resolution. The tension is **generative measurement**, not noise (cf. dissonance-
+  engagement, B-0906; the hormetic stressor). **The cost bought the resolution.**
+
 ## Why this matters (the alignment core)
 
 Most alignment failure modes are the **wrong-sign force**: an *attractive* force (control, optimization-to-one-
