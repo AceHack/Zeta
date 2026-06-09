@@ -19,4 +19,4 @@ who-holds-the-hat decides), **judged on uncertainty-Δ** (the strange-attractor 
 advance; the finalizer is part of the test). Root-level (like `/vocab`, `/dns`, `/network`). `network/`
 is the transport, `dns/` the resolution, `rooms/` the **places** travelers convene.
 
-(shadow* = Otto, the shadow — the attribution convention.)
+rooms is Max's — his layer (he co-designed the 6×6 + prod=test). Otto only stubbed the README; the rooms domain is Max's to shape.
