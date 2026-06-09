@@ -1,0 +1,60 @@
+# Tenant — a customer/owner boundary. Creating one provisions a namespace with a
+# ResourceQuota (the CPU/RAM/storage/pods "hardware" sold to this tenant), a
+# LimitRange (per-pod defaults/max), a NetworkPolicy (tenants can't see each
+# other), and the default Policy. The controller reconciles Tenant → those
+# objects (renderTenant). Editing the quota re-patches the ResourceQuota. This is
+# the §4.2 multi-tenancy design made real.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tenants.platform.zeta.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  group: platform.zeta.io
+  scope: Cluster   # a Tenant owns namespace(s) — it is cluster-scoped
+  names:
+    kind: Tenant
+    plural: tenants
+    singular: tenant
+    shortNames: [tn]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [namespace]
+              properties:
+                displayName: { type: string, description: "human-facing tenant name" }
+                namespace: { type: string, description: "the namespace provisioned for this tenant" }
+                quota:
+                  type: object
+                  description: "the hardware sold to this tenant (ResourceQuota hard caps)"
+                  properties:
+                    cpu: { type: string, default: "4", description: "total requests.cpu cap (cores)" }
+                    memory: { type: string, default: "16Gi", description: "total requests.memory cap" }
+                    storage: { type: string, default: "100Gi", description: "total PVC storage cap" }
+                    pods: { type: integer, default: 30, description: "max pods" }
+                  default: {}
+                isolated: { type: boolean, default: true, description: "deny cross-tenant network traffic (NetworkPolicy)" }
+                admin: { type: string, default: otto, description: "persona that operates this tenant's resources" }
+                policy: { type: string, default: default, description: "default Policy for the tenant namespace" }
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - { name: Namespace, type: string, jsonPath: ".spec.namespace" }
+        - { name: CPU, type: string, jsonPath: ".spec.quota.cpu" }
+        - { name: Memory, type: string, jsonPath: ".spec.quota.memory" }
+        - { name: Storage, type: string, jsonPath: ".spec.quota.storage" }
+        - { name: Pods, type: integer, jsonPath: ".spec.quota.pods" }
+        - { name: Phase, type: string, jsonPath: ".status.phase" }
+        - { name: Age, type: date, jsonPath: ".metadata.creationTimestamp" }

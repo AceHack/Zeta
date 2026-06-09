@@ -25,6 +25,12 @@ rules:
   - apiGroups: ["platform.zeta.io"]
     resources: ["deployables", "blueprints"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["platform.zeta.io"]   # admin: read + apply tenants (set quotas)
+    resources: ["tenants"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]   # admin: cluster capacity + per-namespace usage (read-only)
+    resources: ["nodes", "pods", "namespaces", "resourcequotas"]
+    verbs: ["get", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

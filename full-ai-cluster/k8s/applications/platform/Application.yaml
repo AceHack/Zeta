@@ -26,7 +26,7 @@ spec:
     targetRevision: main
     path: full-ai-cluster/k8s/applications/platform
     directory:
-      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,crd-blueprint,crd-deployable,policy-default,blueprints,controller,portal}.yaml'
+      include: '{namespace,crd-policy,crd-gameserver,crd-app,crd-webapp,crd-blueprint,crd-deployable,crd-tenant,policy-default,blueprints,controller,portal}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-platform

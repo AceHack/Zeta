@@ -22,17 +22,29 @@ metadata:
     argocd.argoproj.io/sync-wave: "-10"
 rules:
   - apiGroups: ["platform.zeta.io"]
-    resources: ["deployables", "blueprints"]
+    resources: ["deployables", "blueprints", "tenants"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["platform.zeta.io"]
-    resources: ["deployables/status"]
+    resources: ["deployables/status", "tenants/status"]
     verbs: ["get", "patch", "update"]
+  - apiGroups: ["platform.zeta.io"]
+    resources: ["policies"]   # the tenant reconcile writes a default Policy per namespace
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
   - apiGroups: ["apps"]
     resources: ["deployments", "statefulsets"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
   - apiGroups: [""]
     resources: ["services", "persistentvolumeclaims"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]   # tenant provisioning: namespace + quota + limits
+    resources: ["namespaces", "resourcequotas", "limitranges"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["networking.k8s.io"]   # tenant isolation
+    resources: ["networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]   # admin: read cluster capacity + per-namespace usage
+    resources: ["nodes", "pods"]
+    verbs: ["get", "list"]
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]

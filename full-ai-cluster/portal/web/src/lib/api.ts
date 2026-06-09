@@ -104,6 +104,11 @@ export interface MemoryUsage {
 
 export interface QueryResult { columns: string[]; rows: Array<Array<string | number>>; rowCount: number; durationMs: number; error?: string }
 
+export interface NodeVM { name: string; ready: boolean; role: string; cpuAllocMilli: number; cpuCapMilli: number; memAllocMi: number; memCapMi: number; podCapacity: number; podsRunning: number; cpuRequestedMilli: number; memRequestedMi: number }
+export interface ClusterCapacity { nodes: NodeVM[]; totals: { nodeCount: number; cpuAllocMilli: number; cpuRequestedMilli: number; memAllocMi: number; memRequestedMi: number; pods: number; podCapacity: number } }
+export interface TenantUsage { namespace: string; displayName?: string; cpu: { allocMilli: number; usedMilli: number }; mem: { allocMi: number; usedMi: number }; storage: { allocMi: number; usedMi: number }; pods: { alloc: number; used: number }; hasQuota: boolean }
+export interface TenantSpecInput { name: string; namespace: string; displayName?: string; quota: { cpu: string; memory: string; storage: string; pods: number }; isolated?: boolean }
+
 export type Dashboard =
   | { kind: "game"; status: string; game: string; map: string; gamemode: string; players: { online: number; max: number }; address: string; tickrate: number; uptime: string; recentJoins: Array<{ name: string; at: string }> }
   | { kind: "database"; status: string; engine: string; connections: { active: number; max: number }; sizeMi: number; tables: number; queriesPerSec: number; cacheHitPct: number; replication: string; topTables: Array<{ name: string; rows: number; sizeMi: number }> }
@@ -138,6 +143,11 @@ export const api = {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ text, by }),
     }).then((d) => d.room),
+
+  // admin plane
+  cluster: () => j<ClusterCapacity>("/api/admin/cluster"),
+  tenants: () => j<{ tenants: TenantUsage[] }>("/api/admin/tenants").then((d) => d.tenants),
+  applyTenant: (spec: TenantSpecInput) => post("/api/admin/tenants", spec),
 
   // management plane
   memory: () => j<MemoryUsage>("/api/memory"),

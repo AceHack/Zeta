@@ -16,6 +16,7 @@ import {
   toRoomVM,
 } from "./viewmodel.ts";
 import type { LifecycleAction, MemoryUsage, ResourceConfig, ResourceOps } from "./ops.ts";
+import type { AdminData, TenantSpecInput } from "./admin.ts";
 import { type ChatOp, DEFAULT_POLICY, decide, respond } from "./room-agent.ts";
 
 const LIFECYCLE_ACTIONS = new Set(["restart", "stop", "start", "scale", "delete"]);
@@ -48,6 +49,8 @@ export interface PlatformData {
   ops?: ResourceOps;
   /** Aggregate memory usage (durable Room logs + agent-memory). Optional. */
   memoryUsage?(): Promise<MemoryUsage>;
+  /** Cluster-admin: capacity + per-tenant allocation. Optional. */
+  admin?: AdminData;
 }
 
 /** The typed Event bodies the write endpoint accepts (mirrors the Room substrate). */
@@ -90,6 +93,22 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
     if (path === "/api/memory" && req.method === "GET") {
       if (!data.memoryUsage) return json({ rooms: [], totalEvents: 0, totalBytes: 0 });
       return json(await data.memoryUsage());
+    }
+
+    // ── admin: cluster capacity + tenants ──────────────────────────────
+    if (path === "/api/admin/cluster" && req.method === "GET") {
+      if (!data.admin) return json({ error: "admin not available on this backend" }, 405);
+      return json(await data.admin.cluster());
+    }
+    if (path === "/api/admin/tenants" && req.method === "GET") {
+      if (!data.admin) return json({ error: "admin not available on this backend" }, 405);
+      return json({ tenants: await data.admin.tenants() });
+    }
+    if (path === "/api/admin/tenants" && req.method === "POST") {
+      if (!data.admin) return json({ error: "admin not available on this backend" }, 405);
+      const b = (await req.json().catch(() => ({}))) as Partial<TenantSpecInput>;
+      if (!b.name || !b.namespace || !b.quota) return json({ error: "name, namespace, quota required" }, 400);
+      return json(await data.admin.applyTenant(b as TenantSpecInput));
     }
 
     // ── management plane: /api/resources/:resource/* ───────────────────

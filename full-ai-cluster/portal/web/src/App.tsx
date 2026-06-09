@@ -1,21 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { Boxes, Brain, LayoutGrid, Plus, RefreshCw, ShieldAlert } from "lucide-react";
+import { Boxes, Brain, Gauge, LayoutGrid, Plus, RefreshCw, ShieldAlert } from "lucide-react";
 import { api, type CatalogEntryVM, type CategoryGroupVM, type NeedsMeItemVM, type ResourceVM } from "@/lib/api";
 import { Toaster } from "sonner";
 import { Resources } from "@/views/Resources";
 import { Create } from "@/views/Create";
 import { NeedsMe } from "@/views/NeedsMe";
 import { Memory } from "@/views/Memory";
+import { Admin } from "@/views/Admin";
 import { ResourceConsole } from "@/components/ResourceConsole";
 import { cn } from "@/lib/utils";
 
-type View = "resources" | "create" | "needsme" | "memory";
+type View = "resources" | "create" | "needsme" | "memory" | "admin";
 
 const NAV: Array<{ id: View; label: string; icon: typeof LayoutGrid }> = [
   { id: "resources", label: "Resources", icon: LayoutGrid },
   { id: "create", label: "Create", icon: Plus },
   { id: "memory", label: "Memory", icon: Brain },
   { id: "needsme", label: "Needs me", icon: ShieldAlert },
+  { id: "admin", label: "Admin", icon: Gauge },
 ];
 
 export default function App() {
@@ -118,6 +120,8 @@ export default function App() {
             <Create catalog={catalog} />
           ) : view === "memory" ? (
             <Memory />
+          ) : view === "admin" ? (
+            <Admin />
           ) : (
             <NeedsMe items={needs} onChange={refresh} />
           )}

@@ -9,6 +9,7 @@
 import { type Blueprint, type Deployable, renderDeployable } from "./blueprint.ts";
 import { GROUP, VERSION } from "./types.ts";
 import { inClusterConfig, K8sClient, KIND_PLURAL } from "./k8s.ts";
+import { renderTenant, type Tenant, TENANT_KIND_PLURAL } from "./tenant.ts";
 
 export const LIBRARY_NAMESPACE = "zeta-platform";
 
@@ -95,7 +96,19 @@ async function reconcileOne(client: K8sClient, idx: BlueprintIndex, cr: Deployab
   await emitState(cr, "Ready", `applied ${result.objects.length} object(s) from blueprint "${cr.spec.blueprint}"`);
 }
 
-/** Run the controller: load blueprints, then watch Deployables and reconcile. */
+/** Reconcile one Tenant: render + server-side-apply its namespace/quota/isolation. */
+async function reconcileTenant(client: K8sClient, cr: Tenant): Promise<void> {
+  const objs = renderTenant(cr);
+  for (const o of objs) {
+    const plural = TENANT_KIND_PLURAL[o.kind];
+    if (!plural) throw new Error(`no REST plural for tenant child ${o.kind}`);
+    await client.apply(o, plural);
+  }
+  console.log(`[tenant ${cr.metadata.name}] applied ${objs.length} object(s) → namespace ${cr.spec.namespace}`);
+  await client.patchStatus(GROUP, VERSION, "tenants", "", cr.metadata.name, { phase: "Ready", namespace: cr.spec.namespace, children: objs.map((o) => `${o.kind}/${o.metadata.name}`) });
+}
+
+/** Run the controller: reconcile + watch BOTH Deployables and Tenants concurrently. */
 export async function run(): Promise<void> {
   const client = new K8sClient(inClusterConfig());
 
@@ -104,27 +117,48 @@ export async function run(): Promise<void> {
     return indexBlueprints(items as unknown as Array<{ metadata: { name: string; namespace: string }; spec: Blueprint }>);
   };
 
-  let idx = await loadBlueprints();
-  console.log(`loaded ${idx.size} blueprint(s)`);
-
-  const { items, resourceVersion } = await client.list(GROUP, VERSION, "deployables");
-  for (const cr of items) await reconcileOne(client, idx, cr as unknown as Deployable);
-
-  console.log(`watching deployables from rv ${resourceVersion}`);
-  for (;;) {
-    try {
-      const start = (await client.list(GROUP, VERSION, "deployables")).resourceVersion;
-      for await (const ev of client.watch(GROUP, VERSION, "deployables", undefined, start)) {
-        if (ev.type === "BOOKMARK") continue;
-        if (ev.type === "DELETED") continue; // ownerReferences cascade-delete children
-        idx = await loadBlueprints(); // refresh library each event (cheap; few blueprints)
-        await reconcileOne(client, idx, ev.object as unknown as Deployable);
+  // ── Deployable reconcile + watch ───────────────────────────────────
+  const runDeployables = async (): Promise<void> => {
+    let idx = await loadBlueprints();
+    console.log(`loaded ${idx.size} blueprint(s)`);
+    const { items } = await client.list(GROUP, VERSION, "deployables");
+    for (const cr of items) await reconcileOne(client, idx, cr as unknown as Deployable);
+    console.log("watching deployables");
+    for (;;) {
+      try {
+        const start = (await client.list(GROUP, VERSION, "deployables")).resourceVersion;
+        for await (const ev of client.watch(GROUP, VERSION, "deployables", undefined, start)) {
+          if (ev.type === "BOOKMARK" || ev.type === "DELETED") continue;
+          idx = await loadBlueprints();
+          await reconcileOne(client, idx, ev.object as unknown as Deployable);
+        }
+      } catch (e) {
+        console.error(`deployable watch error, retrying in 3s: ${(e as Error).message}`);
+        await new Promise((r) => setTimeout(r, 3000));
       }
-    } catch (e) {
-      console.error(`watch error, retrying in 3s: ${(e as Error).message}`);
-      await new Promise((r) => setTimeout(r, 3000));
     }
-  }
+  };
+
+  // ── Tenant reconcile + watch (cluster-scoped) ──────────────────────
+  const runTenants = async (): Promise<void> => {
+    const { items } = await client.list(GROUP, VERSION, "tenants");
+    for (const cr of items) await reconcileTenant(client, cr as unknown as Tenant).catch((e) => console.error(`[tenant ${(cr as { metadata: { name: string } }).metadata.name}] ${(e as Error).message}`));
+    console.log("watching tenants");
+    for (;;) {
+      try {
+        const start = (await client.list(GROUP, VERSION, "tenants")).resourceVersion;
+        for await (const ev of client.watch(GROUP, VERSION, "tenants", undefined, start)) {
+          if (ev.type === "BOOKMARK" || ev.type === "DELETED") continue;
+          await reconcileTenant(client, ev.object as unknown as Tenant);
+        }
+      } catch (e) {
+        console.error(`tenant watch error, retrying in 3s: ${(e as Error).message}`);
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+    }
+  };
+
+  await Promise.all([runDeployables(), runTenants()]);
 }
 
 if (import.meta.main) {
