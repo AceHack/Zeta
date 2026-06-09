@@ -31,3 +31,17 @@ not yet a confirmed traveler-word. So `float-like`, `qubit-like`, `spinor-like`,
 marker ("like a word, hasn't earned its ZetaId yet"). Drop the `-like` on graduation to
 `words/` (it becomes the real term with its ZetaId). An `xxx-like` token in any doc = a
 `like/` word-candidate, not a canonical traveler.
+
+## Update: travelers/ is intake for EVERYTHING
+
+Aaron (2026-06-09): *"travelers is intake for everything."* So `travelers/` is the
+**universal intake** — every kind of thing enters as a **traveler first** (the
+negotiation precondition). `like/` is the **type-specific intake for `words/`** that sits
+*after* the universal `travelers/` intake. Full order:
+
+```text
+travelers/   →   like/ (words intake)   →   words/ (canonical + ZetaId)
+EVERYTHING       word candidates             homed words
+enters here      (the -like marker)
+(universal)
+```
