@@ -35,6 +35,30 @@ Everyone reads these. Measured cost: ~12k tokens total cold (GLOSSARY.md dominat
    exists). The **right-now** slice; updated per architect
    turn.
 
+## Tier 0-Agent — operating Zeta via the action grammar (autonomous-agent cold start)
+
+If your job is to **operate / reconcile Zeta** (not just contribute to the repo) — the AX path, the *largest*
+audience — read this in addition to Tier 0. You act through the **universal action grammar**, not by naming tools.
+
+- **The contract:** you act by **picking an index `0..15`** that `observe()` renders **available (`T`)**. Capability
+  == whatever is rendered `T` for your hat; a forbidden action is **not present** (render-time guardrail), not merely
+  rejected. The 16 slots are four fixed groups: **Navigate** (0-3), **Commit** (4-7), **Scope** (8-11, in/out along
+  `RunScope`), **Meta** (12-15: refresh / re-observe / escalate).
+- **Canonical grammar:** `docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`
+  (the 16-slot table + the fixed-direction "muscle memory" rationale).
+- **The two `observe.ts` (don't confuse them):** `tools/observe/observe.ts` — the small runnable controller
+  (`observe(world) -> NextAction`); `agentic-organization/packages/application/src/observe.ts` — the production
+  kernel (`observe(snapshot, deps)` → legal options, `decide()` rejects off-readout picks).
+- **Self-heal / reconcile loop:** `agentic-organization/packages/domain/src/state-reconciliation.ts` — desired
+  (remembered) vs actual drift is the snapshot; **Commit** slots reconcile; **Meta-13 (re-observe)** is the tick.
+  Destructive Commits (e.g. fresh-format) must render `N` (held) until drift is corroborated across ≥2 ticks — never
+  auto-persist a destructive action (idempotency; no reconcile-into-broken loop).
+- **Always an exit:** if rendered options are all bad, **Meta-15 (escalate)** — headless loops must wire escalate to
+  a durable async channel (the operator channel is unwired headless).
+
+*(Per-persona local policy applies here too — see "go to the developer / subsidiarity"; standards enforced only
+where necessary, local AX policy where possible.)*
+
 ## Tier 1 — your own persona
 
 Each persona adds these on top of Tier 0. ~5-10k tokens.

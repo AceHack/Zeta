@@ -1,5 +1,7 @@
-# Ignore EVERYTHING in this dir except the docs — the test-infra SSH keypair is
-# generated locally / per-CI-run and MUST NOT be committed (private key never in git).
+# The PRIVATE key is NEVER committed — it lives in the GH Actions secret
+# ZETA_TEST_INFRA_SSH_KEY (repo scope). The PUBLIC key IS committed (safe;
+# --test-scoped trust only). Ignore everything except the docs + the .pub.
 *
 !.gitignore
 !README.md
+!zeta-test-infra.pub

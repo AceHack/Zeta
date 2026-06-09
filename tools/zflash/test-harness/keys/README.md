@@ -12,9 +12,11 @@ to trust those."*
    this key. It is injected into the `zeta` user's `authorized_keys` **only** when an explicit **`--test`** flag is
    passed (a test-build path). It is **not** in `operator-ssh-keys.txt` / `maintainers/*/ssh-pubkeys.txt`
    (the production trust set).
-2. **Private key is NEVER committed.** This dir is `.gitignore`d to all files except these docs. The keypair is
-   **generated locally / per-CI-run** (ephemeral), used only against throwaway QEMU VMs, and discarded. There is no
-   shared secret in git.
+2. **Private key is NEVER committed — it lives in the GH Actions secret `ZETA_TEST_INFRA_SSH_KEY`** (repo scope on
+   `Lucent-Financial-Group/Zeta`; a dedicated `test` environment is the cleaner long-term home). The matching
+   **public key `zeta-test-infra.pub` IS committed** here (safe — public; `--test`-scoped trust only). The QEMU
+   workflow reads the secret into the runner, bakes `zeta-test-infra.pub` into the `--test` image, and SSHes into
+   the ephemeral VM with the private key. The private key is `.gitignore`d; no secret in git.
 
 ## Generate it
 
