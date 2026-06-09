@@ -1,0 +1,20 @@
+{
+  "user": "addison",
+  "ssh_fingerprint": "SHA256:m9xDKJZBYdOV4urBWX3FzdAyiQbvvZOr0z7QYpL7aqg",
+  "pgp": {
+    "keyId": "a61c3fd7e7afee5f",
+    "fingerprint": "d5f211092f81ec1c3d705cf8a61c3fd7e7afee5f"
+  },
+  "nostr_npub": "npub1pxyf94tdrwkrd9xtg4hlfswuu9wl3wz4q92hnz4yzdggytx7fv5qm0jpdn",
+  "eth": "0x866fd3d2e1c2fc622a239b73de8244ed89a55f9b",
+  "btc": "bc1qq0y3fq2nh06fz2fflhg4yy4mun9p522slqmj0r",
+  "sol": "6wQscH7KTpqHtt3rK9hcF2jutzDfmgga9sNFqWFbg7rL",
+  "paths": {
+    "ssh": "m/44'/1110'/0'/0'",
+    "pgp": "m/44'/1111'/0'/0'",
+    "nostr": "m/44'/1237'/0'/0/0",
+    "eth": "m/44'/60'/0'/0/0",
+    "btc": "m/84'/0'/0'/0/0",
+    "sol": "m/44'/501'/0'/0'"
+  }
+}

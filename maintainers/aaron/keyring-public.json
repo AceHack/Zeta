@@ -1,0 +1,20 @@
+{
+  "user": "aaron",
+  "ssh_fingerprint": "SHA256:7DS+F+oWIaIY6g2LsoCBfDou38nWnfhbz5eUUI6yt+8",
+  "pgp": {
+    "keyId": "f892a7674a2649dc",
+    "fingerprint": "51ac8f0bc47b8c93cde543f7f892a7674a2649dc"
+  },
+  "nostr_npub": "npub103m2h8w2lmyh8m2hs6v2s88t9lwn7g2sc2tlund5hc9xzkar9qksf9ezrl",
+  "eth": "0x00f675d9ea155073c7a295d3e5c63f4eb248c888",
+  "btc": "bc1q2z3lkl7usz4ckpr2la4vr3dj7w5klrmgrtv6tl",
+  "sol": "4pezvXSkzAhwom181N3fqoG9D5PdpXCXx5wS67TtaEAx",
+  "paths": {
+    "ssh": "m/44'/1110'/0'/0'",
+    "pgp": "m/44'/1111'/0'/0'",
+    "nostr": "m/44'/1237'/0'/0/0",
+    "eth": "m/44'/60'/0'/0/0",
+    "btc": "m/84'/0'/0'/0/0",
+    "sol": "m/44'/501'/0'/0'"
+  }
+}

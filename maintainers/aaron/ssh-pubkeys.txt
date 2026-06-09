@@ -1,14 +1,1 @@
-# Aaron — operator SSH public keys (persona-owned)
-#
-# Owner: Aaron (maintainer `aaron`; email aaron_bond@yahoo.com — confirm if canonical
-# vs the acehack00@gmail.com used in older commit trailers).
-#
-# These are PUBLIC keys — safe to publish (they grant no access; only the private
-# key authenticates). Published 2026-06-09 so every Zeta node trusts Aaron regardless
-# of which machine flashed its USB (the durable fix for the "only the flashing machine
-# can SSH" fragility). Composed into node trust via the operator-ssh-keys substrate
-# (`full-ai-cluster/nixos/modules/operator-ssh-keys.txt` → `zeta` authorized_keys).
-#
-# Format: one OpenSSH pubkey per line; `#` comments + blank lines ignored.
-
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBUZp95D809VZtwIJwTzARs0oKqEQlkoZ5FWxB2Cx/oX aaron_bond@yahoo.com (Mac.lan)
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwJVbQNiFzUCiOhc+raFvtI4ex6pY8/4Spfwe6eH0rK aaron@lucent.financial  aaron@lucent.financial

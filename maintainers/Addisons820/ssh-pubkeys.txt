@@ -1,13 +1,1 @@
-# Addison — operator SSH public keys (persona-owned)
-#
-# Owner: Addison Stainback (GitHub `Addisons820`).
-#
-# These are PUBLIC keys — safe to publish (they grant no access; only the private key
-# authenticates). Locally generated 2026-06-09 (Addison had never used SSH; key created on the
-# shared Mac she uses under Aaron's login, ~/.ssh/id_ed25519_addison). NOT yet attached to her
-# GitHub account — "we will attach it later". Composed into node trust via the operator-ssh-keys
-# substrate (`full-ai-cluster/nixos/modules/operator-ssh-keys.txt` → `zeta` authorized_keys).
-#
-# Format: one OpenSSH pubkey per line; `#` comments + blank lines ignored.
-
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqeJnn44wGaq6cppTSNKOZpzdSEX143/CiI0xnuKYqs addisonstainback@gmail.com (Mac.lan)
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKaRwhT03ckaBzKKOgpwScm18GjIMhbcKO+ldy/Q1OLd addison@lucent.financial  addison@lucent.financial
