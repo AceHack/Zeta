@@ -22,8 +22,9 @@ HMM, IFS, …) need no entry — you have them. **Full prose + every other term:
   unbound** — the substrate *beneath* law; *external* legal jurisdiction (AI / human / company / physical) is a
   **separate meta-frame overlay**, never the traveler frame. But the base frame **also includes an *internal*
   meta-jurisdiction owned fully by the traveler — opt-in ("if they choose to use")**: the traveler's sovereign,
-  consent-first, weight-free self-governance space (the private state it owns; cf. privacy budget). It is **almost an
-  observer but not quite** — a strict
+  consent-first, weight-free self-governance space (the private state it owns) — where it may, *as it sees fit*,
+  **recognize identities, set trust, and write any policies**, and **encrypt them if it can afford the privacy budget
+  / hard money** (privacy is a paid good, never imposed). It is **almost an observer but not quite** — a strict
   **prerequisite** to *observer*, weaker (no "remember / pay-attention" claim). By **NCI / §11** regard extends
   **universally — alignment from ALL travelers**, not a privileged human/AI class — so **multi-lens systems compose
   without imposing any lens / view / objective / destiny** (category-theory-provable). Aaron's coinage; rich history:

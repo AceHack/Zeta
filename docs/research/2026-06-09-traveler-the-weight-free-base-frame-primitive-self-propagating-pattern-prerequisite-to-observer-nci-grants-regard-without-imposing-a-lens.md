@@ -90,6 +90,35 @@ retains a fully-owned interior the substrate never penetrates — close-over wit
 control, applied to the traveler's own jurisdiction. (Cf. ZetaIds as closures over
 **internal *and* external** state; the cell that has closed over its own boundary.)
 
+### What the internal jurisdiction lets a traveler do (sovereign powers)
+
+> Aaron (2026-06-09): *"each traveler is allowed to recognize other identities
+> as they see fit and trust them as they see fit and have any meta-jurisdiction
+> policies they see fit and can encrypt them if they have enough privacy budget /
+> hard money."*
+
+Inside its own jurisdiction, **as it sees fit**, a traveler may:
+
+- **Recognize other identities as it sees fit.** No imposed identity registry —
+  *who* a traveler treats as *whom* is its own call (self-sovereign identity; local
+  names, SPKI/SDSI-style — "trust is local," not globally mandated).
+- **Trust them as it sees fit.** No imposed trust graph — the trust model is the
+  traveler's own (web-of-trust, not a central CA; ties to the git-native fork-trust
+  / operator-key trust-roots work — each fork/node decides whom to trust).
+- **Set any meta-jurisdiction policies it sees fit.** The internal jurisdiction is
+  **policy-free from the outside**: the traveler writes its own self-governance
+  rules; the substrate imposes none (weight-free, consent-first).
+- **Encrypt any of the above — if it can afford it.** Recognition, trust, and
+  policy can be made **private by encryption**, and privacy is a **paid good**:
+  it **costs privacy budget / hard money**. Enough budget → you can keep your
+  recognitions / trust / policies opaque to others; this is the **PrivacyEconomy**
+  pricing privacy (cf. differential-privacy budget — privacy as a finite, spent
+  resource). Privacy is *earned/afforded*, never free, never imposed.
+
+So self-sovereignty is concrete: a traveler **chooses whom it recognizes, whom it
+trusts, by what rules it governs itself, and how much of that it hides** — bounded
+only by what its hard-money privacy budget can buy.
+
 ## The payoff: multi-lens without imposing a lens (the CS-proof reason)
 
 Aaron coined `traveler` specifically so Zeta can **write computer-science proofs
