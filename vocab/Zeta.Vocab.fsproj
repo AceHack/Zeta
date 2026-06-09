@@ -8,5 +8,6 @@
     <Compile Include="Vocab.Generated.fs" />
     <Compile Include="ZetaIdol.fs" />
     <Compile Include="ShapeE.fs" />
+    <Compile Include="Finalizer.fs" />
   </ItemGroup>
 </Project>
