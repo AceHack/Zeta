@@ -53,7 +53,7 @@ So MyNode secrets (node config secrets, any wallet/identity keys) are **sealed b
 keys in git; he has keys in Vault; we meet in the middle."
 
 - **Research side (us / shadow):** **keys-in-git**, sealed by our own keyring/PKI (security by clarity; the
-  github-free / Tailscale mode).
+  github-free mode; **Headscale** = self-hosted Tailscale, not the SaaS).
 - **Corporate side (Max):** **keys-in-Vault** (HashiCorp Vault — Max is deploying it next; the equipment /
   Headscale mode), alongside his cert-manager + Let's Encrypt (ACMEv2) on the **zetacluster** via ArgoCD.
 - **Meet in the middle** — the two secret-planes bridge (the existing two-modes design:

@@ -14,6 +14,13 @@ the infra layer). A root-level folder. **Max owns/deploys it.**
 - (the home-crypto-mining fleet, the MyNode nodes, and Zeta services land here over time — `hats/home-crypto-miner/`,
   `updates/`, `triggers/`.)
 
+## Network plane — Reticulum + Headscale (Aaron)
+
+We use **Reticulum** (our sovereign ZetaId-addressed overlay; `network/`) **and Headscale** (self-hosted
+Tailscale/WireGuard control — our own, not the SaaS) for the cluster + fleet mesh. Both are **self-hosted /
+sovereign** (the close-over-everything stance applied to networking): Reticulum for the agent/bus overlay,
+Headscale for the WireGuard equipment mesh. (Not Tailscale-the-SaaS — Headscale, self-run.)
+
 ## Discipline
 
 - **GitOps / declarative** — cluster state is declared in the repo (manifests), ArgoCD realizes it; same as
