@@ -11,8 +11,6 @@ import { test, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 import { keyring4x4, keyringToTagged, serializeKeyring, deserializeKeyring } from "./keyring-4x4.ts";
 import { deriveKeyring } from "./derive.ts";
-import { canonicalJson } from "../../../src/Core.TypeScript/dynamic-value/json.ts";
-import { canonicalCbor, toHex } from "../../../src/Core.TypeScript/dynamic-value/cbor.ts";
 
 const HERE = new URL(".", import.meta.url).pathname;
 const gv = JSON.parse(readFileSync(HERE + "golden-vectors-keyring.json", "utf8"));

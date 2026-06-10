@@ -40,7 +40,7 @@ export function makeKeyringSet(activeMnemonic: string, standbyMnemonic: string, 
   assertDistinctSeeds(seeds);
   return {
     user,
-    active: slot("active", seeds[0], user),
+    active: slot("active", activeMnemonic, user),  // === seeds[0]; named form satisfies noUncheckedIndexedAccess
     standby: seeds.slice(1).map((m) => slot("standby", m, user)),
     retired: [],
   };
@@ -53,8 +53,9 @@ export function makeKeyringSet(activeMnemonic: string, standbyMnemonic: string, 
  * Pure: pass the fresh standby seed in (the only randomness) for DST-replayability.
  */
 export function rotate(set: KeyringSet, freshStandbyMnemonic: string): KeyringSet {
-  if (set.standby.length < 1) throw new Error("malformed set: no standby to promote (single-key state forbidden)");
-  const [promote, ...restStandby] = set.standby;
+  const promote = set.standby[0];
+  if (promote === undefined) throw new Error("malformed set: no standby to promote (single-key state forbidden)");
+  const restStandby = set.standby.slice(1);
   assertDistinctSeeds([promote.mnemonic, ...restStandby.map((s) => s.mnemonic), freshStandbyMnemonic, set.active.mnemonic]);
   const newActive: KeySlot = { ...promote, state: "active" };           // continuity: same bytes
   const newStandby: KeySlot = slot("standby", freshStandbyMnemonic, set.user);

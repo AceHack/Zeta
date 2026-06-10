@@ -20,8 +20,8 @@ test("a fresh set holds exactly one active + one standby (>=2), both well-formed
 
 test("active and standby derive from DIFFERENT seeds (one compromise must not take both)", () => {
   const s = makeKeyringSet(A, B, "zeta");
-  expect(s.active.mnemonic).not.toBe(s.standby[0].mnemonic);
-  expect(s.active.keyring.eth.address).not.toBe(s.standby[0].keyring.eth.address);
+  expect(s.active.mnemonic).not.toBe(s.standby[0]!.mnemonic);
+  expect(s.active.keyring.eth.address).not.toBe(s.standby[0]!.keyring.eth.address);
 });
 
 test("reusing a seed across slots is rejected (distinct-seed invariant)", () => {
@@ -30,17 +30,17 @@ test("reusing a seed across slots is rejected (distinct-seed invariant)", () => 
 
 test("rotation is GAPLESS and CONTINUOUS: old standby becomes new active, byte-identical", () => {
   const s0 = makeKeyringSet(A, B, "zeta");
-  const oldStandbyEth = s0.standby[0].keyring.eth.address;
+  const oldStandbyEth = s0.standby[0]!.keyring.eth.address;
   const s1 = rotate(s0, C);
   // continuity: the promoted keyring is byte-identical to what it was as standby
   expect(s1.active.keyring.eth.address).toBe(oldStandbyEth);
-  expect(s1.active.keyring.eth.privkey).toBe(s0.standby[0].keyring.eth.privkey);
+  expect(s1.active.keyring.eth.privkey).toBe(s0.standby[0]!.keyring.eth.privkey);
   // gapless: still >=2 keys at every step (1 active + >=1 standby), never single-key
   assertWellFormed(s1);
   // the retiring active is recorded for revocation, not silently dropped
   expect(s1.retired.map((r) => r.keyring.eth.address)).toContain(s0.active.keyring.eth.address);
   // the new standby is the fresh seed we supplied
-  expect(s1.standby[s1.standby.length - 1].keyring.eth.address).toBe(makeKeyringSet(C, A, "zeta").active.keyring.eth.address);
+  expect(s1.standby[s1.standby.length - 1]!.keyring.eth.address).toBe(makeKeyringSet(C, A, "zeta").active.keyring.eth.address);
 });
 
 test("rotation is deterministic given the fresh-standby seed (DST-replayable)", () => {

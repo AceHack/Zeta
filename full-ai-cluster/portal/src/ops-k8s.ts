@@ -114,7 +114,7 @@ export class K8sOps implements ResourceOps {
 
   async metrics(resource: string): Promise<Metrics> {
     const [ns, name] = split(resource);
-    const cfg = await this.config(resource).catch(() => ({ cpu: "1", memory: "512Mi", storage: undefined } as ResourceConfig));
+    const cfg = await this.config(resource).catch(() => ({ cpu: "1", memory: "512Mi" } as ResourceConfig));
     const limits = { cpuMilli: parseCpu(cfg.cpu), memMi: parseMemMi(cfg.memory) };
     const storageMi = cfg.storage ? parseMemMi(cfg.storage) : 0;
     try {

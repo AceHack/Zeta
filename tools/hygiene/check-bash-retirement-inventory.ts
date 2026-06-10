@@ -113,6 +113,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/install.sh",
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
+  "tools/setup/persona-keys/keyring.sh",
 ];
 
 export const RETAINED_BASH_SCOPE = RETAINED_SHELL_SCOPE;
@@ -157,6 +158,10 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/install.sh": "setup/bootstrap",
   "tools/setup/linux.sh": "setup/bootstrap",
   "tools/setup/macos.sh": "setup/bootstrap",
+  // keyring.sh is the intentionally-retained thin security EDGE: in-process seed
+  // handling (`read -s`, umask-077, shred-on-exit) that must stay in shell; the
+  // typed operational logic lives in keyset.ts ("bash only calls the edge").
+  "tools/setup/persona-keys/keyring.sh": "setup/bootstrap",
 };
 
 function parseArgs(argv: readonly string[]): ParseResult {

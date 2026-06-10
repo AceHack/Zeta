@@ -30,7 +30,7 @@ test(`(2) a ${N}-link rotation chain is gapless + continuous at every link`, () 
   let set = makeKeyringSet(A, B, "zeta");
   let breaks = 0, discontinuities = 0;
   for (let i = 0; i < N; i++) {
-    const priorStandbyEth = set.standby[0].keyring.eth.address;
+    const priorStandbyEth = set.standby[0]!.keyring.eth.address;
     set = rotate(set, freshMnemonic());                 // fresh standby each link
     try { assertWellFormed(set); } catch { breaks++; }   // never single-key
     if (set.active.keyring.eth.address !== priorStandbyEth) discontinuities++; // promoted == prior standby
