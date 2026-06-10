@@ -237,6 +237,7 @@
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
     <Compile Include="DarkHall.fs" />
+    <Compile Include="Skadium.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>
 
