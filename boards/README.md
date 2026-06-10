@@ -4,6 +4,11 @@
 **Plural on purpose** (Aaron 2026-06-10): *"we never really have one of a thing — always **many**, with a
 **discriminator / lens / polarization**."*
 
+**`/boards` is the BOARD ROOM (Aaron 2026-06-10):** *"this is our board room where we discuss `/boards`."*
+A board here is also a **discussion** — a proposal we debate before a room/`sim` measures it. The board
+room is where a question is *opened*; it is settled by standing up a `sim` and `mea`-ing it repeatedly
+until it resolves (not by argument alone).
+
 ## The principle — never one, always many (disambiguated)
 
 In Zeta there is **never a single canonical instance of a kind** — there are **many**, told apart by:
@@ -42,6 +47,9 @@ come and go; the root-network/common-cause remains. *(Peel: mycelium-as-decentra
 - `chutes-and-ladders.md` — the Chutes & Ladders board: the space `chutes/` (down) + `ladders/` (up)
   traverse; the up/down board of the bootstrap (and the escalator runs both ways over it). One board among
   many — pick it by its discriminator/lens.
+- `dynamic-value-cmyk-rgb-encoding.md` — board-room discussion: encode DynamicValue into CMYK (solid) +
+  RGB (soft) in Haskell-Prelude-rules (lawful) style; settled by a room/`sim` `mea`'d repeatedly until
+  it resolves.
 
 (More boards as they're named — each a space with its own discriminator/lens/polarization.)
 
