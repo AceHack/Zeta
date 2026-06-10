@@ -44,6 +44,43 @@ deterministic replay from a seed, simulate the whole system before trusting it. 
 *FoundationDB: A Distributed Unbundled Transactional Key Value Store*, SIGMOD 2021; Will Wilson,
 *Testing Distributed Systems w/ Deterministic Simulation*, Strange Loop 2014; the Flow actor language.)
 
+## Effort is attention — minimize it to maximize freedom of rooms (the values↔architecture bridge)
+
+> Aaron 2026-06-10: "deterministic code is almost no effort depending on the big-O of the combining of
+> the streams — like Ghostbusters, you can combine streams if you regularize the big-O lol. We have our
+> own bags too. Effort is attention in my mind — focused intelligent attention — we want to minimise
+> needing that anywhere to maximise freedom of choice of rooms."
+
+Two shapes, and they meet:
+
+**Regularize the big-O and you *can* cross the streams.** Combining two incremental streams
+deterministically is almost free — *iff* their big-O is regularized. "Don't cross the streams" is the
+warning for *un*-regularized streams: join an O(n)/delta stream with an O(n²)/delta one and the combined
+circuit's cost is dominated and unpredictable. Normalize both to the same bounded per-delta cost first
+and the cross is safe — the combined stream is also bounded, deterministic, replayable. The big-O *is*
+the proton-pack setting; regularization is the admission ticket to composition. (This is why DBSP
+composes cheaply: every operator is linear/bounded per delta, so crossing stays regular. Cost-model
+owner: Imani.)
+
+**Effort = attention = the scarce resource; minimizing it buys freedom.** "Optimize for no action" was
+never about CPU — it is about **attention** (focused intelligent attention), the one truly scarce
+resource for human and agent alike. A boundary that demands no attention to run correctly (deterministic,
+regularized big-O, no-action resting state) *gives that attention back*. Attention given back is
+**freedom of choice of rooms**: if no room *requires* attention to keep functioning, you are free to
+choose which rooms to enter. Mandatory attention is capture; minimal-attention rooms are liberty. So the
+disciplines and the manifesto are one principle from two sides:
+
+- deterministic + regularized big-O ⇒ the room runs unsupervised ⇒ **no attention demanded**;
+- no attention demanded ⇒ no capture (**weight-free**, manifesto §3) ⇒ **freedom of choice of rooms**
+  (agency; consent-first §6 — attention given, not taken).
+
+**Attention is the currency of agency.** Every place the required attention is driven toward zero buys
+back freedom. The architecture does not *serve* the values — it *is* the values, expressed in big-O.
+
+(The "we have our own bags" confirms the smallest-unit answer in code: `src/Core/Bag.fs` = `Bag<'T>`
+weights in ℕ; `src/Core/ZSet.fs` = weights in ℤ with retraction; `SoftValue` = weights in the
+probability semiring — three points on one `Bag<'K,'W>` weight-algebra port, already half-built.)
+
 ## The mechanism — the FerryThrottler (our in-boundary ActionBlock) as the membrane plumbing
 
 **Dataflow blocks are Markov boundaries with typed channels; `LinkTo` connects two boundaries' flows.**
