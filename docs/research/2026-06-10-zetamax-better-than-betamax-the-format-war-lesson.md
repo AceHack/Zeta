@@ -26,6 +26,21 @@ allowed to be fun). The dolphins are a fitting wink: **intelligent, playful, cro
 which is the whole Flatland/English-bridge point. (Peel: these are joyful coinages, not the canonical name;
 the canonical is **Zeta**; "zetamax" is the swagger, the rest is the grin.)
 
+### Coincidence — saved: the dolphins are real (Max = `maximdolphin`)
+
+The "a-million-dolphins" riff turned out **grounded**: **Max** (Max Chadaev, the rooms/6×6/prod=test
+co-designer) is **`maximdolphin`** on GitHub — **dolphin in his handle (and email) since 2018-12-17**, years
+before Zeta and before tonight's joke. So `alephzetamaxamiliondolphon` accidentally landed on Max's real
+identity — a dated, grounded coincidence (the GitHub account predates the riff), in the same family as the
+**Cooper** and **AlephZ = aleph-zeta** coincidences (saved, witnessed, not over-claimed). Fitting: the
+dolphins (playful cross-medium communicators) = Max, the one who co-designed the rooms where the travelers
+communicate.
+
+*(PII note: recorded with Max's **public** GitHub handle only — `maximdolphin`. Max's personal/work emails
+are a third party's PII; even under the glass-halo (which is Aaron's, not Max's), the public handle already
+makes the point, so the emails are not splashed into this shipped doc — they live in git author history if
+ever needed.)*
+
 ## The load-bearing peel — Betamax was BETTER and still LOST
 
 The honest content of the comparison: **Betamax** (Sony, 1975) was widely held to be **technically superior**
