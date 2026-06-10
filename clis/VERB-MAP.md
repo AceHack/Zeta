@@ -60,8 +60,10 @@ Core (braid/tie verbs + matrix-weighted WeightedSet), Aaron (which verbs are rea
 ## Status summary
 
 - **In code (6):** `sim mea cut ben cla res` (sim concrete; rest interface stubs + resolver + finalizer).
+- **In code (4, new 2026-06-10):** `bob weave braid tie` — interface stubs in [`Verbs.fs`](Verbs.fs)
+  (`ITieVerb`/`IBraidVerb`/`IWeaveVerb`/`IBobVerb` + `IBraidCli`; supporting `ISoftTie`/`IBraid`/`IWeave`),
+  the effective-qubit constructors over the qubit substrate. Aaron greenlit ("lets go").
 - **Floated (7):** `rem whe pay att how man whi way` (shapes, no verbs yet).
-- **New (4):** `bob weave braid tie` (map to the existing qubit substrate; verbs not yet stubbed).
 
-Adding the floated/new verbs as interface stubs in `Verbs.fs` is a verb-family-expansion **design
+Adding the *floated* verbs as interface stubs in `Verbs.fs` remains a verb-family-expansion **design
 decision** (which shapes are real verbs) — pending Aaron's call, not auto-added.

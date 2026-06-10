@@ -86,3 +86,57 @@ type ICli =
     inherit IBenVerb
     inherit IClaVerb
     inherit IResVerb
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The braid / soft-topology verbs — bob · weave · braid · tie (new 2026-06-10).
+//
+// Aaron: "bob weave braid tie all tie to 2x2 3x3 4x4 etc... structures that make
+// effective qubits" + "topology is hairdressing." These are hairdressing words AND
+// the operations of topological quantum computing (braid group / anyon braiding) —
+// they BUILD the n×n effective-qubit substrate. Map (clis/VERB-MAP.md):
+//   tie   → src/Core/FingerprintPrism.fs (`soft` Match) + WeightedSet soft links
+//   braid → src/Core/QubitIso.fs (Pauli/SU(2)) + src/Core/Cl3.fs (Clifford Cl(3,0))
+//   weave → src/Core/AmplitudeEmu.fs (complex amplitudes → interference)
+//   bob   → the cut that sizes the structure (the n in n×n)
+//   2→4→8 doubling = src/Core/CayleyDickson.fs (ℝ→ℂ→ℍ→𝕆; ℍ = SU(2) = one qubit)
+// Peel: "effective qubits" = qubit-shaped linear algebra, classically simulated +
+// replayable (BellTest reproduces Tsirelson 2√2 in DST); the braid-as-gate layer is
+// to build. Stubs, like the six above; opaque supporting types reified later via gen/.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A SOFT tie — a weighted/probabilistic link between elements. In the soft topology the *tie itself*
+/// is soft (not crisp); `src/Core/FingerprintPrism.fs` `soft` is a concrete soft tie. The 2-strand join.
+type ISoftTie<'a> = interface end
+
+/// A braid — a braid-group element over strands (the pattern of crossings); an anyon braid = a gate =
+/// a computation. Sturdy: the information lives in the crossings, not any one strand (= topological
+/// fault-tolerance, the same reason a hair braid holds).
+type IBraid<'a> = interface end
+
+/// A woven structure — strands interlaced into one sturdy n×n effective-qubit structure.
+type IWeave<'a> = interface end
+
+/// tie — soft-link two strands into a soft tie (the binary 2×2 base of the n×n ladder).
+type ITieVerb =
+    abstract member Tie<'a> : a: ISim<'a> * b: ISim<'a> -> ISoftTie<'a>
+
+/// braid — cross n strands in a pattern (a braid-group element = an effective-qubit gate). Interleaves
+/// the independent deterministic choice-streams (the bob-weave braid over the shared seed).
+type IBraidVerb =
+    abstract member Braid<'a> : strands: ISim<'a> list -> IBraid<'a>
+
+/// weave — interlace the braided strands into one sturdy n×n structure (build the effective qubit).
+type IWeaveVerb =
+    abstract member Weave<'a> : braid: IBraid<'a> -> IWeave<'a>
+
+/// bob — cut the weave to a chosen length/dimension (the cut that *sizes* the structure — the n in n×n).
+/// Residue is cut-shaped: a Z-set delta + a sticky-end seam the finalizer re-ligates.
+type IBobVerb =
+    abstract member Bob<'a> : at: int * weave: IWeave<'a> -> IDelta<'a> * ISeam
+
+/// The braid / soft-topology sub-family (the effective-qubit constructors).
+type IBraidCli =
+    inherit ITieVerb
+    inherit IBraidVerb
+    inherit IWeaveVerb
+    inherit IBobVerb
