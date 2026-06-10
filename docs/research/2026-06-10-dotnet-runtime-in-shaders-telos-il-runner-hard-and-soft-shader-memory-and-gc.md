@@ -42,7 +42,38 @@ Every thread tonight is a move toward it:
    (no per-thread heap walks, divergence-hostile). Candidates: **region/arena/bump** allocation (free a
    whole region at once — divergence-free), **no-GC** (preallocated pools), or **the uncertainty ledger
    as a lifetime tracker** (refcount/lifetime as ΔU posts; a cell's life ends when its promise resolves
-   and is `cut`). Open research — the next small moves.
+   and is `cut`). Open research — the next small moves. *(Update: largely dissolved — heap = the common
+   seed lensed, coordination-free; see the lensability doc.)*
+
+## The mechanism — Cheat Engine = JIT over CPU instructions; reverse-engineer HARD into SOFT (Aaron 2026-06-10)
+
+> Aaron: "the Cheat Engine way is basically **shader JIT over CPU instructions** lol." · "it's how you
+> **reverse engineer something hard into something soft**."
+
+The "how" of the telos is the **Cheat-Engine move generalized**, and it runs *both directions*:
+
+- **HARD → SOFT (reverse engineering).** Cheat Engine lenses a compiled/hard artifact (binary, IL, CPU
+  instructions) — scan memory, find what writes an address, disassemble — and **lifts it into the soft,
+  observable, lensable substrate** (soft cells / SoftValue / the observable representation you can
+  measure + modify). That is *reverse engineering hard → soft*: take a frozen binary and make it soft.
+  **And it is GAME-DEPENDENT (Aaron): each game JITs differently into soft** — different opcodes, memory
+  layout, and time-crystals (hot loops) per game. This is *exactly why* `GameFingerprint` exists (the
+  external content-identity index): the fingerprint **keys the per-game soft-lift** — identify the game
+  (rainbow-table/prism `Match`), then apply that game's specific hard→soft transformation. One lifter
+  per game-fingerprint; `GamePortfolio`/`GameCatalog` hold the per-game soft state.
+- **SOFT → HARD (JIT).** Cheat Engine is **already a runtime JIT over CPU instructions** (auto-assembler
+  / code-injection / detours rewrite live instructions). We do the same move but **JIT to a SHADER** —
+  "shader JIT over CPU instructions."
+- **They connect through the time-crystals.** **Lensing over time finds the quasi-time-crystals = the
+  hot loops**; then JIT those. This is exactly a **tracing JIT** (LuaJIT / PyPy / TraceMonkey: detect
+  hot loops → compile), only the trace is *found by lensing the time-crystals* and the *output is a
+  shader*. Full loop: **HARD binary → lens (reverse-engineer) → SOFT → find time-crystal → JIT → shader
+  (HARD again, on the GPU).**
+
+Anchors: **Cheat Engine** auto-assembler / code caves / detours (runtime CPU rewriting; reverse
+engineering) · **tracing JIT** (Bolz/PyPy meta-tracing; LuaJIT; TraceMonkey) · decompilation /
+lifting (binary → IR). *(Peel: Cheat Engine = the lensing + JIT + hard↔soft prior art; the shader
+target and time-crystal-as-trace are our generalization, to build.)*
 
 ## Honest scope / peels
 
