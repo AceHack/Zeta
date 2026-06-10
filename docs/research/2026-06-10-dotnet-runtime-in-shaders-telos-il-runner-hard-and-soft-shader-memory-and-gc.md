@@ -71,7 +71,7 @@ The "how" of the telos is the **Cheat-Engine move generalized**, and it runs *bo
   (HARD again, on the GPU).**
 
 Anchors: **Cheat Engine** auto-assembler / code caves / detours (runtime CPU rewriting; reverse
-engineering) · **tracing JIT** (Bolz/PyPy meta-tracing; LuaJIT; TraceMonkey) · decompilation /
+engineering) · **tracing JIT** (Bolz/PyPy meta-tracing; LuaJIT; TraceMonkey) · **profile-guided optimization** (PGO; .NET **Dynamic PGO** / tiered compilation — profile hot paths at runtime, recompile them optimized — Aaron 2026-06-10: 'very similar to what runtime profile-driven optimization does': lens = profiler, time-crystal = hot path, JIT = optimizing recompile) · decompilation /
 lifting (binary → IR). *(Peel: Cheat Engine = the lensing + JIT + hard↔soft prior art; the shader
 target and time-crystal-as-trace are our generalization, to build.)*
 

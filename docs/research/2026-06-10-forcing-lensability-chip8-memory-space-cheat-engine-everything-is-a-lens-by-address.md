@@ -114,6 +114,23 @@ pattern) promoted to a principle: the program's *temporal* structure = its time 
 by **lensing memory+code through time**. (Ties quantum-phase time / the Cayley–Dickson phasor — phase
 is the time-crystal's clock; `mea` reads the phase, `res` confirms the period.)
 
+### The arrow tracks state; assign each quasi-crystal its owner over time (Aaron 2026-06-10)
+
+> Aaron: "the **arrow** from category theory lets us **track state**, and using the **Law-of-One (Ra)**
+> framework assign it to repeating quasi-crystals — **who owns which state over time**."
+
+The **Arrow** (the ISR Kleisli arrow, `IntrCtx.fs` — `ISR<'A,'B> = IntrCtx -> 'A -> Task<Result<'B,…>>`,
+which threads `IntrCtx` explicitly) is how state is **tracked** through the loops: no hidden ambient
+state, the context rides the arrow. Then each **quasi-time-crystal (repeating loop)** is **assigned an
+owner of the state it carries over time** — *who owns which state when*. That's the **writer-actor
+ownership model** at the time-crystal scale: `persona = owner = "what remains"` owns a crystal's state
+across its period; the arrow carries it; the lens reads who-owns-what at any phase. So state-ownership
+is **per-crystal, time-indexed**, threaded by the arrow — coordination-free because each crystal owns
+its own slice (lock/wait-free §2). *(Peel: "Law of One / Ra" is a Mirror-register framing for the
+unity/ownership model — all crystals part of one substrate, each owning its slice; the load-bearing
+literals are the ISR arrow (state-threading) + persona-as-owner (writer-actor model) + the per-crystal
+ownership; the esoteric framing is not a physics anchor. Routes the formalization to Soraya/Sova.)*
+
 ## Ties / routing
 
 `src/Core/PolarityFilter.fs` (the meaning-lens / polarization filter) · [`hooks/`](../../hooks/) (the
