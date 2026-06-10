@@ -15,7 +15,7 @@ function loadMasterIndex(): Map<string, string> {
   const m = new Map<string, string>();
   for (const line of readFileSync(INDEX, "utf8").split("\n")) {
     const mm = line.match(/^- \*\*(.+?)\*\* — (.+?) `\(/);
-    if (mm) m.set(mm[1], mm[2]);
+    if (mm) { const [, k, v] = mm; if (k && v) m.set(k, v); }
   }
   return m;
 }
