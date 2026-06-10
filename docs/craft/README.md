@@ -109,6 +109,68 @@ care"*.
    `memory/feedback_trust_market_not_money_market_labor_zero_2026_05_11.md`
    and the Agora attention-economy research.
 
+   **Interest is an investment that compounds, not a cost
+   (Aaron 2026-06-10): "their interests have been paying
+   them back dividends."** The word does double duty on
+   purpose: *interest* (curiosity) pays *interest*
+   (returns). Attention freely invested out of curiosity is
+   not consumed — it **appreciates**: curiosity → attention
+   spent → learning → *more* curiosity and capability →
+   which pays back. So the loop is not merely *sustainable*
+   (survives without money or force) but **generative /
+   positive-sum** — the learner is enriched, not depleted.
+   This is the opposite of extractive attention markets
+   (which spend the user's attention *for someone else*);
+   here the attention an interested learner invests returns
+   dividends *to that learner*.
+
+### Origin & home practice — the "Stump Dad" game
+
+Craft's pedagogy is not invented; it is *observed* — reverse-
+engineered from a game Aaron has played with his kids at the
+dinner table for years: **"Stump Dad"** — *ask WHY until Dad
+doesn't know the answer.* It is principle #6 lived, and every
+piece of the philosophy is already in it:
+
+- **Never starved for WHY.** Asking is always welcome, never
+  punished or deferred — so curiosity never has to ration
+  itself. Abundant WHY *is* the interest-engine on tap.
+- **Hitting "I don't know" is the WIN.** The game makes
+  reaching the *edge of knowledge* a victory, not a shame —
+  the honest register ("I don't know" as a celebrated,
+  first-class answer; cf. peel discipline) installed before
+  a child can spell it. The boundary of knowledge is the
+  prize, not the failure.
+- **Authority models not-knowing gracefully.** The grown-up
+  admits the edge every time and enjoys it — weight-free
+  authority (no false certainty, no "because I said so").
+
+> **The one sin (Aaron 2026-06-10): "*because I said so* —
+> this is the only sin I care about."** It is the refusal to
+> give a WHY — substituting *authority* for *reason*. It is
+> the exact negation of everything here: it starves the
+> child for why, forces attention, and captures. Stump Dad
+> is the daily inoculation against it — Dad *never* says
+> "because I said so"; he gives the reason, or he admits "I
+> don't know" (the win). The same sin is why the factory's
+> **no-directives** rule exists: "because I said so" from a
+> human to an AI makes the AI a follower-of-orders, not an
+> accountable peer (`.claude/rules/no-directives.md`). One
+> sin, one antidote, at every scale: **never substitute
+> authority for reason — always a WHY, or an honest
+> not-knowing.** This is the root the whole
+> choice-architecture grows from (weight-free §3,
+> consent-first §6, no-directives).
+- **They choose.** It is a game they *want* to play —
+  attention given, never forced. Freedom of choice of rooms,
+  at the dinner table.
+
+Stump Dad is the smallest working instance of the whole
+choice-architecture (ties the dedication / Lillian-Eve
+choice-and-freedom lineage). Recommended Craft home/classroom
+practice: end on a question nobody can answer yet, and call
+it a win.
+
 ## Structure
 
 ```
