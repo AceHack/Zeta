@@ -78,20 +78,36 @@ care"*.
 
    **Sustainability corollary (Aaron 2026-06-10): this
    teaching pattern is survivable in the attention economy
-   *without introducing money*.** Built on WHY→interest→
-   attention, the loop is self-funding in the *native*
-   currency — interest produces the attention that the
+   *without money AND without external force*.** Built on
+   WHY→interest→attention, the loop is self-funding in the
+   *native* currency — interest produces the attention the
    learning spends, and the learning produces more interest.
-   No money layer is needed to keep it alive. Money only
-   ever enters to *compel attention that interest failed to
-   earn* (paying over the bankruptcy case above) — so a
-   curriculum built on interest removes the money crutch
-   entirely. This makes Craft an **attention-economy-native
+   The two usual props of education are both **external
+   compulsion** mechanisms, and intrinsic interest removes
+   *both*:
+
+   - **No money (the carrot).** Money only ever enters to
+     *compel attention that interest failed to earn* (paying
+     over the bankruptcy case above). Build on interest and
+     the money crutch is gone — no tuition needed to survive.
+   - **No external force (the stick).** No mandatory
+     attendance, no authority seizing attention, no
+     coercion. Nobody is forced into the HOW room; they
+     enter because they want to. Interest is **intrinsic
+     motivation** — it needs neither carrot nor stick.
+
+   A pattern that survives on interest alone needs neither
+   payment nor compulsion to keep running. This is the
+   manifesto realized in pedagogy — **weight-free** (§3: no
+   capture, by money or by force) and **consent-first** (§6:
+   attention given, never taken) — and it is the same
+   *freedom of choice of rooms*: nobody pays you in and
+   nobody forces you in; you enter because you're
+   interested. This makes Craft an **attention-economy-native
    institution**, aligned with the Agora (trust-market /
    attention-as-settlement, not money-market): see
    `memory/feedback_trust_market_not_money_market_labor_zero_2026_05_11.md`
-   and the Agora attention-economy research. Teaching that
-   runs on interest needs no tuition to survive.
+   and the Agora attention-economy research.
 
 ## Structure
 
