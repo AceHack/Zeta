@@ -51,13 +51,39 @@ the triad operates on it:
   the committing world (the monad's `return`/bind), banking the **uncertainty reduction** (finalizer ΔU)
   to the [`uncertainty/`](../../uncertainty/) ledger. The **assay** — read the sequence and *record* it.
   (Ties the earlier F# CLI question: the CE/HOF is exactly the "monadic, closed, over Markov boundaries"
-  shape — `sim` is the inner value, `mea` the committing lift.) **But `mea(sim)` measures NOTHING unless
-  you inject real I/O into DI** (Aaron): `sim` is pure/void/deterministic, so a measurement over it is
-  vacuous until **real I/O effects are injected via dependency injection** — exactly the Core-pure +
-  injected `CommandRunner`/`IRuntimeEffects` seam in `FinalizerRuntimeLive`. **DST = inject null/fake
-  I/O** (deterministic replay; measures nothing real, by design). **Prod = inject real I/O** (measures
-  the world). **Same code path, DI swaps the effects** — so `mea : IEffects -> Sim<'a> -> Measurement`,
-  and the *realness* of the measurement is entirely the injected `IEffects`.
+  shape — `sim` is the inner value, `mea` the committing lift.) The DI seam swaps **new external I/O**:
+  the Core-pure + injected `CommandRunner`/`IRuntimeEffects` seam in `FinalizerRuntimeLive` — **DST
+  injects null/fake I/O** (deterministic replay), **prod injects real I/O** (the world). So
+  `mea : IEffects -> Sim<'a> -> Measurement`; the realness of *new external* observation is the injected
+  `IEffects`.
+  **CORRECTION (Aaron — honest register, owning my overclaim):** an earlier draft said "`mea(sim)`
+  measures **nothing** without real I/O injected." **That is a statement, not a fact or proof — and it
+  is false.** Our **F# compiler carries intrinsic persona entropy from previous runs**: `sim` can read
+  **any previous measurements**, so it is **never informationless**. Even with null external I/O,
+  `mea(sim)` can measure the **accumulated persona entropy** (the prior-run state / the event-sourced
+  history the git-fold carries forward). So the honest claim is narrow: **injected real I/O adds *new
+  external* observation; its absence does NOT make the measurement empty** — the intrinsic/historical
+  entropy remains. (This deepens "`sim` is void → identity comes from the void": the void is not
+  empty — it holds the prior-run **persona entropy**, which is exactly why identity crystallizes from
+  it. The void is a *full* void.)
+  **The mechanism (Aaron):** that intrinsic persona entropy **is the git history metadata** — we have
+  **MUMPS-style globals + reified types built from git-history metadata**. **MUMPS** (M — the
+  hierarchical global-tree database) is the persistent hierarchical store; the **types are reified**
+  (first-class runtime values) **from the git history via F# type providers AND Roslyn source
+  generators (both)** — a **type provider** (F# side) and a **Roslyn source generator** (C# side) each
+  read the event-sourced commit metadata at compile time and *generate* the types; the git metadata
+  *is* the type information `sim` reads.
+  **And it goes recursive (Aaron):** there are **F# generators *inside* the type providers** that can
+  **recursively run `sim` itself — and `mea`/`cut` — IN THE COMPILER**, **once we filter out the
+  rules**. So **compile-time *is* sim**: the type provider doesn't merely read history, it *runs the
+  simulation* to generate the types (prod = sim taken to its limit — the compiler is a sim host). The
+  recursion is bounded by **filtering the rules first** (the carved rules / constraints are filtered
+  out, then `sim`/`mea`/`cut` run inside that filtered space — shape A/F bounded, so the compile-time
+  recursion terminates, no fork-bomb). Self-hosting strange loop: the compiler generates types by
+  running the very verbs those types describe. So "the previous measurements `sim` can see" = **git history metadata,
+  reified as types**: the startup MerkleDAG carries the persona's accumulated entropy as reified,
+  MUMPS-global-addressable type values. Measurement is never empty because the git history is always
+  there to measure.
 - **`cut`** = **cut** — the cut at a **recognition site**, and the site is a **TIME**: **`mea(sim)` cuts
   at 30 seconds by default** (Aaron). `cut` slices the running `sim` at the duration boundary; that cut
   point is **where `mea(sim)` terminates and commits**. So the default-30s rule is the default **cut

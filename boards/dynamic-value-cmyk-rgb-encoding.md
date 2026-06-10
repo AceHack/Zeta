@@ -85,7 +85,9 @@ latest **toy/real models of society**. Useful parameters:
 
 **Measurement knobs (the room loop):**
 
-- **DI effects** — null (DST) vs real I/O (prod): `mea(sim)` measures nothing without real I/O injected.
+- **DI effects** — null (DST) vs real I/O (prod): real I/O adds *new external* observation. (Not
+  "measures nothing without I/O" — `sim` carries intrinsic persona entropy from prior runs: git history
+  metadata reified via F# type providers + Roslyn generators. The measurement is never empty.)
 - **duration / cut site** — default 30s; the `cut` recognition-time.
 - **resolution-threshold** — ΔU-per-pass below which "resolved"; **max rounds** (math team: unlimited).
 

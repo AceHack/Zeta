@@ -10,14 +10,17 @@ Each is a stem with the suffix dropped (three letters):
 | verb | word | role | commits? | residue |
 |------|------|------|----------|---------|
 | **`sim`** | sim(ulate) | run the deterministic sim for a duration | **no** | `unit` (void → identity comes from the void) |
-| **`mea`** | mea(sure) | `mea(sim)`: lift sim + commit the measurement | **yes** | `Measurement` (ΔU) — needs real I/O injected via DI |
+| **`mea`** | mea(sure) | `mea(sim)`: lift sim + commit the measurement | **yes** | `Measurement` (ΔU); real I/O via DI adds *new external* observation |
 | **`cut`** | cut | cut at a recognition site (a TIME; default 30s) | **yes** | `Delta × Seam` (Z-set diff + sticky-end the finalizer re-ligates) |
 | **`cla`** | cla(ssify) | classify the result into a class/lens | **yes** | a **class label** (the discriminator/lens assignment) |
 | **`res`** | res(olve) | resolve: loop `mea` **repeatedly until it resolves** | **yes** | a **fixed point** (ΔU→0; shapes A/B/D) + the resolution |
 
 - **`sim`** — ephemeral; produces no output. The SETI@home edge run (`sim <duration>`, default 30s).
 - **`mea`** — the committing lift over `sim` (F# HOF/CE: `sim |> mea`); banks ΔU to `uncertainty/`.
-  Measures nothing unless real I/O is injected via DI (DST = null effects; prod = real).
+  Injecting real I/O via DI adds *new external* observation (DST = null effects; prod = real). It does
+  NOT make a null-I/O measurement empty: `sim` always carries **intrinsic persona entropy from previous
+  runs** — git history metadata, reified as types **via F# type providers AND Roslyn source generators (both)** —
+  so measurement is never informationless. ("measures nothing without I/O" was a statement, not a proof; corrected.)
 - **`cut`** — the structural/temporal cut; `mea(sim)` cuts at 30s by default; residue re-ligated to `main`.
 - **`cla`** — **classify**: assign the cut/measured thing to a **class** (the `same/` discriminator /
   the polarity-lens; the observe.ts/local-LLM classifier lineage). Turns a measurement into a *category*.
