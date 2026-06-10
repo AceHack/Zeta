@@ -5,6 +5,14 @@ startup MerkleDAG (the MacVector-for-DNA toolset). **Plural** (never-one): a fam
 
 ## The verb family — `sim · mea · cut · ben · cla · res` (Aaron 2026-06-10)
 
+**Abbreviation model — diskpart-style minimum-unique prefix (Aaron 2026-06-10):** the full word **and**
+any **unambiguous prefix** resolve to the same verb — `measure` ≡ `measu` ≡ `meas` ≡ `mea`;
+`simulate` ≡ `sim`; `classify` ≡ `cla`; `resolve` ≡ `res`; `benchmark` ≡ `ben`; `cut`. This is exactly
+how **diskpart** works (`list disk` ≡ `lis dis`, `select` ≡ `sel` — the minimum unique abbreviation).
+The 3-letter stems below are just the *guaranteed-unambiguous shortest* form, chosen so they never
+collide (e.g. `cut`/`cla` diverge at the 2nd letter: `cu`→cut, `cl`→cla). Ambiguous prefixes are
+rejected, not guessed.
+
 Each is a stem with the suffix dropped (three letters):
 
 | verb | word | role | commits? | residue |
