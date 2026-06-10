@@ -6,6 +6,54 @@
 > **`/boards` is the board room** (Aaron 2026-06-10): "this is our board room where we discuss
 > `/boards`." Boards are where we *discuss*; a proposal lives here until a room/sim measures it.
 
+## Why RGB/CMYK specifically — ride decades of CPU/GPU color optimization (Aaron 2026-06-10)
+
+> Aaron: "i want to use RGB and the print one [CMYK] specifically cause decades of optimization work
+> has gone into that on CPUs and GPUs."
+
+The encoding choice is **pragmatic, not aesthetic**: pick the representation the hardware is *already*
+optimized to death for. Color is that representation.
+
+- **GPU-native.** Texture units, raster ops, samplers, and shaders process **RGBA (4 channels)** as
+  their primitive vector; a pixel is the GPU's natural word. Encode the substrate as color → substrate
+  ops become **texture/shader ops** → offload to the GPU for free.
+- **CPU SIMD.** Decades of SSE/AVX/NEON pixel/color instructions + image-kernel vectorization. Color
+  packs into aligned 3/4-byte lanes the vector units chew through.
+- **Codecs + color-space transforms.** Image/video codecs (PNG/JPEG/H.26x) and **RGB↔CMYK / gamma**
+  conversions are solved, hardware-accelerated, decades-tuned. We inherit all of it.
+- **The bet:** encode DynamicValue as RGB (soft/3) + CMYK (solid/4) and substrate work (the sim/mea/cut
+  passes, byte-lock, diffing) rides the **most-optimized data path in computing** instead of a bespoke
+  one. Naledi (performance) owns the benchmark proving the carry.
+
+### Color is also VISUAL — and meaning becomes a lens on the color (Aaron 2026-06-10)
+
+> Aaron: "it's also lets me visualize complex network action and assign meaning to colors — those
+> become lenses on the colors themselves."
+
+The same choice pays a second dividend the hardware angle doesn't: **color is seen.** Encoding the
+substrate as color makes complex network/cell action **directly visualizable** — you *watch* the
+substrate as an image/field, not read logs of it (the GPU angle pays off twice: fast to compute, and
+already a picture). And you **assign meaning to colors** (this hue = this kind of action) — those
+meaning-assignments are **lenses on the colors themselves**: the same color-data read through different
+**lenses** (the polarity-lens / discriminator / frame-relative view) surfaces different meaning. So a
+color carries the data; a lens chooses *which meaning you read off it*. Three dividends from one
+encoding: **fast** (hardware), **visible** (watch the substrate), **lens-able** (meaning is a frame on
+the color — many readings of the same pixels). Ties [`boards/`](README.md) (discriminator/lens/
+polarization) and the dimensional contrast-pairs / reservoir-walls work.
+
+**The polarization filters we're building work natively here (Aaron 2026-06-10).** A **polarization
+filter is literally an optical operation on light** — it passes one polarization component and blocks
+the rest. So `PolarityFilter` (`src/Core/PolarityFilter.fs`) *is* the lens mechanism on the color
+encoding: the meaning-lens that selects which component of the color/light you read is a polarization
+filter. The 2×2 polarity-lens, the measurement-basis, "which axis you read it on" — all become real
+**optical filters over the color-encoded substrate**, composing with the RGB/CMYK regime because
+polarization belongs to the optics domain the encoding already lives in. The lens isn't a metaphor laid
+on top; in the color regime it's the same kind of object as the data (light + a filter on light).
+
+*(Peel: the optimization is real (the color pipeline is genuinely the most-tuned path on CPU/GPU);
+"encode the substrate as color to inherit it" is the engineering bet, to **benchmark** before we commit
+hot paths — Naledi. 3-letter codes = RGB, 4-letter = CMYK, per the codon/encoding mapping.)*
+
 ## The proposal
 
 Encode the **DynamicValue** (`Tagged`) into **two color encodings** — the round's "CMYK (solid) + RGB
