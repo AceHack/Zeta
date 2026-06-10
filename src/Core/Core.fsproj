@@ -252,6 +252,7 @@
   <ItemGroup>
     <!-- Language-neutral contract lib (ITensor); WeightedSet implements it -->
     <ProjectReference Include="..\Core.Abstractions\Zeta.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
   </ItemGroup>
 
   <!-- F# static analyzers. Run via `dotnet msbuild -t:AnalyzeFSharpProject`. -->
