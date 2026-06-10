@@ -57,6 +57,24 @@ care"*.
    meta-observation: a Craft lesson is like a code class —
    reduce concepts-needed-in-any-one-unit; import /
    reference the rest via well-defined prerequisites.
+6. **WHY-before-HOW — interest funds attention.** Per
+   Aaron 2026-06-10: *"teach the WHY of the TOOL before
+   the HOW — that builds the INTEREST in PAYING ATTENTION,
+   so you can afford the HOW."* This is the *mechanism*
+   under principle #1, and it is attention-economics:
+   **attention is the scarce currency; interest is what
+   makes a learner willing to spend it.** The WHY is
+   cheap and gripping — it earns the attention-budget
+   that the HOW (expensive, detailed, easy to bounce off)
+   needs to be affordable. Demanding the HOW first is
+   bankruptcy: asking a learner to spend attention before
+   anything funded it (the classic "why are we even
+   learning this" failure). And it is **consent-first**:
+   interest = the learner *choosing* to spend attention,
+   not having it captured — they walk into the HOW room
+   because they want to (ties the
+   freedom-of-choice-of-rooms / effort-is-attention
+   capture, `docs/research/2026-06-10-boundary-flow-architecture-minimal-action-energy-redirection-dataflow-membranes.md`).
 
 ## Structure
 
