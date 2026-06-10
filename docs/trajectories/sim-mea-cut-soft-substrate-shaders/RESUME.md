@@ -55,7 +55,7 @@ level; `mea` collapses; the finalizer commits; a room *resolving* is the sign-of
 1. **Soft `IScheduler`** — on the ISR arrow (`IntrCtx`); the loop running ISR on `InterruptKind` in rooms; unrolled-interrupt single-threaded loops; lensed-seed heap. *(Aaron driving.)*
 2. **Wire `SoftValue` into the ISR `Result` channel** — value-axis uncertainty into the promise/arrow.
 3. **IL runner** — hard regular IL first (close-over-compilers; Bonsai yin/yang), soft both eventually → soft .NET mini-CPU → our own runtime → shaders.
-4. **Finish soft `GameFingerprint` (MinHash similarity) + `FingerprintPrism`** — switch games staying soft. *(Otto recommended next; self-contained.)*
+4. ~~**Finish soft `GameFingerprint` (MinHash similarity) + `FingerprintPrism`** — switch games staying soft.~~ **DONE (#7527):** `src/Core/FingerprintPrism.fs` — `Rainbow` table → `hard` (exact, `GameFingerprint.key`) + `soft` (nearest by MinHash Jaccard, insertion-robust) `IPrism`; `softBytes`/`softBytesSimilarity`; 5/5 tests; doesn't touch proven-4/4 GameFingerprint.fs. **CHIP-8 = the soft scheduler's first client** (SoftChip8 60Hz timer/interrupt loop on the `IntrCtx` ISR arrow validates the scheduler at minimal-VM scale; `FingerprintPrism.soft` picks/switches the game staying soft). **Math-team models** get an execution substrate: Nash = fixed-point time-crystals, Bayesian convergence = `SoftValue.observe`/`res`, board-room params = room configs; toy=DoP1/null-IO vs real=DoPN/injected-IEffects, same code path.
 5. **rooms-as-sign-off** — a room resolving = approval (finalizer + soft scheduler); replaces per-action human gates.
 6. Loose: `sim`/`mea`/`cut` console binary; shader memory/GC; the lensability/time-crystal detector; parser-gen→CHIP-8 + interrupts = the game.
 
