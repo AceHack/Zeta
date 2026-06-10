@@ -1,6 +1,5 @@
 # letters/INDEX — regenerated (do not edit)
 
-
 ## letters/greek/
 
 - **alpha** — Greek alpha — beginning; significance level; learning rate (RL); the first. `(letters/greek/alpha.md)`

@@ -36,6 +36,8 @@ const lines = (e: Entry): string =>
     : `- **${e.term}** \`(${e.rel})\` — ${e.senses.length} senses (discriminator required):\n` + e.senses.map((s, i) => `  ${i + 1}. ${s}\n`).join("");
 
 const writes: { path: string; body: string }[] = [];
+// markdownlint MD012: collapse any run of 3+ newlines to a single blank line.
+const norm = (s: string): string => s.replace(/\n{3,}/g, "\n\n");
 function folderIndex(f: Folder) {
   let md = `# ${relative(VOCAB, f.dir)}/INDEX — regenerated (do not edit)\n\n`;
   for (const e of [...f.entries].sort((a, b) => a.term.localeCompare(b.term))) md += lines(e);
@@ -43,7 +45,7 @@ function folderIndex(f: Folder) {
     md += `\n## ${relative(VOCAB, c.dir)}/\n\n`;
     for (const e of flatten(c).sort((a, b) => a.term.localeCompare(b.term))) md += lines(e);
   }
-  writes.push({ path: join(f.dir, "INDEX.md"), body: md });
+  writes.push({ path: join(f.dir, "INDEX.md"), body: norm(md) });
   for (const c of f.children) folderIndex(c);
 }
 
@@ -57,7 +59,7 @@ root += `> homes (words/letters/shapes/colors/temperatures). grams/ is the gener
 root += `> The DST test framework loads THIS as the master index (one read). ${all.length} travelers.\n\n`;
 let last = "";
 for (const e of all) { const r = e.rel.split("/")[0] ?? ""; if (r !== last) { root += `\n## ${r}\n\n`; last = r; } root += lines(e); }
-writes.push({ path: ROOT_INDEX, body: root });
+writes.push({ path: ROOT_INDEX, body: norm(root) });
 
 const check = process.argv.includes("--check");
 let stale = 0;

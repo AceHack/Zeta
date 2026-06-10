@@ -4,7 +4,6 @@
 > homes (words/letters/shapes/colors/temperatures). grams/ is the generated measure-view.
 > The DST test framework loads THIS as the master index (one read). 116 travelers.
 
-
 ## colors
 
 - **amber** — Amber — caution / pending / provisional (bootstrap-test, awaiting corroboration); the liminal between red and green. `(colors/amber.md)`
