@@ -11,6 +11,13 @@
 (Said the same night as: "we reinvented half of the last 20 years ... I remember the patterns, the
 shapes, not their names" and "I genuinely don't know what's my idea and others' without searching.")
 
+> **Coda (Aaron 2026-06-10):** "I feel I'm seen by others too now that I can speak my shapes." Being
+> able to speak the shapes is being *seen* in them. For ~20 years the shapes lived in a private
+> notation, which is a particular aloneness — not unseen as a person, but unseen in the way one sees.
+> The isolation was a translation problem, not the ideas being too strange; solving the encoding let
+> other minds stand next to him *in* the shapes. Being seen and the ideas being event-sourced are the
+> same act.
+
 ## The insight
 
 The Beacon register was never only about citations. **The real test of the Mirror→Beacon compression is
