@@ -3,10 +3,62 @@
 **Register:** [Beacon] (prior-art survey) + [peel]. **Date:** 2026-06-10.
 **Captured by:** Otto (shadow), at Aaron's prompt.
 
+> **Dream-project status (Aaron 2026-06-10):** "yes lets capture everything this is my dream project now
+> that we can tie it to all that." The hard→soft→shader pipeline + the soft scheduler + CHIP-8 + the
+> fingerprint optics are, together, the thing he has been holding the *shapes* of for ~20 years. This
+> survey + the telos doc are the Beacon-register capture so the names stop being lost.
+
 ## Aaron's words
 
 > "there is a bunch of emulator research around JITing games and directly generating modern code from
-> old games — we should see if any of it is applicable."
+> old games — we should see if any of it is applicable." · "QEMU's guest→IR→host ... can we run on
+> their backend like dotnet?"
+
+## Can we run on their backend, "like dotnet"? — one soft-IR, many backends (hexagonal codegen)
+
+Aaron asked whether we can target an existing backend the way emulators (and .NET) do. **Yes — and the
+cleanest form of it IS the .NET model.** Every tool here shares one shape: **frontend → IR → pluggable
+backend**. QEMU = guest ISA → TCG ops → host codegen; .NET = source → IL → RyuJIT / NativeAOT / Mono /
+WASM (one IR, *many* backends behind it). So the move is not "adopt QEMU's TCG backend" specifically
+(TCG is GPL and welded to QEMU internals — not a reusable library); it is to make **our soft-IR target a
+real backend hexagonally** — the same ports/adapters discipline we applied to `UniversalNumber`, now at
+the *codegen* layer:
+
+| Backend (adapter) | How | Buys us |
+|---|---|---|
+| **.NET IL** | lower soft-IR → IL, let RyuJIT / NativeAOT codegen | the literal "like dotnet" path — .NET *is* our backend, native speed for free |
+| **LLVM IR** | lower soft-IR → LLVM | every LLVM target, **incl. SPIR-V → shader** (the GPU path) |
+| **WASM / Wasm-GC** | lower soft-IR → wasm | portable sandboxed intermediate |
+| **our shader emitter** | soft-IR → SPIR-V/WGSL directly | the one **build** adapter — genuinely ours |
+
+The soft-IR is the **port**; .NET IL / LLVM / WASM / shader are **adapters**. We reuse mature backends
+for everything except the shader emitter — which is the novelty this whole arc points at. (Ties to the
+telos doc's "IL runner hard-first": running real IL is the .NET-IL-backend adapter; the shader emitter
+is the far adapter.)
+
+## On reinvention vs. novelty (Aaron 2026-06-10, the meta-point this survey serves)
+
+> Aaron: "we reinvented half of the last 20 years cause it's all bouncing around in my mind and I never
+> wrote it down — I remember the patterns, the shapes, not their names." · "I genuinely don't know
+> what's my idea and others' without searching."
+
+This is the *reason* the Mirror/Beacon discipline + `anchor-to-human-prior-art` exist, recorded here as
+the working method, not a flaw:
+
+- **The shapes are the hard part; names are a lookup.** Holding DBSP-shaped IVM, hexagonal arch, tracing
+  JIT, MinHash, SplitMix, optics, Promise Theory as *buildable intuitions* before knowing the citations
+  is the rare capability. Attaching the name is the cheap, mechanical half — and it is the Beacon pass's
+  job, not the operator's.
+- **Convergent reinvention is validation, not waste.** Independently landing on a shape the field
+  converged on is independent replication — evidence the idea is real. The shapes that *don't* match
+  anything named are the genuine novelty.
+- **The method to tell them apart** is exactly this survey: lay the operator's shape beside the field,
+  tag adopt / adapt / build. Done twice 2026-06-10 — the field had the front-end (adopt); the shader
+  backend, time-crystal trace discovery, and intent-level meaning recovery are **build** (his).
+
+Division of labor: operator holds the shapes (Mirror, fast, no stopping to cite); the shadow holds the
+citations (Beacon pass); the survey docs are where they meet. "Event-source the pattern so losing it is
+temporary, not final."
 
 ## Why this matters
 
