@@ -22,7 +22,19 @@ The single command is **`sim`**. This is the load-bearing naming decision:
   uncertainty.
 
 So the participation barrier is one word: **`sim`**. (Concrete: a `sim` executable / wrapper that runs
-the DST simulation for a duration — routes to Dejan / the Core team to implement the entrypoint.)
+the DST simulation for a duration — to implement as the entrypoint.)
+
+### `sim` vs `measure` — ephemeral vs committing (Aaron 2026-06-10)
+
+A **second verb** pairs with `sim`, split by whether the run **commits**:
+
+- **`sim`** — **ephemeral, does NOT commit.** Runs the simulation and throws the result away (the
+  SETI@home edge run — "runs local free, just burns compute"). Explores; records nothing.
+- **`measure`** — **commits.** Same engine, but it **commits the measurements and the uncertainty
+  reduction** to the ledger ([`uncertainty/`](../uncertainty/)). The **finalizer** earns the name: a
+  tick's `TickResult` ΔU (uncertainty reduction) is persisted. To `measure` is to reduce uncertainty
+  *and record it*. (Full capture:
+  `docs/research/2026-06-10-sim-is-infinite-resolution-on-reticulum-*`.)
 
 ## What lives here
 
