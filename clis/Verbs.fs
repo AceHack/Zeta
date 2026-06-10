@@ -11,8 +11,9 @@ open System
 //
 // STUB: not yet wired into a project (clis/ is a root folder). The supporting types
 // are opaque interfaces too — to be reified from git-history metadata via gen/ (F#
-// type providers + Roslyn generators). The loop is `cut mea sim` by currying; res
-// iterates it (the finalizer) until it resolves.
+// type providers + Roslyn generators). The loop is `sim |> mea |> cut` (the pipe =
+// cut(mea(sim)); bare `cut mea sim` is multi-arg application, NOT nesting — F# is
+// left-associative); res iterates it (the finalizer) until it resolves.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Supporting types (opaque stubs; reified later via gen/) ──
@@ -76,7 +77,8 @@ type IClaVerb =
 type IResVerb =
     abstract member Res<'a> : effects: IEffects * sim: ISim<'a> -> IMeasurement
 
-/// The full family. `cut mea sim` by currying IS the loop; `res` iterates it.
+/// The full family. The loop is `sim |> mea |> cut` (pipe = cut(mea(sim)); not bare
+/// juxtaposition — F# application is left-associative); `res` iterates it.
 type ICli =
     inherit ISimVerb
     inherit IMeaVerb

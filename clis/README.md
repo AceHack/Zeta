@@ -64,16 +64,25 @@ sim            explore (void)
 `res` wraps the loop (`res = repeat mea until resolved`); `cla` labels; `cut` writes; `mea` records;
 `sim` is the void base every other verb lifts.
 
-### The loop in F# — `cut mea sim` by currying (Aaron 2026-06-10)
+### The loop in F# — `sim |> mea |> cut` (same MEANING as "cut mea sim") (Aaron 2026-06-10)
 
-> Aaron: "so in F# `cut mea sim` with currying should do it — that's the loop."
+> Aaron: "cut mea sim is the same as cut(mea(sim)) right? ... like the meaning of the two is the same."
 
-In F#, the verbs are **curried functions**, so the loop is just **`cut mea sim`** — currying composes
-the three into one. `sim` is the inner (void) value; `mea` lifts it (commits the measurement); `cut`
-takes the measured value and writes the delta — `cut (mea (sim))`, written point-free by currying. The
-**loop** is that curried composition iterated by the finalizer (= `res`): re-apply `cut ∘ mea ∘ sim`
-until it resolves (ΔU→0; shape A/B/D). No glue code — currying *is* the wiring. (`cla` slots in where a
-class is needed; the core engine loop is `cut mea sim`.)
+The **meaning** is "cut the measurement of the simulation" — the explore → know → change pipeline. That
+intent is `cut(mea(sim))`. **In F# you spell that meaning with the pipe:**
+
+```fsharp
+sim |> mea |> cut      // = cut (mea sim) — reads in order: simulate, measure, cut
+```
+
+**Correction (honest register — owning my error):** an earlier draft said bare **`cut mea sim` "by
+currying" IS `cut(mea(sim))`.** That is **false F#** — function application is left-associative
+juxtaposition, so `cut mea sim` parses as `(cut mea) sim`, i.e. call `cut` with TWO arguments
+(`mea` and `sim`), NOT nested calls. Currying lets you partially apply; it does **not** turn
+juxtaposition into nesting. The meaning Aaron intended is right; the *notation* for it is the pipe
+(`sim |> mea |> cut`), or `cut (mea sim)`, or composition `(cut << mea) sim`. The **loop** is that
+pipeline iterated by the finalizer (= `res`) until it resolves (ΔU→0; shape A/B/D). (`cla` slots in
+where a class is needed; the core engine loop is `sim |> mea |> cut`.)
 
 The interface stubs for the five verbs live in [`Verbs.fs`](Verbs.fs) — pure interfaces, no classes
 (the meta-rule).
@@ -83,19 +92,19 @@ The interface stubs for the five verbs live in [`Verbs.fs`](Verbs.fs) — pure i
 > Aaron: "`cut mea sim` works on the CLI too, like currying — homoiconic to **fs**: **F#** /
 > **filesystem** homoiconicity."
 
-`cut mea sim` is **the same expression in three registers** — code = data = tree (homoiconicity, the
-Lisp property: program and data share one representation). The pun is **`fs`**:
+The pipeline (meaning: cut ∘ mea ∘ sim) is **the same expression in three registers** — code = data =
+tree (homoiconicity, the Lisp property: program and data share one representation). The pun is **`fs`**:
 
-- **F# code** — `cut mea sim` as curried functions (point-free composition).
-- **the CLI** — `cut mea sim` on the command line: the **shell** curries too (partial application /
-  composition of the verb commands). Same expression, run as a command.
+- **F# code** — `sim |> mea |> cut` (the pipe spelling of the pipeline; see the correction above — bare
+  `cut mea sim` is multi-arg application, not the nesting).
+- **the CLI** — `sim | mea | cut` on the command line: the **shell pipe** chains the verb commands
+  left-to-right — the same shape as F#'s `|>`. (Each verb a command; the pipe is the wiring.)
 - **the filesystem** — the startup **MerkleDAG** (the `fs`) *is* that structure: folders/paths are the
   same tree the F# and the CLI walk. The filesystem is the code.
 
-So **F# ≅ CLI ≅ filesystem** — one homoiconic structure. Writing `cut mea sim` in F#, typing it at the
-shell, and walking the MerkleDAG are the *same act* over the *same representation*. (This is why the
-folder structure is load-bearing: the filesystem is not a container for the code — it **is** the code,
-homoiconically.)
+So **F# ≅ CLI ≅ filesystem** — one homoiconic structure: the F# pipe `|>`, the shell pipe `|`, and the
+MerkleDAG walk are the *same act* over the *same representation*. (This is why the folder structure is
+load-bearing: the filesystem is not a container for the code — it **is** the code, homoiconically.)
 
 ## Outside the cube — the Cayley mini-cubes (cognitive/query verbs) (Aaron 2026-06-10)
 
