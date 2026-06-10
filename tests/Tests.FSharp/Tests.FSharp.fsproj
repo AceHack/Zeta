@@ -118,6 +118,7 @@
     <Compile Include="Sim.Tests.fs" />
     <Compile Include="CliVerb.Tests.fs" />
     <Compile Include="Optics.Tests.fs" />
+    <Compile Include="UniversalNumber.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="ForwardMomentum.Tests.fs" />
     <Compile Include="QubitIso.Tests.fs" />

@@ -49,6 +49,7 @@
     <Compile Include="Sim.fs" />
     <Compile Include="CliVerb.fs" />
     <Compile Include="Optics.fs" />
+    <Compile Include="UniversalNumber.fs" />
     <Compile Include="TravelerFrame.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />
