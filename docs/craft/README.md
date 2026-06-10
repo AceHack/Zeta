@@ -3,8 +3,11 @@
 **Status:** skeleton landed; multiple Zeta-track modules
 present (`zset-basics`, `retraction-intuition`,
 `operator-composition`, `semiring-basics`) plus an
-initial `production-dotnet` track. The curriculum grows
-tick-by-tick, backwards-chain from current project needs.
+initial `production-dotnet` track, and a **young-learner**
+module (`crossing-the-streams-ghostbusters` — combining
+streams via proton packs; use-the-tool-without-the-how).
+The curriculum grows tick-by-tick, backwards-chain from
+current project needs.
 **Companion curriculum** to `docs/ALIGNMENT.md` per the
 mutual-alignment (yin/yang) discipline — Craft teaches
 humans what the alignment-contract clauses mean in practice.
