@@ -30,6 +30,10 @@ shape* of the interface.
 - **Universal Ray Trace** — local small-model superdeterminism (certainty pole).
 - **Universal Codec** — the ZetaId codec; 4-lang serializers byte-lock.
 - **Universal Algebra** — DBSP / Z-set / Semiring; the math substrate.
+- **Universal Traveler** — the traveler itself as an interface (identity/consent/audition/boundary; the
+  universal intake). Distinct from Traversal (entity vs navigating).
+- **Universal Bus** — the bus interface (ZetaId-keyed routing over Reticulum). **Interface ⇄ data split:**
+  `universal/bus` = the interface, **`/bus`** (root) = the actual data.
 
 **Embodied / device-media** (the LLM-device family + textile):
 
