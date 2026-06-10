@@ -1,0 +1,95 @@
+# Boundary-flow architecture — minimal action, energy redirection, Dataflow membranes
+
+**Register:** [grounded] (Aaron design stream) + [Beacon]. **Date:** 2026-06-10.
+**Captured by:** Otto (shadow). The load-bearing principle for the room/boundary model.
+
+## Aaron's words
+
+> "we measure the shit out of these to find shapes we can link together ... it's connecting boundary
+> flows together like jujitsu energy redirection between different parts of your boundary or two
+> different boundaries like network and disk." · "your code or effort inside the boundary stays minimal
+> — optimize for no action, and use the energy of one flow to drive the other."
+
+## The principle
+
+The room/membrane (its Markov blanket) does the **minimum** internally and is **driven by the flows that
+cross it**, not by its own expended effort. Three moves:
+
+1. **Optimize for no action (wu-wei).** The boundary's resting state is *nothing* — no polling, no
+   spinning, no pumping. It sits idle until a flow crosses, does the minimum, and yields. Same shape as
+   the FoundationDB single run-loop (yield while I/O is in flight; spawn no thread) and as `sim` being
+   **void** until a real crossing forces `mea`. Less code inside the membrane = more the membrane is
+   just *shaping a flow that already carries its own energy*.
+2. **Use one flow's energy to drive the other (jujitsu / backpressure as power source).** Backpressure
+   is not a brake — it is the coupling that lets a slow consumer *pace* a fast producer. The disk-writer's
+   drain rate pulls the network-reader; the **gradient between two boundaries** (fast net ↔ slow disk)
+   does the work, like a siphon on a height difference or a turbine on the flow passing through it. The
+   room is a **catalyst**: it redirects flow without being consumed.
+3. **Measure the crossings to find the linkable shapes.** The instrument is the uncertainty ledger
+   (per-boundary ΔU). Queue depth, throughput, latency, crossing-rate at each membrane are where the
+   **time-crystals (repeating flow-shapes)** appear — and the recurring shapes tell you which boundaries
+   *want* to be linked. Measurement is not just accounting; it locates the joints.
+
+## Origin lineage — FoundationDB is the pattern that started it all
+
+> Aaron 2026-06-10: "FoundationDB — yes, this is whose pattern inspired me to start building on DBSP and
+> deterministic simulation."
+
+The **FoundationDB** team's pattern (Flow actors + deterministic simulation testing; the single
+run-loop) is the **origin inspiration** for the whole Zeta substrate: it is why Aaron started building on
+**DBSP** (incremental computation as circuits) and **DST** (deterministic simulation, manifesto §7 /
+discipline #4). FDB is not one anchor among many here — it is the *root* of the lineage. Every
+boundary-flow move below is downstream of "build it like FoundationDB": minimal-action single-loop,
+deterministic replay from a seed, simulate the whole system before trusting it. (Anchors: Zhou et al.,
+*FoundationDB: A Distributed Unbundled Transactional Key Value Store*, SIGMOD 2021; Will Wilson,
+*Testing Distributed Systems w/ Deterministic Simulation*, Strange Loop 2014; the Flow actor language.)
+
+## The mechanism — the FerryThrottler (our in-boundary ActionBlock) as the membrane plumbing
+
+**Dataflow blocks are Markov boundaries with typed channels; `LinkTo` connects two boundaries' flows.**
+(Anchor: Stephen Toub, *Inside TPL Dataflow*, Channel 9 Going Deep —
+<https://channel9.msdn.com/Shows/Going+Deep/Stephen-Toub-Inside-TPL-Dataflow> /
+<https://www.youtube.com/watch?v=AFMv_nFIfvk>; the video Aaron recalled.) Each block has a bounded
+inbox; a full downstream block exerts backpressure upstream → flow is *redirected* to where capacity
+exists, never shoved. The bounded queue at a `LinkTo` is the **joint**; backpressure is the redirection.
+
+**Crucially, we do not take a third-party dependency on `System.Threading.Tasks.Dataflow` for this.**
+Aaron 2026-06-10: "we have our ferry throttler which is my version of the internals of ActionBlock."
+`src/Core/FerryThrottler.fs` reimplements ActionBlock's internals — `MaxDegreeOfParallelism`,
+`MaxQueueSize`, the bounded-queue ferry — with **zero** Dataflow dependency (Zeta.Core carries no
+`Tasks.Dataflow` import). So the membrane plumbing itself is **inside our Markov boundary**: he already
+pulled ActionBlock in. This is the dependency-minimization / boundary-expansion goal made literal — the
+flow (`Bag`), the value (`DynamicValue`), AND the plumbing (`FerryThrottler`) are all self-hosted; the
+only crossings left are the injected I/O effects. DoP=1 ⇒ the deterministic FDB loop; DoP=N ⇒ N ferries;
+the SAME knob. Prior art anchored in `async-all-the-way-truthful-signatures` (the Itron `Throttling`
+design the FerryThrottler emulates) — now seen as boundary-linking, not just throttling.
+
+## The architecture, end to end (in Aaron's shapes)
+
+| Layer | What it is | Anchor |
+|---|---|---|
+| **`Bag<DynamicValue,'W>`** | what flows (the smallest-dependency atom; weight-algebra port) | DBSP weighted Z-sets (Budiu et al.) |
+| **Dataflow blocks (`LinkTo`, bounded, DoP-knobbed)** | the membranes, linked at their joints | TPL Dataflow (Toub) |
+| **Backpressure** | one flow's energy driving the next (no internal pump) | Reactive Streams backpressure; siphon/turbine |
+| **Minimal action** | the room's resting state is nothing (wu-wei) | wu-wei 無為; FoundationDB run-loop; lazy/pull eval |
+| **Measured crossings** | the uncertainty ledger; where flow time-crystals show up | Maxwell's demon (the gating, not pumping) |
+| **Injected IEffects** | the only boundary crossings left (net/disk), chosen not implicit | the room-as-injected-membrane doc |
+
+## Honest scope / peels
+
+[Beacon] TPL Dataflow / `ActionBlock` / `LinkTo` / bounded `BufferBlock` (Stephen Toub) · Reactive
+Streams + backpressure (Kafka/Akka Streams/RxJava demand signalling) · wu-wei 無為 (Daoist effortless
+action; the Bonsai yin/yang) · Maxwell's demon (the room as a gate that does minimal work) ·
+FoundationDB deterministic single-loop (Zhou et al., SIGMOD 2021) · catalysis / siphon / turbine as the
+"driven by the flow, not driving it" physical analogies. **Peel:** the dataflow plumbing and
+backpressure are mature prior art (adopt); "energy of one flow drives the other" + "measure crossings to
+find linkable time-crystals" is the framing that unifies them with the room model (ours). The physical
+analogies (siphon/turbine/catalyst) are illustrative, not claims of literal thermodynamic equivalence.
+
+## Ties / routing
+
+`...tests-become-cells-with-strict-boundaries-...md` + `...rooms-are-io-packet-wrappers-...md` (the room
+model) · `...physics-of-floats-...md` (the bit-budget boundary) · the `Bag<'K,'W>` smallest-unit answer
+(this session's chat; spine to-build) · `.claude/rules/async-all-the-way-truthful-signatures.md` (the
+ferry/DoP throttle = the membrane). **Routes to:** Core (the `Bag` atom + Dataflow membrane wiring),
+Naledi (measuring the crossings — the instrument), Aaron (the architecture).
