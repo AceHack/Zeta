@@ -45,6 +45,17 @@ sim            explore (void)
 `res` wraps the loop (`res = repeat mea until resolved`); `cla` labels; `cut` writes; `mea` records;
 `sim` is the void base every other verb lifts.
 
+### The loop in F# — `cut mea sim` by currying (Aaron 2026-06-10)
+
+> Aaron: "so in F# `cut mea sim` with currying should do it — that's the loop."
+
+In F#, the verbs are **curried functions**, so the loop is just **`cut mea sim`** — currying composes
+the three into one. `sim` is the inner (void) value; `mea` lifts it (commits the measurement); `cut`
+takes the measured value and writes the delta — `cut (mea (sim))`, written point-free by currying. The
+**loop** is that curried composition iterated by the finalizer (= `res`): re-apply `cut ∘ mea ∘ sim`
+until it resolves (ΔU→0; shape A/B/D). No glue code — currying *is* the wiring. (`cla` slots in where a
+class is needed; the core engine loop is `cut mea sim`.)
+
 ## Honest scope
 
 [Beacon] MacVector (the DNA-CLI shape lineage) · CHIP-8 (the minimal VM `sim` runs) · DBSP/Z-set (the
