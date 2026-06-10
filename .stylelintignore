@@ -1,0 +1,13 @@
+# Style/CSS is SELF-ENFORCED at the traveler-interface boundary, co-op-designed between
+# pairs of travelers — NOT enforced at the website/code boundary (Aaron, 2026-06-10, the
+# inversion). So stylelint does NOT lint the website/app surfaces (the inverted-away
+# boundary); it stays available for traveler-interface-boundary style only.
+node_modules
+**/node_modules/**
+references/prior-art
+references/prior-art/**
+**/bin/**
+**/obj/**
+# the website/code boundary (the inverted-away surface — style not enforced here):
+full-ai-cluster/portal/web
+full-ai-cluster/portal/web/**

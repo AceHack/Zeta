@@ -22,3 +22,9 @@ references/prior-art/
 tools/lean4/.lake/
 tools/alloy/
 tools/tla/
+
+# Website-traveler style boundary: a website is its own traveler with its own
+# traditional style/CSS at its own boundary — NOT enforced by Zeta's tooling
+# (the style/CSS inversion, Aaron 2026-06-10). Excludes the website's CSS from
+# prettier (stylelint excludes it too via .stylelintignore).
+full-ai-cluster/portal/web/**/*.css
