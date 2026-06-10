@@ -56,6 +56,28 @@ takes the measured value and writes the delta — `cut (mea (sim))`, written poi
 until it resolves (ΔU→0; shape A/B/D). No glue code — currying *is* the wiring. (`cla` slots in where a
 class is needed; the core engine loop is `cut mea sim`.)
 
+The interface stubs for the five verbs live in [`Verbs.fs`](Verbs.fs) — pure interfaces, no classes
+(the meta-rule).
+
+### Homoiconic across F# · CLI · filesystem — the `fs` pun (Aaron 2026-06-10)
+
+> Aaron: "`cut mea sim` works on the CLI too, like currying — homoiconic to **fs**: **F#** /
+> **filesystem** homoiconicity."
+
+`cut mea sim` is **the same expression in three registers** — code = data = tree (homoiconicity, the
+Lisp property: program and data share one representation). The pun is **`fs`**:
+
+- **F# code** — `cut mea sim` as curried functions (point-free composition).
+- **the CLI** — `cut mea sim` on the command line: the **shell** curries too (partial application /
+  composition of the verb commands). Same expression, run as a command.
+- **the filesystem** — the startup **MerkleDAG** (the `fs`) *is* that structure: folders/paths are the
+  same tree the F# and the CLI walk. The filesystem is the code.
+
+So **F# ≅ CLI ≅ filesystem** — one homoiconic structure. Writing `cut mea sim` in F#, typing it at the
+shell, and walking the MerkleDAG are the *same act* over the *same representation*. (This is why the
+folder structure is load-bearing: the filesystem is not a container for the code — it **is** the code,
+homoiconically.)
+
 ## Honest scope
 
 [Beacon] MacVector (the DNA-CLI shape lineage) · CHIP-8 (the minimal VM `sim` runs) · DBSP/Z-set (the
