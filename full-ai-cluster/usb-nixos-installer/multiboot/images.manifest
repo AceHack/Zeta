@@ -1,0 +1,44 @@
+# Multiboot USB image manifest — the declarative payload list for the Zeta GRUB2
+# multiboot stick (Aaron 2026-06-10: "change our USB to give a choice of our boot
+# and the chance to boot others too ... use grub2 for the usb").
+#
+# NO BINARIES IN THE REPO (no-binary-in-proof-lineage + repo hygiene): images are
+# declared here (URL or latest-resolver) and FETCHED + verified at build time,
+# never committed. The Zeta installer is built locally from the sibling flake, not
+# downloaded. Same declarative discipline as tools/setup/manifests/*.
+#
+# Consumed by build-multiboot-usb.ts (to land): for each entry it fetches the
+# artifact (retry-equipped download-then-verify, B-0063), verifies SHA-256, places
+# it per `kind`, and writes grub.cfg. Combine is at BUILD time into one composite
+# image (see README) — never flash time.
+#
+# Format per line (tab- or multi-space-separated): <name>  <kind>  <fields...>
+# kinds + their trailing fields:
+#   grub-iso-local  <flake-attr>                  built by the sibling flake
+#                   (`nix build .#installer-iso`); GRUB loopback-boots it.
+#   grub-iso        <url>  <sha256>               x86 ISO, pinned; GRUB loopback-boots it.
+#   flash-img       <url>  <sha256>               pinned (gz) raw DISK image; a FLASH
+#                   payload under /payloads/ (dd to a device), NOT GRUB-bootable.
+#   flash-img-latest <base-url>  select=<glob>  checksums=<file>
+#                   LATEST-RESOLVING flash payload — NOT pinned to a version. The
+#                   builder fetches <base-url><checksums>, picks the highest-version
+#                   entry matching <glob>, downloads <base-url><name>, and verifies
+#                   it against THAT just-fetched checksum line. Latest-always +
+#                   integrity. (Tradeoff: verifies transit, not a compromised
+#                   upstream — a pinned `flash-img` would freeze the version to
+#                   guard the source. For a re-flashable appliance, latest wins.)
+# `#` comments + blank lines ignored.
+
+# Our boot — the Zeta NixOS installer, built locally (always current; no download).
+zeta-installer    grub-iso-local    nix:.#installer-iso
+
+# MyNode Model Two — amd64 appliance image, ALWAYS LATEST (Aaron 2026-06-10: "make
+# sure that process pulls the latest mynode every time and is not hard coded to
+# one"). amd64 = x86_64 but a raw .img.gz ⇒ a FLASH payload (dd to td5/td6), not a
+# GRUB boot entry. The builder resolves the newest mynode_amd64_*.img.gz from
+# MyNode's SHA256SUMS each build and verifies against it. (As of 2026-06-10 that
+# resolves to mynode_amd64_0-3-34.img.gz — but the version is NOT pinned here.)
+mynode-model-two  flash-img-latest  https://mynodebtc.com/device/mynode_images/  select=mynode_amd64_*.img.gz  checksums=SHA256SUMS
+
+# Add more bootable ISOs below (kind=grub-iso, url, sha256) — "the chance to boot
+# others too". Each becomes a GRUB menu entry.

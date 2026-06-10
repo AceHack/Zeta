@@ -47,6 +47,7 @@
     <Compile Include="FinalizerRuntime.fs" />
     <Compile Include="FinalizerRuntimeLive.fs" />
     <Compile Include="Sim.fs" />
+    <Compile Include="CliVerb.fs" />
     <Compile Include="TravelerFrame.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />
