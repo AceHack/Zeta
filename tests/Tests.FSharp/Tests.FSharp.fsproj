@@ -121,6 +121,7 @@
     <Compile Include="UniversalNumber.Tests.fs" />
     <Compile Include="FingerprintPrism.Tests.fs" />
     <Compile Include="SoftScheduler.Tests.fs" />
+    <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="ForwardMomentum.Tests.fs" />
     <Compile Include="QubitIso.Tests.fs" />
