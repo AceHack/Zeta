@@ -30,20 +30,27 @@ So the core experience layer is **three universal interfaces, each made a bit + 
 oracle agreement is **what makes collaboration trustworthy**. (Sibling to the ZetaId-generation room
 `081KTQXFPTQ08QG0R002BD36HC`: same bit+compiler-oracle discipline, applied to the experience layer.)
 
-## The three universal interfaces (each a bit + compiler oracle room)
+## The FOUR universal interfaces (each a bit + compiler oracle room)
 
 1. **Universal Language Interface (ULI)** — how anything *expresses* itself (the vocab/travelers; the
    ".fs is a universal language interface" coinage). The shared **language** all participants read/write.
 2. **Universal Intelligence Interface (UII)** — how *intelligences/agents* interface (the ".fs is a
    universal intelligence interface"; the agent layer — ZetaIdol auditions, the bus). The shared **agency**
    surface.
-3. **Universal Temperature Interface (UTI)** — the **control / uncertainty** surface: temperature (the
-   eigenvalue/eigen-tensor; the finalizer knob; the polarity-lens/LLMController). How participants **drive
-   and read** the system's state (S→4; the meter).
+3. **Universal Temperature-Transient Interface (UTI)** — the **control / uncertainty** surface: temperature
+   (the eigenvalue/eigen-tensor; the finalizer knob; the polarity-lens/LLMController) **and** the transient
+   (the response dynamics) — **one interface** (the UTI naming-collision resolved by `same/`:
+   `same/_-temperature-transient-_.md`; temperature drives the transient, value ⇄ dynamics of one surface).
+   How participants **drive and read** the system's state (S→4; the meter).
+4. **Universal Traversal Interface (UTrI)** — the **infinite DAG filesystem** (Aaron, 2026-06-10: "the
+   infinite DAG file system is the universal traversal interface"). How anything *navigates* the substrate:
+   the symlink-DAG / multi-parent / **merkle-DAG** filesystem (see the load section below) — traversal IS an
+   interface. The shared **navigation** surface; the `.fs` you walk.
 
 **Each is a room** where the **bit oracles** assert byte-identical structure (not just final value — the
 bits/fields) and the **compiler oracles** assert invariance across toolchains (host→compiler→OS closure;
 Trusting-Trust). An interface that isn't bit+compiler-locked can't be a trustworthy collaboration surface.
+(Four interfaces — fittingly a 4, like the 4 lang oracles; the 4-lang filesystem load below is UTrI's lock.)
 
 ## All 4 languages load the filesystem the same way — the infinite symlink-DAG (multi-parent / merkle-DAG)
 
@@ -73,16 +80,16 @@ its merkle root, identical across oracles).
 
 ## = the core UX/DX/AX room (the experience layer)
 
-The three interfaces serve the three experiences — **not 1:1; a 3×3 the room must hold** (each experience
-touches all three interfaces, with a primary):
+The four interfaces serve the three experiences — **not 1:1; a 3×4 the room must hold** (each experience
+touches all four interfaces, with a primary):
 
-| | **ULI** (language) | **UII** (intelligence) | **UTI** (temperature) |
-|---|---|---|---|
-| **UX** (Iris — library consumers / users) | **primary** — the language users speak | read agent output | read/drive the meter |
-| **DX** (Bodhi — contributors / developers) | write the language | **primary** — build/extend the intelligence | tune the control |
-| **AX** (Daya — agents / cold-start) | speak the language | **primary** — the agent's own interface | drive uncertainty, audition |
+| | **ULI** (language) | **UII** (intelligence) | **UTI** (temperature) | **UTrI** (traversal / DAG-fs) |
+|---|---|---|---|---|
+| **UX** (Iris — library consumers / users) | **primary** — the language users speak | read agent output | read/drive the meter | browse/navigate the fs |
+| **DX** (Bodhi — contributors / developers) | write the language | **primary** — build/extend the intelligence | tune the control | **primary** — author/traverse the DAG-fs |
+| **AX** (Daya — agents / cold-start) | speak the language | **primary** — the agent's own interface | drive uncertainty, audition | **primary** — traverse to cold-start (walk the DAG to orient) |
 
-The **room tests collaboration**: a human (UX/DX) and an agent (AX) operate the *same three interfaces*, and
+The **room tests collaboration**: a human (UX/DX) and an agent (AX) operate the *same four interfaces*, and
 the bit+compiler oracles guarantee they're on the **same bits** — so the collaboration is real, not a
 divergence-prone illusion. "For collaboration, that test" = the room IS the collaboration test.
 

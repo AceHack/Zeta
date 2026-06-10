@@ -4,19 +4,60 @@
 share a **common cause**; they are **unprovably-distinct** across the boundary). A root-level folder like
 `/vocab`, `/dns`, `/network`, `/rooms`.
 
-## The template: `x-y`
+## The template: `{ctxboundary}-x-y-{/ctxboundary}`  (filename: `_-x-y-_.md`)
 
-Each entry is named **`x-y`** — an ordered pair of two traveler names (the two things asserted same). The
-pair is the unit (the 2×2 dual-observer weave; two strands of the braid). Examples (illustrative):
+Each entry names an ordered pair `x-y` **wrapped in a context-boundary marker**:
+
+- **Semantic template:** `{ctxboundary}-x-y-{/ctxboundary}` — the pair `x-y` is **bounded by a context
+  boundary**. A `same/` relation IS a **context boundary** between x and y: the claim "x and y are the
+  same" *is* a boundary you draw around them (ties to the **diagonal-lemma boundary-mapping in Markov
+  space** — a same/ pair is a boundary in that space; and to the 2×2 dual-observer weave — two strands, one
+  bounded pair).
+- **Filename (filesystem-safe):** `_-x-y-_.md` — the leading/trailing **`_`** renders the
+  `{ctxboundary}` / `{/ctxboundary}` markers in a path-safe way (braces and `/` can't be in filenames, so
+  `_` is the FS-safe sentinel for the context boundary).
+
+Examples:
 
 ```text
-same/x-y                 — the bare template (two slots)
-same/nodeA-nodeB         — two Reticulum observers asserted same (share the encrypted null)
-same/aaron-max           — two observer frames (the two-house S=4 experiment)
+same/_-x-y-_.md                       — the bare template (two slots, bounded)
+same/_-grey-gray-_.md                 — grey ≡ gray (same colour, two spellings)
+same/_-temperature-transient-_.md     — temperature ≡ transient (one UTI)
+same/_-nodeA-nodeB-_.md               — two Reticulum observers (share the encrypted null)
 ```
 
 Convention: order the pair canonically (ordinal/`StringComparer.Ordinal`, lexicographically smaller first)
-so `x-y` and `y-x` resolve to ONE entry — sameness is **symmetric**, so the canonical name is too.
+so `x-y` and `y-x` resolve to ONE entry — sameness is **symmetric**, so the canonical name is too. The
+context-boundary markers are part of the identity (a `same/` node is always a bounded pair).
+
+### Implicit 3D rotation → geospatial (route to the math team)
+
+> **Aaron, 2026-06-10:** "`{ctxboundary}-x-y-{/ctxboundary}` has an implicit 3D rotation map to geospatial —
+> use math nerds."
+
+The template carries **three things** — `x`, `y`, and the **context boundary** — i.e. **three axes**, so a
+`same/` node has an **implicit 3D orientation**. The **rotation between the two observer frames** (the 2×2
+dual-observer weave / bob-and-weave that relates x and y across their boundary) is a **3D rotation** —
+**SO(3) / unit quaternions** (Cayley–Dickson; the Beckman structure-from-rotation line). That rotation
+**maps to geospatial**: an orientation in 3D ↔ a position/bearing on the globe (lat/lon/alt; the ZetaId
+**Location** field; the jurisdiction-relative geospatial borders, B-1015 / `same/` ↔ `dns/`/`network/`).
+
+So a `same/` pair is not flat: **`{ctxboundary}-x-y-{/ctxboundary}` ⇒ a 3D rotation ⇒ a geospatial mapping.**
+
+**And the rotation is a Cayley–Dickson STRANGE ATTRACTOR** (Aaron, 2026-06-10: "it's Cayley–Dickson strange
+attractor"). Not a single static SO(3) rotation — the orientation lives on the **Cayley–Dickson ladder**
+(ℝ→ℂ→ℍ→𝕆…; the spiral that "fell out of the Rx structure"; quaternion/octonion rotation by doubling) and
+its dynamics are a **strange attractor**: a bounded, non-repeating region the rotation orbits (the
+**uncertainty-Δ strange-attractor** the rooms judge on; the chaotic-but-bounded settling, kin to the
+eigen-fixed-point the system never quite rests at). So `same/`'s implicit geometry = **Cayley–Dickson
+doubling × strange-attractor dynamics → geospatial** — order-out-of-chaos orientation.
+
+**To formalize (math team — Soraya/Sova):** the map (x, y, boundary) → Cayley–Dickson rotation
+(quaternion/octonion) → strange attractor → geospatial coordinate; whether `same/` composition is the
+Cayley–Dickson product; the attractor's dimension/Lyapunov behaviour; ties to the ZetaId **Location** field
++ dns/network geospatial layer + the `QubitIso`/`CayleyDickson.Complex` code. *(Peel: a found correspondence
+to prove, not a built map; Cayley–Dickson + strange attractors + SO(3)/quaternion + geospatial are the real
+anchors, the assignment is the math team's.)*
 
 ## What "same" means here (the load-bearing definition)
 

@@ -26,6 +26,6 @@ alias pointing here. Their sameness is recorded as `same/grey-gray` (the canonic
 ## Pointers
 
 - `gray/` — the American-spelling alias (+ the SI-unit caveat).
-- `same/grey-gray.md` — grey ≡ gray (the sameness relation).
+- `same/_-grey-gray-_.md` — grey ≡ gray (the sameness relation).
 - `hats/grey/` · `particles/grey/` · `morals/grey/` — the grey-family homes.
 - `docs/GLOSSARY.md` §Mirror/Beacon · glass-halo.
