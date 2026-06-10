@@ -39,20 +39,46 @@ module SoftScheduler =
     /// room boundary — inject `seedSource` (null/deterministic) for DST, a real-IEffects source for prod.
     type Source = int -> InterruptKind list
 
+    // --- SplitMix64 avalanche constants (Steele/Lea/Flood, "Fast Splittable PRNGs", OOPSLA 2014) ---
+    // Named in hex (their canonical form) so the MEANING survives — a signed-decimal literal is the
+    // compiled form that loses what the number IS. We use SplitMix64 purely as a finalizer/hash: it
+    // avalanches a 64-bit input so every input bit flips ~half the output bits — i.e. low-order seed
+    // differences reach the decision bits. (Hash use only; not seeding a PRNG stream here.)
+
+    /// SplitMix64 increment — 2^64 / φ (the 64-bit fixed-point golden ratio). Odd, so adding it walks
+    /// the whole 64-bit space; used here to fold the tick index into the seed before avalanching.
+    [<Literal>]
+    let private GoldenGamma = 0x9E3779B97F4A7C15UL
+
+    /// SplitMix64 first avalanche multiplier.
+    [<Literal>]
+    let private MixMultiplier1 = 0xBF58476D1CE4E5B9UL
+
+    /// SplitMix64 second avalanche multiplier.
+    [<Literal>]
+    let private MixMultiplier2 = 0x94D049BB133111EBUL
+
+    /// SplitMix64 finalizer — avalanche a 64-bit value to a well-mixed 64-bit hash. Pure, branch-free,
+    /// immutable (let-shadowing, no `mutable`): correctness never depended on single-threading — there
+    /// is no shared state, so it is referentially transparent and safe at any DoP.
+    let private avalanche (x: uint64) : uint64 =
+        let z = x
+        let z = (z ^^^ (z >>> 30)) * MixMultiplier1
+        let z = (z ^^^ (z >>> 27)) * MixMultiplier2
+        z ^^^ (z >>> 31)
+
     /// The DST default — a deterministic null source derived from the seed alone (no I/O), the same way
     /// `Sim.tick` derives its entropy, so the schedule replays identically. Fires the 60Hz `TimerElapsed`
     /// every tick (the CHIP-8 timer) and deterministically raises an occasional `OperatorMessageArrived`
-    /// from the seed hash — exercising more than one handler without any real input.
+    /// from the avalanched (seed, tick) hash — exercising more than one handler without any real input.
     let seedSource (seed: int64) : Source =
         fun n ->
-            // SplitMix64-style avalanche so the WHOLE seed (incl. low bits) reaches the decision bits —
-            // a naive `seed ^^^ n*k` leaves low-bit seed differences invisible after a right shift.
-            let mutable h = seed * 6364136223846793005L + int64 n * 1442695040888963407L
-            h <- (h ^^^ (h >>> 30)) * -4658895280553007687L
-            h <- (h ^^^ (h >>> 27)) * -7723592293110705685L
-            h <- h ^^^ (h >>> 31)
+            // Fold the tick index into the seed via the golden-ratio increment, then avalanche — so the
+            // WHOLE seed (incl. low bits) reaches the decision bits. (A naive `seed ^^^ n*k` leaves
+            // low-bit seed differences invisible after a right shift — the bug this replaced.)
+            let h = avalanche (uint64 seed + uint64 n * GoldenGamma)
             let timer = [ TimerElapsed 17 ] // ~1/60s
-            if h &&& 0xFL = 0L then
+            if h &&& 0xFUL = 0UL then
                 timer @ [ OperatorMessageArrived(sprintf "tick-%d" n) ]
             else
                 timer
