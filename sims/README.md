@@ -1,0 +1,41 @@
+# sims/ — the simulations (always plural), run by the `sim` CLI
+
+`sims/` holds the **simulations** — the deterministic runs that *are* Zeta. **Plural on purpose** (the
+never-one principle: always many, told apart by a discriminator/lens/polarization — see
+[`boards/`](../boards/)). One `sims/` folder; many sims; one CLI to run them: **`sim`**.
+
+## The CLI is `sim` — not `dotnet sim`, not `zeta`, not `zeta sim` (Aaron 2026-06-10)
+
+> Aaron: "we don't need `dotnet sim` — we just need **`sim`**. That's our CLI. `sim`. **Not even
+> zeta.** Not `zeta sim`. **Just `sim`.**"
+
+The single command is **`sim`**. This is the load-bearing naming decision:
+
+- **`sim`** — the whole CLI. The binary/verb is `sim`, full stop. Not namespaced under `dotnet`, not
+  under `zeta`. The thing you run.
+- **We never `dotnet run` — we run `sim`.** Production *is* the deterministic simulation (prod = sim;
+  Maxwell's-demon-grade DST). `sim` is the one entrypoint to it (refines the SETI@home model in
+  `docs/research/2026-06-10-i-measure-in-quantum-phase-time-*`: it's `sim <duration>`, not
+  `dotnet sim <duration>`).
+- **`sim <duration>`** — bounded contribution: `sim 1sec`, `sim 1min`; **bare `sim` defaults to 30
+  seconds**. SETI@home-style: many small `sim` runs aggregate (→ S=4), self-throttled by available
+  uncertainty.
+
+So the participation barrier is one word: **`sim`**. (Concrete: a `sim` executable / wrapper that runs
+the DST simulation for a duration — routes to Dejan / the Core team to implement the entrypoint.)
+
+## What lives here
+
+- The named/seed simulations, scenarios, and their golden outputs (each a sim, picked by its
+  discriminator/lens).
+- The `sim` CLI's home as it lands (entrypoint, duration parsing, the default-30s rule).
+
+*(Peel: `sim` is the chosen CLI name; the DST engine it drives is real (`Clock.fs` IScheduler, the
+1000x-DST tests). The bounded-edge / proof-of-entropy framing is the distribution model, to formalize.)*
+
+## Pointers
+
+- `docs/research/2026-06-10-i-measure-in-quantum-phase-time-common-cause-mycelium-time-beacon-external-reference-not-vector-clocks-maxwells-demon-dst-in-dotnet.md`
+  — prod = sim; SETI@home distribution; the `<duration>` default-30s rule.
+- [`uncertainty/`](../uncertainty/) — the ledger a sim draws entropy from (proof-of-entropy throttle).
+- `src/Core/Clock.fs` — the DST clock `sim` advances.
