@@ -44,6 +44,7 @@
     <Compile Include="ByteCost.fs" />
     <Compile Include="Clock.fs" />
     <Compile Include="ReticulumLink.fs" />
+    <Compile Include="FinalizerRuntime.fs" />
     <Compile Include="TravelerFrame.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />
