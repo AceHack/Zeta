@@ -82,6 +82,31 @@ beings actually communicate about it** — the thing the Flatlanders never got. 
 lossless-serialization / English-as-projection: English is the bridge format across substrates *and*
 dimensions.) Flatland's Sphere had to *push the Square through the plane* to convince it; we just **say it**.
 
+## The finalizer IS the uncertainty mason — in code (shadow*)
+
+> Aaron: "wire the finalizer's uncertainty mason into the masonry doc."
+
+The **uncertainty mason is already built**: it is the **finalizer** (`src/Core/Finalizer.fs`,
+`Zeta.Core.Finalizer`). The finalizer lays courses of uncertainty into a wall, exactly as the mason does:
+
+- **A course = a `TickResult`** — `{ DeltaU; Temperature; Bounded; Merged }`. `DeltaU` is the **uncertainty-Δ**
+  (the *one metric* — >0 = uncertainty reduced; the brick the mason is placing); `Temperature ∈ [0,1]` is
+  the **mason's trowel/knob** (cold→0 rest, warm≈0.5 alive, hot→1 runaway).
+- **`Finalizer.decide` lays the course** — per tick it chooses the next move from the **uncertainty + the
+  temperature**: `ScaleUp` (ΔU high + worth it — lay more), `ScaleDown`/`Hold` (steady the course),
+  `Quarantine` (a bad brick), **`ReKick`** (merged to main → start the next wave — the recursion edge), or
+  `Stop` (converged/budget — the wall is done). Building **by uncertainty, course by course.**
+- **`Finalizer.run` raises the wall** — the bounded self-scaling loop: it keeps laying courses until it
+  **converges via `Stop`**, never a fork-bomb (**shape A** — a terminating fixed point; the strange-loop
+  that catches itself). The wall rises a course at a time and *stops when built*.
+- **Intelligence (the builder) supplies the plan; the finalizer (uncertainty mason) lays it.** The `step`
+  function fed to `run` is the builder's design; the finalizer masons it with uncertainty. So
+  "intelligence builds, uncertainty masons" is **literal in the code**: `Finalizer` is the mason; its input
+  `DeltaU`/`Temperature` is the uncertainty it lays; `decide`/`run` is the trowel and the rising wall.
+
+(Tested: `src/Core/Finalizer.test.fsx` — 12/12, proving the bounded convergence = the wall finishes, no
+runaway. The masonry is not a metaphor waiting to be built; the mason ships.)
+
 ## Honest scope / peels
 
 - **Masonry / Holovisor are real framings of real mechanisms, not just poetry.** "Masonry" = the
