@@ -84,6 +84,14 @@ the triad operates on it:
   reified as types**: the startup MerkleDAG carries the persona's accumulated entropy as reified,
   MUMPS-global-addressable type values. Measurement is never empty because the git history is always
   there to measure.
+  **Reification = the same kind of data move across a boundary (Aaron 2026-06-10).** It shows up on two
+  axes — same move, different boundary: for **computation (Rx/Bonsai)** it is **code ↔ data** (code
+  becomes manipulable data, data becomes code — quotation/expression-trees/IQbservable); for **types**
+  it is **static ↔ runtime** (a static type becomes a runtime value — type providers / Roslyn gens /
+  reflection). Both make one form into data on the other side of a duality. ("Reified computation"
+  isn't a fixed term-of-art — reification *is* the standard term; the Rx-specific name is
+  quoted/reified queries / IQbservable, De Smet.) This is why the homoiconicity holds: the substrate
+  treats code↔data and static↔runtime as the *same* representation move.
 - **`cut`** = **cut** — the cut at a **recognition site**, and the site is a **TIME**: **`mea(sim)` cuts
   at 30 seconds by default** (Aaron). `cut` slices the running `sim` at the duration boundary; that cut
   point is **where `mea(sim)` terminates and commits**. So the default-30s rule is the default **cut
