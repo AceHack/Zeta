@@ -1,0 +1,57 @@
+# Headscale — self-hosted Tailscale control server (the SOVEREIGN network-plane control,
+# Aaron 2026-06-10: "we are using Reticulum and Headscale ... lets get headscale in argocd
+# then — that's in repo we close over it that way").
+#
+# Runs on the zetacluster (k3s/ArgoCD); the PC gets the `tailscale` client + `headscale-cli`
+# (declared in tools/setup/manifests/brew). This Application is the SERVER half — closed over
+# in-repo so the whole network plane is declarative.
+#
+# Chart: gabe565/headscale (https://charts.gabe565.com), the widely-used community chart
+# (bjw-s common library). Version pinned per dep-pin-search-first (ArtifactHub 2026-06-10:
+# latest = 0.4.0). NOT upstream-maintained — chart issues go to gabe565/charts.
+#
+# OPERATOR TODO before first real use (Max owns the corporate/domain side):
+#   - set config.server_url to the headscale subdomain on the ACME/Let's-Encrypt domain
+#     cert-manager already serves (e.g. https://headscale.<zeta-domain>).
+#   - provision OIDC / pre-auth keys + the noise private key as a Sealed Secret / Vault.
+#   - confirm Ingress + cert-manager annotations for that subdomain.
+# Conservative syncPolicy (prune:false) until server_url + secrets are set, mirroring redis.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"   # after core infra (longhorn/cilium) at wave 0
+  name: headscale
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.gabe565.com
+    chart: headscale
+    targetRevision: 0.4.0
+    helm:
+      releaseName: headscale
+      valuesObject:
+        persistence:
+          data:
+            enabled: true
+            storageClass: longhorn
+            size: 5Gi
+        config:
+          # PLACEHOLDER — set to the real ACME subdomain before exposing (see header TODO).
+          server_url: https://headscale.zeta.local
+          listen_addr: 0.0.0.0:8080
+          metrics_listen_addr: 0.0.0.0:9090
+          # Tailnet address ranges handed to nodes (headscale defaults; adjust if they collide
+          # with the 10gbe/Reticulum fabric).
+          prefixes:
+            v4: 100.64.0.0/10
+            v6: fd7a:115c:a1e0::/48
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: headscale
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
