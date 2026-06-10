@@ -85,6 +85,33 @@ shell, and walking the MerkleDAG are the *same act* over the *same representatio
 folder structure is load-bearing: the filesystem is not a container for the code — it **is** the code,
 homoiconically.)
 
+## Outside the cube — the Cayley mini-cubes (cognitive/query verbs) (Aaron 2026-06-10)
+
+`sim · mea · cut` is the **main cube** (the RGB primaries; the run/commit loop). `ben · cla · res` are
+**axes around it** (perf / classify / iterate). Beyond those sit two **mini-cubes over Cayley** — the
+**cognitive / query** verbs, paired as natural-language phrases:
+
+> Aaron: "(outside the cube) rem(ember)/whe(n) \ pay/att(ention) — mini cube over cayley" · "also
+> how/man(y) \ whi(ch)/way over cayley."
+
+- **Mini-cube A — memory + attention:** **`rem`(ember) · `whe`(n)** ("remember when") and **`pay` ·
+  `att`(ention)** ("pay attention"). `rem` recalls from the persona entropy / git history (the reified
+  types); `whe` is the temporal query (quantum-phase time — *when*); `pay`/`att` are the attention pair
+  (focus / weight where to look — the transformer "pay attention"; ties the bug→reward `pay` economy).
+- **Mini-cube B — quantity + direction:** **`how` · `man`(y)** ("how many") and **`whi`(ch) · `way`**
+  ("which way"). `how`/`man` = the counting/cardinality query; `whi`/`way` = the navigation query
+  (which direction over the tree — the `bounds/` dashboard walk).
+
+**"Over Cayley"** = these mini-cubes are situated over the **Cayley structure** — the Cayley graph
+(group generators → navigation) / the **Cayley–Dickson** phasor spiral (the doubling that gave us the
+shape-F attractor). The main cube *acts*; the Cayley mini-cubes *query/navigate* over the algebra that
+generates the space. (Together they read as English phrases — remember-when, pay-attention, how-many,
+which-way — the interrogatives + how/many/which/way: the substrate's introspection verbs.)
+
+*(Peel: the core six (`sim·mea·cut·ben·cla·res`) have settled semantics + stubs in `Verbs.fs`; the
+Cayley mini-cube verbs are **forming** — captured as the cognitive/query layer, semantics to crystallize
+(no stubs yet). "Over Cayley" = Cayley graph / Cayley–Dickson, to formalize with the math team.)*
+
 ## Honest scope
 
 [Beacon] MacVector (the DNA-CLI shape lineage) · CHIP-8 (the minimal VM `sim` runs) · DBSP/Z-set (the
