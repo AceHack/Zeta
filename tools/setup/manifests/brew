@@ -78,3 +78,18 @@ r
 # `tectonic` (scoop main). Linux: best-effort gap — see the NOTE in manifests/apt.
 tectonic
 gnupg  # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)
+
+# Network plane — Reticulum + Headscale (Aaron 2026-06-10: "we are using Reticulum and
+# Headscale ... install headscale and tailscale on this pc in install.sh declaratively").
+# SOVEREIGN / self-hosted networking (close-over-everything at the network layer; NOT the
+# SaaS): tailscale = the client/daemon (tailscaled) that joins the mesh; headscale-cli =
+# the CLI to manage our self-hosted Headscale control server. Reticulum (the ZetaId overlay)
+# lives in network/.
+# VERIFIED (dep-pin-search-first, brew 2026-06-10): `tailscale` 1.98.5 ✓, `headscale-cli`
+# 0.28.0 ✓. NOTE: the Headscale *server* is NOT a brew formula (`brew search headscale` →
+# only `headscale-cli`) — it runs on the **zetacluster** (k8s/ArgoCD container), not the PC;
+# the PC gets the client (`tailscale`) + the control CLI (`headscale-cli`). brew default
+# version; idempotent (brew skips if present). Symmetry (follow-on): apt + windows tailscale;
+# headscale server = cluster. See network/README "declared deps".
+headscale-cli  # CLI for our self-hosted Headscale control server (the server runs on the zetacluster)
+tailscale  # the client/daemon (tailscaled) — joins the Headscale-controlled mesh
