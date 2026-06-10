@@ -474,6 +474,44 @@ jobs:
         # rule without a gate isn't a control.
         run: semgrep --config .semgrep.yml --error --metrics=off
 
+  lint-yaml-k8s:
+    # YAML + Kubernetes-manifest validation over full-ai-cluster/k8s/** — the
+    # GitOps surface ArgoCD deploys. Closes the gap that let a k8s Application land
+    # with ZERO CI validation (only ArgoCD checked it, slowly, at cluster-sync).
+    # yamllint = syntax/indentation/dup-key; kubeconform = k8s API-schema validation.
+    # Aaron 2026-06-10 ("should we have a yaml/k8s lint gate? ... lets do that").
+    #
+    # ADVISORY first (continue-on-error) — reports without blocking the gate; flip
+    # to required once it has run clean for a few rounds (same easing-in pattern as
+    # prior gate additions). Toolchain via three-way-parity install.sh (GOVERNANCE
+    # §24): yamllint (pipx→uv) + kubeconform (ubi:) pinned in .mise.toml, so dev
+    # laptops + CI + devcontainers + install.ps1 all get the same versions.
+    name: lint (yaml/k8s)
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    continue-on-error: true   # ADVISORY — remove once clean for a few rounds (then required)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: yamllint (k8s manifests)
+        # relaxed profile: structural correctness (indent/dup-key/syntax), not
+        # cosmetic line-length — the manifests are machine-authored Helm values.
+        run: yamllint -d relaxed full-ai-cluster/k8s/
+
+      - name: kubeconform (k8s API-schema validation)
+        # -ignore-missing-schemas: skip CRs we have no schema for (ArgoCD
+        # Application etc.) rather than false-fail; -strict: reject unknown fields
+        # on the manifests we DO have schemas for. find-pipe so it recurses
+        # explicitly (portable across kubeconform versions).
+        run: |
+          find full-ai-cluster/k8s -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
+            | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default
+
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.
     # Round 33 static-analysis expansion (Aaron: "as much static

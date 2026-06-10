@@ -104,6 +104,23 @@ node = "24"
 # unpinned pip-bootstrap surface goes away entirely once mise
 # owns this tool).
 "pipx:semgrep" = "1.161.0"
+# yamllint: YAML syntax/indentation/duplicate-key linter for the k8s manifests
+# under full-ai-cluster/k8s/** (the `lint (yaml/k8s)` gate job). Same three-way-
+# parity rationale as semgrep — mac/linux/windows all get it through mise, so
+# install.sh AND install.ps1 stay in sync by construction (no per-OS manifest
+# divergence). NOTE: the `pipx:` prefix is mise's backend NAME only — because `uv`
+# is in this toolchain, mise auto-routes `pipx:` through `uv tool install`, NOT
+# pip (the uv-canonical ADR; identical to `pipx:semgrep` above). No pip anywhere.
+# Pin per dep-pin-search-first (PyPI 2026-06-10: 1.38.0).
+"pipx:yamllint" = "1.38.0"
+# kubeconform: FAST offline Kubernetes-manifest schema validator (the other half
+# of the `lint (yaml/k8s)` gate — validates ArgoCD Application CRs + k8s manifests
+# against API schemas; --ignore-missing-schemas so CRDs don't false-fail). A Go
+# binary, installed cross-platform via mise's `ubi:` backend (GitHub-release
+# universal binary installer) — one pin covers mac/linux/windows, install.sh +
+# install.ps1 in sync. Pin per dep-pin-search-first (GitHub releases 2026-06-10:
+# v0.7.0; ubi strips the leading v).
+"ubi:yannh/kubeconform" = "0.7.0"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)
