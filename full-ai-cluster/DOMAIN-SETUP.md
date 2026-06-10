@@ -40,10 +40,12 @@ So the infra is all defined. The rest is your domain/email values + 3 real-world
 ## The 3 actions only you can do
 
 ### 1. Namecheap (the domain side)
+
 - Domain List → **Manage → Advanced DNS → enable "Dynamic DNS"** → copy the **Dynamic DNS Password**.
 - Add host records, each **Type = "A + Dynamic DNS Record"**: `@` (apex), `*` (wildcard), and/or `portal`, `game`.
 
 ### 2. The cluster secret (the DDNS credential — never in git)
+
 ```bash
 kubectl create namespace zeta-platform --dry-run=client -o yaml | kubectl apply -f -
 kubectl -n zeta-platform create secret generic namecheap-ddns \
@@ -55,6 +57,7 @@ kubectl -n zeta-platform logs job/ddns-now      # expect: "updated @" / "updated
 ```
 
 ### 3. Your router (the actual gate)
+
 - DHCP-reserve the machine's LAN IP.
 - Port-forward → the machine / the Cilium LB IP:
   - **Portal HTTPS:** `80` + `443` TCP → the `zeta-gateway` LoadBalancer IP
