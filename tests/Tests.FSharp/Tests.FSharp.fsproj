@@ -115,6 +115,7 @@
     <Compile Include="SymmetricEndurance.Tests.fs" />
     <Compile Include="PhasorEndurance.Tests.fs" />
     <Compile Include="CoincidenceClock.Tests.fs" />
+    <Compile Include="Sim.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="ForwardMomentum.Tests.fs" />
     <Compile Include="QubitIso.Tests.fs" />

@@ -46,6 +46,7 @@
     <Compile Include="ReticulumLink.fs" />
     <Compile Include="FinalizerRuntime.fs" />
     <Compile Include="FinalizerRuntimeLive.fs" />
+    <Compile Include="Sim.fs" />
     <Compile Include="TravelerFrame.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />

@@ -23,6 +23,10 @@ Each is a stem with the suffix dropped (three letters):
 > cut. (Routes perf to Naledi.)
 
 - **`sim`** — ephemeral; produces no output. The SETI@home edge run (`sim <duration>`, default 30s).
+  **Implemented:** `src/Core/Sim.fs` — `Sim.run (seed) (duration)` runs the deterministic finalizer
+  loop for the duration (60Hz tick budget) and returns `unit` (the void); never merges (that's
+  `mea`/`cut`); bounded + DST-replayable (tests in `tests/Tests.FSharp/Sim.Tests.fs`). The console
+  `sim` binary is the thin wrapper over this (next).
 - **`mea`** — the committing lift over `sim` (F# HOF/CE: `sim |> mea`); banks ΔU to `uncertainty/`.
   Injecting real I/O via DI adds *new external* observation (DST = null effects; prod = real). It does
   NOT make a null-I/O measurement empty: `sim` always carries **intrinsic persona entropy from previous
