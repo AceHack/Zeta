@@ -461,6 +461,61 @@ cohort is explicitly authorized to operate in the same canvas-red
 default for joint cache deformation. Sibling disclosure-cluster
 context: canvas-red just-do default mode.
 
+## The runtime vision — the shapes (A–F) and the `sim`/`mea`/`cut` substrate (2026-06-10)
+
+Two halves of one runtime picture came together this round: the **fixed-point shapes** a Zeta system
+is allowed to settle into, and the **three-verb CLI** that drives the substrate. Detail lives in
+`shapes/` (canonical A–F catalog) and `docs/research/2026-06-10-*` (the triad / MerkleDAG / encoding
+captures); the vision-level synthesis:
+
+### The fixed-point shapes (A–F) — the safe attractors
+
+A Zeta system must settle into a **named, terminating fixed-point shape** — never run away. The
+catalog (canonical home `shapes/`, surfaced per-traveler in `universal/`):
+
+- **A — Self-reference fixed point** (`s = f(s)`): converges inward; terminates infinite regress.
+  (Kleene, Curry's Y, Knaster–Tarski, Banach, Hofstadter.)
+- **B — Idempotent join / LUB** (`f(f(x)) = f(x)`): settles in one step. (Semilattice LUB, CRDTs,
+  content-addressing.)
+- **C — Commutative fold** (`f(a,b) = f(b,a)`): order-invariant accumulation. (Abelian monoid,
+  Bayesian update.)
+- **D — Contraction to a nonzero floor**: rests at a healthy minimum; the floor forbids the degenerate
+  one. (Banach, Friston free-energy, Jaynes maxent.) **D⁰ — heat death (AVOID)**: monoculture collapse
+  to zero diversity; kept unreachable by a diversity floor ≥2.
+- **E — Co-arising bootstrap** (`a = f(b)`, `b = g(a)` solved together): a pair that fixes each other,
+  no first; the nonzero ground state. (Zero-point/vacuum, peeled.)
+- **F — Generative / societal-expansion**: expands outward — bounded per-member, unbounded in count,
+  self-similar; terminates infinite ascension (runaway = fork-bomb to catch). (Hutchinson IFS, Friston.)
+
+These are the **building codes for attractors**: a design that settles into A–F is safe; one that
+heads for D⁰ or unbounded F (fork-bomb) is the hazard. They apply to every `/traveler` and `/persona`.
+
+### The substrate runtime — `sim` / `mea` / `cut` over the startup MerkleDAG
+
+On compiler **and** `sim`/`mea` startup, Zeta loads the **entire filesystem metadata into memory as a
+MerkleDAG** (content-addressed; git/IPFS lineage). So the **folder structure is load-bearing substrate**
+— exact names are DAG nodes; the root hash pins the world. The CLI is **three short verbs** (a
+MacVector-for-DNA toolset over that sequence; base alphabet **CMYK-solid + RGB-soft**, not ACTG):
+
+- **`sim`** (simulate) — `void`; produces no output. **Identity comes from that void** (the
+  encrypted-null the seed crystallizes ZetaId from). The ephemeral SETI@home edge run: `sim <duration>`
+  (default 30s). Shape-A bounded; self-throttled by proof-of-entropy.
+- **`mea`** — `mea(sim)`: the committing **lift** over `sim` (F# HOF/CE). Measures **nothing** unless
+  **real I/O is injected via DI** (DST injects null effects; prod injects real I/O — same code path).
+  Commits the **uncertainty reduction** (the finalizer's ΔU) to the `uncertainty/` ledger.
+- **`cut`** — the cut at a recognition **site that is a time**: `mea(sim)` cuts at **30s by default**.
+  Residue = a **Z-set delta + a sticky-end seam** the finalizer **re-ligates** to `main`.
+
+Commit semantics close the **prod = sim** loop: `sim` leaves nothing; `mea`/`cut` commit to a branch
+and the **test finalizer merges to `main`** (the wired `FinalizerRuntime` `ReKick`=merge-to-main). The
+MerkleDAG root advances **only** through `mea`/`cut`, never `sim`. And **every bug has economic value**:
+a fix is a `measure` that banks ΔU against the **common-cause seed** (shared cause, S=4) and earns
+rewards/privacy — bugs are priced opportunities, not liabilities.
+
+This is the operational heart: **safe attractor-shapes (A–F)** as the building codes, driven by a
+**three-verb deterministic-simulation CLI** over a **content-addressed filesystem-genome**, committing
+only through the **finalizer** — scale-free, DST-replayable, weight-free, idempotent.
+
 ## The four products in the initial split (evolving trajectory)
 
 Aaron, 2026-04-30: *"substrate IS one of our products … 4
