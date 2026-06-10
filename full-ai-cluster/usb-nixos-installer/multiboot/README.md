@@ -81,8 +81,12 @@ large (Zeta ISO + MyNode ≈ several GB). Verifiability wins.
 The **declarative manifest + GRUB config + layout** are here and reviewable. The **builder script**
 (`build-multiboot-usb.ts`) is the next step — it's the only piece that touches a physical device, so it
 lands separately with its own DST-style test (mirroring `tools/zflash`'s qemu harness). The Zeta-ISO
-loopback `linux`/`initrd` lines in `grub.cfg` follow the standard NixOS-ISO layout; verify against the
-actually-built ISO's `boot/` paths when the builder lands.
+loopback `linux`/`initrd` lines in `grub.cfg` are **`@KERNEL@`/`@INITRD@` placeholders the builder
+substitutes** — on **nixos-25.11** the kernel/initrd live under `boot/nix/store/<hash>-linux-<ver>/bzImage`
+and `boot/nix/store/<hash>-initrd-linux-<ver>/initrd` (hash per build), NOT top-level `/boot`; the
+builder resolves the real paths by reusing the suffix-pattern resolution in
+`tools/ci/audit-installer-iso-content.ts`. (Caught in PR review — hard-coding `/boot/bzImage` fails
+before the kernel loads.)
 
 ## Pointers
 
