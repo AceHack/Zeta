@@ -71,6 +71,49 @@ lens/prism law-checks are the certainty mechanism; the memory-lowering is the sh
 the first layer universal. The optic interfaces (`ILens`/`IPrism`/`IPolarityFilter`) route to the
 `PolarityFilter`/Core build; formal optic-law proofs route to Soraya/Sova.
 
+## The payoff: lensable memory IS shader memory — heap = common seed lensed, no interrupts (Aaron 2026-06-10)
+
+> Aaron: "it ties back to memory being lensable." · "our **heap will be our common seed lensed**
+> instead — without coordination, several independent loops and **no interrupt**. I'm **unrolling the
+> interrupt** into several repeating patterns through time that are **single-threaded with no
+> interrupt**."
+
+This is the keystone the whole `.NET-in-shaders` telos rides
+(`docs/research/2026-06-10-dotnet-runtime-in-shaders-*`): **shader-compatible memory IS lensable
+memory.** Shader memory is flat, structured, pointer-free, indexed buffers — exactly
+`address+size+codec` lenses over color-encoded buffers. Force the lensable shape and you've already
+built the GPU memory model. Two consequences resolve the two hard shader problems:
+
+- **Heap = the common seed, lensed (the shader-GC answer).** No coordinated heap → **no SIMT-hostile
+  tracing GC**. Memory is the seed accessed through lenses — content-addressed, regenerable from the
+  seed — so there is nothing to collect *with coordination*. **Coordination-free** (lock/wait-free §2);
+  the GC problem is *dissolved*, not solved.
+- **No interrupts — unroll the ISR into independent single-threaded repeating-pattern loops.** Replace
+  interrupt-driven preemption with **several independent loops**, each a repeating temporal pattern that
+  *checks its condition every iteration* (polling baked into the loop period). No preemption ⇒
+  **deterministic/DST-replayable** (§7) ⇒ and **shader-compatible** (a GPU is many independent threads
+  with no interrupts). Several independent loops = **scale-free** (§1); each loop at DoP=1 is the
+  FoundationDB single-thread run loop (the async-all-the-way ferry at DoP=1).
+
+So the GPU execution+memory model = **lensed-seed heap + unrolled-interrupt loops**, both of which fall
+straight out of "memory is lensable." The keystone earns its name: it's the foundation of running the
+runtime in shaders.
+
+### Lensing over time FINDS the quasi-time-crystals (Aaron 2026-06-10)
+
+> Aaron: "lensing find the quasi time crystals in the memory + code regions over time."
+
+What does a lens *find* when you run it over memory+code **across time**? The **quasi-time-crystals** —
+the structures that **recur (quasi-periodically) in time**. A **time crystal** is a phase that repeats
+in *time*, not space (Wilczek; discrete time crystals); **quasi** = aperiodic-but-ordered
+(Shechtman/Penrose — quasicrystals). The **unrolled-interrupt repeating-pattern loops above ARE
+quasi-time-crystals** — stable temporal patterns in the memory/code regions — and **lensing is the
+detector**: a lens read over time surfaces the quasi-periodic recurring structure (which region cycles,
+at what phase). This is literally **Cheat-Engine scanning-over-time** (watch addresses change, find the
+pattern) promoted to a principle: the program's *temporal* structure = its time crystals; you find them
+by **lensing memory+code through time**. (Ties quantum-phase time / the Cayley–Dickson phasor — phase
+is the time-crystal's clock; `mea` reads the phase, `res` confirms the period.)
+
 ## Ties / routing
 
 `src/Core/PolarityFilter.fs` (the meaning-lens / polarization filter) · [`hooks/`](../../hooks/) (the
