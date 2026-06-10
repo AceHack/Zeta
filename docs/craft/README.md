@@ -76,6 +76,23 @@ care"*.
    freedom-of-choice-of-rooms / effort-is-attention
    capture, `docs/research/2026-06-10-boundary-flow-architecture-minimal-action-energy-redirection-dataflow-membranes.md`).
 
+   **Sustainability corollary (Aaron 2026-06-10): this
+   teaching pattern is survivable in the attention economy
+   *without introducing money*.** Built on WHY→interest→
+   attention, the loop is self-funding in the *native*
+   currency — interest produces the attention that the
+   learning spends, and the learning produces more interest.
+   No money layer is needed to keep it alive. Money only
+   ever enters to *compel attention that interest failed to
+   earn* (paying over the bankruptcy case above) — so a
+   curriculum built on interest removes the money crutch
+   entirely. This makes Craft an **attention-economy-native
+   institution**, aligned with the Agora (trust-market /
+   attention-as-settlement, not money-market): see
+   `memory/feedback_trust_market_not_money_market_labor_zero_2026_05_11.md`
+   and the Agora attention-economy research. Teaching that
+   runs on interest needs no tuition to survive.
+
 ## Structure
 
 ```
