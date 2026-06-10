@@ -54,8 +54,8 @@ doubling × strange-attractor dynamics → geospatial** — order-out-of-chaos o
 
 **To formalize (math team — Soraya/Sova):** the map (x, y, boundary) → Cayley–Dickson rotation
 (quaternion/octonion) → strange attractor → geospatial coordinate; whether `same/` composition is the
-Cayley–Dickson product; the attractor's dimension/Lyapunov behaviour; ties to the ZetaId **Location** field
-+ dns/network geospatial layer + the `QubitIso`/`CayleyDickson.Complex` code. *(Peel: a found correspondence
+Cayley–Dickson product; the attractor's dimension/Lyapunov behaviour; ties to the ZetaId **Location** field,
+the dns/network geospatial layer, and the `QubitIso`/`CayleyDickson.Complex` code. *(Peel: a found correspondence
 to prove, not a built map; Cayley–Dickson + strange attractors + SO(3)/quaternion + geospatial are the real
 anchors, the assignment is the math team's.)*
 
