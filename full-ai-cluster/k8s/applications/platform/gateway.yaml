@@ -1,0 +1,47 @@
+# zeta-gateway — the shared Cilium Gateway the portal (and any WebApp HTTPRoute)
+# publishes on. Cilium gives this Gateway a LoadBalancer Service that pulls an IP
+# from the cilium-lb-ipam pool — THAT is the IP your router forwards :80 + :443 to.
+#
+# TLS is provisioned by cert-manager via the `cert-manager.io/cluster-issuer`
+# annotation below: cert-manager watches this Gateway, reads each HTTPS listener's
+# hostname, runs the ACME HTTP-01 challenge through the :80 listener, and writes
+# the cert into the Secret named in `certificateRefs` (portal-tls). No DNS API and
+# no Cloudflare needed — only that Let's Encrypt can reach :80 (so your DNS must
+# resolve to your IP and your router must forward :80 BEFORE the cert issues).
+#
+# ── CHANGE BEFORE IT WORKS ──
+#   • the HTTPS listener `hostname` below → your real domain
+#   • keep it in sync with the portal HTTPRoute hostname in portal.yaml
+#   • apply clusterissuer.yaml (it carries your ACME email) — see SETUP.md
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: zeta-gateway
+  namespace: zeta-platform
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    # cert-manager provisions + renews the HTTPS listener cert into `portal-tls`.
+    # Use letsencrypt-staging first to avoid rate limits, then flip to -prod.
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  gatewayClassName: cilium
+  listeners:
+    # :80 — plain HTTP. Serves the ACME HTTP-01 challenge (cert-manager injects a
+    # temporary HTTPRoute here during issuance) and any non-TLS route. Game servers
+    # do NOT use this — they are raw UDP via their own LoadBalancer Services.
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces: { from: All }
+    # :443 — HTTPS, TLS terminated at the Gateway using the cert-manager cert.
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "portal.example.com"   # ← CHANGE to your domain (e.g. portal.yourdomain.com)
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: portal-tls }
+      allowedRoutes:
+        namespaces: { from: All }

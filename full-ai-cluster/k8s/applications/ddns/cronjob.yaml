@@ -1,0 +1,82 @@
+# Namecheap Dynamic DNS updater — keeps your A records pointed at your current
+# home IP. Runs IN the cluster on purpose: the pod's outbound traffic egresses
+# through your router's NAT, so Namecheap sees your real public IP as the request
+# source (that's why we omit `&ip=` — Namecheap uses the requester's IP).
+#
+# ⚠️ DDNS is NOT DDoS protection. It only keeps the name→IP mapping current. It
+# publishes your home IP; there is no free DDoS shield for game UDP. Keep public
+# game servers whitelisted until you have a paid relay/scrubber.
+#
+# NOT wired into the ArgoCD root app (this dir has no Application.yaml on purpose)
+# — apply it directly so it stays opt-in for the single-machine bootstrap:
+#
+#   # 1. In Namecheap: Domain List → Manage → Advanced DNS → enable "Dynamic DNS".
+#   #    Copy the Dynamic DNS Password. Add a host record for each name below with
+#   #    Type = "A + Dynamic DNS Record" (use "@" for the apex, "*" for wildcard).
+#   # 2. Create the secret (NOT in git — the DDNS password is a credential):
+#   kubectl create namespace zeta-platform --dry-run=client -o yaml | kubectl apply -f -
+#   kubectl -n zeta-platform create secret generic namecheap-ddns \
+#     --from-literal=domain=YOURDOMAIN.com \
+#     --from-literal=password=YOUR_NAMECHEAP_DDNS_PASSWORD
+#   # 3. Edit DDNS_HOSTS below to the host records you created, then:
+#   kubectl apply -f full-ai-cluster/k8s/applications/ddns/cronjob.yaml
+#   # 4. Force one run now + watch it succeed:
+#   kubectl -n zeta-platform create job --from=cronjob/namecheap-ddns ddns-now
+#   kubectl -n zeta-platform logs job/ddns-now
+#
+# Success looks like `updated @` / `updated *` (Namecheap returns <ErrCount>0</ErrCount>).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: namecheap-ddns
+  namespace: zeta-platform
+spec:
+  schedule: "*/5 * * * *"        # every 5 min; reacts to an IP change within ~5 min
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534           # nobody
+            seccompProfile: { type: RuntimeDefault }
+          containers:
+            - name: ddns
+              image: curlimages/curl:8.11.1
+              env:
+                - name: DDNS_DOMAIN
+                  valueFrom: { secretKeyRef: { name: namecheap-ddns, key: domain } }
+                - name: DDNS_PASSWORD
+                  valueFrom: { secretKeyRef: { name: namecheap-ddns, key: password } }
+                # Space-separated host records to update. "@" = apex (yourdomain.com),
+                # "*" = wildcard (*.yourdomain.com), or specific names like "game portal".
+                - name: DDNS_HOSTS
+                  value: "@ *"
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: ["ALL"] }
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -ef   # -f: no globbing, so the "*" host isn't expanded to filenames
+                  rc=0
+                  for h in $DDNS_HOSTS; do
+                    resp=$(curl -fsS "https://dynamicdns.park-your-domain.com/update?host=${h}&domain=${DDNS_DOMAIN}&password=${DDNS_PASSWORD}") \
+                      || { echo "request failed for host '${h}'"; rc=1; continue; }
+                    if echo "$resp" | grep -q "<ErrCount>0</ErrCount>"; then
+                      echo "updated ${h}"
+                    else
+                      echo "namecheap error for host '${h}': ${resp}"; rc=1
+                    fi
+                  done
+                  exit $rc
+              resources:
+                requests: { cpu: "10m", memory: "16Mi" }
+                limits: { cpu: "100m", memory: "32Mi" }

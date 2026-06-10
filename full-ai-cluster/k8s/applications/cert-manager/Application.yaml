@@ -21,6 +21,14 @@ spec:
       valuesObject:
         crds:
           enabled: true
+        # Enable the Gateway API integration so cert-manager can solve ACME
+        # HTTP-01 via http01.gatewayHTTPRoute and auto-provision certs for
+        # Gateway listeners (zeta-gateway → portal-tls). Requires the Gateway
+        # API CRDs, which Cilium installs (gatewayAPI.enabled=true).
+        config:
+          apiVersion: controller.config.cert-manager.io/v1alpha1
+          kind: ControllerConfiguration
+          enableGatewayAPI: true
         replicaCount: 1
         webhook:
           replicaCount: 1

@@ -1,0 +1,57 @@
+# Let's Encrypt ACME issuers — free, automated TLS for the Gateway. HTTP-01
+# challenge solved THROUGH zeta-gateway's :80 listener (no DNS API, no Cloudflare).
+#
+# Two issuers:
+#   • letsencrypt-staging — untrusted certs, very high rate limits. Use this FIRST
+#     to prove the challenge round-trips (DNS resolves + :80 forwarded) without
+#     burning the prod quota. Browsers will warn — that's expected for staging.
+#   • letsencrypt-prod — real, browser-trusted certs. Flip the Gateway annotation
+#     to this once staging issues cleanly.
+#
+# ── CHANGE BEFORE IT WORKS ──  the `email:` in BOTH issuers → your real email
+# (Let's Encrypt sends expiry warnings there; it is not publicly listed).
+#
+# Prereq (handled by the cert-manager Application valuesObject): cert-manager runs
+# with enableGatewayAPI=true so the http01.gatewayHTTPRoute solver is available.
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"   # issuer before the Gateway that references it
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: you@example.com   # ← CHANGE
+    privateKeySecretRef:
+      name: letsencrypt-staging-account-key
+    solvers:
+      - http01:
+          gatewayHTTPRoute:
+            parentRefs:
+              - name: zeta-gateway
+                namespace: zeta-platform
+                kind: Gateway
+                group: gateway.networking.k8s.io
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: you@example.com   # ← CHANGE
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+      - http01:
+          gatewayHTTPRoute:
+            parentRefs:
+              - name: zeta-gateway
+                namespace: zeta-platform
+                kind: Gateway
+                group: gateway.networking.k8s.io
