@@ -46,6 +46,42 @@ the lawful-instance discipline):
 lane, and the numeric packing — is the open board-room question. The laws above hold regardless of the
 assignment; the assignment is what the room/sim resolves.)*
 
+## RGB = `cut mea sim`: combinations & pairings (Aaron 2026-06-10)
+
+> Aaron: "RGB = cut mea sim — how does that work? what's the combinations and pairings?"
+
+**RGB (soft, additive, light) = the three verbs running** (the ephemeral execution). **CMYK (solid,
+subtractive, ink) = their committed complement** (what dries onto `main`). The structure (the R/G/B↔verb
+assignment is the open choice the room resolves; the structure holds regardless):
+
+| light (RGB, soft — what runs) | verb |
+|---|---|
+| **R** | **sim** (void base) |
+| **G** | **mea** (committing lift `mea(sim)`) |
+| **B** | **cut** (write `cut(mea(sim))`) |
+
+**Combinations = composing verbs (additive mixing — more verbs ⇒ more light ⇒ toward white):**
+
+- 1 channel (pure): `sim` alone — ephemeral, leaves nothing.
+- 2 channels (a **pairing** = a secondary): R+G = **Yellow** = `mea(sim)`; G+B = **Cyan** =
+  `cut(mea …)`; R+B = **Magenta** = sim+cut.
+- 3 channels = **White** = `cut mea sim` — the **full curried loop** running (all light on).
+- 0 channels = **Black** = nothing running = the **void/null** (→ K below).
+
+**CMYK = the committed complement + the key:** `C = ¬R, M = ¬G, Y = ¬B` — each committed (ink) channel
+is the **complement** of the verb-light that ran (the residue, the `Delta × Seam`). **K = the key =
+black = the void/null** — the encrypted-null / common seed / `sim`'s void. **K is the 4th channel RGB
+lacks** — which is exactly why **CMYK is solid (4) and RGB is soft (3)**: the committed encoding carries
+the **key/null** the ephemeral light doesn't (K = where identity comes from).
+
+**Where `ben`/`cla`/`res` sit (outside the 3-cube):** `RGB = cut mea sim` is exactly 3, so the others
+are axes *around* the cube — **`res`** iterates the loop (the time axis: repeat until resolved),
+**`cla`** reads the resulting color → a class/lens (reads K to pick the class), **`ben`** instruments
+the run for perf (the benchmark loop `cut mea ben sim`; orthogonal to color — it times the light).
+
+*(Peel: the additive/subtractive complement structure is real color theory (RGB↔CMY complements; K=key);
+the verb↔channel assignment is the open question the room `mea`s out.)*
+
 ## How we settle it — a room/sim, `mea`'d repeatedly until it resolves (Aaron)
 
 > Aaron: "we need a **room/sim** for that so we can **`mea`** it." · "**repeatedly until it resolves**."

@@ -3,7 +3,7 @@
 `clis/` is the home of Zeta's **CLIs** — the short 3-letter verbs that drive the substrate over the
 startup MerkleDAG (the MacVector-for-DNA toolset). **Plural** (never-one): a family, not one binary.
 
-## The verb family — `sim · mea · cut · cla · res` (Aaron 2026-06-10)
+## The verb family — `sim · mea · cut · ben · cla · res` (Aaron 2026-06-10)
 
 Each is a stem with the suffix dropped (three letters):
 
@@ -12,8 +12,15 @@ Each is a stem with the suffix dropped (three letters):
 | **`sim`** | sim(ulate) | run the deterministic sim for a duration | **no** | `unit` (void → identity comes from the void) |
 | **`mea`** | mea(sure) | `mea(sim)`: lift sim + commit the measurement | **yes** | `Measurement` (ΔU); real I/O via DI adds *new external* observation |
 | **`cut`** | cut | cut at a recognition site (a TIME; default 30s) | **yes** | `Delta × Seam` (Z-set diff + sticky-end the finalizer re-ligates) |
+| **`ben`** | ben(chmark) | instrument the sim for perf: the loop `cut mea ben sim` | **yes** | `Benchmark` (timing/allocs/throughput → `bench/`); perf, not ΔU |
 | **`cla`** | cla(ssify) | classify the result into a class/lens | **yes** | a **class label** (the discriminator/lens assignment) |
 | **`res`** | res(olve) | resolve: loop `mea` **repeatedly until it resolves** | **yes** | a **fixed point** (ΔU→0; shapes A/B/D) + the resolution |
+
+> **The benchmark loop (Aaron 2026-06-10): `cut mea ben sim`.** `ben` instruments `sim` for
+> **performance** (timing / allocations / throughput → [`bench/`](../bench/)) — the perf sibling of
+> `mea`'s uncertainty-reduction (ΔU). So the loop has two measuring verbs: `mea` (how much uncertainty
+> did we reduce) and `ben` (how fast / cheap was it). `cut mea ben sim` = simulate, benchmark, measure,
+> cut. (Routes perf to Naledi.)
 
 - **`sim`** — ephemeral; produces no output. The SETI@home edge run (`sim <duration>`, default 30s).
 - **`mea`** — the committing lift over `sim` (F# HOF/CE: `sim |> mea`); banks ΔU to `uncertainty/`.

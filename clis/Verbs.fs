@@ -41,6 +41,10 @@ type ISeam = interface end
 /// A class label — the discriminator / lens.
 type IClassLabel = interface end
 
+/// A benchmark result — perf measurement (timing / allocations / throughput), distinct
+/// from IMeasurement's uncertainty-reduction (ΔU). Lands in bench/.
+type IBenchmark = interface end
+
 // ── The verbs (3-letter stems; pure interface stubs) ──
 
 /// sim(ulate) — ephemeral; produces NO output (void). The SETI@home edge run;
@@ -58,6 +62,11 @@ type IMeaVerb =
 type ICutVerb =
     abstract member Cut<'a> : at: TimeSpan * sim: ISim<'a> -> IDelta<'a> * ISeam
 
+/// ben(chmark) — instrument the sim for performance: the benchmark loop is
+/// `cut mea ben sim` (ben wraps sim, alongside mea's ΔU). Produces a perf result.
+type IBenVerb =
+    abstract member Ben<'a> : effects: IEffects * sim: ISim<'a> -> IBenchmark
+
 /// cla(ssify) — assign the result to a class / lens (the discriminator).
 type IClaVerb =
     abstract member Cla<'a> : sim: ISim<'a> -> IClassLabel
@@ -72,5 +81,6 @@ type ICli =
     inherit ISimVerb
     inherit IMeaVerb
     inherit ICutVerb
+    inherit IBenVerb
     inherit IClaVerb
     inherit IResVerb
