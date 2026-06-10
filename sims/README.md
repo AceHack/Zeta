@@ -36,11 +36,14 @@ A **second verb** pairs with `sim`, split by whether the run **commits**:
   *and record it*. (Full capture:
   `docs/research/2026-06-10-sim-is-infinite-resolution-on-reticulum-*`.)
 
+> **The full verb family lives in [`clis/`](../clis/):** `sim · mea · cut · cla(ssify) · res(olve)`.
+> `sims/` holds the *simulations*; `clis/` holds the *verbs* that run/commit/classify/resolve them.
+
 ## What lives here
 
 - The named/seed simulations, scenarios, and their golden outputs (each a sim, picked by its
   discriminator/lens).
-- The `sim` CLI's home as it lands (entrypoint, duration parsing, the default-30s rule).
+- The simulations the [`clis/`](../clis/) verbs operate on (duration parsing, the default-30s cut site).
 
 *(Peel: `sim` is the chosen CLI name; the DST engine it drives is real (`Clock.fs` IScheduler, the
 1000x-DST tests). The bounded-edge / proof-of-entropy framing is the distribution model, to formalize.)*

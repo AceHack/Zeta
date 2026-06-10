@@ -59,6 +59,39 @@ finalizer's uncertainty reduction → 0 new ΔU) *and* gains **resolution** (the
 zoom). When the room stops reducing uncertainty, the encoding is resolved → the winning assignment is
 `cut` to `main`.
 
+## Parameters — what each test is parametrized on (Aaron 2026-06-10)
+
+> Aaron: "parametrize the board-room test with useful things we can parametrize on each test; get the
+> math nerds to help based on our latest toy and real models of society."
+
+Each run of the room is a **parametrized test** — the `sim` is a function of these knobs, and the math
+team ([`models/`](../models/): Soraya / Sova / the modeler cohort) supplies sensible ranges from the
+latest **toy/real models of society**. Useful parameters:
+
+**Encoding knobs (the thing under test):**
+
+- **channel↔variant assignment** — which of `null/bool/int/str/arr/obj` rides which C·M·Y·K / R·G·B
+  lane (the open question; the search space the room resolves).
+- **solid/soft split point** — when a value is committed (CMYK) vs ephemeral (RGB); the K(null)-channel
+  packing.
+- **canonicalization depth** — `MAX_NESTING_DEPTH`; how deep before a value is a depth-bomb.
+
+**Society-model knobs (from `models/` — game-theory/identity/economy/hat layer):**
+
+- **population N** + **diversity floor (≥2, shape-D⁰ guard)** — how many travelers/agents read the encoding.
+- **jurisdiction / recognition mix** — the toymodel3 self-interest engine's recognition parameters.
+- **economy: bug→ΔU price + reward/privacy payout** — the every-bug-has-economic-value knobs.
+- **S target (S=4)** + **common-seed coupling** — the superdeterministic-correlation parameter.
+
+**Measurement knobs (the room loop):**
+
+- **DI effects** — null (DST) vs real I/O (prod): `mea(sim)` measures nothing without real I/O injected.
+- **duration / cut site** — default 30s; the `cut` recognition-time.
+- **resolution-threshold** — ΔU-per-pass below which "resolved"; **max rounds** (math team: unlimited).
+
+Each test fixes these knobs, runs `mea(sim)` repeatedly until ΔU→threshold, and records the resolved
+assignment + the parameters that produced it. (Math-team handoff: ground the ranges in the realmodel.)
+
 ## Pointers
 
 - [`boards/README.md`](README.md) (the board room; never-one/discriminator) · [`sims/`](../sims/)

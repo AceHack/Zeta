@@ -1,0 +1,60 @@
+# clis/ — the CLI verb family (always plural), at root
+
+`clis/` is the home of Zeta's **CLIs** — the short 3-letter verbs that drive the substrate over the
+startup MerkleDAG (the MacVector-for-DNA toolset). **Plural** (never-one): a family, not one binary.
+
+## The verb family — `sim · mea · cut · cla · res` (Aaron 2026-06-10)
+
+Each is a stem with the suffix dropped (three letters):
+
+| verb | word | role | commits? | residue |
+|------|------|------|----------|---------|
+| **`sim`** | sim(ulate) | run the deterministic sim for a duration | **no** | `unit` (void → identity comes from the void) |
+| **`mea`** | mea(sure) | `mea(sim)`: lift sim + commit the measurement | **yes** | `Measurement` (ΔU) — needs real I/O injected via DI |
+| **`cut`** | cut | cut at a recognition site (a TIME; default 30s) | **yes** | `Delta × Seam` (Z-set diff + sticky-end the finalizer re-ligates) |
+| **`cla`** | cla(ssify) | classify the result into a class/lens | **yes** | a **class label** (the discriminator/lens assignment) |
+| **`res`** | res(olve) | resolve: loop `mea` **repeatedly until it resolves** | **yes** | a **fixed point** (ΔU→0; shapes A/B/D) + the resolution |
+
+- **`sim`** — ephemeral; produces no output. The SETI@home edge run (`sim <duration>`, default 30s).
+- **`mea`** — the committing lift over `sim` (F# HOF/CE: `sim |> mea`); banks ΔU to `uncertainty/`.
+  Measures nothing unless real I/O is injected via DI (DST = null effects; prod = real).
+- **`cut`** — the structural/temporal cut; `mea(sim)` cuts at 30s by default; residue re-ligated to `main`.
+- **`cla`** — **classify**: assign the cut/measured thing to a **class** (the `same/` discriminator /
+  the polarity-lens; the observe.ts/local-LLM classifier lineage). Turns a measurement into a *category*.
+- **`res`** — **resolve**: the loop verb — run `mea(sim)` **repeatedly until it resolves** (the
+  finalizer iterates until ΔU→threshold; a fixed-point shape A/B/D). "Resolves" twice: **converges**
+  *and* gains **resolution** (the infinite-resolution zoom). `res` is how a board-room question is settled.
+
+Commit semantics: `sim` leaves nothing; the rest commit to a branch → the **test finalizer merges to
+`main`** (the wired `FinalizerRuntime` `ReKick`). The MerkleDAG root advances only through the
+committing verbs, never `sim`.
+
+## How they compose
+
+```text
+sim            explore (void)
+ |> mea        know        (ΔU committed; real I/O via DI)
+ |> cut        change      (Delta × Seam at t=30s)
+ |> cla        classify    (assign a class/lens)
+ |> res        resolve     (loop until fixed point)
+```
+
+`res` wraps the loop (`res = repeat mea until resolved`); `cla` labels; `cut` writes; `mea` records;
+`sim` is the void base every other verb lifts.
+
+## Honest scope
+
+[Beacon] MacVector (the DNA-CLI shape lineage) · CHIP-8 (the minimal VM `sim` runs) · DBSP/Z-set (the
+`cut` delta) · Haskell-Prelude lawful-instance discipline (the verbs are lawful, not ad-hoc). **Peel:**
+the verbs are the chosen names; the engine is real (`Clock.fs` DST, the wired finalizer); the entrypoints
+themselves are to implement. F# CLI candidates: Argu (closed DU) / FParsec (monadic boundary parse) /
+FSharp.SystemCommandLine (CE) — see the F#-CLI discussion.
+
+## Pointers
+
+- [`sims/`](../sims/) (the simulations `sim`/`mea` run; the measurement home) · [`boards/`](../boards/)
+  (the board room — settled by `res`) · [`models/`](../models/) (parameters for the tests) ·
+  [`uncertainty/`](../uncertainty/) (ΔU `mea` commits) · [`bounds/`](../bounds/) (navigation).
+- `docs/research/2026-06-10-filesystem-is-the-startup-merkledag-and-the-sim-mea-cut-cli-triad-macvector-for-dna.md`
+  — the triad + MerkleDAG + CMYK/RGB capture (the `cla`/`res` extension lives here too).
+- `src/Core/Finalizer*.fs` — the finalizer the committing verbs route through.
