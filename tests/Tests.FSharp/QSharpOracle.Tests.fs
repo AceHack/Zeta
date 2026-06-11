@@ -95,6 +95,27 @@ let ``QubitIso Pauli X Y Z match the Q# gate matrices on computational basis sta
     assertQSharpColumn z 1 (QubitIso.pauliZ one)
 
 [<Fact>]
+let ``QubitIso H Ry and Rz match the Q# gate matrices on computational basis states`` () =
+    let zero = QubitIso.ofQubit c.One c.Zero
+    let one = QubitIso.ofQubit c.Zero c.One
+
+    let h = gateMatrix "H"
+    assertQSharpColumn h 0 (QubitIso.hadamard zero)
+    assertQSharpColumn h 1 (QubitIso.hadamard one)
+
+    let ryPiOver3 = gateMatrix "Ry(pi/3)"
+    assertQSharpColumn ryPiOver3 0 (QubitIso.ry (Math.PI / 3.0) zero)
+    assertQSharpColumn ryPiOver3 1 (QubitIso.ry (Math.PI / 3.0) one)
+
+    let ryPiOver2 = gateMatrix "Ry(pi/2)"
+    assertQSharpColumn ryPiOver2 0 (QubitIso.ry (Math.PI / 2.0) zero)
+    assertQSharpColumn ryPiOver2 1 (QubitIso.ry (Math.PI / 2.0) one)
+
+    let rzPiOver3 = gateMatrix "Rz(pi/3)"
+    assertQSharpColumn rzPiOver3 0 (QubitIso.rz (Math.PI / 3.0) zero)
+    assertQSharpColumn rzPiOver3 1 (QubitIso.rz (Math.PI / 3.0) one)
+
+[<Fact>]
 let ``BellTest canonical CHSH observables match the Q# golden vector`` () =
     let canonical = vectors.GetProperty("bellChsh").GetProperty("canonical")
     let angles = canonical.GetProperty("anglesRadians")

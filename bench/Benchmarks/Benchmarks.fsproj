@@ -14,6 +14,7 @@
     <Compile Include="CircuitBench.fs" />
     <Compile Include="SpineBench.fs" />
     <Compile Include="BloomBench.fs" />
+    <Compile Include="QuantumOracleBench.fs" />
     <Compile Include="Nexmark.fs" />
     <Compile Include="NexmarkFull.fs" />
     <Compile Include="CheckedVsUncheckedBench.fs" />

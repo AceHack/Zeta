@@ -25,14 +25,29 @@ let ``Pauli anticommute: XZ = -ZX`` () =
     Assert.True(eq (QubitIso.pauliX (QubitIso.pauliZ g)) (QubitIso.scale negOne (QubitIso.pauliZ (QubitIso.pauliX g))))
 
 [<Fact>]
-let ``gates are unitary: norm preserved by X, Y, Z`` () =
+let ``gates are unitary: norm preserved by Pauli and rotation gates`` () =
     Assert.Equal(QubitIso.normSq g, QubitIso.normSq (QubitIso.pauliX g), 12)
     Assert.Equal(QubitIso.normSq g, QubitIso.normSq (QubitIso.pauliY g), 12)
     Assert.Equal(QubitIso.normSq g, QubitIso.normSq (QubitIso.pauliZ g), 12)
+    Assert.Equal(QubitIso.normSq g, QubitIso.normSq (QubitIso.hadamard g), 12)
+    Assert.Equal(QubitIso.normSq g, QubitIso.normSq (QubitIso.ry (System.Math.PI / 3.0) g), 12)
+    Assert.Equal(QubitIso.normSq g, QubitIso.normSq (QubitIso.rz (System.Math.PI / 3.0) g), 12)
 
 [<Fact>]
 let ``Born + bit-flip: X swaps measurement probabilities`` () =
     Assert.Equal(1.0 - QubitIso.measureOne g, QubitIso.measureOne (QubitIso.pauliX g), 12)
+
+[<Fact>]
+let ``Hadamard is self-inverse and maps basis zero to a fair measurement`` () =
+    let zero = QubitIso.ofQubit { Real = 1.0; Imag = 0.0 } { Real = 0.0; Imag = 0.0 }
+    Assert.True(eq (QubitIso.hadamard (QubitIso.hadamard g)) g)
+    Assert.Equal(0.5, QubitIso.measureOne (QubitIso.hadamard zero), 12)
+
+[<Fact>]
+let ``Ry pi over three has textbook cos squared and sin squared probabilities`` () =
+    let zero = QubitIso.ofQubit { Real = 1.0; Imag = 0.0 } { Real = 0.0; Imag = 0.0 }
+    let rotated = QubitIso.ry (System.Math.PI / 3.0) zero
+    Assert.Equal(sin (System.Math.PI / 6.0) ** 2.0, QubitIso.measureOne rotated, 12)
 
 [<Fact>]
 let ``state bijection is the identity on ℂ² (round-trip)`` () =

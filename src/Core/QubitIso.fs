@@ -79,6 +79,28 @@ module QubitIso =
     /// Identity gate.
     let id (j: JoinState) : JoinState = j
 
+    /// H (Hadamard): basis change between Z and X measurement axes.
+    let hadamard (j: JoinState) : JoinState =
+        let invSqrt2 = 1.0 / sqrt 2.0
+        let s = { Real = invSqrt2; Imag = 0.0 }
+        { A = c.Mul(s, c.Add(j.A, j.B))
+          B = c.Mul(s, c.Add(j.A, c.Negate j.B)) }
+
+    /// Ry(θ): real Y-axis Bloch rotation, matching Q#'s half-angle matrix convention.
+    let ry (theta: float) (j: JoinState) : JoinState =
+        let ct = cos (theta / 2.0)
+        let st = sin (theta / 2.0)
+        { A = c.Add(c.Mul({ Real = ct; Imag = 0.0 }, j.A), c.Mul({ Real = -st; Imag = 0.0 }, j.B))
+          B = c.Add(c.Mul({ Real = st; Imag = 0.0 }, j.A), c.Mul({ Real = ct; Imag = 0.0 }, j.B)) }
+
+    /// Rz(θ): phase rotation with `|0>` carrying `e^{-iθ/2}` and `|1>` carrying `e^{+iθ/2}`.
+    let rz (theta: float) (j: JoinState) : JoinState =
+        let half = theta / 2.0
+        let phase0 = { Real = cos half; Imag = -sin half }
+        let phase1 = { Real = cos half; Imag = sin half }
+        { A = c.Mul(phase0, j.A)
+          B = c.Mul(phase1, j.B) }
+
     /// Approximate state equality (per-component, within `eps`).
     let equalish (eps: float) (x: JoinState) (y: JoinState) : bool =
         abs (x.A.Real - y.A.Real) < eps
