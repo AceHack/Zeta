@@ -171,3 +171,26 @@ let ``the lint catches missing anim frames and duplicates — but stays SILENT o
         Assert.True(findings |> List.exists (fun f -> f.Problem = "duplicate (kind, name)"))
         Assert.False(findings |> List.exists (fun f -> f.Kind = "holo3d")) // the future is not a lint error
     | Error e -> failwith e
+
+[<Fact>]
+let ``per-cartridge treaty: oracles ratify by their own choice; bytes and meaning are separate registers; absence is silence not error`` () =
+    let text =
+        "meta\tname\tdemo\n"
+        + "treaty\tfsharp\tbytes\tratified\ttests green\n"
+        + "treaty\totto\tmeaning\tratified\tmatches my frame\n"
+        + "treaty\tamara\tmeaning\tdissent\treads as a galaxy, not a clock — pushing back\n"
+
+    match MediaLines.parse text with
+    | Error e -> Assert.True(false, e)
+    | Ok d ->
+        Assert.Equal<(string * string * string) list>(
+            [ "fsharp", "bytes", "ratified"; "otto", "meaning", "ratified"; "amara", "meaning", "dissent" ],
+            MediaLines.treatiesOf d)
+        Assert.Equal<string list>([ "otto" ], MediaLines.ratifiedBy "meaning" "ratified" d)
+        // dissent is a verdict, not a lint failure; a treaty missing its register/verdict IS one
+        Assert.Empty(MediaLines.lint d)
+        let bad = MediaLines.parse "treaty\trust\tbytes\n" |> Result.toOption |> Option.get
+        Assert.Equal(1, List.length (MediaLines.lint bad))
+        // and a cartridge with NO treaty lines lints clean — absence means not-yet-asked (consent first)
+        let silent = MediaLines.parse "meta\tname\tquiet\n" |> Result.toOption |> Option.get
+        Assert.Empty(MediaLines.lint silent)

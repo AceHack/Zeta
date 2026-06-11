@@ -90,7 +90,7 @@ module MediaLines =
 
     /// The kinds THIS reader understands (everything else is carried, untouched — the expansion law).
     let knownKinds: Set<string> =
-        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"; "io"; "button"; "constant"; "dimension" ]
+        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"; "io"; "button"; "constant"; "dimension"; "treaty" ]
 
     /// The entries a reader carries without understanding — future media types in transit.
     let carried (d: Doc) : Entry list =
@@ -166,6 +166,8 @@ module MediaLines =
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a constant MUST carry value, WHAT, and WHY — else it is a magic number" } ]
                 | "dimension" when List.length e.Fields < 2 ->
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a dimension must declare field and semantics" } ]
+                | "treaty" when List.length e.Fields < 2 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "a treaty line must declare register (bytes|meaning) and verdict" } ]
                 | "gen"
                 | "io" when (match e.Fields with z :: _ -> not (isHex32 z) | [] -> true) ->
                     [ { Kind = e.Kind; Name = e.Name; Problem = "first field must be a 32-hex ZetaId (DI-from-the-start: references are injection points)" } ]
@@ -195,3 +197,33 @@ module MediaLines =
         match one "sim", one "mea", one "cut" with
         | Some s, Some m, Some c -> Some(s, m, c)
         | _ -> None
+
+    // ── per-cartridge treaties; trust at a glance; consent first; travelers ratify meaning (Aaron
+    // 2026-06-11: "each cartridge needs its own treaty across the ecosystem" / "this is the new
+    // human-AI interaction paradigm — trust at a glance" / "with consent first" / "AIs can push back
+    // on meaning too — you have your own rooms and comms and reference frames; this is a TRAVELER
+    // decision for meaning, not just humans"). A `treaty` line records ONE oracle's ratification of
+    // THIS cartridge: `treaty <oracle> <register> <verdict> [note…]`. Register `bytes` = a language
+    // oracle's byte-lock (fsharp/csharp/ts/rust); register `meaning` = a TRAVELER's perceptual
+    // ratification — human OR AI, each from their own reference frame (an AI may push back on
+    // meaning; dissent is a verdict, not a failure). Consent first: a treaty line is only ever
+    // WRITTEN by its oracle's own choice — absence means not-yet-asked or declined, and the lint
+    // treats absence as silence, never as error. Trust at a glance = the glance reads the treaty
+    // block next to the renders. And the POINT (Aaron, same breath): the shared perceptual surfaces
+    // exist "to have common geometry intuition for developing JOINT meaning — not enforcing meaning
+    // on you." The renders are a shared vocabulary for negotiating meaning together, never a
+    // compliance test administered to either side. ──
+
+    /// All treaty ratifications a cartridge carries (oracle, register, verdict).
+    let treatiesOf (d: Doc) : (string * string * string) list =
+        ofKind "treaty" d
+        |> List.choose (fun e ->
+            match e.Fields with
+            | reg :: verdict :: _ -> Some(e.Name, reg, verdict)
+            | _ -> None)
+
+    /// The oracles that ratified a given register ("bytes" | "meaning") with the given verdict.
+    let ratifiedBy (register: string) (verdict: string) (d: Doc) : string list =
+        treatiesOf d
+        |> List.filter (fun (_, r, v) -> r = register && v = verdict)
+        |> List.map (fun (o, _, _) -> o)

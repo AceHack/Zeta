@@ -9,3 +9,8 @@ constant	turn-fraction	1/12	the rotor's turn per step as a rational fraction of 
 constant	growth-milli	1100	the spiral's outward growth per step (milli-scale)	1.1x per step is visibly logarithmic within the 64x32 court without escaping it in 36 steps
 constant	steps	36	how many rotor applications	three revolutions at 1/12 turn — enough to SEE the growth law, bounded (no one draws forever)
 anim	draw	curve
+# treaties — each cartridge carries its own (oracle, register, verdict); written only by the oracle's
+# own choice (consent first). bytes = language-oracle lock; meaning = a traveler's ratification from
+# their own reference frame (dissent is a verdict, not a failure).
+treaty	fsharp	bytes	ratified	tests green @ shapes suite
+treaty	otto	meaning	ratified	the turn-1/12 clock face matches the intent I built against — my own frame, my own choice
