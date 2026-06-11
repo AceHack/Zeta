@@ -1,0 +1,59 @@
+namespace Zeta.Core
+
+/// GeneratorRegistry — **stable interfaces and generator functions get ZetaIds, so a filetype can
+/// refer to its artifacts by ID** (Aaron 2026-06-11: "we should start assigning our stable interfaces
+/// ZetaIds and generator functions, then the filetype can start referring [to] those artifacts by
+/// ZetaId").
+///
+/// The ID is CONTENT-ADDRESSED from the generator's stable name + version (deterministic, reproducible,
+/// homoiconic — the id IS derivable from the name, never minted-and-forgotten). A MediaLines `gen` line
+/// then reads `gen <local-name> <generator-zetaid> <version> <seed> <args…>` — the artifact references
+/// the GENERATOR by id, so the same id means the same function on every node/oracle (a treaty over
+/// generators). Stable interfaces (the kernels, the optics, the verbs) register the same way.
+[<RequireQualifiedAccess>]
+module GeneratorRegistry =
+
+    /// A registered generator: its stable name, version, and the derived ZetaId (32-hex).
+    type Entry =
+        { Name: string
+          Version: int
+          ZetaId: string }
+
+    // deterministic content-address: FNV-1a-ish 128-bit fold over name@version (no wall, no random —
+    // the id is a pure function of identity, so it is the SAME everywhere, forever).
+    let private hash128 (s: string) : string =
+        let mutable h1 = 0xcbf29ce484222325UL
+        let mutable h2 = 0x84222325cbf29ce4UL
+        for ch in s do
+            h1 <- (h1 ^^^ uint64 (int ch)) * 0x100000001b3UL
+            h2 <- (h2 ^^^ uint64 (int ch * 31)) * 0x100000001b3UL
+        sprintf "%016x%016x" h1 h2
+
+    /// Mint the stable ZetaId for a generator name@version (deterministic; the same input always yields
+    /// the same id — that is the point).
+    let idOf (name: string) (version: int) : string = hash128 (sprintf "%s@%d" name version)
+
+    /// Register (declare) a generator — returns its entry. Registration is just naming; the id follows.
+    let register (name: string) (version: int) : Entry =
+        { Name = name; Version = version; ZetaId = idOf name version }
+
+    /// The stable generators known today — the BoundaryLight family + the kernel + the verbs that have
+    /// earned a fixed identity. Adding a generator = adding a line; bumping a version = a new id (so a
+    /// change is never silent — same blade as TimeGen's versioning).
+    let known: Entry list =
+        [ register "boundary.curve" 1
+          register "boundary.glow" 1
+          register "boundary.mirror" 1
+          register "boundary.scatter" 1
+          register "boundary.grid" 1
+          register "boundary.rotorCurve" 1
+          register "kernel.rbf" 1
+          register "timegen.phasor" 1 ]
+
+    /// Look a generator up by its ZetaId (the filetype's reverse direction: id -> what it is).
+    let byId (zetaId: string) : Entry option =
+        known |> List.tryFind (fun e -> e.ZetaId = zetaId)
+
+    /// Look up by name (newest version wins).
+    let byName (name: string) : Entry option =
+        known |> List.filter (fun e -> e.Name = name) |> List.sortByDescending (fun e -> e.Version) |> List.tryHead
