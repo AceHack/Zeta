@@ -101,6 +101,32 @@ only crossings left are the injected I/O effects. DoP=1 ⇒ the deterministic FD
 the SAME knob. Prior art anchored in `async-all-the-way-truthful-signatures` (the Itron `Throttling`
 design the FerryThrottler emulates) — now seen as boundary-linking, not just throttling.
 
+## The concrete Dataflow mechanisms — the ~15-year-old prior art (Aaron's recalled talk)
+
+> Aaron 2026-06-10: the talk he originally saw "was an older one, like this, about 15 years ago" — they
+> **hooked disk and network IO together and it harmonized into max throughput.** A modern restatement of
+> the same talk: *"Build High-Performance Stream Processing and Workflows with TPL Dataflow"*
+> (<https://www.youtube.com/watch?v=3CTV7NtVcR0>). (TPL Dataflow shipped ~2011–2012, so ~14–15 yrs — the
+> pattern is genuinely that old; this is settled prior art, not new.)
+
+The talk spells out the exact mechanisms the `FerryThrottler` reimplements, each a boundary-flow piece:
+
+- **`LinkTo` (+ predicate filter)** — connect a source block to a target; the optional predicate routes
+  only matching messages onward. = composing the **mesh of membranes**; the predicate = a *typed door*
+  (only certain flows cross this joint).
+- **`BroadcastBlock` (+ clone delegate)** — send one message to *all* linked consumers at once (the clone
+  delegate makes each consumer its own copy). = a **one-to-many membrane**; fan-out a flow to several
+  rooms.
+- **per-block `MaxDegreeOfParallelism`** — "increase the throttling property for each block," set
+  **individually per block**, applies to **CPU- or IO-bound** work alike. = the **FerryThrottler DoP knob**,
+  exactly: DoP=1 deterministic (FDB loop), DoP=N ferries, **same code path**, per-membrane.
+- **the canonical example = a parallel web crawler** — download page (network IO) → `BroadcastBlock` →
+  {link-parser → recursively re-feed the loader, image-parser → action-block that persists images (disk
+  IO)}. **This is literally "hook disk and network IO together":** the network-download blocks and the
+  disk-persist block are linked in one mesh, each DoP-throttled, and backpressure paces them so neither
+  starves nor floods — *harmonizing into max throughput*. The crawler is the worked instance of the whole
+  doc: net-membrane ⨝ disk-membrane, energy of one flow pacing the other.
+
 ## The architecture, end to end (in Aaron's shapes)
 
 | Layer | What it is | Anchor |
