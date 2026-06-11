@@ -102,6 +102,25 @@ Landauer's heat** — erasure-free by design (Z-set retraction, event-sourced cu
 with the rooms/qubits framework as its execution model and the dev room as its console. The database that
 never burns its history — it cools it.
 
+## flux IS heat — the speculation budget is the Landauer toll (Aaron 2026-06-11)
+
+The `SoftThrottle` flux tank and this doc's heat are **the same quantity**. Resolution of the apparent
+paradox (cuts are heat-free, yet speculation costs): the **commit** is reversible and free (history kept —
+Bennett), but **exploring the branch tree forward costs** — and that cost IS the flux. So:
+
+- **flux spent = heat dissipated** — `SoftThrottle.heatSpent t = Capacity − Charge` (the flux discharged
+  funding speculation = the Landauer/attention toll of branching).
+- **idle charge = cooling** — the tank radiating budget back while not speculating (`charge`).
+- **out of flux = the thermal ceiling** — `coolingHeadroom = 0` ⇒ the machine signals
+  `RateLimitExhausted "speculation-flux"` (the power-awareness signal): *it knows it ran out of heat to
+  think with* (the BigFloat principle — knows when it needs more, here more heat).
+- **one currency:** flux = heat = attention = the Landauer branch-prune toll. The flux capacitor is a
+  heat capacitor; the four-corner harmonic is the oscillation of that heat between cooling and bursting.
+
+So the night's threads close: a room ticks (raises resolution), speculation costs heat (flux), the
+reversible cut banks history instead of paying heat on commit, and the tank's charge/discharge is the
+room breathing — cool, then a thermal spike of looking ahead, then cool again.
+
 ## Beacon anchors
 
 Landauer, *Irreversibility and Heat Generation in the Computing Process* (IBM JRD 1961) · Bennett,

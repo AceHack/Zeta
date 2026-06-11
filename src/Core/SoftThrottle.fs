@@ -84,6 +84,18 @@ module SoftThrottle =
     /// alternative to a hard reject).
     let available (t: Tank) : float = t.Charge
 
+    // ── flux IS heat (Aaron 2026-06-11) ──
+    // The flux spent funding speculation IS the heat dissipated (Landauer/attention — the cost of
+    // exploring the branch tree forward). The reversible CUT pays no heat (history is kept), but the
+    // EXPLORATION does — that resolves the apparent paradox: commit = free, speculation = heat. Charging
+    // while idle = COOLING (radiating budget back); running out = the THERMAL CEILING.
+
+    /// Heat dissipated so far — the flux discharged from a full tank (the instantaneous heat-debt).
+    let heatSpent (t: Tank) : float = max 0.0 (t.Capacity - t.Charge)
+
+    /// Cooling headroom — the flux remaining before the thermal ceiling (= `available`, named for heat).
+    let coolingHeadroom (t: Tank) : float = t.Charge
+
     /// **The limiter — Aaron's original Itron abstraction, ported.** In his `Platform.DotNet`
     /// `Threading.Tasks.Throttling`, the batch limiter is a **stateful fold delegate**:
     /// `BatchSizeLimiter<TItem, TState> = (item, state) → (fits?, state')` — pluggable over ANY

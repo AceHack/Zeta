@@ -122,3 +122,23 @@ let ``the limiter is Aaron's Itron fold: countLimiter boards exactly batchSize (
     Assert.Equal<int list>([ 1; 2; 3 ], b)
     Assert.Equal<int list>([ 4; 5 ], rest)
     Assert.Equal(3, n) // state advanced once per BOARDED item (0->1->2->3); the refusal probe's state is discarded
+
+[<Fact>]
+let ``flux IS heat: spending flux dissipates heat; idle charging cools (the thermal accounting)`` () =
+    let t0 = SoftThrottle.tank 10.0 2.0 // full, cool
+    Assert.Equal(0.0, SoftThrottle.heatSpent t0, 12)
+    Assert.Equal(10.0, SoftThrottle.coolingHeadroom t0, 12)
+    match SoftThrottle.discharge 6.0 t0 with
+    | Some hot ->
+        Assert.Equal(6.0, SoftThrottle.heatSpent hot, 12) // speculation dissipated 6 units of heat
+        Assert.Equal(4.0, SoftThrottle.coolingHeadroom hot, 12)
+        let cooled = SoftThrottle.charge hot // one idle tick = radiate 2 back
+        Assert.Equal(4.0, SoftThrottle.heatSpent cooled, 12) // cooled from 6 to 4
+    | None -> Assert.Fail "tank should fund the burst"
+
+[<Fact>]
+let ``the thermal ceiling: a starved speculation has spent ALL its heat (no cooling headroom left)`` () =
+    let f = Chip8Cow.create 7UL |> Chip8Cow.loadRom [| 0x6Auy; 0x0Cuy; 0x7Auy; 0x01uy; 0x12uy; 0x02uy |]
+    let _, _, _, tank' = SoftChip8Flux.lookAheadFunded 1.0 (SoftThrottle.tank 20.0 0.0) f
+    Assert.Equal(20.0, SoftThrottle.heatSpent tank', 12) // ran to the ceiling
+    Assert.Equal(0.0, SoftThrottle.coolingHeadroom tank', 12) // no headroom = the signal fires
