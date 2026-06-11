@@ -124,6 +124,7 @@ module MediaLines =
     type IoBinding =
         | Live of zetaId: string
         | Injected of zetaId: string
+        | Adapted of zetaId: string * viaPiece: string * fromCapability: string
         | Mock of zetaId: string
 
     /// All io declarations in a document.
@@ -137,6 +138,26 @@ module MediaLines =
         | zid :: _ when Set.contains zid granted -> Injected zid
         | zid :: _ -> Mock zid
         | [] -> Mock ""
+
+    /// THE SNAP IN THE LADDER (Aaron 2026-06-12: "keep the snap useful — what can we use it for?"):
+    /// resolution with a toolbox of adapters (fromType, toType, pieceName) — the GraphEdit lens in
+    /// the capability calculus. The ladder grows one rung: Live → Injected → ADAPTED (the host has
+    /// a DIFFERENT capability plus the toolbox piece that completes the flow) → Mock. Adapted is
+    /// honest in the value: which piece, from which real capability — never a silent substitution.
+    let resolveIoWith
+        (adapters: (string * string * string) list)
+        (hostLive: Set<string>)
+        (granted: Set<string>)
+        (e: Entry)
+        : IoBinding =
+        match resolveIo hostLive granted e with
+        | Mock zid when zid <> "" ->
+            adapters
+            |> List.tryFind (fun (fromT, toT, _) -> toT = zid && Set.contains fromT hostLive)
+            |> function
+                | Some(fromT, _, name) -> Adapted(zid, name, fromT)
+                | None -> Mock zid
+        | b -> b
 
     // ── constants, meta-dimensions, and THE LINT (Aaron 2026-06-11: "we should have constants —
     // constants MUST have WHY and WHAT" / "rx can define meta-dimensions that travel on the pixels

@@ -194,3 +194,21 @@ let ``per-cartridge treaty: oracles ratify by their own choice; bytes and meanin
         // and a cartridge with NO treaty lines lints clean — absence means not-yet-asked (consent first)
         let silent = MediaLines.parse "meta\tname\tquiet\n" |> Result.toOption |> Option.get
         Assert.Empty(MediaLines.lint silent)
+
+[<Fact>]
+let ``THE SNAP IN THE LADDER: a missing capability with a toolbox adapter binds ADAPTED (which piece, from what) — only then Mock`` () =
+    let want = GeneratorRegistry.idOf "algebra.z2-parity" 1
+    let have = GeneratorRegistry.idOf "algebra.braid-memory" 1
+    let e: MediaLines.Entry = { Kind = "io"; Name = "parity-feed"; Fields = [ want ] }
+    let adapters = [ have, want, "mod2" ]
+    // host has the OTHER register + the quotient piece: the flow completes, honestly labeled
+    match MediaLines.resolveIoWith adapters (Set.ofList [ have ]) Set.empty e with
+    | MediaLines.Adapted(zid, via, fromCap) ->
+        Assert.Equal(want, zid)
+        Assert.Equal("mod2", via)
+        Assert.Equal(have, fromCap)
+    | other -> Assert.True(false, sprintf "expected Adapted, got %A" other)
+    // empty toolbox: the gap stays honest — Mock, never a forced fit
+    Assert.Equal(MediaLines.Mock want, MediaLines.resolveIoWith [] (Set.ofList [ have ]) Set.empty e)
+    // and a direct Live capability still wins without any adapter
+    Assert.Equal(MediaLines.Live want, MediaLines.resolveIoWith adapters (Set.ofList [ want; have ]) Set.empty e)

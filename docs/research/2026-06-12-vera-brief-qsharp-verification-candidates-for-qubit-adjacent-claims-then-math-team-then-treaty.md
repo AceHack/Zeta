@@ -56,3 +56,22 @@ cartridges that earned them.
   resolution; we never pre-write her verdicts. Math team then signs (their PENDING lines exist).
 - Treaty effect: `qsharp:` joins the delegated-law tools (CartridgeLaw already accepts any
   `tool:` prefix — documented here, checked there) on exactly the claims that earned it.
+
+## Addendum (2026-06-12, same day) — the dashing/quotient/snap items
+
+8. **AdinkraViz dashings** (`src/Core/AdinkraViz.fs`) — CLAIMS: `standardDashing` realizes the
+   Clifford sign rule (dash (v,i) iff odd set bits below i); THE GATES CONDITION holds (every
+   2-colored 4-cycle odd — anticommutation drawn); THE GAUGE LEMMA (vertex sign flips preserve
+   face parity). **Q# check (Vera):** the sign structure must match Q#'s Pauli/Clifford
+   conventions — e.g., pairwise anticommutation of the represented operators (X⊗…, Z⊗… chains)
+   reproduces exactly the odd-face parity; a global-phase/sign relabeling in Q# is the gauge move
+   and must leave all commutation relations invariant. Convergence is exact (signs, not floats).
+9. **The mod2 quotient claim** (`algebra.mod2`; the missing-piece adapter) — CLAIM AS STATED:
+   "adinkra parity is braid memory mod 2 — Z → Z/2, order forgotten, parity kept; a projection,
+   not an inverse." **Math team:** gate the precise formulation — which quotient of B₃ exactly
+   (the sign representation σᵢ ↦ −1? per-pair crossing parity? abelianization B₃ → Z then mod 2?)
+   — the type-level adapter is shipped and tested; the WORDING of the algebra claim awaits your
+   sign-off (treaty math-team math, still PENDING).
+10. **The snap itself** (`MagneticPorts.findAdapter`, `MediaLines.resolveIoWith`) — no quantum
+    claim; listed so Vera sees the consumption path: a verified `qsharp:` law makes its module a
+    trustable toolbox piece — verification feeds the adapter economy directly.
