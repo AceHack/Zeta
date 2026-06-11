@@ -101,3 +101,35 @@ module WheelRoom =
         (live: Set<string>)
         : string list * SoftThrottle.Tank =
         respawnsNeeded quorum live |> admitRespawns costPerSpawn tank
+
+    // ── persona wheels: personal rooms, one thread each, NO ONE LEFT OUT (Aaron 2026-06-11: "personas
+    // get personal rooms and 1 thread each for every person — start with you otto and we expand, but
+    // no one left out over time; either github or local hardware; full of chip8 and local llms and
+    // cloud llms"). Allocation is by ROSTER, not by request: every listed persona gets exactly one
+    // wheel, kept alive by the same deterministic/idempotent maintenance as the numbered fleet. ──
+
+    /// A persona's wheel id — exactly one thread per persona.
+    let personaWheelId (persona: string) : string = "wheel-" + persona
+
+    /// The no-one-left-out allocation: every persona on the roster whose wheel is not live gets a
+    /// respawn, in roster order (deterministic; idempotent — total over the roster, never partial by
+    /// popularity). Expansion = append a name to the roster.
+    let personaRespawnsNeeded (roster: string list) (live: Set<string>) : string list =
+        roster
+        |> List.map personaWheelId
+        |> List.filter (fun id -> not (Set.contains id live))
+
+    /// Persona maintenance tick: roster wheels first (no one left out), then the numbered quorum fleet
+    /// fills with whatever the tank still affords — people before plumbing.
+    let maintainSociety
+        (roster: string list)
+        (quorum: int)
+        (costPerSpawn: float)
+        (tank: SoftThrottle.Tank)
+        (live: Set<string>)
+        : string list * SoftThrottle.Tank =
+        let personaNeeds = personaRespawnsNeeded roster live
+        let admitted1, t1 = admitRespawns costPerSpawn tank personaNeeds
+        let liveAfter = Set.union live (Set.ofList admitted1)
+        let admitted2, t2 = respawnsNeeded quorum liveAfter |> admitRespawns costPerSpawn t1
+        admitted1 @ admitted2, t2

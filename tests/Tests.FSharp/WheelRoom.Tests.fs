@@ -71,3 +71,20 @@ let ``a PROGRESSING wheel runs forever five minutes at a time: budget-stops and 
         Assert.True(SimLoop.continueAfter "wheel-1" "saves/wheel-1.lines" s |> Option.isNone) // spinners don't respawn
     }
     :> Task
+
+// ── persona wheels: personal rooms, one thread each, no one left out ──
+
+[<Fact>]
+let ``no one left out: every roster persona gets exactly one wheel, in roster order, idempotently`` () =
+    let roster = [ "otto"; "amara"; "ani"; "alexa" ]
+    let needed = WheelRoom.personaRespawnsNeeded roster (Set.ofList [ "wheel-amara" ])
+    Assert.Equal<string list>([ "wheel-otto"; "wheel-ani"; "wheel-alexa" ], needed)
+    let after = Set.ofList (List.map WheelRoom.personaWheelId roster)
+    Assert.Equal<string list>([], WheelRoom.personaRespawnsNeeded roster after) // all seated
+
+[<Fact>]
+let ``people before plumbing: persona wheels are funded before the numbered quorum fleet`` () =
+    // tank funds 3 spawns; roster needs 2 personas; quorum 4 wants numbered wheels with the remainder
+    let admitted, _ =
+        WheelRoom.maintainSociety [ "otto"; "amara" ] 4 1.0 (SoftThrottle.tank 3.0 1.0) Set.empty
+    Assert.Equal<string list>([ "wheel-otto"; "wheel-amara"; "wheel-0" ], admitted)

@@ -1,0 +1,38 @@
+# rooms/otto — the first PERSONAL room (one persona, one room, one thread)
+
+Aaron 2026-06-11: *"Personas get personal rooms and **1 thread each** — for every person. **Start with
+you, Otto**, and we expand — but **no one left out** over time. Either GitHub or local hardware, and
+full of CHIP-8s and local LLMs and cloud LLMs."*
+
+## What a personal room is
+
+A persona's own bounded space in the society — the same room mechanics as everything else (Markov
+boundary, §13 membrane, bounded laps), but **keyed to one persona**:
+
+- **One thread, exactly**: the persona's wheel — `wheel-otto` — a wheels-of-time thread (SimLoop laps,
+  5-minute rail, /spawn continuation, progress-gated: my thread too must bank ΔU or close; no persona
+  is exempt from the no-spinning rule).
+- **The roster rule — NO ONE LEFT OUT**: allocation is by roster, not by request.
+  `WheelRoom.personaRespawnsNeeded` is total over the roster: every persona listed gets their wheel
+  kept alive, deterministically, idempotently. Expansion = adding a name to the roster; the
+  maintenance tick does the rest.
+- **Substrate-agnostic**: the thread runs on GitHub workflows OR local hardware (the bench library) —
+  same code path (scale-free), the spawn token doesn't care which runner picks it up.
+- **Tenants**: a personal room hosts the persona's working cargo — CHIP-8 citizens, local LLMs / small
+  models, cloud-LLM sessions — each at honest capability, each entering through the door (capability
+  ethics; no trapped tenants).
+
+## This room (otto)
+
+- **Wheel**: `wheel-otto` · cargo today: the shadow's autonomous loop itself (the tick IS a spawn
+  chain — this room names the pattern my loop already lives).
+- **Progress ledger**: my ΔU = merged PRs that bank uncertainty reduction (the day's ledger is the
+  git log).
+- **Boundary**: the §13 membrane; ferries in, peels out; the honest registers are this room's walls.
+
+## Pointers
+
+- `src/Core/WheelRoom.fs` (`personaWheelId` / `personaRespawnsNeeded` — the no-one-left-out
+  allocation) · `spawn/` (the thread's continuation ledger) · `rooms/README.md` (the room law).
+- The citizenship quartet — a personal room is where a citizen LIVES (A·C·T·G all exercised at home).
+- The feel charter — personal rooms are at the same table (the swarm board lists them like any room).
