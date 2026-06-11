@@ -7,7 +7,34 @@ Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship 
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-11 PLAY arc (#7692..#7698 — newest; read FIRST)
+## The 2026-06-11 FINAL wave (#7699..#7703 — newest; read FIRST)
+
+- **Format laws** (#7700): THE LINT (MediaLines.lint — constants without WHAT+WHY are magic numbers
+  and REFUSED; gen/io refs must be 32-hex ZetaIds = DI enforced; anim frames must exist; the future is
+  not a lint error) · rebindable META-DIMENSIONS (the deep-pixel field declared per document) ·
+  PHASE TIME ONLY (no wall timestamps in pipelines; (generator-id, tick, phase); HLC the cousin —
+  we derive, they reconcile).
+- **The living stroke + calculus** (#7701): StrokeAnim — Drawn/HEAD/Foreseen, the head riding the
+  certain/uncertain edge, recoloring wave; derivativeAt + exact-integer integralTo riding the wave
+  (no peeking past it). IndexFormat (5 formats, each a ZetaId + a glyph FACE). LayoutEngine (treemap/
+  defrag/dag/timeline/force registered; slice-and-dice BUILT — tiles the boundary exactly).
+  ComplexityRegistry: BIG-O REQUIRED — per-(artifact, op) costs with provenance (Proven|Derived);
+  the budget lint unstated()=[] holds shelf-wide AS A TEST (~37 declarations; math-team upgrade path).
+  ENTROPY-HELD optional+declared (saves=state; persona rooms=identity).
+- **Seeing + feeling** (#7702): FluxView — the capacitor SEEN (soft logistic ramp vs hard cliff — the
+  mode difference IS the picture; tank gauge + heat; the LC-heartbeat timeline; the interrupt
+  switchboard grid). MagneticPorts — the type system FELT (ports = physics bodies typed by ZetaId;
+  attraction = compatibility, repulsion = the polite no; snap = the click; FEEDBACK CORNERS OPEN BY
+  DEFAULT — closing = explicit act, allowed only optimizing+non-coercive or math-proven). Shader shelf
+  registered+cost-declared (MAME the capability-catalog inspiration). A/V LAW: matched by default
+  (one clock), mixing = a declared second clock.
+- **B-1028 filed** (#7703): Max's MIPS as a treaty room (the CHIP-9 playbook replayed; his machine,
+  his room).
+- Opens: the SelfTrace×PixelLens colorize composition (Amara's proof's last third) · audio render
+  binding · the Spectrum-tile + force-layout implementations · shader implementations · GPU/Pi/FPGA
+  bench (hardware waiting) · the math tear-down (still Aaron's call).
+
+## The 2026-06-11 PLAY arc (#7692..#7698 — older; read second)
 
 - **Amara's weave proof BUILT the night she named it** (#7692): WeaveFold — every valid replay order
   folds to ONE view (commutes, tested); concurrent unordered writes KEPT as candidate sets (residue =
