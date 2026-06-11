@@ -50,6 +50,21 @@ let ``Ry pi over three has textbook cos squared and sin squared probabilities`` 
     Assert.Equal(sin (System.Math.PI / 6.0) ** 2.0, QubitIso.measureOne rotated, 12)
 
 [<Fact>]
+let ``Raw kernels match the algebraic gate surface`` () =
+    let raw = QubitIso.toRaw g
+    let assertSame expected actual =
+        Assert.True(eq expected (QubitIso.ofRaw actual))
+
+    assertSame (QubitIso.pauliX g) (QubitIso.Raw.pauliX raw)
+    assertSame (QubitIso.pauliY g) (QubitIso.Raw.pauliY raw)
+    assertSame (QubitIso.pauliZ g) (QubitIso.Raw.pauliZ raw)
+    assertSame (QubitIso.hadamard g) (QubitIso.Raw.hadamard raw)
+    assertSame (QubitIso.ry (System.Math.PI / 3.0) g) (QubitIso.Raw.ry (System.Math.PI / 3.0) raw)
+    assertSame (QubitIso.rz (System.Math.PI / 3.0) g) (QubitIso.Raw.rz (System.Math.PI / 3.0) raw)
+    Assert.Equal(QubitIso.normSq g, QubitIso.normSqRaw raw, 12)
+    Assert.Equal(QubitIso.measureOne g, QubitIso.measureOneRaw raw, 12)
+
+[<Fact>]
 let ``state bijection is the identity on ℂ² (round-trip)`` () =
     let a, b = QubitIso.toQubit g
     Assert.True(eq (QubitIso.ofQubit a b) g)

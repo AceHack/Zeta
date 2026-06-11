@@ -14,6 +14,7 @@ open Zeta.Core
 type QuantumOracleOps() =
 
     [<DefaultValue(false)>] val mutable private states: QubitIso.JoinState array
+    [<DefaultValue(false)>] val mutable private rawStates: QubitIso.RawState array
     [<DefaultValue(false)>] val mutable private frames: Chip8Cow.Frame array
     [<DefaultValue(false)>] val mutable private goldenBytes: byte array
 
@@ -28,6 +29,8 @@ type QuantumOracleOps() =
                 let alpha = { Real = cos theta; Imag = sin theta }
                 let beta = { Real = cos (theta * 0.5); Imag = sin (theta * 0.5) }
                 QubitIso.ofQubit alpha beta)
+
+        this.rawStates <- this.states |> Array.map QubitIso.toRaw
 
         this.frames <-
             Array.init 2 (fun i ->
@@ -69,6 +72,22 @@ type QuantumOracleOps() =
                 |> QubitIso.pauliY
                 |> QubitIso.pauliZ
             acc <- acc + QubitIso.normSq s + QubitIso.measureOne s
+        acc
+
+    [<Benchmark>]
+    member this.QubitIsoRawGateSweep() =
+        let mutable acc = 0.0
+        let states = this.rawStates
+        for i in 0 .. states.Length - 1 do
+            let s =
+                states.[i]
+                |> QubitIso.Raw.hadamard
+                |> QubitIso.Raw.ry (Math.PI / 3.0)
+                |> QubitIso.Raw.rz (Math.PI / 3.0)
+                |> QubitIso.Raw.pauliX
+                |> QubitIso.Raw.pauliY
+                |> QubitIso.Raw.pauliZ
+            acc <- acc + QubitIso.normSqRaw s + QubitIso.measureOneRaw s
         acc
 
     [<Benchmark>]

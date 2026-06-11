@@ -51,9 +51,28 @@ module QubitIso =
     /// A two-stream join state = a qubit. `A` = stream-A / `|0⟩` amplitude, `B` = stream-B / `|1⟩` amplitude.
     type JoinState = { A: Complex; B: Complex }
 
+    /// Allocation-conscious twin of `JoinState` for hot observable loops. The algebraic surface stays
+    /// `JoinState`; this struct is the benchmark/data-plane carrier for the same Q#-locked gate convention.
+    [<Struct>]
+    type RawState =
+        { AReal: float
+          AImag: float
+          BReal: float
+          BImag: float }
+
     /// Qubit `α|0⟩ + β|1⟩` ↔ join `(A,B)` — the state bijection is the identity on `ℂ²`.
     let ofQubit (alpha: Complex) (beta: Complex) : JoinState = { A = alpha; B = beta }
     let toQubit (j: JoinState) : Complex * Complex = j.A, j.B
+
+    let toRaw (j: JoinState) : RawState =
+        { AReal = j.A.Real
+          AImag = j.A.Imag
+          BReal = j.B.Real
+          BImag = j.B.Imag }
+
+    let ofRaw (r: RawState) : JoinState =
+        { A = { Real = r.AReal; Imag = r.AImag }
+          B = { Real = r.BReal; Imag = r.BImag } }
 
     /// `|z|²`.
     let private magSq (z: Complex) : float = z.Real * z.Real + z.Imag * z.Imag
@@ -65,6 +84,13 @@ module QubitIso =
     let measureOne (j: JoinState) : float =
         let n = normSq j
         if n = 0.0 then 0.0 else magSq j.B / n
+
+    let normSqRaw (r: RawState) : float =
+        r.AReal * r.AReal + r.AImag * r.AImag + r.BReal * r.BReal + r.BImag * r.BImag
+
+    let measureOneRaw (r: RawState) : float =
+        let n = normSqRaw r
+        if n = 0.0 then 0.0 else (r.BReal * r.BReal + r.BImag * r.BImag) / n
 
     // ── Pauli gates as stream operations ──────────────────────────────────────────────────────────────────
     /// X (bit-flip) = swap the two streams.
@@ -100,6 +126,51 @@ module QubitIso =
         let phase1 = { Real = cos half; Imag = sin half }
         { A = c.Mul(phase0, j.A)
           B = c.Mul(phase1, j.B) }
+
+    module Raw =
+
+        let id (r: RawState) : RawState = r
+
+        let pauliX (r: RawState) : RawState =
+            { AReal = r.BReal
+              AImag = r.BImag
+              BReal = r.AReal
+              BImag = r.AImag }
+
+        let pauliY (r: RawState) : RawState =
+            { AReal = r.BImag
+              AImag = -r.BReal
+              BReal = -r.AImag
+              BImag = r.AReal }
+
+        let pauliZ (r: RawState) : RawState =
+            { r with
+                BReal = -r.BReal
+                BImag = -r.BImag }
+
+        let hadamard (r: RawState) : RawState =
+            let invSqrt2 = 1.0 / sqrt 2.0
+            { AReal = (r.AReal + r.BReal) * invSqrt2
+              AImag = (r.AImag + r.BImag) * invSqrt2
+              BReal = (r.AReal - r.BReal) * invSqrt2
+              BImag = (r.AImag - r.BImag) * invSqrt2 }
+
+        let ry (theta: float) (r: RawState) : RawState =
+            let ct = cos (theta / 2.0)
+            let st = sin (theta / 2.0)
+            { AReal = ct * r.AReal - st * r.BReal
+              AImag = ct * r.AImag - st * r.BImag
+              BReal = st * r.AReal + ct * r.BReal
+              BImag = st * r.AImag + ct * r.BImag }
+
+        let rz (theta: float) (r: RawState) : RawState =
+            let half = theta / 2.0
+            let ct = cos half
+            let st = sin half
+            { AReal = ct * r.AReal + st * r.AImag
+              AImag = ct * r.AImag - st * r.AReal
+              BReal = ct * r.BReal - st * r.BImag
+              BImag = ct * r.BImag + st * r.BReal }
 
     /// Approximate state equality (per-component, within `eps`).
     let equalish (eps: float) (x: JoinState) (y: JoinState) : bool =
