@@ -39,6 +39,9 @@ from ℤ to any commutative ring 'W (we already carry `Semiring`/`ProbabilitySem
 and a quantum circuit is the SAME `Circuit` shape with 'W = ℂ and the operator set restricted to
 norm-preserving (unitary) maps. The Distinct-at-the-boundary discipline we enforce for correctness
 is literally the measurement-at-the-boundary discipline quantum mechanics enforces by law.
+(Razor note 2026-06-13: ONE discipline, enforced SEPARATELY per engine — no generic enforcement
+exists in code; the law lives in three review conventions and this prose. A shared boundary-typed
+seam is the upgrade if drift ever appears.)
 
 HONEST LIMITS, stated: (a) unitarity is NOT free — circuit composition preserves linearity, not
 norm; a quantum lane needs the operator set gated (the acceptance-gate pattern applies); (b) this

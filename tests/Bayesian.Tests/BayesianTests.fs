@@ -233,25 +233,17 @@ let ``DAMPING never breaks the easy case: on a TREE, damped agrees with undamped
         Assert.Equal(undamped.Marginals.[v].Mean, damped.Marginals.[v].Mean, 6)
         Assert.Equal(undamped.Marginals.[v].Variance, damped.Marginals.[v].Variance, 6)
 
-// ─── THE THIRD RING: discrete sum-product as a WSet circuit vs Zeta.Bayesian (the GDL instance) ───
-// Closes the three-rings table (B-1032): ℤ=DBSP, ℂ=Mach-Zehnder, ℝ≥0=THIS. Aji-McEliece 2000:
-// belief propagation IS a semiring circuit. Two independent engines (WSet over the probability
-// semiring vs our FactorGraph on a 2-state Bernoulli-ish discrete message), one marginal.
+// ─── THE THIRD RING: discrete sum-product over the ℝ semiring vs the analytic marginal ───
+// The GDL instance (Aji-McEliece 2000) demonstrated with the RING DIRECTLY — no connective type
+// (Rodney's razor 2026-06-13: WSet demoted to test fixture; the demo needs only the semiring).
+// ℤ=DBSP, ℂ=Mach-Zehnder (WSet.Fixture in Tests.FSharp), ℝ≥0=THIS: one calculus, three rings.
 
 [<Fact>]
-let ``GDL ring demo: discrete sum-product as a WSet circuit equals the Bayesian marginal (ℝ≥0 ring, the third oracle)`` () =
-    // a 2-state variable, two soft "votes" (unnormalized likelihoods) multiplied then normalized —
-    // the sum-product marginal of x given two independent observations.
-    // WSet over ℝ≥0 (probabilities): keys 0/1, weights multiply (apply), consolidate sums, normalize.
-    let ring = Zeta.Core.Real.algebra   // ℝ as an IStarRing (Add=+, Mul=*); we stay in ℝ≥0
-    let isZero w = abs w < 1e-15
-    // vote A: [0,0.7; 1,0.3]; vote B: [0,0.4; 1,0.6] — fuse by pointwise product then normalize
-    let voteA : Zeta.Core.WSet.WSet<int, float> = [ 0, 0.7; 1, 0.3 ]
-    let voteB = [ 0, 0.4; 1, 0.6 ]
-    let fused =
-        Zeta.Core.WSet.apply ring (fun k -> voteB |> List.filter (fun (k2, _) -> k2 = k)) voteA
-        |> Zeta.Core.WSet.consolidate ring isZero
-    let total = fused |> List.sumBy snd
-    let wsetP0 = (fused |> List.find (fun (k, _) -> k = 0) |> snd) / total
-    // the analytic marginal: 0.7*0.4 / (0.7*0.4 + 0.3*0.6) = 0.28/0.46
-    Assert.Equal(0.28 / 0.46, wsetP0, 9)
+let ``GDL ring demo: discrete sum-product over the real semiring equals the analytic Bayesian marginal (the third ring)`` () =
+    let ring = Zeta.Core.Real.algebra // Add=+, Mul=* — the ℝ *-ring; we stay in ℝ≥0
+    // two soft votes on a 2-state variable, fused by the semiring product, normalized at the boundary
+    let voteA = [| 0.7; 0.3 |]
+    let voteB = [| 0.4; 0.6 |]
+    let fused = Array.init 2 (fun s -> ring.Mul(voteA.[s], voteB.[s])) // sum-product's product step
+    let total = fused |> Array.fold (fun acc w -> ring.Add(acc, w)) ring.Zero // the sum step
+    Assert.Equal(0.28 / 0.46, fused.[0] / total, 9)

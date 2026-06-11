@@ -1,3 +1,8 @@
+// DEMOTED TO TEST FIXTURE (Rodney's Razor, 2026-06-13): the GDL unification is essential as
+// MATHEMATICS (the three-ring demos stand) and accidental as CODE — zero non-test consumers; the
+// real engines (ZSet/AmplitudeEmu/FactorGraph) share no code through WSet. Per the razor: WSet
+// lives beside the demos it exists for; it returns to Core only when a non-test consumer exists
+// ON MERIT. (The IBLT reconciliation deliberately took Rodney's branch A: plain keys, no WSet.)
 namespace Zeta.Core
 
 open Zeta.Core.Abstractions

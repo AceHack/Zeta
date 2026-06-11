@@ -98,6 +98,8 @@ module ComplexityRegistry =
               ("engine.zeta-bayesian", "run"), c "O(rounds·factors)" "O(vars+factors)" Derived // BP passes over the graph until moved < tol
               ("engine.infer-net", "run"), c "O(rounds·factors)" "O(model)" Derived // Minka's engine behind OUR port (test-side adapter); cost shape mirrors ours by design
               ("engine.mock-flat", "run"), c "O(vars)" "O(vars)" Derived // the REHEARSAL engine: flat marginals, Converged=false — the ladder's honest Mock rung
+              ("sketch.iblt", "build"), c "O(n·k)" "O(cells)" Derived // n keys, k buckets each; cells sized to the DIFFERENCE, not the set
+              ("sketch.iblt", "reconcile"), c "O(|Δ|·k)" "O(cells)" Derived // subtract is O(cells); peeling touches each difference key k times — the whole point
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived

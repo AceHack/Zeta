@@ -32,7 +32,7 @@ the same one the quantum answer named yesterday:
 | ℝ≥0 (or log-semiring) | factor graph / sum-product | probabilities (messages) | **EP projection** (moment-match to the family) |
 
 Three rings, ONE calculus (the GDL says so with a proof); three boundary nonlinearities, one
-discipline — the nonlinear step never lives inside the linear loop. Minka's EP projection is to
+discipline — ENFORCED SEPARATELY per engine (no generic code enforcement; Rodney 2026-06-13: the connection is demonstrated, not shared-coded) — the nonlinear step never lives inside the linear loop. Minka's EP projection is to
 inference what Distinct is to DBSP and measurement is to quantum: the lossy step, quarantined at
 the boundary (EP literally alternates linear message products with a projection — and the
 α-divergence paper is the knob between them).
