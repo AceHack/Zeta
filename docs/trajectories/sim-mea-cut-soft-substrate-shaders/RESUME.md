@@ -7,7 +7,33 @@ Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship 
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-11 NIGHT wave (#7669..#7689 — newest; read FIRST)
+## The 2026-06-11 PLAY arc (#7692..#7698 — newest; read FIRST)
+
+- **Amara's weave proof BUILT the night she named it** (#7692): WeaveFold — every valid replay order
+  folds to ONE view (commutes, tested); concurrent unordered writes KEPT as candidate sets (residue =
+  honest uncertainty, never last-writer-wins); the weave edge resolves residue AS DATA. Plus SoftLens
+  (the sweep: fingerprint + solid-ground peaks; finds the self-trace's attractor). Her blade adopted:
+  the through-line is REFLECTION, not aesthetics.
+- **The cartridge completed** (#7693/#7694): 8-track reading (many parallel tracks; its own boxart
+  in-file) + live IO (interfaces by ZetaId, resolved Live/Injected/Mock — never crashes; DI-from-the-
+  start ratified as the format's first law).
+- **The play stack** (#7695/#7697/#7698): PhysUI (buttons ARE bodies; the UI plays pong; tie-break
+  bug found by the game and fixed) · ControlScheme (devices SECOND to the grammar; ZetaId'd schemes;
+  dpad-up ≡ 'w' ≡ pad-5 tested) · MetaControl (the meta tier: steer the optimizer, watch; care
+  monotone in weight) · CorrespondencePong (a turn = one objectives line; retries free; BOTH ENDS
+  REPLAY THE IDENTICAL MATCH — git = text-message tier, reticulum = conference tier) · ChipAudio
+  (hear/see one math: waveforms = phase functions; one TimeGen stream drives pixel AND sample;
+  audio+midi ZetaId'd; SCALE-FREE TUNING LAW — no A440 in the kernel, tuning = traveler-local binding).
+- **The psych-3D rule** (#7696): contrast pairs make depth; illusions = engineered uncertainty,
+  TRACKED in PixelLens (declared tricks, never hidden persuasion — consent closes it).
+- **The only-entropy tester captured**: everything seeded but Aaron = perfect attribution (the
+  consented chaos monkey); adversarial-reticulum-by-gamepad; Severance-style uncertainty resolving on
+  screen; math-proof terrain by controller/VR (Quest charged); Neo Geo MVS = the cabinet feel.
+- New opens: the lazy-pong band (defense 50 still returns everything — the court geometry's honest
+  constraint list grows) · audio render binding (samples → an actual beep on a host) · the meta-game
+  (Risk-of-Rain-2D style) · VR/proof-terrain rung.
+
+## The 2026-06-11 NIGHT wave (#7669..#7689 — older; read second)
 
 - **THE DATABASE DEFAULT ATOM FORMAT, RATIFIED** (#7688/#7689): a MediaLines document = the canonical
   yin-yang self-host form — yin (irreducible text + ZetaId'd generators + common-cause seed, per the
