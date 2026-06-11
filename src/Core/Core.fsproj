@@ -139,8 +139,10 @@
     <Compile Include="IntrCtx.fs" />
     <Compile Include="FourCorner.fs" />
     <Compile Include="IsrLift.fs" />
+    <Compile Include="SoftIsr.fs" />
     <Compile Include="SoftScheduler.fs" />
     <Compile Include="SoftThrottle.fs" />
+    <Compile Include="RecordedSource.fs" />
     <Compile Include="SagaBuilder.fs" />
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
