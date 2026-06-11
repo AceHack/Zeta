@@ -2,12 +2,32 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-13 (round 3 folded in — #7767; prior waves below).
+Last refreshed: 2026-06-13 (the greenfield wave folded in — #7771..#7775; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-13 ROUND-3 wave (#7767 — newest; read FIRST)
+## The 2026-06-13 GREENFIELD wave (#7771..#7775 — newest; read FIRST)
+
+- **Round 3b** (#7771): writing the injection falsifier the test-gap audit asked for IMMEDIATELY
+  found a LIVE hole — a hostile meta motto put live <script> through HtmlCssBinding's no-JS page
+  (same class as Kira's ShapeRender P0, in the module round 2 didn't cover); all sinks escape now.
+  Determinism allowlist pins EXACT occurrence counts (no third wall clock behind two justified
+  ones; the contains-disjunct excuse removed — and the count pins caught two stale assumptions
+  while landing). Pong playFrom serveDir (the doc-promised parameter exists; rightward = stated
+  default). PixelLens pack doc truthful (masking = silent truncation).
+- **Greenfield correctness** (#7773, Aaron: "do the right long-term thing — no backward compat,
+  just us"): Chip9Phys.div TOTAL (divide-by-zero saturates by sign — no hot-path throw; mul/div
+  saturate casts); **THE FAULT REGISTER** (Frame.Fault) — 00EE stack underflow RECORDED, never
+  swallowed (the red-light law applied to machine faults: no secrets, even machine-to-itself);
+  program keeps running (ROM bugs visible, not fatal).
+- **B-1031 filed, deliberately NOT fired:** DRW should CLIP at edges (COSMAC VIP correct) but it
+  is a FOUR-ORACLE treaty primitive — F#-only would desync C#/TS/Rust on edge-crossing draws (a
+  latent divergence today's goldens don't catch). Plan: one atomic verified pass across all four
+  + an edge-crossing golden. Greenfield ≠ unilateral: the break is cheap IF byte-identical.
+- Suite 3003. Four bug rounds total: ~57 findings found/fixed/filed.
+
+## The 2026-06-13 ROUND-3 wave (#7767 — older; read second)
 
 - **Round 3 tear-down** (Kira machine/physics layer + the test-gap audit, both folded): treemap
   P0 (a box tiled TWICE the boundary on negative weights); the VF-order spec bug fixed in BOTH
