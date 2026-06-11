@@ -114,3 +114,13 @@ let ``THE DROP-IN LAW: a seed dropped mid-stream is IN PHASE — identical to ha
         Assert.Equal(ChipAudio.voiceSample horns 1UL ChipAudio.Saw 125 t, ChipAudio.dropIn 17 horns 1UL ChipAudio.Saw 125 t)
     // and its downbeats land on the SAME coincidence lattice the running voices already share
     Assert.Equal<int list>([ 8; 16; 24; 32 ], ChipAudio.coincidences 125 250 32)
+
+[<Fact>]
+let ``GOERTZEL = NAIVE: the recurrence and the reference single-bin DFT agree to 1e-9 on a mixed signal (BP-16 pair)`` () =
+    let n = 64
+    let signal =
+        [| for t in 0 .. n - 1 ->
+               sin (2.0 * System.Math.PI * 5.0 * float t / float n)
+               + 0.5 * cos (2.0 * System.Math.PI * 11.0 * float t / float n) |]
+    for k in [ 0; 1; 5; 11; 31 ] do
+        Assert.True(abs (SpectralPivot.probe signal k - SpectralPivot.probeNaive signal k) < 1e-9, sprintf "bin %d" k)

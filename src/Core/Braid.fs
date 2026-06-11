@@ -92,3 +92,26 @@ module Braid =
 
     /// The identity test (valid words only — an invalid word is not the identity, it is refused).
     let isIdentity (n: int) (b: int list) : bool = equal n b []
+
+    /// The writhe-parity character (Soraya's signable mod2 statement, made code): the unique
+    /// homomorphism B_n → Z/2 with χ(σᵢ^±1) = 1 — exponent-sum (writhe) mod 2, which equals the
+    /// underlying permutation's sign character. A projection (order forgotten, parity kept).
+    let writheParity (b: int list) : int = List.length b % 2
+
+    /// DELETE one strand from a braid word (n strands, 0-based strand index by STARTING position):
+    /// the surviving (n−1)-braid. Position-tracked: a crossing involving the deleted strand's
+    /// current position vanishes from the word (the survivor passes straight) but still swaps the
+    /// positions; other crossings reindex past the deleted strand's lane. This is the BRUNNIAN
+    /// probe: a link is Brunnian iff deleting ANY component trivializes the rest.
+    let deleteStrand (n: int) (strand: int) (braid: int list) : int list =
+        let mutable pos = strand // the deleted strand's current position
+        let out = ResizeArray<int>()
+        for c in braid do
+            let i = abs c - 1 // acts on positions i, i+1
+            if pos = i then pos <- i + 1 // deleted strand crosses: no surviving crossing, position moves
+            elif pos = i + 1 then pos <- i
+            else
+                // both crossing strands survive; reindex if the deleted lane sits left of them
+                let j = if pos < i then i - 1 else i
+                out.Add(if c > 0 then j + 1 else -(j + 1))
+        List.ofSeq out

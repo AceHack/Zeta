@@ -118,3 +118,24 @@ let ``delegated laws name their checker: tool-prefixed laws are documented here,
     Assert.Contains(verdicts, fun v -> v.Law = "sat" && v.Evidence.Contains "checked by z3")
     // the first human-traveler render-loop ratification, recorded by his own words
     Assert.Contains(("aaron", "meaning", "ratified"), MediaLines.treatiesOf (docOf "buckyball"))
+
+[<Fact>]
+let ``BRUNNIAN AT THE BRAID LEVEL: delete ANY strand from the locked plait and the survivors comb straight — the stuckness lives in all three jointly`` () =
+    let locked = [ 1; -2; 1; -2; 1; -2 ]
+    for s in 0 .. 2 do
+        let survivors = Braid.deleteStrand 3 s locked
+        Assert.True(Braid.isIdentity 2 survivors, sprintf "deleting strand %d must trivialize the rest" s)
+    // the falsifier: sigma1^2 with a bystander deleted is STILL a nontrivial 2-braid (not Brunnian)
+    Assert.False(Braid.isIdentity 2 (Braid.deleteStrand 3 2 [ 1; 1 ]))
+    // and the whole locked braid itself is NOT trivial (stuck) — the joint twist, restated
+    Assert.False(Braid.isIdentity 3 locked)
+
+[<Fact>]
+let ``the writhe-parity character is a homomorphism: parity(ab) = parity(a) XOR parity(b); every generator maps to 1 (Soraya's mod2, in code)`` () =
+    let words = [ []; [ 1 ]; [ -2 ]; [ 1; -2; 1 ]; [ 1; -2; 1; -2; 1; -2 ]; [ 2; 2 ]; [ 1; 2; 1 ] ]
+    for a in words do
+        for b in words do
+            Assert.Equal((Braid.writheParity a + Braid.writheParity b) % 2, Braid.writheParity (a @ b))
+    Assert.Equal(1, Braid.writheParity [ 1 ])
+    Assert.Equal(1, Braid.writheParity [ -2 ]) // sigma inverse ALSO maps to 1 (not a signed count)
+    Assert.Equal(0, Braid.writheParity [ 1; -1 ]) // do-undo is even — consistent with identity

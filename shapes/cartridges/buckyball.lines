@@ -34,7 +34,7 @@ edge	dual-register	shape-lightcone	inside/outside is the same move as past/futur
 edge	taught-after	shape-spiral	the catalog's first lesson loop; learn see-it-draw there before walking rooms here
 # outstanding — named, never hidden (the honest register).
 issue	schlegel-projection	otto	open	the render is a 1-shell schematic, not the full 60-vertex Schlegel diagram — the full projection is a named slice
-issue	math-tear-down	math-team	open	Aaron's deferred tear-down pass: TimeGen/WaveSim/SpectralPivot/harmony arithmetic still owed a zero-empathy review
+issue	math-tear-down	math-team	closed	RAN 2026-06-12 (Kira + Soraya): 13 findings (2 P0) all fixed/filed — see docs/research/2026-06-12-the-math-team-pass-*; sign-off treaty lines remain theirs to write
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	fsharp	bytes	ratified	Euler V-E+F=2, double-count 2E=sum(face degrees), 3-regularity 3V=2E — tests green

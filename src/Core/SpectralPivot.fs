@@ -47,15 +47,33 @@ module SpectralPivot =
     /// A bin's energy (the fingerprint's coordinate).
     let energy (c: Complex) : float = c.Real * c.Real + c.Imag * c.Imag
 
-    /// SOFT: probe ONE bin (a naive single-bin DFT — per-sample cos/sin, O(n); the Goertzel
-    /// recurrence is the named upgrade, not what this is) — the spectral soft-prism: "is this pitch there?"
-    let probe (signal: float[]) (k: int) : float =
+    /// The naive single-bin DFT (per-sample cos/sin, O(n) with 2n trig calls) — kept as the
+    /// REFERENCE oracle for the Goertzel recurrence below (BP-16: two independent computations of
+    /// one number).
+    let probeNaive (signal: float[]) (k: int) : float =
         let n = signal.Length
         let mutable acc = Doubled.make 0.0 0.0
         for t in 0 .. n - 1 do
             let ang = -tau * float k * float t / float n
             acc <- ImaginaryStack.complex.Add(acc, Doubled.make (signal.[t] * cos ang) (signal.[t] * sin ang))
         energy acc
+
+    /// SOFT: probe ONE bin — now the ACTUAL Goertzel recurrence (the named upgrade landed; Kira P2
+    /// closed): s[t] = x[t] + 2cos(ω)·s[t−1] − s[t−2], one multiply per sample and exactly two trig
+    /// calls total; energy = s₁² + s₂² − 2cos(ω)·s₁·s₂. Same number as probeNaive to 1e-9.
+    let probe (signal: float[]) (k: int) : float =
+        let n = signal.Length
+        if n = 0 then 0.0
+        else
+            let w = tau * float k / float n
+            let coeff = 2.0 * cos w
+            let mutable s1 = 0.0 // s[t-1]
+            let mutable s2 = 0.0 // s[t-2]
+            for t in 0 .. n - 1 do
+                let s = signal.[t] + coeff * s1 - s2
+                s2 <- s1
+                s1 <- s
+            s1 * s1 + s2 * s2 - coeff * s1 * s2
 
     /// The soft FINGERPRINT: k probe bins (the spectral MinHash — cheap, comparable, honest about
     /// what it didn't look at).
