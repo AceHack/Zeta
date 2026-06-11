@@ -243,3 +243,4 @@ tools/alignment/out/
 # outside the repo; this also covers a repo-local `.zeta-keys/` if anyone uses one.
 *.secret.json
 .zeta-keys/
+src/Core.Rust.*/target/

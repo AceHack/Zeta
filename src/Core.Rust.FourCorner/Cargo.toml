@@ -1,0 +1,11 @@
+[package]
+name = "zeta-four-corner"
+version = "0.1.0"
+edition = "2021"
+description = "FourCornerOwnership (the bidirectional-feedback I/O object) — Rust oracle for Zeta.Core cross-language treaty agreement."
+license = "MIT"
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
