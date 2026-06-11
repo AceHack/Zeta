@@ -26,6 +26,7 @@ prereq	the-braid	shapes/cartridges/braid.lines — what happens when end modes a
 prereq	pairing	count in twos: 8 sites, 16 modes; pair them two ways and watch what is left over
 edge	ancestor-of	shape-braid	this chain's end modes are WHAT the braid braids — 1D storage, 2D+time operation (Kitaev 2001 -> Kitaev 2003)
 edge	same-protection	shape-adinkra	memory in the global pattern, invisible locally — the parity register's hardware cousin
+issue	study-aaron	aaron	open	MARKED 2026-06-12, his words: "I need to study to understand" this one — the prereq lines below are the road in (count in twos; then the braid); his meaning treaty line stays UNWRITTEN until understanding arrives by his own ratification (consent: not-yet-understood is honest silence, never assumed agreement)
 issue	hamiltonian-honesty	otto	closed	BY CONSTRUCTION: pairing arithmetic only; the gap, the Hamiltonian, and the phase diagram live in Kitaev 2001, not in this file
 anim	draw	panels
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
