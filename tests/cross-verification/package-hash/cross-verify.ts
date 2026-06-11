@@ -4,9 +4,9 @@
 // expected_canonical_json + expected_package_hash (exit non-zero on any mismatch —
 // assert-don't-skip). The expected values are the cross-language contract: a future
 // F#/C#/Rust Ace must reproduce them. Run from this directory: `bun cross-verify.ts`.
-import { packageHash } from "../../../tools/ace/package-hash.ts";
-import { canonicalBytes } from "../../../tools/ace/canonical.ts";
-import type { AcePackage } from "../../../tools/ace/store.ts";
+import { packageHash } from "../../../src/Core.TypeScript/ace/package-hash.ts";
+import { canonicalBytes } from "../../../src/Core.TypeScript/ace/canonical.ts";
+import type { AcePackage } from "../../../src/Core.TypeScript/ace/store.ts";
 
 interface Vec {
   id: string;

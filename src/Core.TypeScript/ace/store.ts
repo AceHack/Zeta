@@ -159,7 +159,7 @@ export function trustStorePath(): string {
   return join(home, ".ace", "trusted-keys.json");
 }
 
-/** tools/ace/trusted-keys.json — the in-repo bundled root anchor (ships empty). */
+/** src/Core.TypeScript/ace/trusted-keys.json — the in-repo bundled root anchor (ships empty). */
 export function bundledTrustPath(): string {
   // node:url + import.meta.url is the standard-ESM portable idiom (works on Bun AND
   // Node >= 22.5); import.meta.dir is Bun-only and would be undefined under Node,
@@ -243,7 +243,7 @@ export function registryPath(): string {
   return join(home, ".ace", "registry.json");
 }
 
-/** tools/ace/registry.json — bundled root anchor (ships `{}`). Portable ESM idiom (per bundledTrustPath). */
+/** src/Core.TypeScript/ace/registry.json — bundled root anchor (ships `{}`). Portable ESM idiom (per bundledTrustPath). */
 export function bundledRegistryPath(): string {
   return join(dirname(fileURLToPath(import.meta.url)), "registry.json");
 }

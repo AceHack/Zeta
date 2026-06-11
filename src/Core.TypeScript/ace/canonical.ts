@@ -4,7 +4,7 @@
 // dynamic-value port. The trust core's package_hash + index/manifest signing all
 // rest on canonicalBytes, so they inherit the audited cross-language canonicalization (and a
 // future Rust/F#/C# Ace consumer computes byte-identical hashes for free from the byte-lock).
-import { canonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-value/json.ts";
+import { canonicalJson, type Tagged } from "../dynamic-value/json.ts";
 
 // A lone (unpaired) UTF-16 surrogate is not well-formed text: the shared canonicalJson passes
 // it through raw, then TextEncoder collapses it to U+FFFD, so "\uD800", "\uD801", and the real

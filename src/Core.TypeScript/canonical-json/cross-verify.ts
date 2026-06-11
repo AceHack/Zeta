@@ -1,6 +1,6 @@
 // TS reference generator for the canonical-json 4-language byte-lock (slice 8.8).
 // Reads tests/cross-verification/canonical-json/vectors.json (run with cwd = that dir),
-// computes the Ace canonical seam (tools/ace/canonical.ts canonicalBytes), and writes a FLAT
+// computes the Ace canonical seam (src/Core.TypeScript/ace/canonical.ts canonicalBytes), and writes a FLAT
 // ts-output.json keyed "canonical:<id>" -> canonical_json string and "invalid:<id>" -> "<rejected>".
 // compare.ts then cross-checks TS + Rust (+ F#/C# when present) against the canonical vectors.
 //
@@ -9,7 +9,7 @@
 // FLAT "<rejected>" sentinel is the cross-language reject contract (a non-TS Ace words its error
 // differently — the byte-lock is the canonical string + reject-or-not). Regenerate ts-output.json
 // with: `cd tests/cross-verification/canonical-json && bun ../../../src/Core.TypeScript/canonical-json/cross-verify.ts`.
-import { canonicalBytes } from "../../../tools/ace/canonical.ts";
+import { canonicalBytes } from "../ace/canonical.ts";
 
 interface CanonVec { id: string; value: unknown; expected_canonical_json: string; }
 interface InvalidVec { id: string; value: unknown; expected_error_substring: string; }

@@ -2,7 +2,7 @@
 name = "zeta-core-ace-canonical"
 version = "0.1.0"
 edition = "2024"
-description = "Ace canonical-JSON seam (slice 8.8) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language byte-lock. Reproduces tools/ace/canonical.ts (toTagged + canonicalBytes) byte-for-byte: code-unit key sort at every object level, insertion-order arrays, safe-integer-only ints, lone-surrogate rejection, minified raw-unicode output. Zero-dependency production core; the DynamicValue port is the value model."
+description = "Ace canonical-JSON seam (slice 8.8) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language byte-lock. Reproduces src/Core.TypeScript/ace/canonical.ts (toTagged + canonicalBytes) byte-for-byte: code-unit key sort at every object level, insertion-order arrays, safe-integer-only ints, lone-surrogate rejection, minified raw-unicode output. Zero-dependency production core; the DynamicValue port is the value model."
 license = "Apache-2.0"
 publish = false
 

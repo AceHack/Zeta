@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { toTagged, canonicalBytes } from "./canonical.ts";
-import { canonicalJson, fromCanonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-value/json.ts";
+import { canonicalJson, fromCanonicalJson, type Tagged } from "../dynamic-value/json.ts";
 
 const dec = new TextDecoder();
 const bytesToStr = (b: Uint8Array): string => dec.decode(b);

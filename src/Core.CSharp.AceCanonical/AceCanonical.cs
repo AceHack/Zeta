@@ -24,7 +24,7 @@ using System.Text.Json;
 namespace Zeta.Core.CSharp.AceCanonical;
 
 /// <summary>
-/// Ace canonical-JSON seam for C#.  Mirrors <c>tools/ace/canonical.ts</c>
+/// Ace canonical-JSON seam for C#.  Mirrors <c>src/Core.TypeScript/ace/canonical.ts</c>
 /// <c>canonicalBytes</c> byte-for-byte.
 /// </summary>
 // MA0049: class name 'AceCanonical' matches the trailing segment of the namespace

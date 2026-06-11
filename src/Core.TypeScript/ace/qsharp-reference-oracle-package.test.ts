@@ -9,7 +9,7 @@ import { pointerFromSetupManifest } from "./setup-manifest.ts";
 const here = dirname(fileURLToPath(import.meta.url));
 const packagePath = join(here, "packages", "qsharp-reference-oracle-0.1.0.json");
 const registryPath = join(here, "registry.json");
-const quantumManifestPath = join(here, "..", "setup", "manifests", "quantum");
+const quantumManifestPath = join(here, "..", "..", "..", "tools", "setup", "manifests", "quantum");
 
 function readPackage(): AcePackage {
   return JSON.parse(readFileSync(packagePath, "utf8")) as AcePackage;
@@ -31,7 +31,7 @@ describe("qsharp-reference-oracle Ace package", () => {
     const entry = registry["qsharp-reference-oracle"]["0.1.0"];
     expect(entry.package_hash).toBe(packageHash(pkg));
     expect(entry.url).toBe(
-      "https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/tools/ace/packages/qsharp-reference-oracle-0.1.0.json",
+      "https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/src/Core.TypeScript/ace/packages/qsharp-reference-oracle-0.1.0.json",
     );
   });
 

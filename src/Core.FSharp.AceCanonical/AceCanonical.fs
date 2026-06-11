@@ -1,7 +1,7 @@
 /// F# oracle for the Ace canonical-JSON byte-lock (slice 8.8.1).
 ///
 /// This is the third language (after the TS reference in
-/// `src/Core.TypeScript/dynamic-value/json.ts` + `tools/ace/canonical.ts`, and the Rust
+/// `src/Core.TypeScript/dynamic-value/json.ts` + `src/Core.TypeScript/ace/canonical.ts`, and the Rust
 /// crate) in `tests/cross-verification/canonical-json/`. Its output must byte-match the
 /// committed contract EXACTLY.
 ///

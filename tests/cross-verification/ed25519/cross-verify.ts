@@ -5,7 +5,7 @@
 // key_id / envelope / invalid exercise the Ace surface via signing.ts's existing exports.
 // Run from this directory: `bun cross-verify.ts`.
 import { createPrivateKey, createPublicKey, sign as nodeSign, verify as nodeVerify } from "node:crypto";
-import { keyId, signManifest, verifySignature, type TrustEntry } from "../../../tools/ace/signing.ts";
+import { keyId, signManifest, verifySignature, type TrustEntry } from "../../../src/Core.TypeScript/ace/signing.ts";
 
 const hexToBuf = (h: string): Buffer => Buffer.from(h, "hex");
 const b64url = (h: string): string => Buffer.from(h, "hex").toString("base64url");

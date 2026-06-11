@@ -1068,7 +1068,7 @@ jobs:
     # job is the missing gate that prevents the class. Same shape as
     # round-30 semgrep elevation: codified rules (tsconfig strict mode)
     # without a gate aren't a control.
-    name: lint (tsc tools)
+    name: lint (tsc TypeScript)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
@@ -1128,12 +1128,12 @@ jobs:
 
   cross-verify:
     # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
-    # package-manager suite. Previously only `lint (tsc tools)` type-checked these, so a
+    # package-manager suite. Previously only `lint (tsc TypeScript)` type-checked these, so a
     # regression to a committed golden vector, or a 4-language disagreement, could merge green.
     # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
     # oracle via tools/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
     # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
-    # TS golden-vector oracle) plus `bun test tools/ace/` and the Q# source-oracle tests. The
+    # TS golden-vector oracle) plus `bun test src/Core.TypeScript/ace/` and the Q# source-oracle tests. The
     # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
     # npm deps (z3-solver) + uses the runner node for its solver Z3 differential. This is the
     # ENFORCEMENT half of the canonical-primitive gate (proof + 4-language byte-lock); the proof half
@@ -1185,7 +1185,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Ace package-manager suite
-        run: bun test tools/ace/
+        run: bun test src/Core.TypeScript/ace/
 
       - name: Q# source-owned reference oracles
         run: bun test src/Core.QSharp.ReferenceOracle/qsharp-golden.test.ts src/Core.QSharp.ReferenceOracle/quantum-circuit.test.ts

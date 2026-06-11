@@ -2,16 +2,16 @@
 // ace.ts -- Ace DLC package manager CLI. Smallest safe slice of B-0288.
 //
 // Usage:
-//   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
-//   bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]
-//   bun tools/ace/ace.ts verify <hash>
-//   bun tools/ace/ace.ts keygen [--out <prefix>]
-//   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
-//   bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]
-//   bun tools/ace/ace.ts trust list
-//   bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <h>]
-//   bun tools/ace/ace.ts registry list
+//   bun src/Core.TypeScript/ace/ace.ts list [--store <path>] [--json]
+//   bun src/Core.TypeScript/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
+//   bun src/Core.TypeScript/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]
+//   bun src/Core.TypeScript/ace/ace.ts verify <hash>
+//   bun src/Core.TypeScript/ace/ace.ts keygen [--out <prefix>]
+//   bun src/Core.TypeScript/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
+//   bun src/Core.TypeScript/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]
+//   bun src/Core.TypeScript/ace/ace.ts trust list
+//   bun src/Core.TypeScript/ace/ace.ts registry add <name> <version> <url> [--hash <h>]
+//   bun src/Core.TypeScript/ace/ace.ts registry list
 //
 // Future commands (not yet implemented): remove, inspect.
 

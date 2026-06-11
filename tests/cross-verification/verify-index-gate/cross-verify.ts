@@ -20,9 +20,9 @@
 // check order). Python's policy impl is wholly separate from Ace's verifyIndex, so a match here is
 // genuine cross-language agreement, not a TS-vs-TS tautology. Run from this directory:
 // `bun cross-verify.ts`.
-import { verifyIndex, type IndexDoc, type CacheMeta, type VerifyOpts } from "../../../tools/ace/registry-remote.ts";
-import type { RemoteRegistryConfig } from "../../../tools/ace/store.ts";
-import type { TrustEntry } from "../../../tools/ace/signing.ts";
+import { verifyIndex, type IndexDoc, type CacheMeta, type VerifyOpts } from "../../../src/Core.TypeScript/ace/registry-remote.ts";
+import type { RemoteRegistryConfig } from "../../../src/Core.TypeScript/ace/store.ts";
+import type { TrustEntry } from "../../../src/Core.TypeScript/ace/signing.ts";
 
 interface Case {
   id: string;

@@ -1,5 +1,5 @@
 //! Ace canonical-JSON seam -- the Rust oracle (#4 of TS/F#/C#/Rust) for Ace's
-//! trust-core canonicalization (slice 8.8). Reproduces `tools/ace/canonical.ts`
+//! trust-core canonicalization (slice 8.8). Reproduces `src/Core.TypeScript/ace/canonical.ts`
 //! (`toTagged` + `canonicalBytes`) byte-for-byte over the shared `DynamicValue`
 //! value model.
 //!

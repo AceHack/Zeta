@@ -243,8 +243,8 @@ describe("registry paths + empty load", () => {
   test("registryPath is under ~/.ace", () => {
     expect(registryPath().replace(/\\/g, "/")).toMatch(/\.ace\/registry\.json$/);
   });
-  test("bundledRegistryPath ends in tools/ace/registry.json", () => {
-    expect(bundledRegistryPath().replace(/\\/g, "/")).toMatch(/tools\/ace\/registry\.json$/);
+  test("bundledRegistryPath ends in src/Core.TypeScript/ace/registry.json", () => {
+    expect(bundledRegistryPath().replace(/\\/g, "/")).toMatch(/src\/Core\.TypeScript\/ace\/registry\.json$/);
   });
   test("loadRegistry on two missing files is an empty Map", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));

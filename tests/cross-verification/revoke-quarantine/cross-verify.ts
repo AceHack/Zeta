@@ -14,9 +14,9 @@
 // Python's algebra impl is wholly separate from registry-revoke.ts, so a match here is genuine
 // cross-language agreement, not a TS-vs-TS tautology. Run from this directory: `bun cross-verify.ts`.
 import { createHash } from "node:crypto";
-import { applyRevoke, applyQuarantine, applyUnquarantine } from "../../../tools/ace/registry-revoke.ts";
-import { canonicalBytes } from "../../../tools/ace/canonical.ts";
-import type { IndexSignableContent } from "../../../tools/ace/index-signature.ts";
+import { applyRevoke, applyQuarantine, applyUnquarantine } from "../../../src/Core.TypeScript/ace/registry-revoke.ts";
+import { canonicalBytes } from "../../../src/Core.TypeScript/ace/canonical.ts";
+import type { IndexSignableContent } from "../../../src/Core.TypeScript/ace/index-signature.ts";
 
 interface BaseCase {
   id: string;
