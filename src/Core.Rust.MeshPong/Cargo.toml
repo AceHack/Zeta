@@ -1,0 +1,11 @@
+[package]
+name = "zeta-mesh-pong"
+version = "0.1.0"
+edition = "2021"
+description = "Mesh-pong world (integer-grid lockstep pong) — Rust oracle for the Zeta game-state treaty."
+license = "MIT"
+publish = false
+
+[dependencies]
+
+[dev-dependencies]

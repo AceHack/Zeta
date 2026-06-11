@@ -146,3 +146,43 @@ module MeshPong =
             let! reportB = SimFramework.runK (room "pong-room-B" replay budget toWin) seed
             return recording, reportA, reportB
         }
+
+    // ── The GAME-STATE TREATY codec (Aaron 2026-06-11: "yes on the game treaty") ──
+    // Canonical text line for the Game state; all four oracles replay the shared session
+    // (src/Core.TypeScript/mesh-pong/golden-vectors.lines) through their own pure `step` and must hit
+    // byte-identical checkpoint lines. Integer fields, tab-separated, versioned tag.
+
+    /// Serialize the game state to its canonical treaty line (byte-deterministic).
+    let gameToLine (g: Game) : string =
+        sprintf
+            "ponggame1\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d"
+            g.BallX
+            g.BallY
+            g.VX
+            g.VY
+            g.PaddleA
+            g.PaddleB
+            g.ScoreA
+            g.ScoreB
+
+    /// Parse a canonical game-state line (None = malformed — honest refusal).
+    let gameOfLine (line: string) : Game option =
+        match line.Split('\t') with
+        | [| "ponggame1"; bx; by; vx; vy; pa; pb; sa; sb |] ->
+            let p (s: string) =
+                match System.Int32.TryParse s with
+                | true, v -> Some v
+                | _ -> None
+            match p bx, p by, p vx, p vy, p pa, p pb, p sa, p sb with
+            | Some bx, Some by, Some vx, Some vy, Some pa, Some pb, Some sa, Some sb ->
+                Some
+                    { BallX = bx
+                      BallY = by
+                      VX = vx
+                      VY = vy
+                      PaddleA = pa
+                      PaddleB = pb
+                      ScoreA = sa
+                      ScoreB = sb }
+            | _ -> None
+        | _ -> None

@@ -139,6 +139,7 @@
     <Compile Include="SoftIsr.Tests.fs" />
     <Compile Include="SimFramework.Tests.fs" />
     <Compile Include="MeshPong.Tests.fs" />
+    <Compile Include="MeshPongTreaty.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="ForwardMomentum.Tests.fs" />
