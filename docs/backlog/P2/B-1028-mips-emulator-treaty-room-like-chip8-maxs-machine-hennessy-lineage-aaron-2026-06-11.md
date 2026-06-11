@@ -23,6 +23,7 @@ machine-agnostic), and capability upgrades through the door (MAME-inspired: the 
 injection, never by fork).
 
 ## Staged
+
 1. The core subset (R/I/J decode, the teaching-set instructions) in F# — exact, pure, stepwise.
 2. Golden vectors: a treaty program's register/memory trajectory locked as text.
 3. Oracle ports (TS/C#/Rust) — first-run byte-lock the bar (CHIP-9 set the precedent ×3).
@@ -30,5 +31,6 @@ injection, never by fork).
 5. Max's call on the dialect's growth (his machine, his room — clauses 1-5 apply).
 
 ## Relates
+
 B-1025 (the fan-out; MIPS = Max's rung) · the CHIP-9 treaty (the playbook) · gen/action-grammar.md
 (the grammar both machines bind) · Hennessy 1981 · MAME (capability-catalog inspiration).
