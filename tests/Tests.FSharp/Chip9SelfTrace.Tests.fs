@@ -85,3 +85,25 @@ let ``THE DEEP VIEW (SelfTrace x PixelLens): the drawn past survives honest colo
         Assert.Equal(PixelLens.color.Get c &&& 1uy, PixelLens.colorize 500 c) // mono stays the program's
     // and the payload rides with the pixel: the slot index is readable through the lens
     Assert.Equal(gy * 64 + gx, PixelLens.payload.Get gCell)
+
+// ── greenfield correctness pass (2026-06-13): hot-path totality + the fault register ──
+
+[<Fact>]
+let ``TOTAL DIV: fix16 divide-by-zero saturates by sign, never throws (Result-over-exception on the hot path)`` () =
+    Assert.Equal(System.Int32.MaxValue, Chip9Phys.div (Chip9Phys.ofInt 5) 0)
+    Assert.Equal(System.Int32.MinValue, Chip9Phys.div (Chip9Phys.ofInt -5) 0)
+    Assert.Equal(System.Int32.MaxValue, Chip9Phys.div 0 0) // 0 >= 0 -> +max, deterministic
+    // and a normal divide still works
+    Assert.Equal(Chip9Phys.ofInt 2, Chip9Phys.div (Chip9Phys.ofInt 6) (Chip9Phys.ofInt 3))
+
+[<Fact>]
+let ``THE FAULT REGISTER: 00EE on an empty stack is RECORDED, not silently swallowed (the machine never hides a fault)`` () =
+    // 00EE (RET) as the very first instruction: nothing was ever CALLed, so the stack is empty
+    let rom = [| 0x00uy; 0xEEuy |]
+    let f = Chip8Cow.create 7UL |> Chip8Cow.loadRom rom |> Chip8Cow.step
+    match f.Fault with
+    | Some msg -> Assert.Contains("underflow", msg)
+    | None -> Assert.True(false, "stack underflow was swallowed — the fault register stayed None")
+    // a healthy program keeps Fault = None
+    let healthy = Chip8Cow.create 7UL |> Chip8Cow.loadRom [| 0x60uy; 0x05uy |] |> Chip8Cow.step
+    Assert.Equal<string option>(None, healthy.Fault)

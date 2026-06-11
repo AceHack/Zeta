@@ -44,7 +44,12 @@ module Chip8Cow =
           Plane: byte
           /// CHIP-9: the higher planes' per-pixel bitmask (bits 1-2; plane 0 lives in `Display`,
           /// untouched, so every existing mono consumer is unaffected). Canonical: zero ⇒ absent.
-          Extra: Map<int, byte> }
+          Extra: Map<int, byte>
+          /// THE FAULT REGISTER (greenfield right-thing 2026-06-13): None = healthy. A machine
+          /// fault (stack underflow on 00EE, …) is RECORDED here instead of silently swallowed —
+          /// the trace/DAG/honest-register layers can see it (no secrets in that area). Set-once
+          /// per fault; the program keeps running (a ROM bug should be visible, not fatal).
+          Fault: string option }
 
     let private rd (addr: int) (f: Frame) : byte =
         Map.tryFind addr f.Mem |> Option.defaultValue 0uy
@@ -86,7 +91,8 @@ module Chip8Cow =
           Keys = Array.zeroCreate 16
           Rng = seed
           Plane = 1uy
-          Extra = Map.empty }
+          Extra = Map.empty
+          Fault = None }
 
     /// Load a ROM at `0x200` (COW writes).
     let loadRom (rom: byte[]) (f: Frame) : Frame =
@@ -136,6 +142,7 @@ module Chip8Cow =
             | 0x00EE ->
                 match f.Stack with
                 | top :: rest -> { f with PC = top; Stack = rest }
+                | [] when f.Fault = None -> { f with Fault = Some "stack underflow: 00EE (RET) on empty stack" }
                 | [] -> f
             | _ -> f
         | 0x1000 -> { f with PC = nnn }

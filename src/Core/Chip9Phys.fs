@@ -30,11 +30,23 @@ module Chip9Phys =
     let ofInt (i: int) : Fix = i * one
     let toIntFloor (f: Fix) : int = int (System.Math.Floor(float f / 65536.0))
 
-    /// fix16 multiply (64-bit intermediate — no overflow inside the screen's range).
-    let mul (a: Fix) (b: Fix) : Fix = int ((int64 a * int64 b) >>> 16)
+    /// Saturating cast of a 64-bit fix result to Fix (greenfield right-thing: the int cast used to
+    /// silently truncate quotients/products past ±32767px — clamp instead of wrap).
+    let private satFix (x: int64) : Fix =
+        if x > int64 System.Int32.MaxValue then System.Int32.MaxValue
+        elif x < int64 System.Int32.MinValue then System.Int32.MinValue
+        else int x
 
-    /// fix16 divide.
-    let div (a: Fix) (b: Fix) : Fix = int ((int64 a <<< 16) / int64 b)
+    /// fix16 multiply (64-bit intermediate; saturating cast — no wrap inside OR past screen range).
+    let mul (a: Fix) (b: Fix) : Fix = satFix ((int64 a * int64 b) >>> 16)
+
+    /// fix16 divide — TOTAL (Result-over-exception / no exceptions on hot paths, greenfield fix):
+    /// divide-by-zero saturates to ±max by the dividend's sign (physically: a velocity/position
+    /// "to infinity" clamped to the field) instead of throwing DivideByZeroException; the quotient
+    /// cast saturates too. A divide-by-zero is a caller bug, but the hot path never throws.
+    let div (a: Fix) (b: Fix) : Fix =
+        if b = 0 then (if a >= 0 then System.Int32.MaxValue else System.Int32.MinValue)
+        else satFix ((int64 a <<< 16) / int64 b)
 
     /// A 2D fixed-point vector.
     type V2 = { X: Fix; Y: Fix }
