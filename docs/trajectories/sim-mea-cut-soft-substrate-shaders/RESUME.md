@@ -2,12 +2,42 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-12 night (the math-team wave folded in — #7736..#7741; prior waves below).
+Last refreshed: 2026-06-12 late night (the atom wave folded in — #7744..#7753; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-12 MATH-TEAM wave (#7736..#7741 — newest; read FIRST)
+## The 2026-06-12 ATOM wave (#7744..#7753 — newest; read FIRST)
+
+- **The remaining math-pass items closed** (#7744): Brunnian PROVEN at the braid level
+  (Braid.deleteStrand — delete any strand of the locked plait, survivors comb straight; falsifier
+  holds); the ACTUAL Goertzel recurrence (probeNaive kept as BP-16 reference); writheParity =
+  Soraya's mod2 statement as code.
+- **The TS quantum lane** (#7745, verified before adopted): quantum-circuit recommended (mature;
+  Q# EXPORTER = a literal adapter piece — one circuit, two oracles, BP-16 by construction; SVG
+  drawings golden-lockable); q5mjs real but v0.1.1 — WATCH; Quirk = craft-school toy layer.
+  **B-1029 filed: Lior owns this lane** (Aaron's routing) + the treaties; **B-1030**:
+  quantum-viz.js eval (diagram lane only; decline is a legal verdict). Vera handoff package rev 2
+  on Aaron's Desktop/clipboard.
+- **The anyon picture** (#7747): shape-exchange-worldlines — the braid drawn IN SPACETIME (time
+  up, exchanges as slope-1/1 event diamonds, same word as shape-braid: one object, two registers).
+  THE GATE TAUGHT PHYSICS: 12-column spacing made consecutive exchanges SPACELIKE — strand-gap is
+  now a constant whose WHY is causality (the diagram register spreads; the spacetime register
+  cannot). Canonical externally (Kitaev/Nayak/knot convention); event diamonds = our labeled addition.
+- **Kitaev chain** (#7751): the STRONG-fit physics candidate admitted — two panels, one difference
+  (where the leftovers are: TWO unpaired end modes = the memory); four in-file integer laws;
+  acceptance counts the DRAWN arcs/diamonds. Aaron marked it STUDY (#7752 — his meaning line stays
+  unwritten until he ratifies; consent-honest silence).
+- **THE ATOM** (#7751): shape-crossing — two strands, one σ; the three smallest braid proofs as
+  in-file laws (σ≠1; do-undo; σ²≠1 — memory at its smallest); composed-of edges on
+  plait-move/braid/exchange-worldlines (3- and 6-letter WORDS in the atom). Aaron: "this one is
+  obvious" (#7753 — ratified at a glance; the contrast with the chain's study marker IS the
+  lesson: provability scales down, composition carries it up). Lint: edge identity =
+  relation+target (joins rom/treaty exemptions).
+- Catalog = 13 cartridges. Open render slices: buckyball full Schlegel; adinkra wrap edges;
+  Susskind/Markov/Penrose/Ising candidates (fit-gated).
+
+## The 2026-06-12 MATH-TEAM wave (#7736..#7741 — older; read second)
 
 - **Adinkras placed** (#7736/#7737): the sign register's display-and-checker organ (two-register
   table: ORDER braid/Z/Artin · PARITY dashing/Z2/Gates, bridged by mod2, home = Clifford).
