@@ -137,6 +137,59 @@ module ShapeRender =
             [ { Dash = false; Name = "loop"; Mask = 7uy; Points = loop }
               // the catch point: a small diamond on the crossing (the door used twice)
               { Dash = false; Name = "catch"; Mask = 5uy; Points = [ cx, cy - 6; cx + 6, cy; cx, cy + 6; cx - 6, cy; cx, cy - 6 ] } ]
+        | "shape-exchange-worldlines" ->
+            // the anyon picture: the braid's strands drawn as worldlines with TIME RUNNING UP
+            // (y = rows − braid-row), each crossing marked by a small causal diamond at the
+            // exchange event (slope 1/1 — the lightcone's constant, worn locally). Same word, same
+            // runs, same occlusion gaps as shape-braid — one object, the spacetime register.
+            let word =
+                MediaLines.field "constant" "word" d
+                |> Option.defaultValue "1,-2,1,-2,1,-2"
+                |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+            let rows = constInt "rows" 21
+            let gap = constInt "strand-gap" 3 // causality-bounded: see the cartridge constant's WHY
+            let cols = [| 32 - gap; 32; 32 + gap |]
+            let flip (x: int, y: int) = x, (rows * scale + scale) - y // time runs UP
+            let mutable perm = [| 0; 1; 2 |]
+            let rowsPerCross = rows / (List.length word + 1)
+            let runs = Array.init 3 (fun _ -> ResizeArray<ResizeArray<int * int>>())
+            for slot in 0 .. 2 do
+                let r = ResizeArray<int * int>()
+                r.Add(flip (pt cols.[slot] 0))
+                runs.[perm.[slot]].Add r
+            let events = ResizeArray<int * int>()
+            word
+            |> List.iteri (fun i c ->
+                let y = (i + 1) * rowsPerCross
+                let a = abs c - 1
+                let under = perm.[if c > 0 then a + 1 else a]
+                let x0, y0 = List.last (List.ofSeq (runs.[under].[runs.[under].Count - 1]))
+                let x1, y1 = flip (pt cols.[(if perm.[if c > 0 then a + 1 else a] = perm.[a] then a + 1 else a)] y)
+                // event diamond center: midpoint of the swapped columns at this row
+                events.Add(((cols.[a] + cols.[a + 1]) / 2) * scale + scale / 2, (flip (pt 0 y)) |> snd)
+                let cur = runs.[under].[runs.[under].Count - 1]
+                cur.Add(x0 + (x1 - x0) * 2 / 5, y0 + (y1 - y0) * 2 / 5)
+                let next = ResizeArray<int * int>()
+                next.Add(x0 + (x1 - x0) * 3 / 5, y0 + (y1 - y0) * 3 / 5)
+                runs.[under].Add next
+                let t' = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t'
+                for slot in 0 .. 2 do
+                    runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(flip (pt cols.[slot] y)))
+            for slot in 0 .. 2 do
+                runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(flip (pt cols.[slot] rows))
+            [ for s in 0 .. 2 do
+                  for r in 0 .. runs.[s].Count - 1 ->
+                      { Dash = false
+                        Name = (if r = 0 then sprintf "worldline-%d" s else sprintf "worldline-%d-r%d" s r)
+                        Mask = byte (1 <<< s)
+                        Points = List.ofSeq runs.[s].[r] }
+              for i in 0 .. events.Count - 1 ->
+                  let ex, ey = events.[i]
+                  let r = 8 // the event diamond: slope-1 edges (a tiny lightcone, worn locally)
+                  { Dash = true
+                    Name = sprintf "event-%d" i
+                    Mask = 7uy
+                    Points = [ ex, ey - r; ex + r, ey; ex, ey + r; ex - r, ey; ex, ey - r ] } ]
         | "shape-buckyball" ->
             // Addison's two views, schematic and honest: INSIDE reads like a soccer ball (central
             // pentagon room, hexagon ring, a bounding circle); OUTSIDE is almost the same drawing

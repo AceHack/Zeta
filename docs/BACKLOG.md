@@ -974,6 +974,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-1026](backlog/P2/B-1026-the-swarm-board-see-swarm-friction-heat-heatmap-zork-navigate-join-conference-remotely-citizenship-right-even-chip8s-aaron-2026-06-11.md)** The swarm board — sit down, see the swarm + friction/heat heatmap, Zork-navigate, join/conference rooms remotely; a citizenship right (even CHIP-8s)
 - [ ] **[B-1027](backlog/P2/B-1027-craft-verb-precision-bob-weave-tie-twist-braid-textile-warp-weft-jacquard-braid-relations-test-salon-textile-craft-schools-aaron-2026-06-11.md)** Craft-verb precision (bob/weave/tie/twist/braid) + the textile frame (warp/weft/loom/selvage) — ratify the registry, test the braid relations
 - [ ] **[B-1028](backlog/P2/B-1028-mips-emulator-treaty-room-like-chip8-maxs-machine-hennessy-lineage-aaron-2026-06-11.md)** MIPS emulator as a treaty room — like our CHIP-8, for Max (Hennessy lineage; the B-1025 fan-out's second machine)
+- [ ] **[B-1029](backlog/P2/B-1029-quirk-craft-school-toy-layer-and-quantum-circuit-ts-second-oracle-with-qsharp-export-lior-owner-aaron-2026-06-12.md)** The TS quantum lane (Lior): quantum-circuit as second oracle — the three Vera jobs as circuits, exported to Q# (BP-16 by construction) + Quirk as the craft-school toy layer
+- [ ] **[B-1030](backlog/P3/B-1030-evaluate-microsoft-quantum-viz-js-circuit-diagram-rendering-for-ts-apps-aaron-2026-06-12.md)** Evaluate @microsoft/quantum-viz.js (diagram lane only; honest verdict may be "decline — one tool fewer")
 
 ## P3 — convenience / deferred
 

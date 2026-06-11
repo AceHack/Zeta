@@ -129,6 +129,32 @@ module ShapeAcceptance =
             // closure lands at t=0 (span,0), never on the center — so the visit count is exact.
             let ok = closed && visits = c "center-visits"
             ok, sprintf "closed loop; %d center visits (the catch, used twice as one door)" visits
+        | "shape-exchange-worldlines" ->
+            // CAUSAL ORDER: consecutive exchange events must be timelike-separated at slope 1/1 —
+            // |Δcolumn| <= Δtime-rows between events i and i+1 (each event inside the next's past
+            // cone). Plus SAME-BRAID: the word is the locked+stuck word (one object, two registers).
+            let word =
+                MediaLines.field "constant" "word" d
+                |> Option.defaultValue ""
+                |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+            let rows = MediaLines.field "constant" "rows" d |> Option.map int |> Option.defaultValue 21
+            let gap = MediaLines.field "constant" "strand-gap" d |> Option.map int |> Option.defaultValue 3
+            let cols = [| 32 - gap; 32; 32 + gap |]
+            let rowsPerCross = rows / (List.length word + 1)
+            let eventPts = word |> List.mapi (fun i c -> (cols.[abs c - 1] + cols.[abs c]) / 2, (i + 1) * rowsPerCross)
+            let causal =
+                eventPts
+                |> List.pairwise
+                |> List.forall (fun ((x0, t0), (x1, t1)) -> abs (x1 - x0) <= (t1 - t0)) // slope 1/1
+            let valid = Braid.validWord 3 word
+            let perm = Array.init 3 id
+            if valid then
+                for c in word do
+                    let a = abs c - 1
+                    let t' = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t'
+            let lockedStuck = valid && perm = [| 0; 1; 2 |] && not (Braid.isIdentity 3 word)
+            causal && lockedStuck,
+            "exchanges causally ordered (|Δx| <= Δt at slope 1/1); the word is the locked+stuck braid — one object, two registers"
         | "shape-adinkra" ->
             // the two laws run live: Gates condition on the standard dashing, and the gauge lemma
             // (a deterministic vertex walk changes the dashing, never the face parity).

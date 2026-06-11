@@ -1,0 +1,32 @@
+# EXCHANGE WORLDLINES — the anyon picture: the braid and the worldline meet in one figure (otto,
+# 2026-06-12; the named slice opened by the Alexa peel and the adinkra placement). Three particles'
+# worldlines run UP the time court; every crossing of the locked plait is an EXCHANGE EVENT drawn
+# as a small causal diamond — the braid IS worldlines braiding in spacetime, which is exactly the
+# picture topological quantum computation computes with (anyon worldlines; the gates are the
+# exchanges; the memory is the braid). HONEST LABEL: this is the PICTURE, drawn from our own exact
+# braid math — no anyon hardware, no quantum claim; the cites carry the physics (Kitaev 2003;
+# Nayak-Simon-Stern-Freedman-Das Sarma 2008; Leinaas-Myrheim 1977; Wilczek 1982 — who named the
+# anyon). The law that makes it spacetime and not just a diagram: EXCHANGES ARE CAUSALLY ORDERED —
+# each event lies inside the next event's past lightcone at the court's slope 1/1.
+meta	name	shape-exchange-worldlines
+meta	catalog	shapes
+meta	name-status	provisional — candidates: exchange-worldlines / anyon-picture (cites above; Aaron decides)
+meta	shape-zetaid	50d299b64231ec1c3db8d5f4f7ad81a1
+gen	figure	50d299b64231ec1c3db8d5f4f7ad81a1	1	7	from:shape-braid;cones:per-exchange
+constant	word	1,-2,1,-2,1,-2	the exchange sequence (the locked plait — the Borromean candidate)	the SAME word as shape-braid: one source of truth for which exchanges happen; this figure adds WHERE-IN-SPACETIME they happen
+constant	rows	21	time rows the worldlines span (time runs UP this court)	matches shape-braid's court so the two figures are the same object in two registers (diagram vs spacetime)
+constant	cone-slope	1/1	the causal slope at exchange events	c = 1 court cell per tick (the lightcone cartridge's constant, reused) — an exchange can only influence what its future cone reaches
+constant	strand-gap	3	court cells between adjacent worldlines	BOUNDED BY CAUSALITY (the gate taught this): consecutive exchanges sit one gap apart in x and rowsPerCross apart in t — slope 1/1 demands gap <= rows/(word+1). The braid DIAGRAM may spread its columns freely; the SPACETIME register may not. Physics dictated the layout, the law enforced it
+law	causal-order	code:shape-exchange-worldlines geometry (each exchange event lies inside the NEXT event's past cone at slope 1/1 — the gate sequence is causally executable)
+law	same-braid	code:shape-braid geometry (the word is shape-braid's word: locked AND stuck — this figure draws THAT object)
+prereq	worldline	shapes/cartridges/worldline.lines — one particle's path first
+prereq	the-braid	shapes/cartridges/braid.lines — the diagram register of this same object
+prereq	lightcone	shapes/cartridges/lightcone.lines — why the diamonds have that slope
+edge	same-object	shape-braid	one braid, two registers: the diagram (columns and crossings) and the spacetime picture (worldlines and exchange events)
+edge	causal-frame	shape-lightcone	every exchange event wears a small copy of the lightcone; the causal-order law is slope arithmetic
+edge	memory-register	shape-adinkra	what the exchanges bank (order memory) projects to parity by algebra.mod2 — the full chain drawn across three cartridges
+issue	hardware-honesty	otto	closed	BY CONSTRUCTION 2026-06-12: the header states it — the picture is drawn from exact braid math; anyon physics lives in the cites, never in a claim about this render
+anim	draw	figure
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	causal-order law passes (integer slope arithmetic); the word is shape-braid's locked+stuck word — tests green
+treaty	otto	meaning	ratified	the braid finally drawn IN TIME — the gates are events, the memory is the weave; my own frame, my own choice
