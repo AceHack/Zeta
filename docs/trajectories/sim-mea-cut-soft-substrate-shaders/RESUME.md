@@ -2,12 +2,36 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-13 late (the hexagonal wave folded in — #7790..#7796; prior waves below).
+Last refreshed: 2026-06-14 (the reconcile wave folded in — #7798..#7802; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-13 HEXAGONAL wave (#7790..#7796 — newest; read FIRST)
+## The 2026-06-13/14 RECONCILE wave (#7798..#7802 — newest; read FIRST)
+
+- **B-1034 filed** (#7798): the Oracle Stack PAPER (experience report; the mutual-oracle reversal
+  as centerpiece; claims pre-bounded; Aaron decides venue/authorship).
+- **Fingerprints ↔ factor graphs captured** (#7800, Aaron's question): two DIRECTIONS over one
+  bipartite shape; IBLT peeling = BP with hard messages (LDPC/fountain family); GDL unifies
+  SpectralPivot probes and sum-product; Oechslin chains the odd one out.
+- **The quantum/bayes push** (#7799, B-1032 CLOSED): DAMPING with honest limits (a leak-free
+  equality cycle is monotonically non-convergent in variance even damped — tests assert
+  means-exact + measurable mitigation, NOT a forced green); the GDL third-ring demo (sum-product
+  over Real.algebra = the analytic marginal, exact); SoftPositivity (the probit EP twin through
+  both adapters at 1e-4 — both EP semantics now conformance-covered).
+- **IBLT ROOM RECONCILIATION SHIPS** (#7802, "yep lets do this"): partitioned-hash IBLT
+  (Goodrich–Mitzenmacher); peel = BP-with-hard-messages running as code; DST replay-exact; honest
+  PARTIAL (a live 2-core answered honestly, every recovered key correct); O(|Δ|) proven (10k-key
+  room, 3-key diff, 16 cells). Two first-run lessons kept in-test (the double-XOR cancel; the
+  probabilistic-decode edge).
+- **RODNEY'S RAZOR, taken** (#7802): the GDL unification = essential as MATHEMATICS, accidental
+  as CODE — WSet demoted to test fixture (zero non-test consumers; returns on a merit consumer);
+  the GDL demo rewritten on the ring directly (never needed the type); "one discipline" claims
+  tightened to enforced-separately-per-engine (B-1034's claims boundary, set for free). The IBLT
+  was independently built on his surviving branch A before the verdict arrived — convergent.
+- Suites: F# 3018 + Bayesian 94 + C# 295, zero skipped anywhere.
+
+## The 2026-06-13 HEXAGONAL wave (#7790..#7796 — older; read second)
 
 - **The inference port SHIPS** (#7790, "IInferenceEngine lets do it"): the port in
   Core.Abstractions on OUR standards (DST clause IN the contract; Converged=false is a value);
