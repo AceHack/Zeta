@@ -35,7 +35,8 @@ import { join } from "node:path";
 
 const EXPECTED_HOSTNAME = "zeta-installer";
 const EXPECTED_LOGIN_PROMPT = `${EXPECTED_HOSTNAME} login:`;
-const TIMEOUT_SECONDS = 300; // 5 min — generous; typical boot is 60-180s
+const TIMEOUT_SECONDS = 300; // 5 min — generous; typical x86_64 KVM boot is 60-180s
+const AARCH64_TCG_TIMEOUT_SECONDS = 900; // 15 min — aarch64 without nested KVM is TCG-slow
 const POLL_INTERVAL_MS = 1000;
 const MEMORY_MB = 2048; // installer needs >= 1GB; 2GB gives headroom for nix
 const KVM_PATH = "/dev/kvm";
@@ -142,11 +143,20 @@ function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): stri
   return args;
 }
 
+function timeoutSecondsFor(arch: Arch): number {
+  const kvm = existsSync(KVM_PATH);
+  if (arch === "aarch64" && !(kvm && process.arch === "arm64")) {
+    return AARCH64_TCG_TIMEOUT_SECONDS;
+  }
+  return TIMEOUT_SECONDS;
+}
+
 async function waitForLoginPrompt(
   serialLogPath: string,
+  timeoutSeconds: number,
   abandoned?: () => boolean,
 ): Promise<BootResult> {
-  const deadline = Date.now() + TIMEOUT_SECONDS * 1000;
+  const deadline = Date.now() + timeoutSeconds * 1000;
 
   while (Date.now() < deadline) {
     if (abandoned?.()) {
@@ -182,7 +192,7 @@ async function waitForLoginPrompt(
     : "(serial log empty or never created)";
   return {
     exitCode: 1,
-    reason: `Timeout (${TIMEOUT_SECONDS}s) waiting for "${EXPECTED_LOGIN_PROMPT}"`,
+    reason: `Timeout (${timeoutSeconds}s) waiting for "${EXPECTED_LOGIN_PROMPT}"`,
     serialLogTail: tail,
   };
 }
@@ -214,9 +224,11 @@ async function main(): Promise<never> {
   const tmpDir = mkdtempSync(join(tmpdir(), "zeta-qemu-boot-test-"));
   const serialLogPath = join(tmpDir, "serial.log");
 
+  const timeoutSeconds = timeoutSecondsFor(arch);
+
   console.log(`[qemu-boot-test] ISO: ${isoPath}`);
   console.log(`[qemu-boot-test] Serial log: ${serialLogPath}`);
-  console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${TIMEOUT_SECONDS}s`);
+  console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s`);
   console.log(`[qemu-boot-test] Expecting login prompt: "${EXPECTED_LOGIN_PROMPT}"`);
 
   console.log(`[qemu-boot-test] Arch: ${arch}`);
@@ -235,7 +247,7 @@ async function main(): Promise<never> {
     console.log(`[qemu-boot-test] QEMU exited with code ${code}`);
   });
 
-  const result = await waitForLoginPrompt(serialLogPath, () =>
+  const result = await waitForLoginPrompt(serialLogPath, timeoutSeconds, () =>
     // QEMU died with an error before the prompt: fail NOW, not at the
     // 300s timeout (live failure 2026-06-11 burned 5min on a 50ms death).
     qemuExited && qemuExitCode !== 0

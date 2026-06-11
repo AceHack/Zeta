@@ -165,6 +165,27 @@ When a scenario transitions to composes-with-existing:
 - [B-0891](../../../docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md) — backlog row this PoC implements
 - [B-0892](../../../docs/backlog/P1/B-0892-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) — zflash lane this advances
 
+## CI acceptance matrix (B-0891)
+
+| Scenario | Where it runs | Notes |
+|---|---|---|
+| 1 initial-format | every `build-ai-cluster-iso` PR | `audit-installer-iso-content` + `zflash-file-backed --test` + `qemu-boot-test` |
+| 2 boot-cluster-up | push / `workflow_dispatch` on ISO workflow | delegates to `qemu-full-install-test.ts` |
+| 3 retention | `workflow_dispatch` on ISO workflow | `ZFLASH_QEMU_RETENTION_EXECUTE=1`; auto-bakes boot image when ISO exists |
+| 4 path-fork | `workflow_dispatch` on ISO workflow | `ZFLASH_QEMU_PATH_FORK_EXECUTE=1` + bootstrap; fork boots stop on B-0891 markers only (one full install in bootstrap) |
+| 5 cluster-join | skipped in harness | multi-VM orchestration pending |
+
+Dry-run + unit invariants: `.github/workflows/zflash-qemu-test.yml` on every harness-touching PR.
+
+Prepare a retention boot image locally:
+
+```bash
+bun tools/zflash/test-harness/prepare-boot-image.ts \
+  --iso /path/to/installer.iso \
+  --output /tmp/zflash-retention.img \
+  --with-credential-blob
+```
+
 ## Operator-collaborative testing
 
 Per B-0891 framing, USB-side validation (after QEMU green) is operator-collaborative: physical USB confirms QEMU-validated behavior survives real hardware; operator demos at work need physical USB; KVM substrate enables remote USB-boot tests.

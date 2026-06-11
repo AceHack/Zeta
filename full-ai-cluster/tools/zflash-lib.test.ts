@@ -18,8 +18,10 @@
 import { describe, expect, test } from "bun:test";
 import {
   composeAuthorizedKeysFileContent,
+  detectIsohybridEspOffsetBytes,
   executeFileBackedZflashImageExecutionPlan,
   generateRandomNodeName,
+  ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
   isValidHostname,
   parseFatPartitionFromDiskutilList,
   parseOutputFileMarker,
@@ -272,6 +274,32 @@ describe("composeAuthorizedKeysFileContent", () => {
     expect(result.ok).toBe(false);
     if (result.ok) throw new Error("expected failure");
     expect(result.error).toContain("at least one");
+  });
+});
+
+function syntheticIsoHeadWithEspAtLba(lba: number): Buffer {
+  const offset = lba * 512;
+  const head = Buffer.alloc(offset + 512);
+  head.writeUInt16LE(0xaa55, 0x1fe);
+  const entry = 0x1be;
+  head[entry + 4] = 0xef;
+  head.writeUInt32LE(lba, entry + 8);
+  const esp = head.subarray(offset, offset + 512);
+  esp.writeUInt16LE(0xaa55, 0x1fe);
+  esp.write("FAT12   ", 0x36, "latin1");
+  return head;
+}
+
+describe("detectIsohybridEspOffsetBytes", () => {
+  test("reads MBR 0xEF partition start LBA", () => {
+    expect(detectIsohybridEspOffsetBytes(syntheticIsoHeadWithEspAtLba(276))).toBe(276 * 512);
+  });
+
+  test("falls back to canonical NixOS isohybrid ESP offset", () => {
+    const head = Buffer.alloc(ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 512);
+    head.writeUInt16LE(0xaa55, ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 0x1fe);
+    head.write("FAT12   ", ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES + 0x36, "latin1");
+    expect(detectIsohybridEspOffsetBytes(head)).toBe(ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES);
   });
 });
 

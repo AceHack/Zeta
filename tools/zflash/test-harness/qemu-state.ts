@@ -1,5 +1,12 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import {
+  B0891_RETENTION_USB_SERIAL_MARKERS,
+  INITIAL_INSTALL_SERIAL_MARKERS,
+  INSTALLED_OS_RETENTION_SERIAL_MARKERS,
+  RETENTION_ABSENT_TERMINAL_MARKERS,
+  RETENTION_FAILURE_SERIAL_MARKERS,
+} from "./serial-markers";
 
 /**
  * B-0891 scenario 3 QEMU state-preservation primitives.
@@ -203,19 +210,21 @@ const DEFAULT_RETENTION_POLL_INTERVAL_MS = 1000;
 const DEFAULT_QEMU_STOP_TIMEOUT_MS = 5000;
 const DEFAULT_QEMU_KILL_TIMEOUT_MS = 1000;
 
-export const RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
+export {
+  B0891_RETENTION_USB_SERIAL_MARKERS,
+  INITIAL_INSTALL_SERIAL_MARKERS,
+  INSTALLED_OS_RETENTION_SERIAL_MARKERS as RETENTION_SERIAL_MARKERS,
+  RETENTION_ABSENT_TERMINAL_MARKERS,
+  RETENTION_FAILURE_SERIAL_MARKERS,
+} from "./serial-markers";
 
-export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = ["[iter-5.1]"];
-
-export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
-  "panic",
-  "FATAL",
-  "Refusing to wipe",
-  "no internet",
-  "bail",
-];
-
-export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = ["nixos@zeta-installer:~"];
+function restartRetentionSerialMarkers(
+  bootImagePath: string | undefined,
+): readonly string[] {
+  return bootImagePath === undefined
+    ? INSTALLED_OS_RETENTION_SERIAL_MARKERS
+    : B0891_RETENTION_USB_SERIAL_MARKERS;
+}
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
@@ -370,11 +379,11 @@ export function planQcow2SnapshotRetention(input: Qcow2SnapshotRetentionInput): 
       },
       restartStopCondition: {
         serialLogPath: normalized.serialLogPath,
-        successMarkers: RETENTION_SERIAL_MARKERS,
+        successMarkers: restartRetentionSerialMarkers(normalized.bootImagePath),
         failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
         terminalFailureMarkers: RETENTION_ABSENT_TERMINAL_MARKERS,
       },
-      requiredSerialMarkers: RETENTION_SERIAL_MARKERS,
+      requiredSerialMarkers: restartRetentionSerialMarkers(normalized.bootImagePath),
     },
   };
 }
@@ -773,7 +782,7 @@ export function executeQcow2SnapshotRetentionPlan(
 
 export function assertRetentionSerialMarkers(
   serialOutput: string,
-  requiredMarkers: readonly string[] = RETENTION_SERIAL_MARKERS,
+  requiredMarkers: readonly string[] = INSTALLED_OS_RETENTION_SERIAL_MARKERS,
 ): RetentionSerialMarkerResult {
   const missingMarkers = requiredMarkers.filter((marker) => !serialOutput.includes(marker));
   if (missingMarkers.length > 0) {

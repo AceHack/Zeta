@@ -19,6 +19,8 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - 'tools/zflash/test-harness/**'
+      - 'tools/zflash/test-harness/prepare-boot-image.ts'
+      - 'tools/zflash/test-harness/serial-markers.ts'
       - 'tools/ci/qemu-boot-test.ts'
       - 'tools/ci/qemu-full-install-test.ts'
       - 'tools/ci/audit-installer-iso-content.ts'
@@ -33,6 +35,8 @@ on:
     branches: [main]
     paths:
       - 'tools/zflash/test-harness/**'
+      - 'tools/zflash/test-harness/prepare-boot-image.ts'
+      - 'tools/zflash/test-harness/serial-markers.ts'
       - 'tools/ci/qemu-boot-test.ts'
       - 'tools/ci/qemu-full-install-test.ts'
       - 'tools/ci/audit-installer-iso-content.ts'
@@ -75,6 +79,9 @@ jobs:
 
       - name: Validate zflash QEMU dry-run plan
         run: bun tools/zflash/test-harness/run.ts --dry-run
+
+      - name: Validate zflash file-backed boot-image prep (unit-level)
+        run: bun test tools/zflash/test-harness/prepare-boot-image.test.ts
 
       - name: Validate state-retention runtime fails closed by default
         run: |

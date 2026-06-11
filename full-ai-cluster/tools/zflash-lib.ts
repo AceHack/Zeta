@@ -232,6 +232,44 @@ export type FileBackedZflashImageExecutionResult =
   | { readonly ok: true; readonly value: FileBackedZflashImageExecution }
   | { readonly ok: false; readonly error: FileBackedZflashImageExecutionFeedback };
 
+/** NixOS isohybrid installer ESP fallback when MBR 0xEF scan misses (LBA 276). */
+export const ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES = 141_312;
+
+function isFatBpbSector(sector: Buffer): boolean {
+  if (sector.length < 512) {
+    return false;
+  }
+  const fsLabel = sector.subarray(0x36, 0x3b).toString("latin1");
+  return sector.readUInt16LE(0x1fe) === 0xaa55 && fsLabel.startsWith("FAT");
+}
+
+/**
+ * Locate the FAT ESP byte offset inside an isohybrid installer image head.
+ * Mirrors flash-and-inject.ts MBR scan + LBA-276 fallback used on real USB bakes.
+ */
+export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
+  if (isoHead.length >= 512) {
+    const mbr = isoHead.subarray(0, 512);
+    for (let partition = 0; partition < 4; partition++) {
+      const entryOffset = 0x1be + partition * 16;
+      const type = mbr[entryOffset + 4]!;
+      const startLba = mbr.readUInt32LE(entryOffset + 8);
+      if (type === 0xef && startLba > 0) {
+        const partOffset = startLba * 512;
+        if (isoHead.length >= partOffset + 512 && isFatBpbSector(isoHead.subarray(partOffset, partOffset + 512))) {
+          return partOffset;
+        }
+      }
+    }
+  }
+
+  const fallback = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
+  if (isoHead.length >= fallback + 512 && isFatBpbSector(isoHead.subarray(fallback, fallback + 512))) {
+    return fallback;
+  }
+  return fallback;
+}
+
 /**
  * Plan the non-destructive, file-backed equivalent of zflash's current
  * physical-device flow for QEMU tests.

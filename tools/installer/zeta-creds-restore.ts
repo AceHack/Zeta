@@ -287,7 +287,11 @@ async function main(): Promise<number> {
     return 0;
   }
   const written = applyPlan(plan);
-  console.log(`zeta-creds-restore: wrote ${written} creds (target-root: ${parsed.targetRoot})`);
+  if (written === 0 && plan.skipped.some((entry) => entry.reason === "already-present")) {
+    console.log("zeta-creds-restore: already-present, skipping credential rewrite");
+  } else {
+    console.log(`zeta-creds-restore: wrote ${written} creds (target-root: ${parsed.targetRoot})`);
+  }
   for (const s of plan.skipped) console.log(`  SKIP ${s.id}: ${s.reason}`);
   return 0;
 }

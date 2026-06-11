@@ -37,7 +37,7 @@ describe("B-0891 test-harness dispatcher", () => {
     const parsed = JSON.parse(result.stdout);
     expect(parsed.mode).toBe("dry-run");
     expect(parsed.targets[0].id).toBe("reformat-with-retention");
-    expect(parsed.targets[0].plan).toContain("implementation pending");
+    expect(parsed.targets[0].plan).toContain("auto-prepare zflash boot image");
   });
 
   test("runtime attempt for retention emits QEMU plan but fails closed", () => {
@@ -85,7 +85,7 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.mode).toBe("dry-run");
     expect(parsed.targets[0].id).toBe("reformat-from-scratch");
     expect(parsed.targets[0].plan).toContain("path-fork plan");
-    expect(parsed.targets[0].plan).toContain("identity comparison proof");
+    expect(parsed.targets[0].plan).toContain("auto-prepare zflash boot image");
   });
 
   test("runtime attempt for path-fork emits migrate + fresh plans but fails closed", () => {
@@ -213,13 +213,11 @@ describe("B-0891 test-harness dispatcher", () => {
         readSerialOutput: (path) => {
           if (path.includes("migrate.serial.log")) {
             return [
-              "[iter-5.1]",
               "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
               "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
             ].join("\n");
           }
           return [
-            "[iter-5.1]",
             "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal",
           ].join("\n");
         },

@@ -50,6 +50,7 @@ import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
+import { prepareBootImage, DEFAULT_ESP_OFFSET_BYTES } from "./prepare-boot-image";
 import {
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
@@ -224,22 +225,96 @@ function emitDryRun(scenarioId?: ScenarioId): number {
 }
 
 function dryRunPlanMessage(scenario: Scenario): string {
+  if (scenario.id === "initial-format") {
+    return "would run audit-installer-iso-content.ts + zflash-file-backed --test bake + qemu-boot-test.ts";
+  }
   if (scenario.status === "composes-with-existing") {
     return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
   }
   if (scenario.id === "reformat-with-retention") {
-    return "would generate QEMU snapshot/restart retention plan; implementation pending real execution opt-in";
+    return "would generate QEMU snapshot/restart retention plan; auto-prepare zflash boot image when execute opt-in is set";
   }
   if (scenario.id === "reformat-from-scratch") {
-    return "would generate QEMU path-fork plan for migrate-existing-creds + fresh-cluster; implementation pending executor + identity comparison proof";
+    return "would generate QEMU path-fork plan for migrate-existing-creds + fresh-cluster; auto-prepare zflash boot image when execute opt-in is set";
   }
   return `would report scaffolded — implementation pending; composes-with: ${scenario.composesWith.join(", ")}`;
 }
 
+function runHarnessScript(relPath: string, args: readonly string[]): { ok: boolean; exitCode: number | null } {
+  const absPath = resolve(REPO_ROOT, relPath);
+  if (!existsSync(absPath)) {
+    return { ok: false, exitCode: null };
+  }
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun is intentionally resolved from the active PATH; args are structured and never shell-expanded.
+  const result = spawnSync("bun", [absPath, ...args], {
+    cwd: REPO_ROOT,
+    stdio: "inherit",
+  });
+  return { ok: result.status === 0, exitCode: result.status };
+}
+
+function runInitialFormatScenario(isoPath: string): ScenarioResult {
+  const start = Date.now();
+  const absIso = resolve(isoPath);
+  const steps: string[] = [];
+
+  const audit = runHarnessScript("tools/ci/audit-installer-iso-content.ts", ["--iso", absIso]);
+  steps.push("audit-installer-iso-content");
+  if (!audit.ok) {
+    return {
+      id: "initial-format",
+      status: "failed",
+      durationMs: Date.now() - start,
+      message: `ISO content audit failed (exit ${audit.exitCode ?? "missing harness"})`,
+    };
+  }
+
+  const runDir = mkdtempSync(join(tmpdir(), "zeta-zflash-initial-format-"));
+  const bootImagePath = join(runDir, `${basename(absIso)}.zflash-boot.img`);
+  const prepared = prepareBootImage({
+    isoPath: absIso,
+    outputImagePath: bootImagePath,
+    withCredentialBlob: true,
+    testMode: true,
+    hostname: "node-qemu-test",
+    espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
+    pubkeyPath: resolve(REPO_ROOT, "tools/zflash/test-harness/keys/zeta-test-infra.pub"),
+  });
+  steps.push("zflash-file-backed --test");
+  if ("error" in prepared) {
+    return {
+      id: "initial-format",
+      status: "failed",
+      durationMs: Date.now() - start,
+      message: `zflash file-backed bake failed: ${prepared.error}`,
+    };
+  }
+
+  const boot = runHarnessScript("tools/ci/qemu-boot-test.ts", [absIso]);
+  steps.push("qemu-boot-test");
+  const durationMs = Date.now() - start;
+  if (!boot.ok) {
+    return {
+      id: "initial-format",
+      status: "failed",
+      durationMs,
+      message: `QEMU boot smoke-test failed (exit ${boot.exitCode ?? "missing harness"}) after ${steps.join(" → ")}`,
+    };
+  }
+
+  return {
+    id: "initial-format",
+    status: "passed",
+    durationMs,
+    message: `passed ${steps.join(" → ")}; zflash boot image at ${prepared.outputImagePath}`,
+  };
+}
+
 function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResult {
-  const harnessPath = scenario.id === "initial-format"
-    ? "tools/ci/qemu-boot-test.ts"
-    : "tools/ci/qemu-full-install-test.ts";
+  if (scenario.id === "initial-format") {
+    return runInitialFormatScenario(isoPath);
+  }
+  const harnessPath = "tools/ci/qemu-full-install-test.ts";
   const absHarnessPath = resolve(REPO_ROOT, harnessPath);
   if (!existsSync(absHarnessPath)) {
     return {
@@ -403,6 +478,30 @@ function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
   };
 }
 
+function resolveTestInfraPubkeyPath(): string {
+  return resolve(REPO_ROOT, "tools/zflash/test-harness/keys/zeta-test-infra.pub");
+}
+
+function ensureZflashBootImage(
+  isoPath: string,
+  outputPath: string,
+  withCredentialBlob: boolean,
+): { ok: string } | { error: string } {
+  const prepared = prepareBootImage({
+    isoPath,
+    outputImagePath: outputPath,
+    withCredentialBlob,
+    testMode: true,
+    hostname: "node-qemu-test",
+    espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
+    pubkeyPath: resolveTestInfraPubkeyPath(),
+  });
+  if ("error" in prepared) {
+    return { error: prepared.error };
+  }
+  return { ok: prepared.outputImagePath };
+}
+
 export function runRetentionRuntime(
   isoPath: string,
   options: RetentionRuntimeOptions = {},
@@ -416,9 +515,31 @@ export function runRetentionRuntime(
       message: `could not prepare QEMU retention run directory: ${runDirectory.error}`,
     };
   }
-  const bootImagePath = options.bootImagePath === undefined
-    ? retentionBootImagePathFromEnv()
-    : resolve(options.bootImagePath);
+  const bootImagePath = (() => {
+    if (options.bootImagePath !== undefined) {
+      return resolve(options.bootImagePath);
+    }
+    const fromEnv = retentionBootImagePathFromEnv();
+    if (fromEnv !== undefined) {
+      return fromEnv;
+    }
+    if (options.execute === true && existsSync(absIsoPath)) {
+      const autoPath = join(runDirectory.ok, `${basename(absIsoPath)}.retention-boot.img`);
+      const ensured = ensureZflashBootImage(absIsoPath, autoPath, true);
+      if ("error" in ensured) {
+        return ensured;
+      }
+      return ensured.ok;
+    }
+    return undefined;
+  })();
+  if (typeof bootImagePath === "object" && "error" in bootImagePath) {
+    return {
+      id: "reformat-with-retention",
+      status: "failed",
+      message: `could not prepare retention boot image: ${bootImagePath.error}`,
+    };
+  }
   const artifacts = retentionArtifactPaths(absIsoPath, runDirectory.ok);
   const planned = planQcow2SnapshotRetention({
     isoPath: absIsoPath,
@@ -483,9 +604,31 @@ export function runPathForkRuntime(
       message: `could not prepare QEMU path-fork run directory: ${runDirectory.error}`,
     };
   }
-  const bootImagePath = options.bootImagePath === undefined
-    ? pathForkBootImagePathFromEnv()
-    : resolve(options.bootImagePath);
+  const bootImagePath = (() => {
+    if (options.bootImagePath !== undefined) {
+      return resolve(options.bootImagePath);
+    }
+    const fromEnv = pathForkBootImagePathFromEnv();
+    if (fromEnv !== undefined) {
+      return fromEnv;
+    }
+    if (options.execute === true && existsSync(absIsoPath)) {
+      const autoPath = join(runDirectory.ok, `${basename(absIsoPath)}.path-fork-boot.img`);
+      const ensured = ensureZflashBootImage(absIsoPath, autoPath, true);
+      if ("error" in ensured) {
+        return ensured;
+      }
+      return ensured.ok;
+    }
+    return undefined;
+  })();
+  if (typeof bootImagePath === "object" && "error" in bootImagePath) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not prepare path-fork boot image: ${bootImagePath.error}`,
+    };
+  }
   const artifacts = pathForkArtifactPaths(absIsoPath, runDirectory.ok);
   const planned = planPathForkRuntime({
     isoPath: absIsoPath,
@@ -603,6 +746,14 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
               timeoutMs,
             };
         return runPathForkRuntime(isoPath, pathForkOptions);
+      }
+      if (scenario.id === "cluster-joining") {
+        return {
+          id: "cluster-joining",
+          status: "skipped",
+          message:
+            "multi-VM QEMU orchestration not yet automated in CI — validates via extensions.ts design spec + operator-collaborative USB join",
+        };
       }
       return reportScaffolded(scenario);
     case "operator-runtime":

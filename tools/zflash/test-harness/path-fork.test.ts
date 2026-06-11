@@ -32,6 +32,24 @@ function pathForkPlan(): readonly PathForkRuntimeForkPlan[] {
 }
 
 describe("path-fork serial marker assertions", () => {
+  test("path-fork fork plans stop on B-0891 markers without requiring a second full install", () => {
+    const result = planPathForkRuntime({
+      isoPath: ISO_PATH,
+      bootImagePath: BOOT_IMAGE_PATH,
+      startingDiskPath: STARTING_DISK_PATH,
+      migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
+      freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
+    });
+    if ("error" in result) {
+      throw new Error(result.error.reason);
+    }
+    const migrate = result.ok.forks.find((fork) => fork.forkId === "migrate-existing-creds");
+    const fresh = result.ok.forks.find((fork) => fork.forkId === "fresh-cluster");
+    expect(migrate?.stopCondition.successMarkers).toEqual(MIGRATE_EXISTING_CREDS_SERIAL_MARKERS);
+    expect(fresh?.stopCondition.successMarkers).toEqual(FRESH_CLUSTER_SERIAL_MARKERS);
+    expect(migrate?.requiredSerialMarkers).not.toContain("[iter-5.1]");
+  });
+
   test("accepts each fork when all required markers and no forbidden markers appear", () => {
     for (const fork of pathForkPlan()) {
       const result = assertPathForkSerialMarkers(fork, fork.requiredSerialMarkers.join("\n"));
