@@ -30,7 +30,7 @@ FourCornerOwnership found in TS).
 ## The fragments to fuse
 
 `ISR<'A,'B>`+`>=>` (`IntrCtx.fs`, the morphism) · `FourCornerOwnership<TIn,TOut,TOutFeedback,TInFeedback>`
-(`tools/workflow-engine/types.ts`, the typed bidirectional-feedback I/O object) · `Policy`/`StreamPolicy`
+(`src/Core.TypeScript/workflow-engine/types.ts`, the typed bidirectional-feedback I/O object) · `Policy`/`StreamPolicy`
 (decision-arrow case) · `FeedbackThrottle` (harmonic coupling) · `FerryThrottler` (DoP runner) ·
 `SoftScheduler` (the tick) · `LinguisticSeed` (kernel payload) · `CayleyDickson`/`Cl3`/`AmplitudeEmu`
 (oscillator algebra) · `SoftTie`/`FingerprintPrism` (soft optics).

@@ -23,7 +23,7 @@ depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisites (file-le
 `tools/backlog/README.md` schema). This row's substantive prerequisites
 are TS/F#/memory files rather than backlog rows:
 
-- `tools/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812 extends
+- `src/Core.TypeScript/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812 extends
   with interrupt substrate)
 - `src/Core/Tracing.fs` (existing Kleisli `Arrow<'A, 'B> = ActivityContext
   -> 'A -> Task<'B>` shape)

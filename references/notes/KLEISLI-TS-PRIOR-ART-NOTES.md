@@ -12,7 +12,7 @@ Substrate-honest scouting for B-0917 (interrupt-substrate in monad space) when T
 
 ## When to consult
 
-Before authoring Kleisli substrate in TS scope (e.g., extending `tools/workflow-engine/` with Kleisli-shaped interrupt-context composition per B-0917 Slice E):
+Before authoring Kleisli substrate in TS scope (e.g., extending `src/Core.TypeScript/workflow-engine/` with Kleisli-shaped interrupt-context composition per B-0917 Slice E):
 
 1. WebSearch each library for current maintenance + version per `.claude/rules/dep-pin-search-first-authority.md`
 2. Check fp-ts ecosystem state generally (fp-ts went through significant API changes in v2 → v3; ecosystem libraries may or may not have followed)

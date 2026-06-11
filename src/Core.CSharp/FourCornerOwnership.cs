@@ -1,6 +1,6 @@
 // FourCorner — the bidirectional-feedback I/O object (four corners = data×feedback × in×out).
 // C# parity oracle; mirrors src/Core/FourCorner.fs (the F# oracle that LOCKED the treaty bytes) and the
-// original tools/workflow-engine/types.ts FourCornerOwnership. TInFeedback is co-owned — both sides
+// original src/Core.TypeScript/workflow-engine/types.ts FourCornerOwnership. TInFeedback is co-owned — both sides
 // contribute — "each is backpressure from the other's perspective".
 //
 // TREATY (B-1022 trigger fired: "we are the consumer for our treaties"): ToLine/OfLine is the canonical

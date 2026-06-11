@@ -60,7 +60,7 @@
  */
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
-import type { FourCornerOwnership } from "../workflow-engine/types";
+import type { FourCornerOwnership } from "../../src/Core.TypeScript/workflow-engine/types";
 
 /** One backlog item, classified to just what the controller needs to decide. */
 export interface BacklogItem {
@@ -571,7 +571,15 @@ if (import.meta.main) {
     {
       label: "grammar can't express it → edit_grammar (not trapped)",
       world: {
-        backlog: [{ id: "B-0999", title: "needs a 'merge duplicates' action", ready: false, ambiguous: false, needsNewAction: true }],
+        backlog: [
+          {
+            id: "B-0999",
+            title: "needs a 'merge duplicates' action",
+            ready: false,
+            ambiguous: false,
+            needsNewAction: true,
+          },
+        ],
       },
     },
     {
@@ -589,7 +597,11 @@ if (import.meta.main) {
   for (const s of samples) {
     console.log(`• ${s.label}`);
     console.log(`    default: ${renderAction(observe(s.world))}`);
-    console.log(`    menu:    ${buildMenu(s.world).map((a) => a.kind).join(" · ")}\n`);
+    console.log(
+      `    menu:    ${buildMenu(s.world)
+        .map((a) => a.kind)
+        .join(" · ")}\n`,
+    );
   }
 
   // live model run (watchable) — only if a local ollama is reachable. This is a
@@ -612,7 +624,10 @@ if (import.meta.main) {
     for (const s of samples) {
       const oracle = observe(s.world);
       const llm = await observeWithLlm(s.world, backend);
-      const note = llm.kind === oracle.kind ? "(matches default)" : `(chose ${llm.kind} over default ${oracle.kind} — free choice)`;
+      const note =
+        llm.kind === oracle.kind
+          ? "(matches default)"
+          : `(chose ${llm.kind} over default ${oracle.kind} — free choice)`;
       console.log(`• ${s.label}`);
       console.log(`    default: ${renderAction(oracle)}`);
       console.log(`    agent  : ${renderAction(llm)}  ${note}\n`);

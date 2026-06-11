@@ -28,7 +28,7 @@ here so the razor can be run later):
 | fragment | the facet it is |
 |---|---|
 | `ISR<'A,'B>` + `>=>` (`IntrCtx.fs`) | the **morphism / composition** (Kleisli arrow; feedback in the Result channel) |
-| `FourCornerOwnership<TIn,TOut,TOutFeedback,TInFeedback>` (`tools/workflow-engine/types.ts`, `tools/observe/observe.ts`) | the **typed I/O + bidirectional-feedback object** (the arrow's source/target; `tInFeedback` co-owned = each is the other's backpressure) |
+| `FourCornerOwnership<TIn,TOut,TOutFeedback,TInFeedback>` (`src/Core.TypeScript/workflow-engine/types.ts`, `tools/observe/observe.ts`) | the **typed I/O + bidirectional-feedback object** (the arrow's source/target; `tInFeedback` co-owned = each is the other's backpressure) |
 | `Policy<'input,'decision,'feedback>` + `StreamPolicy` | a **decision-arrow special case** (input → decision + why) |
 | `FeedbackThrottle.fs` | the **harmonic coupling** (four-corner feedback; latency→CHSH) |
 | `FerryThrottler.fs` | the **DoP runner** (how many arrows run at once; DoP=1 deterministic) |

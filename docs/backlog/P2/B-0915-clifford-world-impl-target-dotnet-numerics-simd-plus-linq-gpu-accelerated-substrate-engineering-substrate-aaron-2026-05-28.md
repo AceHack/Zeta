@@ -13,7 +13,7 @@ composes_with:
   - B-0635  # wave-particle duality (Clifford multivector substrate)
   - B-0666  # English-as-projection (I(D(x))=x identity)
   - B-0644  # Limit-as-simulation (pre-collapse substrate)
-depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisite (file-level, not row-level): tools/workflow-engine/world-hierarchy.ts (OPEN_QUESTION_DBSP_CLIFFORD + operator-vote ordering) — see "Substrate prerequisite" prose below.
+depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisite (file-level, not row-level): src/Core.TypeScript/workflow-engine/world-hierarchy.ts (OPEN_QUESTION_DBSP_CLIFFORD + operator-vote ordering) — see "Substrate prerequisite" prose below.
 upstream_references:
   - dotnet/runtime (System.Numerics, System.Numerics.Tensors, System.Runtime.Intrinsics)
   - SixLabors/ImageSharp (production SIMD substrate)
@@ -25,7 +25,7 @@ upstream_references:
 
 `depends_on` carries B-NNNN backlog IDs only (per `tools/backlog/README.md`
 schema). This row's substantive prerequisite is a TS file rather than a
-backlog row: `tools/workflow-engine/world-hierarchy.ts` (introduces
+backlog row: `src/Core.TypeScript/workflow-engine/world-hierarchy.ts` (introduces
 `OPEN_QUESTION_DBSP_CLIFFORD` substrate + the `voteOrdering` field this
 impl-target consumes). The file shipped via PR #5776. When this row gets
 picked up, verify the file is on `origin/main` before starting impl work.

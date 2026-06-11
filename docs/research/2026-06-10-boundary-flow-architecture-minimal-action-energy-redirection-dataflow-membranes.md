@@ -189,7 +189,7 @@ the *labels* on the 2×2 is a framing; the `{1,i,−1,−i}` = C₄ = 90°-rotat
 
 **What did we call it? — FOUND (Aaron was right; my first grep was too narrow).** The four-corner shape
 **exists and is named exactly that: `FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback>`** —
-`tools/workflow-engine/types.ts:133`, used by `tools/observe/observe.ts` as the **observe/emit primitive**
+`src/Core.TypeScript/workflow-engine/types.ts:133`, used by `tools/observe/observe.ts` as the **observe/emit primitive**
 ("we've had this since the beginning"):
 
 ```ts

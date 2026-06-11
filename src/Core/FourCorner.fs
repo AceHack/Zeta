@@ -2,7 +2,7 @@ namespace Zeta.Core
 
 /// FourCorner — the bidirectional-feedback I/O object, **graduated `tools → src`** (Aaron 2026-06-10:
 /// "yes let's put 4 corners in src"). The F# port of `FourCornerOwnership<TIn, TOut, TOutFeedback,
-/// TInFeedback>` from `tools/workflow-engine/types.ts` (used by `tools/observe/observe.ts` — the
+/// TInFeedback>` from `src/Core.TypeScript/workflow-engine/types.ts` (used by `tools/observe/observe.ts` — the
 /// observe/emit primitive, "we've had this since the beginning"). Per the tools→src rule (`tools/` is the
 /// dependency *shield*, not where our-own primitives live), this is our-own and belongs in `src/`.
 ///

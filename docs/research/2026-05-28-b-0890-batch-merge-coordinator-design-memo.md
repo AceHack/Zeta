@@ -81,7 +81,7 @@ The batch-merger MUST aggregate across trajectories. Cadence is global.
 
 Sequence per event:
 
-1. State-machine emits event → `tools/workflow-engine/state-append.ts` writes a ZetaID-named file on the trajectory branch (per B-0867.2)
+1. State-machine emits event → `src/Core.TypeScript/workflow-engine/state-append.ts` writes a ZetaID-named file on the trajectory branch (per B-0867.2)
 2. REST git-data push lands the commit on `trajectory/<chromosome-hex>` branch (per B-0858 REST pattern — no local git state touched)
 3. Event is durable: GitHub holds it; any future coordinator invocation can find it via `gh api repos/.../commits?sha=trajectory/<hex>`
 

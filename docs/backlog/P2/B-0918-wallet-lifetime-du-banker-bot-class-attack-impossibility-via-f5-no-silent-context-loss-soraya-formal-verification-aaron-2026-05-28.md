@@ -16,7 +16,7 @@ composes_with:
   - B-0703  # Aurora multi-oracle BFT (composition substrate for adversarial scenarios)
 depends_on:
   - docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md
-  - tools/workflow-engine/auto-loop-lifetime.ts
+  - src/Core.TypeScript/workflow-engine/auto-loop-lifetime.ts
   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
   - .claude/agents/formal-verification-expert.md  # Soraya
   - .claude/agents/threat-model-critic.md  # Aminata

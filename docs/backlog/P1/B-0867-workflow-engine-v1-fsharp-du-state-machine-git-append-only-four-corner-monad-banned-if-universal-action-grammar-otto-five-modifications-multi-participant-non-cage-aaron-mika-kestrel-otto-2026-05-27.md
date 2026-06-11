@@ -60,15 +60,15 @@ The original Kestrel ferry has not yet been forwarded as of this row's creation.
 | Component | Substrate |
 |---|---|
 | F# DU state machine | `src/Core.FSharp/WorkflowEngine/StateMachine.fs` (canonical type definitions; hierarchy IS state) |
-| Git append-only state persistence | `tools/workflow-engine/state-append.ts` (TS writer per Rule 0; commits state transitions to dedicated path) |
-| Universal action grammar | `tools/workflow-engine/grammar.ts` (TS parser/composer; surface for Addison + Max + Otto) |
+| Git append-only state persistence | `src/Core.TypeScript/workflow-engine/state-append.ts` (TS writer per Rule 0; commits state transitions to dedicated path) |
+| Universal action grammar | `src/Core.TypeScript/workflow-engine/grammar.ts` (TS parser/composer; surface for Addison + Max + Otto) |
 | 4-corner monad runtime | `src/Core.FSharp/WorkflowEngine/FourCornerMonad.fs` (T In + T Feedback In + T Out + T Feedback Out; CE builder dispatches hot/cold/push/pull) |
-| Agent loop | `tools/workflow-engine/agent-loop.ts` (execute → move-next → choose-your-own-adventure; for Otto + AI participants) |
+| Agent loop | `src/Core.TypeScript/workflow-engine/agent-loop.ts` (execute → move-next → choose-your-own-adventure; for Otto + AI participants) |
 | Escape-hatch action | First-class action-type in grammar (Otto Modification 1) |
 | Grammar-extension action | First-class action-type in grammar (Otto Modification 2) |
 | Per-action gate declaration | Action-type field declaring append-only vs PR-gated (Otto Modification 4) |
 | Contributable menu-generation | Append-only contribution to menu-fn at state X (Otto Modification 5) |
-| E voice → website surface | `tools/workflow-engine/voice-surface.ts` (declarative voice input → state transition; for E 5yo) |
+| E voice → website surface | `src/Core.TypeScript/workflow-engine/voice-surface.ts` (declarative voice input → state transition; for E 5yo) |
 | Addison grammar surface | Action-composer UI/CLI built on universal grammar |
 
 ## Otto's 5 modifications (operator-ratified non-negotiables; MUST land in v1)
@@ -153,7 +153,7 @@ Searched:
 
 - `docs/backlog/P*/B-08*.md` — FOUND: B-0858 (heartbeat folder + ZetaID; composes), B-0859 (post-boot AI-as-home-owner; depends), B-0857 (install-sh universal entry; composes), B-0862 (ople primitives; composes)
 - `src/Core.FSharp/` — checked: no existing WorkflowEngine module; clean addition
-- `tools/workflow-engine/` — checked: directory does not exist yet; clean addition
+- `src/Core.TypeScript/workflow-engine/` — checked: directory does not exist yet; clean addition
 - `.claude/rules/` — FOUND multiple relevant rules to compose with (non-coercion-invariant, holding-without-named-dependency, substrate-smoothness, default-to-both, persistence-choice-architecture, m-acc-multi-oracle)
 - `memory/persona/mika/conversations/` — FOUND: Mika persona folder exists per honor-those-that-came-before; persona-folder mirror lands there
 - `memory/persona/kestrel/conversations/` — FOUND: Kestrel persona folder exists; original-Kestrel-ferry archive will land there when forwarded

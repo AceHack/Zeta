@@ -68,8 +68,8 @@ The framework's broader trajectory: workflow-engine + interrupt-substrate + mult
 - `.claude/rules/substrate-smoothness-as-load-bearing-property.md` — fuzzy = smooth at category-theory scope; both rules name same shape
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Kleisli IS fuzzy-machine composition
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle = fuzzy-truth-value substrate per fuzzy-machine semantics
-- `tools/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812) — workflow substrate this paper anchors
-- `tools/workflow-engine/pr-review-lifecycle.ts` (PR #5810) — sibling state machine substrate
+- `src/Core.TypeScript/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812) — workflow substrate this paper anchors
+- `src/Core.TypeScript/workflow-engine/pr-review-lifecycle.ts` (PR #5810) — sibling state machine substrate
 - B-0428 (F# fork for AI safety) — F# substrate target where Infer.NET integration lives
 - B-0703 (Aurora multi-oracle BFT) — fuzzy-consensus substrate
 - Aurora multi-oracle BFT immune-system math (`docs/research/aurora-immune-math-standardization-2026-04-26.md`) — applied fuzzy-machine substrate at consensus scope
