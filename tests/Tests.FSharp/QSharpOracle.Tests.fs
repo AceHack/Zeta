@@ -11,14 +11,6 @@ let private qsharpDumpTolerance = 1e-5
 
 let private c = ImaginaryStack.complex
 
-let private real (value: float) : Complex = { Real = value; Imag = 0.0 }
-
-let private phase (angle: float) : Complex =
-    { Real = cos angle; Imag = sin angle }
-
-let private frame (seed: uint64) =
-    Chip8Cow.create seed |> Chip8Cow.loadRom [| 0x60uy; byte seed |]
-
 let private goldenRelativePath =
     Path.Combine("src", "Core.QSharp.ReferenceOracle", "qsharp-golden.json")
 
@@ -130,6 +122,22 @@ let private probabilities (case: JsonElement) =
     let p = case.GetProperty("probabilities")
     p.GetProperty("Zero").GetDouble(), p.GetProperty("One").GetDouble()
 
+let private fsharpSingleQubitCase id =
+    QuantumObservableTreaty.singleQubitMeasurements()
+    |> List.find (fun item -> item.Id = id)
+
+let private fsharpSingletCorner id =
+    (QuantumObservableTreaty.singletChsh()).Corners
+    |> List.find (fun item -> item.Id = id)
+
+let private fsharpBellCoincidenceCase id =
+    QuantumObservableTreaty.bellCoincidences()
+    |> List.find (fun item -> item.Id = id)
+
+let private fsharpInterferenceCase id =
+    QuantumObservableTreaty.interferenceVisibility()
+    |> List.find (fun item -> item.Id = id)
+
 let private assertQSharpColumn (matrix: JsonElement) col (state: QubitIso.JoinState) =
     complexCloseTo (matrixEntry matrix 0 col) state.A
     complexCloseTo (matrixEntry matrix 1 col) state.B
@@ -139,12 +147,6 @@ let private assertQSharpBellColumn (matrix: JsonElement) col (state: BellState.S
     complexCloseTo (matrixEntry matrix 1 col) state.ZeroOne
     complexCloseTo (matrixEntry matrix 2 col) state.OneZero
     complexCloseTo (matrixEntry matrix 3 col) state.OneOne
-
-let private probabilityFor frame probabilities =
-    probabilities
-    |> List.tryFind (fun (f, _) -> f = frame)
-    |> Option.map snd
-    |> Option.defaultValue 0.0
 
 [<Fact>]
 let ``F# reads the committed Q# observable treaty without depending on QDK at test time`` () =
@@ -228,47 +230,50 @@ let ``BellTest canonical CHSH observables match the Q# golden vector`` () =
     let canonical = vectors.GetProperty("bellChsh").GetProperty("canonical")
     let angles = canonical.GetProperty("anglesRadians")
     let correlators = canonical.GetProperty("correlators")
+    let fsharp = QuantumObservableTreaty.canonicalChsh ()
 
-    let a = angles.GetProperty("a").GetDouble()
-    let a' = angles.GetProperty("aPrime").GetDouble()
-    let b = angles.GetProperty("b").GetDouble()
-    let b' = angles.GetProperty("bPrime").GetDouble()
+    closeTo (angles.GetProperty("a").GetDouble()) fsharp.Angles.A
+    closeTo (angles.GetProperty("aPrime").GetDouble()) fsharp.Angles.APrime
+    closeTo (angles.GetProperty("b").GetDouble()) fsharp.Angles.B
+    closeTo (angles.GetProperty("bPrime").GetDouble()) fsharp.Angles.BPrime
 
-    closeTo (correlators.GetProperty("E(a,b)").GetDouble()) (BellTest.correlation a b)
-    closeTo (correlators.GetProperty("E(a,bPrime)").GetDouble()) (BellTest.correlation a b')
-    closeTo (correlators.GetProperty("E(aPrime,b)").GetDouble()) (BellTest.correlation a' b)
-    closeTo (correlators.GetProperty("E(aPrime,bPrime)").GetDouble()) (BellTest.correlation a' b')
-    closeTo (canonical.GetProperty("s").GetDouble()) (BellTest.chsh a a' b b')
-    closeTo (canonical.GetProperty("tsirelson").GetDouble()) BellTest.TsirelsonBound
+    closeTo (correlators.GetProperty("E(a,b)").GetDouble()) fsharp.Correlators.EAB
+    closeTo (correlators.GetProperty("E(a,bPrime)").GetDouble()) fsharp.Correlators.EABPrime
+    closeTo (correlators.GetProperty("E(aPrime,b)").GetDouble()) fsharp.Correlators.EAPrimeB
+    closeTo (correlators.GetProperty("E(aPrime,bPrime)").GetDouble()) fsharp.Correlators.EAPrimeBPrime
+    closeTo (canonical.GetProperty("s").GetDouble()) fsharp.S
+    closeTo (canonical.GetProperty("tsirelson").GetDouble()) fsharp.Tsirelson
+    closeTo (canonical.GetProperty("classicalBound").GetDouble()) fsharp.ClassicalBound
 
 [<Fact>]
 let ``TimeGen phasor CHSH matches Q# singlet corner observables and the analytic value`` () =
     let singlet = vectors.GetProperty("bellChsh").GetProperty("singletCorners")
     let corners = singlet.GetProperty("corners").EnumerateArray() |> Seq.toArray
+    let fsharp = QuantumObservableTreaty.singletChsh ()
 
     Assert.Equal(4, corners.Length)
+    Assert.Equal(corners.Length, fsharp.Corners.Length)
     Assert.Contains("Tsirelson maximality is cited/proved separately", singlet.GetProperty("scope").GetString())
 
-    let mutable observedS = 0.0
-
     for corner in corners do
+        let id = corner.GetProperty("id").GetString()
         let angles = corner.GetProperty("anglesRadians")
-        let a = angles.GetProperty("a").GetDouble()
-        let b = angles.GetProperty("b").GetDouble()
-        let expectedOpposite = corner.GetProperty("oppositeOutcomeProbability").GetDouble()
-        let expectedCorrelation = corner.GetProperty("correlator").GetDouble()
-        let coefficient = corner.GetProperty("coefficient").GetInt32()
+        let expected = fsharpSingletCorner id
 
-        closeToWithin qsharpDumpTolerance expectedOpposite (BellTest.coincidenceProbability a b)
-        closeToWithin qsharpDumpTolerance expectedCorrelation (BellTest.correlation a b)
-        observedS <- observedS + float coefficient * expectedCorrelation
+        closeTo (angles.GetProperty("a").GetDouble()) expected.A
+        closeTo (angles.GetProperty("b").GetDouble()) expected.B
+        closeToWithin qsharpDumpTolerance (corner.GetProperty("oppositeOutcomeProbability").GetDouble()) expected.OppositeOutcomeProbability
+        closeToWithin qsharpDumpTolerance (corner.GetProperty("sameOutcomeProbability").GetDouble()) expected.SameOutcomeProbability
+        closeToWithin qsharpDumpTolerance (corner.GetProperty("correlator").GetDouble()) expected.Correlator
+        Assert.Equal(expected.Coefficient, corner.GetProperty("coefficient").GetInt32())
+        Assert.Equal(expected.Operation, corner.GetProperty("operation").GetString())
 
     let generator = TimeGen.mk "qsharp-singlet-corners" 1 0UL TimeGen.PhasorTsirelson
     let analytic = singlet.GetProperty("analytic").GetDouble()
 
-    closeTo analytic (TimeGen.chsh generator 1)
-    closeToWithin qsharpDumpTolerance analytic observedS
-    closeToWithin qsharpDumpTolerance analytic (singlet.GetProperty("s").GetDouble())
+    closeTo analytic fsharp.Analytic
+    closeTo fsharp.Analytic (TimeGen.chsh generator 1)
+    closeToWithin qsharpDumpTolerance (singlet.GetProperty("s").GetDouble()) fsharp.S
 
 [<Fact>]
 let ``BellState PhiPlus preparation matches the Q# two-qubit oracle`` () =
@@ -291,13 +296,16 @@ let ``BellTest coincidence probability matches Q# Bell analyzer observables`` ()
     let assertCase id =
         let item = bellCoincidenceCase id
         let angles = item.GetProperty("anglesRadians")
-        let a = angles.GetProperty("a").GetDouble()
-        let b = angles.GetProperty("b").GetDouble()
-        let expected = item.GetProperty("probability").GetDouble()
+        let expected = fsharpBellCoincidenceCase id
 
-        closeTo expected (BellTest.coincidenceProbability a b)
-        closeTo expected (PhasorEndurance.overlap a b)
-        closeTo (2.0 * expected - 1.0) (BellTest.correlation a b)
+        Assert.Equal(expected.State, item.GetProperty("state").GetString())
+        Assert.Equal(expected.Operation, item.GetProperty("operation").GetString())
+        Assert.Equal(expected.Event, item.GetProperty("event").GetString())
+        closeTo (angles.GetProperty("a").GetDouble()) expected.A
+        closeTo (angles.GetProperty("b").GetDouble()) expected.B
+        closeTo (item.GetProperty("probability").GetDouble()) expected.Probability
+        closeTo expected.Probability (PhasorEndurance.overlap expected.A expected.B)
+        closeTo (2.0 * expected.Probability - 1.0) (BellTest.correlation expected.A expected.B)
 
     assertCase "PhiPlus same-outcome a=0 b=pi/4"
     assertCase "Singlet opposite-outcome a=0 b=pi/4"
@@ -306,54 +314,33 @@ let ``BellTest coincidence probability matches Q# Bell analyzer observables`` ()
 
 [<Fact>]
 let ``single-qubit probability formulas match the Q# observable treaty`` () =
-    let assertCase id expectedZero expectedOne =
+    let assertCase id =
         let actualZero, actualOne = singleQubitCase id |> probabilities
-        closeTo expectedZero actualZero
-        closeTo expectedOne actualOne
+        let expected = fsharpSingleQubitCase id
 
-    assertCase "H|0>" 0.5 0.5
+        closeTo expected.Probabilities.Zero actualZero
+        closeTo expected.Probabilities.One actualOne
 
-    let ryPiOver3 = singleQubitCase "Ry(pi/3)|0>"
-    let theta3 = ryPiOver3.GetProperty("thetaRadians").GetDouble()
-    assertCase "Ry(pi/3)|0>" ((cos (theta3 / 2.0)) ** 2.0) ((sin (theta3 / 2.0)) ** 2.0)
+    assertCase "H|0>"
+    assertCase "Ry(pi/3)|0>"
+    assertCase "Ry(pi/2)|0>"
 
-    let ryPiOver2 = singleQubitCase "Ry(pi/2)|0>"
-    let theta2 = ryPiOver2.GetProperty("thetaRadians").GetDouble()
-    assertCase "Ry(pi/2)|0>" ((cos (theta2 / 2.0)) ** 2.0) ((sin (theta2 / 2.0)) ** 2.0)
 
 [<Fact>]
 let ``AmplitudeEmu interference observables match the Q# Mach-Zehnder treaty`` () =
-    let detectorZero = frame 0UL
-    let detectorOne = frame 1UL
-    let half = real 0.5
-    let invSqrt2 = real (1.0 / sqrt 2.0)
-
-    let closedInterferometer (phi: float) : AmplitudeEmu.Amp =
-        let phase0 = phase (-phi / 2.0)
-        let phase1 = phase (phi / 2.0)
-
-        [ detectorZero, c.Mul(half, phase0)
-          detectorZero, c.Mul(half, phase1)
-          detectorOne, c.Mul(half, phase0)
-          detectorOne, c.Negate(c.Mul(half, phase1)) ]
-
-    let assertCase id (amp: AmplitudeEmu.Amp) =
+    let assertCase id =
         let expectedZero, expectedOne = interferenceCase id |> probabilities
-        let actual = amp |> AmplitudeEmu.merge |> AmplitudeEmu.bornProb
-        closeTo expectedZero (probabilityFor detectorZero actual)
-        closeTo expectedOne (probabilityFor detectorOne actual)
+        let actual = fsharpInterferenceCase id
+        closeTo expectedZero actual.Probabilities.Zero
+        closeTo expectedOne actual.Probabilities.One
 
-    assertCase
-        "mach-zehnder-open"
-        [ detectorZero, invSqrt2
-          detectorOne, invSqrt2 ]
-
-    [ "mach-zehnder-closed-zero-phase", 0.0
-      "mach-zehnder-closed-pi-over-3-phase", Math.PI / 3.0
-      "mach-zehnder-closed-pi-over-2-phase", Math.PI / 2.0
-      "mach-zehnder-closed-two-pi-over-3-phase", 2.0 * Math.PI / 3.0
-      "mach-zehnder-closed-pi-phase", Math.PI ]
-    |> List.iter (fun (id, phi) -> assertCase id (closedInterferometer phi))
+    [ "mach-zehnder-open"
+      "mach-zehnder-closed-zero-phase"
+      "mach-zehnder-closed-pi-over-3-phase"
+      "mach-zehnder-closed-pi-over-2-phase"
+      "mach-zehnder-closed-two-pi-over-3-phase"
+      "mach-zehnder-closed-pi-phase" ]
+    |> List.iter assertCase
 
 [<Fact>]
 let ``Q# Pauli products pin the hardware-side anticommutation signs`` () =

@@ -12,6 +12,8 @@ Files:
 - `qsharp-golden.json` is the committed reference fixture ordinary CI checks.
 - `qsharp-golden.test.ts` verifies the fixture schema and load-bearing values
   without requiring QDK on every lane.
+- `QuantumObservableTreaty.fs` under `src/Core` names the F#/analytic
+  observable rows that must stay symmetric with this Q# fixture.
 
 Regenerate after changing the Q# source:
 

@@ -245,6 +245,7 @@
     <Compile Include="SoftDashboard.fs" />
     <Compile Include="SoftEmu.fs" />
     <Compile Include="AmplitudeEmu.fs" />
+    <Compile Include="QuantumObservableTreaty.fs" />
     <Compile Include="SoftMem.fs" />
     <Compile Include="SoftDrive.fs" />
     <Compile Include="SoftScope.fs" />
