@@ -158,6 +158,7 @@
     <Compile Include="ZetaBreathe.Tests.fs" />
     <Compile Include="TimeGen.Tests.fs" />
     <Compile Include="Braid.Tests.fs" />
+    <Compile Include="MillBraid.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />
