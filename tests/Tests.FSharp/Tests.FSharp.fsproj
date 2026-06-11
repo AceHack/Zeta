@@ -163,6 +163,7 @@
     <Compile Include="BoundaryLight.Tests.fs" />
     <Compile Include="GeneratorRegistry.Tests.fs" />
     <Compile Include="ZetaIdViz.Tests.fs" />
+    <Compile Include="AnimFlow.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />
