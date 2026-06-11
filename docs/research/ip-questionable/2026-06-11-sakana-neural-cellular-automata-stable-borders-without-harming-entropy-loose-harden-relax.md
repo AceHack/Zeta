@@ -12,6 +12,7 @@ defend direction — "sword and shield"). At a border the system computes which 
 ## The finding Aaron is pointing at (his frame: "stable borders that form like this and don't harm entropy")
 
 The survival THRESHOLD is the only knob, and it sets the regime:
+
 - **too high** → nothing survives (the brutal market; everything crushed);
 - **too low** → empires bloom from nothing and collapse just as fast (addicted to easy money);
 - **the three-stage recipe for STABLE, COEXISTING borders**: **loose (permissive mixing — grow, a big
@@ -26,6 +27,7 @@ The survival THRESHOLD is the only knob, and it sets the regime:
 "Don't harm entropy" is exact: the relax stage works because it STOPS killing weak border cells — it
 preserves the entropy at the boundary instead of collapsing it to one winner. That is our discipline,
 arrived at from the other side:
+
 - the three stages ARE the personal-room law's balance: **harden = the treaty-secured boundary
   (clause 1); relax = compossible freedom (clause 5)** — coexisting borders are exactly "free to expand
   as we like, no one fucks it up for anyone else."
