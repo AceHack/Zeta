@@ -224,6 +224,7 @@
     <Compile Include="SwarmBoardAnsi.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
+    <Compile Include="WheelRoom.fs" />
     <Compile Include="Chip8Observer.fs" />
     <Compile Include="SoftController.fs" />
     <Compile Include="ActionGrammar.fs" />

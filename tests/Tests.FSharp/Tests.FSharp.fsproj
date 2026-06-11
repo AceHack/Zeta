@@ -151,6 +151,7 @@
     <Compile Include="SwarmBoardMesh.Tests.fs" />
     <Compile Include="SwarmBoardAnsi.Tests.fs" />
     <Compile Include="SimLoopTelemetry.Tests.fs" />
+    <Compile Include="WheelRoom.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
