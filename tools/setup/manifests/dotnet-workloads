@@ -1,0 +1,7 @@
+# dotnet WORKLOADS — installed/updated by tools/setup/common/dotnet-workloads.sh (Aaron
+# 2026-06-11: "we might have to install workloads — make sure install.sh and our declarative
+# stuff has that"). Format: one workload id per line; comments start with `#`.
+#
+# Deliberately EMPTY today: no project in-tree needs a workload yet (wasm-tools / aspire /
+# maui land here the day one does — declare, don't speculate). The installer still runs
+# `dotnet workload update` so anything already installed tracks the SDK.

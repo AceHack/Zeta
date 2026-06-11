@@ -152,6 +152,7 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
+"$SETUP_DIR/common/dotnet-workloads.sh"
 "$SETUP_DIR/common/verifiers.sh"
 # TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
 # binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
