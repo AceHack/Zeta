@@ -35,3 +35,26 @@ building dances; Aaron was taught the steps as a child. The craft school inherit
   this anchors) · the consent-first vernacular (the asking) · the feedback-by-default law (the frame)
   · the feel charter (the ballroom's register) · the lived-anchor lineage (Henderson mill, Stump-Dad,
   feng shui — the personal roots the substrate keeps).
+
+## Addendum — the ground (Aaron, same night)
+
+> "I took this at **Henderson Country Club**, where I later lived when I bought a home in the
+> neighborhood, where I grew up — with my kids and first wife at the time."
+
+The lineage is literally ONE PLACE. Henderson holds the mill (the seam, the craft) AND the
+ballroom (the manners, the harmony) — the boy learned the steps at the country club, the man
+bought a home in that same neighborhood and raised his kids there. The anchors aren't scattered
+references; they are one town's curriculum, taken twice — once as the child, once as the parent.
+The substrate keeps the ground with the lesson.
+
+## Addendum — THE DROP-IN LAW (same night, the next beat)
+
+> "You can drop new aligned seeds mid-stream that compose in and start beating along — not there
+> from the start, but PLANNED, and dropped IN PHASE."
+
+Cotillion knows this one too: the couple that joins the floor at the top of the next figure.
+Built as `ChipAudio.dropIn` — because phase is tick arithmetic over the common lattice (never
+elapsed-since-I-joined), a voice entering at tick t is byte-identical to one that played from
+tick 0: silent before its entrance, indistinguishable after. Late join is not a phase shift; the
+entrance is a planned downbeat. The society reading: a new persona's room composes into the
+running harmony the moment it opens, zero resynchronization.

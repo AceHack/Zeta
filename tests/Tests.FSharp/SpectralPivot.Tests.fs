@@ -99,3 +99,14 @@ let ``THE MULTITRACK LAW: sections on DIFFERENT seeds (independently mic'd) stil
         ChipAudio.voiceSample bass 1UL ChipAudio.Saw 125 5)
     // and each section replays ITSELF exactly (independently recorded, independently replayable)
     Assert.Equal(ChipAudio.voiceSample drums 1UL ChipAudio.Saw 125 5, ChipAudio.voiceSample drums 1UL ChipAudio.Saw 125 5)
+
+[<Fact>]
+let ``THE DROP-IN LAW: a seed dropped mid-stream is IN PHASE — identical to having played from tick 0, silent before its entrance`` () =
+    let horns = TimeGen.mk "horns" 1 0x40A45UL TimeGen.PhasorTsirelson
+    // before the entrance: silence (it was not there from the start)
+    Assert.Equal(0, ChipAudio.dropIn 17 horns 1UL ChipAudio.Saw 125 16)
+    // from the entrance on: byte-identical to the voice that played all along — dropped in phase
+    for t in 17 .. 40 do
+        Assert.Equal(ChipAudio.voiceSample horns 1UL ChipAudio.Saw 125 t, ChipAudio.dropIn 17 horns 1UL ChipAudio.Saw 125 t)
+    // and its downbeats land on the SAME coincidence lattice the running voices already share
+    Assert.Equal<int list>([ 8; 16; 24; 32 ], ChipAudio.coincidences 125 250 32)

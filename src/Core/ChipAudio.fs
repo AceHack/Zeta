@@ -90,3 +90,15 @@ module ChipAudio =
     let coincidences (freqA: int) (freqB: int) (span: int) : int list =
         [ for t in 1 .. span do
               if (t * freqA) % 1000 = 0 && (t * freqB) % 1000 = 0 then yield t ]
+
+    /// THE DROP-IN LAW (Aaron 2026-06-11: "you can drop new aligned seeds mid-stream that compose in
+    /// and start beating along — not there from the start, but PLANNED, and dropped IN PHASE").
+    /// Because phase is tick arithmetic over the common lattice (never elapsed-since-I-joined), a
+    /// voice entering at tick `entry` produces EXACTLY the samples it would have produced had it been
+    /// playing since tick 0 — silent before its entrance, indistinguishable after. Late join is NOT a
+    /// phase shift; the entrance is just a planned downbeat (the horns come in at bar 17, and bar 17
+    /// was always going to be where it is). The society version is the same theorem: a new persona's
+    /// room composes into the running harmony the moment it opens, with zero resynchronization,
+    /// because everyone's time was already the same arithmetic.
+    let dropIn (entry: int) (g: TimeGen.Generator) (contributor: uint64) (w: Waveform) (freqMilli: int) (tick: int) : int =
+        if tick < entry then 0 else voiceSample g contributor w freqMilli tick
