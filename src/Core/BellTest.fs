@@ -65,6 +65,11 @@ module BellTest =
     let correlation (a: float) (b: float) : float =
         2.0 * PhasorEndurance.overlap a b - 1.0
 
+    /// Coincidence probability for the cosine-correlator convention: `P(same outcome on Phi+) = cos²((a-b)/2)`.
+    /// For the singlet this same scalar is the opposite-outcome probability, because one outcome axis is flipped.
+    let coincidenceProbability (a: float) (b: float) : float =
+        PhasorEndurance.overlap a b
+
     /// CHSH from four correlators: `S = E(a,b) − E(a,b') + E(a',b) + E(a',b')`.
     let chshOf (eab: float) (eab': float) (ea'b: float) (ea'b': float) : float =
         eab - eab' + ea'b + ea'b'

@@ -81,6 +81,34 @@ def chsh(a: float, ap: float, b: float, bp: float) -> dict[str, Any]:
     }
 
 
+def coincidence(a: float, b: float) -> float:
+    return math.cos((a - b) / 2.0) ** 2
+
+
+def coincidence_case(
+    id: str,
+    state: str,
+    operation: str,
+    a: float,
+    b: float,
+    event: str,
+) -> dict[str, Any]:
+    return {
+        "id": id,
+        "state": state,
+        "operation": operation,
+        "anglesRadians": {
+            "a": clean_float(a),
+            "b": clean_float(b),
+            "delta": clean_float(a - b),
+        },
+        "event": event,
+        "probability": clean_float(coincidence(a, b)),
+        "formula": "cos((a-b)/2)^2",
+        "checks": ["BellTest.coincidenceProbability", "PhasorEndurance.overlap"],
+    }
+
+
 def build_vectors() -> dict[str, Any]:
     qsharp.init()
     qsharp.eval(QSHARP_SOURCE.read_text(encoding="utf-8"))
@@ -148,6 +176,40 @@ def build_vectors() -> dict[str, Any]:
                 "canonical": chsh(0.0, math.pi / 2.0, math.pi / 4.0, 3.0 * math.pi / 4.0),
                 "checks": ["BellTest.correlation", "BellTest.chsh", "BellTest.TsirelsonBound"],
             },
+            "bellCoincidence": [
+                coincidence_case(
+                    "PhiPlus same-outcome a=0 b=pi/4",
+                    "PhiPlus",
+                    "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+                    0.0,
+                    math.pi / 4.0,
+                    "sameOutcome",
+                ),
+                coincidence_case(
+                    "Singlet opposite-outcome a=0 b=pi/4",
+                    "Singlet",
+                    "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers",
+                    0.0,
+                    math.pi / 4.0,
+                    "oppositeOutcome",
+                ),
+                coincidence_case(
+                    "PhiPlus same-outcome a=0 b=pi/2",
+                    "PhiPlus",
+                    "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+                    0.0,
+                    math.pi / 2.0,
+                    "sameOutcome",
+                ),
+                coincidence_case(
+                    "PhiPlus same-outcome a=0 b=pi",
+                    "PhiPlus",
+                    "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+                    0.0,
+                    math.pi,
+                    "sameOutcome",
+                ),
+            ],
             "interferenceVisibility": [
                 {
                     "id": "mach-zehnder-open",

@@ -24,15 +24,99 @@
         "s": 2.828427124746,
         "tsirelson": 2.828427124746
       },
-      "checks": ["BellTest.correlation", "BellTest.chsh", "BellTest.TsirelsonBound"],
+      "checks": [
+        "BellTest.correlation",
+        "BellTest.chsh",
+        "BellTest.TsirelsonBound"
+      ],
       "correlatorFormula": "E(a,b)=cos(a-b)",
       "id": "BellPhiPlus canonical CHSH",
       "preparation": {
         "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlus",
-        "probabilities": [0.5, 0.0, 0.0, 0.5],
-        "stateBasis": ["|00>", "|01>", "|10>", "|11>"]
+        "probabilities": [
+          0.5,
+          0.0,
+          0.0,
+          0.5
+        ],
+        "stateBasis": [
+          "|00>",
+          "|01>",
+          "|10>",
+          "|11>"
+        ]
       }
     },
+    "bellCoincidence": [
+      {
+        "anglesRadians": {
+          "a": 0.0,
+          "b": 0.785398163397,
+          "delta": -0.785398163397
+        },
+        "checks": [
+          "BellTest.coincidenceProbability",
+          "PhasorEndurance.overlap"
+        ],
+        "event": "sameOutcome",
+        "formula": "cos((a-b)/2)^2",
+        "id": "PhiPlus same-outcome a=0 b=pi/4",
+        "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+        "probability": 0.853553390593,
+        "state": "PhiPlus"
+      },
+      {
+        "anglesRadians": {
+          "a": 0.0,
+          "b": 0.785398163397,
+          "delta": -0.785398163397
+        },
+        "checks": [
+          "BellTest.coincidenceProbability",
+          "PhasorEndurance.overlap"
+        ],
+        "event": "oppositeOutcome",
+        "formula": "cos((a-b)/2)^2",
+        "id": "Singlet opposite-outcome a=0 b=pi/4",
+        "operation": "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers",
+        "probability": 0.853553390593,
+        "state": "Singlet"
+      },
+      {
+        "anglesRadians": {
+          "a": 0.0,
+          "b": 1.570796326795,
+          "delta": -1.570796326795
+        },
+        "checks": [
+          "BellTest.coincidenceProbability",
+          "PhasorEndurance.overlap"
+        ],
+        "event": "sameOutcome",
+        "formula": "cos((a-b)/2)^2",
+        "id": "PhiPlus same-outcome a=0 b=pi/2",
+        "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+        "probability": 0.5,
+        "state": "PhiPlus"
+      },
+      {
+        "anglesRadians": {
+          "a": 0.0,
+          "b": 3.14159265359,
+          "delta": -3.14159265359
+        },
+        "checks": [
+          "BellTest.coincidenceProbability",
+          "PhasorEndurance.overlap"
+        ],
+        "event": "sameOutcome",
+        "formula": "cos((a-b)/2)^2",
+        "id": "PhiPlus same-outcome a=0 b=pi",
+        "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+        "probability": 0.0,
+        "state": "PhiPlus"
+      }
+    ],
     "gateUnitaries": {
       "BellPhiPlusPrep": [
         [
@@ -309,7 +393,10 @@
     },
     "interferenceVisibility": [
       {
-        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
+        "checks": [
+          "AmplitudeEmu.merge",
+          "AmplitudeEmu.intensity"
+        ],
         "id": "mach-zehnder-open",
         "operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
         "probabilities": {
@@ -318,7 +405,10 @@
         }
       },
       {
-        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
+        "checks": [
+          "AmplitudeEmu.merge",
+          "AmplitudeEmu.intensity"
+        ],
         "id": "mach-zehnder-closed-zero-phase",
         "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
         "probabilities": {
@@ -328,7 +418,10 @@
         "visibility": 1.0
       },
       {
-        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
+        "checks": [
+          "AmplitudeEmu.merge",
+          "AmplitudeEmu.intensity"
+        ],
         "id": "mach-zehnder-closed-pi-phase",
         "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
         "probabilities": {
@@ -341,7 +434,10 @@
     "singleQubitMeasurement": [
       {
         "basis": "Z",
-        "checks": ["AmplitudeEmu.bornProb", "QubitIso.H"],
+        "checks": [
+          "AmplitudeEmu.bornProb",
+          "QubitIso.H"
+        ],
         "id": "H|0>",
         "operation": "Zeta.ReferenceOracle.ApplyH",
         "probabilities": {
@@ -351,7 +447,10 @@
       },
       {
         "basis": "Z",
-        "checks": ["AmplitudeEmu.bornProb", "QubitIso.Ry"],
+        "checks": [
+          "AmplitudeEmu.bornProb",
+          "QubitIso.Ry"
+        ],
         "formula": "P(Zero)=cos(theta/2)^2; P(One)=sin(theta/2)^2",
         "id": "Ry(pi/3)|0>",
         "operation": "Zeta.ReferenceOracle.ApplyRyPiOver3",
@@ -363,7 +462,10 @@
       },
       {
         "basis": "Z",
-        "checks": ["AmplitudeEmu.bornProb", "QubitIso.Ry"],
+        "checks": [
+          "AmplitudeEmu.bornProb",
+          "QubitIso.Ry"
+        ],
         "formula": "P(Zero)=cos(theta/2)^2; P(One)=sin(theta/2)^2",
         "id": "Ry(pi/2)|0>",
         "operation": "Zeta.ReferenceOracle.ApplyRyPiOver2",

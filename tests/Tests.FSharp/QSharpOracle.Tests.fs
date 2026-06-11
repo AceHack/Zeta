@@ -20,7 +20,7 @@ let rec private findRepoRoot (dir: DirectoryInfo) =
     elif isNull dir.Parent then failwith "Could not find repository root from test output directory."
     else findRepoRoot dir.Parent
 
-let private root = findRepoRoot (DirectoryInfo(Environment.CurrentDirectory))
+let private root = findRepoRoot (DirectoryInfo(__SOURCE_DIRECTORY__))
 
 let private goldenPath =
     Path.Combine(root, "tools", "qsharp-oracle", "qsharp-golden.json")
@@ -58,6 +58,10 @@ let private singleQubitCase (id: string) =
 
 let private interferenceCase (id: string) =
     vectors.GetProperty("interferenceVisibility").EnumerateArray()
+    |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
+
+let private bellCoincidenceCase (id: string) =
+    vectors.GetProperty("bellCoincidence").EnumerateArray()
     |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
 
 let private probabilities (case: JsonElement) =
@@ -190,6 +194,24 @@ let ``BellState PhiPlus preparation matches the Q# two-qubit oracle`` () =
     |> Array.iter (fun (expected, actual) -> closeTo expected actual)
 
     closeTo 1.0 (BellState.normSq prepared)
+
+[<Fact>]
+let ``BellTest coincidence probability matches Q# Bell analyzer observables`` () =
+    let assertCase id =
+        let item = bellCoincidenceCase id
+        let angles = item.GetProperty("anglesRadians")
+        let a = angles.GetProperty("a").GetDouble()
+        let b = angles.GetProperty("b").GetDouble()
+        let expected = item.GetProperty("probability").GetDouble()
+
+        closeTo expected (BellTest.coincidenceProbability a b)
+        closeTo expected (PhasorEndurance.overlap a b)
+        closeTo (2.0 * expected - 1.0) (BellTest.correlation a b)
+
+    assertCase "PhiPlus same-outcome a=0 b=pi/4"
+    assertCase "Singlet opposite-outcome a=0 b=pi/4"
+    assertCase "PhiPlus same-outcome a=0 b=pi/2"
+    assertCase "PhiPlus same-outcome a=0 b=pi"
 
 [<Fact>]
 let ``single-qubit probability formulas match the Q# observable treaty`` () =

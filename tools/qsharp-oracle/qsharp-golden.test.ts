@@ -51,6 +51,24 @@ test("Bell/CHSH vector pins Tsirelson and the canonical correlators", () => {
   expect(canonical.s).toBeGreaterThan(canonical.classicalBound);
 });
 
+test("Bell coincidence observables pin PhiPlus and singlet outcome conventions", () => {
+  const cases = new Map(golden.vectors.bellCoincidence.map((v) => [v.id, v]));
+
+  const phiPiOver4 = cases.get("PhiPlus same-outcome a=0 b=pi/4");
+  closeTo(phiPiOver4?.probability as number, Math.cos(Math.PI / 8) ** 2);
+  expect(phiPiOver4?.event).toBe("sameOutcome");
+
+  const singletPiOver4 = cases.get("Singlet opposite-outcome a=0 b=pi/4");
+  closeTo(singletPiOver4?.probability as number, Math.cos(Math.PI / 8) ** 2);
+  expect(singletPiOver4?.event).toBe("oppositeOutcome");
+
+  const phiPiOver2 = cases.get("PhiPlus same-outcome a=0 b=pi/2");
+  closeTo(phiPiOver2?.probability as number, 0.5);
+
+  const phiPi = cases.get("PhiPlus same-outcome a=0 b=pi");
+  closeTo(phiPi?.probability as number, 0);
+});
+
 test("interference observables distinguish open, reinforce, and cancel cases", () => {
   const cases = new Map(golden.vectors.interferenceVisibility.map((v) => [v.id, v]));
 

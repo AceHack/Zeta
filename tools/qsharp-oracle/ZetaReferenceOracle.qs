@@ -40,6 +40,37 @@ namespace Zeta.ReferenceOracle {
         CNOT(qs[0], qs[1]);
     }
 
+    operation ApplyBellSinglet(qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        CNOT(qs[0], qs[1]);
+        X(qs[1]);
+        Z(qs[1]);
+    }
+
+    operation ApplyBellPhiPlusAnalyzers(a : Double, b : Double, qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        CNOT(qs[0], qs[1]);
+        Ry(-a, qs[0]);
+        Ry(-b, qs[1]);
+    }
+
+    operation ApplyBellSingletAnalyzers(a : Double, b : Double, qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        CNOT(qs[0], qs[1]);
+        X(qs[1]);
+        Z(qs[1]);
+        Ry(-a, qs[0]);
+        Ry(-b, qs[1]);
+    }
+
+    operation ApplyBellPhiPlusAnalyzersCanonical(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyBellPhiPlusAnalyzers(0.0, 3.141592653589793 / 4.0, qs);
+    }
+
+    operation ApplyBellSingletAnalyzersCanonical(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyBellSingletAnalyzers(0.0, 3.141592653589793 / 4.0, qs);
+    }
+
     operation ApplyMachZehnderOpen(qs : Qubit[]) : Unit is Adj + Ctl {
         H(qs[0]);
     }
