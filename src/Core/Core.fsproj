@@ -226,6 +226,7 @@
     <Compile Include="ZetaMax.fs" />
     <Compile Include="Chip9Phys.fs" />
     <Compile Include="TimeGen.fs" />
+    <Compile Include="Braid.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
