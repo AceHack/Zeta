@@ -147,6 +147,7 @@
     <Compile Include="LinguisticSeedPsd.Tests.fs" />
     <Compile Include="Chip8Arcade.Tests.fs" />
     <Compile Include="Chip8Citizen.Tests.fs" />
+    <Compile Include="SwarmBoard.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
