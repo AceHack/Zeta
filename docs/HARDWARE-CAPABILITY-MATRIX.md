@@ -20,10 +20,10 @@ replay). Idempotent upsert by (target, surface). No aspirational greens.
 | **macos-arm64** (macos-15, M-class) | ✅ | ✅ | ✅ | ✅ | ✅ | UNKNOWN | n/a (host) | macos-15 workflow + this dev machine (Darwin 25.4, daily) |
 | **qemu-x86_64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | ✅ **boots, in CI** | `build-ai-cluster-iso.yml` + `tools/ci/qemu-boot-test.ts` (serial-console login-prompt smoke test) + `qemu-full-install-test.ts`; green runs 2026-06-10 |
 | **qemu-aarch64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN — the remaining B-1024 slice-1 gap (x86_64 proven; arch port of the boot test) | none yet |
-| **raspberry-pi-4/5** (metal) | UNKNOWN (arm64 .NET exists upstream) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN (RNS upstream supports Pi) | UNKNOWN | Aaron has the hardware; nothing recorded |
+| **raspberry-pi-4/5** (metal) | UNKNOWN (arm64 .NET exists upstream) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN (RNS upstream supports Pi) | UNKNOWN | Aaron has the hardware (Pi + NAS equipment on the bench, 2026-06-11); nothing recorded; the aarch64 CI ISO artifact (slice 1) is the flash source |
 | **microcontroller class** (RNode-ish) | ❌ honest-no (no .NET) | ❌ | UNKNOWN (no_std uninvestigated) | UNKNOWN (a C CHIP-8 fits the class) | ❌ (sim is .NET) | UNKNOWN (RNode firmware proves the radio layer) | ❌ | class analysis only — the honest-capability probe is B-1024 rung 5 |
 | **nixos-x64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | named in the 6×6×6 room axis; no recorded run |
-| **nvidia-gpu (CUDA, small AND large)** | UNKNOWN (ILGPU/.NET-CUDA exists upstream) | UNKNOWN | UNKNOWN (cudarc) | UNKNOWN (a shader CHIP-8 is the lens-on-GPU probe) | UNKNOWN | n/a | n/a | **hardware IN HAND — Aaron: "tons hooked up right now, ready" (2026-06-11); B-0725 lineage; the B-1025 shader rung jumps the queue** |
+| **nvidia-gpu (CUDA, small AND large)** | UNKNOWN (ILGPU/.NET-CUDA exists upstream) | UNKNOWN | UNKNOWN (cudarc) | UNKNOWN (a shader CHIP-8 is the lens-on-GPU probe) | UNKNOWN | n/a | n/a | **hardware IN HAND — Aaron 2026-06-11: 4 machines waiting incl. RTX 4090 + RTX 3090; "tons hooked up right now, ready"; B-0725 lineage; the B-1025 shader rung jumps the queue** |
 
 Legend: ✅ proven green · ❌ honest-no (class can't carry it — declared, like Mono1) · UNKNOWN = no
 evidence either way (NOT a no; a cell waiting for its first run).

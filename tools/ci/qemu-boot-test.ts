@@ -46,25 +46,70 @@ interface BootResult {
   serialLogTail?: string;
 }
 
+type Arch = "x86_64" | "aarch64";
+
 function usage(): never {
-  console.error("usage: bun tools/ci/qemu-boot-test.ts <iso-path>");
+  console.error("usage: bun tools/ci/qemu-boot-test.ts <iso-path> [--arch x86_64|aarch64]");
   process.exit(2);
 }
 
-function checkDependencies(): string | null {
-  // qemu-system-x86_64 must be installed (apt-get install qemu-system-x86)
+function qemuBinary(arch: Arch): string {
+  return arch === "aarch64" ? "qemu-system-aarch64" : "qemu-system-x86_64";
+}
+
+// aarch64 UEFI firmware (apt: qemu-efi-aarch64). -machine virt has no
+// BIOS path; EDK2 is the only boot road. First existing candidate wins.
+const AARCH64_EFI_CANDIDATES = [
+  "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd",
+  "/usr/share/AAVMF/AAVMF_CODE.fd",
+];
+
+function checkDependencies(arch: Arch): string | null {
+  const bin = qemuBinary(arch);
+  const pkg = arch === "aarch64" ? "qemu-system-arm qemu-efi-aarch64" : "qemu-system-x86";
   try {
-    const result = Bun.spawnSync(["qemu-system-x86_64", "--version"]);
+    const result = Bun.spawnSync([bin, "--version"]);
     if (result.exitCode !== 0) {
-      return "qemu-system-x86_64 not found or non-zero exit; install via `apt-get install -y qemu-system-x86`";
+      return `${bin} not found or non-zero exit; install via \`apt-get install -y ${pkg}\``;
     }
   } catch {
-    return "qemu-system-x86_64 not found in PATH; install via `apt-get install -y qemu-system-x86`";
+    return `${bin} not found in PATH; install via \`apt-get install -y ${pkg}\``;
+  }
+  if (arch === "aarch64" && !AARCH64_EFI_CANDIDATES.some((f) => existsSync(f))) {
+    return `aarch64 UEFI firmware not found (looked for ${AARCH64_EFI_CANDIDATES.join(", ")}); install via \`apt-get install -y qemu-efi-aarch64\``;
   }
   return null;
 }
 
-function buildQemuArgs(isoPath: string, serialLogPath: string): string[] {
+function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): string[] {
+  const kvm = existsSync(KVM_PATH);
+
+  if (arch === "aarch64") {
+    // -machine virt + EDK2 UEFI; the PL011 serial (ttyAMA0 — matched by
+    // the installer's console= kernel param) lands in the serial log.
+    const efi = AARCH64_EFI_CANDIDATES.find((f) => existsSync(f))!;
+    const args: string[] = [
+      "-machine", "virt",
+      "-m", String(MEMORY_MB),
+      "-smp", "2",
+      "-bios", efi,
+      "-cdrom", isoPath,
+      "-boot", "d",
+      "-serial", `file:${serialLogPath}`,
+      "-display", "none",
+      "-no-reboot",
+    ];
+    // KVM only accelerates same-arch (an aarch64 host, e.g. the
+    // ubuntu-24.04-arm runners); otherwise TCG with -cpu max.
+    if (kvm && process.arch === "arm64") {
+      args.push("-enable-kvm", "-cpu", "host");
+    } else {
+      args.push("-cpu", "max");
+      console.warn(`[qemu-boot-test] aarch64 without same-arch KVM; using TCG (will be slow)`);
+    }
+    return args;
+  }
+
   const args: string[] = [
     "-machine", "q35",
     "-m", String(MEMORY_MB),
@@ -81,7 +126,7 @@ function buildQemuArgs(isoPath: string, serialLogPath: string): string[] {
   // KVM acceleration when /dev/kvm is available (GitHub Actions
   // ubuntu-24.04 supports nested KVM). Falls back to TCG (slow but
   // works) when KVM unavailable (e.g., macOS local testing).
-  if (existsSync(KVM_PATH)) {
+  if (kvm) {
     args.push("-enable-kvm", "-cpu", "host");
   } else {
     args.push("-cpu", "qemu64");
@@ -124,7 +169,16 @@ async function waitForLoginPrompt(serialLogPath: string): Promise<BootResult> {
 }
 
 async function main(): Promise<never> {
-  const [isoPath] = process.argv.slice(2);
+  const argv = process.argv.slice(2);
+  const archFlag = argv.indexOf("--arch");
+  let arch: Arch = "x86_64";
+  if (archFlag >= 0) {
+    const v = argv[archFlag + 1];
+    if (v !== "x86_64" && v !== "aarch64") usage();
+    arch = v;
+    argv.splice(archFlag, 2);
+  }
+  const [isoPath] = argv;
   if (!isoPath) usage();
 
   if (!existsSync(isoPath)) {
@@ -132,7 +186,7 @@ async function main(): Promise<never> {
     process.exit(2);
   }
 
-  const depErr = checkDependencies();
+  const depErr = checkDependencies(arch);
   if (depErr) {
     console.error(`[qemu-boot-test] ${depErr}`);
     process.exit(2);
@@ -146,10 +200,11 @@ async function main(): Promise<never> {
   console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${TIMEOUT_SECONDS}s`);
   console.log(`[qemu-boot-test] Expecting login prompt: "${EXPECTED_LOGIN_PROMPT}"`);
 
-  const qemuArgs = buildQemuArgs(isoPath, serialLogPath);
-  console.log(`[qemu-boot-test] Launching: qemu-system-x86_64 ${qemuArgs.join(" ")}`);
+  console.log(`[qemu-boot-test] Arch: ${arch}`);
+  const qemuArgs = buildQemuArgs(arch, isoPath, serialLogPath);
+  console.log(`[qemu-boot-test] Launching: ${qemuBinary(arch)} ${qemuArgs.join(" ")}`);
 
-  const qemu = spawn("qemu-system-x86_64", qemuArgs, {
+  const qemu = spawn(qemuBinary(arch), qemuArgs, {
     stdio: ["ignore", "inherit", "inherit"],
   });
 

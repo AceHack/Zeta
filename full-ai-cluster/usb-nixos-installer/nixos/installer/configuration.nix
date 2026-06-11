@@ -30,6 +30,11 @@
   # flow); ttyS0 is mirrored secondary at 115200 8N1 (standard).
   boot.kernelParams = [
     "console=ttyS0,115200n8"
+    # aarch64 (QEMU -machine virt / Pi): the PL011 serial is ttyAMA0,
+    # not ttyS0. Each arch ignores the console= naming a UART it does
+    # not have, so listing both keeps ONE config for both ISOs
+    # (B-1024 slice 1). tty1 stays last = primary /dev/console.
+    "console=ttyAMA0,115200n8"
     "console=tty1"
   ];
 

@@ -68,6 +68,10 @@
       isoBuildSystems = [
         "x86_64-linux"
         "aarch64-darwin"
+        # B-1024 slice 1 (2026-06-11): aarch64-linux builds the aarch64
+        # installer ISO natively (GitHub ubuntu-24.04-arm runners; Pi
+        # bring-up path). Selects nixosConfigurations.installer-aarch64.
+        "aarch64-linux"
       ];
 
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
@@ -82,6 +86,16 @@
         # USB installer ISO — identical to the standalone
         # usb-nixos-installer/ flake at the parent level.
         installer = mkSystem {
+          modules = [
+            ./usb-nixos-installer/nixos/installer/configuration.nix
+          ];
+        };
+
+        # The SAME installer configuration built for aarch64 (B-1024
+        # slice 1: QEMU aarch64 boot in CI; the Raspberry Pi rung). One
+        # source of truth — only `system` differs.
+        installer-aarch64 = mkSystem {
+          system = "aarch64-linux";
           modules = [
             ./usb-nixos-installer/nixos/installer/configuration.nix
           ];
@@ -178,8 +192,13 @@
       in
       {
         packages = nixpkgs.lib.optionalAttrs (builtins.elem system isoBuildSystems) {
+          # aarch64-linux hosts build the aarch64 installer natively; all
+          # other ISO-building systems target the x86_64 installer (the
+          # aarch64-darwin case cross-builds it via linux-builder).
           installer-iso =
-            self.nixosConfigurations.installer.config.system.build.isoImage;
+            (if system == "aarch64-linux"
+             then self.nixosConfigurations.installer-aarch64
+             else self.nixosConfigurations.installer).config.system.build.isoImage;
           default = self.packages.${system}.installer-iso;
         };
 
