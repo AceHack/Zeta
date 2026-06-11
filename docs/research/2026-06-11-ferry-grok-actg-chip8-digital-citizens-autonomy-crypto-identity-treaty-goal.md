@@ -48,6 +48,11 @@
 
 ## Peel (Mirror → Beacon)
 
+> **CORRECTION (2026-06-11):** DNA/ACTG is a **metaphor only** — see
+> `2026-06-11-correction-the-real-build-is-rgb-cmyk-ray-tracing-of-chip8-instructions-dna-is-metaphor.md`.
+> The real build is **RGB/CMYK ray-tracing of CHIP-8 instructions**; the citizenship checklist below stands
+> on its own anchors, not on the DNA letters.
+
 **What's real and load-bearing:** the GOAL restatement. Not "clever agents playing with themselves"
 (the funny tangent Grok ran with) but **CHIP-8 instances as full citizens of the society** — independent
 decisions, identity, reflection, interaction with the outside, purpose. That is the actual target, and
