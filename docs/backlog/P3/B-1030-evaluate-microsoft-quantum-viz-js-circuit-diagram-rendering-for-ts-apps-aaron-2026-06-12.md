@@ -19,6 +19,7 @@ shipped via the Q# dev blog; repo active-status UNCONFIRMED — the eval must ch
 recency and whether the qsharp-lang reorg superseded it.
 
 Eval criteria (an afternoon, not a project):
+
 1. Maintenance: last release/commit; open-issue triage; superseded-by status.
 2. Output discipline: is the rendered HTML/SVG deterministic (same circuit → same bytes)? If yes
    it can golden-lock; if no, quantum-circuit's own SVG export (B-1029 item 3) wins by default.
