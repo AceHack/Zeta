@@ -72,12 +72,13 @@ meters the speculative future in BYTES.
 3. **Flux-metered speculation**: SoftValue/tank-funded `lookAhead` depth+breadth in SoftChip8 (the
    throttler already owns the knob conceptually); CHIP-8 INPUT as scheduler arrivals (forkOnInput wired
    to the present-crossing leg).
-4. **FerryThrottler ⇄ SoftThrottle cross-pollination** (Aaron asked): hard gains = adopt the ported
-   Limiter-as-fold for boat assembly (restores the Itron original's pluggability; count+bytes become
-   instances), Tank-funded dynamic MaxBatchBytes (bank idle capacity → resonant bursts), gradient
-   front-door before EnqueueAsync (pressure = depth/MaxQueueSize). Soft gains (later, with triggers):
-   partition-keyed multi-boat state (BatchThrottler's CompareBatchByCreated) when multi-stream arrives.
-5. **Salon as a LinguisticSeed.Pack** (room = seed+extensions+parameters made literal) · conformal-GA
+4. ~~FerryThrottler ⇄ SoftThrottle cross-pollination~~ **DEFERRED-WITH-TRIGGERS (Rodney verdict
+   2026-06-11):** the boat loop already IMPLEMENTS Aaron's count+bytes limiter pair, tight and proven —
+   generalizing the hot path with no third limiter kind demanding it = accidental complexity. Reopen
+   triggers: Limiter-as-fold into boats WHEN a third limiter kind has a consumer; Tank-funded
+   MaxBatchBytes WHEN a resonance consumer measures it (Naledi bench first); gradient front-door WHEN a
+   queue-depth surface is exposed. Soft side: partition-keyed multi-boat when multi-stream arrives.
+5. ~~Salon as a LinguisticSeed.Pack~~ **DONE 2026-06-11** (Salon.seedPack — Jaccard/min-max kernel is PSD, the Mercer witness holds; Salon.asRoom = seed+extensions+parameters literal; OCP proven: an added pack lifts the room over its threshold without editing it) · conformal-GA
    slice (Cl3's flagged "Sequoia soft memory distance") · B-1023 (gated) · B-0945 substrate.
 6. Loose: sim/mea/cut console binary; the floated outside-cube verbs (rem/whe/pay/att/how/man/whi/way —
    Aaron's call); shader memory/GC; Q# golden vectors (Vera).

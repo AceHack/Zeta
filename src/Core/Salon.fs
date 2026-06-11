@@ -71,3 +71,37 @@ module Salon =
 
     /// The stations that are working slices today (Live = true) — what you can actually use at the salon now.
     let liveStations: Station list = stations |> List.filter (fun s -> s.Live)
+
+    // ── The salon as a LinguisticSeed.Pack (room = seed + extensions + parameters, made literal) ──
+    // The salon's soft-tie similarity IS a kernel: Jaccard over MinHash sketches is the min-max kernel,
+    // PSD (Gärtner; the min-max/Jaccard kernel literature) — so the salon's offerings compose into the
+    // seed language under Mercer closure, and a salon ROOM is literally seed + extensions(Pack) +
+    // parameters(budget/threshold), ticking to its sign-off.
+
+    /// The Jaccard (min-max) kernel over byte strands — the soft tie's similarity, kernel-shaped. PSD.
+    let jaccardKernel: LinguisticSeed.Kernel<byte[]> =
+        fun a b -> FingerprintPrism.softBytesSimilarity (FingerprintPrism.softBytes a) (FingerprintPrism.softBytes b)
+
+    /// The salon's extension pack — its kernels, composable into any seed (OCP: add, never edit).
+    let seedPack: LinguisticSeed.Pack<byte[]> =
+        LinguisticSeed.pack
+            "salon"
+            [ "tie-jaccard", jaccardKernel
+              "exact", LinguisticSeed.indicator ]
+
+    /// A salon ROOM, literally `seed + extensions + parameters`: state = the running kernel evaluation
+    /// of two strands under the COMPOSED pack (seed ∪ salon extensions); parameters = budget + the
+    /// sign-off threshold; resolves when the composed kernel clears it.
+    let asRoom (extraPacks: LinguisticSeed.Pack<byte[]> list) (a: byte[]) (b: byte[]) (budget: int) (threshold: float) : SimFramework.Room<float> =
+        let kernel = LinguisticSeed.composePacks (seedPack :: extraPacks)
+        SimFramework.room
+            "salon-room"
+            (fun _ -> 0.0)
+            [ SoftScheduler.handler
+                  "salon-kernel"
+                  (function
+                  | TimerElapsed _ -> true
+                  | _ -> false)
+                  (fun _ _ -> System.Threading.Tasks.Task.FromResult(Ok(kernel a b))) ]
+            budget
+            (fun v -> v >= threshold)
