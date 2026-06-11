@@ -126,3 +126,48 @@ let ``resolution is the capability calculus: live when the host has it; injected
     Assert.Equal(MediaLines.Live tvId, MediaLines.resolveIo (Set.ofList [ tvId ]) Set.empty e)
     Assert.Equal(MediaLines.Injected tvId, MediaLines.resolveIo Set.empty (Set.ofList [ tvId ]) e)
     Assert.Equal(MediaLines.Mock tvId, MediaLines.resolveIo Set.empty Set.empty e) // degrades honestly
+
+// ── constants (WHY and WHAT required), meta-dimensions, and the lint ──
+
+[<Fact>]
+let ``a constant without WHAT and WHY is a magic number — the lint refuses it`` () =
+    let bad = "constant\tmax-laps\t1000"
+    let good = "constant\tmax-laps\t1000\tthe SimLoop lap rail\tno one gets to run for infinity"
+    match MediaLines.parse bad, MediaLines.parse good with
+    | Ok b, Ok g ->
+        Assert.Equal(1, List.length (MediaLines.lint b))
+        Assert.Contains("magic number", (MediaLines.lint b |> List.head).Problem)
+        Assert.Equal<MediaLines.LintFinding list>([], MediaLines.lint g)
+    | _ -> failwith "parse failed"
+
+[<Fact>]
+let ``a dimension REBINDS the deep-pixel field — declared, never assumed; lint checks the declaration`` () =
+    let ok = "dimension\tdepth\tuncertainty-field\tpsych-z-from-contrast-pairs"
+    let bad = "dimension\tdepth"
+    match MediaLines.parse ok, MediaLines.parse bad with
+    | Ok o, Error _ -> Assert.Equal<MediaLines.LintFinding list>([], MediaLines.lint o)
+    | Ok o, Ok b ->
+        Assert.Equal<MediaLines.LintFinding list>([], MediaLines.lint o)
+        Assert.Equal(1, List.length (MediaLines.lint b))
+    | _ -> failwith "parse failed"
+
+[<Fact>]
+let ``the lint enforces DI-from-the-start: gen/io first fields must be 32-hex ZetaIds`` () =
+    let bad = "gen\tstars\tnot-a-zetaid\t1\t99"
+    let good = sprintf "gen\tstars\t%s\t1\t99" (GeneratorRegistry.idOf "boundary.scatter" 1)
+    match MediaLines.parse bad, MediaLines.parse good with
+    | Ok b, Ok g ->
+        Assert.Equal(1, List.length (MediaLines.lint b))
+        Assert.Equal<MediaLines.LintFinding list>([], MediaLines.lint g)
+    | _ -> failwith "parse failed"
+
+[<Fact>]
+let ``the lint catches missing anim frames and duplicates — but stays SILENT on carried future kinds`` () =
+    let doc = "frame\tidle\taa\nanim\tgo\tidle,missing\nmeta\tname\tx\nmeta\tname\ty\nholo3d\tbust\twhatever"
+    match MediaLines.parse doc with
+    | Ok d ->
+        let findings = MediaLines.lint d
+        Assert.True(findings |> List.exists (fun f -> f.Problem.Contains "missing frame 'missing'"))
+        Assert.True(findings |> List.exists (fun f -> f.Problem = "duplicate (kind, name)"))
+        Assert.False(findings |> List.exists (fun f -> f.Kind = "holo3d")) // the future is not a lint error
+    | Error e -> failwith e

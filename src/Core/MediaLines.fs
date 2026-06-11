@@ -90,7 +90,7 @@ module MediaLines =
 
     /// The kinds THIS reader understands (everything else is carried, untouched — the expansion law).
     let knownKinds: Set<string> =
-        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"; "io"; "button" ]
+        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"; "io"; "button"; "constant"; "dimension" ]
 
     /// The entries a reader carries without understanding — future media types in transit.
     let carried (d: Doc) : Entry list =
@@ -135,6 +135,56 @@ module MediaLines =
         | zid :: _ when Set.contains zid granted -> Injected zid
         | zid :: _ -> Mock zid
         | [] -> Mock ""
+
+    // ── constants, meta-dimensions, and THE LINT (Aaron 2026-06-11: "we should have constants —
+    // constants MUST have WHY and WHAT" / "rx can define meta-dimensions that travel on the pixels
+    // instead of uncertainty, if it makes sense — CMYK-kind of sharp stuff" / "we need lint for our
+    // file"). A `constant` line is `constant <name> <value> <WHAT> <WHY>` — a value with no stated
+    // WHAT and WHY is not a constant, it is a magic number, and the lint refuses it (the Stump-Dad
+    // rule applied to numbers: every value answers why). A `dimension` line REBINDS what the deep
+    // pixel field carries — `dimension <name> <field> <semantics>` (uncertainty is the default; Rx
+    // may rebind to depth, CMYK-K, persistence, trick-load… the pixel's meta-dimension is DECLARED,
+    // never assumed). The lint checks structure, never style — and per the expansion law it stays
+    // SILENT about carried (unknown) kinds: the future is not a lint error. ──
+
+    /// One lint finding: the line's kind/name and what is wrong.
+    type LintFinding = { Kind: string; Name: string; Problem: string }
+
+    /// Lint a document: constants must carry value+WHAT+WHY; gen/io must reference 32-hex ZetaIds;
+    /// anims must reference frames that exist; duplicate (kind, name) pairs are flagged.
+    let lint (d: Doc) : LintFinding list =
+        let isHex32 (s: string) = s.Length = 32 && s |> Seq.forall System.Char.IsAsciiHexDigitLower
+        let frameNames = ofKind "frame" d |> List.map (fun e -> e.Name) |> Set.ofList
+
+        let perEntry =
+            d.Entries
+            |> List.collect (fun e ->
+                match e.Kind with
+                | "constant" when List.length e.Fields < 3 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "a constant MUST carry value, WHAT, and WHY — else it is a magic number" } ]
+                | "dimension" when List.length e.Fields < 2 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "a dimension must declare field and semantics" } ]
+                | "gen"
+                | "io" when (match e.Fields with z :: _ -> not (isHex32 z) | [] -> true) ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "first field must be a 32-hex ZetaId (DI-from-the-start: references are injection points)" } ]
+                | "anim" ->
+                    match e.Fields with
+                    | head :: _ ->
+                        head.Split(',')
+                        |> Array.filter (fun f -> f.Length > 0 && not (Set.contains f frameNames))
+                        |> Array.toList
+                        |> List.map (fun f -> { Kind = e.Kind; Name = e.Name; Problem = sprintf "anim references missing frame '%s'" f })
+                    | [] -> [ { Kind = e.Kind; Name = e.Name; Problem = "anim has no cycle" } ]
+                | _ -> [])
+
+        let dupes =
+            d.Entries
+            |> List.filter (fun e -> Set.contains e.Kind knownKinds && e.Kind <> "rom") // rom legitimately repeats per address
+            |> List.groupBy (fun e -> e.Kind, e.Name)
+            |> List.filter (fun (_, es) -> List.length es > 1)
+            |> List.map (fun ((k, n), _) -> { Kind = k; Name = n; Problem = "duplicate (kind, name)" })
+
+        perEntry @ dupes
 
     /// The document AS a room declaration: Some (sim, mea, cut) when all three verbs are present —
     /// the file defines its own loop in the verb engine; None = a media-only document (honest).
