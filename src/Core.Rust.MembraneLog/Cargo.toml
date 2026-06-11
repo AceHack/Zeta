@@ -1,0 +1,11 @@
+[package]
+name = "zeta-membrane-log"
+version = "0.1.0"
+edition = "2021"
+description = "Membrane-log wire line (RecordedSource) — Rust oracle for the Zeta channel-reliability treaty."
+license = "MIT"
+publish = false
+
+[dependencies]
+
+[dev-dependencies]

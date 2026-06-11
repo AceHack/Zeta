@@ -1,0 +1,14 @@
+# recorded-source golden-vectors.lines — the MEMBRANE-LOG TREATY (locked by the F# oracle 2026-06-11).
+# One crossing per line: tick<TAB>Kind[<TAB>arg]; esc: \\ \t \n \r; tick-then-arrival ordered (canonical).
+# int-arg kinds: TimerElapsed DotGitSaturation RoundsElapsedSinceFreeTime PeerPRMerged
+# str-arg kinds: RateLimitExhausted OperatorMessageArrived CIFailureDetected ; no-arg: SentinelMissing
+0	TimerElapsed	17
+0	OperatorMessageArrived	line1\nline2\twith\ttabs\\and\\slashes
+3	SentinelMissing
+3	CIFailureDetected	job-42
+7	RateLimitExhausted	graphql
+7	DotGitSaturation	3
+7	RoundsElapsedSinceFreeTime	9
+7	PeerPRMerged	7605
+12	OperatorMessageArrived	héllo-⊕-反馈
+12	TimerElapsed	0
