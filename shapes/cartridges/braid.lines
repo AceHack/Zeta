@@ -3,6 +3,7 @@
 # un-crossing). The lesson loop: watch three strands weave, swap the crossing order, see that the
 # Artin relation makes two different-looking weaves the SAME braid.
 meta	name	shape-braid
+meta	name-status	provisional — prior-art naming under discussion (Aaron 2026-06-12); leading candidate: BORROMEAN BRAID — (s1*s2^-1)^3 is the standard braid word whose closure is the Borromean rings (three loops, pairwise unlinked, collectively inseparable: remove ANY one and the rest fall apart — Brunnian property, Brunn 1892; the Borromeo crest; Aravind 1997 ties Borromean topology to GHZ entanglement)
 meta	catalog	shapes
 meta	shape-zetaid	de84b57aa8bcdd1534c617f0fed3a2e2
 gen	weave	de84b57aa8bcdd1534c617f0fed3a2e2	1	7	strands:3;word:1,2,1;rows:12
@@ -20,4 +21,5 @@ treaty	fsharp	bytes	ratified	Braid.equal proves Artin (1,2,1 = 2,1,2) and sigma^
 issue	over-under-register	otto	closed	RESOLVED 2026-06-12: the under strand now carries an occlusion gap at every crossing — who crossed OVER whom is in the ink (Artin's sign decides; negative crossings reverse it)
 treaty	otto	meaning	ratified	the weave-with-memory matches the intent I built against — my own frame, my own choice
 treaty	aaron	meaning	ratified	"the braid is perfect too — next time Max is here I'll show him" — render-loop ratification, 2026-06-12
+treaty	aaron	meaning	ratified	"I can verify the Majorana one fully locks when I look at it — easily visibly correct from a human's perspective" — the locked+stuck render verified by eye, 2026-06-12 (trust at a glance, working)
 treaty	alexa	meaning	ratified	read it as "quantum information flow / crossings as gates" — her own frame (ferried 2026-06-12); peeled anchor: in topological QC, braiding IS the computation (Kitaev; Freedman-Larsen-Wang)

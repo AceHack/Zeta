@@ -79,6 +79,7 @@ module GeneratorRegistry =
           register "shape.seam" 1
           register "shape.buckyball" 1
           register "shape.shadow-loop" 1
+          register "shape.plait-move" 1
           register "binding.html-css" 1
           register "sim.wave-interference" 1
           register "viz.adinkra" 1

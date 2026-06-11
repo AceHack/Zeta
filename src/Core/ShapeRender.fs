@@ -72,7 +72,8 @@ module ShapeRender =
             { Name = "left-cloth"; Mask = 2uy; Points = [ pt 0 0; pt 27 0; pt 27 31; pt 0 31; pt 0 0 ] }
             :: { Name = "right-cloth"; Mask = 4uy; Points = [ pt 36 0; pt 63 0; pt 63 31; pt 36 31; pt 36 0 ] }
             :: stitches
-        | "shape-braid" ->
+        | "shape-braid"
+        | "shape-plait-move" ->
             // 3 strands at columns 20/32/44; each crossing in the word swaps two strands over 2
             // rows. THE OVER-UNDER REGISTER (the braid's memory, drawn): at every crossing the
             // UNDER strand's diagonal carries an occlusion GAP around the midpoint, so the picture

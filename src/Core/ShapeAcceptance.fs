@@ -90,6 +90,20 @@ module ShapeAcceptance =
                 && 3 * v' = 2 * e // three edges at every corner (the soccer-ball stitch)
                 && c "meta-doors" = f + 1 // a door to every room AND itself
             ok, sprintf "Euler %d-%d+%d=2; double-count and 3-regularity close; meta-doors = faces + itself" v' e f
+        | "shape-plait-move" ->
+            // the unit move: the drawn word's permutation must be the OUTER SWAP (02) — ends
+            // exchanged, middle home — and NOT identity (the move moves; odd parity proves no
+            // 3-crossing word can lock). The locked braid is this move repeated to its period.
+            let word =
+                MediaLines.field "constant" "word" d
+                |> Option.defaultValue ""
+                |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+            let perm = Array.init 3 id
+            for c in word do
+                let a = abs c - 1
+                let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
+            let ok = perm = [| 2; 1; 0 |] && not (Braid.isIdentity 3 word)
+            ok, "perm = outer swap (02), middle home; not the identity braid — the move MOVES (odd parity: lock impossible here)"
         | "shape-shadow-loop" ->
             // otto's own: the sampled lemniscate must CLOSE (first = last) and pass through the
             // center exactly center-visits times (the crossing, hit structurally — steps % 4 = 0).

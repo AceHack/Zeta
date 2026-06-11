@@ -87,6 +87,7 @@ module ComplexityRegistry =
               ("shape.seam", "draw"), c "O(strands·passes)" "O(strands)" Derived
               ("shape.buckyball", "draw"), c "O(F)" "O(F)" Derived // F=32 faces: both views + a door per room + itself — linear in rooms, constant for C60
               ("shape.shadow-loop", "draw"), c "O(steps)" "O(steps)" Derived // one closed pass; the crossing costs nothing extra — catching yourself is built into the path
+              ("shape.plait-move", "draw"), c "O(crossings·strands)" "O(strands)" Derived // the unit move: one exchange (the gate); the locked braid is this, repeated to its period
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived
