@@ -35,6 +35,18 @@ owner: open (migrate little by little — Aaron's pacing, explicit)
    xUnit tests migrate opportunistically (when touched); NO big-bang rewrite; the suite stays
    green throughout. First slice: the interface + xUnit adapter + 3 migrated exemplar tests
    (one shape-acceptance loop, one DST replay loop, one io/red-light loop).
-5. Beacon: xUnit's own extensibility points (the adapter seam); JUnit's rules/extensions lineage
+5. **RETICULUM-ONLY IO (Aaron, same stream, verbatim): "at no point do our tests need to
+   interact with HDD or git or tools or anything other than Reticulum — for our framework, our
+   simulation stuff. We will figure out HDD later, and it will force us to have cache loaded in
+   the room at startup."** The framework's membrane has ONE door: the bus. No disk reads, no git
+   calls, no tool spawns inside a loop — every dependency arrives IN the room before sim starts
+   (the warm-cache forcing function: startup loads everything; the loop runs sealed). This makes
+   the before/after boundary (item 3) trivially enforceable — any non-Reticulum syscall inside a
+   loop is a violation the framework can detect, not a convention reviewers must catch. Disk is
+   deferred ON PURPOSE: the constraint is the design tool. (Goldens/cartridges reach the room as
+   startup cache or bus crossings, never as mid-test file reads — note this reshapes today's
+   repoRoot()-based tests at migration time, which is exactly the point.)
+
+6. Beacon: xUnit's own extensibility points (the adapter seam); JUnit's rules/extensions lineage
    (the before/after pattern we are centralizing); our SimLoop/rooms (the loop already exists as
    a runtime concept — this row makes TESTS instances of it).
