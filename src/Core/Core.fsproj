@@ -284,6 +284,7 @@
     <Compile Include="FluxView.fs" />
     <Compile Include="MagneticPorts.fs" />
     <Compile Include="HtmlCssBinding.fs" />
+    <Compile Include="WaveSim.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
