@@ -44,6 +44,7 @@ was **root clutter** — too many top-level entries, intimidating wall on first 
 
 ## Notes
 
+- **Plan (Aaron 2026-06-11):** the repo IS the database — root is default-DENY, everything *earns promotion out of `/db`*; see `docs/research/2026-06-11-db-folder-the-database-is-the-repo-earn-promotion-out-of-db-root-is-the-standard-handful.md` (staged migration; gate unchanged).
 - Do NOT move `tools/` contents as part of this (that's the separate tools→src graduation rule, B-1022).
 - Relates: B-0424..0427 (repo-split / DV2.0 topology), the folders-are-load-bearing convention, Bodhi's
   first-60-minutes charter.
