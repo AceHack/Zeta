@@ -38,6 +38,10 @@ let ``the flux timeline breathes: bursts drain the columns, idle ticks recover t
     let line = FluxView.timeline 12 load t0
     Assert.Equal(12, line.Length)
     Assert.True(line.[3] < line.[11]) // drained low during the burst, recovered by the end (block chars order by height)
+    // r3-final (test-gap #12): one pair passes non-recovering noise — the idle stretch must be
+    // MONOTONE non-decreasing (the tank refills, never dips, with zero load)
+    for i in 5 .. 10 do
+        Assert.True(line.[i] <= line.[i + 1], sprintf "recovery dipped at tick %d" i)
 
 [<Fact>]
 let ``the interrupt grid shows the switchboard: who matched, who passed, when it was silent`` () =
@@ -52,10 +56,11 @@ let ``the interrupt grid shows the switchboard: who matched, who passed, when it
     let grid = FluxView.interruptGrid handlers source 4
     Assert.Equal(2, List.length grid)
     Assert.Contains("chip8-input", grid.[0])
-    // input handler: passed(timer only), silent, matched, silent => "· ■ "
-    Assert.True(grid.[0].EndsWith "· ■ ")
-    // timer handler: matched, silent, matched, silent => "■ ■ "
-    Assert.True(grid.[1].EndsWith "■ ■ ")
+    // r3-final: audited as "half-pinned" (test-gap #7) — FALSE POSITIVE: cells are single-char,
+    // so this 4-char suffix IS all four ticks: passed(·), silent( ), matched(■), silent( ).
+    // The passed glyph was always pinned. Documented so the next audit doesn't re-flag it.
+    Assert.True(grid.[0].EndsWith "· ■ ", "input handler: passed, silent, matched, silent")
+    Assert.True(grid.[1].EndsWith "■ ■ ", "timer handler: matched, silent, matched, silent")
 
 [<Fact>]
 let ``the views are registered, cost-declared, and the budget lint still holds shelf-wide`` () =

@@ -124,3 +124,17 @@ let ``GOERTZEL = NAIVE: the recurrence and the reference single-bin DFT agree to
                + 0.5 * cos (2.0 * System.Math.PI * 11.0 * float t / float n) |]
     for k in [ 0; 1; 5; 11; 31 ] do
         Assert.True(abs (SpectralPivot.probe signal k - SpectralPivot.probeNaive signal k) < 1e-9, sprintf "bin %d" k)
+
+[<Fact>]
+let ``HEALTHY has a real boundary: a small perturbation passes under tolerance and a larger one fails over it (test-gap #9)`` () =
+    let n = 32
+    let baseline = [| for t in 0 .. n - 1 -> sin (2.0 * System.Math.PI * 3.0 * float t / float n) |]
+    let perturbed (amp: float) = [| for t in 0 .. n - 1 -> baseline.[t] + amp * sin (2.0 * System.Math.PI * 9.0 * float t / float n) |]
+    let bins = [ 3; 9 ]
+    // tolerance sized between the two perturbations' drifts — the boundary is exercised from both sides
+    let small = SpectralPivot.drift (SpectralPivot.fingerprint bins baseline) (SpectralPivot.fingerprint bins (perturbed 0.05))
+    let large = SpectralPivot.drift (SpectralPivot.fingerprint bins baseline) (SpectralPivot.fingerprint bins (perturbed 0.5))
+    Assert.True(small < large)
+    let tol = (small + large) / 2.0
+    Assert.True(SpectralPivot.healthy bins baseline tol (perturbed 0.05)) // under: healthy
+    Assert.False(SpectralPivot.healthy bins baseline tol (perturbed 0.5)) // over: the bearing sings

@@ -189,62 +189,13 @@ let private buildDelta (ops: EdgeDelta list) : ZSet<struct (int * int)> =
     |> ZSet.ofSeq
 
 
-// ─── Skipped while multi-tick-seed behaviour is under research ─────
-//
-// FsCheck on this property reliably finds disagreement on insert-retract
-// sequences such as
-//   [[InsertEdge(0,6); InsertEdge(4,5)];
-//    [InsertEdge(5,6); InsertEdge(2,4)];
-//    [InsertEdge(2,3)]]
-//
-// matching exactly the "multi-tick seed mid-LFP" limitation that
-// `RecursiveCounting`'s docstring in `src/Zeta.Core/Recursive.fs` flags
-// as OPEN RESEARCH (see `docs/BUGS.md` §"RecursiveCounting multi-tick-seed
-// behaviour unproven" and `docs/research/retraction-safe-semi-naive.md`).
-//
-// Tests 1-3 above ARE the one-shot-seed + strictly paired-delta cases
-// that the docstring promises to cover; they pass. This property probes
-// the unproven multi-tick-seed path and is skipped until the
-// gap-monotone signed-delta combinator (`RecursiveSignedSemiNaive`)
-// lands.  Remove the Skip once the research completes.
-[<Property(Arbitrary = [| typeof<MultiTickArb> |], MaxTest = 25,
-           Skip = "Multi-tick is REFUTED, not open research (witness pinned as the \
-                   unskipped REFUTATION WITNESS Fact below); this property stays \
-                   skipped until the signed-delta replacement lands — then unskip.")>]
-let ``CountingClosureTable clamped to Distinct matches ClosureTable oracle``
-    (ops: MultiTickEdges) =
-    // Build two parallel circuits: one using the counting variant,
-    // one using the boolean oracle. Apply the same sequence of
-    // deltas to both and compare the clamped counting output
-    // against the oracle at each outer tick.
-    let counting = Circuit()
-    let countIn = counting.ZSetInput<struct (int * int)>()
-    let countStream = counting.CountingClosureTable(countIn.Stream)
-    let countOut = OutputHandle countStream.Op
-    counting.Build()
-
-    let oracle = Circuit()
-    let oracleIn = oracle.ZSetInput<struct (int * int)>()
-    let oracleStream = oracle.ClosureTable(oracleIn.Stream)
-    let oracleOut = OutputHandle oracleStream.Op
-    oracle.Build()
-
-    let mutable allAgree = true
-    for tick in ops.Ticks do
-        if not (List.isEmpty tick) then
-            let delta = buildDelta tick
-            countIn.Send delta
-            oracleIn.Send delta
-            let struct (_, convC) =
-                counting.IterateToFixedPoint(countStream, 40)
-            let struct (_, convO) =
-                oracle.IterateToFixedPoint(oracleStream, 40)
-            if convC && convO then
-                let clamped = clampToSet countOut.Current
-                let oracleMap = clampToSet oracleOut.Current
-                if clamped <> oracleMap then
-                    allAgree <- false
-    allAgree
+// ─── The multi-tick FsCheck property was REMOVED here (Aaron 2026-06-13: "why do we have a
+// skipped test? we should fix or remove that"). Removed, not fixed, because its job is DONE:
+// the divergence it found is pinned as the deterministic, UNSKIPPED `REFUTATION WITNESS` Fact
+// below — a Skip'd property was a zombie guarding knowledge the witness already gates. The
+// property RETURNS (unskipped) when the signed-delta combinator lands
+// (docs/research/retraction-safe-semi-naive.md §7); its text lives in git history at this file,
+// and the witness Fact's header says exactly when to resurrect it. ───
 
 // ─── THE PINNED WITNESS (Soraya's routing, math-team triage 2026-06-12) ─────
 //

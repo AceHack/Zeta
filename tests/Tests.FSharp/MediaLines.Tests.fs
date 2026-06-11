@@ -144,12 +144,14 @@ let ``a constant without WHAT and WHY is a magic number — the lint refuses it`
 let ``a dimension REBINDS the deep-pixel field — declared, never assumed; lint checks the declaration`` () =
     let ok = "dimension\tdepth\tuncertainty-field\tpsych-z-from-contrast-pairs"
     let bad = "dimension\tdepth"
+    // r3-final (test-gap #8): the old hedged match accepted EITHER refusal mechanism, so the
+    // contract could silently migrate. Pinned: a fieldless dimension PARSES (kind+name suffice
+    // structurally) and the LINT is the refusal layer (exactly one finding).
     match MediaLines.parse ok, MediaLines.parse bad with
-    | Ok o, Error _ -> Assert.Equal<MediaLines.LintFinding list>([], MediaLines.lint o)
     | Ok o, Ok b ->
         Assert.Equal<MediaLines.LintFinding list>([], MediaLines.lint o)
         Assert.Equal(1, List.length (MediaLines.lint b))
-    | _ -> failwith "parse failed"
+    | _ -> failwith "contract: both forms must PARSE; the lint owns the refusal"
 
 [<Fact>]
 let ``the lint enforces DI-from-the-start: gen/io first fields must be 32-hex ZetaIds`` () =

@@ -237,3 +237,7 @@ let ``HTMLCSSBINDING INJECTION FALSIFIER: a hostile motto cannot smuggle script 
     | Ok d ->
         let html = HtmlCssBinding.render d
         Assert.DoesNotContain("<script", html)
+
+[<Fact>]
+let ``the generator shelf has ZERO ZetaId collisions (distinct names never share an id — byId shadowing surfaced, not silent)`` () =
+    Assert.Equal<(string * string list) list>([], GeneratorRegistry.collisions ())

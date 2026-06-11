@@ -94,6 +94,16 @@ module GeneratorRegistry =
           register "spectral.soft-probe" 1 ]
 
     /// Look a generator up by its ZetaId (the filetype's reverse direction: id -> what it is).
+    /// Registry-side collision guard (BUGS.md idOf finding, the cheap additive piece: the full
+    /// hash-lane fix is a treaty-scale migration since ids are pinned in cartridges). Two DISTINCT
+    /// names sharing one ZetaId on the shelf = a collision the first-match byId would silently
+    /// shadow — this surfaces it as a checkable fact (the suite asserts it stays empty).
+    let collisions () : (string * string list) list =
+        known
+        |> List.groupBy (fun e -> e.ZetaId)
+        |> List.filter (fun (_, es) -> (es |> List.map (fun e -> e.Name) |> List.distinct |> List.length) > 1)
+        |> List.map (fun (zid, es) -> zid, es |> List.map (fun e -> e.Name))
+
     let byId (zetaId: string) : Entry option =
         known |> List.tryFind (fun e -> e.ZetaId = zetaId)
 
