@@ -131,10 +131,12 @@
     <Compile Include="DevRoomTick.Tests.fs" />
     <Compile Include="FourCorner.Tests.fs" />
     <Compile Include="FourCornerFusion.Tests.fs" />
+    <Compile Include="FourCornerTreaty.Tests.fs" />
     <Compile Include="SoftScheduler.Tests.fs" />
     <Compile Include="SoftThrottle.Tests.fs" />
     <Compile Include="RecordedSource.Tests.fs" />
     <Compile Include="SoftIsr.Tests.fs" />
+    <Compile Include="SimFramework.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
     <Compile Include="ForwardMomentum.Tests.fs" />
@@ -422,5 +424,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="YamlDotNet" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="four-corner-golden.lines">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
