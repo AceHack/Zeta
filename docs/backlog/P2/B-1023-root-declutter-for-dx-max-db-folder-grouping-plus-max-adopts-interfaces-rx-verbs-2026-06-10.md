@@ -1,0 +1,49 @@
+---
+id: B-1023
+title: Root declutter for DX — Max finds the repo root intimidating; group into folders (e.g. db/) without breaking load-bearing paths
+priority: P2
+status: open
+tier: dx-contributor-experience
+tags: [dx, bodhi, root-clutter, repo-topology, dv2, folders-load-bearing, max, onboarding, first-60-minutes]
+created: 2026-06-10
+owner: Bodhi (DX audit) / Kenji (integrate — topology change needs sign-off) / Max (the consumer)
+---
+
+# B-1023 — Root declutter for DX (Max: "not everything in the root — it's intimidating")
+
+Aaron 2026-06-10: *"Max ... does not like my clutter at the root of our filesystem — he wants to start
+moving some stuff into like a `db/` folder or something so not everything is in the root, it's
+intimidating to him."*
+
+## Context — Max is now a contributor, and this is a first-60-minutes DX finding
+
+Same conversation: **Max said he's going to write all his code in interfaces, Rx, and verbs now, and avoid
+classes/nouns/ifs "like the plague"** — i.e. the factory's meta-rules (interfaces-free-classes-earned,
+the verb family, banned-if / B-0867) just got **voluntarily adopted by a second human**, unprompted, after
+the grounding hour. He's also going to help build the universal primitives. That makes his DX friction
+*the* highest-signal onboarding datapoint we have: the first thing a new, motivated, sharp contributor hit
+was **root clutter** — too many top-level entries, intimidating wall on first `ls`/clone.
+
+## The work
+
+1. **Bodhi DX audit first** (advisory): inventory the repo root; classify entries by change-rate +
+   audience (DV2.0 lens — the same hub/satellite split that drives repo-split smells).
+2. **Propose a grouping** (e.g. `db/` for database-ish trees, or whatever the audit supports) that reduces
+   top-level count materially **without breaking load-bearing paths** — CAUTION: folders are load-bearing
+   here (the startup MerkleDAG; `clis/`, `gen/`, `meta/`, `boards/`, `rooms/`, `escalator/`, `bench/`,
+   `uncertainty/` etc. were *deliberately* created at root by Aaron; CI workflows, install scripts, skills
+   and rules reference paths). Any move = mechanical path-rewrite sweep + CI green proof.
+3. **Architect/human sign-off before executing** — repo topology is a large, semi-reversible change
+   (gated; NOT autonomous). Max should co-review the proposal (he's the consumer).
+
+## Acceptance
+
+- Bodhi's root-inventory + grouping proposal doc, with the load-bearing-paths impact table.
+- Aaron + Max sign-off on the grouping; then the mechanical move lands with all gates green.
+- Post-move: a fresh-clone first-`ls` that a new contributor (Max-test) calls non-intimidating.
+
+## Notes
+
+- Do NOT move `tools/` contents as part of this (that's the separate tools→src graduation rule, B-1022).
+- Relates: B-0424..0427 (repo-split / DV2.0 topology), the folders-are-load-bearing convention, Bodhi's
+  first-60-minutes charter.

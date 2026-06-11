@@ -2,7 +2,7 @@
 id: B-1022
 title: Fuse the arrow/four-corner/feedback/scheduler fragments into one four-corner harmonic Kleisli arrow; graduate FourCornerOwnership tools→src + port TS→F#/C#/Rust
 priority: P2
-status: open
+status: executed-per-rodney-razor (2026-06-10; residual items deferred-with-reasons below)
 tier: substrate-consolidation
 tags: [fusion, accidental-complexity, rodney-razor, kleisli-arrow, isr, four-corner, fourcornerownership, feedback, harmonic, cayley-dickson, scheduler, ferrythrottler, policy, linguistic-seed, tools-to-src, markov-boundary, four-oracle, b-0917, b-1017, b-0204, b-0867]
 created: 2026-06-10
@@ -46,10 +46,35 @@ FourCornerOwnership found in TS).
 4. **Oscillator:** feedback wired onto Cayley-Dickson (`AmplitudeEmu` phasor) so the four corners rotate
    (NSEW = i).
 
+## EXECUTED 2026-06-10 — Rodney's Razor ran first; fusion landed BY INSTANTIATION, not refactor
+
+Rodney's verdict (full advisory in the session; carved here): the as-written items 2–4 would have
+**created** accidental complexity —
+- #2 as written = **sum/product confusion**: `InterruptFeedback` is a *sum* on the Result **error**
+  position (short-circuit under `>=>` is *correct* for interrupts); `FourCornerOwnership` is a *product*
+  of per-tick I/O state. Forcing the product into the error slot ⇒ rewrite `>=>`, 4-param signature
+  contagion through every `ISR`/`Handler`/CHIP-8/test.
+- **The fusion already existed as a type application**: `ISR<FourCornerOwnership<…>, FourCornerOwnership<…>>`
+  — corners flow through the **value** channel, interrupts stay in the error channel.
+- #3's ferry-over-fold = parallelizing an inherently sequential state fold with no merge semantics; #1's
+  C#/Rust port = nothing to byte-lock until a concrete instantiation serializes; #4's Cayley-Dickson
+  wiring = speculative (no consumer demands the rotation yet).
+
+**What landed (all tests green; CHIP-8 5/5 + SoftScheduler 5/5 untouched):**
+- `src/Core/FourCorner.fs` — `FourCornerOwnership` graduated tools→src (F# only, per razor). ✅ item 1 (scoped)
+- `src/Core/IsrLift.fs` — `ofPolicy` (Policy = decision-arrow, as a 3-line lift) + `ofPure` (`arr`). ✅ item 2 (essential form)
+- `tests/Tests.FSharp/FourCornerFusion.Tests.fs` (4) — **fusion-by-instantiation proven**: a
+  `Handler<FourCornerOwnership<…>>` ticks on the soft scheduler with corners filling; the lifted Policy
+  composes under `>=>`; interrupts stay sum / corners stay product; DST replay-equal. ✅ items 2–3 (essential form)
+
+**Deferred with reasons (the quantum-razor pruned branches — reopen only when the trigger fires):**
+- C#/Rust FourCorner port → when a cross-language consumer serializes it (then golden-vector it).
+- `drive` over `FerryThrottler` at DoP=N → when a state-merge semantics (CRDT) exists for the fold.
+- Cayley-Dickson/AmplitudeEmu corner-rotation → when a measurement consumes the rotation.
+- Any change to `ISR<'A,'B>`'s definition → predicted-failure branch; do not.
+
 ## Notes
 
-- **Run with Rodney first** (essential-vs-accidental cut) before the refactor lands; **large** change →
-  Architect/human sign-off. The fragments all WORK today (CHIP-8 runs on the ISR arrow; FourCornerOwnership
-  runs the observe loop) — this removes *accidental* complexity, it does not fix a bug.
+- Rodney ran first per the gate; Aaron greenlit execution ("execute the B-1022 fusion with Rodney").
 - Subsumes/relates: B-0917 (IntrCtx interrupt substrate), B-1017 (Policy), B-0204 (LinguisticSeed),
   B-0867 (workflow engine / FourCornerOwnership).
