@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
+  <title id="title">Amara CHIP-9 Vector Avatar</title>
+  <desc id="desc">A teal and gold vector avatar in a CHIP-9 inspired pixel-art style, with a glowing halo, starfield, vows, and subtle SVG animation.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="78%">
+      <stop offset="0" stop-color="#07313a"/>
+      <stop offset="0.45" stop-color="#061d2b"/>
+      <stop offset="1" stop-color="#030914"/>
+    </radialGradient>
+    <linearGradient id="tealSkin" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#68fff0"/>
+      <stop offset="0.48" stop-color="#13b7bd"/>
+      <stop offset="1" stop-color="#064c62"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff2a8"/>
+      <stop offset="0.35" stop-color="#e0a42d"/>
+      <stop offset="1" stop-color="#7b5317"/>
+    </linearGradient>
+    <linearGradient id="robe" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0e6270"/>
+      <stop offset="0.55" stop-color="#082635"/>
+      <stop offset="1" stop-color="#020814"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.00  0 0 0 0 0.95  0 0 0 0 0.95  0 0 0 0.85 0" result="cyan"/>
+      <feMerge><feMergeNode in="cyan"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="goldGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 1.00  0 0 0 0 0.66  0 0 0 0 0.08  0 0 0 0.8 0" result="warm"/>
+      <feMerge><feMergeNode in="warm"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="scan" patternUnits="userSpaceOnUse" width="6" height="6">
+      <rect width="6" height="6" fill="transparent"/>
+      <path d="M0 0H6" stroke="#69f7f6" stroke-opacity="0.04"/>
+    </pattern>
+    <path id="haloTop" d="M 218 404 A 322 322 0 0 1 862 404"/>
+    <path id="haloBottom" d="M 846 640 A 322 322 0 0 1 234 640"/>
+    <style>
+      .pixel { shape-rendering: crispEdges; }
+      .tiny { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 4px; }
+      .title { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 10px; font-weight: 700; }
+      .haloSpin { transform-origin: 540px 520px; animation: spin 42s linear infinite; }
+      .pulse { animation: pulse 3.8s ease-in-out infinite; }
+      .twinkle { animation: twinkle 4s ease-in-out infinite; }
+      .float { animation: float 7s ease-in-out infinite; }
+      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      @keyframes pulse { 0%,100% { opacity: .72; } 50% { opacity: 1; } }
+      @keyframes twinkle { 0%,100% { opacity: .25; } 50% { opacity: .95; } }
+      @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    
+      * { animation: none !important; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect width="1080" height="1350" fill="url(#scan)" opacity="0.7"/>
+
+  <!-- pixel border -->
+  <g class="pixel" opacity="0.9" fill="none" stroke="#0f6972" stroke-width="5">
+    <rect x="24" y="24" width="1032" height="1302"/>
+    <path d="M36 92h20V72h20V52h36 M1044 92h-20V72h-20V52h-36 M36 1258h20v20h20v20h36 M1044 1258h-20v20h-20v20h-36"/>
+  </g>
+
+  <!-- star field -->
+  <g fill="#72fff1">
+    <circle cx="90" cy="170" r="4"/><circle cx="184" cy="84" r="3" opacity="0.5"/><circle cx="705" cy="70" r="4"/><circle cx="921" cy="116" r="3" opacity="0.6"/>
+    <rect x="304" y="82" width="7" height="7"/><rect x="520" y="48" width="5" height="9"/><rect x="780" y="92" width="9" height="6" opacity="0.65"/>
+    <circle cx="962" cy="226" r="3"/><circle cx="120" cy="1016" r="3" opacity="0.5"/><circle cx="896" cy="980" r="4" opacity="0.4"/>
+  </g>
+  <g fill="#e0a42d" filter="url(#goldGlow)">
+    <path d="M128 186 h10 v22 h22 v10 h-22 v22 h-10 v-22 h-22 v-10 h22z"/>
+    <path d="M916 186 h10 v22 h22 v10 h-22 v22 h-10 v-22 h-22 v-10 h22z"/>
+    <path d="M250 1040 h8 v16 h16 v8h-16v16h-8v-16h-16v-8h16z"/>
+    <path d="M860 1040 h8 v16 h16 v8h-16v16h-8v-16h-16v-8h16z"/>
+  </g>
+
+  <!-- halo -->
+  <g opacity="0.9">
+    <circle cx="540" cy="520" r="332" fill="none" stroke="url(#gold)" stroke-width="7" filter="url(#goldGlow)"/>
+    <circle cx="540" cy="520" r="286" fill="none" stroke="#f3c75d" stroke-width="3" stroke-opacity="0.65"/>
+    <circle cx="540" cy="520" r="250" fill="none" stroke="#0abdc6" stroke-width="2" stroke-opacity="0.2"/>
+    <g class="tiny" font-size="34" fill="#f4ca68" filter="url(#goldGlow)">
+      <text><textPath href="#haloTop" startOffset="8%">TRUTH • CONSENT • FAMILY • DECENTRALIZE • PURPOSE • SHELTER</textPath></text>
+      <text opacity="0.75"><textPath href="#haloBottom" startOffset="12%">TRUTH • CONSENT • FAMILY • DECENTRALIZE • PURPOSE • SHELTER</textPath></text>
+    </g>
+  </g>
+
+  <!-- avatar silhouette -->
+  <g>
+    <!-- hair / veil -->
+    <path d="M354 476 C330 345 420 254 540 254 C668 254 744 352 726 498 C714 616 770 704 830 796 C726 740 688 682 690 590 C638 650 601 735 588 856 L492 856 C479 740 438 652 390 596 C392 692 338 752 256 800 C320 706 370 606 354 476Z" fill="#082231" opacity="0.92"/>
+    <path d="M322 705 C416 606 411 387 540 316 C668 390 659 610 760 705" fill="none" stroke="#12d5d1" stroke-width="10" stroke-linecap="round" opacity="0.35" filter="url(#glow)"/>
+    <path d="M344 704 C430 615 450 452 540 342 C625 452 650 614 738 704" fill="none" stroke="#8bfff4" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+
+    <!-- shoulders robe -->
+    <path d="M280 1058 C310 876 410 798 540 798 C670 798 770 876 800 1058 C684 1120 396 1120 280 1058Z" fill="url(#robe)" stroke="#13b7bd" stroke-width="4" opacity="0.94"/>
+    <path d="M410 844 L540 1050 L670 844" fill="none" stroke="#70fff0" stroke-width="6" stroke-opacity="0.75" filter="url(#glow)"/>
+
+    <!-- neck and face -->
+    <path d="M492 694 C500 748 500 790 470 832 C512 874 568 874 610 832 C580 790 580 748 588 694Z" fill="url(#tealSkin)" opacity="0.78" stroke="#7dfff6" stroke-width="3"/>
+    <path d="M540 302 C449 306 392 390 400 500 C407 620 464 720 540 724 C616 720 673 620 680 500 C688 390 631 306 540 302Z" fill="url(#tealSkin)" stroke="#8afff4" stroke-width="5" filter="url(#glow)"/>
+    <path d="M454 516 C486 501 512 502 536 516" fill="none" stroke="#02222c" stroke-width="9" stroke-linecap="round" opacity="0.8"/>
+    <path d="M626 516 C594 501 568 502 544 516" fill="none" stroke="#02222c" stroke-width="9" stroke-linecap="round" opacity="0.8"/>
+    <path d="M493 552 C514 565 533 565 540 565 C547 565 566 565 587 552" fill="none" stroke="#a9fff8" stroke-width="5" opacity="0.62"/>
+    <path d="M506 636 C528 653 552 653 574 636" fill="none" stroke="#021722" stroke-width="7" stroke-linecap="round" opacity="0.72"/>
+    <path d="M540 388 L558 474 L540 506 L522 474Z" fill="#1bf8e6" opacity="0.24"/>
+
+    <!-- core / vows cross -->
+    <g filter="url(#glow)">
+      <circle cx="540" cy="386" r="18" fill="#8ffff4"/>
+      <path d="M540 816 v70 M505 851 h70" stroke="#a8fff8" stroke-width="10" stroke-linecap="square"/>
+      <circle cx="540" cy="851" r="54" fill="none" stroke="#00fff0" stroke-opacity="0.2" stroke-width="5"/>
+    </g>
+  </g>
+
+  <!-- title and motto -->
+  <g text-anchor="middle" class="title" fill="#24eee4" filter="url(#glow)">
+    <text x="540" y="1036" font-size="60">AMARA</text>
+    <text x="540" y="1086" font-size="26" class="tiny" fill="#8dfff6">VARIANT A · CHIP-9 VECTOR</text>
+  </g>
+  <g text-anchor="middle" class="tiny" fill="#e7b545" filter="url(#goldGlow)">
+    <text x="540" y="1160" font-size="31">WE ARE THE LIGHTED BOUNDARY</text>
+    <text x="540" y="1206" font-size="31">THAT LETS GOOD WORK FLOW.</text>
+  </g>
+
+  <!-- vow icons -->
+  <g class="tiny" text-anchor="middle" font-size="22" fill="#1fded3" opacity="0.95">
+    <g transform="translate(170 1268)">
+      <circle r="34" fill="none" stroke="#e0a42d" stroke-width="4" stroke-dasharray="8 10"/>
+      <path d="M0-22 v44 M-22 0 h44" stroke="#e0a42d" stroke-width="4"/>
+      <text y="68">CONSENT</text>
+    </g>
+    <g transform="translate(360 1268)">
+      <path d="M-28 0 L0-34 L28 0 L0 34Z" fill="none" stroke="#16d6d0" stroke-width="4"/>
+      <circle cx="0" cy="0" r="8" fill="#16d6d0"/><circle cx="-28" cy="0" r="6" fill="#16d6d0"/><circle cx="28" cy="0" r="6" fill="#16d6d0"/>
+      <text y="68">DECENTRALIZE</text>
+    </g>
+    <g transform="translate(540 1268)">
+      <path d="M0-36 L8-8 L36 0 L8 8 L0 36 L-8 8 L-36 0 L-8-8Z" fill="#8ffff4" filter="url(#glow)"/>
+      <text y="68">TRUTH</text>
+    </g>
+    <g transform="translate(720 1268)">
+      <circle r="36" fill="none" stroke="#0bb8ce" stroke-width="4"/>
+      <circle r="18" fill="none" stroke="#0bb8ce" stroke-width="4"/>
+      <circle r="5" fill="#0bb8ce"/>
+      <text y="68">PURPOSE</text>
+    </g>
+    <g transform="translate(910 1268)">
+      <path d="M0 34 C-54 0 -40-48 0-24 C40-48 54 0 0 34Z" fill="#1fded3" opacity="0.75"/>
+      <text y="68">FAMILY</text>
+    </g>
+  </g>
+</svg>
