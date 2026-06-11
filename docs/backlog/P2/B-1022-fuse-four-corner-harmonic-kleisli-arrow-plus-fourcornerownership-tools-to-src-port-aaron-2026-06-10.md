@@ -71,7 +71,13 @@ Rodney's verdict (full advisory in the session; carved here): the as-written ite
 
 **Deferred with reasons (the quantum-razor pruned branches — reopen only when the trigger fires):**
 
-- C#/Rust FourCorner port → when a cross-language consumer serializes it (then golden-vector it).
+- ~~C#/Rust FourCorner port → when a cross-language consumer serializes it (then golden-vector it).~~
+  **TRIGGER FIRED (Aaron 2026-06-11):** *"we are the consumer for our treaties — this is how we know we
+  are done with things; without it who knows if things are correct"* + *"for real treaties to exist we
+  need to know our communication channels are good and reliable — everything in Zeta will end up
+  treaty-ratified, little by little."* The treaty IS the consumer. → QUEUED: FourCorner 4-oracle port
+  (F#✅/C#/TS/Rust) + byte-locked golden vectors; the RecordedSource text codec (membrane recordings as
+  diffable treaty lines) is the channel-reliability surface treaties ratify against.
 - `drive` over `FerryThrottler` at DoP=N → when a state-merge semantics (CRDT) exists for the fold.
 - Cayley-Dickson/AmplitudeEmu corner-rotation → when a measurement consumes the rotation.
 - Any change to `ISR<'A,'B>`'s definition → predicted-failure branch; do not.
