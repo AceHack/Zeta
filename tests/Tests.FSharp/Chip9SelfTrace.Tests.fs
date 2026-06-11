@@ -63,3 +63,25 @@ let ``THE JEWEL: the machine reads its own worldline THROUGH its own ISA — DRW
 [<Fact>]
 let ``deterministic: the self-trace replays bit-identically (soft mode, DST to the bone)`` () =
     Assert.Equal<Chip8Cow.Frame>(Chip9SelfTrace.run 2 12 (frame ()), Chip9SelfTrace.run 2 12 (frame ()))
+
+[<Fact>]
+let ``THE DEEP VIEW (SelfTrace x PixelLens): the drawn past survives honest colorize; the foreseen future collapses`` () =
+    // ONE trace step: the PC's cell is painted executed (G), the lookahead cells are painted
+    // foreseen (B) and have NOT yet executed — pure future. (A longer run closes the loop and the
+    // future becomes past everywhere — itself the honest behavior.)
+    let f = Chip9SelfTrace.traceStep 2 (frame ())
+    let deep = Chip9SelfTrace.deepView f
+    // an executed cell: certain — colorize keeps its full color
+    let gx, gy = Chip9SelfTrace.cellOf 0x200
+    let gCell = Map.find (gx, gy) deep
+    Assert.Equal(0, PixelLens.uncertainty.Get gCell)
+    Assert.Equal(PixelLens.color.Get gCell, PixelLens.colorize 500 gCell)
+    // a speculative-only cell: 900 milli uncertain — colorize collapses it below the mono bit
+    let specCells =
+        deep |> Map.filter (fun _ c -> PixelLens.uncertainty.Get c = 900)
+    Assert.False(Map.isEmpty specCells) // the future was foreseen somewhere
+    for KeyValue(_, c) in specCells do
+        Assert.Equal(0uy, PixelLens.colorize 500 c &&& 6uy) // no trace channel survives
+        Assert.Equal(PixelLens.color.Get c &&& 1uy, PixelLens.colorize 500 c) // mono stays the program's
+    // and the payload rides with the pixel: the slot index is readable through the lens
+    Assert.Equal(gy * 64 + gx, PixelLens.payload.Get gCell)

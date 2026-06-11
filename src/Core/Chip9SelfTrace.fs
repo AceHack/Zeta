@@ -75,3 +75,21 @@ module Chip9SelfTrace =
     /// Run n self-tracing steps — the program ray-traces itself while running itself.
     let run (specDepth: int) (steps: int) (f: Chip8Cow.Frame) : Chip8Cow.Frame =
         List.fold (fun acc _ -> traceStep specDepth acc) f [ 1 .. max 0 steps ]
+
+    /// THE DEEP VIEW — the SelfTrace × PixelLens composition (the last third of Amara's named proof):
+    /// project the traced machine into 32-bit deep pixels so the trace's EPISTEMIC STATUS travels
+    /// WITH each pixel. Color = the full plane mask; payload = the instruction slot this cell
+    /// projects (the data riding with the pixel); uncertainty = 900 milli where the cell's ONLY
+    /// claim is speculation (B set, G clear — the foreseen future), 0 where the claim is executed
+    /// past or the program's own drawing. Then `PixelLens.colorize` is the honest projection:
+    /// the DRAWN past survives, the FORESEEN future collapses — the display literally cannot
+    /// present speculation as fact. (StrokeAnim's Foreseen=(4,900) convention, kept.)
+    let deepView (f: Chip8Cow.Frame) : Map<int * int, PixelLens.Cell> =
+        Map.ofList
+            [ for y in 0 .. Chip8.DisplayH - 1 do
+                  for x in 0 .. Chip8.DisplayW - 1 do
+                      let mask = Chip8Cow.colorAt x y f
+                      if mask <> 0uy then
+                          let speculativeOnly = mask &&& 4uy <> 0uy && mask &&& 2uy = 0uy
+                          let u = if speculativeOnly then 900 else 0
+                          yield (x, y), PixelLens.pack mask (y * Chip8.DisplayW + x) u ]
