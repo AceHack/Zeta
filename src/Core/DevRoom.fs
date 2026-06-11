@@ -76,3 +76,109 @@ module DevRoom =
 
     /// The landmark names the dev room currently hangs (the navigable index).
     let landmarks: string list = doors |> List.map (fun d -> d.Landmark)
+
+    // ── The TICK (Aaron 2026-06-10, "lets move forward"): the dev room RUNS its rooms, not just lists ──
+    // Each landmark gets a deterministic representative run, driven through the ONE soft scheduler
+    // (`SoftScheduler.runDeterministic` — DoP=1, seed-deterministic, DST-replayable). Entering a room and
+    // ticking it is how a room earns its sign-off (rooms-as-sign-off: run → resolve → report).
+
+    /// The uniform result of ticking a room: which landmark ran, how many 60Hz ticks it was budgeted,
+    /// and a deterministic summary of where it landed (replay-equal for equal (landmark, seed, budget)).
+    type RoomRun =
+        { Landmark: string
+          Ticks: int
+          Summary: string }
+
+    let private dstCtx: IntrCtx =
+        { Memetic = "devroom"
+          Prompt = ""
+          Trust = ""
+          Log = ""
+          Otel = System.Diagnostics.ActivityContext() }
+
+    let private isTimer =
+        function
+        | TimerElapsed _ -> true
+        | _ -> false
+
+    /// One deterministic byte-strand pair for the salon's representative run (a near-match pair, so the
+    /// soft tie genuinely exercises the MinHash similarity, not just identity).
+    let private salonStrands (seed: int64) =
+        let a = System.Text.Encoding.UTF8.GetBytes(sprintf "strand-%d the quick brown fox jumps over the lazy dog" seed)
+        let b = System.Text.Encoding.UTF8.GetBytes(sprintf "strand-%d the quick brown fox JUMPED over the lazy dog" seed)
+        a, b
+
+    /// Tick a landmark's representative workload on the soft scheduler. Deterministic in
+    /// (landmark, seed, budget); `None` for an unknown landmark. Each room's run:
+    ///   salon — tie two near strands each tick; summary = the tie strength (the soft link held).
+    ///   darkhall — play a 2-op clean-room ROM on `SoftChip8Scheduler` (already ON the scheduler).
+    ///   bowling alley — roll deterministically (SplitMix from the seed) each tick; summary = the score.
+    ///   skatium — bob-and-weave; summary = final lean + openings seen.
+    let tick (landmark: string) (seed: int64) (budget: int) : System.Threading.Tasks.Task<Result<RoomRun, InterruptFeedback>> =
+        task {
+            match landmark with
+            | "salon" ->
+                let a, b = salonStrands seed
+                let handler: SoftScheduler.Handler<SoftTie.SoftTie<byte[]> option> =
+                    SoftScheduler.handler "salon-tie" isTimer (fun _ _ ->
+                        System.Threading.Tasks.Task.FromResult(Ok(SoftTie.tieBytes 0.5 a b)))
+                let! r = SoftScheduler.runDeterministic [ handler ] dstCtx seed None budget
+                return
+                    r
+                    |> Result.map (fun tie ->
+                        let s =
+                            match tie with
+                            | Some t -> sprintf "tied (strength %.3f)" t.Strength
+                            | None -> "no tie"
+                        { Landmark = landmark; Ticks = budget; Summary = s })
+            | "darkhall" ->
+                // 6A0C (V[A]=0x0C) ; 1202 (jump loop) — the clean-room 2-op ROM (no copyrighted content).
+                let rom = [| 0x6Auy; 0x0Cuy; 0x12uy; 0x02uy |]
+                let! r = SoftChip8Scheduler.run (uint64 seed) rom budget
+                return
+                    r
+                    |> Result.map (fun f ->
+                        { Landmark = landmark
+                          Ticks = budget
+                          Summary = sprintf "chip8 ran: PC=0x%04X V[A]=0x%02X delay=%d" f.PC f.V.[0xA] f.Delay })
+            | "bowling alley" ->
+                let handler: SoftScheduler.Handler<int list> =
+                    SoftScheduler.handler "bowl" isTimer (fun _ rolls ->
+                        // a deterministic roll 0..10 from the seed + position (SplitMix64 — the one avalanche)
+                        let n = List.length rolls
+                        let h = SplitMix64.mix (uint64 seed + uint64 n * SplitMix64.GoldenRatio)
+                        let roll = int (h % 11UL)
+                        System.Threading.Tasks.Task.FromResult(Ok(rolls @ [ roll ])))
+                let! r = SoftScheduler.runDeterministic [ handler ] dstCtx seed [] budget
+                return
+                    r
+                    |> Result.map (fun rolls ->
+                        { Landmark = landmark
+                          Ticks = budget
+                          Summary = sprintf "rolled %d, score %d" (List.length rolls) (BowlingAlley.score rolls) })
+            | "skatium" ->
+                let handler: SoftScheduler.Handler<int * int> = // (step, openings seen)
+                    SoftScheduler.handler "weave" isTimer (fun _ (step, opens) ->
+                        let opens' = if Skadium.openAt 2 step then opens + 1 else opens
+                        System.Threading.Tasks.Task.FromResult(Ok(step + 1, opens')))
+                let! r = SoftScheduler.runDeterministic [ handler ] dstCtx seed (0, 0) budget
+                return
+                    r
+                    |> Result.map (fun (step, opens) ->
+                        { Landmark = landmark
+                          Ticks = budget
+                          Summary = sprintf "wove %d steps, lean %A, %d openings" step (Skadium.weave 2 step) opens })
+            | _ -> return Error(Failed(sprintf "no such landmark: %s" landmark))
+        }
+
+    /// Tick EVERY room the dev room hangs (the register sweep) — sequentially, deterministically.
+    let tickAll (seed: int64) (budget: int) : System.Threading.Tasks.Task<RoomRun list> =
+        task {
+            let mutable acc = []
+            for lm in landmarks do
+                let! r = tick lm seed budget
+                match r with
+                | Ok run -> acc <- acc @ [ run ]
+                | Error e -> acc <- acc @ [ { Landmark = lm; Ticks = budget; Summary = sprintf "ERROR: %A" e } ]
+            return acc
+        }
