@@ -57,3 +57,19 @@ module SpectralPivot =
     /// what it didn't look at).
     let fingerprint (bins: int list) (signal: float[]) : (int * float) list =
         bins |> List.map (fun k -> k, probe signal k)
+
+    // ── predictive maintenance (Aaron 2026-06-11: "once you can hear pitch, predictive maintenance
+    // becomes a breeze — anomaly detection over time"). A machine's healthy hum is a spectral
+    // fingerprint; DRIFT is the distance from that baseline at the same probe bins. A new harmonic
+    // (the bearing starting to sing) shows up as drift long before it shows up as failure — the
+    // soft-lens discipline pointed at time: baseline = solid ground, drift = the uncertainty rising. ──
+
+    /// The drift between a baseline fingerprint and a current one (same bins): Σ |Δenergy|.
+    let drift (baseline: (int * float) list) (current: (int * float) list) : float =
+        List.zip baseline current
+        |> List.sumBy (fun ((_, a), (_, b)) -> abs (a - b))
+
+    /// The maintenance question in one call: is the machine's hum still within `tolerance` of its
+    /// healthy self at these probe bins?
+    let healthy (bins: int list) (baselineSignal: float[]) (tolerance: float) (signal: float[]) : bool =
+        drift (fingerprint bins baselineSignal) (fingerprint bins signal) <= tolerance

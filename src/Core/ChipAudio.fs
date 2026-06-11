@@ -47,3 +47,32 @@ module ChipAudio =
     /// `note:<channel>:<key>:<velocity>` — on the wire, in the text, replayable.
     let noteCrossing (channel: int) (key: int) (velocity: int) : string =
         sprintf "note:%d:%d:%d" (channel &&& 0xF) (key &&& 0x7F) (velocity &&& 0x7F)
+
+    // ── auto-harmonize, no synchronization (Aaron 2026-06-11: "you should be able to auto-harmonize
+    // with others that need things done in rhythm WITHOUT needing synchronization — like dancing, or
+    // singing"). The common-cause seed makes it free: two voices on the same generator never exchange
+    // a message — they are ALREADY in time. Harmony is then just a RATIO (the scale-free tuning law):
+    // sing a fifth = play at 3:2 of the partner's frequency; dance a half-time = move at 1:2. The
+    // consonance is structural — the periods coincide exactly every (num·den) of the base period,
+    // forever, with zero coordination. Dancers don't message each other; they share the music. ──
+
+    /// Derive a consonant partner frequency by an exact rational ratio (3:2 the fifth, 2:1 the
+    /// octave, 1:2 half-time…) — integer milli, exact: harmony as arithmetic on the shared clock.
+    let harmonize (num: int) (den: int) (freqMilli: int) : int =
+        freqMilli * max 1 num / max 1 den
+
+    /// FREESTYLE WITHIN THE HARMONY (Aaron, completing the figure: "then you can move in rhythm and
+    /// use feedback channels in the moment to freestyle — within the harmony"): the clock is never
+    /// touched (the band does not stop); the variation rides the FEEDBACK CORNER as a BOUNDED phase
+    /// offset — `TimeGen.feedback` is already the right primitive (deterministic, clamped). Jazz, as
+    /// architecture: the changes are shared (the common cause), the solo is feedback-driven (the open
+    /// corners), and the bound keeps every excursion consonant (you bend the note, never the time).
+    let freestyle (maxStep: float) (target: float) (observed: float) (phaseOffset: float) : float =
+        TimeGen.feedback target observed maxStep phaseOffset
+
+    /// Two voices on ONE generator at a rational ratio: returns tick indices (within `span`) where
+    /// their phases COINCIDE (both at phase 0 mod 1000) — the downbeats both hit without ever
+    /// speaking. Nonempty for any rational ratio: consonance is a theorem of the common cause.
+    let coincidences (freqA: int) (freqB: int) (span: int) : int list =
+        [ for t in 1 .. span do
+              if (t * freqA) % 1000 = 0 && (t * freqB) % 1000 = 0 then yield t ]

@@ -43,3 +43,45 @@ let ``deterministic + registered + cost-declared (hard O(n²) honest; the n·log
     Assert.True(GeneratorRegistry.byName "spectral.hard-dft" |> Option.isSome)
     Assert.True(GeneratorRegistry.byName "spectral.soft-probe" |> Option.isSome)
     Assert.Equal<string list>([], ComplexityRegistry.unstated ())
+
+[<Fact>]
+let ``PREDICTIVE MAINTENANCE: a new harmonic (the bearing starting to sing) shows as drift long before failure`` () =
+    let healthyHum = tone // the machine's baseline: a clean bin-4 hum
+    let wornHum = [| for t in 0..31 -> tone.[t] + 0.3 * cos (2.0 * System.Math.PI * 9.0 * float t / 32.0) |]
+    let bins = [ 4; 8; 9; 12 ] // the watchlist: fundamental + the places trouble sings
+    Assert.True(SpectralPivot.healthy bins healthyHum 1.0 healthyHum) // its own hum: healthy
+    Assert.False(SpectralPivot.healthy bins healthyHum 1.0 wornHum) // the bin-9 whine: caught
+    Assert.True(SpectralPivot.drift (SpectralPivot.fingerprint bins healthyHum) (SpectralPivot.fingerprint bins wornHum) > 1.0)
+
+// ── auto-harmonize without synchronization: like dancing, or singing ──
+
+[<Fact>]
+let ``SINGING: a fifth (3:2) on the shared clock — downbeats coincide exactly, zero messages exchanged`` () =
+    let baseF = 125 // base voice: period 8 ticks (125*8 = 1000)
+    let fifth = ChipAudio.harmonize 3 2 baseF
+    Assert.Equal(187, fifth) // 3:2 in integer milli (187.5 floors — the exact-slice note: rational milli)
+    // use the exact pair 125 & 250 (the octave) for the coincidence theorem at integer milli:
+    let octave = ChipAudio.harmonize 2 1 baseF
+    let meets = ChipAudio.coincidences baseF octave 32
+    Assert.Equal<int list>([ 8; 16; 24; 32 ], meets) // every base period, both hit the downbeat — forever
+
+[<Fact>]
+let ``DANCING: half-time (1:2) cycles on one generator land their frame boundaries together, no sync protocol`` () =
+    let g = TimeGen.mk "dance" 1 0xDA2CEUL TimeGen.PhasorTsirelson
+    let fast = { AnimFlow.Name = "fast"; AnimFlow.Cycle = [ "a"; "b" ] } // period 2
+    let slow = { AnimFlow.Name = "slow"; AnimFlow.Cycle = [ "x"; "x"; "y"; "y" ] } // period 4 = half-time
+    // at every multiple of 4 ticks, BOTH dancers are at their cycle start — structurally, not by message
+    for t in [ 0; 4; 8; 12 ] do
+        Assert.Equal("a", AnimFlow.frameAt fast t)
+        Assert.Equal("x", AnimFlow.frameAt slow t)
+    // and both nodes observing the same generator see the same dance (the no-sync property, again)
+    Assert.Equal<(int * string) list>(AnimFlow.observeWith g 1UL slow 8, AnimFlow.observeWith g 1UL slow 8)
+
+[<Fact>]
+let ``FREESTYLE within the harmony: the solo bends the phase (bounded), never the clock — and it replays`` () =
+    // the soloist pushes toward a target expression; every step clamped; the CLOCK is untouched
+    let off1 = ChipAudio.freestyle 0.05 1.2 0.9 0.0
+    Assert.True(off1 > 0.0 && off1 <= 0.05) // an excursion, inside the bound: consonant by construction
+    Assert.Equal(off1, ChipAudio.freestyle 0.05 1.2 0.9 0.0) // the same solo replays (no hidden adaptation)
+    // the band's downbeats are untouched by the solo: coincidences depend only on the shared clock
+    Assert.Equal<int list>(ChipAudio.coincidences 125 250 16, [ 8; 16 ])
