@@ -87,3 +87,38 @@ let ``scheduler tie-in DST: the throttled run replays identically`` () =
         let! b = mk ()
         Assert.Equal<Result<SoftThrottle.Throttled<int>, InterruptFeedback>>(a, b)
     }
+
+[<Fact>]
+let ``the hard register is the k->infinity limit: admitHard is the step function the gradient approaches`` () =
+    Assert.True(SoftThrottle.admitHard 0.5)
+    Assert.False(SoftThrottle.admitHard 1.0)
+    Assert.False(SoftThrottle.admitHard 2.0)
+    // the soft gradient approaches the step as k grows (sub-nominal -> 1; super-nominal -> 0)
+    Assert.True(SoftThrottle.admissionProbability 1000.0 0.9 > 0.999)
+    Assert.True(SoftThrottle.admissionProbability 1000.0 1.1 < 0.001)
+
+[<Fact>]
+let ``boatBytes: the boat is funded in BYTES by the tank — zero-wait, takes the affordable prefix`` () =
+    let items = [ "aaaa"; "bb"; "cccccc"; "d" ] // sizes 4,2,6,1
+    let sizeOf (s: string) = s.Length
+    // tank holds 7 bytes: funds "aaaa"(4) + "bb"(2) = 6; "cccccc"(6) doesn't fit => stop instantly
+    let boat, rest, t' = SoftThrottle.boatBytes sizeOf items (SoftThrottle.tank 7.0 1.0)
+    Assert.Equal<string list>([ "aaaa"; "bb" ], boat)
+    Assert.Equal<string list>([ "cccccc"; "d" ], rest)
+    Assert.Equal(1.0, SoftThrottle.available t', 12) // 7 - 6 = 1 byte left
+
+[<Fact>]
+let ``boatBytes: charging the tank lets the next boat carry the rest (the future metered in bytes)`` () =
+    let sizeOf (s: string) = s.Length
+    let _, rest, t1 = SoftThrottle.boatBytes sizeOf [ "aaaa"; "bb"; "cccccc" ] (SoftThrottle.tank 6.0 3.0)
+    let t2 = t1 |> SoftThrottle.charge |> SoftThrottle.charge // bank capacity while idle
+    let boat2, rest2, _ = SoftThrottle.boatBytes sizeOf rest t2
+    Assert.Equal<string list>([ "cccccc" ], boat2)
+    Assert.Empty(rest2)
+
+[<Fact>]
+let ``the limiter is Aaron's Itron fold: countLimiter boards exactly batchSize (state < n, state+1 verbatim)`` () =
+    let b, rest, n = SoftThrottle.boat (SoftThrottle.countLimiter 3) [ 1; 2; 3; 4; 5 ] 0
+    Assert.Equal<int list>([ 1; 2; 3 ], b)
+    Assert.Equal<int list>([ 4; 5 ], rest)
+    Assert.Equal(3, n) // state advanced once per BOARDED item (0->1->2->3); the refusal probe's state is discarded

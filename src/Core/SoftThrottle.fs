@@ -51,6 +51,13 @@ module SoftThrottle =
         let u = float (h >>> 11) / float (1UL <<< 53)
         u < p
 
+    /// The HARD admission — the k→∞ limit of `admit`: the logistic collapses to a step function (under
+    /// nominal pressure admit, at/over it reject). With the `Tank` (a float-generalized token bucket)
+    /// this is the classic hard rate limiter — the hard register as a *limit case* of the soft one
+    /// (default-to-both: one mechanism, both registers; dual-use hard/soft).
+    let admitHard (pressure: float) : bool = pressure < 1.0
+
+
     /// The flux tank — the capacitor: charges while idle (up to `Capacity`), discharges on bursts. The
     /// LC-tank half of the flux capacitor: stored flow-capacity, not a fixed ceiling.
     type Tank =
@@ -76,6 +83,46 @@ module SoftThrottle =
     /// The largest burst the tank can serve right now (take a sip instead of being refused — the soft
     /// alternative to a hard reject).
     let available (t: Tank) : float = t.Charge
+
+    /// **The limiter — Aaron's original Itron abstraction, ported.** In his `Platform.DotNet`
+    /// `Threading.Tasks.Throttling`, the batch limiter is a **stateful fold delegate**:
+    /// `BatchSizeLimiter<TItem, TState> = (item, state) → (fits?, state')` — pluggable over ANY
+    /// accumulated measure (his count limiter is literally `state < batchSize, state + 1`; bytes is the
+    /// same fold over sizes). This is that delegate in F#.
+    type Limiter<'a, 's> = 'a -> 's -> bool * 's
+
+    /// **The boat — Aaron's zero-wait batch, generalized over his limiter.** Take items (arrival order,
+    /// never waits, no timeout) while the limiter says they fit, folding its state; stop the instant one
+    /// doesn't. Returns (boat, remaining, finalState).
+    let boat (limiter: Limiter<'a, 's>) (items: 'a list) (s0: 's) : 'a list * 'a list * 's =
+        let rec go acc rest s =
+            match rest with
+            | [] -> List.rev acc, [], s
+            | x :: xs ->
+                match limiter x s with
+                | true, s' -> go (x :: acc) xs s'
+                | false, _ -> List.rev acc, rest, s
+
+        go [] items s0
+
+    /// Aaron's original count limiter (`state < batchSize, state + 1`), verbatim in F#.
+    let countLimiter (batchSize: int) : Limiter<'a, int> =
+        fun _ n -> (n < batchSize), n + 1
+
+    /// **The BYTE limiter over the soft tank — "it meters the future in BYTES, literally" (Aaron).**
+    /// `FerryThrottler` already sizes boats by serialized bytes (`MaxBatchBytes` + `itemSizeBytes` —
+    /// Aaron's tracking unit); here the ceiling is the **charged tank**, not a constant: an item fits iff
+    /// the tank funds its bytes (discharging as it boards). Bytes = information — the Bekenstein unit:
+    /// the speculative future you may visit is bounded in information, exactly like the room interior.
+    let bytesTankLimiter (sizeOf: 'a -> int) : Limiter<'a, Tank> =
+        fun x t ->
+            match discharge (float (max 0 (sizeOf x))) t with
+            | Some t' -> true, t'
+            | None -> false, t
+
+    /// The byte-metered boat (the bytes-tank limiter applied): (boat, remaining, tank').
+    let boatBytes (sizeOf: 'a -> int) (items: 'a list) (t: Tank) : 'a list * 'a list * Tank =
+        boat (bytesTankLimiter sizeOf) items t
 
     /// The flux-capacitor step: given pressure and a desired burst, the soft throttle either serves the
     /// burst from the tank (discharging), serves what it CAN (the sip), or charges (idle). Deterministic.
