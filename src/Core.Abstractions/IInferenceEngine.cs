@@ -17,8 +17,8 @@ namespace Zeta.Core.Abstractions;
 public interface IInferenceEngine
 {
     /// <summary>Adapter name (for conformance reporting: which oracle said what).</summary>
-    string Name { get; }
+    public string Name { get; }
 
     /// <summary>Run Gaussian belief propagation to convergence (bounded) and read all marginals.</summary>
-    InferenceResult RunGaussian(GaussianModel model, int maxRounds, double tolerance);
+    public InferenceResult RunGaussian(GaussianModel model, int maxRounds, double tolerance);
 }

@@ -1,0 +1,405 @@
+{
+  "schema": "zeta.quantum.zset-transcript.v1",
+  "metadata": {
+    "generatedBy": "src/Core.TypeScript/quantum-observable/generate-quantum-transcript.ts",
+    "timestamp": "2026-06-11T21:48:35.880Z"
+  },
+  "batches": [
+    {
+      "batchId": 0,
+      "deltas": [
+        {
+          "row": {
+            "type": "SingleQubit",
+            "value": {
+              "Id": "H|0>",
+              "Operation": "Zeta.ReferenceOracle.ApplyH",
+              "Probabilities": {
+                "Zero": 0.5,
+                "One": 0.5
+              }
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "SingleQubit",
+            "value": {
+              "Id": "Ry(pi/3)|0>",
+              "Operation": "Zeta.ReferenceOracle.ApplyRyPiOver3",
+              "ThetaRadians": 1.0471975511965976,
+              "Probabilities": {
+                "Zero": 0.75,
+                "One": 0.25
+              }
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "SingleQubit",
+            "value": {
+              "Id": "Ry(pi/2)|0>",
+              "Operation": "Zeta.ReferenceOracle.ApplyRyPiOver2",
+              "ThetaRadians": 1.5707963267948966,
+              "Probabilities": {
+                "Zero": 0.5,
+                "One": 0.5
+              }
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "CanonicalChsh",
+            "value": {
+              "Id": "BellPhiPlus canonical CHSH",
+              "Angles": {
+                "A": 0,
+                "APrime": 1.5707963267948966,
+                "B": 0.7853981633974483,
+                "BPrime": 2.356194490192345
+              },
+              "Correlators": {
+                "EAB": 0.7071067811865474,
+                "EABPrime": -0.7071067811865472,
+                "EAPrimeB": 0.7071067811865475,
+                "EAPrimeBPrime": 0.7071067811865472
+              },
+              "S": 2.828427124746189,
+              "Tsirelson": 2.8284271247461903,
+              "ClassicalBound": 2
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "SingletChsh",
+            "value": {
+              "Id": "BellSinglet CHSH corners",
+              "Corners": [
+                {
+                  "Id": "E(a0,b0)",
+                  "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0",
+                  "A": 0,
+                  "B": 0.7853981633974483,
+                  "Coefficient": 1,
+                  "SameOutcomeProbability": 0.14644660940672619,
+                  "OppositeOutcomeProbability": 0.8535533905932735,
+                  "Correlator": 0.7071067811865474
+                },
+                {
+                  "Id": "E(a0,b1)",
+                  "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1",
+                  "A": 0,
+                  "B": -0.7853981633974483,
+                  "Coefficient": 1,
+                  "SameOutcomeProbability": 0.14644660940672619,
+                  "OppositeOutcomeProbability": 0.8535533905932735,
+                  "Correlator": 0.7071067811865474
+                },
+                {
+                  "Id": "E(a1,b0)",
+                  "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0",
+                  "A": 1.5707963267948966,
+                  "B": 0.7853981633974483,
+                  "Coefficient": 1,
+                  "SameOutcomeProbability": 0.14644660940672607,
+                  "OppositeOutcomeProbability": 0.8535533905932735,
+                  "Correlator": 0.7071067811865475
+                },
+                {
+                  "Id": "E(a1,b1)",
+                  "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1",
+                  "A": 1.5707963267948966,
+                  "B": -0.7853981633974483,
+                  "Coefficient": -1,
+                  "SameOutcomeProbability": 0.8535533905932735,
+                  "OppositeOutcomeProbability": 0.14644660940672632,
+                  "Correlator": -0.7071067811865472
+                }
+              ],
+              "S": 2.828427124746189,
+              "Analytic": 2.8284271247461903,
+              "ClassicalBound": 2
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCorner",
+            "value": {
+              "Id": "E(a0,b0)",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0",
+              "A": 0,
+              "B": 0.7853981633974483,
+              "Coefficient": 1,
+              "SameOutcomeProbability": 0.14644660940672619,
+              "OppositeOutcomeProbability": 0.8535533905932735,
+              "Correlator": 0.7071067811865474
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCorner",
+            "value": {
+              "Id": "E(a0,b1)",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1",
+              "A": 0,
+              "B": -0.7853981633974483,
+              "Coefficient": 1,
+              "SameOutcomeProbability": 0.14644660940672619,
+              "OppositeOutcomeProbability": 0.8535533905932735,
+              "Correlator": 0.7071067811865474
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCorner",
+            "value": {
+              "Id": "E(a1,b0)",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0",
+              "A": 1.5707963267948966,
+              "B": 0.7853981633974483,
+              "Coefficient": 1,
+              "SameOutcomeProbability": 0.14644660940672607,
+              "OppositeOutcomeProbability": 0.8535533905932735,
+              "Correlator": 0.7071067811865475
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCorner",
+            "value": {
+              "Id": "E(a1,b1)",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1",
+              "A": 1.5707963267948966,
+              "B": -0.7853981633974483,
+              "Coefficient": -1,
+              "SameOutcomeProbability": 0.8535533905932735,
+              "OppositeOutcomeProbability": 0.14644660940672632,
+              "Correlator": -0.7071067811865472
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCoincidence",
+            "value": {
+              "Id": "PhiPlus same-outcome a=0 b=pi/4",
+              "State": "PhiPlus",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+              "A": 0,
+              "B": 0.7853981633974483,
+              "Event": "sameOutcome",
+              "Probability": 0.8535533905932735
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCoincidence",
+            "value": {
+              "Id": "Singlet opposite-outcome a=0 b=pi/4",
+              "State": "Singlet",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers",
+              "A": 0,
+              "B": 0.7853981633974483,
+              "Event": "oppositeOutcome",
+              "Probability": 0.8535533905932735
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCoincidence",
+            "value": {
+              "Id": "PhiPlus same-outcome a=0 b=pi/2",
+              "State": "PhiPlus",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+              "A": 0,
+              "B": 1.5707963267948966,
+              "Event": "sameOutcome",
+              "Probability": 0.5
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "BellCoincidence",
+            "value": {
+              "Id": "PhiPlus same-outcome a=0 b=pi",
+              "State": "PhiPlus",
+              "Operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+              "A": 0,
+              "B": 3.141592653589793,
+              "Event": "sameOutcome",
+              "Probability": 3.7493994566546427e-33
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-open",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
+              "Probabilities": {
+                "Zero": 0.5,
+                "One": 0.5
+              }
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-zero-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+              "PhaseRadians": 0,
+              "Probabilities": {
+                "Zero": 1,
+                "One": 0
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-pi-over-3-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase",
+              "PhaseRadians": 1.0471975511965976,
+              "Probabilities": {
+                "Zero": 0.75,
+                "One": 0.25
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-pi-over-2-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase",
+              "PhaseRadians": 1.5707963267948966,
+              "Probabilities": {
+                "Zero": 0.5,
+                "One": 0.5
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-two-pi-over-3-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase",
+              "PhaseRadians": 2.0943951023931953,
+              "Probabilities": {
+                "Zero": 0.25,
+                "One": 0.75
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": 1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-pi-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
+              "PhaseRadians": 3.141592653589793,
+              "Probabilities": {
+                "Zero": 0,
+                "One": 1
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "batchId": 1,
+      "deltas": [
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-open",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
+              "Probabilities": {
+                "Zero": 0.5,
+                "One": 0.5
+              }
+            }
+          },
+          "weight": -1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-zero-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+              "PhaseRadians": 0,
+              "Probabilities": {
+                "Zero": 1,
+                "One": 0
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": -1
+        },
+        {
+          "row": {
+            "type": "InterferenceVisibility",
+            "value": {
+              "Id": "mach-zehnder-closed-pi-over-6-phase",
+              "Operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase",
+              "PhaseRadians": 0.5235987755982988,
+              "Probabilities": {
+                "Zero": 0.93301270189222,
+                "One": 0.06698729810778
+              },
+              "Visibility": 1
+            }
+          },
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}
