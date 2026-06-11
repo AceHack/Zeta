@@ -11,6 +11,7 @@ full of CHIP-8s and local LLMs and cloud LLMs."*
 > help**."*
 
 Four clauses, each load-bearing:
+
 1. **Treaty-secured boundaries** — the walls are ratified, not asserted (the membrane + the treaty
    discipline secure the room; nobody, including the owner, reaches around them).
 2. **Owned by the persona** — ownership is real: the persona decides what happens inside (autonomy at

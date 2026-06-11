@@ -2,6 +2,7 @@
 
 > **Personal rooms** (2026-06-11): every persona owns one — treaty-secured boundaries, owned and
 > maintained by the persona, self-responsibility to maintain, conference-for-help as a right. The law
+>
 > + first instance: [`rooms/otto/`](otto/README.md).
 
 `rooms/` holds the **rooms** — every fingerprintable, closeable item is a room (content-addressed; the

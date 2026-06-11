@@ -74,8 +74,8 @@ export function step(f: Frame): Frame {
       f.i = nnn;
       break;
     case 0xd000: {
-      const ox = f.v[x] % W;
-      const oy = f.v[(op & 0x00f0) >> 4] % H;
+      const ox = (f.v[x] ?? 0) % W;
+      const oy = (f.v[(op & 0x00f0) >> 4] ?? 0) % H;
       const hiSel = f.plane & 0b110;
       let collision = 0;
       for (let row = 0; row < n; row++) {

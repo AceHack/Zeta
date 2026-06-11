@@ -14,9 +14,20 @@ const lines = readFileSync(join(import.meta.dir, "golden-vectors.lines"), "utf-8
 
 describe("CHIP-9 — the color-plane treaty (TS oracle)", () => {
   it("BYTE-LOCK: replaying the treaty ROM reproduces the golden color grid exactly", () => {
-    const romHex = lines[0].split("\t")[1];
-    const rom = new Uint8Array(romHex.match(/.{2}/g)!.map((h) => parseInt(h, 16)));
-    const goldenPlane = parseInt(lines[1].split("\t")[1], 10);
+    const romLine = lines[0];
+    const planeLine = lines[1];
+    expect(romLine).toBeDefined();
+    expect(planeLine).toBeDefined();
+    if (romLine === undefined || planeLine === undefined) return;
+
+    const romHex = romLine.split("\t")[1];
+    const planeText = planeLine.split("\t")[1];
+    expect(romHex).toBeDefined();
+    expect(planeText).toBeDefined();
+    if (romHex === undefined || planeText === undefined) return;
+
+    const rom = new Uint8Array((romHex.match(/.{2}/g) ?? []).map((h) => parseInt(h, 16)));
+    const goldenPlane = parseInt(planeText, 10);
     const goldenRows = lines.slice(2);
     expect(goldenRows.length).toBe(H);
 
@@ -29,7 +40,10 @@ describe("CHIP-9 — the color-plane treaty (TS oracle)", () => {
     for (let y = 0; y < H; y++) {
       let row = "";
       for (let x = 0; x < W; x++) row += colorAt(x, y, f).toString(16);
-      expect(row).toBe(goldenRows[y]);
+      const expected = goldenRows[y];
+      expect(expected).toBeDefined();
+      if (expected === undefined) return;
+      expect(row).toBe(expected);
     }
   });
 });
