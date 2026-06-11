@@ -75,3 +75,11 @@ let ``empty seed (no packs) is the PSD zero kernel`` () =
     let seed = LS.composePacks ([]: LS.Pack<int> list)
     Assert.Equal(0.0, seed 1 2, 12)
     Assert.True(isPSD seed)
+
+[<Fact>]
+let ``Math Razor P0: dot is PSD on RAGGED vectors (zero-extended, not min-truncated)`` () =
+    // the counterexample shape: lengths 1, 2, 2 — min-truncation here is not a Gram matrix
+    let k = LS.dot (fun (i: int) -> match i with 0 -> [| 3.0 |] | 1 -> [| 0.0; 5.0 |] | _ -> [| 0.0; 5.0 |])
+    let xs = [| 0; 1; 2 |]
+    for v in [ [| 1.0; 1.0; 1.0 |]; [| 1.0; -1.0; 1.0 |]; [| 2.0; -3.0; 1.0 |]; [| -1.0; 1.0; -1.0 |] ] do
+        Assert.True(LS.quadForm k xs v >= -1e-9)

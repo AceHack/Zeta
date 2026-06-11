@@ -54,3 +54,21 @@ let ``locality scale behaves: near memories similar (~1), far memories dissimila
     Assert.Equal(1.0, k origin origin, 9)
     Assert.True(k origin (ConformalGA.embed 0.1 0.0 0.0) > 0.99)
     Assert.True(k origin (ConformalGA.embed 10.0 10.0 10.0) < 1e-10)
+
+[<Fact>]
+let ``Math Razor P0: rbfKernel is PSD even on NON-null (non-embedded) CPoints (Euclidean d², Schoenberg)`` () =
+    // raw CPoints NOT produced by embed (wInf/w0 arbitrary) — the old exp(inner/σ²) could break PSD here
+    let raw x y z wi w0 : ConformalGA.CPoint = { X = x; Y = y; Z = z; WInf = wi; W0 = w0 }
+    let xs =
+        [| raw 0.0 0.0 0.0 5.0 -2.0
+           raw 1.0 0.0 0.0 0.0 0.0
+           raw 0.0 2.0 0.0 9.0 9.0
+           raw 5.0 5.0 5.0 -1.0 3.0
+           raw -3.0 1.0 2.0 0.5 0.5 |]
+    let vs = [| [| 1.0;1.0;1.0;1.0;1.0 |]; [| 1.0;-1.0;1.0;-1.0;1.0 |]; [| 2.0;-3.0;0.5;1.0;-2.0 |] |]
+    let k = ConformalGA.rbfKernel 2.0
+    for v in vs do
+        Assert.True(LinguisticSeed.quadForm k xs v >= -1e-9)
+    // still agrees with the conformal distance on EMBEDDED points
+    Assert.Equal(ConformalGA.distSq (ConformalGA.embed 1.0 2.0 3.0) (ConformalGA.embed 4.0 6.0 3.0),
+                 ConformalGA.euclidSq (ConformalGA.embed 1.0 2.0 3.0) (ConformalGA.embed 4.0 6.0 3.0), 9)

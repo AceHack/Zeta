@@ -38,13 +38,18 @@ module LinguisticSeed =
     let feature (phi: 'x -> float) : Kernel<'x> = fun a b -> phi a * phi b
 
     /// The linear kernel over a vector feature map `φ : 'x → float[]` — `k(a,b) = ⟨φ a, φ b⟩`. PSD (Gram).
+    /// Ragged lengths are ZERO-EXTENDED to the longer (a fixed embedding into ℝ^∞ with finite support) —
+    /// NOT min-truncated. (Math Razor 2026-06-11 P0: min-truncation makes φ depend on the *pair*, so it
+    /// is no Gram matrix and need not be PSD. Zero-extension keeps a fixed φ ⇒ genuine inner product ⇒ PSD.)
     let dot (phi: 'x -> float[]) : Kernel<'x> =
         fun a b ->
             let pa, pb = phi a, phi b
-            let n = min pa.Length pb.Length
+            let n = max pa.Length pb.Length
             let mutable s = 0.0
             for i in 0 .. n - 1 do
-                s <- s + pa.[i] * pb.[i]
+                let u = if i < pa.Length then pa.[i] else 0.0
+                let v = if i < pb.Length then pb.[i] else 0.0
+                s <- s + u * v
             s
 
     /// The discrete (Kronecker) kernel `k(a,b) = 1 if a = b else 0` — PSD (identity Gram on distinct keys).

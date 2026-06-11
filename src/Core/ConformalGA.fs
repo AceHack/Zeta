@@ -51,12 +51,21 @@ module ConformalGA =
     /// Is this point on the null cone (an honestly embedded point)? `P·P = 0` within `eps`.
     let isNull (eps: float) (p: CPoint) : bool = abs (inner p p) <= eps
 
-    /// **The Sequoia soft-memory-distance kernel**: Gaussian RBF over conformal distance,
-    /// `exp(−½ d² / σ²) = exp(inner / σ²)` for embedded points — PSD (the Gaussian kernel), so it
-    /// composes into the seed language under Mercer closure. σ is the locality scale (the tier width).
+    /// True squared-Euclidean distance from the Euclidean parts directly — ALWAYS a real `d²` (no null
+    /// precondition). For honestly-embedded points this equals `−2·inner`; for arbitrary CPoints it is
+    /// still the genuine Euclidean squared distance of the spatial coords.
+    let euclidSq (p: CPoint) (q: CPoint) : float =
+        let dx, dy, dz = p.X - q.X, p.Y - q.Y, p.Z - q.Z
+        dx * dx + dy * dy + dz * dz
+
+    /// **The Sequoia soft-memory-distance kernel**: Gaussian RBF `exp(−d²/σ²)` over the *true* squared
+    /// Euclidean distance — PSD for ANY inputs (Schoenberg 1938: `exp(−γd²)` is PSD iff `d²` is
+    /// conditionally-negative-definite; Euclidean `d²` always is). σ is the locality scale (tier width).
+    /// (Math Razor 2026-06-11 P0: the old form `exp(inner/σ²)` was only Euclidean for NULL points — a
+    /// non-embedded CPoint broke PSD. Computing `d²` from the Euclidean parts removes the precondition.)
     let rbfKernel (sigma: float) : LinguisticSeed.Kernel<CPoint> =
         let s2 = max 1e-12 (sigma * sigma)
-        fun p q -> exp (inner p q / s2)
+        fun p q -> exp (-(euclidSq p q) / s2)
 
     /// The memory-distance extension pack — placement similarity, composable into any seed (OCP).
     let memoryPack (sigma: float) : LinguisticSeed.Pack<CPoint> =

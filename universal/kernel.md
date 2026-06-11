@@ -22,10 +22,14 @@ The six closure operations — each provably PSD-preserving (Mercer 1909; the Sc
 Compositions outside the closure cannot be expressed, so they cannot break PSD — **OCP as a theorem**
 (B-0204). Extension packs (`Pack`/`composePacks`) grow a seed by ADDING kernels, never editing.
 
-## Conformance = the Mercer witness, not a claim
+## The proof is the CLOSURE; the Gram witness is a regression CHECK (Math Razor 2026-06-11)
 
-A conforming implementation proves `vᵀKv ≥ 0` over sampled Gram matrices (`quadForm`) — conformance by
-witness, the same way `universal/` membership is proven by oracle agreement, not assumed.
+The **proof** that a kernel is PSD is the **closure itself** — it is built only from PSD-preserving
+operations, so the composite is PSD by construction (a type-level guarantee, provable in Lean: each
+combinator preserves the PSD predicate). The **Gram witness** (`vᵀKv ≥ 0` on sampled points via
+`quadForm`) is **evidence, not proof** — a finite-sample regression check that the algebra was not
+violated (e.g. a non-closure op smuggled in). Sell it as the check, never as the certificate. (Precondition
+caught the same day: `dot` must zero-extend ragged vectors, not min-truncate, or it is not a Gram matrix.)
 
 ## Bit-perfection (honest boundary)
 
