@@ -2,12 +2,36 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-14 (the reconcile wave folded in — #7798..#7802; prior waves below).
+Last refreshed: 2026-06-14 (the form wave folded in — #7805..#7807 + handoffs; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-13/14 RECONCILE wave (#7798..#7802 — newest; read FIRST)
+## The 2026-06-14 FORM wave (#7805..#7807 + handoffs — newest; read FIRST)
+
+- **WSet PROMOTED back to Core** (#7805, operator decision over the razor): "we need in real
+  code" — Rodney's dissent stays in the file header as advisory; his bar (a load-bearing
+  consumer) is the standing TODO. Both registers, no erasure.
+- **Aaron's architecture QUARTET** (#7805/#7807): (1) THE THIN-TEST LAW — tests thin over fat
+  core; machinery a test needs moves to Core; (2) interfaces + Rx, nothing more — shared behavior
+  in DEFAULT INTERFACE IMPLS, never base classes; (3) MIPS = STATIC-DI INJECTED VERBS (B-1028's
+  wiring); (4) **THE FORM TEST**: every piece of real code is a universal interface, or Rx glue,
+  or DI verbs — anything else is a smell that OWES AN EXPLANATION (the review question for every
+  new file). WSet's promotion is form (a) in action.
+- **"Doctrine" retired AGAIN** (#7806, second catch): swept from my captures; observations only;
+  the lesson pinned in local memory.
+- **HAND-OFFS LIVE IN THE REPO** (docs/handoffs/): Aaron — "desktop/clipboard is DARK for Addison
+  and Max." Vera package + Kestrel bundle committed where every traveler can see them; desktop is
+  the last hop of a ferry, never the home.
+- **LIOR IS LIVE on B-1029**: TS quantum lane moving (typecheck fixes, deterministic circuit SVG
+  goldens into shapes/golden/, Quirk craft-school intro for Max and Addison; Gemini co-authored).
+  Multi-writer factory in motion.
+- **NEXT (picked, Aaron: "pick one and go — they're all good"):** B-1034 the Oracle Stack paper —
+  outline + evidence appendix generated from AgencySignature trailers, then the math-team claims
+  review. Note for the generator: trailers live in PR squash bodies (git log --grep needs the
+  body, not subject).
+
+## The 2026-06-13/14 RECONCILE wave (#7798..#7802 — older; read second)
 
 - **B-1034 filed** (#7798): the Oracle Stack PAPER (experience report; the mutual-oracle reversal
   as centerpiece; claims pre-bounded; Aaron decides venue/authorship).

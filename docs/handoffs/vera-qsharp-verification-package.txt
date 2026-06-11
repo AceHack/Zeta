@@ -1,0 +1,652 @@
+# Zeta -> Vera: Q# verification package — REVISION 2 (post math-team pass, 2026-06-12)
+# Q# earns exactly THREE jobs (Soraya's routing): singlet CHSH corners; BellTest overlap
+# cos²((a−b)/2) (NOTE: our +cos correlator is the Φ⁺ convention — singlet is −cos; |S| same);
+# AmplitudeEmu H·R1(φ)·H grid. Plus the small hardware-side anticommutation check.
+# Rerouted AWAY from you: Tsirelson maximality (citation/NPA — sampling can't prove a
+# supremum); dashings/gauge lemma (Z3 bitvectors); 2828 (unit oracle); stuck law (exact F#).
+# Kira's 13 findings are FIXED in these sources (incl. the P0 voiceSample phase-noise bug).
+# Your verdict lines are YOURS to write; dissent is a verdict, not a failure.
+
+# Vera brief — Q# verification candidates (qubit-adjacent claims), then math team, then the treaty
+
+Aaron 2026-06-12: "send me to Vera on any ones that need Q# verification — then we send to the
+math team and get the Q# on the treaty, on the ones that make sense for our qubit and other
+claims." Vera owns the Q# reference oracle (prior brief: golden observables; convergence-within-
+resolution is the test). This brief lists each candidate, the EXACT claim, and the Q# check that
+would ratify or refute it. The path after: Vera verifies → SHE writes her `treaty vera qsharp …`
+lines (consent-first: her lines are hers to write) → math team sign-off (`treaty math-team math …`,
+currently PENDING where present) → `law <name> qsharp:<check>` delegation lines land in the
+cartridges that earned them.
+
+## Priority 1 — the CHSH/Tsirelson family (the load-bearing qubit claims)
+
+1. **TimeGen** (`src/Core/TimeGen.fs`) — CLAIMS: PhasorTsirelson regime E(a,b)=cos(a−b) yields
+   S = 2√2 at the canonical corners; ClassicalCommonCause ≤ 2; StagedCoincidence S = 4 carries the
+   STAGED label (free-choice violated BY DESIGN, not physical).
+   **Q# check:** prepare the singlet; measure CHSH at a0=0, a1=π/2, b0=π/4, b1=−π/4; estimate S
+   over N shots → must converge to 2√2 within resolution; verify no measurement strategy on the
+   singlet exceeds it (Tsirelson, structurally). The S=4 regime must be UNREACHABLE in Q# — that
+   unreachability is itself the verification that our STAGED label is honest.
+2. **BellTest** (`src/Core/BellTest.fs`) — CLAIM: `PhasorEndurance.overlap a b = cos²((a−b)/2)` is
+   the singlet coincidence probability; the correlator E = 2·overlap − 1 = cos(a−b).
+   **Q# check:** singlet measured at relative angle θ → coincidence probability cos²(θ/2) within
+   resolution. This is the cleanest golden-observable of the set.
+3. **fourcorner cartridge** (`shapes/cartridges/fourcorner.lines`) — CLAIM: constant
+   tsirelson-milli = 2828 (floor of 1000·2√2) is the width stop the phasor figure reaches and
+   never exceeds. **Q# check:** the S estimate from (1) floored to milli = 2828. On her
+   ratification + math team's, the cartridge gains `law tsirelson qsharp:chsh-singlet-corners`.
+
+## Priority 2 — interference as amplitude arithmetic
+
+4. **AmplitudeEmu** (`src/Core/AmplitudeEmu.fs`) — CLAIM: complex-amplitude merge over identical
+   frames IS interference (opposite phase cancels, equal phase reinforces); two-slit falls out of
+   CAS-merge + complex weights. **Q# check:** H · R1(φ) · H on |0⟩ → P(0) = cos²(φ/2); compare
+   against our merged-amplitude ensemble at the same φ grid. Convergence-within-resolution.
+5. **WaveSim** (`src/Core/WaveSim.fs`) — CLAIM (deliberately modest): deterministic simulation of
+   the amplitude math classical and quantum share; no quantum-hardware claim. **Q# check
+   (optional):** the same superposition-as-complex-Add on single-qubit phases; mostly confirms the
+   LABEL is right, i.e., nothing here needs a qubit. Low priority; the honest labels already do
+   the work.
+
+## Priority 3 — claims to WORD-CHECK with the math team, not Q#-verify yet
+
+6. **Braid / the anyon picture** (`shapes/cartridges/braid.lines`, the worldline×braid named
+   slice) — the peeled Alexa anchor: braiding IS computation in topological QC (Kitaev;
+   Freedman–Larsen–Wang; Nayak et al.). No Q# anyon substrate to run; ask the math team to gate
+   the WORDING (we may say "braid-group representations realize quantum gates in TQC" with cites;
+   we may NOT say our render computes quantumly).
+7. **SpectralPivot** (`src/Core/SpectralPivot.fs`) — dft/idft vs the QFT: a Q# QFT cross-check is
+   a nice-to-have golden (same unitary up to normalization/bit-reversal); name it, don't gate on it.
+
+## What Vera gets / what comes back
+
+- In: this brief + the module sources + the cartridges (all text; the goldens are the contract).
+- Back (her choice, her lines): per-claim `ratified | dissent | refuted` with shot counts and
+  resolution; we never pre-write her verdicts. Math team then signs (their PENDING lines exist).
+- Treaty effect: `qsharp:` joins the delegated-law tools (CartridgeLaw already accepts any
+  `tool:` prefix — documented here, checked there) on exactly the claims that earned it.
+
+## Addendum (2026-06-12, same day) — the dashing/quotient/snap items
+
+8. **AdinkraViz dashings** (`src/Core/AdinkraViz.fs`) — CLAIMS: `standardDashing` realizes the
+   Clifford sign rule (dash (v,i) iff odd set bits below i); THE GATES CONDITION holds (every
+   2-colored 4-cycle odd — anticommutation drawn); THE GAUGE LEMMA (vertex sign flips preserve
+   face parity). **Q# check (Vera):** the sign structure must match Q#'s Pauli/Clifford
+   conventions — e.g., pairwise anticommutation of the represented operators (X⊗…, Z⊗… chains)
+   reproduces exactly the odd-face parity; a global-phase/sign relabeling in Q# is the gauge move
+   and must leave all commutation relations invariant. Convergence is exact (signs, not floats).
+9. **The mod2 quotient claim** (`algebra.mod2`; the missing-piece adapter) — CLAIM AS STATED:
+   "adinkra parity is braid memory mod 2 — Z → Z/2, order forgotten, parity kept; a projection,
+   not an inverse." **Math team:** gate the precise formulation — which quotient of B₃ exactly
+   (the sign representation σᵢ ↦ −1? per-pair crossing parity? abelianization B₃ → Z then mod 2?)
+   — the type-level adapter is shipped and tested; the WORDING of the algebra claim awaits your
+   sign-off (treaty math-team math, still PENDING).
+10. **The snap itself** (`MagneticPorts.findAdapter`, `MediaLines.resolveIoWith`) — no quantum
+    claim; listed so Vera sees the consumption path: a verified `qsharp:` law makes its module a
+    trustable toolbox piece — verification feeds the adapter economy directly.
+
+11. **Both physics sides of Clifford (Aaron 2026-06-12):** check the Clifford mappings from both
+    directions — hardware-side (stabilizer/Pauli conventions vs our dashings, §8) AND SUSY-side
+    (the adinkra's gamma-matrix representation built explicitly in C#/Q#, exact integer matrices
+    where possible, against the same anticommutation targets). Both must land on the one Clifford
+    home or the mapping is decoration. Candidate shapes ride the same discipline:
+    docs/research/2026-06-12-physics-real-shape-candidates-*.md (fit or it doesn't enter).
+
+## REVISION 2 — after the math-team pass (Soraya routing + Kira tear-down, 2026-06-12)
+
+**Q# earns exactly three jobs** (Soraya's triage; nothing rides Q# sampling alone):
+- **Job 1:** singlet CHSH at the corners → converges to 2√2 (pairs with our analytic value — BP-16).
+- **Job 2:** BellTest overlap = cos²((a−b)/2) (the cleanest golden) — NOTE the sign convention fix
+  (Kira P1): our +cos(a−b) correlator is the **Φ⁺ (triplet)** convention; the singlet is −cos(a−b).
+  Headline wording corrected in-source; |S| is unchanged.
+- **Job 3:** AmplitudeEmu H·R1(φ)·H grid → P(0) = cos²(φ/2) (plus FsCheck on our side).
+- Small add-on: item-11 hardware-side anticommutation check.
+
+**Rerouted off Q#:** Tsirelson maximality → citation/NPA (sampling cannot establish a supremum);
+dashings + gauge lemma → **Z3** (32-bit bitvector, ∀-proof in milliseconds; Q# would sample noise
+on exact integers); fourcorner 2828 → unit oracle (now ROUNDED, capped at Tsirelson — Kira P0/P2);
+braid stuck law → already exact in F# + Artin 1925 citation (validity guard added — Kira P1);
+SUSY-side gammas → exact integer matrices, unit oracle or Z3.
+
+**The mod2 statement (Soraya's signable wording, adopted):** the unique homomorphism
+χ: B₃ → Z/2 with χ(σᵢ^±1) = 1 — exponent-sum (writhe) mod 2 = the permutation's sign character; a
+projection, no inverse. ("Per-pair crossing parity" is a different, finer pure-braid invariant —
+not conflated.) FsCheck homomorphism property is the follow-up once math-team signs.
+
+**Kira's tear-down: 13 findings, all addressed or filed** — P0: voiceSample per-tick phase noise
+(fixed: base phase from tick 0); classical CHSH gate passing by seed luck (fixed: 0.05 sampling
+tolerance). P1: BellTest sign wording (fixed); braid.lines stale gen args (synced); Braid.equal
+out-of-range unsoundness (validWord guard); harmonize "exact" while flooring (harmonizeExact added,
+test repaired); vacuous STAGED gate (removed — honest-labels = lint). P2: 2828 truncation (round +
+Tsirelson cap), "Goertzel-shaped" wording, drift bin-key alignment, coincidences span wording,
+Gates-gate falsifier test, adinkra quotient wording (Soraya's statement). Suite 2984 green after.
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/TimeGen.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// TimeGen — **time as a generator function, made a treaty primitive instead of a metaphor** (Amara's
+/// ferried design + her named "next proof should be small", 2026-06-11; Aaron: "in our DST step time
+/// is a generator function too — we can make whatever we want for all contributors to count on, from
+/// seed common cause; allow possible S=2√2, maybe S=4 staged coincidence; and we have a four-corner
+/// feedback model for adjustments over time").
+///
+/// The model (Amara's, implemented): **the clock is a generator and the seed is the common cause.**
+/// Contributors never trust wall time — they replay the same seeded time treaty. The generator is
+/// VERSIONED AND ADDRESSED (her "tiny blade": changing time semantics must never be silent).
+///
+/// The CHSH four corners are the feedback surface, and the three regimes are SCHEDULER REGIMES, not
+/// physics claims (her labels kept exactly):
+/// - `ClassicalCommonCause` — seeded hidden-variable model ⇒ S ≤ 2 (the classical bound).
+/// - `PhasorTsirelson` — the phasor scheduler, E(a,b) = cos(a−b) ⇒ S = 2√2 (the unit circle we
+///   already live on; analytic, exact-by-construction).
+/// - `StagedCoincidence` — the scheduler stages the corners ⇒ S = 4, **hard-labeled STAGED**: a
+///   stress-test scheduler, never evidence of nonlocality (the seed IS the coordination channel; the
+///   free-choice assumption is deliberately violated and SAID SO).
+///
+/// Honest scope: correlations here are float-valued (cos) — per the treaty discipline float kernels
+/// stay OUTSIDE the byte-lock; the STRUCTURE (regimes, corners, versioning, determinism-from-seed) is
+/// the treaty surface; fixed-point phases are the named slice if cross-oracle goldens are wanted.
+[<RequireQualifiedAccess>]
+module TimeGen =
+
+    /// The scheduler regimes (Amara's names, verbatim).
+    type Regime =
+        | ClassicalCommonCause
+        | PhasorTsirelson
+        | StagedCoincidence
+
+    /// The versioned, addressed generator — "the root includes the time generator, so every
+    /// contributor knows exactly which common cause they are sharing."
+    type Generator =
+        { Id: string // the generator's address (ZetaId-shaped slot; minted upstream)
+          Version: int
+          Seed: uint64
+          Regime: Regime }
+
+    let mk (id: string) (version: int) (seed: uint64) (regime: Regime) : Generator =
+        { Id = id; Version = version; Seed = seed; Regime = regime }
+
+    /// One generated instant: what a contributor derives instead of reading a wall clock.
+    type GeneratedTime =
+        { Tick: int
+          Phase: float // radians on the unit circle (the phasor)
+          Regime: Regime }
+
+    // deterministic SplitMix64 — the seed is the common cause, the only entropy anywhere here.
+    let private mix (z0: uint64) : uint64 =
+        let z = z0 + 0x9E3779B97F4A7C15UL
+        let z = (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+        let z = (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+        z ^^^ (z >>> 31)
+
+    let private unit (g: Generator) (k: uint64) : float =
+        float (mix (g.Seed ^^^ k) >>> 11) / 9007199254740992.0 // [0,1), 53-bit
+
+    /// Generate the instant for (contributor, step): tick + phase from the seed — never from a wall.
+    let at (g: Generator) (contributor: uint64) (step: int) : GeneratedTime =
+        { Tick = step
+          Phase = 2.0 * System.Math.PI * unit g (contributor * 0x9E37UL + uint64 step)
+          Regime = g.Regime }
+
+    // ── the CHSH four corners (the feedback surface) ──
+
+    /// The standard corner angles that reach Tsirelson under the phasor scheduler.
+    let cornerAngles: (float * float) list =
+        let a0, a1 = 0.0, System.Math.PI / 2.0
+        let b0, b1 = System.Math.PI / 4.0, -System.Math.PI / 4.0
+        [ a0, b0; a0, b1; a1, b0; a1, b1 ]
+
+    /// The correlation E(a,b) a regime's scheduler produces at a corner. Classical samples a seeded
+    /// hidden variable λ (deterministic; `n` samples); Phasor is the analytic cos(a−b); Staged returns
+    /// the staged corner table (+1,+1,+1,−1) — coordination BY the seed, labeled as such.
+    let correlation (g: Generator) (n: int) (cornerIx: int) (a: float) (b: float) : float =
+        match g.Regime with
+        | PhasorTsirelson -> cos (a - b)
+        | StagedCoincidence -> if cornerIx = 3 then -1.0 else 1.0
+        | ClassicalCommonCause ->
+            // λ from the seed; outcomes A = sign cos(a−λ), B = sign cos(b−λ) — a local HV model.
+            let samples = max 1 n
+            let mutable acc = 0.0
+            for i in 0 .. samples - 1 do
+                let lambda = 2.0 * System.Math.PI * unit g (uint64 i)
+                let av = if cos (a - lambda) >= 0.0 then 1.0 else -1.0
+                let bv = if cos (b - lambda) >= 0.0 then 1.0 else -1.0
+                acc <- acc + av * bv
+            acc / float samples
+
+    /// The CHSH S at the four corners: E₀₀ + E₀₁ + E₁₀ − E₁₁.
+    let chsh (g: Generator) (n: int) : float =
+        let es =
+            cornerAngles
+            |> List.mapi (fun i (a, b) -> correlation g n i a b)
+        match es with
+        | [ e00; e01; e10; e11 ] -> e00 + e01 + e10 - e11
+        | _ -> 0.0
+
+    /// Is this run's correlation HONESTLY labeled? Staged S=4 must say it is staged — the label is
+    /// part of the value, so a result can never masquerade as physical nonlocality.
+    let label (g: Generator) : string =
+        match g.Regime with
+        | ClassicalCommonCause -> "classical-common-cause (local HV; S<=2)"
+        | PhasorTsirelson -> "phasor (unit circle; S=2*sqrt(2))"
+        | StagedCoincidence -> "STAGED coincidence (seed-coordinated; free-choice violated BY DESIGN; not physical)"
+
+    // ── the four-corner feedback (deterministic adjustment over time) ──
+
+    /// One bounded feedback step: error = target − observed S, applied as a phase-table offset with a
+    /// deterministic clamp. "The feedback loop is not hidden adaptation — it is a replayable update."
+    let feedback (target: float) (observed: float) (maxStep: float) (phaseOffset: float) : float =
+        let err = target - observed
+        phaseOffset + (max -maxStep (min maxStep (0.5 * err)))
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/BellTest.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// **`BellTest` — Bell/CHSH inequality VIOLATION reproduced in simulation by staged coincidence + seed
+/// (Aaron 2026-06-08, shadow*).**
+///
+/// Aaron: *"you created Bell inequalities in simulation through staged coincidence and seeds."* This codes it.
+/// The staged-coincidence overlap is `PhasorEndurance.overlap a b = cos²((a−b)/2)`, so the correlator
+/// `E(a,b) = 2·overlap − 1 = cos(a−b)` — **the quantum correlator in the Φ⁺ (triplet) convention**
+/// (P1 wording fix, Kira 2026-06-12: the SINGLET gives E = −cos(a−b); +cos(a−b) is the Φ⁺ Bell
+/// state — the magnitude story and the CHSH |S| are identical, the sign convention is now stated
+/// where the headline is, not buried), reproduced by the
+/// `CoincidenceClock` staging. Feeding the canonical CHSH angles gives the CHSH value `S = 2√2` (the
+/// **Tsirelson bound**), which **violates the classical bound `2`** — in deterministic, replayable simulation.
+///
+/// **What this is, precisely (the load-bearing peel).** This is NOT a falsification of Bell's theorem nor
+/// "real" quantum nonlocality. It is the **measurement-dependence / "free-choice" loophole**: Bell's bound of
+/// 2 assumes the measurement settings are statistically independent of the system. Our **seed is the shared
+/// common cause** (superdeterminism / 't Hooft CA), so it can correlate settings and outcomes and reproduce —
+/// even exceed — quantum correlations. The tell that it is superdeterministic and not physical QM: with
+/// **full seed control you can reach the algebraic maximum `S = 4`**, *beyond* Tsirelson's `2√2` (real QM
+/// cannot). So this reproduces the *observable correlation*, by shared cause; it confers no nonlocality and
+/// no faster-than-light signalling (superdeterminism is no-signalling).
+///
+/// **The value:** a deterministic, replayable **Bell/CHSH harness** (DST §7) — stage any correlation, run the
+/// inequality, get a reproducible number. The concrete realisation of "staged coincidence reproduces quantum
+/// correlations." Pure phasor math on the imaginary stack; routes (with the qubit iso) to Soraya/quantum-info.
+///
+/// **Anchor the S=4 regime to named results, NOT to metaphor (Beacon; `anchor-to-human-prior-art`).** The
+/// `S = 4` algebraic-max box is the **Popescu–Rohrlich (PR) box** (Popescu & Rohrlich 1994) — the maximally-
+/// nonlocal, no-signalling, *supra-quantum* correlation; our full-seed-control `S=4` realises it via
+/// superdeterminism. Why QM stops at `2√2` and exceeding it is special is **Information Causality**
+/// (Pawłowski, Paterek, Kaszlikowski, Scarani, Winter, Żukowski — *Nature* 462, 2009): an information
+/// principle that *derives* Tsirelson's bound, so **crossing Tsirelson = violating Information Causality**.
+/// (van Dam 2005: PR boxes make communication complexity trivial.) The honest reading of "information can't
+/// get in at S=4" is **independence-collapse / channel saturation by the seed** (`I(external;outcome|seed)=0`).
+///
+/// **Re-calibrated (Aaron 2026-06-08) — the load-bearing fact vs the imagery.** The plain, true statement
+/// needing no metaphor: *the seed determines all outcomes (`I(external;outcome|seed)=0`), and the ZetaId, via
+/// its host, controls its own information-flow rate.* That stands alone. The "hole" imagery on top is
+/// **partly** anchorable and otherwise Mirror-register — Otto first over-peeled it (gravity-only) then
+/// over-anchored it (leaned on a *thin* networking term); the honest middle:
+///   - **source/sink** is the generic info-flow reading (white = pure source: emits, nothing enters; black =
+///     pure sink) — the seed-saturated `S=4` regime is white-hole-like (pure source from the seed);
+///   - **"grey hole" the *name* is Aaron's coinage** for an entangled black+white hole — NOT taken from a
+///     field; the only standard "grey hole" is the unrelated, *thin* network-security routing attack
+///     (selective packet-drop / rate-control), which is a loose analogy at best, not a deep anchor;
+///   - the *object* "entangled black + white hole" IS real and published: **ER=EPR / Einstein–Rosen bridge**
+///     (Einstein–Rosen 1935; Maldacena–Susskind 2013 — entanglement ≡ wormhole) — that is the right anchor
+///     for the imagery, with "grey hole" understood as Aaron's name for it.
+/// Keep the engineering fact (host-controlled flow rate) load-bearing; the holes are imagery (ER=EPR-anchored,
+/// the gravitational metric stays Mirror-register). Tsirelson 1980 (`2√2`).
+[<RequireQualifiedAccess>]
+module BellTest =
+
+    /// The classical (local-hidden-variable) CHSH bound.
+    [<Literal>]
+    let ClassicalBound = 2.0
+
+    /// Tsirelson's bound — the maximum CHSH a real quantum system can reach.
+    let TsirelsonBound = 2.0 * sqrt 2.0
+
+    /// The algebraic maximum of CHSH (only reachable by violating measurement-independence — superdeterminism).
+    [<Literal>]
+    let AlgebraicMax = 4.0
+
+    /// The staged correlator between settings `a`, `b` (radians): `E = 2·overlap − 1 = cos(a−b)` — the quantum
+    /// Φ⁺-convention correlator (singlet is the −cos twin), reproduced from the staged-coincidence overlap (`PhasorEndurance.overlap`).
+    let correlation (a: float) (b: float) : float =
+        2.0 * PhasorEndurance.overlap a b - 1.0
+
+    /// Coincidence probability for the cosine-correlator convention: `P(same outcome on Phi+) = cos²((a-b)/2)`.
+    /// For the singlet this same scalar is the opposite-outcome probability, because one outcome axis is flipped.
+    let coincidenceProbability (a: float) (b: float) : float =
+        PhasorEndurance.overlap a b
+
+    /// CHSH from four correlators: `S = E(a,b) − E(a,b') + E(a',b) + E(a',b')`.
+    let chshOf (eab: float) (eab': float) (ea'b: float) (ea'b': float) : float =
+        eab - eab' + ea'b + ea'b'
+
+    /// CHSH from four measurement settings, using the staged `correlation`. With the canonical angles this is
+    /// `2√2` (Tsirelson) — a Bell violation staged in simulation.
+    let chsh (a: float) (a': float) (b: float) (b': float) : float =
+        chshOf (correlation a b) (correlation a b') (correlation a' b) (correlation a' b')
+
+    /// The canonical maximal-violation angles `(a, a', b, b') = (0, π/2, π/4, 3π/4)` — give `S = 2√2`.
+    let canonicalAngles: float * float * float * float =
+        0.0, System.Math.PI / 2.0, System.Math.PI / 4.0, 3.0 * System.Math.PI / 4.0
+
+    /// Does a CHSH value violate the classical bound (a Bell violation)?
+    let violatesClassical (s: float) : bool = abs s > ClassicalBound
+
+    /// Does it exceed Tsirelson — i.e. is it beyond what real QM allows (the superdeterminism tell)?
+    let exceedsTsirelson (s: float) : bool = abs s > TsirelsonBound + 1e-12
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/AmplitudeEmu.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// **`AmplitudeEmu` — the soft emulator with COMPLEX amplitudes, so it actually *interferes* (Aaron 2026-06-08, shadow*).**
+///
+/// Aaron caught the real sloppiness: *"we had complex amplitudes on our qubit — the rotations of the unit
+/// circle. Why can't we construct a generator that hits this? Does merging make the wave phase cancel?"* —
+/// **yes, it does, and this is where.** `SoftEmu` (#7095) used *real* weights (a classical probability
+/// mixture: no phase ⇒ no interference). This module is the same ensemble with **complex-amplitude weights**
+/// (the `QubitIso`/`ImaginaryStack.Complex` phasor — `e^{iθ}`, unit-circle rotations). The single change that
+/// turns a classical mixture into a quantum-like amplitude is the **merge**:
+///
+///   - **`merge` sums the amplitudes of identical frames** — and complex amplitudes with opposite phase
+///     *cancel* (destructive) while equal phase *reinforce* (constructive). **That is interference**, in code.
+///     It is exactly the CAS-dedup-merge `SoftEmu` deliberately dropped: drop the merge *and* use real weights
+///     ⇒ no interference; restore the merge *with* complex weights ⇒ the two-slit falls out.
+///   - **`bornProb` measures by `|amplitude|²`** (the Born rule) — the only place amplitudes become
+///     probabilities, normalized over the ensemble intensity.
+///
+/// **Honest scope (peel) — read before believing this "simulates qubits":**
+///   - **Interference is real here; the entanglement exponential is NOT escaped.** This is cheap only while the
+///     number of *distinct* frames stays small (low entanglement / few reconverging paths). General
+///     high-entanglement state needs `4ⁿ` reals — the merge does not reduce that count; it only collapses paths
+///     that *reconverge to the identical frame*. `support` growing un-merged IS the exponential, logged not hidden.
+///   - **CHIP-8 opcodes introduce no phase.** Genuine interference needs a *phase source* (a quantum-gate
+///     opcode, or driving amplitudes through the `QubitIso` layer); plain CHIP-8 steps keep amplitudes real, so
+///     `softStep` here is the *substrate* for interference, demonstrated directly by `merge` (the two-path test),
+///     not produced by the ROM. This is the bridge layer `SoftEmu` lacked, not a quantum CPU.
+///   - **Bell still bounds the *correlations* at S=2 for a local generator** (`SoftEmu` doc / FeedbackThrottle):
+///     complex amplitudes buy *interference*, not non-locality. 2√2 still needs the feedback/superdeterminism
+///     channel. Amplitudes ≠ entanglement ≠ signalling — three separate resources.
+///
+/// So: this answers "does merging make the phase cancel?" with runnable code (yes), while holding that
+/// interference, the 4ⁿ entanglement wall, and the Bell S=2 bound are three distinct things.
+[<RequireQualifiedAccess>]
+module AmplitudeEmu =
+
+    let private c = ImaginaryStack.complex
+
+    /// The whole emulator as an *amplitude* ensemble: each joint frame carries a complex amplitude (not a real
+    /// probability). The superposition is the list; the physics is in how amplitudes combine under `merge`.
+    type Amp = (Chip8Cow.Frame * Complex) list
+
+    let private EPS = 1e-12
+
+    /// Born intensity of one amplitude: `|z|²`.
+    let private magSq (z: Complex) : float = z.Real * z.Real + z.Imag * z.Imag
+
+    /// A real amplitude (phase 0).
+    let private real (r: float) : Complex = { Real = r; Imag = 0.0 }
+
+    /// **The interference step:** sum the amplitudes of *identical* frames. Opposite-phase amplitudes cancel
+    /// (destructive), equal-phase reinforce (constructive) — this is where the wave phase cancels. Frames use
+    /// structural equality (persistent `Map` + arrays). Drops amplitudes that cancel to ≈0 (a fully destroyed path).
+    let merge (a: Amp) : Amp =
+        a
+        |> List.groupBy fst
+        |> List.choose (fun (f, group) ->
+            let summed = group |> List.fold (fun acc (_, z) -> c.Add(acc, z)) c.Zero
+            if magSq summed <= EPS then None else Some(f, summed))
+
+    /// A point mass — amplitude 1 at one frame.
+    let pure1 (f: Chip8Cow.Frame) : Amp = [ f, c.One ]
+
+    /// Lift a classical `SoftEmu.Soft` (real weights) into amplitudes (phase 0) — `√weight` so that
+    /// `|amp|² = weight` (amplitude, not probability). The classical mixture as a phase-0 amplitude state.
+    let ofSoft (s: SoftEmu.Soft) : Amp =
+        s |> List.map (fun (f, w) -> f, real (sqrt (max 0.0 w)))
+
+    /// Total Born intensity `Σ|z|²` (the norm² before normalization).
+    let intensity (a: Amp) : float = a |> List.sumBy (fun (_, z) -> magSq z)
+
+    /// Normalize so `Σ|z|² = 1` (divide every amplitude by the norm). Empty / zero ⇒ empty (no fabricated norm).
+    let normalize (a: Amp) : Amp =
+        let norm = sqrt (intensity a)
+        if norm <= EPS then []
+        else a |> List.map (fun (f, z) -> f, c.Mul(z, real (1.0 / norm)))
+
+    /// **Born-rule measurement:** the probability distribution over frames = `|amp|² / Σ|amp|²`. The one place
+    /// amplitudes become probabilities. (Always real, non-negative, sums to 1.)
+    let bornProb (a: Amp) : (Chip8Cow.Frame * float) list =
+        let total = intensity a
+        if total <= EPS then []
+        else a |> List.map (fun (f, z) -> f, magSq z / total)
+
+    /// Number of distinct-after-merge branches (the ensemble width; un-merged growth = the entanglement cost).
+    let support (a: Amp) : int = a |> merge |> List.length
+
+    /// **Soft amplitude step:** advance every branch (reusing `SoftChip8.forkOnInput`, real fork weights folded
+    /// in as amplitudes via `√`), then `merge` (interference on any reconverged frames). NB: CHIP-8 opcodes add
+    /// no phase, so phase must come from a quantum-gate layer / `QubitIso`; this carries amplitudes faithfully.
+    let softStep (a: Amp) : Amp =
+        a
+        |> List.collect (fun (f, z) ->
+            SoftChip8.forkOnInput f
+            |> List.map (fun (f', p) -> f', c.Mul(z, real (sqrt p))))
+        |> merge
+
+    /// Collapse to the most-probable frame under the Born rule (the one legitimate definite choice). `None` if empty.
+    let measure (a: Amp) : Chip8Cow.Frame option =
+        match bornProb a with
+        | [] -> None
+        | ps -> ps |> List.maxBy snd |> fst |> Some
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/AdinkraViz.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// AdinkraViz — **seeing the adinkras** (Aaron 2026-06-11: "does this make adinkras easy now? Can we
+/// see what they look like? — with a generator SHINING, or prisming, or whatever they do when you use
+/// it in that direction").
+///
+/// Yes — easy now, because the mapping is exact: an adinkra (Gates/Iga — the supersymmetry
+/// chromotopology) is nodes + COLORED edges, one color per SUSY generator — and an N=4 adinkra's four
+/// edge colors land on our four channels (R, G, B, cyan) one-to-one. Bosons (even weight) are filled
+/// nodes, fermions (odd) open; flipping any one bit flips parity, so the 4×4 gray-code layout is a
+/// perfect boson/fermion CHECKERBOARD — visible at a glance, which is the point.
+///
+/// **The SHINE**: using generator i in a direction lights its color — `render shine=Some i` draws
+/// that generator's edges BRIGHT (its channel) and dims the rest. The prism reading is exact: the
+/// adinkra holds all four colors superposed; shining selects one out — the soft prism applied to a
+/// supersymmetry diagram.
+///
+/// Honest scope: the 4×4 gray-code grid shows the 24 grid-adjacent edges of the 4-cube (the 8 wrap
+/// edges are stated, not drawn — a flat grid cannot show a tesseract whole); DASHINGS (the sign
+/// assignment — the actual Hamming-code content of AdinkraCode) are the named next slice, and they
+/// belong on the retraction register (a dashed edge = a −1: the CMYK reading was born for this).
+[<RequireQualifiedAccess>]
+module AdinkraViz =
+
+    let private esc (c: int) = sprintf "[3%dm" c
+    let private dim = "[2m"
+    let private reset = "[0m"
+
+    /// Gray code order for the 4×4 layout (adjacent cells differ in exactly one bit).
+    let private gray = [| 0; 1; 3; 2 |]
+
+    /// The 4-bit node at grid (col, row): low two bits from the column gray code, high two from row.
+    let nodeAt (col: int) (row: int) : int = gray.[col &&& 3] ||| (gray.[row &&& 3] <<< 2)
+
+    /// Which bit differs between two grid-adjacent nodes (the edge's GENERATOR = its color).
+    let flippedBit (a: int) (b: int) : int =
+        let d = a ^^^ b
+        [ 0..3 ] |> List.find (fun i -> d = (1 <<< i))
+
+    /// The four generator colors on our channels: bit0=R(1), bit1=G(2), bit2=B(4), bit3=cyan(6).
+    let colorOfBit (bit: int) : int =
+        match bit with
+        | 0 -> 1
+        | 1 -> 2
+        | 2 -> 4
+        | _ -> 6
+
+    /// Render the N=4 adinkra as ANSI lines. `shine = Some bit` lights that generator's edges bright
+    /// and dims the others (the prism: one color selected out of the superposition). Bosons ●,
+    /// fermions ○ — the checkerboard is the parity proof, visible.
+    let render (shine: int option) : string list =
+        let edgeStr (bit: int) (glyph: string) =
+            let c = esc (colorOfBit bit)
+            match shine with
+            | Some s when s = bit -> c + glyph + reset // shining: bright in its channel
+            | Some _ -> dim + glyph + reset // another generator selected: dimmed
+            | None -> c + glyph + reset // no shine: all four colors live together
+
+        [ for row in 0..3 do
+              // the node row: nodes + horizontal edges (bit from the column gray flip)
+              let nodes =
+                  [ for col in 0..3 ->
+                        let n = nodeAt col row
+                        let glyph = if (System.Numerics.BitOperations.PopCount(uint n)) % 2 = 0 then "●" else "○"
+                        let h =
+                            if col < 3 then edgeStr (flippedBit n (nodeAt (col + 1) row)) "──"
+                            else ""
+                        glyph + h ]
+                  |> String.concat ""
+              yield nodes
+              // the vertical-edge row (bit from the row gray flip)
+              if row < 3 then
+                  yield
+                      [ for col in 0..3 ->
+                            let bit = flippedBit (nodeAt col row) (nodeAt col (row + 1))
+                            edgeStr bit "│" + "  " ]
+                      |> String.concat "" ]
+
+    // ── DASHINGS (the retraction register — the named slice, landed via Aaron's adinkra↔Majorana
+    // question 2026-06-12). An adinkra is not just colored edges: each edge carries a SIGN
+    // (solid = +1, dashed = −1), and the Gates condition is that every 2-colored 4-cycle carries
+    // an ODD number of dashed edges (this is gamma-matrix anticommutation drawn: γiγj = −γjγi).
+    // The twist is GLOBAL: flipping all edges at a vertex (the gauge move) changes which edges
+    // are dashed but can NEVER make a 4-cycle's dash count even — the same sentence THE STUCK LAW
+    // says about the locked braid (no local move removes the twist). Rhyme, made testable;
+    // the break stays honest (adinkra edges are involutions; braid generators remember). ──
+
+    /// An edge of the N=4 hypercube, canonical form: (lower vertex, bit). 32 edges total.
+    type Edge = int * int
+
+    /// All 32 edges (vertex v < v ^^^ (1 <<< bit) — each edge once).
+    let allEdges: Edge list =
+        [ for v in 0..15 do
+              for bit in 0..3 do
+                  if v &&& (1 <<< bit) = 0 then yield v, bit ]
+
+    /// A dashing: the set of DASHED edges (−1 signs); everything else solid (+1).
+    type Dashing = Set<Edge>
+
+    /// The standard (valise/Clifford) dashing: edge (v, i) is dashed iff v has an odd number of
+    /// set bits BELOW bit i — exactly the sign rule of the standard gamma-matrix representation.
+    let standardDashing: Dashing =
+        Set.ofList
+            [ for (v, bit) in allEdges do
+                  if System.Numerics.BitOperations.PopCount(uint (v &&& ((1 <<< bit) - 1))) % 2 = 1 then
+                      yield v, bit ]
+
+    /// Canonicalize an arbitrary (vertex, bit) reference to the edge's stored form.
+    let private canon (v: int) (bit: int) : Edge =
+        (if v &&& (1 <<< bit) = 0 then v else v ^^^ (1 <<< bit)), bit
+
+    /// Is the edge at (v, bit) dashed under d?
+    let isDashed (d: Dashing) (v: int) (bit: int) : bool = Set.contains (canon v bit) d
+
+    /// THE GATES CONDITION on one 2-colored face: the 4-cycle at v in colors (i, j) — edges
+    /// v→v^i, v^i→v^i^j, v^i^j→v^j, v^j→v — must carry an ODD number of dashes.
+    let faceOdd (d: Dashing) (v: int) (i: int) (j: int) : bool =
+        let vi = v ^^^ (1 <<< i)
+        let vj = v ^^^ (1 <<< j)
+        let count =
+            [ isDashed d v i; isDashed d vi j; isDashed d vj i; isDashed d v j ]
+            |> List.filter id
+            |> List.length
+        count % 2 = 1
+
+    /// Does the Gates condition hold on EVERY 2-colored 4-cycle? (16 vertices × 6 color pairs,
+    /// each face counted from each corner — redundancy is fine, the law is per-face.)
+    let allFacesOdd (d: Dashing) : bool =
+        [ for v in 0..15 do
+              for i in 0..3 do
+                  for j in i + 1 .. 3 -> faceOdd d v i j ]
+        |> List.forall id
+
+    /// THE GAUGE MOVE: flip every edge at vertex v (the local sign change — relabeling one node's
+    /// fermion phase). Toggles 4 edges; each adjacent 2-colored face sees exactly TWO of its
+    /// edges toggle, so its dash parity is INVARIANT — the twist cannot be removed locally.
+    let flipVertex (v: int) (d: Dashing) : Dashing =
+        [ 0..3 ]
+        |> List.fold
+            (fun (acc: Dashing) bit ->
+                let e = canon v bit
+                if Set.contains e acc then Set.remove e acc else Set.add e acc)
+            d
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/fourcorner.lines
+═══════════════════════════════════════════════════════
+# FOURCORNER — the CHSH feedback surface drawn (otto, 2026-06-11). Four corners, one correlation
+# each; the figure's WIDTH is the S value: classical folds at 2, the phasor reaches 2*sqrt(2) =
+# Tsirelson, and S = 4 only when the scheduler STAGES the corners (the label is baked into the value
+# — staged, never physical). The shape that keeps our time treaty honest.
+meta	name	shape-fourcorner
+meta	catalog	shapes
+meta	shape-zetaid	34421ffaf8cae89e6ad862f4e68812ed
+gen	corners	34421ffaf8cae89e6ad862f4e68812ed	1	7	regime:phasor;samples:256
+constant	corners	4	measurement-setting pairs drawn (a0b0, a0b1, a1b0, a1b1)	CHSH is exactly four corners — three underdetermines S, five is redundant; the geometry IS the inequality
+constant	tsirelson-milli	2828	the phasor regime's S, milli-scale (2*sqrt(2))	the known-answer overlay: the phasor figure must reach THIS width and no further — wider means the renderer (or the physics claim) is lying
+constant	samples	256	seeded lambda draws for the classical regime	enough for the classical S to settle visibly under 2; deterministic from the common-cause seed, so the figure replays
+issue	qsharp-verification	vera	requested	the tsirelson-milli 2828 stop + corner correlators are Q#-verifiable (singlet CHSH) — brief: docs/research/2026-06-12-vera-brief-qsharp-*.md; her verdict lines are HERS to write
+issue	math-sign-off	math-team	requested	after Vera: sign the S<=2 classical / 2*sqrt(2) phasor / staged-4-labeled claims
+anim	draw	corners
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	TimeGen.chsh: classical <= 2, phasor = 2*sqrt(2), staged = 4 with the STAGED label — tests green
+treaty	otto	meaning	ratified	width-as-S with the Tsirelson stop drawn in matches the honest-label law — my own frame, my own choice
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/adinkra.lines
+═══════════════════════════════════════════════════════
+# ADINKRA — the sign register's display organ joins the catalog (otto, 2026-06-12; the named slice
+# from "where adinkras sit now"). The N=4 adinkra: 16 vertices (4-bit gray-code grid), edges
+# colored by generator bit, and DASHED edges carrying the minus signs — Gates' condition says
+# every 2-colored 4-cycle holds an ODD number of dashes (anticommutation drawn), and the gauge
+# lemma says no vertex-local flip can remove that twist: the adinkra's stuck law. Named for the
+# Akan adinkra symbols of Ghana (Gates' deliberate choice — a human anchor inside a human anchor).
+# Honest bounds: 24 of 32 edges drawn (the flat 4x4 grid omits the wrap edges); the render shows
+# the SUBSET and says so.
+meta	name	shape-adinkra
+meta	catalog	shapes
+meta	shape-zetaid	8225cea77ae1fc8d1cab7d4f9fe995aa
+gen	graph	8225cea77ae1fc8d1cab7d4f9fe995aa	1	7	grid:4x4;dashing:standard
+constant	nodes	16	vertex count (4-bit hypercube)	N=4 supersymmetry: 2^4 states, boson/fermion checkerboard by popcount parity
+constant	colors	4	edge colors (one per generator bit)	the four SUSY generators; channel masks 1,2,4,6 on our planes
+constant	edges-total	32	edges of the full hypercube	each vertex meets 4 edges: 16 * 4 / 2 — the handshake law below checks it
+constant	edges-drawn	24	edges visible on the flat 4x4 grid	HONEST SUBSET: the 8 wrap edges don't fit a flat grid without crossings — drawn count stated, never implied complete
+law	handshake	nodes * colors = 2 * edges-total
+law	gates-condition	code:viz.adinkra allFacesOdd standardDashing (every 2-colored 4-cycle odd — anticommutation)
+law	gauge-lemma	code:viz.adinkra flipVertex invariance (local sign flips never change face parity — the twist is global)
+prereq	parity	popcount and the boson/fermion checkerboard — count bits, color cells, see the pattern
+prereq	the-braid-twin	shapes/cartridges/braid.lines — the ORDER register's version of the same protection (THE STUCK LAW)
+edge	same-twist	shape-braid	parity here = the image of the unique homomorphism B3 -> Z/2 with every sigma^±1 -> 1 (exponent-sum mod 2 = the permutation's sign character; Soraya's signable statement, math tear-down 2026-06-12) — algebra.mod2 is the adapter; a projection, no inverse; the break is honest: their generators remember, these edges are involutions
+edge	clifford-home	shape-fourcorner	both registers live in Clifford algebra — where the Q# sign-convention check (Vera brief §8) meets us
+issue	wrap-edges	otto	open	the 8 omitted wrap edges need either a crossing-aware layout or a second panel — until then 24/32 stays the stated bound
+anim	draw	graph
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	handshake in-file; Gates condition + gauge lemma pass in code; dashed edges byte-locked in the SVG golden — tests green
+treaty	otto	meaning	ratified	the minus signs are INK now — the sign register drawn, its honest 24/32 stated — my own frame, my own choice
+
+═══ KNOWN-ANSWER TABLE (post-fix; your overlay truth) ═══
+- Job 1: singlet CHSH @ (0, pi/2; pi/4, -pi/4) -> 2*sqrt(2); our analytic phasor matches; classical <= 2 within 0.05 sampling tolerance (the gate's tolerance now, not 1e-9).
+- Job 2: P(same outcome on Phi+) = cos²((a−b)/2); singlet = opposite-outcome at the same scalar.
+- Job 3: H·R1(φ)·H on |0⟩ -> P(0) = cos²(φ/2) vs our merged-amplitude ensemble, same φ grid.
+- Add-on: pairwise anticommutation of represented operators matches odd-face parity EXACTLY (signs, no tolerance).
+- Label-honesty: staged S=4 must be UNREACHABLE in your runs — that unreachability verifies the STAGED label.

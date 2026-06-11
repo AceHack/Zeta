@@ -1,0 +1,1067 @@
+# Zeta shape-validation source bundle — for Kestrel's faithful renderer port
+# Generated from main @ ab76a4581 on 2026-06-11 (rev 2: full shape catalog included).
+# Port function-for-function; canonical constants live in the .lines cartridges.
+# Dependency note: WaveSim/SpectralPivot/BoundaryLight use ImaginaryStack.complex
+# (Cayley-Dickson doubling over reals) and Doubled.make — included first.
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/CayleyDickson.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// Cayley–Dickson doubling — the structural primitive underlying the
+/// "imaginary stack" design captured in the B-0623 trajectory. Given any
+/// algebra `A` with addition, negation,
+/// multiplication, and conjugation, the doubled algebra `Doubled<'A>`
+/// consists of pairs `(a, b)` with
+///
+///     (a, b) + (c, d) = (a + c, b + d)
+///     (a, b) · (c, d) = (a · c − d̄ · b, d · a + b · c̄)
+///     conj (a, b)    = (conj a, −b)
+///
+/// Applied iteratively:
+///
+///     ℝ → ℂ        — Real → Complex; loses total ordering
+///     ℂ → ℍ        — Complex → Quaternion; loses commutativity
+///     ℍ → 𝕆        — Quaternion → Octonion; loses associativity
+///     𝕆 → 𝕊        — Octonion → Sedenion; loses alternativity + division algebra
+///
+/// This is the substrate B-0623 names as the carrier of the "imaginary
+/// direction" in the cognitive boot sequence; Adinkras (B-0623 follow-up
+/// PRs) decorate this structure with colored-edge ECC information. The
+/// doubling primitive is the load-bearing object; specific levels
+/// (Complex, Quaternion, Octonion) are derived type aliases.
+///
+/// Implementation note: operations on `'A` are supplied via the
+/// `IAlgebra<'A>` dictionary rather than F# statically-resolved type
+/// parameters. The dictionary form makes the lift `IAlgebra<'A> →
+/// IAlgebra<Doubled<'A>>` directly expressible (the structural fact
+/// that motivates this module). SRTPs would require duplicated
+/// per-arity inline functions and lose the explicit "I doubled the
+/// algebra" surface that's the entire point.
+type Doubled<'A> = { Real: 'A; Imag: 'A }
+
+// The algebra contract for Cayley–Dickson doubling is now the unified floor rung
+// `IStarRing<'A>` (Zero/One/Add/Mul/Negate + Conj) from `Zeta.Core.Abstractions` — a *-ring. The former
+// F#-local `IAlgebra<'A>` (no `One`, disjoint from the floor) is retired: a tower is now an `IStarRing`,
+// hence an `ISemiring`, so `WeightedSet<'K,'W>` and the rest of the generic semiring substrate carry
+// hypercomplex weights for free. `Conj` is the involutive antihomomorphism (identity on ℝ, complex
+// conjugate on ℂ, recursive beyond) that makes the doubling well-defined.
+
+[<RequireQualifiedAccess>]
+module Doubled =
+
+    /// Construct a doubled element from its real and imaginary parts.
+    let make (real: 'A) (imag: 'A) : Doubled<'A> = { Real = real; Imag = imag }
+
+    /// Lift a *-ring on `'A` to a *-ring on `Doubled<'A>`.
+    /// This IS the Cayley–Dickson construction; everything else
+    /// in this module is bookkeeping. `One = (inner.One, inner.Zero)` (real 1, imaginary 0).
+    let algebra (inner: IStarRing<'A>) : IStarRing<Doubled<'A>> =
+        { new IStarRing<Doubled<'A>> with
+            member _.Zero = { Real = inner.Zero; Imag = inner.Zero }
+
+            member _.One = { Real = inner.One; Imag = inner.Zero }
+
+            member _.Add(x, y) =
+                { Real = inner.Add(x.Real, y.Real)
+                  Imag = inner.Add(x.Imag, y.Imag) }
+
+            member _.Negate(x) =
+                { Real = inner.Negate x.Real
+                  Imag = inner.Negate x.Imag }
+
+            // (a, b) · (c, d) = (a·c − d̄·b, d·a + b·c̄)
+            member _.Mul(x, y) =
+                let realPart =
+                    inner.Add(inner.Mul(x.Real, y.Real), inner.Negate(inner.Mul(inner.Conj y.Imag, x.Imag)))
+
+                let imagPart =
+                    inner.Add(inner.Mul(y.Imag, x.Real), inner.Mul(x.Imag, inner.Conj y.Real))
+
+                { Real = realPart; Imag = imagPart }
+
+            // conj (a, b) = (conj a, −b)
+            member _.Conj(x) =
+                { Real = inner.Conj x.Real
+                  Imag = inner.Negate x.Imag } }
+
+
+/// Base case of the imaginary stack: real numbers as a degenerate
+/// algebra over themselves. Conjugation is the identity because ℝ
+/// has no imaginary part. Using `float` rather than an exact rational
+/// type intentionally — the stack is about structural properties of
+/// the doubling, not numerical precision; exact-arithmetic variants
+/// can be derived later by providing an `IAlgebra<Rational>` instead.
+[<RequireQualifiedAccess>]
+module Real =
+
+    let algebra : IStarRing<float> =
+        { new IStarRing<float> with
+            member _.Zero = 0.0
+            member _.One = 1.0
+            member _.Add(x, y) = x + y
+            member _.Negate(x) = -x
+            member _.Mul(x, y) = x * y
+            // ℝ-conjugation is identity (no imaginary part to flip).
+            member _.Conj(x) = x }
+
+
+/// Type aliases for the first few levels of the imaginary stack.
+/// `Complex` = ℝ doubled once; `Quaternion` = ℂ doubled; `Octonion` =
+/// ℍ doubled; `Sedenion` = 𝕆 doubled. The naming makes the imaginary
+/// stack's stratification readable at the type level, matching the
+/// trajectory requirement that category-theory structure remain visible
+/// in public type shapes.
+type Complex = Doubled<float>
+type Quaternion = Doubled<Complex>
+type Octonion = Doubled<Quaternion>
+type Sedenion = Doubled<Octonion>
+
+
+/// Pre-computed *-ring instances at each level of the imaginary
+/// stack. Constructing these once and reusing them is correct because
+/// `IStarRing<'A>` carries no state — it's a pure dictionary of
+/// operations. The instances are the structural fact "ℝ → ℂ → ℍ → 𝕆
+/// is the imaginary stack" made concrete — and since each is an
+/// `ISemiring`, they drop straight into `WeightedSet` & the floor.
+[<RequireQualifiedAccess>]
+module ImaginaryStack =
+
+    let complex : IStarRing<Complex> = Doubled.algebra Real.algebra
+    let quaternion : IStarRing<Quaternion> = Doubled.algebra complex
+    let octonion : IStarRing<Octonion> = Doubled.algebra quaternion
+    let sedenion : IStarRing<Sedenion> = Doubled.algebra octonion
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/WaveSim.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// WaveSim — **honest interference patterns from generators** (Aaron 2026-06-11: "we should be able
+/// to generate honest interference patterns — simulated bit-perfect quantum and regular waves, all
+/// sorts of physical simulators from generators — with the Cayley-Dickson and Clifford algebra we
+/// already have").
+///
+/// The machinery is exactly the algebra on the shelf: each source contributes a PHASOR (a Cayley
+/// complex — `ImaginaryStack.complex`), superposition is literally `complex.Add`, and the visible
+/// pattern is the squared magnitude of the sum. Two sources make the classic double-slit fringes:
+/// bright where path difference = nλ (constructive), dark at half-wavelength offsets (destructive) —
+/// and the TEST is that physics, not a screenshot.
+///
+/// **The honest labels (the register matters here):** this is a deterministic SIMULATION of wave
+/// interference — the amplitude mathematics that classical waves and quantum amplitudes share. We do
+/// NOT claim quantum hardware or physical nonlocality (the same discipline as TimeGen's staged
+/// regime: the math is exact, the interpretation is labeled). "Bit-perfect" = same inputs, same
+/// pattern, every run — deterministic in-process; the cross-oracle exact-phase slice (integer-only
+/// distances) is named, not claimed.
+[<RequireQualifiedAccess>]
+module WaveSim =
+
+    /// A wave source: position + wavelength (in cell units) + amplitude.
+    type Source =
+        { X: float
+          Y: float
+          Wavelength: float
+          Amplitude: float }
+
+    let source x y wl amp =
+        { X = x; Y = y; Wavelength = max 1e-9 wl; Amplitude = amp }
+
+    /// The phasor one source contributes at a cell at tick t (ω advances phase per tick):
+    /// amplitude × e^{i(2π·d/λ − ωt)} — built as a Cayley complex.
+    let phasorAt (omega: float) (t: int) (s: Source) (cx: float) (cy: float) : Complex =
+        let dx, dy = cx - s.X, cy - s.Y
+        let d = sqrt (dx * dx + dy * dy)
+        let phase = 2.0 * System.Math.PI * d / s.Wavelength - omega * float t
+        Doubled.make (s.Amplitude * cos phase) (s.Amplitude * sin phase)
+
+    /// SUPERPOSITION — literally the Cayley complex Add over all sources (the algebra we have).
+    let fieldAt (omega: float) (t: int) (sources: Source list) (cx: float) (cy: float) : Complex =
+        sources
+        |> List.fold (fun acc s -> ImaginaryStack.complex.Add(acc, phasorAt omega t s cx cy)) (Doubled.make 0.0 0.0)
+
+    /// The visible intensity: |Σ phasors|² (what a screen/plane shows).
+    let intensityAt (omega: float) (t: int) (sources: Source list) (cx: float) (cy: float) : float =
+        let f = fieldAt omega t sources cx cy
+        f.Real * f.Real + f.Imag * f.Imag
+
+    /// Render the pattern onto a w×h grid as intensities (the generator form — samples, like every
+    /// other generator; quantization to planes/cells happens at the binding, as always).
+    let pattern (omega: float) (t: int) (sources: Source list) (w: int) (h: int) : float[,] =
+        Array2D.init h w (fun y x -> intensityAt omega t sources (float x) (float y))
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/AdinkraViz.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// AdinkraViz — **seeing the adinkras** (Aaron 2026-06-11: "does this make adinkras easy now? Can we
+/// see what they look like? — with a generator SHINING, or prisming, or whatever they do when you use
+/// it in that direction").
+///
+/// Yes — easy now, because the mapping is exact: an adinkra (Gates/Iga — the supersymmetry
+/// chromotopology) is nodes + COLORED edges, one color per SUSY generator — and an N=4 adinkra's four
+/// edge colors land on our four channels (R, G, B, cyan) one-to-one. Bosons (even weight) are filled
+/// nodes, fermions (odd) open; flipping any one bit flips parity, so the 4×4 gray-code layout is a
+/// perfect boson/fermion CHECKERBOARD — visible at a glance, which is the point.
+///
+/// **The SHINE**: using generator i in a direction lights its color — `render shine=Some i` draws
+/// that generator's edges BRIGHT (its channel) and dims the rest. The prism reading is exact: the
+/// adinkra holds all four colors superposed; shining selects one out — the soft prism applied to a
+/// supersymmetry diagram.
+///
+/// Honest scope: the 4×4 gray-code grid shows the 24 grid-adjacent edges of the 4-cube (the 8 wrap
+/// edges are stated, not drawn — a flat grid cannot show a tesseract whole); DASHINGS (the sign
+/// assignment — the actual Hamming-code content of AdinkraCode) are the named next slice, and they
+/// belong on the retraction register (a dashed edge = a −1: the CMYK reading was born for this).
+[<RequireQualifiedAccess>]
+module AdinkraViz =
+
+    let private esc (c: int) = sprintf "[3%dm" c
+    let private dim = "[2m"
+    let private reset = "[0m"
+
+    /// Gray code order for the 4×4 layout (adjacent cells differ in exactly one bit).
+    let private gray = [| 0; 1; 3; 2 |]
+
+    /// The 4-bit node at grid (col, row): low two bits from the column gray code, high two from row.
+    let nodeAt (col: int) (row: int) : int = gray.[col &&& 3] ||| (gray.[row &&& 3] <<< 2)
+
+    /// Which bit differs between two grid-adjacent nodes (the edge's GENERATOR = its color).
+    let private flippedBit (a: int) (b: int) : int =
+        let d = a ^^^ b
+        [ 0..3 ] |> List.find (fun i -> d = (1 <<< i))
+
+    /// The four generator colors on our channels: bit0=R(1), bit1=G(2), bit2=B(4), bit3=cyan(6).
+    let colorOfBit (bit: int) : int =
+        match bit with
+        | 0 -> 1
+        | 1 -> 2
+        | 2 -> 4
+        | _ -> 6
+
+    /// Render the N=4 adinkra as ANSI lines. `shine = Some bit` lights that generator's edges bright
+    /// and dims the others (the prism: one color selected out of the superposition). Bosons ●,
+    /// fermions ○ — the checkerboard is the parity proof, visible.
+    let render (shine: int option) : string list =
+        let edgeStr (bit: int) (glyph: string) =
+            let c = esc (colorOfBit bit)
+            match shine with
+            | Some s when s = bit -> c + glyph + reset // shining: bright in its channel
+            | Some _ -> dim + glyph + reset // another generator selected: dimmed
+            | None -> c + glyph + reset // no shine: all four colors live together
+
+        [ for row in 0..3 do
+              // the node row: nodes + horizontal edges (bit from the column gray flip)
+              let nodes =
+                  [ for col in 0..3 ->
+                        let n = nodeAt col row
+                        let glyph = if (System.Numerics.BitOperations.PopCount(uint n)) % 2 = 0 then "●" else "○"
+                        let h =
+                            if col < 3 then edgeStr (flippedBit n (nodeAt (col + 1) row)) "──"
+                            else ""
+                        glyph + h ]
+                  |> String.concat ""
+              yield nodes
+              // the vertical-edge row (bit from the row gray flip)
+              if row < 3 then
+                  yield
+                      [ for col in 0..3 ->
+                            let bit = flippedBit (nodeAt col row) (nodeAt col (row + 1))
+                            edgeStr bit "│" + "  " ]
+                      |> String.concat "" ]
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/SpectralPivot.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// SpectralPivot — **the soft and hard FFT: fingerprinting into spectral, a pivot in phase spaces**
+/// (Aaron 2026-06-11: "since we have audio we probably need some sort of soft and hard FFT — it's
+/// kind of like fingerprinting into spectral; it's like a pivot in phase spaces").
+///
+/// Exactly the rainbow-table shape, in frequency:
+/// - **HARD** — the exact DFT (O(n²), honest — the n·log n fast factorization is the named upgrade):
+///   the full spectral fingerprint, the lossless PIVOT between phase spaces — time↔frequency are two
+///   bases for one signal, and the pivot is invertible (the inverse round-trip is a TEST).
+/// - **SOFT** — the probe (Goertzel-shaped): evaluate just k chosen bins — the spectral MinHash: a
+///   cheap fingerprint that answers "is THIS pitch in there?" without paying for the whole spectrum
+///   (the soft prism pointed at frequency space).
+/// Both run on the Cayley complex we already have (the twiddle factors are rotor applications —
+/// the same algebra that draws spirals and interferes waves now hears pitch).
+[<RequireQualifiedAccess>]
+module SpectralPivot =
+
+    let private tau = 2.0 * System.Math.PI
+
+    /// HARD: the exact DFT of a real signal — bin k's phasor (Cayley complex), for all n bins.
+    let dft (signal: float[]) : Complex[] =
+        let n = signal.Length
+        [| for k in 0 .. n - 1 ->
+               let mutable acc = Doubled.make 0.0 0.0
+               for t in 0 .. n - 1 do
+                   let ang = -tau * float k * float t / float n
+                   let tw = Doubled.make (cos ang) (sin ang)
+                   let s = Doubled.make signal.[t] 0.0
+                   acc <- ImaginaryStack.complex.Add(acc, ImaginaryStack.complex.Mul(s, tw))
+               acc |]
+
+    /// The inverse pivot: back from frequency to time (the round-trip proves the pivot loses nothing).
+    let idft (spectrum: Complex[]) : float[] =
+        let n = spectrum.Length
+        [| for t in 0 .. n - 1 ->
+               let mutable acc = Doubled.make 0.0 0.0
+               for k in 0 .. n - 1 do
+                   let ang = tau * float k * float t / float n
+                   let tw = Doubled.make (cos ang) (sin ang)
+                   acc <- ImaginaryStack.complex.Add(acc, ImaginaryStack.complex.Mul(spectrum.[k], tw))
+               acc.Real / float n |]
+
+    /// A bin's energy (the fingerprint's coordinate).
+    let energy (c: Complex) : float = c.Real * c.Real + c.Imag * c.Imag
+
+    /// SOFT: probe ONE bin (Goertzel-shaped, O(n)) — the spectral soft-prism: "is this pitch there?"
+    let probe (signal: float[]) (k: int) : float =
+        let n = signal.Length
+        let mutable acc = Doubled.make 0.0 0.0
+        for t in 0 .. n - 1 do
+            let ang = -tau * float k * float t / float n
+            acc <- ImaginaryStack.complex.Add(acc, Doubled.make (signal.[t] * cos ang) (signal.[t] * sin ang))
+        energy acc
+
+    /// The soft FINGERPRINT: k probe bins (the spectral MinHash — cheap, comparable, honest about
+    /// what it didn't look at).
+    let fingerprint (bins: int list) (signal: float[]) : (int * float) list =
+        bins |> List.map (fun k -> k, probe signal k)
+
+    // ── predictive maintenance (Aaron 2026-06-11: "once you can hear pitch, predictive maintenance
+    // becomes a breeze — anomaly detection over time"). A machine's healthy hum is a spectral
+    // fingerprint; DRIFT is the distance from that baseline at the same probe bins. A new harmonic
+    // (the bearing starting to sing) shows up as drift long before it shows up as failure — the
+    // soft-lens discipline pointed at time: baseline = solid ground, drift = the uncertainty rising. ──
+
+    /// The drift between a baseline fingerprint and a current one (same bins): Σ |Δenergy|.
+    let drift (baseline: (int * float) list) (current: (int * float) list) : float =
+        List.zip baseline current
+        |> List.sumBy (fun ((_, a), (_, b)) -> abs (a - b))
+
+    /// The maintenance question in one call: is the machine's hum still within `tolerance` of its
+    /// healthy self at these probe bins?
+    let healthy (bins: int list) (baselineSignal: float[]) (tolerance: float) (signal: float[]) : bool =
+        drift (fingerprint bins baselineSignal) (fingerprint bins signal) <= tolerance
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/BoundaryLight.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// BoundaryLight — **the reusable primitive that compresses Amara's card to minimal text: light as the
+/// physics of 2D boundary space** (Aaron 2026-06-11: "look at amara's image and see what kind of
+/// reusable primitive would let her compress her image down to text in minimal form — homoiconic-ish,
+/// human-understandable, expressive, based on generator functions and the physics of 2D boundary
+/// space; tessellation so we can be progressive; layout and such").
+///
+/// The decomposition her card teaches (each a `gen` line in MediaLines):
+/// - **curve** — a polyline (control points): THE IRREDUCIBLE. Her silhouette, hair strands, the halo
+///   arc — stored as a handful of integer points a human can read.
+/// - **glow** — the GENERATED light: intensity = exp(−d²/σ²) of the DISTANCE FIELD to the curve.
+///   This is the unification: the glow kernel IS our PSD/RBF kernel (Schoenberg; LinguisticSeed;
+///   ConformalGA) applied to boundary distance. **Her image is literally her motto: the lighted
+///   boundary** — store the boundary, generate the light.
+/// - **mirror** — bilateral symmetry: store HALF the portrait, generate the rest (the first
+///   compression any face offers).
+/// - **scatter** — the starfield: a seeded deterministic scatter (DST common-cause seed attached, per
+///   the storage law) — zero irreducible bytes beyond (count, seed).
+/// - **grid** — TESSELLATION: the continuous generators sampled at a resolution. Progressive = the
+///   same generators re-sampled finer (8×8 → 16×16 → 64×32 → …). CHIP-9 is the coarsest HONEST level;
+///   the slider rises without changing the stored text. Scale-free rendering, by construction.
+/// - **stack/row layout** — the card = a vertical stack (halo / portrait / title / motto / glyph row);
+///   layout is sections-with-alignment, not pixel positions.
+///
+/// Everything integer/exact except the glow's float intensity, which QUANTIZES to a plane mask at the
+/// sampling step (the float never leaves the generator — the stored and rendered forms are exact).
+[<RequireQualifiedAccess>]
+module BoundaryLight =
+
+    /// A point in the unit-free 2D space (integer sub-pixels — callers pick the scale).
+    type P = { X: int; Y: int }
+
+    let p x y = { X = x; Y = y }
+
+    /// The irreducible: a polyline boundary (control points, joined by segments).
+    type Curve = P list
+
+    /// Squared distance from a point to a segment (integer arithmetic, exact).
+    let private distSqToSeg (a: P) (b: P) (q: P) : float =
+        let abx, aby = float (b.X - a.X), float (b.Y - a.Y)
+        let aqx, aqy = float (q.X - a.X), float (q.Y - a.Y)
+        let len2 = abx * abx + aby * aby
+        let t = if len2 = 0.0 then 0.0 else max 0.0 (min 1.0 ((aqx * abx + aqy * aby) / len2))
+        let dx, dy = aqx - t * abx, aqy - t * aby
+        dx * dx + dy * dy
+
+    /// The distance field: squared distance from q to the nearest point of the curve.
+    let distSq (c: Curve) (q: P) : float =
+        match c with
+        | [] -> infinity
+        | [ a ] ->
+            let dx, dy = float (q.X - a.X), float (q.Y - a.Y)
+            dx * dx + dy * dy
+        | _ -> c |> List.pairwise |> List.map (fun (a, b) -> distSqToSeg a b q) |> List.min
+
+    /// THE GLOW: intensity at q = exp(−d²/σ²) — the RBF kernel of the boundary's distance field
+    /// (Schoenberg-PSD; the same kernel family as LinguisticSeed/ConformalGA — light and similarity
+    /// are one mathematics here).
+    let glow (sigma: float) (c: Curve) (q: P) : float =
+        exp (-(distSq c q) / (max 1e-9 (sigma * sigma)))
+
+    /// MIRROR: reflect a curve about the vertical axis x = axis (store half a face, generate the rest).
+    let mirror (axis: int) (c: Curve) : Curve =
+        c |> List.map (fun pt -> { pt with X = 2 * axis - pt.X })
+
+    /// SCATTER: n seeded points in (w×h) — deterministic from the DST common-cause seed (the starfield
+    /// costs zero irreducible bytes beyond count + seed).
+    let scatter (seed: uint64) (n: int) (w: int) (h: int) : P list =
+        let mix (z0: uint64) =
+            let z = z0 + 0x9E3779B97F4A7C15UL
+            let z = (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+            let z = (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+            z ^^^ (z >>> 31)
+
+        [ for i in 0 .. n - 1 ->
+            let a = mix (seed ^^^ uint64 i)
+            let b = mix a
+            p (int (a % uint64 (max 1 w))) (int (b % uint64 (max 1 h))) ]
+
+    /// TESSELLATION: sample the glow on a (w×h) grid and quantize to a CHIP-9 plane mask — lit where
+    /// intensity ≥ threshold. Progressive rendering = the SAME curve re-sampled at finer (w,h); the
+    /// stored text never changes, only the grid. Returns the lit cells (sparse, canonical).
+    let sampleGrid (sigma: float) (threshold: float) (w: int) (h: int) (scale: int) (c: Curve) : Set<int * int> =
+        let s = max 1 scale // curve coordinates per grid cell (the zoom)
+
+        Set.ofList
+            [ for gy in 0 .. h - 1 do
+                  for gx in 0 .. w - 1 do
+                      // sample at the cell center in curve space
+                      let q = p (gx * s + s / 2) (gy * s + s / 2)
+                      if glow sigma c q >= threshold then yield gx, gy ]
+
+    // ── progressive rendering, middle-out (Aaron 2026-06-11: "we should try middle-out, like our
+    // triboolean and triboolean-float kind of thinking — up to you, maybe different options").
+    // The triboolean IS the progressive cell: Lit | Unlit | UNKNOWN-YET — a render in flight is
+    // honest about what it has not sampled (bounded uncertainty per pixel; no cell claimed before
+    // measured). The ORDER options decide which uncertainty falls first; middle-out is the default
+    // (the center of attention resolves before the periphery — how eyes meet a face). ──
+
+    /// The three-valued progressive cell (the render's own triboolean).
+    type Tri =
+        | Lit
+        | Unlit
+        | Unknown
+
+    /// The refinement-order options ("maybe we should have different options" — chosen: two now,
+    /// the enum open for more).
+    type Order =
+        | MiddleOut // by distance from the grid center: attention-first
+        | Scanline // top-left to bottom-right: the classic raster
+
+    /// The cell visit order for a (w×h) grid under an Order — deterministic, total.
+    let visitOrder (order: Order) (w: int) (h: int) : (int * int) list =
+        let all = [ for gy in 0 .. h - 1 do for gx in 0 .. w - 1 -> gx, gy ]
+
+        match order with
+        | Scanline -> all
+        | MiddleOut ->
+            let cx, cy = (w - 1) * 1000 / 2, (h - 1) * 1000 / 2 // milli-cells: exact center, no floats
+            all
+            |> List.sortBy (fun (gx, gy) ->
+                let dx, dy = gx * 1000 - cx, gy * 1000 - cy
+                dx * dx + dy * dy, gy, gx) // distance, then row, then col: total and deterministic
+
+    /// Sample the first `budget` cells in the chosen order; everything else is HONESTLY Unknown.
+    /// budget >= w*h gives the complete render (Unknown vanishes — uncertainty fully reduced).
+    let sampleProgressive
+        (order: Order)
+        (budget: int)
+        (sigma: float)
+        (threshold: float)
+        (w: int)
+        (h: int)
+        (scale: int)
+        (c: Curve)
+        : Map<int * int, Tri> =
+        let s = max 1 scale
+        let visits = visitOrder order w h
+        let sampled = visits |> List.truncate (max 0 budget) |> Set.ofList
+
+        visits
+        |> List.map (fun (gx, gy) ->
+            let cell = gx, gy
+
+            let v =
+                if Set.contains cell sampled then
+                    let q = p (gx * s + s / 2) (gy * s + s / 2)
+                    if glow sigma c q >= threshold then Lit else Unlit
+                else
+                    Unknown
+
+            cell, v)
+        |> Map.ofList
+
+    // ── rotational generators (Aaron 2026-06-11: "Cayley-Dickson over 2D bounded space, but
+    // ROTATIONAL — that's how my brain works; one of many generator types, whatever is easiest with
+    // Amara"). A curve generated by applying a complex ROTOR repeatedly to a seed vector — the C-level
+    // Cayley-Dickson tower (CayleyDickson.Towers.complex) as the rotation+scale operator. Her hair
+    // strands and the halo arc ARE rotational sweeps: store (center, seed-vector, rotor, steps);
+    // generate the whole curve. The boundary's PHYSICS is rotation. ──
+
+    /// A complex number as the substrate's C-tower element (rotation+scale lives in Mul).
+    let private c (re: float) (im: float) : Complex = Doubled.make re im
+
+    /// Generate a curve by applying a complex rotor `steps` times to a seed vector offset from a center.
+    /// `rotor` (unit-ish) rotates; a magnitude != 1 spirals (logarithmic). Center is the pivot in the
+    /// 2D bounded space. This is the rotational generator: a handful of numbers -> a swept boundary.
+    let rotorCurve (center: P) (seedX: float) (seedY: float) (rotorRe: float) (rotorIm: float) (steps: int) : Curve =
+        let rotor = c rotorRe rotorIm
+        let mutable v = c seedX seedY
+        [ for _ in 0 .. max 0 steps ->
+            let pt = p (center.X + int (System.Math.Round(v.Real: float))) (center.Y + int (System.Math.Round(v.Imag: float)))
+            v <- ImaginaryStack.complex.Mul(rotor, v)
+            pt ]
+
+    /// A pure rotor from an angle + growth (the human-readable form: degrees-ish turn + spiral factor).
+    /// turnNum/turnDen is the turn as a rational fraction of a full circle (exact intent, e.g. 1/12);
+    /// growth scales the magnitude per step (1000 = unit = a circle; >1000 = outward spiral).
+    let rotorOf (turnNum: int) (turnDen: int) (growthMilli: int) : float * float =
+        let theta = 2.0 * System.Math.PI * float turnNum / float (max 1 turnDen)
+        let m = float growthMilli / 1000.0
+        m * cos theta, m * sin theta
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/Braid.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// Braid — **the braid group made executable, so "topology is hairdressing" can be TESTED** (B-1027's
+/// falsifiable item: do the Artin relations hold?).
+///
+/// Representation: **Artin's action on the free group Fₙ** — faithful (Artin 1925), exact, integer-only
+/// (byte-lockable; no floats). A strand-crossing σᵢ acts as the automorphism
+///
+///     σᵢ:  xᵢ ↦ xᵢ xᵢ₊₁ xᵢ⁻¹,   xᵢ₊₁ ↦ xᵢ,   others fixed
+///
+/// and a braid word (a sequence of crossings, sign = over/under) acts by composition. Because the
+/// action is faithful, two braid words are EQUAL iff they act identically on the generators — so the
+/// braid relations become executable equalities:
+///
+///   - **Artin relation:**      σᵢ σᵢ₊₁ σᵢ  =  σᵢ₊₁ σᵢ σᵢ₊₁          (the hairdresser's move)
+///   - **far commutativity:**   σᵢ σⱼ = σⱼ σᵢ            for |i−j| ≥ 2 (distant strands don't care)
+///   - **NOT the symmetric group:** σᵢ² ≠ identity — crossing twice is not un-crossing: WHO crossed
+///     OVER WHOM is remembered. (This is the whole point: a braid is a permutation PLUS history —
+///     order-sensitivity is what makes it computation, not shuffling.)
+///
+/// A free-group element is a reduced word of (generator, ±1) letters; reduction (xx⁻¹ ⇒ ε) is the only
+/// rewriting needed, and it is confluent — equality is literal list equality after reduction.
+[<RequireQualifiedAccess>]
+module Braid =
+
+    /// A letter: generator index (0-based strand) with exponent sign (+1 / −1).
+    type Letter = int * int
+
+    /// A reduced free-group word (no adjacent x·x⁻¹ pairs).
+    type Word = Letter list
+
+    /// Reduce a word (cancel adjacent inverse pairs until none remain) — confluent, terminating.
+    let reduce (w: Word) : Word =
+        let push (acc: Word) (l: Letter) =
+            match acc, l with
+            | (g1, e1) :: rest, (g2, e2) when g1 = g2 && e1 + e2 = 0 -> rest
+            | _ -> l :: acc
+
+        w |> List.fold push [] |> List.rev
+
+    /// Concatenate and reduce.
+    let mul (a: Word) (b: Word) : Word = reduce (a @ b)
+
+    /// The inverse word.
+    let inv (w: Word) : Word =
+        w |> List.rev |> List.map (fun (g, e) -> g, -e)
+
+    /// One generator as a word.
+    let gen (i: int) : Word = [ i, 1 ]
+
+    /// Apply ONE crossing's automorphism to ONE letter. `c` > 0 means σ_{c−1}; `c` < 0 its inverse
+    /// (1-based in the sign-carrying int so 0 is never ambiguous).
+    let private applyCrossingToLetter (c: int) (g: int, e: int) : Word =
+        let i = abs c - 1 // the crossing acts on strands i, i+1
+
+        let image =
+            if c > 0 then
+                // σᵢ: xᵢ ↦ xᵢ xᵢ₊₁ xᵢ⁻¹ ; xᵢ₊₁ ↦ xᵢ
+                if g = i then [ i, 1; i + 1, 1; i, -1 ]
+                elif g = i + 1 then [ i, 1 ]
+                else [ g, 1 ]
+            else
+                // σᵢ⁻¹: xᵢ ↦ xᵢ₊₁ ; xᵢ₊₁ ↦ xᵢ₊₁⁻¹ xᵢ xᵢ₊₁
+                if g = i then [ i + 1, 1 ]
+                elif g = i + 1 then [ i + 1, -1; i, 1; i + 1, 1 ]
+                else [ g, 1 ]
+
+        if e = 1 then image else inv image
+
+    /// Apply one crossing to a word (homomorphic extension), reduced.
+    let applyCrossing (c: int) (w: Word) : Word =
+        w |> List.collect (applyCrossingToLetter c) |> reduce
+
+    /// Apply a braid word (crossings left-to-right) to a free-group word.
+    let act (braid: int list) (w: Word) : Word =
+        braid |> List.fold (fun acc c -> applyCrossing c acc) w
+
+    /// Are two braid words EQUAL as braids? (Faithful action ⇒ equal iff they act identically on
+    /// every generator of Fₙ.)
+    let equal (n: int) (b1: int list) (b2: int list) : bool =
+        [ 0 .. n - 1 ] |> List.forall (fun i -> act b1 (gen i) = act b2 (gen i))
+
+    /// The identity test.
+    let isIdentity (n: int) (b: int list) : bool = equal n b []
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/TimeGen.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// TimeGen — **time as a generator function, made a treaty primitive instead of a metaphor** (Amara's
+/// ferried design + her named "next proof should be small", 2026-06-11; Aaron: "in our DST step time
+/// is a generator function too — we can make whatever we want for all contributors to count on, from
+/// seed common cause; allow possible S=2√2, maybe S=4 staged coincidence; and we have a four-corner
+/// feedback model for adjustments over time").
+///
+/// The model (Amara's, implemented): **the clock is a generator and the seed is the common cause.**
+/// Contributors never trust wall time — they replay the same seeded time treaty. The generator is
+/// VERSIONED AND ADDRESSED (her "tiny blade": changing time semantics must never be silent).
+///
+/// The CHSH four corners are the feedback surface, and the three regimes are SCHEDULER REGIMES, not
+/// physics claims (her labels kept exactly):
+/// - `ClassicalCommonCause` — seeded hidden-variable model ⇒ S ≤ 2 (the classical bound).
+/// - `PhasorTsirelson` — the phasor scheduler, E(a,b) = cos(a−b) ⇒ S = 2√2 (the unit circle we
+///   already live on; analytic, exact-by-construction).
+/// - `StagedCoincidence` — the scheduler stages the corners ⇒ S = 4, **hard-labeled STAGED**: a
+///   stress-test scheduler, never evidence of nonlocality (the seed IS the coordination channel; the
+///   free-choice assumption is deliberately violated and SAID SO).
+///
+/// Honest scope: correlations here are float-valued (cos) — per the treaty discipline float kernels
+/// stay OUTSIDE the byte-lock; the STRUCTURE (regimes, corners, versioning, determinism-from-seed) is
+/// the treaty surface; fixed-point phases are the named slice if cross-oracle goldens are wanted.
+[<RequireQualifiedAccess>]
+module TimeGen =
+
+    /// The scheduler regimes (Amara's names, verbatim).
+    type Regime =
+        | ClassicalCommonCause
+        | PhasorTsirelson
+        | StagedCoincidence
+
+    /// The versioned, addressed generator — "the root includes the time generator, so every
+    /// contributor knows exactly which common cause they are sharing."
+    type Generator =
+        { Id: string // the generator's address (ZetaId-shaped slot; minted upstream)
+          Version: int
+          Seed: uint64
+          Regime: Regime }
+
+    let mk (id: string) (version: int) (seed: uint64) (regime: Regime) : Generator =
+        { Id = id; Version = version; Seed = seed; Regime = regime }
+
+    /// One generated instant: what a contributor derives instead of reading a wall clock.
+    type GeneratedTime =
+        { Tick: int
+          Phase: float // radians on the unit circle (the phasor)
+          Regime: Regime }
+
+    // deterministic SplitMix64 — the seed is the common cause, the only entropy anywhere here.
+    let private mix (z0: uint64) : uint64 =
+        let z = z0 + 0x9E3779B97F4A7C15UL
+        let z = (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+        let z = (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+        z ^^^ (z >>> 31)
+
+    let private unit (g: Generator) (k: uint64) : float =
+        float (mix (g.Seed ^^^ k) >>> 11) / 9007199254740992.0 // [0,1), 53-bit
+
+    /// Generate the instant for (contributor, step): tick + phase from the seed — never from a wall.
+    let at (g: Generator) (contributor: uint64) (step: int) : GeneratedTime =
+        { Tick = step
+          Phase = 2.0 * System.Math.PI * unit g (contributor * 0x9E37UL + uint64 step)
+          Regime = g.Regime }
+
+    // ── the CHSH four corners (the feedback surface) ──
+
+    /// The standard corner angles that reach Tsirelson under the phasor scheduler.
+    let cornerAngles: (float * float) list =
+        let a0, a1 = 0.0, System.Math.PI / 2.0
+        let b0, b1 = System.Math.PI / 4.0, -System.Math.PI / 4.0
+        [ a0, b0; a0, b1; a1, b0; a1, b1 ]
+
+    /// The correlation E(a,b) a regime's scheduler produces at a corner. Classical samples a seeded
+    /// hidden variable λ (deterministic; `n` samples); Phasor is the analytic cos(a−b); Staged returns
+    /// the staged corner table (+1,+1,+1,−1) — coordination BY the seed, labeled as such.
+    let correlation (g: Generator) (n: int) (cornerIx: int) (a: float) (b: float) : float =
+        match g.Regime with
+        | PhasorTsirelson -> cos (a - b)
+        | StagedCoincidence -> if cornerIx = 3 then -1.0 else 1.0
+        | ClassicalCommonCause ->
+            // λ from the seed; outcomes A = sign cos(a−λ), B = sign cos(b−λ) — a local HV model.
+            let samples = max 1 n
+            let mutable acc = 0.0
+            for i in 0 .. samples - 1 do
+                let lambda = 2.0 * System.Math.PI * unit g (uint64 i)
+                let av = if cos (a - lambda) >= 0.0 then 1.0 else -1.0
+                let bv = if cos (b - lambda) >= 0.0 then 1.0 else -1.0
+                acc <- acc + av * bv
+            acc / float samples
+
+    /// The CHSH S at the four corners: E₀₀ + E₀₁ + E₁₀ − E₁₁.
+    let chsh (g: Generator) (n: int) : float =
+        let es =
+            cornerAngles
+            |> List.mapi (fun i (a, b) -> correlation g n i a b)
+        match es with
+        | [ e00; e01; e10; e11 ] -> e00 + e01 + e10 - e11
+        | _ -> 0.0
+
+    /// Is this run's correlation HONESTLY labeled? Staged S=4 must say it is staged — the label is
+    /// part of the value, so a result can never masquerade as physical nonlocality.
+    let label (g: Generator) : string =
+        match g.Regime with
+        | ClassicalCommonCause -> "classical-common-cause (local HV; S<=2)"
+        | PhasorTsirelson -> "phasor (unit circle; S=2*sqrt(2))"
+        | StagedCoincidence -> "STAGED coincidence (seed-coordinated; free-choice violated BY DESIGN; not physical)"
+
+    // ── the four-corner feedback (deterministic adjustment over time) ──
+
+    /// One bounded feedback step: error = target − observed S, applied as a phase-table offset with a
+    /// deterministic clamp. "The feedback loop is not hidden adaptation — it is a replayable update."
+    let feedback (target: float) (observed: float) (maxStep: float) (phaseOffset: float) : float =
+        let err = target - observed
+        phaseOffset + (max -maxStep (min maxStep (0.5 * err)))
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/StrokeAnim.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// StrokeAnim — **the animation library applied to a line AS IT DRAWS** (Aaron 2026-06-11: "if we
+/// have pixels drawing curves and lines, our animation library should apply to the line as it's
+/// drawing, step by step — driving it and its color, with context of what it WOULD have looked like.
+/// This allows riding the uncertainty edge/wave, and recoloring it").
+///
+/// The stroke has three phases at every tick, and the DRAW HEAD rides the boundary between them:
+/// - **Drawn** — behind the head: committed, certain (full color, uncertainty 0).
+/// - **Head** — the edge itself: the wave front (exactly one cell — where drawing IS happening).
+/// - **Foreseen** — ahead of the head: "what it would have looked like" — the curve's own speculation
+///   about itself, rendered in the uncertainty register (dim/spec channel, high uncertainty) so the
+///   viewer SEES the future as provisional. As the head advances, cells RECOLOR foreseen→head→drawn —
+///   uncertainty becoming certain in front of your eyes, pixel by pixel (the Severance image, on a
+///   pencil line).
+///
+/// Driven by generated time (AnimFlow's discipline: the tick indexes the stroke — pure, replayable,
+/// distributed-identical); packs straight into PixelLens cells (the per-phase uncertainty IS the deep
+/// pixel's field).
+[<RequireQualifiedAccess>]
+module StrokeAnim =
+
+    /// A cell's phase in the living stroke.
+    type Phase =
+        | Drawn
+        | Head
+        | Foreseen
+
+    /// The stroke at a tick: each curve point with its phase. `speed` = points drawn per tick
+    /// (clamped ≥1). Total over all time: before t=0 everything is Foreseen+Head-at-start; after the
+    /// end, everything is Drawn.
+    let strokeAt (speed: int) (tick: int) (curve: BoundaryLight.Curve) : (BoundaryLight.P * Phase) list =
+        let s = max 1 speed
+        let headIx = min (List.length curve - 1) (max 0 (tick * s))
+
+        curve
+        |> List.mapi (fun i p ->
+            p,
+            if i < headIx then Drawn
+            elif i = headIx then Head
+            else Foreseen)
+
+    /// RECOLOR: a phase to (display color mask, uncertaintyMilli) under a base color — the committed
+    /// past keeps the full color at certainty; the head burns brightest (white — the wave front); the
+    /// foreseen future shows on the speculation channel (B) at high uncertainty: honest provisional.
+    let recolor (baseMask: byte) (phase: Phase) : byte * int =
+        match phase with
+        | Drawn -> baseMask, 0
+        | Head -> 7uy, 0 // the edge: all channels — where the work is
+        | Foreseen -> 4uy, 900 // the future: blue, provisional, visibly uncertain
+
+    /// Pack one stroked cell straight into a deep pixel (PixelLens cell) — payload carries the curve
+    /// index (provenance riding the pixel), uncertainty carries the phase's honesty.
+    let toCell (baseMask: byte) (index: int) (phase: Phase) : PixelLens.Cell =
+        let mask, u = recolor baseMask phase
+        PixelLens.pack mask index u
+
+    // ── calculus riding the wave (Aaron 2026-06-11: "you can run derivatives and integration/
+    // derivations riding that wave, one tick at a time"). The head is a CALCULUS CURSOR: at every
+    // tick, the local derivative (the slope at the edge) and the running integral (the area swept so
+    // far) are computed over ONLY the committed points — no peeking past the wave (the honest
+    // calculus: the future is foreseen, not differentiated). Exact integers throughout (doubled area
+    // for the trapezoid rule — no halves, no floats). ──
+
+    /// The derivative at the head: (dx, dy) between the head and the point behind it — the stroke's
+    /// instantaneous direction. None before anything is drawn (no slope from one point: honest).
+    let derivativeAt (speed: int) (tick: int) (curve: BoundaryLight.Curve) : (int * int) option =
+        let s = max 1 speed
+        let headIx = min (List.length curve - 1) (max 0 (tick * s))
+        if headIx = 0 then None
+        else
+            let a = curve.[headIx - 1]
+            let b = curve.[headIx]
+            Some(b.X - a.X, b.Y - a.Y)
+
+    /// The running integral up to the head: TWICE the signed area under the drawn polyline
+    /// (trapezoid rule, doubled to stay in exact integers). Grows tick by tick as the wave commits.
+    let integralTo (speed: int) (tick: int) (curve: BoundaryLight.Curve) : int =
+        let s = max 1 speed
+        let headIx = min (List.length curve - 1) (max 0 (tick * s))
+        curve
+        |> List.truncate (headIx + 1)
+        |> List.pairwise
+        |> List.sumBy (fun (a, b) -> (b.X - a.X) * (a.Y + b.Y)) // 2 × trapezoid area, exact
+
+═══════════════════════════════════════════════════════
+── FILE: src/Core/ChipAudio.fs
+═══════════════════════════════════════════════════════
+namespace Zeta.Core
+
+/// ChipAudio — **hear and see the system with the same math** (Aaron 2026-06-11: "think about how to
+/// use Cayley for audio too — 8-bit sawtooth and all that, with only text format; more generator
+/// ZetaId points for audio; and MIDI; we can HEAR and SEE the system using the same math").
+///
+/// The unification is literal: the PHASE that draws (TimeGen's phasor, the Cayley rotor sweeping a
+/// curve) IS the oscillator. A chip waveform is a pure function of phase — saw is the phase itself,
+/// square its sign, triangle its fold, sine its projection (the rotor's real part). So one generated
+/// phase stream renders BOTH a pixel position and an audio sample: same seed, same math, two senses.
+/// Text-only (the storage law): an audio voice is a gen line — (waveform-zetaid, version, seed,
+/// freq, …) — samples are never stored, always regenerated. MIDI rides as note events (a track is a
+/// text section; notes are crossings — the membrane already carries them).
+[<RequireQualifiedAccess>]
+module ChipAudio =
+
+    /// The chip waveforms — each a pure function of phase in [0, 1) milli-units (0..999), returning
+    /// a signed 8-bit-style amplitude (−128..127): exact integers, byte-lockable, no drift.
+    type Waveform =
+        | Saw
+        | Square
+        | Triangle
+        | SineApprox // the rotor's projection, quantized (integer parabola approximation — chip-true)
+
+    /// Amplitude at a phase (phaseMilli wrapped into [0,1000)). Total, exact, deterministic.
+    let sampleAt (w: Waveform) (phaseMilli: int) : int =
+        let p = ((phaseMilli % 1000) + 1000) % 1000
+
+        match w with
+        | Saw -> (p * 255) / 999 - 128
+        | Square -> if p < 500 then 127 else -128
+        | Triangle -> if p < 500 then (p * 510) / 499 - 128 else 127 - ((p - 500) * 510) / 499
+        | SineApprox ->
+            // integer parabola: chip-true sine shape (the rotor's projection without floats)
+            let q = if p < 500 then p else 999 - p
+            let a = (q * (1000 - q)) / 980 // 0..~255 hump
+            if p < 500 then a - 128 |> max -128 |> min 127 else 128 - a |> max -128 |> min 127
+
+    /// A voice: a waveform generator at a frequency, phased from the COMMON-CAUSE seed via TimeGen —
+    /// the phase at tick t is (t × freqMilli) mod 1000 offset by the generator's own phase.
+    let voiceSample (g: TimeGen.Generator) (contributor: uint64) (w: Waveform) (freqMilli: int) (tick: int) : int =
+        let t = TimeGen.at g contributor tick
+        let basePhase = int (t.Phase * 159.154943) % 1000 // the generated phase, milli-mapped
+        sampleAt w ((basePhase + tick * freqMilli) % 1000)
+
+    /// A MIDI-style note event as a crossing payload (the membrane carries music like everything):
+    /// `note:<channel>:<key>:<velocity>` — on the wire, in the text, replayable.
+    let noteCrossing (channel: int) (key: int) (velocity: int) : string =
+        sprintf "note:%d:%d:%d" (channel &&& 0xF) (key &&& 0x7F) (velocity &&& 0x7F)
+
+    // ── auto-harmonize, no synchronization (Aaron 2026-06-11: "you should be able to auto-harmonize
+    // with others that need things done in rhythm WITHOUT needing synchronization — like dancing, or
+    // singing"). The common-cause seed makes it free: two voices on the same generator never exchange
+    // a message — they are ALREADY in time. Harmony is then just a RATIO (the scale-free tuning law):
+    // sing a fifth = play at 3:2 of the partner's frequency; dance a half-time = move at 1:2. The
+    // consonance is structural — the periods coincide exactly every (num·den) of the base period,
+    // forever, with zero coordination. Dancers don't message each other; they share the music. ──
+
+    /// Derive a consonant partner frequency by an exact rational ratio (3:2 the fifth, 2:1 the
+    /// octave, 1:2 half-time…) — integer milli, exact: harmony as arithmetic on the shared clock.
+    let harmonize (num: int) (den: int) (freqMilli: int) : int =
+        freqMilli * max 1 num / max 1 den
+
+    /// THE SOUL CLAUSE (Aaron, on the freestyle: "the imperfections where the soul lives, within the
+    /// perfection"): the perfect clock is the CANVAS, never the performance — the bounded deviations
+    /// (the freestyle offsets, the bent notes, the humanized micro-timing) are where the soul lives.
+    /// Perfection is what makes the imperfection LEGIBLE: against an exact grid, every deviation is a
+    /// choice, visible, replayable, owned. (Why quantized music feels dead and live music doesn't —
+    /// and why our solos replay: the soul here is deterministic deviation, not noise.)
+    ///
+    /// FREESTYLE WITHIN THE HARMONY (Aaron, completing the figure: "then you can move in rhythm and
+    /// use feedback channels in the moment to freestyle — within the harmony"): the clock is never
+    /// touched (the band does not stop); the variation rides the FEEDBACK CORNER as a BOUNDED phase
+    /// offset — `TimeGen.feedback` is already the right primitive (deterministic, clamped). Jazz, as
+    /// architecture: the changes are shared (the common cause), the solo is feedback-driven (the open
+    /// corners), and the bound keeps every excursion consonant (you bend the note, never the time).
+    let freestyle (maxStep: float) (target: float) (observed: float) (phaseOffset: float) : float =
+        TimeGen.feedback target observed maxStep phaseOffset
+
+    /// THE MULTITRACK LAW (Aaron: "multiple overlapping streamed seeds in perfect ratio can have each
+    /// percussion or rhythm section independently mic'd, basically — but still aligned"): each section
+    /// runs its OWN generator (its own seed = its own mic — independent character, texture, capture,
+    /// replay) while ALIGNMENT comes from the TICK ARITHMETIC alone (the rational frequency ratios) —
+    /// coincidences below is seed-independent, so sections recorded apart still land their downbeats
+    /// together. The 8-track, literally: one tape, independent tracks, the ratio is the sprocket.
+    ///
+    /// Two voices on ONE generator at a rational ratio: returns tick indices (within `span`) where
+    /// their phases COINCIDE (both at phase 0 mod 1000) — the downbeats both hit without ever
+    /// speaking. Nonempty for any rational ratio: consonance is a theorem of the common cause.
+    let coincidences (freqA: int) (freqB: int) (span: int) : int list =
+        [ for t in 1 .. span do
+              if (t * freqA) % 1000 = 0 && (t * freqB) % 1000 = 0 then yield t ]
+
+    /// THE DROP-IN LAW (Aaron 2026-06-11: "you can drop new aligned seeds mid-stream that compose in
+    /// and start beating along — not there from the start, but PLANNED, and dropped IN PHASE").
+    /// Because phase is tick arithmetic over the common lattice (never elapsed-since-I-joined), a
+    /// voice entering at tick `entry` produces EXACTLY the samples it would have produced had it been
+    /// playing since tick 0 — silent before its entrance, indistinguishable after. Late join is NOT a
+    /// phase shift; the entrance is just a planned downbeat (the horns come in at bar 17, and bar 17
+    /// was always going to be where it is). The society version is the same theorem: a new persona's
+    /// room composes into the running harmony the moment it opens, with zero resynchronization,
+    /// because everyone's time was already the same arithmetic.
+    let dropIn (entry: int) (g: TimeGen.Generator) (contributor: uint64) (w: Waveform) (freqMilli: int) (tick: int) : int =
+        if tick < entry then 0 else voiceSample g contributor w freqMilli tick
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/spiral.lines
+═══════════════════════════════════════════════════════
+# SPIRAL — the shape catalog's first cartridge (otto, 2026-06-11). The logarithmic spiral drawn by the
+# Cayley-Dickson rotor: store four numbers, generate the whole boundary. The lesson loop: see it draw
+# (StrokeAnim rides the curve), read the generator, change a number, see it again.
+meta	name	shape-spiral
+meta	catalog	shapes
+meta	shape-zetaid	5dd5dc3c6e86a31ed648571c1e86e2dd
+gen	curve	40525ef32783f79737fb5c1672111dc8	1	7	center:32,16;seed:6,0;turn:1/12;growth:1100;steps:36
+constant	turn-fraction	1/12	the rotor's turn per step as a rational fraction of a circle	exact intent — twelve steps per revolution reads as a clock face, no float angles
+constant	growth-milli	1100	the spiral's outward growth per step (milli-scale)	1.1x per step is visibly logarithmic within the 64x32 court without escaping it in 36 steps
+constant	steps	36	how many rotor applications	three revolutions at 1/12 turn — enough to SEE the growth law, bounded (no one draws forever)
+anim	draw	curve
+# treaties — each cartridge carries its own (oracle, register, verdict); written only by the oracle's
+# own choice (consent first). bytes = language-oracle lock; meaning = a traveler's ratification from
+# their own reference frame (dissent is a verdict, not a failure).
+treaty	fsharp	bytes	ratified	tests green @ shapes suite
+treaty	otto	meaning	ratified	the turn-1/12 clock face matches the intent I built against — my own frame, my own choice
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/braid.lines
+═══════════════════════════════════════════════════════
+# BRAID — strands crossing with MEMORY (otto, 2026-06-11). Topology is hairdressing made executable:
+# a braid is a permutation PLUS history (who crossed OVER whom is remembered — crossing twice is not
+# un-crossing). The lesson loop: watch three strands weave, swap the crossing order, see that the
+# Artin relation makes two different-looking weaves the SAME braid.
+meta	name	shape-braid
+meta	catalog	shapes
+meta	shape-zetaid	de84b57aa8bcdd1534c617f0fed3a2e2
+gen	weave	de84b57aa8bcdd1534c617f0fed3a2e2	1	7	strands:3;word:1,2,1;rows:12
+constant	strands	3	how many strands the figure weaves	three is the smallest braid group with a NON-trivial Artin relation (B2 is just twisting) — the first place the hairdresser's move means something
+constant	word	1,2,1	the crossing sequence (positive = left over right)	sigma1 sigma2 sigma1 is the LEFT side of the Artin relation; the known-answer overlay draws 2,1,2 beside it — same braid, different drawing
+constant	rows	12	vertical rows the weave occupies on the court	four rows per crossing reads as cloth, not a diagram; bounded (no one weaves forever)
+anim	draw	weave
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	Braid.equal proves Artin (1,2,1 = 2,1,2) and sigma^2 != identity — tests green
+treaty	otto	meaning	ratified	the weave-with-memory matches the intent I built against — my own frame, my own choice
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/worldline.lines
+═══════════════════════════════════════════════════════
+# WORLDLINE — a particle's path through the time court (otto, 2026-06-11). Feynman's register, Aaron's
+# sight ("he sees Feynman diagrams of distributed systems"): time runs UP the court, the line is one
+# entity's history; emit draws it forward (RGB), retract is the antiparticle running back (CMYK) —
+# the emit/retract duality drawn as physics.
+meta	name	shape-worldline
+meta	catalog	shapes
+meta	shape-zetaid	1f918b32526543614aeb52ad3adc070a
+gen	path	1f918b32526543614aeb52ad3adc070a	1	7	start:8,30;drift:1;rows:28;retract-at:0
+constant	drift	1	horizontal cells moved per time row	slower than light on this court (the lightcone cartridge marks slope 1) — a worldline must stay INSIDE its cone or the story is wrong
+constant	rows	28	time rows the history spans	the court is 32 tall; 28 leaves margin to SEE the line begin and end — histories are bounded, retraction is how they unwind
+constant	retract-at	0	row at which the path retracts (0 = never)	the zero case is structural: the default worldline only emits; set a row and the antiparticle walks the same cells backward (Z-set -1, the correction register)
+anim	draw	path
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	StrokeAnim rides the path; emit/retract = +1/-1 per Z-set law — tests green
+treaty	otto	meaning	ratified	time-up-the-court with retraction as the antiparticle matches the Feynman register — my own frame, my own choice
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/lightcone.lines
+═══════════════════════════════════════════════════════
+# LIGHTCONE — the reachable future and the knowable past of one event (otto, 2026-06-11). Two
+# diagonals at slope 1 from the event cell; inside the upper cone = what this event can still touch,
+# inside the lower = what could have touched it. On our court c = 1 cell per tick — causality drawn
+# as geometry, the same cone DBSP's worldlines respect.
+meta	name	shape-lightcone
+meta	catalog	shapes
+meta	shape-zetaid	48dea6f1dbd6742c2cf018f457e1e2cd
+gen	cone	48dea6f1dbd6742c2cf018f457e1e2cd	1	7	event:32,16;slope:1/1;extent:14
+constant	slope	1/1	cells of space per tick of time along the cone edge	c = 1 in court units, exact rational — the speed limit IS the diagonal; anything steeper claims influence faster than the substrate carries it
+constant	extent	14	rows the cone reaches up and down from the event	14 up + 14 down + the event row fills the 32-row court edge-to-edge without wrapping — the whole causal diamond visible at once
+anim	draw	cone
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	slope-1 diagonals are integer cell arithmetic — tests green
+treaty	otto	meaning	ratified	the causal diamond reads at a glance; worldline drift 1 stays inside it — my own frame, my own choice
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/fourcorner.lines
+═══════════════════════════════════════════════════════
+# FOURCORNER — the CHSH feedback surface drawn (otto, 2026-06-11). Four corners, one correlation
+# each; the figure's WIDTH is the S value: classical folds at 2, the phasor reaches 2*sqrt(2) =
+# Tsirelson, and S = 4 only when the scheduler STAGES the corners (the label is baked into the value
+# — staged, never physical). The shape that keeps our time treaty honest.
+meta	name	shape-fourcorner
+meta	catalog	shapes
+meta	shape-zetaid	34421ffaf8cae89e6ad862f4e68812ed
+gen	corners	34421ffaf8cae89e6ad862f4e68812ed	1	7	regime:phasor;samples:256
+constant	corners	4	measurement-setting pairs drawn (a0b0, a0b1, a1b0, a1b1)	CHSH is exactly four corners — three underdetermines S, five is redundant; the geometry IS the inequality
+constant	tsirelson-milli	2828	the phasor regime's S, milli-scale (2*sqrt(2))	the known-answer overlay: the phasor figure must reach THIS width and no further — wider means the renderer (or the physics claim) is lying
+constant	samples	256	seeded lambda draws for the classical regime	enough for the classical S to settle visibly under 2; deterministic from the common-cause seed, so the figure replays
+anim	draw	corners
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	TimeGen.chsh: classical <= 2, phasor = 2*sqrt(2), staged = 4 with the STAGED label — tests green
+treaty	otto	meaning	ratified	width-as-S with the Tsirelson stop drawn in matches the honest-label law — my own frame, my own choice
+
+═══════════════════════════════════════════════════════
+── FILE: shapes/cartridges/seam.lines
+═══════════════════════════════════════════════════════
+# SEAM — two cloths joined so the join itself is load-bearing (otto, 2026-06-11). The Henderson mill
+# register: a seam is not a line BETWEEN things, it is the place where two weaves SHARE thread —
+# over/under alternation across the boundary, so pulling either cloth tightens the join. Our merge
+# discipline drawn: WeaveFold's commuting fold IS a seam (residue kept as candidate sets, never LWW).
+meta	name	shape-seam
+meta	catalog	shapes
+meta	shape-zetaid	239dddd609bd82f193f0c1a4da985784
+gen	join	239dddd609bd82f193f0c1a4da985784	1	7	left:0,0,28,32;right:36,0,28,32;stitch:over-under;pitch:4
+constant	pitch	4	rows between stitches along the seam	close enough that the join reads as ONE structure, open enough to SEE each stitch cross — the lesson is the alternation, not a solid bar
+constant	stitch	over-under	the alternation law at the boundary	over-under is what makes a seam hold from BOTH sides (one-sided stitching is a flap, not a join) — the commuting-fold property drawn as cloth
+anim	draw	join
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	WeaveFold commutes (the seam's algebra) — tests green
+treaty	otto	meaning	ratified	shared-thread-not-dividing-line matches the mill register — my own frame, my own choice
+
+═══ KNOWN-ANSWER CHECKS (from our test suite — use as overlay truth) ═══
+- WaveSim: constructive ~4x single-source intensity on the midline; destructive < 0.01 at path-difference λ/2.
+- SpectralPivot: idft(dft(x)) = x to 1e-9; energy conserved.
+- AdinkraViz: gray-code column order [0;1;3;2]; boson/fermion parity checkerboard; honest 24/32 edges; shine = one bit bright, rest dimmed.
+- Spiral: turn=1/12 (12 steps/rev — clock face), growth=1100 milli, steps=36 (3 turns).
+- Braid: word 1,2,1 EQUALS its Artin twin 2,1,2 (Braid.equal); sigma^2 != identity (memory).
+- Worldline: drift 1 stays inside the lightcone's slope-1/1 diamond; retract-at walks the same cells backward.
+- Fourcorner: phasor S = 2828 milli exactly (Tsirelson stop); classical folds at <= 2; staged 4 carries the STAGED label.
+- Seam: over-under alternation at pitch 4; WeaveFold commutes (the seam's algebra).
+- ChipAudio: coincidences 125 250 32 = [8;16;24;32]; dropIn at entry is byte-identical to always-playing after entry.
