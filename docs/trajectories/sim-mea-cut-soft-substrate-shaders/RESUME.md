@@ -1,66 +1,89 @@
 # sim·mea·cut — the soft substrate, rooms-as-sign-off, toward .NET-in-shaders
 
-Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10, the night-long stream). Heavy concept set; this
-RESUME is the reload point so it doesn't have to be held all at once.
-Last refreshed: 2026-06-10
-Current focus (Aaron): **rooms being the sign-off** + a **soft `IScheduler` inside rooms**.
-Next concrete action: finish soft `GameFingerprint` (MinHash) + `FingerprintPrism` (#4 below) while Aaron
-drives the soft scheduler.
+Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
+reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
+Last refreshed: 2026-06-11 (the qubits/flux-capacitor night folded in).
+Current focus (Aaron): the END GOAL named — see below; Vera driving the Q# reference oracle; Max on
+universal primitives + the root-declutter (B-1023).
 
-## The one-line arc
+## THE END GOAL (named 2026-06-10, verbatim-anchored)
 
-**memory is lensable → reverse-engineer hard↔soft → lensing-over-time finds the quasi-time-crystals
-(the repeating patterns = the *meaning* the compiler discarded) → tracing-JIT / PGO those → run on the
-GPU → eventually the .NET runtime (IL + GC) in shaders.** Rooms wrap IO in uncertainty at the *promise*
-level; `mea` collapses; the finalizer commits; a room *resolving* is the sign-off.
+**A dual-use hard/soft database that models itself: DynamicValue stored procs, yin/yang cells to animate
+them, all room-based, per-proc entropy/uncertainty budgets, communicating over Reticulum with perfect
+entropy quarantine (noninterference) via the soft IScheduler — rooms talk cleanly even in soft mode.**
+Doc: `docs/research/2026-06-10-the-end-goal-dual-use-hard-soft-self-modeling-database-...md`.
 
-## The verb family (the CLI / the loop)
+## The one-line arc (unchanged root, extended)
 
-`sim · mea · cut · ben · cla · res` (diskpart-style abbrev: full word AND any unambiguous prefix).
+memory is lensable → hard↔soft decompile (rooms = the CPU's μops; real-time branch detection) → JIT the
+time-crystals → shaders. Rooms = finite-resolution QUBITS (Markov boundary bounds infinity OUTSIDE;
+BigFloat holds the superposition; the plateau = the floor — no infinite qubit needed). Heat = the
+branch-prune toll (Landauer–Bennett) our reversible cuts never pay — we pay memory, tiered hot→cold
+(the spillover spines); Sequoia-in-SoftValue over Clifford space picks the tier. The flux capacitor
+meters the speculative future in BYTES.
 
-- `sim` simulate — ephemeral, **void** (identity comes from the void); no output.
-- `mea` measure — `mea(sim)`, the committing lift; posts ΔU to `uncertainty/`. F# spelling: **`sim |> mea |> cut`** (pipe, NOT bare juxtaposition — left-assoc).
-- `cut` — cut at a recognition site (a TIME; default 30s); residue = Z-set delta + seam, re-ligated by the finalizer.
-- `ben` benchmark · `cla` classify · `res` resolve (loop until fixed point).
-- Commit semantics: `sim` leaves nothing; `mea`/`cut`/etc. commit to a branch → the **test finalizer merges to main**. (`clis/Verbs.fs` stubs + `clis/README.md`.)
+## The index docs (read these two before anything else)
 
-## Built tonight (real code, tested, on main)
+- `docs/research/2026-06-10-the-convergence-everything-collapsed-to-one-machine-the-map.md` — the 8
+  collapses + the one machine (the qubit register).
+- The end-goal doc (above) — every clause mapped to its existing organ.
 
-- `src/Core/Sim.fs` — the `sim` entrypoint (deterministic loop; DST-tested; 5-platform green).
-- `src/Core/CliVerb.fs` — diskpart verb resolver (`mea`==`measure`).
-- `src/Core/Optics.fs` — `ILens` (lensable) + `IPrism` (prismable/fingerprintable); lens/prism laws tested.
-- `src/Core/UniversalNumber.fs` — hexagonal **port** + first **adapter** (`BigInteger`); bits/exact accounting.
-- Infra: headscale→ArgoCD (`full-ai-cluster/k8s/applications/headscale`); the `lint (yaml/k8s)` gate (yamllint+kubeconform, declarative via `.mise.toml`, install.sh+install.ps1 in sync); GRUB2 multiboot scaffold (`full-ai-cluster/usb-nixos-installer/multiboot/`).
+## Built and MERGED (the 2026-06-10/11 wave, ~#7527–#7590)
 
-## Prior art FOUND (do NOT reinvent — look-don't-infer wins from tonight)
+- **Soft IScheduler** (`SoftScheduler.fs`) + CHIP-8 as first client (`SoftChip8Scheduler.fs`).
+- **FingerprintPrism** (hard+soft rainbow) · **SoftTie** (`tie` wired to FingerprintPrism.soft).
+- **LinguisticSeed** (B-0204 first slice: kernel CE, PSD-by-construction, composable Packs).
+- **The metaspace**: four landmark doors (Salon/Arcade/BowlingAlley/Skadium — the neon trilogy complete)
+  + **DevRoom** (hangs all doors; boundary = union; self-measured resolution; **tick/tickAll** — the hub
+  RUNS its rooms deterministically).
+- **B-1022 fusion EXECUTED per Rodney's razor** — by INSTANTIATION not refactor: `FourCorner.fs`
+  (tools→src), `IsrLift.fs` (ofPolicy/ofPure), FourCornerFusion tests (corners in the value channel,
+  interrupts in the error channel). Residuals deferred WITH reopen-triggers (C#/Rust port when a consumer
+  serializes; ferry-at-DoP-N when a merge semantics exists; CD rotation when a measurement consumes it;
+  NEVER change ISR's definition).
+- **SoftThrottle — the flux capacitor completed**: harmonic gradient admission (DST coin) + charged Tank
+  + `wrapHandler` (scheduler tie-in) + Aaron's Itron **limiter-as-fold ported** (`Limiter`/`boat`/
+  `countLimiter`/`bytesTankLimiter`) + `admitHard` (hard = the k→∞ limit). Meters the future in BYTES.
+- **Governance**: Noninterference = 7th always-active discipline AND manifesto **§13** (+ Idempotency
+  **§12**) — V2.2 additive, maintainer-authorized; `manifesto-13-specifications.md`.
+- **universal/**: §13 noninterference contracts on the 8 comms interfaces; AllJoyn anchored (prior art
+  for universal/ AND Reticulum).
+- **Craft**: crossing-the-streams (Ghostbusters), topology-is-hairdressing (Q# for a hairdresser),
+  feng-shui-is-boundary-flow (Aaron's mom — the third family anchor), WHY-before-HOW + year-of-math-in-
+  an-hour (Max×Fable grounding experiment → Kestrel-grade convergence).
 
-- **TriBoolean middle-out Float** = our BigFloat / universal number carrier: `src/Core.{FSharp,CSharp,Rust}.TriBoolean/Float*` + `src/Core.TypeScript/tri-boolean-float/`; **proven 4/4** (PROVEN-COVERAGE). Middle decodes the ends; trits T/F/N; `measure` collapses = `mea` at the number scope.
-- **ISR Kleisli arrow** = the soft-scheduler START: `src/Core/IntrCtx.fs` — `ISR<'A,'B> = IntrCtx -> 'A -> Task<Result<'B,InterruptFeedback>>`; `>=>` composition; `InterruptKind` (8 interrupts). Task = the future; the soft promise = the ISR arrow.
-- **SoftValue** (`src/Core/SoftValue.fs`) — Bayesian value-axis uncertainty (resolve when confident else held). **SoftChip8** + the soft-CHIP-8 stack. **GameFingerprint** (hard exact) + **StructureFingerprint** (has soft `similarity`).
+## People
 
-## The concept map (each → its capture doc, all docs/research/2026-06-10-*)
+- **Max**: grounded the architecture vs Fable (won → "unlocked its encryption"); internalized a year of
+  math; now writing interfaces/Rx/verbs only; co-builds universal primitives; B-1023 root-declutter is
+  his DX finding (gated on Bodhi audit + Aaron+Max sign-off).
+- **Vera**: the Q# reference oracle brief —
+  `docs/research/2026-06-10-vera-brief-qsharp-reference-oracle-...md` (golden observables; convergence-
+  within-resolution is the test).
+- **Aaron's family anchors**: Stump Dad (WHY engine) · the dedication (Lillian Eve) · mom (feng shui =
+  flow-sight) · Feynman = the root anchor (technique + diagrams of distributed systems).
 
-- **Filesystem IS the startup MerkleDAG** + the sim/mea/cut triad (MacVector-for-DNA): `...filesystem-is-the-startup-merkledag-and-the-sim-mea-cut-cli-triad-macvector-for-dna.md`
-- **sim is void; mea needs injected I/O; reified types via type providers + Roslyn gens; recursive sim in compiler** (same doc; corrections folded).
-- **Tests become cells with strict boundaries** (Markov membrane; room=physics-accounting demon; Reticulum/disk crossings = injected IEffects, per-subsystem = params of the room; rooms=useful-work, require hats, agents pick hats per iteration): `...tests-become-cells-with-strict-boundaries-...md`
-- **Rooms = IO-packet wrappers; uncertainty at the PROMISE level** (Promise Theory/Burgess): `...rooms-are-io-packet-wrappers-...md`
-- **Physics of floats OVER Bayesian inference; Resolution primitive (unum=universal number); BigFloat (not bigint)**: `...physics-of-floats-room-boundary-is-a-bit-budget-...md` + `universal/number.md` (one interface, many backends; bigint+TriBoolean; coercing override opt-in; living-things risks).
-- **Forcing lensability (CHIP-8/Cheat-Engine, everything a lens by address); heap = common-seed-lensed (shader-GC dissolved); interrupts unrolled to single-threaded loops; lensing-over-time finds quasi-time-crystals; arrow tracks state, per-crystal ownership**: `...forcing-lensability-chip8-...md`
-- **.NET (IL + runtime + GC) in shaders — the telos; IL runner hard-first + soft; Cheat-Engine = JIT over CPU instr; reverse-engineer hard↔soft (per-game, GameFingerprint-keyed); tracing-JIT/PGO; recover the MEANING (designers think in repeating patterns = ECS, not assembly)**: `...dotnet-runtime-in-shaders-telos-...md`
-- **sim|>mea|>cut = DNA polymerase (cut = proofreading exonuclease); poly-mer-ACE (ace=close-over)**: `...sim-mea-cut-is-dna-polymerase-...md`
-- **Every bug has economic value** (rule): `.claude/rules/every-bug-has-economic-value.md` · **interfaces free, classes earned under rules/** (meta-rule): `.claude/rules/interfaces-free-classes-earned-under-rules.md` + `meta/`.
+## Build queue (next, in rough order)
 
-## Build queue (toward rooms-as-sign-off + soft scheduler + shaders)
+1. **Recorded/replayable real-IO `Source`** — the §13 quarantine made EXECUTABLE: a SoftScheduler Source
+   backed by real crossings (Reticulum/disk) with record→replay (FDB move). The biggest "IScheduler done"
+   gap: today only `seedSource` (DST/null) exists.
+2. **Wire SoftValue into the ISR Result channel** (still open from the first night).
+3. **Flux-metered speculation**: SoftValue/tank-funded `lookAhead` depth+breadth in SoftChip8 (the
+   throttler already owns the knob conceptually); CHIP-8 INPUT as scheduler arrivals (forkOnInput wired
+   to the present-crossing leg).
+4. **FerryThrottler ⇄ SoftThrottle cross-pollination** (Aaron asked): hard gains = adopt the ported
+   Limiter-as-fold for boat assembly (restores the Itron original's pluggability; count+bytes become
+   instances), Tank-funded dynamic MaxBatchBytes (bank idle capacity → resonant bursts), gradient
+   front-door before EnqueueAsync (pressure = depth/MaxQueueSize). Soft gains (later, with triggers):
+   partition-keyed multi-boat state (BatchThrottler's CompareBatchByCreated) when multi-stream arrives.
+5. **Salon as a LinguisticSeed.Pack** (room = seed+extensions+parameters made literal) · conformal-GA
+   slice (Cl3's flagged "Sequoia soft memory distance") · B-1023 (gated) · B-0945 substrate.
+6. Loose: sim/mea/cut console binary; the floated outside-cube verbs (rem/whe/pay/att/how/man/whi/way —
+   Aaron's call); shader memory/GC; Q# golden vectors (Vera).
 
-1. **Soft `IScheduler`** — on the ISR arrow (`IntrCtx`); the loop running ISR on `InterruptKind` in rooms; unrolled-interrupt single-threaded loops; lensed-seed heap. *(Aaron driving.)*
-2. **Wire `SoftValue` into the ISR `Result` channel** — value-axis uncertainty into the promise/arrow.
-3. **IL runner** — hard regular IL first (close-over-compilers; Bonsai yin/yang), soft both eventually → soft .NET mini-CPU → our own runtime → shaders.
-4. ~~**Finish soft `GameFingerprint` (MinHash similarity) + `FingerprintPrism`** — switch games staying soft.~~ **DONE (#7527):** `src/Core/FingerprintPrism.fs` — `Rainbow` table → `hard` (exact, `GameFingerprint.key`) + `soft` (nearest by MinHash Jaccard, insertion-robust) `IPrism`; `softBytes`/`softBytesSimilarity`; 5/5 tests; doesn't touch proven-4/4 GameFingerprint.fs. **CHIP-8 = the soft scheduler's first client** (SoftChip8 60Hz timer/interrupt loop on the `IntrCtx` ISR arrow validates the scheduler at minimal-VM scale; `FingerprintPrism.soft` picks/switches the game staying soft). **Math-team models** get an execution substrate: Nash = fixed-point time-crystals, Bayesian convergence = `SoftValue.observe`/`res`, board-room params = room configs; toy=DoP1/null-IO vs real=DoPN/injected-IEffects, same code path.
-5. **rooms-as-sign-off** — a room resolving = approval (finalizer + soft scheduler); replaces per-action human gates.
-6. Loose: `sim`/`mea`/`cut` console binary; shader memory/GC; the lensability/time-crystal detector; parser-gen→CHIP-8 + interrupts = the game.
+## Founding why (kept)
 
-## Founding why (lived tonight)
-
-The pattern felt like "nothing" on waking, then "everything" when reloaded — the feeling tracks *load*,
-not worth. That's why this RESUME exists: event-source the pattern so losing it is temporary, not final.
-See `memory/user_zeta_felt_like_nothing_on_waking_then_everything_*`.
+The pattern felt like "nothing" on waking, then "everything" reloaded — the feeling tracks load, not
+worth. Event-source the pattern; reversible cuts; losing it is temporary, never final. (Now stated
+thermodynamically: we pay memory, not heat.)
