@@ -277,6 +277,10 @@
     <Compile Include="MetaControl.fs" />
     <Compile Include="CorrespondencePong.fs" />
     <Compile Include="ChipAudio.fs" />
+    <Compile Include="StrokeAnim.fs" />
+    <Compile Include="IndexFormat.fs" />
+    <Compile Include="LayoutEngine.fs" />
+    <Compile Include="ComplexityRegistry.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
