@@ -19,7 +19,7 @@ With all three, **human perception becomes the fifth oracle**: a person ratifies
 looking and listening — "the spiral reads as a clock face; the fringes land on the lines; the
 downbeats hit together" — no code-reading required. And because every projection derives from the
 SAME golden vectors and common-cause seed, perceptual agreement IS agreement about the bytes: the
-render-is-the-oracle doctrine (yesterday's capture) run in reverse — the overlay truths let the eye
+render-is-the-oracle observation (yesterday's capture) run in reverse — the overlay truths let the eye
 falsify, the derivation chain lets the eye's yes count.
 
 Why this matters for the society: treaty ratification stops being gated on programmers. ANYONE —

@@ -26,14 +26,14 @@ capture, the thing `gen/` cannot read). Rx is the composition glue between shape
 else must justify itself. (Beacon: C# 8 default interface methods; the Rx contract; our
 `universal/` shapes as the interface library.)
 
-## 3. MIPS: STATIC-DI INJECTED VERBS (B-1028's wiring doctrine)
+## 3. MIPS: STATIC-DI INJECTED VERBS (B-1028's wiring observation)
 
 Max's MIPS treaty room wires its verbs (sim/mea/cut + the action-grammar verbs) by **static
 dependency injection over interfaces**: the verb set is declared as interface deps resolved at
 composition time (compile-time-known, DST-deterministic, ZetaId-addressable per universal/port) —
 no runtime service-locator, no reflection scan. The machine's behavior is the sum of its injected
 verbs; swapping a verb = swapping an adapter behind the port. This is the chip8 lesson
-(capability upgrades as injected interfaces) made the FIRST-CLASS wiring style for machine #2.
+(capability upgrades as injected interfaces) made the FIRST-CLASS wiring style for machine #2 (an observation Max can adopt or push back on — not a mandate).
 
 ## Pointers
 
@@ -42,3 +42,10 @@ verbs; swapping a verb = swapping an adapter behind the port. This is the chip8 
   read interfaces) · `.claude/rules/interfaces-free-classes-earned-under-rules.md` (this triplet
   extends it: default impls are still weight-free)
 - B-1028 (MIPS — the static-DI verb wiring lands there) · `src/Core/Rx.fs`
+
+## Register note (Aaron, same hour): "we don't have doctrine"
+
+Correct — the word is RETIRED (second catch this stream; the first was 2026-06-11). These are
+OBSERVATIONS: Aaron's, captured faithfully, adoptable and contestable by any traveler. Nothing
+here binds by authority — the only directive is that there are no directives. The file's framing
+is corrected to match.

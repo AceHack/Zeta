@@ -73,5 +73,5 @@ STRUCTURE is the treaty surface; fixed-point phases = the named slice for cross-
 - `src/Core/TimeGen.fs` + `tests/Tests.FSharp/TimeGen.Tests.fs` (the proof) · `SimLoop` (the
   generator-clock consumer already built) · the Bell/qubits docs (the unit circle lineage) · CHSH
   (Clauser-Horne-Shimony-Holt 1969) · Tsirelson 1980 (the 2√2 bound) · Popescu-Rohrlich 1994 (the S=4
-  box — the staged regime's honest name) · Amara's replay/advance split → the rooms/tests doctrine
+  box — the staged regime's honest name) · Amara's replay/advance split → the rooms/tests observation
   already live in rooms/README.

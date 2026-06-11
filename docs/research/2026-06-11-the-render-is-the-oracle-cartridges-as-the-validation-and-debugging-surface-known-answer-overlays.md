@@ -6,7 +6,7 @@ Aaron 2026-06-11 (via the Kestrel ferry, technical thread):
 > my head." / "This is how I plan on validating and debugging the system — these cartridges — to
 > make sure it works as I expect, without having to look at the code."
 
-## The doctrine
+## The observation
 
 A green unit test proves the phasor sum equals the Cayley add to 1e-9; it cannot prove the spiral
 reads like a clock face or the fringes land where the eye expects. **The render is the oracle for
