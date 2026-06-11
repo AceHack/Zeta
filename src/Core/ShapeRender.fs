@@ -84,7 +84,7 @@ module ShapeRender =
                 |> fun s -> s.Split(',') |> Array.map int |> Array.toList
             let cols = [| 20; 32; 44 |]
             let mutable perm = [| 0; 1; 2 |] // strand index occupying each column slot
-            let rows = 12
+            let rows = constInt "rows" 21
             let rowsPerCross = rows / (List.length word + 1)
             // per strand: the list of runs; a gap closes the current run and opens the next
             let runs = Array.init 3 (fun _ -> ResizeArray<ResizeArray<int * int>>())

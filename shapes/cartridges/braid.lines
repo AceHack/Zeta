@@ -7,9 +7,13 @@ meta	catalog	shapes
 meta	shape-zetaid	de84b57aa8bcdd1534c617f0fed3a2e2
 gen	weave	de84b57aa8bcdd1534c617f0fed3a2e2	1	7	strands:3;word:1,2,1;rows:12
 constant	strands	3	how many strands the figure weaves	three is the smallest braid group with a NON-trivial Artin relation (B2 is just twisting) — the first place the hairdresser's move means something
-constant	word	1,-2,1	the crossing sequence (positive = left over right; negative reverses)	THE PLAIT: alternating signs so each strand takes a turn on top — Aaron's render-loop correction ("blue crosses on top of red for it to be a braid"); all-positive 1,2,1 lays one strand over twice like a rod (legal braid, wrong register). The Artin overlay (1,2,1 = 2,1,2) stays the in-code law
-constant	rows	12	vertical rows the weave occupies on the court	four rows per crossing reads as cloth, not a diagram; bounded (no one weaves forever)
+constant	word	1,-2,1,-2,1,-2	the crossing sequence (positive = left over right; negative reverses)	THE LOCKED PLAIT: the plait move (1,-2) repeated three times is ONE PERIOD of a real hair braid — the permutation returns to identity, so every strand starts AND ends in its own column (Aaron: "is there any way to lock them in place?" — yes: braid until they come home). Alternating signs keep each strand taking turns on top (his earlier correction); the Artin overlay (1,2,1 = 2,1,2) stays the in-code law
+constant	lock-period	6	crossings until the strands return to their own columns	((01)(12))^3 = identity — the plait's period; fewer crossings leave the ends scrambled, which is what "blue messes up" looks like
+constant	stuck	1	the locked word is NOT the identity braid (1 = true, proven by Artin's faithful action)	Aaron's Majorana reach: strands HOME yet the braid CANNOT be pulled apart — pure-braid-group memory, the configuration topological qubits bank on (Kitaev chain; Microsoft Majorana 1; sigma1*sigma2^-1 is the figure-eight braid word)
+law	stuck-together	code:shape-braid geometry (perm = identity AND Braid.isIdentity = false — locked AND stuck)
+constant	rows	21	vertical rows the weave occupies on the court	three rows per crossing across the 6-crossing period fits the 32-row court with margin; bounded (no one weaves forever)
 anim	draw	weave
+issue	lock-in-place	aaron	closed	RESOLVED 2026-06-12: "the blue messes up… any way to lock them in place?" — the word is now one full plait period (lock-period 6): ends locked, every strand home
 issue	plait-register	aaron	closed	RESOLVED 2026-06-12: his dissent ("blue crosses on top of red for it to be a braid") changed the word to the alternating plait 1,-2,1 — joint meaning, negotiated through the render loop
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	fsharp	bytes	ratified	Braid.equal proves Artin (1,2,1 = 2,1,2) and sigma^2 != identity — tests green

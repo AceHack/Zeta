@@ -45,8 +45,26 @@ module ShapeAcceptance =
             let ok = List.length curve = 37 && d2 (List.last curve) > d2 (List.head curve)
             ok, "37 rotor points; outward logarithmic growth (last farther than first)"
         | "shape-braid" ->
-            let ok = Braid.equal 3 [ 1; 2; 1 ] [ 2; 1; 2 ] && not (Braid.isIdentity 3 [ 1; 1 ])
-            ok, "word 1,2,1 = Artin twin 2,1,2; sigma^2 != identity (memory held)"
+            // Artin holds; memory holds; and THE LOCK: the drawn word's permutation is identity
+            // (every strand returns to its own column — Aaron's lock-in-place, checked).
+            let word =
+                MediaLines.field "constant" "word" d
+                |> Option.defaultValue ""
+                |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+            let perm = Array.init 3 id
+            for c in word do
+                let a = abs c - 1
+                let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
+            let locked = perm = [| 0; 1; 2 |]
+            // THE STUCK LAW (Aaron 2026-06-12, reaching for Majorana-style topology: "trying to
+            // see if I can get a configuration where they are stuck together"): the drawn word
+            // must be permutation-IDENTITY (every strand home — locked) yet NOT the identity
+            // BRAID (cannot be pulled apart — stuck). Strands home + braid un-undoable is the
+            // pure-braid-group memory that topological qubits bank on (Kitaev; Microsoft's
+            // Majorana 1; (s1·s2^-1) is the figure-eight braid word). Artin's faithful action decides.
+            let stuck = locked && not (Braid.isIdentity 3 word)
+            let ok = Braid.equal 3 [ 1; 2; 1 ] [ 2; 1; 2 ] && not (Braid.isIdentity 3 [ 1; 1 ]) && locked && stuck
+            ok, "Artin holds; memory holds; ends LOCKED (perm = id) and braid STUCK (≠ identity braid — cannot be pulled apart)"
         | "shape-worldline" ->
             // cross-cartridge law: drift must not exceed the lightcone's slope (c = 1 court cell/tick)
             let drift = MediaLines.field "constant" "drift" d |> Option.map int |> Option.defaultValue 99
