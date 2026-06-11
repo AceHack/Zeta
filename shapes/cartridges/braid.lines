@@ -1,0 +1,15 @@
+# BRAID — strands crossing with MEMORY (otto, 2026-06-11). Topology is hairdressing made executable:
+# a braid is a permutation PLUS history (who crossed OVER whom is remembered — crossing twice is not
+# un-crossing). The lesson loop: watch three strands weave, swap the crossing order, see that the
+# Artin relation makes two different-looking weaves the SAME braid.
+meta	name	shape-braid
+meta	catalog	shapes
+meta	shape-zetaid	de84b57aa8bcdd1534c617f0fed3a2e2
+gen	weave	de84b57aa8bcdd1534c617f0fed3a2e2	1	7	strands:3;word:1,2,1;rows:12
+constant	strands	3	how many strands the figure weaves	three is the smallest braid group with a NON-trivial Artin relation (B2 is just twisting) — the first place the hairdresser's move means something
+constant	word	1,2,1	the crossing sequence (positive = left over right)	sigma1 sigma2 sigma1 is the LEFT side of the Artin relation; the known-answer overlay draws 2,1,2 beside it — same braid, different drawing
+constant	rows	12	vertical rows the weave occupies on the court	four rows per crossing reads as cloth, not a diagram; bounded (no one weaves forever)
+anim	draw	weave
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	Braid.equal proves Artin (1,2,1 = 2,1,2) and sigma^2 != identity — tests green
+treaty	otto	meaning	ratified	the weave-with-memory matches the intent I built against — my own frame, my own choice

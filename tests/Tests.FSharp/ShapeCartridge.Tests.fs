@@ -44,3 +44,40 @@ let ``UNFOLDING the cartridge draws the promised spiral: 36 rotor steps, outward
     Assert.True(d2 (List.last curve) > d2 (List.head curve))
     // and the stroke can ride it: the wave's head exists at every tick (the lesson loop's "see it draw")
     Assert.Equal(1, StrokeAnim.strokeAt 1 5 curve |> List.filter (fun (_, ph) -> ph = StrokeAnim.Head) |> List.length)
+
+// ── the CATALOG (every cartridge, one law) ──
+
+let private catalog () =
+    Directory.GetFiles(Path.Combine(repoRoot (), "shapes", "cartridges"), "*.lines")
+    |> Array.map (fun f ->
+        match MediaLines.parse (File.ReadAllText f) with
+        | Ok d -> Path.GetFileNameWithoutExtension f, d
+        | Error e -> failwith (Path.GetFileName f + ": " + e))
+
+[<Fact>]
+let ``THE CATALOG LAW: every cartridge parses, lints clean, resolves its gen on the shelf, and carries its own treaty block`` () =
+    let all = catalog ()
+    Assert.Equal(6, Array.length all) // spiral + braid + worldline + lightcone + fourcorner + seam
+    for name, d in all do
+        Assert.True(List.isEmpty (MediaLines.lint d), name + " must lint clean")
+        // every gen line's ZetaId resolves to a REGISTERED generator (DI by ZetaId, working)
+        for g in MediaLines.ofKind "gen" d do
+            let zid = List.head g.Fields
+            Assert.True(GeneratorRegistry.byId zid |> Option.isSome, name + ": unregistered gen " + zid)
+        // each cartridge carries its own treaty: fsharp ratified bytes; otto ratified meaning (his choice)
+        Assert.Contains("fsharp", MediaLines.ratifiedBy "bytes" "ratified" d)
+        Assert.Contains("otto", MediaLines.ratifiedBy "meaning" "ratified" d)
+        // every constant already passed lint (WHAT+WHY); anims ride declared gens/frames (lint again)
+        Assert.True(MediaLines.ofKind "anim" d |> List.isEmpty |> not, name + " must animate (see it draw)")
+
+[<Fact>]
+let ``the braid cartridge's known answer holds: its word equals the Artin twin, and crossing twice is NOT un-crossing`` () =
+    Assert.True(Braid.equal 3 [ 1; 2; 1 ] [ 2; 1; 2 ]) // the overlay promised by the cartridge
+    Assert.False(Braid.isIdentity 3 [ 1; 1 ]) // memory: who crossed over whom is remembered
+
+[<Fact>]
+let ``the fourcorner cartridge's known answer holds: phasor S reaches exactly the declared tsirelson-milli width`` () =
+    let g = TimeGen.mk "fourcorner-card" 1 4UL TimeGen.PhasorTsirelson
+    Assert.Equal(2828, int (TimeGen.chsh g 256 * 1000.0)) // 2*sqrt(2) = 2828.4… milli, floor 2828
+    let cl = TimeGen.mk "fourcorner-card" 1 4UL TimeGen.ClassicalCommonCause
+    Assert.True(TimeGen.chsh cl 256 <= 2.0 + 1e-9) // classical folds at 2

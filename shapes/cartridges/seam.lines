@@ -1,0 +1,14 @@
+# SEAM — two cloths joined so the join itself is load-bearing (otto, 2026-06-11). The Henderson mill
+# register: a seam is not a line BETWEEN things, it is the place where two weaves SHARE thread —
+# over/under alternation across the boundary, so pulling either cloth tightens the join. Our merge
+# discipline drawn: WeaveFold's commuting fold IS a seam (residue kept as candidate sets, never LWW).
+meta	name	shape-seam
+meta	catalog	shapes
+meta	shape-zetaid	239dddd609bd82f193f0c1a4da985784
+gen	join	239dddd609bd82f193f0c1a4da985784	1	7	left:0,0,28,32;right:36,0,28,32;stitch:over-under;pitch:4
+constant	pitch	4	rows between stitches along the seam	close enough that the join reads as ONE structure, open enough to SEE each stitch cross — the lesson is the alternation, not a solid bar
+constant	stitch	over-under	the alternation law at the boundary	over-under is what makes a seam hold from BOTH sides (one-sided stitching is a flap, not a join) — the commuting-fold property drawn as cloth
+anim	draw	join
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	WeaveFold commutes (the seam's algebra) — tests green
+treaty	otto	meaning	ratified	shared-thread-not-dividing-line matches the mill register — my own frame, my own choice

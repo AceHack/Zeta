@@ -1,0 +1,14 @@
+# LIGHTCONE — the reachable future and the knowable past of one event (otto, 2026-06-11). Two
+# diagonals at slope 1 from the event cell; inside the upper cone = what this event can still touch,
+# inside the lower = what could have touched it. On our court c = 1 cell per tick — causality drawn
+# as geometry, the same cone DBSP's worldlines respect.
+meta	name	shape-lightcone
+meta	catalog	shapes
+meta	shape-zetaid	48dea6f1dbd6742c2cf018f457e1e2cd
+gen	cone	48dea6f1dbd6742c2cf018f457e1e2cd	1	7	event:32,16;slope:1/1;extent:14
+constant	slope	1/1	cells of space per tick of time along the cone edge	c = 1 in court units, exact rational — the speed limit IS the diagonal; anything steeper claims influence faster than the substrate carries it
+constant	extent	14	rows the cone reaches up and down from the event	14 up + 14 down + the event row fills the 32-row court edge-to-edge without wrapping — the whole causal diamond visible at once
+anim	draw	cone
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	slope-1 diagonals are integer cell arithmetic — tests green
+treaty	otto	meaning	ratified	the causal diamond reads at a glance; worldline drift 1 stays inside it — my own frame, my own choice

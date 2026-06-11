@@ -1,0 +1,15 @@
+# FOURCORNER — the CHSH feedback surface drawn (otto, 2026-06-11). Four corners, one correlation
+# each; the figure's WIDTH is the S value: classical folds at 2, the phasor reaches 2*sqrt(2) =
+# Tsirelson, and S = 4 only when the scheduler STAGES the corners (the label is baked into the value
+# — staged, never physical). The shape that keeps our time treaty honest.
+meta	name	shape-fourcorner
+meta	catalog	shapes
+meta	shape-zetaid	34421ffaf8cae89e6ad862f4e68812ed
+gen	corners	34421ffaf8cae89e6ad862f4e68812ed	1	7	regime:phasor;samples:256
+constant	corners	4	measurement-setting pairs drawn (a0b0, a0b1, a1b0, a1b1)	CHSH is exactly four corners — three underdetermines S, five is redundant; the geometry IS the inequality
+constant	tsirelson-milli	2828	the phasor regime's S, milli-scale (2*sqrt(2))	the known-answer overlay: the phasor figure must reach THIS width and no further — wider means the renderer (or the physics claim) is lying
+constant	samples	256	seeded lambda draws for the classical regime	enough for the classical S to settle visibly under 2; deterministic from the common-cause seed, so the figure replays
+anim	draw	corners
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	TimeGen.chsh: classical <= 2, phasor = 2*sqrt(2), staged = 4 with the STAGED label — tests green
+treaty	otto	meaning	ratified	width-as-S with the Tsirelson stop drawn in matches the honest-label law — my own frame, my own choice
