@@ -1,0 +1,40 @@
+---
+id: B-1027
+title: Craft-verb precision (bob/weave/tie/twist/braid) + the textile frame (warp/weft/loom/selvage) — ratify the registry, test the braid relations
+priority: P2
+status: open
+tier: vocabulary-craft
+tags: [verb-map, craft, salon, textile, braid-group, jacquard, timegen, topology-is-hairdressing]
+created: 2026-06-11
+owner: open (glossary pass for ratification; Aaron = the craft register)
+---
+
+# B-1027 — nail the craft verbs precisely; research the two craft schools (salon, textile)
+
+Aaron 2026-06-11: tie to the verb map; nail down bob/weave/tie/twist precisely; textile is working
+(HendersonTextileMill) and salon too — research + backlog both.
+
+Proposed definitions + the textile vocabulary (warp/weft/loom/shed/selvage/seam/spin) live in
+`docs/research/2026-06-11-craft-verb-precision-...md` — each tied to running code and a math name.
+
+## Staged
+
+1. **Ratify the verb registry** (glossary pass): bob=oscillation/window, weave=deterministic
+   interleave, tie=soft kernel bond, twist=single-strand phase, braid=order-sensitive crossings.
+2. **Test the braid relations**: does the weave engine satisfy σᵢσᵢ₊₁σᵢ = σᵢ₊₁σᵢσᵢ₊₁ (Artin)? A
+   property test over crossing sequences — if yes, "topology is hairdressing" is a theorem here too.
+3. **Warp/weft implementation frame**: monorails as warp (tensioned, fixed), roads as weft (steered
+   per pick); the loom = the scheduler; shed = the tick aperture; selvage = §13.
+4. **Twist ∪ TimeGen**: unify twist-as-phase with the generated clock (the feedback offset IS a twist).
+5. **The two craft schools** researched as teaching tracks (craft-school pipeline): salon (kernels/
+   similarity/ties) and textile (streams/weaves/fabric) — WHY-before-HOW curricula.
+
+## Acceptance (first slice)
+
+The ratified verb table in the glossary + one braid-relation property test green (or an honest
+counterexample documented).
+
+## Relates
+
+Jacquard 1804 (weaving is computing's parent) · Artin braid group · HendersonTextileMill · Salon ·
+TimeGen · Amara's causal-fabric ferry · the craft-school load-bearing line.

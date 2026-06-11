@@ -972,6 +972,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-1024](backlog/P2/B-1024-speak-to-tv-plus-own-microkernel-iso-boot-qemu-tested-raspberry-pi-self-contained-hardware-capability-matrix-friction-heat-visible-aaron-2026-06-11.md)** The hardware ladder: speak-to-the-TV + own microkernel/ISO boot, QEMU-tested, Pi self-contained, capability matrix with visible friction/heat
 - [ ] **[B-1025](backlog/P2/B-1025-universal-action-grammar-plus-reversible-risc-isa-generate-microkernel-to-mips-riscv-fpga-verilog-shaders-pi-first-artisanal-then-room-aaron-2026-06-11.md)** Universal action grammar + reversible RISC-like ISA — generate the microkernel to any hardware (Pi first, artisanal → room)
 - [ ] **[B-1026](backlog/P2/B-1026-the-swarm-board-see-swarm-friction-heat-heatmap-zork-navigate-join-conference-remotely-citizenship-right-even-chip8s-aaron-2026-06-11.md)** The swarm board — see the swarm + friction/heat heatmap, Zork-navigate, join/conference remotely; a citizenship right (even CHIP-8s)
+- [ ] **[B-1027](backlog/P2/B-1027-craft-verb-precision-bob-weave-tie-twist-braid-textile-warp-weft-jacquard-braid-relations-test-salon-textile-craft-schools-aaron-2026-06-11.md)** Craft-verb precision (bob/weave/tie/twist/braid) + textile frame (warp/weft) — ratify registry, test the braid relations
 
 ## P3 — convenience / deferred
 
