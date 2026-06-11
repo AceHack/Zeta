@@ -2,12 +2,42 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-13 (the greenfield wave folded in — #7771..#7775; prior waves below).
+Last refreshed: 2026-06-13 (the rings wave folded in — #7777..#7785; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-13 GREENFIELD wave (#7771..#7775 — newest; read FIRST)
+## The 2026-06-13 RINGS wave (#7777..#7785 — newest; read FIRST)
+
+- **DRW CLIPS at edges** (#7777, B-1031 DONE — the reviewed treaty change): Kira + Viktor
+  pre-change reviews (GO with conditions, all folded BEFORE code); wrap-origin/clip-pixels
+  (COSMAC VIP) identical across F#/TS/C#/Rust; the new edge ROM locks right/bottom/corner/
+  color-plane clips AND the VF collision semantic (a marker drawn iff the edge draw did NOT
+  collide) AND n=0; the golden header carries the written DRW clause + VIP anchor (Viktor: the
+  behavior was unspecified and UNGATED before — now the treaty actually enforces it). En route:
+  owned main's RED (QSharpOracle helpers dropped by #7766 refactor — restored).
+- **ZERO SKIPPED TESTS** (#7781): the multi-tick property removed (a zombie — the unskipped
+  REFUTATION WITNESS carries its knowledge; resurrects with the signed-delta ClosureTable);
+  one audit finding FALSIFIED honestly (single-char grid cells).
+- **RecursiveSignedDelta SHIPS** (#7782, "lets do it"): TLC verified the spec's real Step at all
+  four seed weights FIRST (S1/S2/S3), then the combinator at its planned home — THE FEEDBACK CELL
+  CARRIES THE SIGNED DELTA, never the total (seed deltas join at their own tick); the refuted
+  multi-tick case passes BY CONSTRUCTION; retraction converges to exact zero (dip-and-recover).
+  Distinct forbidden inside the body — boundary only.
+- **THE THREE-RINGS THESIS** (#7782/#7783/#7785): ZSet↔quantum↔Infer.NET is ONE calculus over
+  different weight rings (GDL, Aji–McEliece 2000), with ONE boundary-nonlinearity law: Distinct
+  (ℤ) / measurement (ℂ) / EP-projection (ℝ≥0) — never inside the linear loop. Discoveries:
+  src/Bayesian ALREADY carries the Infer.NET shape (FactorGraph.runToFixpoint + real Ep.fs —
+  Minka's cavity→project→divide, ours). **WSet<'K,'W> shipped** (#7785) + THE THREE-ORACLE
+  MACH-ZEHNDER: one interferometer checked against the analytic law (1e-12), AmplitudeEmu (1e-9),
+  and Vera's Q# treaty transcript — passing.
+- **Filed:** B-1032 (ring demos; first one DONE) · B-1033 (hexagonal inference port — own
+  IInferenceEngine; Zeta.Bayesian + dotnet/infer as adapters, theirs tests ours; + the
+  four-plugin-systems convergence audit: PluginApi / MediaLines io / GeneratorRegistry /
+  MagneticPorts = one hub concept, map before a fifth grows).
+- Suite 3012, ZERO skipped. Six bug rounds + two treaty changes this arc.
+
+## The 2026-06-13 GREENFIELD wave (#7771..#7775 — older; read second)
 
 - **Round 3b** (#7771): writing the injection falsifier the test-gap audit asked for IMMEDIATELY
   found a LIVE hole — a hostile meta motto put live <script> through HtmlCssBinding's no-JS page
