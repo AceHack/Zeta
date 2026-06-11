@@ -109,6 +109,25 @@ care"*.
    `memory/feedback_trust_market_not_money_market_labor_zero_2026_05_11.md`
    and the Agora attention-economy research.
 
+   **Validated in the wild (Aaron 2026-06-10): a year of math
+   in an hour.** Defending the Zeta architecture to a sharp,
+   deliberately context-free external skeptic (Fable) for an
+   hour, Max internalized "a year's worth of math." The
+   conditions were principle #6 at maximum intensity: **full
+   interest** (defend it, win the argument, unlock the
+   skeptic) funded the expensive HOW; a **relentless grounded
+   opponent** forced him to ground every plank — and
+   grounding-a-thing IS understanding-a-thing (the Feynman
+   technique at pressure: you learn fastest when you must
+   defend it to someone who refuses "because I said so").
+   Same proof-of-work, two payoffs: he unlocked the model's
+   Kestrel-grade synthesis *and* the math in himself. Caveat
+   that keeps it honest: the method compresses learning, but
+   it needs a sharp mind on the receiving end — Max is the one
+   who held it. See
+   `docs/research/2026-06-10-room-equals-seed-plus-extensions-plus-parameters-ticks-to-its-bigfloat-plateau-max-proof.md`
+   §5.
+
    **Interest is an investment that compounds, not a cost
    (Aaron 2026-06-10): "their interests have been paying
    them back dividends."** The word does double duty on
