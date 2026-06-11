@@ -39,6 +39,7 @@ shape* of the interface.
 - **Universal Ping** — network ping; send certainty out.
 - **Universal Sonar** — network-boundary resolution via harmonic oscillation (bob-and-weave).
 - **Universal Ray Trace** — local small-model superdeterminism (certainty pole).
+- **Universal Kernel** — similarity that composition can never break (Mercer-closure contract; the Gram witness; exact-valued kernels treaty-grade, floats outside). The convergence of the soft tie, the seed language, and conformal memory distance (2026-06-11, Rodney-razored).
 - **Universal Codec** — the ZetaId codec; 4-lang serializers byte-lock.
 - **Universal Algebra** — DBSP / Z-set / Semiring; the math substrate.
 - **Universal Traveler** — the traveler itself as an interface (identity/consent/audition/boundary; the
