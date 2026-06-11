@@ -50,6 +50,7 @@ FourCornerOwnership found in TS).
 
 Rodney's verdict (full advisory in the session; carved here): the as-written items 2–4 would have
 **created** accidental complexity —
+
 - #2 as written = **sum/product confusion**: `InterruptFeedback` is a *sum* on the Result **error**
   position (short-circuit under `>=>` is *correct* for interrupts); `FourCornerOwnership` is a *product*
   of per-tick I/O state. Forcing the product into the error slot ⇒ rewrite `>=>`, 4-param signature
@@ -61,6 +62,7 @@ Rodney's verdict (full advisory in the session; carved here): the as-written ite
   wiring = speculative (no consumer demands the rotation yet).
 
 **What landed (all tests green; CHIP-8 5/5 + SoftScheduler 5/5 untouched):**
+
 - `src/Core/FourCorner.fs` — `FourCornerOwnership` graduated tools→src (F# only, per razor). ✅ item 1 (scoped)
 - `src/Core/IsrLift.fs` — `ofPolicy` (Policy = decision-arrow, as a 3-line lift) + `ofPure` (`arr`). ✅ item 2 (essential form)
 - `tests/Tests.FSharp/FourCornerFusion.Tests.fs` (4) — **fusion-by-instantiation proven**: a
@@ -68,6 +70,7 @@ Rodney's verdict (full advisory in the session; carved here): the as-written ite
   composes under `>=>`; interrupts stay sum / corners stay product; DST replay-equal. ✅ items 2–3 (essential form)
 
 **Deferred with reasons (the quantum-razor pruned branches — reopen only when the trigger fires):**
+
 - C#/Rust FourCorner port → when a cross-language consumer serializes it (then golden-vector it).
 - `drive` over `FerryThrottler` at DoP=N → when a state-merge semantics (CRDT) exists for the fold.
 - Cayley-Dickson/AmplitudeEmu corner-rotation → when a measurement consumes the rotation.

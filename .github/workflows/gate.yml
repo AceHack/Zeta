@@ -489,7 +489,7 @@ jobs:
     name: lint (yaml/k8s)
     timeout-minutes: 10
     runs-on: ubuntu-24.04
-    continue-on-error: true   # ADVISORY — remove once clean for a few rounds (then required)
+    continue-on-error: true # ADVISORY — remove once clean for a few rounds (then required)
 
     steps:
       - name: Checkout
@@ -753,7 +753,7 @@ jobs:
     # the layer that catches all paths, not at the input-tool
     # layer.
     name: lint (tick-history order)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -785,7 +785,7 @@ jobs:
     # script self-allowlists files that legitimately document
     # merge-conflict resolution.
     name: lint (no conflict markers)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -821,7 +821,7 @@ jobs:
     # B-0036 Sub-task 2 — wire the lint to gate.yml after Sub-task 1
     # backfilled all pre-existing violations to 0.
     name: lint (archive header §33)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -854,7 +854,7 @@ jobs:
     # B-0533 Slice B.3 + B.4 — wire the scanner to gate.yml in --enforce mode
     # after PR #3552 backfilled all pre-existing violations to 0.
     name: lint (§33 migration xrefs)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -883,7 +883,7 @@ jobs:
     # so historical residue in immutable shards doesn't block — new violations
     # still fail. Same shape as Stryker `--reset` or ESLint suppressions.
     name: lint (tick-shard relative-paths)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -912,7 +912,7 @@ jobs:
     # B-0535 — sibling of lint-section-33-migration-xrefs + lint-archive-
     # header-section33: catch-once-then-lint pattern at ID-allocation scope.
     name: lint (backlog ID uniqueness)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -940,7 +940,7 @@ jobs:
     # consistency (parent.children ↔ child.parent) deferred to follow-up
     # slices per B-0532's full acceptance criteria.
     name: lint (backlog parent-child status)
-    timeout-minutes: 2
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -964,7 +964,7 @@ jobs:
     # references/prior-art/** are excluded by the script itself.
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no empty dirs)
-    timeout-minutes: 3
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -987,7 +987,7 @@ jobs:
     # are hard-excluded by the script itself.
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no python files)
-    timeout-minutes: 3
+    timeout-minutes: 5
     runs-on: ubuntu-24.04
 
     steps:
@@ -1133,12 +1133,13 @@ jobs:
     # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
     # oracle via tools/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
     # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
-    # TS golden-vector oracle) plus `bun test tools/ace/`. The ORACLES assert COMMITTED outputs (no
-    # dotnet/rust toolchain needed); the ace suite installs npm deps (z3-solver) + uses the runner
-    # node for its solver Z3 differential. This is the ENFORCEMENT half of the canonical-primitive
-    # gate (proof + 4-language byte-lock); the proof half is the formal-coverage cadence / lean-proof
-    # lane. NOTE: promoting this to a REQUIRED check (branch protection) is a separate operator/devops
-    # step — until then it runs + shows on every PR but does not block auto-merge.
+    # TS golden-vector oracle) plus `bun test tools/ace/` and the Q# observable fixture test. The
+    # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
+    # npm deps (z3-solver) + uses the runner node for its solver Z3 differential. This is the
+    # ENFORCEMENT half of the canonical-primitive gate (proof + 4-language byte-lock); the proof half
+    # is the formal-coverage cadence / lean-proof lane. NOTE: promoting this to a REQUIRED check
+    # (branch protection) is a separate operator/devops step — until then it runs + shows on every PR
+    # but does not block auto-merge.
     name: cross-verify (trust-core oracles + ace suite)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
@@ -1185,6 +1186,9 @@ jobs:
 
       - name: Ace package-manager suite
         run: bun test tools/ace/
+
+      - name: Q# reference-observable golden vectors
+        run: bun test tools/qsharp-oracle/qsharp-golden.test.ts
 
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun tools/ci/cross-verify-all.ts

@@ -1,0 +1,68 @@
+import { expect, test } from "bun:test";
+import golden from "./qsharp-golden.json";
+
+type Probabilities = { Zero: number; One: number };
+
+const tolerance = 1e-6;
+
+function closeTo(actual: number, expected: number, epsilon = tolerance) {
+  expect(Math.abs(actual - expected)).toBeLessThanOrEqual(epsilon);
+}
+
+function probabilitySum(probabilities: Probabilities) {
+  return probabilities.Zero + probabilities.One;
+}
+
+test("Q# golden fixture exposes the observable treaty", () => {
+  expect(golden.schema).toBe("zeta.qsharp.reference-observables.v1");
+  expect(golden.qsharpSource).toBe("tools/qsharp-oracle/ZetaReferenceOracle.qs");
+  expect(golden.qdkPackage).toBe("qdk[azure]==1.29.1");
+  expect(golden.qsharpPackage).toBe("qsharp==1.29.1");
+});
+
+test("single-qubit measurement observables match textbook probabilities", () => {
+  const cases = new Map(golden.vectors.singleQubitMeasurement.map((v) => [v.id, v]));
+
+  const h = cases.get("H|0>")?.probabilities as Probabilities;
+  closeTo(h.Zero, 0.5);
+  closeTo(h.One, 0.5);
+  closeTo(probabilitySum(h), 1);
+
+  const ryPiOver3 = cases.get("Ry(pi/3)|0>")?.probabilities as Probabilities;
+  closeTo(ryPiOver3.Zero, 0.75);
+  closeTo(ryPiOver3.One, 0.25);
+  closeTo(probabilitySum(ryPiOver3), 1);
+
+  const ryPiOver2 = cases.get("Ry(pi/2)|0>")?.probabilities as Probabilities;
+  closeTo(ryPiOver2.Zero, 0.5);
+  closeTo(ryPiOver2.One, 0.5);
+  closeTo(probabilitySum(ryPiOver2), 1);
+});
+
+test("Bell/CHSH vector pins Tsirelson and the canonical correlators", () => {
+  const canonical = golden.vectors.bellChsh.canonical;
+
+  closeTo(canonical.correlators["E(a,b)"], Math.SQRT1_2);
+  closeTo(canonical.correlators["E(a,bPrime)"], -Math.SQRT1_2);
+  closeTo(canonical.correlators["E(aPrime,b)"], Math.SQRT1_2);
+  closeTo(canonical.correlators["E(aPrime,bPrime)"], Math.SQRT1_2);
+  closeTo(canonical.s, 2 * Math.SQRT2);
+  closeTo(canonical.tsirelson, 2 * Math.SQRT2);
+  expect(canonical.s).toBeGreaterThan(canonical.classicalBound);
+});
+
+test("interference observables distinguish open, reinforce, and cancel cases", () => {
+  const cases = new Map(golden.vectors.interferenceVisibility.map((v) => [v.id, v]));
+
+  const open = cases.get("mach-zehnder-open")?.probabilities as Probabilities;
+  closeTo(open.Zero, 0.5);
+  closeTo(open.One, 0.5);
+
+  const reinforced = cases.get("mach-zehnder-closed-zero-phase")?.probabilities as Probabilities;
+  closeTo(reinforced.Zero, 1);
+  closeTo(reinforced.One, 0);
+
+  const cancelled = cases.get("mach-zehnder-closed-pi-phase")?.probabilities as Probabilities;
+  closeTo(cancelled.Zero, 0);
+  closeTo(cancelled.One, 1);
+});

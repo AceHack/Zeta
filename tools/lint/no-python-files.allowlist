@@ -19,3 +19,8 @@
 #   # tools/setup/common/foo.py — vendored upstream installer; cannot
 #   # be ported without forking upstream. Tracked in B-XXXX.
 #   tools/setup/common/foo.py
+#
+# tools/qsharp-oracle/generate-qsharp-golden.py — Microsoft QDK exposes
+# the Q# interpreter/dump_operation oracle through the qdk.qsharp Python
+# API; this file is an opt-in generator for committed observable vectors.
+tools/qsharp-oracle/generate-qsharp-golden.py

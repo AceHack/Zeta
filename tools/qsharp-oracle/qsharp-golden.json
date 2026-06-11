@@ -1,0 +1,378 @@
+{
+  "generatedBy": "tools/qsharp-oracle/generate-qsharp-golden.py",
+  "observableContract": "Compare measurable observables, not raw state vectors; finite BigFloat rooms converge toward these continuous-amplitude references as precision increases.",
+  "qdkPackage": "qdk[azure]==1.29.1",
+  "qsharpPackage": "qsharp==1.29.1",
+  "qsharpSource": "tools/qsharp-oracle/ZetaReferenceOracle.qs",
+  "schema": "zeta.qsharp.reference-observables.v1",
+  "vectors": {
+    "bellChsh": {
+      "canonical": {
+        "anglesRadians": {
+          "a": 0.0,
+          "aPrime": 1.570796326795,
+          "b": 0.785398163397,
+          "bPrime": 2.356194490192
+        },
+        "classicalBound": 2.0,
+        "correlators": {
+          "E(a,b)": 0.707106781187,
+          "E(a,bPrime)": -0.707106781187,
+          "E(aPrime,b)": 0.707106781187,
+          "E(aPrime,bPrime)": 0.707106781187
+        },
+        "s": 2.828427124746,
+        "tsirelson": 2.828427124746
+      },
+      "checks": ["BellTest.correlation", "BellTest.chsh", "BellTest.TsirelsonBound"],
+      "correlatorFormula": "E(a,b)=cos(a-b)",
+      "id": "BellPhiPlus canonical CHSH",
+      "preparation": {
+        "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlus",
+        "probabilities": [0.5, 0.0, 0.0, 0.5],
+        "stateBasis": ["|00>", "|01>", "|10>", "|11>"]
+      }
+    },
+    "gateUnitaries": {
+      "BellPhiPlusPrep": [
+        [
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": -0.707107
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": -0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ]
+      ],
+      "H": [
+        [
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": -0.707107
+          }
+        ]
+      ],
+      "Ry(pi/2)": [
+        [
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": -0.707107
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          },
+          {
+            "imag": 0.0,
+            "real": 0.707107
+          }
+        ]
+      ],
+      "Ry(pi/3)": [
+        [
+          {
+            "imag": 0.0,
+            "real": 0.866025
+          },
+          {
+            "imag": 0.0,
+            "real": -0.5
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.5
+          },
+          {
+            "imag": 0.0,
+            "real": 0.866025
+          }
+        ]
+      ],
+      "Rz(pi/3)": [
+        [
+          {
+            "imag": -0.5,
+            "real": 0.866025
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.5,
+            "real": 0.866025
+          }
+        ]
+      ],
+      "S": [
+        [
+          {
+            "imag": 0.0,
+            "real": 1.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 1.0,
+            "real": 0.0
+          }
+        ]
+      ],
+      "T": [
+        [
+          {
+            "imag": 0.0,
+            "real": 1.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.707107,
+            "real": 0.707107
+          }
+        ]
+      ],
+      "X": [
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": 1.0
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 1.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ]
+      ],
+      "Y": [
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": -1.0,
+            "real": 0.0
+          }
+        ],
+        [
+          {
+            "imag": 1.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ]
+      ],
+      "Z": [
+        [
+          {
+            "imag": 0.0,
+            "real": 1.0
+          },
+          {
+            "imag": 0.0,
+            "real": 0.0
+          }
+        ],
+        [
+          {
+            "imag": 0.0,
+            "real": 0.0
+          },
+          {
+            "imag": 0.0,
+            "real": -1.0
+          }
+        ]
+      ]
+    },
+    "interferenceVisibility": [
+      {
+        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
+        "id": "mach-zehnder-open",
+        "operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
+        "probabilities": {
+          "One": 0.5,
+          "Zero": 0.5
+        }
+      },
+      {
+        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
+        "id": "mach-zehnder-closed-zero-phase",
+        "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+        "probabilities": {
+          "One": 0.0,
+          "Zero": 1.0
+        },
+        "visibility": 1.0
+      },
+      {
+        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
+        "id": "mach-zehnder-closed-pi-phase",
+        "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
+        "probabilities": {
+          "One": 1.0,
+          "Zero": 0.0
+        },
+        "visibility": 1.0
+      }
+    ],
+    "singleQubitMeasurement": [
+      {
+        "basis": "Z",
+        "checks": ["AmplitudeEmu.bornProb", "QubitIso.H"],
+        "id": "H|0>",
+        "operation": "Zeta.ReferenceOracle.ApplyH",
+        "probabilities": {
+          "One": 0.5,
+          "Zero": 0.5
+        }
+      },
+      {
+        "basis": "Z",
+        "checks": ["AmplitudeEmu.bornProb", "QubitIso.Ry"],
+        "formula": "P(Zero)=cos(theta/2)^2; P(One)=sin(theta/2)^2",
+        "id": "Ry(pi/3)|0>",
+        "operation": "Zeta.ReferenceOracle.ApplyRyPiOver3",
+        "probabilities": {
+          "One": 0.25,
+          "Zero": 0.75
+        },
+        "thetaRadians": 1.047197551197
+      },
+      {
+        "basis": "Z",
+        "checks": ["AmplitudeEmu.bornProb", "QubitIso.Ry"],
+        "formula": "P(Zero)=cos(theta/2)^2; P(One)=sin(theta/2)^2",
+        "id": "Ry(pi/2)|0>",
+        "operation": "Zeta.ReferenceOracle.ApplyRyPiOver2",
+        "probabilities": {
+          "One": 0.5,
+          "Zero": 0.5
+        },
+        "thetaRadians": 1.570796326795
+      }
+    ]
+  }
+}
