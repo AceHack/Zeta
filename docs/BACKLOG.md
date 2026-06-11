@@ -984,6 +984,7 @@ are closed (status: closed/done in frontmatter)._
 - [ ] **[B-1036](backlog/P2/B-1036-soft-sharp-garbage-collection-chip89-no-garbage-by-construction-lifetimes-weak-refs-raytraced-reachability-history-epochs-aaron-2026-06-11.md)** Soft/sharp GC on chip8/9 — five rungs: no-garbage-by-construction, room-scoped lifetimes, weak refs, RAY-TRACED reachability (shape-gc cartridge), history-epoch reclamation (git gc is the in-house anchor)
 - [ ] **[B-1037](backlog/P2/B-1037-ball-number-adapter-center-radius-behind-universalnumber-lossy-widens-never-rounds-comparisons-return-tri-aaron-2026-06-11.md)** Ball-number adapter — center±radius behind IUniversalNumber; lossy WIDENS never rounds; ball compare returns Tri (N on overlap)
 - [ ] **[B-1038](backlog/P2/B-1038-chip89-crypto-boot-and-workload-identity-keys-injected-at-the-door-never-in-cartridges-reticulum-native-identity-aaron-2026-06-11.md)** chip8/9 boot crypto + workload identity — keys injected at the door, never in cartridges; Reticulum-native identity; Nazar+Mateo gate
+- [ ] **[B-1039](backlog/P2/B-1039-ben-verb-benchmark-as-easy-as-measure-injected-interfaces-timing-memory-live-with-rooms-grade-the-complexity-predictions-aaron-2026-06-11.md)** The ben verb — benchmark as easy as measure (injected, room-inherited, red-lit); GRADE ComplexityRegistry predictions (n/2n/4n growth vs declared O — VIOLATED = a priced bug); chip8 ticks are the exact DST-clean case
 
 ## P3 — convenience / deferred
 
