@@ -16,6 +16,25 @@
     }
     body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
     svg { width: min(96vw, 960px); image-rendering: pixelated; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { to { opacity: 1; } }
+    polyline:hover { stroke-width: 7; filter: brightness(1.6); }
+    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }
+    #worldline-0 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 0ms forwards; }
+    #worldline-0-r1 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 180ms forwards; }
+    #worldline-0-r2 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 360ms forwards; }
+    #worldline-1 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 540ms forwards; }
+    #worldline-1-r1 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 720ms forwards; }
+    #worldline-1-r2 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 900ms forwards; }
+    #worldline-2 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1080ms forwards; }
+    #worldline-2-r1 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1260ms forwards; }
+    #worldline-2-r2 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1440ms forwards; }
+    #event-0 { opacity: 0; animation: appear 400ms linear 1620ms forwards; }
+    #event-1 { opacity: 0; animation: appear 400ms linear 1800ms forwards; }
+    #event-2 { opacity: 0; animation: appear 400ms linear 1980ms forwards; }
+    #event-3 { opacity: 0; animation: appear 400ms linear 2160ms forwards; }
+    #event-4 { opacity: 0; animation: appear 400ms linear 2340ms forwards; }
+    #event-5 { opacity: 0; animation: appear 400ms linear 2520ms forwards; }
   </style>
 </head>
 <body>

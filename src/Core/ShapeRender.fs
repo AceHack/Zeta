@@ -319,7 +319,32 @@ module ShapeRender =
     let toHtml (d: MediaLines.Doc) : string =
         let name = MediaLines.field "meta" "name" d |> Option.defaultValue "shape"
         let vars = [ for m in 0uy .. 7uy -> sprintf "      --c%d: %s;" m (colorHex m) ] |> String.concat "\n"
-        sprintf "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <title>%s</title>\n  <style>\n    :root {\n%s\n    }\n    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }\n    svg { width: min(96vw, 960px); image-rendering: pixelated; }\n  </style>\n</head>\n<body>\n%s</body>\n</html>\n" name vars (toSvg d)
+        // THE DRAW-ON ANIMATION (Aaron 2026-06-12: "animation on our shapes — being drawn tick by
+        // tick — in the html and the svg"): pure CSS, zero JavaScript (the HtmlCssBinding law).
+        // Solid strokes draw themselves via stroke-dashoffset keyframes (StrokeAnim's see-it-draw,
+        // as CSS); strokes are SEQUENCED by per-stroke integer delays (tick by tick — the order is
+        // the document's stroke order, which is the generator's order). Semantically-DASHED
+        // strokes (the sign register) must keep their dasharray, so they FADE in instead — the
+        // two animations never fight over one attribute. Interactivity, also JS-free: hovering a
+        // stroke brightens it and dims nothing else (inspect by eye). The SVG golden stays the
+        // STATIC truth; animation is the HTML projection's layer.
+        let strokes = strokesOf d
+        let perStroke =
+            strokes
+            |> List.mapi (fun i s ->
+                let delay = i * 180 // ms per tick: deterministic, integer, sequential
+                if s.Dash then
+                    sprintf "    #%s { opacity: 0; animation: appear 400ms linear %dms forwards; }" s.Name delay
+                else
+                    sprintf "    #%s { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear %dms forwards; }" s.Name delay)
+            |> String.concat "\n"
+        let anim =
+            "    @keyframes draw { to { stroke-dashoffset: 0; } }\n"
+            + "    @keyframes appear { to { opacity: 1; } }\n"
+            + "    polyline:hover { stroke-width: 7; filter: brightness(1.6); }\n"
+            + "    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }\n"
+            + perStroke
+        sprintf "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <title>%s</title>\n  <style>\n    :root {\n%s\n    }\n    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }\n    svg { width: min(96vw, 960px); image-rendering: pixelated; }\n%s\n  </style>\n</head>\n<body>\n%s</body>\n</html>\n" name vars anim (toSvg d)
 
     /// READ BACK the strict dialect (the bidirectional half) — refuses anything outside it:
     /// script, floats in points, foreign elements. We read their format; we do not import its habits.

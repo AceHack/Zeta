@@ -16,6 +16,59 @@
     }
     body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
     svg { width: min(96vw, 960px); image-rendering: pixelated; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { to { opacity: 1; } }
+    polyline:hover { stroke-width: 7; filter: brightness(1.6); }
+    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }
+    #t-mode-0-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 0ms forwards; }
+    #t-mode-0-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 180ms forwards; }
+    #t-pair-0 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 360ms forwards; }
+    #t-mode-1-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 540ms forwards; }
+    #t-mode-1-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 720ms forwards; }
+    #t-pair-1 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 900ms forwards; }
+    #t-mode-2-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1080ms forwards; }
+    #t-mode-2-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1260ms forwards; }
+    #t-pair-2 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1440ms forwards; }
+    #t-mode-3-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1620ms forwards; }
+    #t-mode-3-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1800ms forwards; }
+    #t-pair-3 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 1980ms forwards; }
+    #t-mode-4-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 2160ms forwards; }
+    #t-mode-4-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 2340ms forwards; }
+    #t-pair-4 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 2520ms forwards; }
+    #t-mode-5-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 2700ms forwards; }
+    #t-mode-5-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 2880ms forwards; }
+    #t-pair-5 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 3060ms forwards; }
+    #t-mode-6-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 3240ms forwards; }
+    #t-mode-6-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 3420ms forwards; }
+    #t-pair-6 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 3600ms forwards; }
+    #t-mode-7-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 3780ms forwards; }
+    #t-mode-7-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 3960ms forwards; }
+    #t-pair-7 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 4140ms forwards; }
+    #k-mode-0-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 4320ms forwards; }
+    #k-mode-0-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 4500ms forwards; }
+    #k-mode-1-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 4680ms forwards; }
+    #k-mode-1-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 4860ms forwards; }
+    #k-mode-2-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 5040ms forwards; }
+    #k-mode-2-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 5220ms forwards; }
+    #k-mode-3-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 5400ms forwards; }
+    #k-mode-3-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 5580ms forwards; }
+    #k-mode-4-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 5760ms forwards; }
+    #k-mode-4-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 5940ms forwards; }
+    #k-mode-5-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 6120ms forwards; }
+    #k-mode-5-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 6300ms forwards; }
+    #k-mode-6-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 6480ms forwards; }
+    #k-mode-6-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 6660ms forwards; }
+    #k-mode-7-l { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 6840ms forwards; }
+    #k-mode-7-r { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 7020ms forwards; }
+    #k-pair-0 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 7200ms forwards; }
+    #k-pair-1 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 7380ms forwards; }
+    #k-pair-2 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 7560ms forwards; }
+    #k-pair-3 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 7740ms forwards; }
+    #k-pair-4 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 7920ms forwards; }
+    #k-pair-5 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 8100ms forwards; }
+    #k-pair-6 { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear 8280ms forwards; }
+    #end-mode-left { opacity: 0; animation: appear 400ms linear 8460ms forwards; }
+    #end-mode-right { opacity: 0; animation: appear 400ms linear 8640ms forwards; }
   </style>
 </head>
 <body>
