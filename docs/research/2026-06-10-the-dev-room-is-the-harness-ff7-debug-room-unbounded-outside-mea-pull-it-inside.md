@@ -73,6 +73,36 @@ So a landmark = a room whose *name* is a familiar place and whose *contents* are
 kind of work; the dev room is the hub whose doors open onto all of them. (Each persona/concern can own a
 landmark — the salon for quantum, etc.)
 
+## Self-measurement — "BigFloat, but for devops"
+
+> Aaron 2026-06-10: "once we have a stable dev/meta room we can `mea` it too — it won't be outside its own
+> measurement. This is like our BigFloat but for devops."
+
+This is the resolution of the tension below, and the analogy is exact. **BigFloat / TriBoolean / the
+universal number is a number that measures its own precision** — the middle field decodes the ends, it
+tracks its own bit-usage, and it *knows when it needs more bits* (the physics-of-floats: a bit-budget
+boundary; resolution is part of the value, not external metadata). `measure` collapses *at the number
+scope*.
+
+A **stable** dev/meta room is the same pattern **one level up — at the devops scope**: a harness that
+**carries its own measurement**. It won't be "outside its own `mea`" because, like a BigFloat, the
+resolution accounting is *part of the room*, not an external observer's job:
+
+- the room's **boundary is a budget** (the physics-of-floats bit-budget, generalized: capacity / coverage
+  / health / attention), and the room measures *itself against it*;
+- it **knows its own resolution** — how well it currently covers the rooms it's the hub of — and **knows
+  when it needs more** (scale up / add a door / grow a blanket), the way a BigFloat knows when it needs
+  more bits;
+- so self-measurement isn't a paradox requiring an exterior vantage — it's **self-describing resolution**,
+  the BigFloat trick at the infrastructure scale. You don't need an outside observer to know your
+  precision if the structure *encodes* it.
+
+The key precondition is **stability** (Aaron: "once we have a *stable* dev/meta room"): an unstable,
+still-churning harness can't measure itself coherently (its own resolution is moving); a stable one can,
+because its structure has settled enough to carry the accounting. (The reflective-tower limit below still
+holds asymptotically — there's always a thinnest top — but BigFloat-style self-measurement is how a
+stable level brings *itself* into `mea` without an external measurer.)
+
 ## Why it matters (and the tension)
 
 - **Self-hosting / sovereignty.** Running on a borrowed harness means the dev room's rules (its doors, its
