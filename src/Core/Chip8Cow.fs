@@ -146,7 +146,16 @@ module Chip8Cow =
                 | [] -> f
             | _ -> f
         | 0x1000 -> { f with PC = nnn }
-        | 0x2000 -> { f with Stack = f.PC :: f.Stack; PC = nnn }
+        | 0x2000 ->
+            // STACK-DEPTH FAULT (shadow*, 2026-06-11 — completing the underflow's pair): classic
+            // CHIP-8 caps nesting at 16 frames; ours is a heap list, so without this cap a
+            // runaway CALL loop grows memory silently forever. At depth 16 the CALL is REFUSED
+            // (fall through to the next instruction) and the fault is RECORDED — visible to the
+            // trace layers, never fatal, same register discipline as 00EE underflow.
+            if List.length f.Stack >= 16 then
+                if f.Fault = None then { f with Fault = Some "stack overflow: CALL (2NNN) at depth 16 refused" } else f
+            else
+                { f with Stack = f.PC :: f.Stack; PC = nnn }
         | 0x3000 -> if vx = nn then { f with PC = f.PC + 2us } else f
         | 0x4000 -> if vx <> nn then { f with PC = f.PC + 2us } else f
         | 0x5000 -> if vx = vy then { f with PC = f.PC + 2us } else f

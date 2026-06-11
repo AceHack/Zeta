@@ -107,3 +107,14 @@ let ``THE FAULT REGISTER: 00EE on an empty stack is RECORDED, not silently swall
     // a healthy program keeps Fault = None
     let healthy = Chip8Cow.create 7UL |> Chip8Cow.loadRom [| 0x60uy; 0x05uy |] |> Chip8Cow.step
     Assert.Equal<string option>(None, healthy.Fault)
+
+[<Fact>]
+let ``THE STACK-DEPTH FAULT: the 17th nested CALL is refused and recorded; 16 deep stays healthy (the underflow's pair)`` () =
+    // rom: address 0x200 holds CALL 0x200 — infinite self-call; each step pushes one frame
+    let f0 = Chip8Cow.create 7UL |> Chip8Cow.loadRom [| 0x22uy; 0x00uy |]
+    let after16 = [ 1..16 ] |> List.fold (fun f _ -> Chip8Cow.step f) f0
+    Assert.Equal<string option>(None, after16.Fault) // 16 deep: classic budget, healthy
+    Assert.Equal(16, List.length after16.Stack)
+    let after17 = Chip8Cow.step after16
+    Assert.Equal(16, List.length after17.Stack) // the 17th CALL refused — no growth
+    Assert.Contains("overflow", after17.Fault |> Option.defaultValue "")
