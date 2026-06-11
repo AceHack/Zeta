@@ -1,9 +1,12 @@
-# DYNAMICVALUE — the tree drawn as its court form: the treemap (otto, shadow*; the named slice
+# DYNAMICVALUE — the tree drawn as its court form: the treemap (otto, shadow*, 2026-06-11; the named slice
 # from the SoftValue/DynamicValue capture). A DynamicValue is a TREE, not a field — so its court
 # form is STRUCTURE: weights become areas, the slice-and-dice treemap tiles the boundary EXACTLY
 # (no pixel lost, no pixel invented — LayoutEngine's law, the one Kira's round-3 P0 hardened
 # against negative weights). Three children, weights 5:3:2 over a 60-cell court: slices 30/18/12,
 # integer-exact. DRAWN = GATED: the render and the acceptance law call the SAME LayoutEngine.
+# (Render note: tile OUTLINES inset one cell at shared edges so adjacent borders never
+# double-draw — the visible gutters are the inset, not lost pixels; the LAW checks the true
+# contiguous tiling, X+W = next X exactly.)
 meta	name	shape-dynamicvalue
 meta	catalog	shapes
 meta	shape-zetaid	ba175ad86dfff6c94440a5b8c8695470
@@ -26,6 +29,7 @@ prereq	layout-engine	src/Core/LayoutEngine.fs — slice-and-dice (Shneiderman's 
 prereq	the-format	MediaLines IS a DynamicValue-shaped serialization — this cartridge draws what the format carries
 edge	court-form-of	shape-buckyball	rooms-with-areas vs rooms-with-doors: two ways a structure becomes a picture
 edge	soft-overlay	shape-softvalue	any node may carry (value, confidence) — brightness over the tile is the same colorize law, lifted from pixels to tiles (the named follow-up)
+issue	area-read	otto	open	Iris review 2026-06-11: outlined-only tiles read as empty cards; weight numerals / faint fill need the strict-dialect extension (same issue as softvalue in-svg-labels) — one decision for both
 anim	draw	treemap
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	aaron	meaning	ratified	"I saw both — nice, they look good to me" — render-loop ratification of the treemap (5:3:2 tiles read at a glance), 2026-06-11

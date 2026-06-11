@@ -256,6 +256,7 @@ module ShapeRender =
             let wb = constInt "weight-b" 3
             let wc = constInt "weight-c" 2
             let court = constInt "court-cells" 60
+            // treemap(x=2, y=8, w=court, h=16, horizontal) — outlines below inset 1 cell at shared edges (no double-draw); the LAW gates true contiguity
             let tiles = LayoutEngine.treemap 2 8 court 16 true [ "a", wa; "b", wb; "c", wc ]
             tiles
             |> List.mapi (fun i r ->

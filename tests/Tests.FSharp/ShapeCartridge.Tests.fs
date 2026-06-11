@@ -14,7 +14,7 @@ let private repoRoot () =
     dir.FullName
 
 let private doc () =
-    let text = File.ReadAllText(Path.Combine(repoRoot (), "shapes", "cartridges", "spiral.lines"))
+    let text = File.ReadAllText(Path.Combine(repoRoot (), "db", "shapes", "cartridges", "spiral.lines"))
     match MediaLines.parse text with
     | Ok d -> d
     | Error e -> failwith e
@@ -48,7 +48,7 @@ let ``UNFOLDING the cartridge draws the promised spiral: 36 rotor steps, outward
 // ── the CATALOG (every cartridge, one law) ──
 
 let private catalog () =
-    Directory.GetFiles(Path.Combine(repoRoot (), "shapes", "cartridges"), "*.lines")
+    Directory.GetFiles(Path.Combine(repoRoot (), "db", "shapes", "cartridges"), "*.lines")
     |> Array.map (fun f ->
         match MediaLines.parse (File.ReadAllText f) with
         | Ok d -> Path.GetFileNameWithoutExtension f, d

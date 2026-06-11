@@ -194,6 +194,7 @@ module ShapeAcceptance =
             let wb = MediaLines.constIntOr "weight-b" 3 d
             let wc = MediaLines.constIntOr "weight-c" 2 d
             let court = MediaLines.constIntOr "court-cells" 60 d
+            // same call as the renderer: treemap(x=2, y=8, w=court, h=16, horizontal) — drawn = gated
             let tiles = LayoutEngine.treemap 2 8 court 16 true [ "a", wa; "b", wb; "c", wc ]
             let widths = tiles |> List.map (fun r -> r.W)
             let contiguous =

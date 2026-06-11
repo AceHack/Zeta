@@ -15,14 +15,14 @@ let private repoRoot () =
     dir.FullName
 
 let private docOf (name: string) =
-    match MediaLines.parse (File.ReadAllText(Path.Combine(repoRoot (), "shapes", "cartridges", name + ".lines"))) with
+    match MediaLines.parse (File.ReadAllText(Path.Combine(repoRoot (), "db", "shapes", "cartridges", name + ".lines"))) with
     | Ok d -> d
     | Error e -> failwith e
 
 // derived from the directory (test-gap audit #3: the hand list let a 14th cartridge bypass every
 // gate here until someone remembered to add it — now a new cartridge is gated the moment it lands)
 let private shapes =
-    Directory.GetFiles(Path.Combine(repoRoot (), "shapes", "cartridges"), "*.lines")
+    Directory.GetFiles(Path.Combine(repoRoot (), "db", "shapes", "cartridges"), "*.lines")
     |> Array.map Path.GetFileNameWithoutExtension
     |> Array.sort
     |> Array.toList
@@ -55,7 +55,7 @@ let ``a shape with NO known-answer law cannot pass geometry — looks are not a 
 let ``THE GOLDEN LOCK: every committed SVG and HTML golden is byte-identical to the cartridge's regenerated projection`` () =
     for s in shapes do
         let d = docOf s
-        let golden ext = File.ReadAllText(Path.Combine(repoRoot (), "shapes", "golden", s + "." + ext))
+        let golden ext = File.ReadAllText(Path.Combine(repoRoot (), "db", "shapes", "golden", s + "." + ext))
         Assert.Equal<string>(golden "svg", ShapeRender.toSvg d)
         Assert.Equal<string>(golden "html", ShapeRender.toHtml d)
 

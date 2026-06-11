@@ -5,7 +5,7 @@ import QuantumCircuit from "quantum-circuit";
 const currentDir = import.meta.dir;
 // repoRoot: currentDir is src/Core.TypeScript/quantum-observable
 const repoRoot = join(currentDir, "..", "..", "..");
-const goldenDir = join(repoRoot, "shapes", "golden");
+const goldenDir = join(repoRoot, "db", "shapes", "golden");
 
 function writeSvg(filename: string, circuit: QuantumCircuit): void {
   const svg = (circuit as any).exportSVG(false) as string;
