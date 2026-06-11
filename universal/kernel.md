@@ -16,8 +16,8 @@ distances are all the same object*. Rooms, memories, and similarities speak one 
 
 The six closure operations — each provably PSD-preserving (Mercer 1909; the Schur product theorem):
 
-1. `constant c` (c ≥ 0) · 2. `feature φ` / `dot φ` (rank-1 / Gram) · 3. `indicator` (Kronecker) ·
-4. `sum` · 5. `product` (Schur/Hadamard) · 6. `scale c` (c ≥ 0) · plus `pullback g` (re-indexing).
+`constant c` (c ≥ 0); `feature φ` / `dot φ` (rank-1 / Gram); `indicator` (Kronecker); `sum`;
+`product` (Schur/Hadamard); `scale c` (c ≥ 0); plus `pullback g` (re-indexing).
 
 Compositions outside the closure cannot be expressed, so they cannot break PSD — **OCP as a theorem**
 (B-0204). Extension packs (`Pack`/`composePacks`) grow a seed by ADDING kernels, never editing.
