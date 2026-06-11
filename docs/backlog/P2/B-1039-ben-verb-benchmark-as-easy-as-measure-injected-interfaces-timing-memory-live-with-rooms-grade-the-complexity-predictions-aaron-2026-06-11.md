@@ -2,7 +2,7 @@
 id: B-1039
 title: The ben verb — benchmark as easy as measure; timing/memory injected interfaces living with rooms/cartridges; GRADE the ComplexityRegistry's predictions
 priority: P2
-status: open
+status: in-progress
 tier: verification-substrate
 tags: [benchmark, ben, sim-mea-cut, testloop, complexity, prediction, rooms, chip8, di-verbs, hexagonal]
 created: 2026-06-11
@@ -45,3 +45,5 @@ Beacon: BenchmarkDotNet; Hoefler & Belli (SC '15, benchmarking rigor); our Compl
 (the predictions) + Naledi's measure-before-proposing register. First slice: tick-count ben for
 the chip8 emu (exact, no ambient) + ONE dotnet room through a BenchmarkDotNet-backed adapter +
 the n/2n/4n grader over three registry rows.
+
+## Progress (slice 1, 2026-06-11): Ben.fs SHIPS — the exact chip8 tick meter (Steps/MemEntries/DisplayLit/Extra/StackDepth/Faulted, deterministic) + the GRADER (infer doubling-ratio growth class; grade = Confirmed/Tighter/Violated). Two REAL predictions graded CONFIRMED with exact cost proxies (treemap tiles = O(children); IBLT build work = n·k via the table's own count sum); falsifiers prove Violated/Tighter/refusal. Dogfooded through ITestLoop. Remaining: dotnet wall/alloc meters behind the boundary + red light; BenchmarkDotNet senior adapter; the cartridge `ben` line kind + gate refusal.

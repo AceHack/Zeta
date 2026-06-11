@@ -95,6 +95,7 @@ module GeneratorRegistry =
           register "shape.softvalue" 1
           register "shape.dynamicvalue" 1
           register "shape.triboolean" 1
+          register "test.ben" 1
           register "binding.html-css" 1
           register "sim.wave-interference" 1
           register "viz.adinkra" 1
