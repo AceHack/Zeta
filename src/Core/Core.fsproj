@@ -222,6 +222,7 @@
     <Compile Include="Chip8Citizen.fs" />
     <Compile Include="SwarmBoard.fs" />
     <Compile Include="SwarmBoardAnsi.fs" />
+    <Compile Include="ZetaMax.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
