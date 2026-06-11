@@ -43,3 +43,31 @@ let ``TESSELLATION is progressive: the SAME stored curve renders at 8x8 and 16x1
     // determinism at both levels (the render is a pure function of stored text + grid)
     Assert.Equal<Set<int * int>>(coarse, B.sampleGrid 2.0 0.5 8 8 2 spine)
     Assert.Equal<Set<int * int>>(fine, B.sampleGrid 2.0 0.5 16 16 1 spine)
+
+// ── middle-out progressive: the render's own triboolean ──
+
+[<Fact>]
+let ``MIDDLE-OUT: the center cells resolve first; the periphery stays honestly Unknown`` () =
+    let r = B.sampleProgressive B.MiddleOut 4 2.0 0.5 8 8 2 spine
+    Assert.Equal(64, r.Count) // every cell accounted for
+    let unknowns = r |> Map.filter (fun _ v -> v = B.Unknown) |> Map.count
+    Assert.Equal(60, unknowns) // exactly budget cells sampled
+    // the four sampled cells are the centermost ones
+    Assert.True(r.[(3, 3)] <> B.Unknown && r.[(4, 3)] <> B.Unknown && r.[(3, 4)] <> B.Unknown && r.[(4, 4)] <> B.Unknown)
+    Assert.Equal(B.Unknown, r.[(0, 0)]) // the corner waits its turn
+
+[<Fact>]
+let ``full budget = the complete render: Unknown vanishes and matches sampleGrid exactly`` () =
+    let prog = B.sampleProgressive B.MiddleOut 64 2.0 0.5 8 8 2 spine
+    Assert.True(prog |> Map.forall (fun _ v -> v <> B.Unknown)) // uncertainty fully reduced
+    let lit = prog |> Map.filter (fun _ v -> v = B.Lit) |> Map.toList |> List.map fst |> Set.ofList
+    Assert.Equal<Set<int * int>>(B.sampleGrid 2.0 0.5 8 8 2 spine, lit) // same answer, any order
+
+[<Fact>]
+let ``the order options agree on the ANSWER and differ only in which uncertainty falls first`` () =
+    let mo = B.sampleProgressive B.MiddleOut 64 2.0 0.5 8 8 2 spine
+    let sl = B.sampleProgressive B.Scanline 64 2.0 0.5 8 8 2 spine
+    Assert.Equal<Map<int * int, B.Tri>>(mo, sl) // complete renders identical
+    let moFirst = B.visitOrder B.MiddleOut 8 8 |> List.head
+    let slFirst = B.visitOrder B.Scanline 8 8 |> List.head
+    Assert.NotEqual(moFirst, slFirst) // but the journeys differ (center vs corner)

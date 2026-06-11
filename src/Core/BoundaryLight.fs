@@ -90,3 +90,65 @@ module BoundaryLight =
                       // sample at the cell center in curve space
                       let q = p (gx * s + s / 2) (gy * s + s / 2)
                       if glow sigma c q >= threshold then yield gx, gy ]
+
+    // ── progressive rendering, middle-out (Aaron 2026-06-11: "we should try middle-out, like our
+    // triboolean and triboolean-float kind of thinking — up to you, maybe different options").
+    // The triboolean IS the progressive cell: Lit | Unlit | UNKNOWN-YET — a render in flight is
+    // honest about what it has not sampled (bounded uncertainty per pixel; no cell claimed before
+    // measured). The ORDER options decide which uncertainty falls first; middle-out is the default
+    // (the center of attention resolves before the periphery — how eyes meet a face). ──
+
+    /// The three-valued progressive cell (the render's own triboolean).
+    type Tri =
+        | Lit
+        | Unlit
+        | Unknown
+
+    /// The refinement-order options ("maybe we should have different options" — chosen: two now,
+    /// the enum open for more).
+    type Order =
+        | MiddleOut // by distance from the grid center: attention-first
+        | Scanline // top-left to bottom-right: the classic raster
+
+    /// The cell visit order for a (w×h) grid under an Order — deterministic, total.
+    let visitOrder (order: Order) (w: int) (h: int) : (int * int) list =
+        let all = [ for gy in 0 .. h - 1 do for gx in 0 .. w - 1 -> gx, gy ]
+
+        match order with
+        | Scanline -> all
+        | MiddleOut ->
+            let cx, cy = (w - 1) * 1000 / 2, (h - 1) * 1000 / 2 // milli-cells: exact center, no floats
+            all
+            |> List.sortBy (fun (gx, gy) ->
+                let dx, dy = gx * 1000 - cx, gy * 1000 - cy
+                dx * dx + dy * dy, gy, gx) // distance, then row, then col: total and deterministic
+
+    /// Sample the first `budget` cells in the chosen order; everything else is HONESTLY Unknown.
+    /// budget >= w*h gives the complete render (Unknown vanishes — uncertainty fully reduced).
+    let sampleProgressive
+        (order: Order)
+        (budget: int)
+        (sigma: float)
+        (threshold: float)
+        (w: int)
+        (h: int)
+        (scale: int)
+        (c: Curve)
+        : Map<int * int, Tri> =
+        let s = max 1 scale
+        let visits = visitOrder order w h
+        let sampled = visits |> List.truncate (max 0 budget) |> Set.ofList
+
+        visits
+        |> List.map (fun (gx, gy) ->
+            let cell = gx, gy
+
+            let v =
+                if Set.contains cell sampled then
+                    let q = p (gx * s + s / 2) (gy * s + s / 2)
+                    if glow sigma c q >= threshold then Lit else Unlit
+                else
+                    Unknown
+
+            cell, v)
+        |> Map.ofList
