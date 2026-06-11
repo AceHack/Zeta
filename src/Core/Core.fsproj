@@ -281,6 +281,7 @@
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
     <Compile Include="AdinkraViz.fs" />
+    <Compile Include="LayoutEngine.fs" />
     <Compile Include="ShapeRender.fs" />
     <Compile Include="ShapeAcceptance.fs" />
     <Compile Include="PhysUI.fs" />
@@ -290,7 +291,6 @@
     <Compile Include="ChipAudio.fs" />
     <Compile Include="StrokeAnim.fs" />
     <Compile Include="IndexFormat.fs" />
-    <Compile Include="LayoutEngine.fs" />
     <Compile Include="ComplexityRegistry.fs" />
     <Compile Include="FluxView.fs" />
     <Compile Include="MagneticPorts.fs" />

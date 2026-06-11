@@ -101,6 +101,8 @@ module ComplexityRegistry =
               ("sketch.iblt", "build"), c "O(n·k)" "O(cells)" Derived // n keys, k buckets each; cells sized to the DIFFERENCE, not the set
               ("sketch.iblt", "reconcile"), c "O(|Δ|·k)" "O(cells)" Derived // subtract is O(cells); peeling touches each difference key k times — the whole point
               ("test.loop", "run"), c "O(2·sim+mea + cut)" "O(world)" Derived // the double-run determinism check is the 2x — the boundary, priced honestly
+              ("shape.softvalue", "draw"), c "O(rungs·bar)" "O(rungs)" Derived // three panels, two bars each at most; the dashed tail is the uncertainty, not extra cost
+              ("shape.dynamicvalue", "draw"), c "O(children)" "O(children)" Derived // one treemap pass + one rectangle per child
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived

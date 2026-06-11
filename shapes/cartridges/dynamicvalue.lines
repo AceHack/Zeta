@@ -1,0 +1,32 @@
+# DYNAMICVALUE — the tree drawn as its court form: the treemap (otto, shadow*; the named slice
+# from the SoftValue/DynamicValue capture). A DynamicValue is a TREE, not a field — so its court
+# form is STRUCTURE: weights become areas, the slice-and-dice treemap tiles the boundary EXACTLY
+# (no pixel lost, no pixel invented — LayoutEngine's law, the one Kira's round-3 P0 hardened
+# against negative weights). Three children, weights 5:3:2 over a 60-cell court: slices 30/18/12,
+# integer-exact. DRAWN = GATED: the render and the acceptance law call the SAME LayoutEngine.
+meta	name	shape-dynamicvalue
+meta	catalog	shapes
+meta	shape-zetaid	ba175ad86dfff6c94440a5b8c8695470
+gen	treemap	ba175ad86dfff6c94440a5b8c8695470	1	7	children:3;weights:5,3,2
+constant	weight-a	5	first child's weight	the biggest slice — half the tree's mass
+constant	weight-b	3	second child's weight	with 5 and 2: three DISTINCT slice widths, so a swapped tile is visible at a glance
+constant	weight-c	2	third child's weight	the smallest — still wide enough to read on the court
+constant	total-weight	10	the tree's mass	5 + 3 + 2 — the in-file law checks the sum
+constant	court-cells	60	the boundary being tiled	divides by total-weight exactly: every slice is integer, the tiling law has no remainder to hide
+constant	slice-a	30	child a's tile width	5 * 60 / 10 — in-file law below
+constant	slice-b	18	child b's tile width	3 * 60 / 10
+constant	slice-c	12	child c's tile width	2 * 60 / 10
+law	mass	weight-a + weight-b + weight-c = total-weight
+law	tile-a	weight-a * court-cells = slice-a * total-weight
+law	tile-b	weight-b * court-cells = slice-b * total-weight
+law	tile-c	weight-c * court-cells = slice-c * total-weight
+law	conservation	slice-a + slice-b + slice-c = court-cells
+law	engine	code:shape-dynamicvalue geometry (LayoutEngine.treemap tiles the boundary EXACTLY — same call the renderer draws; area conservation run live)
+prereq	layout-engine	src/Core/LayoutEngine.fs — slice-and-dice (Shneiderman's treemap lineage); exact-integer remainders pushed left-to-right
+prereq	the-format	MediaLines IS a DynamicValue-shaped serialization — this cartridge draws what the format carries
+edge	court-form-of	shape-buckyball	rooms-with-areas vs rooms-with-doors: two ways a structure becomes a picture
+edge	soft-overlay	shape-softvalue	any node may carry (value, confidence) — brightness over the tile is the same colorize law, lifted from pixels to tiles (the named follow-up)
+anim	draw	treemap
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	five in-file integer laws hold; the engine law runs the SAME treemap call the renderer draws — tests green
+treaty	otto	meaning	ratified	a tree you can read as floor space, no pixel lost or invented — my own frame, my own choice

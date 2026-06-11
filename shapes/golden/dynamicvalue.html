@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>shape-dynamicvalue</title>
+  <style>
+    :root {
+      --c0: #000000;
+      --c1: #d62828;
+      --c2: #2a9d2a;
+      --c3: #d6c828;
+      --c4: #2828d6;
+      --c5: #d628d6;
+      --c6: #28c8d6;
+      --c7: #f0f0f0;
+    }
+    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
+    svg { width: min(96vw, 960px); image-rendering: pixelated; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { to { opacity: 1; } }
+    polyline:hover { stroke-width: 7; filter: brightness(1.6); }
+    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }
+    #tile-a { stroke-dasharray: 880; stroke-dashoffset: 880; animation: draw 600ms linear 0ms forwards; }
+    #tile-b { stroke-dasharray: 640; stroke-dashoffset: 640; animation: draw 600ms linear 180ms forwards; }
+    #tile-c { stroke-dasharray: 520; stroke-dashoffset: 520; animation: draw 600ms linear 360ms forwards; }
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" data-cartridge="shape-dynamicvalue">
+  <polyline id="tile-a" fill="none" stroke="#d62828" stroke-width="4" points="25,85 315,85 315,235 25,235 25,85" />
+  <polyline id="tile-b" fill="none" stroke="#2a9d2a" stroke-width="4" points="325,85 495,85 495,235 325,235 325,85" />
+  <polyline id="tile-c" fill="none" stroke="#2828d6" stroke-width="4" points="505,85 615,85 615,235 505,235 505,85" />
+</svg>
+</body>
+</html>

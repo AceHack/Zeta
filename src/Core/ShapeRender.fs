@@ -227,6 +227,42 @@ module ShapeRender =
                       { Dash = false; Name = name + "-r1"; Mask = mask; Points = [ (ax + (bx - ax) * 3 / 5, ay + (by - ay) * 3 / 5); p1 ] } ]
             diag xL top xR bot (not overLeft) "strand-0" 1uy
             @ diag xR top xL bot overLeft "strand-1" 4uy
+        | "shape-softvalue" ->
+            // the ladder: three panels, one value. A value bar per rung; a confidence bar where
+            // the rung HAS a channel (rung 1 = none — absent, not zero); the dashed tail is the
+            // uncertainty the rung admits. Coarse (rung 2) is visibly shorter than fine (rung 3).
+            let barCells = constInt "bar-cells" 40
+            let valueLen = constInt "value-len" 28
+            let confLen = constInt "conf-len" 34
+            let levels = constInt "rung2-levels" 4
+            let quantized = constInt "rung2-quantized" 3
+            let coarseLen = quantized * barCells / levels
+            let x0 = 8
+            let bar (name: string) (y: int) (len: int) (mask: byte) (dash: bool) =
+                { Dash = dash; Name = name; Mask = mask; Points = [ pt x0 y; pt (x0 + len) y ] }
+            [ // rung 1 — CHIP-8 mono: the value ONLY (no confidence bar exists at this rung)
+              bar "r1-value" 5 valueLen 1uy false
+              // rung 2 — CHIP-9 planes: value + COARSE confidence (solid to the quantized level, dashed tail = uncertainty)
+              bar "r2-value" 13 valueLen 2uy false
+              bar "r2-conf" 15 coarseLen 2uy false
+              { Dash = true; Name = "r2-uncertainty"; Mask = 2uy; Points = [ pt (x0 + coarseLen) 15; pt (x0 + barCells) 15 ] }
+              // rung 3 — deep pixel: value + FINE confidence + its (smaller) dashed tail
+              bar "r3-value" 23 valueLen 6uy false
+              bar "r3-conf" 25 confLen 6uy false
+              { Dash = true; Name = "r3-uncertainty"; Mask = 6uy; Points = [ pt (x0 + confLen) 25; pt (x0 + barCells) 25 ] } ]
+        | "shape-dynamicvalue" ->
+            // DRAWN = GATED: the same LayoutEngine.treemap call the acceptance law verifies.
+            let wa = constInt "weight-a" 5
+            let wb = constInt "weight-b" 3
+            let wc = constInt "weight-c" 2
+            let court = constInt "court-cells" 60
+            let tiles = LayoutEngine.treemap 2 8 court 16 true [ "a", wa; "b", wb; "c", wc ]
+            tiles
+            |> List.mapi (fun i r ->
+                { Dash = false
+                  Name = sprintf "tile-%s" r.Name
+                  Mask = byte (1 <<< i)
+                  Points = [ pt r.X r.Y; pt (r.X + r.W - 1) r.Y; pt (r.X + r.W - 1) (r.Y + r.H - 1); pt r.X (r.Y + r.H - 1); pt r.X r.Y ] })
         | "shape-kitaev-chain" ->
             // two panels of the same chain: TOP = trivial (intra-site pairing — tidy, unprotected),
             // BOTTOM = topological (inter-site pairing — two END MODES left unpaired: the memory,

@@ -1,0 +1,33 @@
+# SOFTVALUE — one value at three rungs: the display ladder drawn (otto, shadow*; the named slice
+# from the SoftValue court-ladder capture, B-1032 era). The SAME value travels down three panels:
+# RUNG 1 (CHIP-8 mono): the VALUE only — confidence has NO channel, so its bar is ABSENT (the
+#   zero case is structural: a mono consumer cannot even know what it is missing).
+# RUNG 2 (CHIP-9 planes): value + confidence QUANTIZED to the plane budget (4 levels) — the
+#   coarse bar is visibly SHORTER than the truth (850 milli -> level 3 of 4 -> 30 of 40 cells).
+# RUNG 3 (deep pixel): the full pair at milli resolution (850 -> 34 of 40 cells) — PixelLens's
+#   32-bit cell carries exactly this; colorize is the honest projection back up the ladder.
+# The dashed tail on each confidence bar IS the uncertainty (what the rung admits it cannot
+# claim). Capability upgrades buy channels; what a rung cannot carry it must not claim.
+meta	name	shape-softvalue
+meta	catalog	shapes
+meta	shape-zetaid	14503a27553efb16dbde7ee3da7d8887
+gen	ladder	14503a27553efb16dbde7ee3da7d8887	1	7	rungs:3;bar-cells:40
+constant	value-milli	700	the value, milli-scale (0..1000)	one value for all three rungs — the ladder's whole lesson is that the VALUE never changes, only what travels WITH it
+constant	confidence-milli	850	how sure the soft side is, milli-scale	chosen so fine and coarse bars visibly DIFFER (850 -> 34 fine vs 30 quantized): the resolution loss is the picture
+constant	bar-cells	40	bar width budget in court cells	divides 1000 cleanly for value (700) and confidence (850) — exact integer bars, no rounding lies
+constant	value-len	28	the value bar's length in cells	700 * 40 / 1000 exactly — the in-file law below checks it
+constant	conf-len	34	the FINE confidence bar (rung 3)	850 * 40 / 1000 exactly
+constant	rung2-levels	4	CHIP-9's coarse confidence budget	~2 bits is what 3 planes leave after the value takes one — honest about how little it is
+constant	rung2-quantized	3	confidence at rung-2 resolution (of 4)	floor(850 * 4 / 1000) = 3 — the code law checks the floor; the bar shows 30 of 40
+law	value-bar	value-milli * bar-cells = value-len * 1000
+law	conf-bar	confidence-milli * bar-cells = conf-len * 1000
+law	quantize	code:shape-softvalue geometry (floor(confidence-milli * rung2-levels / 1000) = rung2-quantized)
+law	colorize	code:shape-softvalue geometry (PixelLens: a confident cell keeps its color; an uncertain one collapses to mono — the ladder's projection, run live)
+prereq	pixel-lens	src/Core/PixelLens.fs — the 32-bit deep cell this ladder projects from (color 3b + payload 13b + uncertainty 16b)
+prereq	the-zero-case	rung 1 first: see what mono CANNOT say before admiring what deep pixels can
+edge	projection-of	shape-adinkra	both draw a register the base display cannot carry (signs there, confidence here) — capability upgrades as visible channels
+edge	ladder-code	viz.adinkra	(see PixelLens.colorize and softRead — the rungs in code; this cartridge is their picture)
+anim	draw	ladder
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	both in-file bar laws are exact integer identities; quantize + colorize run live in the gate — tests green
+treaty	otto	meaning	ratified	the same value three times, each rung admitting exactly what it cannot carry — my own frame, my own choice

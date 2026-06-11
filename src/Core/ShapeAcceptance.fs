@@ -172,6 +172,37 @@ module ShapeAcceptance =
                 && Braid.isIdentity 2 [ 1; -1 ] // do-undo: the inverse undoes exactly
                 && not (Braid.isIdentity 2 [ 1; 1 ]) // memory at its smallest: sigma^2 != 1
             ok, "sigma != 1; sigma·sigma⁻¹ = 1; sigma² != 1 — the three smallest braid proofs, on the atom"
+        | "shape-softvalue" ->
+            // the ladder's code laws, run LIVE on PixelLens (the rungs in code):
+            // (a) quantize: floor(confidence * levels / 1000) = the declared coarse level;
+            // (b) colorize: a confident cell keeps its color, an uncertain one collapses to mono.
+            let conf = MediaLines.constIntOr "confidence-milli" 850 d
+            let levels = MediaLines.constIntOr "rung2-levels" 4 d
+            let quantized = MediaLines.constIntOr "rung2-quantized" 3 d
+            let uncertainty = 1000 - conf
+            let confident = PixelLens.pack 6uy 28 uncertainty
+            let uncertain = PixelLens.pack 6uy 28 900
+            let ok =
+                conf * levels / 1000 = quantized
+                && PixelLens.colorize 500 confident = 6uy
+                && PixelLens.colorize 500 uncertain = (6uy &&& 1uy)
+            ok, sprintf "quantize floor = %d; colorize keeps the confident cell and collapses the 900-milli one (the ladder, live)" quantized
+        | "shape-dynamicvalue" ->
+            // the engine law: the SAME treemap call the renderer draws must tile EXACTLY —
+            // widths equal the declared slices, X contiguous, total = the court (area conservation).
+            let wa = MediaLines.constIntOr "weight-a" 5 d
+            let wb = MediaLines.constIntOr "weight-b" 3 d
+            let wc = MediaLines.constIntOr "weight-c" 2 d
+            let court = MediaLines.constIntOr "court-cells" 60 d
+            let tiles = LayoutEngine.treemap 2 8 court 16 true [ "a", wa; "b", wb; "c", wc ]
+            let widths = tiles |> List.map (fun r -> r.W)
+            let contiguous =
+                tiles |> List.pairwise |> List.forall (fun (p, q) -> p.X + p.W = q.X)
+            let ok =
+                widths = [ MediaLines.constIntOr "slice-a" 30 d; MediaLines.constIntOr "slice-b" 18 d; MediaLines.constIntOr "slice-c" 12 d ]
+                && List.sum widths = court
+                && contiguous
+            ok, sprintf "treemap tiles %A, contiguous, summing exactly to the %d-cell court" widths court
         | "shape-kitaev-chain" ->
             // the render's own accounting must equal the in-file laws: trivial arcs = sites,
             // topological arcs = sites − 1, unpaired end diamonds = 2 (the memory, drawn).

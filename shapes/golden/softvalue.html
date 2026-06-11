@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>shape-softvalue</title>
+  <style>
+    :root {
+      --c0: #000000;
+      --c1: #d62828;
+      --c2: #2a9d2a;
+      --c3: #d6c828;
+      --c4: #2828d6;
+      --c5: #d628d6;
+      --c6: #28c8d6;
+      --c7: #f0f0f0;
+    }
+    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
+    svg { width: min(96vw, 960px); image-rendering: pixelated; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { to { opacity: 1; } }
+    polyline:hover { stroke-width: 7; filter: brightness(1.6); }
+    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }
+    #r1-value { stroke-dasharray: 280; stroke-dashoffset: 280; animation: draw 600ms linear 0ms forwards; }
+    #r2-value { stroke-dasharray: 280; stroke-dashoffset: 280; animation: draw 600ms linear 180ms forwards; }
+    #r2-conf { stroke-dasharray: 300; stroke-dashoffset: 300; animation: draw 600ms linear 360ms forwards; }
+    #r2-uncertainty { opacity: 0; animation: appear 400ms linear 540ms forwards; }
+    #r3-value { stroke-dasharray: 280; stroke-dashoffset: 280; animation: draw 600ms linear 720ms forwards; }
+    #r3-conf { stroke-dasharray: 340; stroke-dashoffset: 340; animation: draw 600ms linear 900ms forwards; }
+    #r3-uncertainty { opacity: 0; animation: appear 400ms linear 1080ms forwards; }
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" data-cartridge="shape-softvalue">
+  <polyline id="r1-value" fill="none" stroke="#d62828" stroke-width="4" points="85,55 365,55" />
+  <polyline id="r2-value" fill="none" stroke="#2a9d2a" stroke-width="4" points="85,135 365,135" />
+  <polyline id="r2-conf" fill="none" stroke="#2a9d2a" stroke-width="4" points="85,155 385,155" />
+  <polyline id="r2-uncertainty" fill="none" stroke="#2a9d2a" stroke-width="4" stroke-dasharray="8 6" points="385,155 485,155" />
+  <polyline id="r3-value" fill="none" stroke="#28c8d6" stroke-width="4" points="85,235 365,235" />
+  <polyline id="r3-conf" fill="none" stroke="#28c8d6" stroke-width="4" points="85,255 425,255" />
+  <polyline id="r3-uncertainty" fill="none" stroke="#28c8d6" stroke-width="4" stroke-dasharray="8 6" points="425,255 485,255" />
+</svg>
+</body>
+</html>
