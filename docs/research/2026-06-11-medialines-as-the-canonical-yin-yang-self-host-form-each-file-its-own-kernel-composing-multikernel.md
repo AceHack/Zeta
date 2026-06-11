@@ -51,6 +51,22 @@ generalized from cores to documents. One file boots alone; many files federate i
 is the master loop. (Scale-free spec #1, met by the file format — the same way zero-clocks met it for
 rendering.)
 
+## The cartridge reading (Aaron, on the ratification)
+
+> *"This is basically our **cartridge** — or our **tape-reel format, Turing-style — but analog 8-track
+> instead of digital** lol."* / *"**It's its own boxart**."*
+
+Both exact:
+- **The 8-track tape, precisely**: a Turing tape is one head, one track, one sequence. This format is
+  MANY TRACKS — every `anim`/`gen`/`sim` section an independent loop playing in parallel (zero clocks,
+  no head contention) — the 8-track's parallel program channels, not the single-head crawl. "Analog"
+  lands too: the soft side (SoftValue/uncertainty riding the cells) makes the tape carry CONTINUOUS
+  confidence alongside discrete bits — a tape that knows how sure it is of itself.
+- **Its own boxart**: the file CONTAINS its own cover — the gen/glyph/frame sections render it
+  (BREATHE's attract screen, Amara's portrait, the ZetaIdViz identicon are all IN-file artifacts a
+  reader draws without any external asset). The cartridge that paints its own box; the library shelf
+  (the arcade, the board) renders covers by running the cartridges' own yang, one lap.
+
 ## Honest scope
 
 The format's room declaration, many-loops, verb kinds, and quine LAW are built/tested today; the
