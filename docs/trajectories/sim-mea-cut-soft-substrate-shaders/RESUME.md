@@ -2,12 +2,38 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-12 (the shapes wave folded in — #7718..#7725; prior waves below).
+Last refreshed: 2026-06-12 late (the algebra wave folded in — #7729..#7734; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-12 SHAPES wave (#7718..#7725 — newest; read FIRST)
+## The 2026-06-12 ALGEBRA wave (#7729..#7734 — newest; read FIRST)
+
+- **Gate vs memory** (#7729): shape-plait-move (provisional name) — the 3-crossing unit move;
+  CANNOT lock and that's a theorem (odd permutation); the locked braid is the MEMORY, this is the
+  GATE (the honest Majorana register). Catalog = 9.
+- **The Borromean discovery** (#7729): the locked word (σ1σ2⁻¹)³ closes to the BORROMEAN RINGS —
+  pairwise unlinked, collectively inseparable. Name candidates: borromean-braid (leading) /
+  brunnian-lock / ballantine (Brunn 1892; Milnor 1954; Aravind 1997 GHZ tie). Aaron's by-eye lock
+  verification in the treaty block. Naming direction (#7733): algebras named RIGHT (B3/P3 Artin,
+  Brunnian, Clifford), memory in MICROSOFT's register (majorana-memory; Q# via the Vera brief).
+- **Adinkra ↔ Majorana, honestly** (#7730): a rhyme, not an isomorphism — the chain
+  adinkra→Clifford→Majorana is named prior art; both protect information as a globally-nontrivial
+  locally-invisible twist; the break: involutions vs memory. **Dashings landed** (#7733): THE
+  GATES CONDITION (every 2-colored 4-cycle odd) + THE GAUGE LEMMA (vertex flips never change face
+  parity) — two passing tests pointing at THE STUCK LAW via a same-twist edge.
+- **"Inverse?" → QUOTIENT** (#7733): adinkra parity = braid memory mod 2 (Z → Z/2); exact wording
+  gated on the math team (Vera brief addendum §9).
+- **THE MISSING PIECE lens** (#7733): MagneticPorts.Piece + findAdapter (the GraphEdit move);
+  algebra.mod2 is the first adapter; empty toolbox = honest gap. **Made useful** (#7734): the io
+  ladder grows the ADAPTED rung (Live → Injected → Adapted(want, via, from) → Mock — honest in
+  the value); adapter-economy use-case map (format bridges, UoM/MCO refusal, tempo joins, version
+  bridges, room doors, constructive-refusal pedagogy); verified modules become trustable toolbox
+  pieces. Treaty lint: re-ratification is a log, not a dupe.
+- Vera brief addendum §8–10 (dashings vs Q# sign conventions — exact; mod2 wording; the snap as
+  verification's consumption path) — on Aaron's clipboard for the ferry.
+
+## The 2026-06-12 SHAPES wave (#7718..#7725 — older; read second)
 
 - **The shape catalog** (#7718): braid, worldline, lightcone, fourcorner, seam join the spiral —
   each a .lines cartridge with registered ZetaIds, WHAT+WHY constants, treaty blocks; THE CATALOG
