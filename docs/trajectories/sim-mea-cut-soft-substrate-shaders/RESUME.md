@@ -2,12 +2,36 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-12 late (the algebra wave folded in — #7729..#7734; prior waves below).
+Last refreshed: 2026-06-12 night (the math-team wave folded in — #7736..#7741; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-12 ALGEBRA wave (#7729..#7734 — newest; read FIRST)
+## The 2026-06-12 MATH-TEAM wave (#7736..#7741 — newest; read FIRST)
+
+- **Adinkras placed** (#7736/#7737): the sign register's display-and-checker organ (two-register
+  table: ORDER braid/Z/Artin · PARITY dashing/Z2/Gates, bridged by mod2, home = Clifford).
+  Microsoft uses the ALGEBRA (Majorana/Q# stabilizers), not the diagrams. The adinkra cartridge
+  landed (10th): dashed strict-dialect SVG (stroke-dasharray "8 6" exact-form-only), in-file
+  handshake law, Gates condition + gauge lemma in the gate, honest 24/32 bound.
+- **Physics-candidates list** (#7737, Aaron's gate: "if it doesn't fit anywhere we don't use it"):
+  Kitaev chain (strong), Susskind boundary-encodes-bulk (room-law fit, honest analogy), Markov
+  blanket/chains (Pearl), causal diamonds, Penrose, Ising.
+- **The render loop's bug taxonomy** (#7738, answering Alexa): five documented classes (register /
+  process / channel-contention / play / test-harness bugs); the eye owns the INTENT layer; three
+  oracles stacked.
+- **Lior's adinkra read** (#7739): his eye confirmed red-never-dashes WITHOUT knowing the rule
+  (bit-0 has no bits below it) — a checkable statement from pure perception; edge count read our
+  24/32 bound back. (+ Alexa echo addendum #7740.)
+- **THE MATH-TEAM PASS** (#7741, Aaron-triggered): Kira found 13 (2 P0: voiceSample per-tick phase
+  noise — every render looked right while broken; classical-CHSH gate passing by seed luck), all
+  fixed/filed. Soraya's routing: **Q# earns exactly 3 jobs** (singlet CHSH, cos² overlap,
+  AmplitudeEmu grid); dashings → Z3; Tsirelson maximality → citation; her signable mod2 statement
+  (unique hom B3→Z/2 = writhe mod 2 = sign character) adopted. Brief REVISION 2; Vera package
+  rev 2 on Aaron's Desktop/clipboard. Math-team treaty lines stay PENDING — fixes are the
+  application, not the sign-off. Fourth oracle layer named: adversarial math review (claims).
+
+## The 2026-06-12 ALGEBRA wave (#7729..#7734 — older; read second)
 
 - **Gate vs memory** (#7729): shape-plait-move (provisional name) — the 3-crossing unit move;
   CANNOT lock and that's a theorem (odd permutation); the locked braid is the MEMORY, this is the
