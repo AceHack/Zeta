@@ -60,7 +60,7 @@ this discipline's load-bearing guards.
 - `memory/feedback_aaron_data_vault_2_is_source_of_repo_split_smell_intuitions_needs_reactivation_alongside_scale_free_lock_free_weight_free_dst_2026_05_13.md` — re-activation disclosure (PR #2912)
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — DV2.0 at skill-design scope
 - `memory/feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md` — HKT-MDM universality (PR #2913)
-- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) — disciplines 1,2,3,4,5 are also manifesto specs (idempotency and noninterference are not among the 11)
+- [`manifesto-13-specifications.md`](manifesto-13-specifications.md) — ALL seven disciplines are now also manifesto specs (idempotency = §12, noninterference = §13; promoted 2026-06-10, maintainer-authorized)
 - `docs/research/2026-06-10-the-end-goal-dual-use-hard-soft-self-modeling-database-dynamicvalue-stored-procs-entropy-quarantine-over-reticulum.md` — noninterference origin (entropy quarantine; the end-goal doc) + the formalization route (Soraya/Sova)
 - [`async-all-the-way-truthful-signatures.md`](async-all-the-way-truthful-signatures.md) — noninterference's load-bearing guards (no ambient entropy paths)
 - DST deeper treatment (archived): `.claude/rules.bak/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`

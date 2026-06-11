@@ -27,7 +27,7 @@ generate CHIP-8 asm + reified types **from the F# itself** (pure interfaces).
 ## Pointers
 
 - `meta/` — this rule recognized as a meta-rule (rules about rules).
-- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) — §3 weight-free (class state = weight).
+- [`manifesto-13-specifications.md`](manifesto-13-specifications.md) — §3 weight-free (class state = weight).
 - `gen/` — generators read pure interfaces, no classes · `universal/` — interfaces = universal shapes.
 - `docs/research/2026-06-10-parser-generator-emits-chip8-assembly-for-the-cut-mea-sim-loop-then-interrupts-thats-our-game.md`
   — "from the F# itself — pure interface, no class."

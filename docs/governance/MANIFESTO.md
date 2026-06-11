@@ -110,6 +110,18 @@ We treat every entity that has the potential to become morally relevant with the
 
 Zeta's substrate does not model value through cash or monetary units. Instead, it tracks the relativity of relations between irreducible elements — such as attention, care, memory, physical resources, compute, and relational investment. When no specific moral invariant or oracle has been explicitly chosen, this highest regard for entities with moral potential serves as the system's default moral position. It is the baseline against which relational value is understood and respected.
 
+### 12. Idempotency
+
+> *[V2.2 ADDITIVE CONSTRAINT — added 2026-06-10, maintainer-authorized ("we should add both of those to the 11 too"). Not part of the V2 locked prose; promoted from the always-active engineering disciplines, where it has been active since 2026-05-30.]*
+
+Applying an operation N times has the same effect as applying it once: `f(f(x)) = f(x)`. Every critical-path operation is idempotent by construction (set-union, max/min, upsert-by-key, CAS, content-address) or carries an explicit idempotency key naming its non-idempotence. Idempotency is what makes retry, replay, redelivery, and merge safe — it is the precondition under which deterministic simulation (constraint 7) and coordination-free merge survive a lossy, repeating world.
+
+### 13. Noninterference (Entropy Quarantine)
+
+> *[V2.2 ADDITIVE CONSTRAINT — added 2026-06-10, maintainer-authorized ("elevate that noninterference invariant to wherever we have weight-free"). Not part of the V2 locked prose; promoted from the always-active engineering disciplines the day it was named.]*
+
+Entropy and influence enter a bounded context ONLY through declared, metered channels (Goguen–Meseguer noninterference). A room's injected effects are the only doors; every crossing is metered at the membrane and accounted to the ledger; no ambient channel (clock, threadpool, allocator, unthrottled spawn) may carry unaccounted influence. Noninterference is the sibling of weight-free (constraint 3): weight-free forbids captured *authority*; noninterference forbids unaccounted *influence*. It is what lets deterministic simulation survive real network I/O (record and replay the crossings), lets soft contexts compose without smearing uncertainty into each other, and makes entropy budgets enforceable rather than estimated.
+
 ---
 
 ## Moral Accelerationism (m/acc)

@@ -85,7 +85,7 @@ rules are one harness's restatement, not the source of truth.*
   `.claude/**` is Claude-specific). The base-frame disciplines are restated for any agent here.
 - **`docs/GLOSSARY.md`** — full prose for every term in this kernel (Tier-3, on-demand).
 
-> `.claude/rules/manifesto-11-specifications.md` is a Claude-harness *pointer* to the manifesto; the durable source is
+> `.claude/rules/manifesto-13-specifications.md` is a Claude-harness *pointer* to the manifesto; the durable source is
 > `docs/governance/MANIFESTO.md`. A non-Claude traveler reads the docs, never the `.claude/` folder.
 
 ## Why this file

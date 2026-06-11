@@ -50,7 +50,7 @@ thread.
 
 ## Pointers
 
-- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) §1 scale-free, §2 lock/wait-free, §7 DST
+- [`manifesto-13-specifications.md`](manifesto-13-specifications.md) §1 scale-free, §2 lock/wait-free, §7 DST
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — #1 scale-free, #2 lock/wait-free, #4 DST
 - [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — why the anchors above are load-bearing
 - B-0969 — `ConfigureAwait(false)` cross-cutting default
