@@ -175,20 +175,44 @@ feedback**"* — and `AmplitudeEmu.fs` (complex amplitudes / e^{iθ} phasor → 
 the oscillation needs. The plateau = the resonant floor the coupled oscillator settles to (= the BigFloat
 resolution floor).
 
-**Honest status / "what did we call it?" (Aaron asked; grep 2026-06-10):** the **bidirectional
-`<TIn, TOut, TInFeedback, TOutFeedback>` four-corner harmonic primitive is NOT in the code under that
-name** — no `TInFeedback`/`TOutFeedback` symbol exists. What exists is its *pieces*, one-directional and
-unnamed-as-four-corner:
-- **`Policy<'input, 'decision, 'feedback>`** (`src/Core/Policy.fs`, B-1017) + `PolicyResult<'decision,
-  'feedback>` — the typed **decision-with-feedback** kernel (one-way: input → decision + why). The
-  feedback channel as a *type*, but a single forward feedback, not the bidirectional pair.
-- **`StreamPolicy.fs`** — per-element *decision + feedback* over a stream (`route`/`partition`).
-- **`FeedbackThrottle.fs`** — the **four-corner feedback** *concept* (latency→CHSH), not a typed generic.
-- The **harmonic half is already pervasive** — `CayleyDickson`/`Cl3`/`AmplitudeEmu`/`BellTest` (the tell).
-So: the harmonic algebra is everywhere; the feedback-as-type exists one-way (`Policy`); the **bidirectional
-four-corner harmonic Rx primitive (`TInFeedback`/`TOutFeedback`) is the build** — lift `Policy` +
-`StreamPolicy` + `FeedbackThrottle` onto the Cayley-Dickson oscillator. (Earlier I drafted it as if the
-generics existed — corrected: they're intended, the substrate just already speaks their algebra.)
+### And that is why NSEW naturally form — directionality implicit (Aaron 2026-06-10)
+
+The 2×2 has two *directed* axes (data in≠out; feedback in≠out) — orientation is built in, you can't swap a
+corner without flipping a sign — so the four corners orient as a **compass: N S E W**. And the compass is
+not a metaphor: **NSEW = the four 4th-roots of unity `{1, i, −1, −i}`** = the cyclic group **C₄** =
+multiplication by `i` = a **90° rotation** stepping N→E→S→W. So the four corners *are* the quadrant phases
+of the complex rotation — exactly **ℂ (Cayley-Dickson level 1)**. The implicit directionality (each axis
+directed) is the **`i` orientation / chirality**; one more reason the substrate is Cayley-Dickson all the
+way down: the four-corner feedback compass IS the phase diagram of the harmonic oscillator, and `i` is the
+operator that walks it. (Anchor: 4th roots of unity / cyclic group C₄ / Gaussian integers. Peel: NSEW as
+the *labels* on the 2×2 is a framing; the `{1,i,−1,−i}` = C₄ = 90°-rotation correspondence is exact.)
+
+**What did we call it? — FOUND (Aaron was right; my first grep was too narrow).** The four-corner shape
+**exists and is named exactly that: `FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback>`** —
+`tools/workflow-engine/types.ts:133`, used by `tools/observe/observe.ts` as the **observe/emit primitive**
+("we've had this since the beginning"):
+
+```ts
+export interface FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback> {
+  readonly tIn: TIn;            // what comes in        (OperatorMessage)
+  readonly tOut?: TOut;         // what the agent emits  (OperatorResponse)
+  readonly tOutFeedback?: TOutFeedback; // control-flow the agent authors (ConvFeedback)
+  readonly tInFeedback?: TInFeedback;   // co-owned keepalive, BOTH sides contribute (OperatorAck)
+}
+// observe.ts: OperatorOwnership = FourCornerOwnership<OperatorMessage, OperatorResponse, ConvFeedback, OperatorAck>
+```
+
+The `tInFeedback` being **co-owned (both sides contribute)** is precisely "each is backpressure from the
+other's perspective" — the bidirectional, frame-relative channel, in the type. (Correction: my earlier
+"NOT in the code" was wrong — I grepped F# + the literal `TInFeedback` and missed the TypeScript.)
+
+**The genuine gap (Aaron's other instinct — also right):** `FourCornerOwnership` is **TypeScript-only** —
+NOT in C#, F#, or Rust (grep across all four cores: zero hits outside `tools/`). The F#/C#/Rust **Observe
+ports** carry the concrete `observe`/`simulate`/`fold` (World/NextAction/Chooser) but **not** the generic.
+Per the `tools → src` rule (`tools/` = the dep-shield/host-bootstrap, not where our-own primitives live),
+the build is **graduate `FourCornerOwnership` `tools → src` + port TS→F#/C#/Rust**, onto the Cayley-Dickson
+oscillator. Tracked as **B-1022** (the fusion). One-directional F# kin today: `Policy<'input,'decision,
+'feedback>` (`Policy.fs`, B-1017) + `StreamPolicy.fs` + `FeedbackThrottle.fs`.
 
 ## The architecture, end to end (in Aaron's shapes)
 
