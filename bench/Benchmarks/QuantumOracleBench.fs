@@ -71,6 +71,8 @@ type QuantumOracleOps() =
                 |> QubitIso.pauliX
                 |> QubitIso.pauliY
                 |> QubitIso.pauliZ
+                |> QubitIso.phaseS
+                |> QubitIso.phaseT
             acc <- acc + QubitIso.normSq s + QubitIso.measureOne s
         acc
 
@@ -87,6 +89,8 @@ type QuantumOracleOps() =
                 |> QubitIso.Raw.pauliX
                 |> QubitIso.Raw.pauliY
                 |> QubitIso.Raw.pauliZ
+                |> QubitIso.Raw.phaseS
+                |> QubitIso.Raw.phaseT
             acc <- acc + QubitIso.normSqRaw s + QubitIso.measureOneRaw s
         acc
 

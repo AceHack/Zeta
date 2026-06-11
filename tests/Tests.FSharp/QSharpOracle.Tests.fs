@@ -116,6 +116,19 @@ let ``QubitIso H Ry and Rz match the Q# gate matrices on computational basis sta
     assertQSharpColumn rzPiOver3 1 (QubitIso.rz (Math.PI / 3.0) one)
 
 [<Fact>]
+let ``QubitIso phase S and T match the Q# gate matrices on computational basis states`` () =
+    let zero = QubitIso.ofQubit c.One c.Zero
+    let one = QubitIso.ofQubit c.Zero c.One
+
+    let s = gateMatrix "S"
+    assertQSharpColumn s 0 (QubitIso.phaseS zero)
+    assertQSharpColumn s 1 (QubitIso.phaseS one)
+
+    let t = gateMatrix "T"
+    assertQSharpColumn t 0 (QubitIso.phaseT zero)
+    assertQSharpColumn t 1 (QubitIso.phaseT one)
+
+[<Fact>]
 let ``QubitIso raw kernels match Q# gate matrices on computational basis states`` () =
     let zero = QubitIso.ofQubit c.One c.Zero |> QubitIso.toRaw
     let one = QubitIso.ofQubit c.Zero c.One |> QubitIso.toRaw
@@ -128,6 +141,8 @@ let ``QubitIso raw kernels match Q# gate matrices on computational basis states`
     assertRaw "X" QubitIso.Raw.pauliX
     assertRaw "Y" QubitIso.Raw.pauliY
     assertRaw "Z" QubitIso.Raw.pauliZ
+    assertRaw "S" QubitIso.Raw.phaseS
+    assertRaw "T" QubitIso.Raw.phaseT
     assertRaw "H" QubitIso.Raw.hadamard
     assertRaw "Ry(pi/3)" (QubitIso.Raw.ry (Math.PI / 3.0))
     assertRaw "Ry(pi/2)" (QubitIso.Raw.ry (Math.PI / 2.0))

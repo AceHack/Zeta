@@ -99,6 +99,12 @@ module QubitIso =
     let pauliZ (j: JoinState) : JoinState = { A = j.A; B = c.Negate j.B }
     /// Y = iXZ: `A ↦ -i·B`, `B ↦ i·A`.
     let pauliY (j: JoinState) : JoinState = { A = c.Mul(negI, j.B); B = c.Mul(i, j.A) }
+    /// S (phase gate) = leave `|0⟩` fixed and multiply `|1⟩` by `i`.
+    let phaseS (j: JoinState) : JoinState = { A = j.A; B = c.Mul(i, j.B) }
+    /// T (π/8 gate) = leave `|0⟩` fixed and multiply `|1⟩` by `e^(iπ/4)`.
+    let phaseT (j: JoinState) : JoinState =
+        let phase = { Real = 1.0 / sqrt 2.0; Imag = 1.0 / sqrt 2.0 }
+        { A = j.A; B = c.Mul(phase, j.B) }
     /// Multiply the whole state by a global phase/scalar `s`.
     let scale (s: Complex) (j: JoinState) : JoinState = { A = c.Mul(s, j.A); B = c.Mul(s, j.B) }
 
@@ -147,6 +153,17 @@ module QubitIso =
             { r with
                 BReal = -r.BReal
                 BImag = -r.BImag }
+
+        let phaseS (r: RawState) : RawState =
+            { r with
+                BReal = -r.BImag
+                BImag = r.BReal }
+
+        let phaseT (r: RawState) : RawState =
+            let invSqrt2 = 1.0 / sqrt 2.0
+            { r with
+                BReal = (r.BReal - r.BImag) * invSqrt2
+                BImag = (r.BReal + r.BImag) * invSqrt2 }
 
         let hadamard (r: RawState) : RawState =
             let invSqrt2 = 1.0 / sqrt 2.0
