@@ -85,7 +85,14 @@ export type Qcow2RetentionExecutionStep =
   | "create-baseline-snapshot"
   | "list-baseline-snapshots"
   | "restore-baseline-snapshot"
-  | "restart-from-iso-with-disk";
+  | "restart-from-iso-with-disk"
+  | "bootstrap-create-disk-image"
+  | "bootstrap-initial-install-from-iso-with-disk"
+  | "bootstrap-create-baseline-snapshot"
+  | "restore-migrate-existing-creds"
+  | "restore-fresh-cluster"
+  | "boot-migrate-existing-creds"
+  | "boot-fresh-cluster";
 
 export interface QemuSerialStopCondition {
   readonly serialLogPath: string;

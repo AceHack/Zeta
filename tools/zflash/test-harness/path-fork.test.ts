@@ -7,7 +7,7 @@ import {
   planPathForkRuntime,
   type PathForkRuntimeForkPlan,
 } from "./path-fork";
-import type { QemuCommand, QemuCommandExecution } from "./qemu-state";
+import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
 
 const ISO_PATH = "fixtures/zeta.iso";
 const BOOT_IMAGE_PATH = "fixtures/zflash-boot.img";
@@ -118,7 +118,7 @@ describe("path-fork serial marker assertions", () => {
         .requiredSerialMarkers.join("\n"),
     };
 
-    const successfulExecution = (step: string, command: QemuCommand): QemuCommandExecution => ({
+    const successfulExecution = (step: Qcow2RetentionExecutionStep, command: QemuCommand): QemuCommandExecution => ({
       step,
       command,
       exitCode: 0,
