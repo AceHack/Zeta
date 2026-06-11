@@ -2,12 +2,31 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-13 (the laws wave folded in — #7756..#7764; prior waves below).
+Last refreshed: 2026-06-13 (round 3 folded in — #7767; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-12/13 LAWS wave (#7756..#7764 — newest; read FIRST)
+## The 2026-06-13 ROUND-3 wave (#7767 — newest; read FIRST)
+
+- **Round 3 tear-down** (Kira machine/physics layer + the test-gap audit, both folded): treemap
+  P0 (a box tiled TWICE the boundary on negative weights); the VF-order spec bug fixed in BOTH
+  chip8 machines (operands pre-captured, flag LAST — they diverged exactly where the cross-check
+  claim covered); FX0A pressed its own destination register as a key (scoped fix — the blunt first
+  fix broke EX9E and the suite caught it); WeaveFold cyclic-resolve order-dependence; the magnet's
+  int-overflow teleport; the stuck zero-velocity paddle.
+- **THE TAUTOLOGY→BUG CHAIN:** the audit flagged Triangle-compared-to-itself as can't-fail;
+  hand-deriving its replacement literal exposed a REAL 2x amplitude overflow (382 in a -128..127
+  type). Formula fixed, literals pinned, whole-period range gate on every waveform.
+- **All LIVE BUGS.md entries closed:** checkpoint corrupt-vs-missing surfaced (CorruptLoadCount +
+  bounds), FeatureFlags Stable branch, durability construction warning + one-line gated message,
+  bug-fixer provenance step zero, THREAT-MODEL rows (.claude/agents/** + trust artefacts —
+  Aminata review welcomed). Shapes test list now DERIVES from the directory (cartridge #14 can't
+  bypass the gates). Deferred items filed with reasons (pong serve param + DRW clip quirk =
+  Aaron's calls; allowlist occurrence counts et al. = next test pass).
+- Three rounds total: 52 adversarial findings found/fixed/filed. Suite 3000.
+
+## The 2026-06-12/13 LAWS wave (#7756..#7764 — older; read second)
 
 - **Shapes draw themselves** (#7756, Aaron-ratified): pure-CSS draw-on animation (stroke-dashoffset
   keyframes, per-stroke integer delays in generator order; dashed sign-register strokes fade in;
