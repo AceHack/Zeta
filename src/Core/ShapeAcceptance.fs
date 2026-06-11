@@ -51,11 +51,13 @@ module ShapeAcceptance =
                 MediaLines.field "constant" "word" d
                 |> Option.defaultValue ""
                 |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+            let valid = Braid.validWord 3 word
             let perm = Array.init 3 id
-            for c in word do
-                let a = abs c - 1
-                let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
-            let locked = perm = [| 0; 1; 2 |]
+            if valid then
+                for c in word do
+                    let a = abs c - 1
+                    let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
+            let locked = valid && perm = [| 0; 1; 2 |]
             // THE STUCK LAW (Aaron 2026-06-12, reaching for Majorana-style topology: "trying to
             // see if I can get a configuration where they are stuck together"): the drawn word
             // must be permutation-IDENTITY (every strand home — locked) yet NOT the identity
@@ -77,8 +79,18 @@ module ShapeAcceptance =
                 MediaLines.field "constant" "tsirelson-milli" d |> Option.map int |> Option.defaultValue 0
             let g = TimeGen.mk "acceptance" 1 4UL TimeGen.PhasorTsirelson
             let cl = TimeGen.mk "acceptance" 1 4UL TimeGen.ClassicalCommonCause
-            let ok = int (TimeGen.chsh g 256 * 1000.0) = declared && TimeGen.chsh cl 256 <= 2.0 + 1e-9
-            ok, sprintf "phasor S reaches exactly the declared %d milli; classical folds at 2" declared
+            // P0 fix (Kira): the classical HV model's true S at these corners is exactly 2.0, and a
+            // 256-sample estimator carries ~0.06 sampling error — the old `<= 2.0 + 1e-9` gate
+            // passed by SEED LUCK (any change to the mixer or seed flips it with no bug present).
+            // The suite's honest tolerance (0.05) is the gate's tolerance now. P2 fix: the milli
+            // comparison rounds to nearest (truncation accepted S up to 2828.99 — past Tsirelson);
+            // the phasor value is analytic, so round-equality at 2828 is exact-by-construction.
+            let sPhasor = TimeGen.chsh g 256
+            let ok =
+                int (System.Math.Round(sPhasor * 1000.0)) = declared
+                && sPhasor <= 2.0 * sqrt 2.0 + 1e-9
+                && TimeGen.chsh cl 256 <= 2.0 + 0.05
+            ok, sprintf "phasor S = declared %d milli (rounded, capped at Tsirelson); classical folds at 2 (sampling tolerance 0.05)" declared
         | "shape-buckyball" ->
             // Addison's solid checked by arithmetic, not trust: Euler characteristic, the
             // face/edge double-count, 3-regularity, and the meta room's door count (rooms + itself).
@@ -98,11 +110,13 @@ module ShapeAcceptance =
                 MediaLines.field "constant" "word" d
                 |> Option.defaultValue ""
                 |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+            let valid = Braid.validWord 3 word
             let perm = Array.init 3 id
-            for c in word do
-                let a = abs c - 1
-                let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
-            let ok = perm = [| 2; 1; 0 |] && not (Braid.isIdentity 3 word)
+            if valid then
+                for c in word do
+                    let a = abs c - 1
+                    let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
+            let ok = valid && perm = [| 2; 1; 0 |] && not (Braid.isIdentity 3 word)
             ok, "perm = outer swap (02), middle home; not the identity braid — the move MOVES (odd parity: lock impossible here)"
         | "shape-shadow-loop" ->
             // otto's own: the sampled lemniscate must CLOSE (first = last) and pass through the
@@ -150,10 +164,11 @@ module ShapeAcceptance =
             if List.isEmpty travelers then "no traveler has spoken yet (silence, not error — consent first)"
             else travelers |> List.map (fun (o, _, verdict) -> o + ":" + verdict) |> String.concat " "
         let lintOk = MediaLines.lint d |> List.isEmpty
-        let labelsOk =
-            lintOk
-            && (shape <> "shape-fourcorner"
-                || (TimeGen.label (TimeGen.mk "labels" 1 4UL TimeGen.StagedCoincidence)).Contains "STAGED")
+        // P1 fix (Kira): the old fourcorner extra check asserted a STRING CONSTANT in TimeGen.label
+        // contained "STAGED" — vacuous per-cartridge (it could never fail for the artifact under
+        // review). Honest-labels = the lint (structure: WHAT+WHY on every constant); artifact-
+        // specific honesty obligations belong in the cartridge's own law lines, where they can fail.
+        let labelsOk = lintOk
         [ v shape Bytes bytesOk (if bytesOk then "a language oracle ratified the byte register" else "no byte-register ratification in the treaty block")
           v shape Geometry geomOk geomEv
           v shape Meaning true meaningEv // reported, never gated: dissent is data

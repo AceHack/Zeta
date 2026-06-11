@@ -41,10 +41,14 @@ module SpectralPivot =
                    acc <- ImaginaryStack.complex.Add(acc, ImaginaryStack.complex.Mul(spectrum.[k], tw))
                acc.Real / float n |]
 
+    // honesty note (Kira P2): idft above returns the REAL part only — the round-trip
+    // idft(dft(x)) = x holds for real input signals (our case); complex-valued signals are out of
+    // scope and would need the imaginary channel kept.
     /// A bin's energy (the fingerprint's coordinate).
     let energy (c: Complex) : float = c.Real * c.Real + c.Imag * c.Imag
 
-    /// SOFT: probe ONE bin (Goertzel-shaped, O(n)) — the spectral soft-prism: "is this pitch there?"
+    /// SOFT: probe ONE bin (a naive single-bin DFT — per-sample cos/sin, O(n); the Goertzel
+    /// recurrence is the named upgrade, not what this is) — the spectral soft-prism: "is this pitch there?"
     let probe (signal: float[]) (k: int) : float =
         let n = signal.Length
         let mutable acc = Doubled.make 0.0 0.0
@@ -64,10 +68,15 @@ module SpectralPivot =
     // (the bearing starting to sing) shows up as drift long before it shows up as failure — the
     // soft-lens discipline pointed at time: baseline = solid ground, drift = the uncertainty rising. ──
 
-    /// The drift between a baseline fingerprint and a current one (same bins): Σ |Δenergy|.
+    /// The drift between a baseline fingerprint and a current one: Σ |Δenergy|, aligned BY BIN KEY
+    /// (P2 fix, Kira: the first version zipped by position — fingerprints over different bin lists
+    /// compared as silent nonsense, mismatched lengths threw). A bin present on one side only
+    /// contributes its full energy: missing is maximal drift for that bin, never ignored.
     let drift (baseline: (int * float) list) (current: (int * float) list) : float =
-        List.zip baseline current
-        |> List.sumBy (fun ((_, a), (_, b)) -> abs (a - b))
+        let b, c = Map.ofList baseline, Map.ofList current
+        Set.union (Set.ofSeq (Map.keys b)) (Set.ofSeq (Map.keys c))
+        |> Seq.sumBy (fun k ->
+            abs ((Map.tryFind k b |> Option.defaultValue 0.0) - (Map.tryFind k c |> Option.defaultValue 0.0)))
 
     /// The maintenance question in one call: is the machine's hum still within `tolerance` of its
     /// healthy self at these probe bins?

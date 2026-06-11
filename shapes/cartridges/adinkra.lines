@@ -19,7 +19,7 @@ law	gates-condition	code:viz.adinkra allFacesOdd standardDashing (every 2-colore
 law	gauge-lemma	code:viz.adinkra flipVertex invariance (local sign flips never change face parity — the twist is global)
 prereq	parity	popcount and the boson/fermion checkerboard — count bits, color cells, see the pattern
 prereq	the-braid-twin	shapes/cartridges/braid.lines — the ORDER register's version of the same protection (THE STUCK LAW)
-edge	same-twist	shape-braid	parity here = braid memory mod 2 (the quotient; algebra.mod2 is the adapter) — the break is honest: their generators remember, these edges are involutions
+edge	same-twist	shape-braid	parity here = the image of the unique homomorphism B3 -> Z/2 with every sigma^±1 -> 1 (exponent-sum mod 2 = the permutation's sign character; Soraya's signable statement, math tear-down 2026-06-12) — algebra.mod2 is the adapter; a projection, no inverse; the break is honest: their generators remember, these edges are involutions
 edge	clifford-home	shape-fourcorner	both registers live in Clifford algebra — where the Q# sign-convention check (Vera brief §8) meets us
 issue	wrap-edges	otto	open	the 8 omitted wrap edges need either a crossing-aware layout or a second panel — until then 24/32 stays the stated bound
 anim	draw	graph

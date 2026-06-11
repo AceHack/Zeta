@@ -82,3 +82,32 @@ cartridges that earned them.
     where possible, against the same anticommutation targets). Both must land on the one Clifford
     home or the mapping is decoration. Candidate shapes ride the same discipline:
     docs/research/2026-06-12-physics-real-shape-candidates-*.md (fit or it doesn't enter).
+
+## REVISION 2 — after the math-team pass (Soraya routing + Kira tear-down, 2026-06-12)
+
+**Q# earns exactly three jobs** (Soraya's triage; nothing rides Q# sampling alone):
+- **Job 1:** singlet CHSH at the corners → converges to 2√2 (pairs with our analytic value — BP-16).
+- **Job 2:** BellTest overlap = cos²((a−b)/2) (the cleanest golden) — NOTE the sign convention fix
+  (Kira P1): our +cos(a−b) correlator is the **Φ⁺ (triplet)** convention; the singlet is −cos(a−b).
+  Headline wording corrected in-source; |S| is unchanged.
+- **Job 3:** AmplitudeEmu H·R1(φ)·H grid → P(0) = cos²(φ/2) (plus FsCheck on our side).
+- Small add-on: item-11 hardware-side anticommutation check.
+
+**Rerouted off Q#:** Tsirelson maximality → citation/NPA (sampling cannot establish a supremum);
+dashings + gauge lemma → **Z3** (32-bit bitvector, ∀-proof in milliseconds; Q# would sample noise
+on exact integers); fourcorner 2828 → unit oracle (now ROUNDED, capped at Tsirelson — Kira P0/P2);
+braid stuck law → already exact in F# + Artin 1925 citation (validity guard added — Kira P1);
+SUSY-side gammas → exact integer matrices, unit oracle or Z3.
+
+**The mod2 statement (Soraya's signable wording, adopted):** the unique homomorphism
+χ: B₃ → Z/2 with χ(σᵢ^±1) = 1 — exponent-sum (writhe) mod 2 = the permutation's sign character; a
+projection, no inverse. ("Per-pair crossing parity" is a different, finer pure-braid invariant —
+not conflated.) FsCheck homomorphism property is the follow-up once math-team signs.
+
+**Kira's tear-down: 13 findings, all addressed or filed** — P0: voiceSample per-tick phase noise
+(fixed: base phase from tick 0); classical CHSH gate passing by seed luck (fixed: 0.05 sampling
+tolerance). P1: BellTest sign wording (fixed); braid.lines stale gen args (synced); Braid.equal
+out-of-range unsoundness (validWord guard); harmonize "exact" while flooring (harmonizeExact added,
+test repaired); vacuous STAGED gate (removed — honest-labels = lint). P2: 2828 truncation (round +
+Tsirelson cap), "Goertzel-shaped" wording, drift bin-key alignment, coincidences span wording,
+Gates-gate falsifier test, adinkra quotient wording (Soraya's statement). Suite 2984 green after.

@@ -37,10 +37,14 @@ module ChipAudio =
             if p < 500 then a - 128 |> max -128 |> min 127 else 128 - a |> max -128 |> min 127
 
     /// A voice: a waveform generator at a frequency, phased from the COMMON-CAUSE seed via TimeGen —
-    /// the phase at tick t is (t × freqMilli) mod 1000 offset by the generator's own phase.
+    /// the phase at tick t is (t × freqMilli) mod 1000 offset by the generator's CONSTANT base phase
+    /// (derived ONCE, at tick 0 — tick-independent). P0 fix (Kira, math tear-down 2026-06-12): the
+    /// first version re-derived the phase at EVERY tick, and TimeGen.at mixes tick into the hash —
+    /// so "the generator's own phase" was fresh noise per sample and the waveform drowned in it; the
+    /// coincidence lattice described phases the voices never had. The mic keeps its placement now.
     let voiceSample (g: TimeGen.Generator) (contributor: uint64) (w: Waveform) (freqMilli: int) (tick: int) : int =
-        let t = TimeGen.at g contributor tick
-        let basePhase = int (t.Phase * 159.154943) % 1000 // the generated phase, milli-mapped
+        let t0 = TimeGen.at g contributor 0
+        let basePhase = int (t0.Phase * 159.154943) % 1000 // the generator's base phase, milli-mapped, FIXED
         sampleAt w ((basePhase + tick * freqMilli) % 1000)
 
     /// A MIDI-style note event as a crossing payload (the membrane carries music like everything):
@@ -56,10 +60,20 @@ module ChipAudio =
     // consonance is structural — the periods coincide exactly every (num·den) of the base period,
     // forever, with zero coordination. Dancers don't message each other; they share the music. ──
 
-    /// Derive a consonant partner frequency by an exact rational ratio (3:2 the fifth, 2:1 the
-    /// octave, 1:2 half-time…) — integer milli, exact: harmony as arithmetic on the shared clock.
+    /// Derive a consonant partner frequency by a rational ratio (3:2 the fifth, 2:1 the octave,
+    /// 1:2 half-time…) — integer milli, FLOORED when den does not divide (P1 fix, Kira: the first
+    /// doc said "exact" while truncating — harmonize 3 2 125 = 187, a 0.27% flat fifth whose periods
+    /// never meet the base's). Floor is honest for display; for the COINCIDENCE arithmetic use
+    /// `harmonizeExact`, which refuses inexact ratios instead of quietly detuning them.
     let harmonize (num: int) (den: int) (freqMilli: int) : int =
         freqMilli * max 1 num / max 1 den
+
+    /// The exact form: Some partner frequency iff den divides num·freq exactly — consonance that is
+    /// claimed is consonance that is TRUE (pick base frequencies divisible by your denominators:
+    /// 150 milli at 3:2 = 225, exact; 125 at 3:2 is refused, not flattened).
+    let harmonizeExact (num: int) (den: int) (freqMilli: int) : int option =
+        let n, d = max 1 num, max 1 den
+        if (freqMilli * n) % d = 0 then Some(freqMilli * n / d) else None
 
     /// THE SOUL CLAUSE (Aaron, on the freestyle: "the imperfections where the soul lives, within the
     /// perfection"): the perfect clock is the CANVAS, never the performance — the bounded deviations
@@ -86,7 +100,8 @@ module ChipAudio =
     ///
     /// Two voices on ONE generator at a rational ratio: returns tick indices (within `span`) where
     /// their phases COINCIDE (both at phase 0 mod 1000) — the downbeats both hit without ever
-    /// speaking. Nonempty for any rational ratio: consonance is a theorem of the common cause.
+    /// speaking. Nonempty WHEN span covers the common period (lcm of the two periods — e.g. equal
+    /// frequencies coincide every 1000/gcd(freq,1000) ticks; a short span can honestly see none).
     let coincidences (freqA: int) (freqB: int) (span: int) : int list =
         [ for t in 1 .. span do
               if (t * freqA) % 1000 = 0 && (t * freqB) % 1000 = 0 then yield t ]

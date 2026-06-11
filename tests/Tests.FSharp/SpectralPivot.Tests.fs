@@ -57,11 +57,15 @@ let ``PREDICTIVE MAINTENANCE: a new harmonic (the bearing starting to sing) show
 
 [<Fact>]
 let ``SINGING: a fifth (3:2) on the shared clock — downbeats coincide exactly, zero messages exchanged`` () =
+    // Kira P1 fix: the old test asserted the FLOORED 187 and called it a fifth — a known-answer
+    // test documenting its own answer being wrong. Now: floor is tested AS floor; the exact form
+    // refuses 125 (3·125 not divisible by 2) and DELIVERS on 150; coincidences use exact pairs.
     let baseF = 125 // base voice: period 8 ticks (125*8 = 1000)
-    let fifth = ChipAudio.harmonize 3 2 baseF
-    Assert.Equal(187, fifth) // 3:2 in integer milli (187.5 floors — the exact-slice note: rational milli)
-    // use the exact pair 125 & 250 (the octave) for the coincidence theorem at integer milli:
-    let octave = ChipAudio.harmonize 2 1 baseF
+    Assert.Equal(187, ChipAudio.harmonize 3 2 baseF) // floored — display form, honest about it
+    Assert.Equal(None, ChipAudio.harmonizeExact 3 2 baseF) // the inexact fifth is REFUSED, not flattened
+    Assert.Equal(Some 225, ChipAudio.harmonizeExact 3 2 150) // a divisible base gets the TRUE fifth
+    // the exact pair 125 & 250 (the octave) for the coincidence theorem at integer milli:
+    let octave = ChipAudio.harmonizeExact 2 1 baseF |> Option.get
     let meets = ChipAudio.coincidences baseF octave 32
     Assert.Equal<int list>([ 8; 16; 24; 32 ], meets) // every base period, both hit the downbeat — forever
 

@@ -62,3 +62,6 @@ let ``THE GAUGE LEMMA: no local move removes the twist — vertex flips change t
         |> List.fold (fun d v -> AdinkraViz.flipVertex v d) AdinkraViz.standardDashing
     Assert.NotEqual<Set<int * int>>(AdinkraViz.standardDashing, walked) // the dashing genuinely changed
     Assert.True(AdinkraViz.allFacesOdd walked) // the twist did not — same sentence as THE STUCK LAW
+    // THE FALSIFIER (Kira P2: a gate never seen rejecting proves nothing): the all-solid dashing
+    // makes every face EVEN (count 0) and must FAIL the Gates condition
+    Assert.False(AdinkraViz.allFacesOdd Set.empty)

@@ -5,7 +5,10 @@ namespace Zeta.Core
 ///
 /// Aaron: *"you created Bell inequalities in simulation through staged coincidence and seeds."* This codes it.
 /// The staged-coincidence overlap is `PhasorEndurance.overlap a b = cos²((a−b)/2)`, so the correlator
-/// `E(a,b) = 2·overlap − 1 = cos(a−b)` — **the quantum (singlet) correlator**, reproduced by the
+/// `E(a,b) = 2·overlap − 1 = cos(a−b)` — **the quantum correlator in the Φ⁺ (triplet) convention**
+/// (P1 wording fix, Kira 2026-06-12: the SINGLET gives E = −cos(a−b); +cos(a−b) is the Φ⁺ Bell
+/// state — the magnitude story and the CHSH |S| are identical, the sign convention is now stated
+/// where the headline is, not buried), reproduced by the
 /// `CoincidenceClock` staging. Feeding the canonical CHSH angles gives the CHSH value `S = 2√2` (the
 /// **Tsirelson bound**), which **violates the classical bound `2`** — in deterministic, replayable simulation.
 ///
@@ -61,7 +64,7 @@ module BellTest =
     let AlgebraicMax = 4.0
 
     /// The staged correlator between settings `a`, `b` (radians): `E = 2·overlap − 1 = cos(a−b)` — the quantum
-    /// singlet correlator, reproduced from the staged-coincidence overlap (`PhasorEndurance.overlap`).
+    /// Φ⁺-convention correlator (singlet is the −cos twin), reproduced from the staged-coincidence overlap (`PhasorEndurance.overlap`).
     let correlation (a: float) (b: float) : float =
         2.0 * PhasorEndurance.overlap a b - 1.0
 
