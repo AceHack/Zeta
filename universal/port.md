@@ -39,7 +39,7 @@ a sixth. (Interfaces are free; the rules of the game are interfaces.)
 | MagneticPorts (kid UX) | Port.TypeId | compatible/snap | repulsion is the light | findAdapter ✓ |
 | GeneratorRegistry | the ZetaId itself | byId (Live-or-dangling) | catalog-law test | collisions() gate |
 | PluginApi/Harness | capability interfaces | wiring-time probes | (inherit: add the light) | (inherit) |
-| IInferenceEngine (newest) | (follow-up: engine ZetaIds) | (follow-up: ladder resolution) | (inherit) | conformance divergence |
+| IInferenceEngine (newest) | engine.* ZetaIds ✓ | InferenceLadder.resolve ✓ (Live/Injected/Mock; Adapted carved-when-instanced) | light ✓ (Mock = "nothing real is inferred") | conformance divergence + the honest Mock (Converged=false by construction) |
 
 ## Pointers
 

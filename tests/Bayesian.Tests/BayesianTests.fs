@@ -177,3 +177,26 @@ let ``PORT determinism: same model, same marginals, byte-stable order (the DST c
         let model = GaussianModel(2, [| GaussianPrior(0, 1.0, 2.0); GaussianPrior(1, 5.0, 3.0) |], [| EqualityFactor([| 0; 1 |]) |])
         (engine.RunGaussian(model, 100, 1e-9)).Marginals |> Seq.map (fun m -> m.Variable, m.Mean, m.Variance) |> List.ofSeq
     Assert.Equal<(int * float * float) list>(run (), run ())
+
+// ─── the inference LADDER (universal/port's first customer — B-1033 follow-up) ───
+
+[<Fact>]
+let ``LADDER: a live engine binds Live with its light ON; an absent one binds the HONEST Mock (rehearsal, Converged=false)`` () =
+    let zid = GeneratorRegistry.idOf "engine.zeta-bayesian" 1
+    let live = Map.ofList [ zid, fun () -> Zeta.Bayesian.ZetaBayesianEngine() :> IInferenceEngine ]
+    match InferenceLadder.resolve live Map.empty zid with
+    | InferenceLadder.Live(_, e) ->
+        Assert.Equal("zeta-bayesian", e.Name)
+        Assert.Contains("[REC ●]", InferenceLadder.light (InferenceLadder.resolve live Map.empty zid))
+    | other -> Assert.True(false, sprintf "expected Live, got %A" other)
+    // absent everywhere: the rehearsal engine — flat marginals, NEVER converged
+    let wanted = GeneratorRegistry.idOf "engine.infer-net" 1
+    match InferenceLadder.resolve live Map.empty wanted with
+    | InferenceLadder.Mock(_, e) ->
+        let r = e.RunGaussian(GaussianModel(2, [| GaussianPrior(0, 3.0, 1.0) |], [||]), 10, 1e-9)
+        Assert.False r.Converged // the mock cannot masquerade as inference
+        Assert.Contains("[off ○]", InferenceLadder.light (InferenceLadder.resolve live Map.empty wanted))
+    | other -> Assert.True(false, sprintf "expected Mock, got %A" other)
+    // and all three engine ids are minted on the shelf, collision-free
+    for name in [ "engine.zeta-bayesian"; "engine.infer-net"; "engine.mock-flat" ] do
+        Assert.True(GeneratorRegistry.byName name |> Option.isSome)

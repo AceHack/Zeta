@@ -227,6 +227,7 @@
     <Compile Include="ZetaMax.fs" />
     <Compile Include="Chip9Phys.fs" />
     <Compile Include="WSet.fs" />
+    <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
     <Compile Include="Braid.fs" />
     <Compile Include="MediaLines.fs" />

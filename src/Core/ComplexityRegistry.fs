@@ -95,6 +95,9 @@ module ComplexityRegistry =
               ("shape.exchange-worldlines", "draw"), c "O(crossings·strands)" "O(strands)" Derived // the braid drawn as spacetime: strands + one event diamond per exchange
               ("shape.kitaev-chain", "draw"), c "O(sites)" "O(sites)" Derived // two panels, one arc per pairing; the end modes are the two strokes the topological panel leaves unpaired
               ("shape.crossing", "draw"), c "O(1)" "O(1)" Derived // THE ATOM: two strands, one crossing — constant everything; every braided shape is a word in this generator
+              ("engine.zeta-bayesian", "run"), c "O(rounds·factors)" "O(vars+factors)" Derived // BP passes over the graph until moved < tol
+              ("engine.infer-net", "run"), c "O(rounds·factors)" "O(model)" Derived // Minka's engine behind OUR port (test-side adapter); cost shape mirrors ours by design
+              ("engine.mock-flat", "run"), c "O(vars)" "O(vars)" Derived // the REHEARSAL engine: flat marginals, Converged=false — the ladder's honest Mock rung
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived

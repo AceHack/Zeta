@@ -64,3 +64,5 @@ the rule for system five stated; IInferenceEngine named the first customer (engi
 ladder-shaped resolution = the remaining follow-up alongside richer case families).
 
 ## Progress 3 (2026-06-13): the grammar filed as universal/port.md (Aaron's "smells like universal interfaces" — it was; extension.md is the senior half). Remaining: engine ZetaIds + ladder resolution for IInferenceEngine; richer case families.
+
+## Progress 4 (2026-06-13): InferenceLadder shipped — engine ZetaIds minted (zeta-bayesian/infer-net/mock-flat), ladder resolution (Live/Injected/Mock; Adapted carved when an engine-adapter piece exists), the red light, and the HONEST Mock (flat marginals, Converged=false — a rehearsal that cannot masquerade). universal/port instance row complete. Remaining: richer case families only.
