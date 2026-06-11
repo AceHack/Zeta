@@ -39,8 +39,8 @@ module ShapeAcceptance =
     let geometryLaw (shape: string) (d: MediaLines.Doc) : bool * string =
         match shape with
         | "shape-spiral" ->
-            let growth = MediaLines.field "constant" "growth-milli" d |> Option.map int |> Option.defaultValue 1025
-            let steps = MediaLines.field "constant" "steps" d |> Option.map int |> Option.defaultValue 36
+            let growth = MediaLines.constIntOr "growth-milli" 1025 d
+            let steps = MediaLines.constIntOr "steps" 36 d
             let re, im = BoundaryLight.rotorOf 1 12 growth
             let curve = BoundaryLight.rotorCurve (BoundaryLight.p 32 16) 6.0 0.0 re im steps
             let d2 (pt: BoundaryLight.P) = (pt.X - 32) * (pt.X - 32) + (pt.Y - 16) * (pt.Y - 16)
@@ -74,14 +74,19 @@ module ShapeAcceptance =
             ok, "Artin holds; memory holds; ends LOCKED (perm = id) and braid STUCK (≠ identity braid — cannot be pulled apart)"
         | "shape-worldline" ->
             // cross-cartridge law: drift must not exceed the lightcone's slope (c = 1 court cell/tick)
-            let drift = MediaLines.field "constant" "drift" d |> Option.map int |> Option.defaultValue 99
+            let drift = MediaLines.constIntOr "drift" 99 d
             drift <= 1, sprintf "drift %d <= lightcone slope 1/1 (stays inside the causal diamond)" drift
         | "shape-lightcone" ->
             let slope = MediaLines.field "constant" "slope" d
-            slope = Some "1/1", "slope is exactly the rational 1/1 — c = 1 in court units, no float"
+            let extent = MediaLines.constIntOr "extent" 14 d
+            // extent bound joins the law (Kira round-2 #12: extent 9999 drew off-court while the
+            // string-compare gate smiled) — THE COURT LAW catches it catalog-wide; the gate now
+            // refuses at the source too.
+            let ok = slope = Some "1/1" && extent >= 1 && extent <= 15
+            ok, sprintf "slope exactly 1/1; extent %d within the court's half-height" extent
         | "shape-fourcorner" ->
             let declared =
-                MediaLines.field "constant" "tsirelson-milli" d |> Option.map int |> Option.defaultValue 0
+                MediaLines.constIntOr "tsirelson-milli" 0 d
             let g = TimeGen.mk "acceptance" 1 4UL TimeGen.PhasorTsirelson
             let cl = TimeGen.mk "acceptance" 1 4UL TimeGen.ClassicalCommonCause
             // P0 fix (Kira): the classical HV model's true S at these corners is exactly 2.0, and a
@@ -99,7 +104,7 @@ module ShapeAcceptance =
         | "shape-buckyball" ->
             // Addison's solid checked by arithmetic, not trust: Euler characteristic, the
             // face/edge double-count, 3-regularity, and the meta room's door count (rooms + itself).
-            let c name = MediaLines.field "constant" name d |> Option.map int |> Option.defaultValue -1
+            let c name = MediaLines.constIntOr name -1 d
             let v', e, f = c "vertices", c "edges", c "faces"
             let ok =
                 v' - e + f = 2 // Euler: a sphere, not a torus or a mistake
@@ -126,7 +131,7 @@ module ShapeAcceptance =
         | "shape-shadow-loop" ->
             // otto's own: the sampled lemniscate must CLOSE (first = last) and pass through the
             // center exactly center-visits times (the crossing, hit structurally — steps % 4 = 0).
-            let c name = MediaLines.field "constant" name d |> Option.map int |> Option.defaultValue -1
+            let c name = MediaLines.constIntOr name -1 d
             let pts = ShapeRender.strokesOf d |> List.collect (fun s -> if s.Name = "loop" then s.Points else [])
             let cx, cy = 32 * 10 + 5, 16 * 10 + 5
             let visits = pts |> List.filter (fun (x, y) -> x = cx && y = cy) |> List.length
@@ -142,8 +147,8 @@ module ShapeAcceptance =
                 MediaLines.field "constant" "word" d
                 |> Option.defaultValue ""
                 |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
-            let rows = MediaLines.field "constant" "rows" d |> Option.map int |> Option.defaultValue 21
-            let gap = MediaLines.field "constant" "strand-gap" d |> Option.map int |> Option.defaultValue 3
+            let rows = MediaLines.constIntOr "rows" 21 d
+            let gap = MediaLines.constIntOr "strand-gap" 3 d
             let cols = [| 32 - gap; 32; 32 + gap |]
             let rowsPerCross = rows / (List.length word + 1)
             let eventPts = word |> List.mapi (fun i c -> (cols.[abs c - 1] + cols.[abs c]) / 2, (i + 1) * rowsPerCross)
@@ -170,7 +175,7 @@ module ShapeAcceptance =
         | "shape-kitaev-chain" ->
             // the render's own accounting must equal the in-file laws: trivial arcs = sites,
             // topological arcs = sites − 1, unpaired end diamonds = 2 (the memory, drawn).
-            let c name = MediaLines.field "constant" name d |> Option.map int |> Option.defaultValue -1
+            let c name = MediaLines.constIntOr name -1 d
             let strokes = ShapeRender.strokesOf d
             let count prefix = strokes |> List.filter (fun s -> s.Name.StartsWith(prefix: string)) |> List.length
             let ok =
@@ -204,11 +209,22 @@ module ShapeAcceptance =
         // HOMOICONIC HALF: the cartridge's OWN `law` lines must also hold (the file states its
         // checks; module code carries only what integers cannot say). Both halves gate.
         let fileLaws = CartridgeLaw.check d
-        let geomOk = codeOk && (fileLaws |> List.forall (fun l -> l.Holds))
+        // Delegated laws do not vouch and do not block (the delegation's proof is the named
+        // tool's own treaty line); only a Fails blocks geometry here.
+        let geomOk = codeOk && not (fileLaws |> List.exists CartridgeLaw.blocks)
         let geomEv =
             codeEv
             + (if List.isEmpty fileLaws then ""
-               else " | in-file: " + (fileLaws |> List.map (fun l -> l.Law + (if l.Holds then " holds" else " FAILS")) |> String.concat ", "))
+               else
+                   " | in-file: "
+                   + (fileLaws
+                      |> List.map (fun l ->
+                          l.Law
+                          + (match l.Status with
+                             | CartridgeLaw.Holds -> " holds"
+                             | CartridgeLaw.Delegated tool -> sprintf " delegated:%s" tool
+                             | CartridgeLaw.Fails -> " FAILS"))
+                      |> String.concat ", "))
         let travelers = MediaLines.treatiesOf d |> List.filter (fun (_, r, _) -> r = "meaning")
         let meaningEv =
             if List.isEmpty travelers then "no traveler has spoken yet (silence, not error — consent first)"
@@ -219,7 +235,7 @@ module ShapeAcceptance =
         // review). Honest-labels = the lint (structure: WHAT+WHY on every constant); artifact-
         // specific honesty obligations belong in the cartridge's own law lines, where they can fail.
         let labelsOk = lintOk
-        [ v shape Bytes bytesOk (if bytesOk then "a language oracle ratified the byte register" else "no byte-register ratification in the treaty block")
+        [ v shape Bytes bytesOk (if bytesOk then "a byte-register ATTESTATION is present (the PROOF is THE GOLDEN LOCK in CI — an in-file line can claim, never verify; Kira round-2 #6)" else "no byte-register ratification in the treaty block")
           v shape Geometry geomOk geomEv
           v shape Meaning true meaningEv // reported, never gated: dissent is data
           v shape HonestLabels labelsOk (if labelsOk then "lint clean (WHAT+WHY); shape-specific honesty obligations stand" else "lint findings or a missing honesty label") ]

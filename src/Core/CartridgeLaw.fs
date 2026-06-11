@@ -17,7 +17,18 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module CartridgeLaw =
 
-    type Verdict = { Law: string; Holds: bool; Evidence: string }
+    /// A law's verdict: Holds (checked HERE, by this evaluator) | Delegated (documented here,
+    /// checked by the NAMED tool — true-on-faith is not a thing this type can say; silent-failure
+    /// hunt 2026-06-12) | Fails.
+    type Status =
+        | Holds
+        | Delegated of tool: string
+        | Fails
+
+    type Verdict = { Law: string; Status: Status; Evidence: string }
+
+    /// Back-compat read: does this verdict BLOCK? (Delegated does not block — and does not vouch.)
+    let blocks (v: Verdict) = v.Status = Fails
 
     // THE DIALECT: operators MUST be space-separated (`vertices - edges + faces`), because constant
     // names are kebab-case (`meta-doors`) — an unspaced '-' is part of a NAME, never an operator.
@@ -40,24 +51,31 @@ module CartridgeLaw =
             elif expectAtom then
                 match atom tk with
                 | Some v ->
-                    product <- product * v
+                    (try product <- Checked.(*) product v
+                     with :? System.OverflowException -> ok <- false) // overflow is a refusal, never a wrap (Kira #10)
                     expectAtom <- false
                 | None -> ok <- false
             else
                 match tk with
                 | "*" -> expectAtom <- true
                 | "+" ->
-                    total <- total + sign * product
+                    (try total <- Checked.(+) total (Checked.(*) sign product)
+                     with :? System.OverflowException -> ok <- false)
                     product <- 1
                     sign <- 1
                     expectAtom <- true
                 | "-" ->
-                    total <- total + sign * product
+                    (try total <- Checked.(+) total (Checked.(*) sign product)
+                     with :? System.OverflowException -> ok <- false)
                     product <- 1
                     sign <- -1
                     expectAtom <- true
                 | _ -> ok <- false
-        if ok && not expectAtom then Some(total + sign * product) else None
+        if ok && not expectAtom then
+            try Some(Checked.(+) total (Checked.(*) sign product))
+            with :? System.OverflowException -> None
+        else None
+
 
     /// The constant table of a document (first field of each `constant` line, integers only).
     let constantsOf (d: MediaLines.Doc) : Map<string, int> =
@@ -84,18 +102,31 @@ module CartridgeLaw =
             // fscheck:, alloy:, semgrep:, …). The law is DOCUMENTED in the cartridge and HELD by
             // the named tool — never silent, never assumed checked by the evaluator itself.
             let delegated = expr.IndexOf ':'
+            let knownTools =
+                // the allowlist (Kira round-2 P0: any lowercase prefix used to ratify on faith —
+                // `madeuptool:nothing` passed the gate). A tool not on this list FAILS the law:
+                // delegation to nowhere is not documentation, it is evasion.
+                Set.ofList [ "code"; "z3"; "tla"; "tlc"; "lean"; "fscheck"; "alloy"; "semgrep"; "codeql"; "stryker"; "qsharp" ]
             if delegated > 0 && expr.Substring(0, delegated) |> Seq.forall (fun ch -> System.Char.IsAsciiLetterLower ch || System.Char.IsAsciiDigit ch) then
                 let tool = expr.Substring(0, delegated)
+                if not (Set.contains tool knownTools) then
+                    { Law = e.Name; Status = Fails; Evidence = sprintf "unknown delegation tool '%s' — not on the toolbox allowlist (delegation to nowhere is evasion)" tool }
+                else
                 { Law = e.Name
-                  Holds = true
-                  Evidence = sprintf "documented here, checked by %s: %s (until chip-level checking exists)" tool (expr.Substring(delegated + 1)) }
+                  Status = Delegated tool
+                  Evidence = sprintf "documented here, checked by %s: %s (delegation is not verification — the tool's own treaty line is the proof)" tool (expr.Substring(delegated + 1)) }
             else
                 match expr.Split('=') with
                 | [| lhs; rhs |] ->
                     match evalSide constants lhs, evalSide constants rhs with
-                    | Some a, Some b -> { Law = e.Name; Holds = a = b; Evidence = sprintf "%s: %d = %d" expr a b }
-                    | _ -> { Law = e.Name; Holds = false; Evidence = "unresolvable term in: " + expr }
-                | _ -> { Law = e.Name; Holds = false; Evidence = "a law needs exactly one '=': " + expr })
+                    | Some a, Some b ->
+                        { Law = e.Name
+                          Status = (if a = b then Holds else Fails)
+                          Evidence = sprintf "%s: %d = %d" expr a b }
+                    | _ -> { Law = e.Name; Status = Fails; Evidence = "unresolvable term in: " + expr }
+                | _ -> { Law = e.Name; Status = Fails; Evidence = "a law needs exactly one '=': " + expr })
 
-    /// Do ALL in-file laws hold?
-    let allHold (d: MediaLines.Doc) : bool = check d |> List.forall (fun x -> x.Holds)
+    /// Does no in-file law FAIL? (Holds and Delegated both pass this — but a consumer who needs
+    /// PROOF must look for Status = Holds or the delegated tool's own treaty line; allHold never
+    /// vouches for a delegation.)
+    let allHold (d: MediaLines.Doc) : bool = check d |> List.forall (fun x -> x.Status <> Fails)

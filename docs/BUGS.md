@@ -86,6 +86,32 @@ tempted to ship.
 
 ## P1 — serious
 
+### Checkpoint corruption is indistinguishable from absence (round-2 hunt, 2026-06-12)
+
+- **Site:** `src/Core/Checkpoint.fs:124-170` (`FileCheckpointStore.LoadCheckpointAsync`)
+- **Symptom:** corrupt/IO-erroring checkpoints return `null` with no signal — a failing disk is
+  invisible forever; a corrupt negative `dataLen` still crashes (only `count < 0` guarded).
+- **Fix:** validate `dataLen` bounds; surface corrupt-vs-missing (enum/out or logged warning).
+
+### Durability claims construction-time flagging that does not exist (round-2 hunt, 2026-06-12)
+
+- **Site:** `src/Core/Durability.fs:33-38` vs `createBackingStore` (~:204)
+- **Symptom:** comment says the factory flags StableStorage mismatch; it silently returns
+  DiskBackingStore — fsync intent gets page-cache semantics, zero runtime signal.
+- **Fix:** runtime warning or flag-gate like WitnessDurable.
+
+### GeneratorRegistry idOf second hash lane is correlated (Kira round 2 #15)
+
+- **Site:** `src/Core/GeneratorRegistry.fs:24-30`
+- **Symptom:** the second FNV lane folds `ch * 31` of the same bytes — correlated with lane one;
+  "128-bit" overstates the effective entropy. `register` accepts collisions; `byId` first-match
+  shadows silently.
+- **Fix (treaty-scale, NOT a patch):** ids are pinned in cartridges/goldens — changing idOf is a
+  coordinated migration (new version, both ids carried). Until then: registry-side collision
+  check at registration (cheap, additive), and the lint's resolution gap stays covered by THE
+  CATALOG LAW test.
+
+
 ### BloomBench.fs referenced but not on disk
 
 **STATUS (triage 2026-06-12): FIXED.** `bench/Benchmarks/BloomBench.fs` exists and was run (see the TECH-RADAR entry below).

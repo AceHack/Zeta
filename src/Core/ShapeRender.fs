@@ -21,6 +21,12 @@ module ShapeRender =
 
     let private scale = 10
 
+    /// Escape cartridge-supplied text for the XML/HTML sinks (Kira round-2 P0: an unescaped meta
+    /// name could put live JS inside the "no JavaScript ever" HTML — the emitter violated its own
+    /// dialect). Every interpolation of cartridge text goes through THIS.
+    let escapeXml (s: string) : string =
+        s.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;")
+
     /// One drawable element of the strict dialect: a named polyline with a palette mask.
     /// `Dash = true` renders dashed (the adinkra's retraction register — a MINUS sign as ink);
     /// dashes are TEXT in the dialect (stroke-dasharray "8 6", exact), so goldens stay diffable.
@@ -38,10 +44,7 @@ module ShapeRender =
     /// construction: one source, two readers).
     let strokesOf (d: MediaLines.Doc) : Stroke list =
         let shape = MediaLines.field "meta" "name" d |> Option.defaultValue "?"
-        let constInt name dflt =
-            MediaLines.field "constant" name d |> Option.bind (fun s ->
-                match System.Int32.TryParse(s, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) with
-                | true, v -> Some v | _ -> None) |> Option.defaultValue dflt
+        let constInt name dflt = MediaLines.constIntOr name dflt d // the ONE reader (Kira #5)
         match shape with
         | "shape-spiral" ->
             let re, im = BoundaryLight.rotorOf 1 12 (constInt "growth-milli" 1100)
@@ -84,7 +87,17 @@ module ShapeRender =
             let word =
                 MediaLines.field "constant" "word" d
                 |> Option.defaultValue "1,2,1"
-                |> fun s -> s.Split(',') |> Array.map int |> Array.toList
+                |> fun s ->
+                    s.Split(',')
+                    |> Array.choose (fun x ->
+                        match System.Int32.TryParse(x.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) with
+                        | true, v -> Some v
+                        | _ -> None)
+                    |> Array.toList
+            // drawn-vs-gated parity (Kira round-2 #4): the renderer guards like the gate — an
+            // invalid word draws NOTHING instead of crashing on perm indexing (the wired gate
+            // refuses such a cartridge before render anyway).
+            if not (Braid.validWord 3 word) then [] else
             let cols = [| 20; 32; 44 |]
             let mutable perm = [| 0; 1; 2 |] // strand index occupying each column slot
             let rows = constInt "rows" 21
@@ -145,7 +158,14 @@ module ShapeRender =
             let word =
                 MediaLines.field "constant" "word" d
                 |> Option.defaultValue "1,-2,1,-2,1,-2"
-                |> fun s -> s.Split(',') |> Array.filter (fun x -> x.Length > 0) |> Array.map int |> Array.toList
+                |> fun s ->
+                    s.Split(',')
+                    |> Array.choose (fun x ->
+                        match System.Int32.TryParse(x.Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) with
+                        | true, v -> Some v
+                        | _ -> None)
+                    |> Array.toList
+            if not (Braid.validWord 3 word) then [] else
             let rows = constInt "rows" 21
             let gap = constInt "strand-gap" 3 // causality-bounded: see the cartridge constant's WHY
             let cols = [| 32 - gap; 32; 32 + gap |]
@@ -322,7 +342,7 @@ module ShapeRender =
                     (pointsAttr s.Points))
             |> String.concat "\n"
         let name = MediaLines.field "meta" "name" d |> Option.defaultValue "shape"
-        sprintf "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 320\" data-cartridge=\"%s\">\n%s\n</svg>\n" name body
+        sprintf "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 320\" data-cartridge=\"%s\">\n%s\n</svg>\n" (escapeXml name) body
 
     /// The HTML+CSS projection: the SVG inline in a dark court, palette as CSS custom properties,
     /// NO JavaScript ever (the HtmlCssBinding law) — pure static, kid-viewable, diffable.
@@ -346,7 +366,14 @@ module ShapeRender =
                 if s.Dash then
                     sprintf "    #%s { opacity: 0; animation: appear 400ms linear %dms forwards; }" s.Name delay
                 else
-                    sprintf "    #%s { stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: draw 600ms linear %dms forwards; }" s.Name delay)
+                    // dash length = the stroke's own Manhattan length (>= euclidean, so the draw
+                    // always completes; Kira #11: a hardcoded 2000 left long polylines stuck in the gap)
+                    let len =
+                        s.Points
+                        |> List.pairwise
+                        |> List.sumBy (fun ((x0, y0), (x1, y1)) -> abs (x1 - x0) + abs (y1 - y0))
+                        |> max 1
+                    sprintf "    #%s { stroke-dasharray: %d; stroke-dashoffset: %d; animation: draw 600ms linear %dms forwards; }" s.Name len len delay)
             |> String.concat "\n"
         let anim =
             "    @keyframes draw { to { stroke-dashoffset: 0; } }\n"
@@ -354,13 +381,14 @@ module ShapeRender =
             + "    polyline:hover { stroke-width: 7; filter: brightness(1.6); }\n"
             + "    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }\n"
             + perStroke
-        sprintf "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <title>%s</title>\n  <style>\n    :root {\n%s\n    }\n    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }\n    svg { width: min(96vw, 960px); image-rendering: pixelated; }\n%s\n  </style>\n</head>\n<body>\n%s</body>\n</html>\n" name vars anim (toSvg d)
+        sprintf "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\" />\n  <title>%s</title>\n  <style>\n    :root {\n%s\n    }\n    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }\n    svg { width: min(96vw, 960px); image-rendering: pixelated; }\n%s\n  </style>\n</head>\n<body>\n%s</body>\n</html>\n" (escapeXml name) vars anim (toSvg d)
 
     /// READ BACK the strict dialect (the bidirectional half) — refuses anything outside it:
     /// script, floats in points, foreign elements. We read their format; we do not import its habits.
     let fromSvg (svg: string) : Result<(string * (int * int) list) list, string> =
-        if svg.Contains "<script" then Error "refused: script is not in the treaty dialect"
-        elif svg.Contains "<svg" |> not then Error "refused: not an svg document"
+        let lower = svg.ToLowerInvariant() // case-insensitive scan (Kira #7c: <SCRIPT defeated Contains)
+        if lower.Contains "<script" then Error "refused: script is not in the treaty dialect"
+        elif lower.Contains "<svg" |> not then Error "refused: not an svg document"
         else
             let lines = svg.Replace("\r\n", "\n").Split('\n')
             let mutable err = None
@@ -377,22 +405,37 @@ module ShapeRender =
                                   match t.IndexOf('"', s) with
                                   | -1 -> None
                                   | e -> Some(t.Substring(s, e - s))
-                          match attr "stroke-dasharray" with
-                          | Some d when d <> "8 6" -> err <- Some "refused: only stroke-dasharray=\"8 6\" is in the treaty dialect"
-                          | _ -> ()
+                          if t.Contains "stroke-dasharray" && not (t.Contains "stroke-dasharray=\"8 6\"") then
+                              err <- Some "refused: only stroke-dasharray=\"8 6\" (double-quoted, exact) is in the treaty dialect" // Kira #7a: single quotes were invisible to attr
                           match attr "id", attr "points" with
                           | Some id, Some pts when not (pts.Contains ".") ->
                               yield
                                   id,
                                   [ for p in pts.Split(' ') do
                                         match p.Split(',') with
-                                        | [| x; y |] -> yield int x, int y
+                                        | [| x; y |] ->
+                                            match System.Int32.TryParse(x, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture),
+                                                  System.Int32.TryParse(y.TrimStart('-'), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture) with
+                                            | (true, xv), (true, _) ->
+                                                // y may be negative in transit only via a leading '-'; re-parse signed but refuse exponents/garbage (Kira #2: 1e3 crashed through the Result)
+                                                match System.Int32.TryParse(y, System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.InvariantCulture) with
+                                                | true, yv -> yield xv, yv
+                                                | _ -> err <- Some "refused: non-integer coordinate"
+                                            | _ -> err <- Some "refused: non-integer coordinate (exponents and garbage are not in the dialect)"
                                         | _ -> err <- Some "refused: malformed point" ]
                           | _, Some pts when pts.Contains "." ->
                               err <- Some "refused: float coordinates are not in the treaty dialect"
                           | _ -> err <- Some "refused: polyline missing id/points"
-                      elif t.StartsWith "<" && not (t.StartsWith "<svg") && not (t.StartsWith "</svg") && t.Length > 1 then
-                          err <- Some(sprintf "refused: foreign element outside the dialect: %s" (t.Substring(0, min 24 t.Length))) ]
+                      else
+                          // every '<' token on the line is checked, not just the line prefix
+                          // (Kira #7b: a one-line document smuggled <image> past the prefix scan)
+                          for seg in t.Split('<') |> Array.skip (if t.StartsWith "<" then 0 else 1) do
+                              let tag = seg.TrimStart('/').ToLowerInvariant()
+                              if seg.Length > 0
+                                 && not (tag.StartsWith "svg")
+                                 && not (tag.StartsWith "polyline")
+                                 && not (tag.StartsWith "!--") then
+                                  err <- Some(sprintf "refused: foreign element outside the dialect: <%s" (seg.Substring(0, min 20 seg.Length))) ]
             match err with
             | Some e -> Error e
             | None -> Ok parsed

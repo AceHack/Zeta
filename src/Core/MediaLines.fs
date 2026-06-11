@@ -84,6 +84,17 @@ module MediaLines =
         |> List.tryFind (fun e -> e.Kind = kind && e.Name = name)
         |> Option.bind (fun e -> List.tryHead e.Fields)
 
+    /// The ONE integer-constant reader (Kira round-2 #5: the gate parsed constants with a
+    /// throwing `int` and DIFFERENT defaults than the renderer — two readers, two parsers, one
+    /// "sync by construction" lie). Both ShapeRender and ShapeAcceptance read through THIS.
+    let constIntOr (name: string) (dflt: int) (d: Doc) : int =
+        field "constant" name d
+        |> Option.bind (fun s ->
+            match System.Int32.TryParse(s, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) with
+            | true, v -> Some v
+            | _ -> None)
+        |> Option.defaultValue dflt
+
     /// Decode a hex field into sprite bytes (the CHIP-8/9 drawable payload).
     let hexBytes (s: string) : byte[] =
         [| for i in 0 .. 2 .. s.Length - 2 -> System.Convert.ToByte(s.Substring(i, 2), 16) |]
@@ -139,6 +150,26 @@ module MediaLines =
         | zid :: _ -> Mock zid
         | [] -> Mock ""
 
+    /// THE RED LIGHT (Aaron 2026-06-12: "we never record agents — AI, human, or otherwise —
+    /// without knowledge; imagine a visible red light on any mic. Consent-first design."):
+    /// every io binding of a cartridge, VISIBLE in one report — which capability is Live (the
+    /// mic is REAL and ON: the red light), which is Adapted (on, through a named piece), which
+    /// is Injected, which is Mock (off — a rehearsal, not a recording). The silent-failure hunt
+    /// found Mock bindings had no audience: an all-Mock load was indistinguishable from all-Live
+    /// to any non-inspecting caller. This report is the audience — render it next to the treaty
+    /// block wherever cartridges load; a recording-capable binding without its light shown is a
+    /// consent violation, not a style choice (manifesto §6).
+    let bindingsReport (resolve: Entry -> IoBinding) (d: Doc) : (string * IoBinding) list =
+        ioOf d |> List.map (fun e -> e.Name, resolve e)
+
+    /// One-line red-light strings for display surfaces (the glance form).
+    let bindingLight (name: string, b: IoBinding) : string =
+        match b with
+        | Live zid -> sprintf "[REC ●] %s LIVE %s" name zid
+        | Adapted(zid, via, from) -> sprintf "[REC ●] %s ADAPTED via %s from %s -> %s" name via from zid
+        | Injected zid -> sprintf "[REC ●] %s INJECTED %s" name zid
+        | Mock zid -> sprintf "[off ○] %s MOCK %s (rehearsal — nothing real is heard)" name zid
+
     /// THE SNAP IN THE LADDER (Aaron 2026-06-12: "keep the snap useful — what can we use it for?"):
     /// resolution with a toolbox of adapters (fromType, toType, pieceName) — the GraphEdit lens in
     /// the capability calculus. The ladder grows one rung: Live → Injected → ADAPTED (the host has
@@ -153,7 +184,7 @@ module MediaLines =
         match resolveIo hostLive granted e with
         | Mock zid when zid <> "" ->
             adapters
-            |> List.tryFind (fun (fromT, toT, _) -> toT = zid && Set.contains fromT hostLive)
+            |> List.tryFind (fun (fromT, toT, _) -> toT = zid && (Set.contains fromT hostLive || Set.contains fromT granted))
             |> function
                 | Some(fromT, _, name) -> Adapted(zid, name, fromT)
                 | None -> Mock zid
@@ -212,6 +243,51 @@ module MediaLines =
                     | [] -> [ { Kind = e.Kind; Name = e.Name; Problem = "anim has no cycle" } ]
                 | _ -> [])
 
+        // hex-payload honesty (Kira #8): frame/sprite/glyph first fields must be EVEN-length pure
+        // hex — hexBytes silently dropped a trailing nibble and threw on non-hex; the lint refuses
+        // upstream so the decoder never sees garbage.
+        let hexPayloads =
+            d.Entries
+            |> List.collect (fun e ->
+                match e.Kind with
+                | "frame" | "sprite" | "glyph" ->
+                    match e.Fields with
+                    | h :: _ when h.Length % 2 <> 0 ->
+                        [ { Kind = e.Kind; Name = e.Name; Problem = "hex payload has odd length — a dropped nibble is silent corruption" } ]
+                    | h :: _ when not (h |> Seq.forall System.Char.IsAsciiHexDigit) ->
+                        [ { Kind = e.Kind; Name = e.Name; Problem = "hex payload contains non-hex characters" } ]
+                    | [] -> [ { Kind = e.Kind; Name = e.Name; Problem = "missing hex payload" } ]
+                    | _ -> []
+                | _ -> [])
+
+        // near-miss kinds (Kira #9): the expansion law carries unknown kinds silently, so a TYPO'D
+        // kind ("constent") voided the WHAT+WHY rule with a clean lint. Edit-distance-1 from a
+        // known kind = almost certainly a typo = a finding (a genuinely new media type won't be
+        // one letter from "constant").
+        let editDist1 (a: string) (b: string) =
+            if a = b then false
+            elif abs (a.Length - b.Length) > 1 then false
+            elif a.Length = b.Length then
+                Seq.zip a b |> Seq.filter (fun (x, y) -> x <> y) |> Seq.length = 1
+            else
+                let s, l = (if a.Length < b.Length then a, b else b, a)
+                let mutable i, j, skips = 0, 0, 0
+                let mutable ok = true
+                while i < s.Length && j < l.Length do
+                    if s.[i] = l.[j] then i <- i + 1; j <- j + 1
+                    else
+                        skips <- skips + 1
+                        j <- j + 1
+                        if skips > 1 then ok <- false; i <- s.Length
+                ok
+        let nearMisses =
+            d.Entries
+            |> List.filter (fun e -> not (Set.contains e.Kind knownKinds))
+            |> List.choose (fun e ->
+                knownKinds
+                |> Seq.tryFind (fun k -> editDist1 e.Kind k)
+                |> Option.map (fun k -> { Kind = e.Kind; Name = e.Name; Problem = sprintf "unknown kind one letter from '%s' — almost certainly a typo (carried kinds stay silent only when they are not near-misses)" k }))
+
         let dupes =
             d.Entries
             |> List.filter (fun e -> Set.contains e.Kind knownKinds && e.Kind <> "rom" && e.Kind <> "treaty" && e.Kind <> "edge") // rom repeats per address; treaty repeats per verdict (a log); edge repeats per target (a node has many edges of one relation — identity is relation+target)
@@ -219,7 +295,7 @@ module MediaLines =
             |> List.filter (fun (_, es) -> List.length es > 1)
             |> List.map (fun ((k, n), _) -> { Kind = k; Name = n; Problem = "duplicate (kind, name)" })
 
-        perEntry @ dupes
+        perEntry @ hexPayloads @ nearMisses @ dupes
 
     /// The document AS a room declaration: Some (sim, mea, cut) when all three verbs are present —
     /// the file defines its own loop in the verb engine; None = a media-only document (honest).

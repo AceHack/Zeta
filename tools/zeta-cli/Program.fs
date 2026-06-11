@@ -12,23 +12,62 @@ open Zeta.Core.FSharp.Git
 /// over HTTPS. GitHub is a plugin, not git-native — the source only yields a handler or a clean error.
 /// `zeta shape render <cartridge.lines> (svg|html)` — the cartridge's projection printed to stdout.
 /// The cartridge is the single source; SVG/HTML are regenerated, never edited (sync by golden lock).
-let private shapeRender (path: string) (kind: string) : int =
-    match Zeta.Core.MediaLines.parse (IO.File.ReadAllText path) with
-    | Error e ->
-        eprintfn "zeta: %s: %s" path e
+/// THE GATE IS WIRED (silent-failure hunt 2026-06-12: "the HARD GATE gated nothing" — acceptance
+/// ran only in tests while zeta-cli rendered failing cartridges identically to passing ones):
+/// render now REFUSES a cartridge that fails bytes/geometry/honest-labels (exit 3, verdicts on
+/// stderr); `zeta shape accept` runs the gate standalone. Meaning verdicts are reported, never
+/// gated — unchanged.
+let private shapeAccept (path: string) : int =
+    if not (IO.File.Exists path) then
+        eprintfn "zeta: %s: not found" path
         1
-    | Ok doc ->
-        match kind with
-        | "svg" -> printf "%s" (Zeta.Core.ShapeRender.toSvg doc); 0
-        | "html" -> printf "%s" (Zeta.Core.ShapeRender.toHtml doc); 0
-        | k ->
-            eprintfn "zeta: unknown projection '%s' (svg|html)" k
-            2
+    else
+        match Zeta.Core.MediaLines.parse (IO.File.ReadAllText path) with
+        | Error e ->
+            eprintfn "zeta: %s: %s" path e
+            1
+        | Ok doc ->
+            let verdicts = Zeta.Core.ShapeAcceptance.acceptOne doc
+            for v in verdicts do
+                let mark = if v.Accepted then "ok " else "FAIL"
+                eprintfn "  [%s] %A: %s" mark v.Register v.Evidence
+            if Zeta.Core.ShapeAcceptance.accepted verdicts then
+                printfn "accepted"
+                0
+            else
+                eprintfn "zeta: %s REFUSED by the gate (no shape is accepted because it looks good)" path
+                3
+
+let private shapeRender (path: string) (kind: string) : int =
+    if not (IO.File.Exists path) then
+        eprintfn "zeta: %s: not found" path
+        1
+    else
+        match Zeta.Core.MediaLines.parse (IO.File.ReadAllText path) with
+        | Error e ->
+            eprintfn "zeta: %s: %s" path e
+            1
+        | Ok doc ->
+            let verdicts = Zeta.Core.ShapeAcceptance.acceptOne doc
+            if not (Zeta.Core.ShapeAcceptance.accepted verdicts) then
+                for v in verdicts do
+                    if not v.Accepted then eprintfn "  [FAIL] %A: %s" v.Register v.Evidence
+                eprintfn "zeta: %s REFUSED by the gate — fix the cartridge or run 'zeta shape accept' for the full verdicts" path
+                3
+            else
+                match kind with
+                | "svg" -> printf "%s" (Zeta.Core.ShapeRender.toSvg doc); 0
+                | "html" -> printf "%s" (Zeta.Core.ShapeRender.toHtml doc); 0
+                | k ->
+                    eprintfn "zeta: unknown projection '%s' (svg|html)" k
+                    2
 
 [<EntryPoint>]
 let main argv =
     match argv with
     | [| "shape"; "render"; path; kind |] -> shapeRender path kind
+    | [| "shape"; "accept"; path |] -> shapeAccept path
+    | [| "shape"; "render"; _ |] -> eprintfn "zeta: usage: zeta shape render <cartridge.lines> (svg|html)"; 2
     | _ ->
 
     match CliParse.parse argv with

@@ -139,3 +139,69 @@ let ``the writhe-parity character is a homomorphism: parity(ab) = parity(a) XOR 
     Assert.Equal(1, Braid.writheParity [ 1 ])
     Assert.Equal(1, Braid.writheParity [ -2 ]) // sigma inverse ALSO maps to 1 (not a signed count)
     Assert.Equal(0, Braid.writheParity [ 1; -1 ]) // do-undo is even — consistent with identity
+
+// ── round-2 tear-down regression gates (Kira + the silent-failure hunter, 2026-06-12) ──
+
+[<Fact>]
+let ``INJECTION REFUSED: a hostile cartridge name cannot break out of the SVG attribute or smuggle script into the HTML`` () =
+    let hostile = "meta\tname\tx</title><script>alert(1)</script>\"<svg\nconstant\tn\t1\twhat\twhy\n"
+    let d = MediaLines.parse hostile |> Result.toOption |> Option.get
+    let svg = ShapeRender.toSvg d
+    let html = ShapeRender.toHtml d
+    Assert.DoesNotContain("<script", svg)
+    Assert.DoesNotContain("<script", html)
+    Assert.DoesNotContain("alert(1)</title>", html) // the payload arrives escaped, not live
+    Assert.Contains("&lt;script&gt;", html)
+
+[<Fact>]
+let ``FROMSVG IS TOTAL: exponents, garbage, overflow, case-tricks, single-quoted dashes, and smuggled one-liners are REFUSALS, not crashes`` () =
+    let refused (s: string) =
+        match ShapeRender.fromSvg s with
+        | Error _ -> true
+        | Ok _ -> false
+    Assert.True(refused "<svg>\n<polyline id=\"a\" points=\"1,1e3\" />\n</svg>") // exponent
+    Assert.True(refused "<svg>\n<polyline id=\"a\" points=\"1,abc\" />\n</svg>") // garbage
+    Assert.True(refused "<svg>\n<polyline id=\"a\" points=\"1,99999999999999999999\" />\n</svg>") // overflow
+    Assert.True(refused "<svg>\n<SCRIPT>alert(1)</SCRIPT>\n</svg>") // case trick
+    Assert.True(refused "<svg>\n<polyline id=\"a\" stroke-dasharray='9 9' points=\"1,2 3,4\" />\n</svg>") // single quotes
+    Assert.True(refused "<svg><polyline id=\"a\" points=\"1,2 3,4\" /><image href=\"x\" /></svg>") // one-line smuggle
+
+[<Fact>]
+let ``DELEGATION TO NOWHERE IS EVASION: an unknown tool prefix FAILS the law and the gate with it`` () =
+    let txt = "meta\tname\tdemo\nconstant\tn\t4\twhat\twhy\nlaw\thonesty\tmadeuptool:nothing\n"
+    let d = MediaLines.parse txt |> Result.toOption |> Option.get
+    Assert.False(CartridgeLaw.allHold d)
+    // and a KNOWN tool delegates without vouching: not Fails, not Holds
+    let txt2 = "meta\tname\tdemo\nconstant\tn\t4\twhat\twhy\nlaw\tliveness\ttla:Spec.Drains\n"
+    let d2 = MediaLines.parse txt2 |> Result.toOption |> Option.get
+    let v = CartridgeLaw.check d2 |> List.head
+    Assert.Equal(CartridgeLaw.Delegated "tla", v.Status)
+    Assert.True(CartridgeLaw.allHold d2)
+
+[<Fact>]
+let ``LAW ARITHMETIC NEVER WRAPS: an overflowing product is a refusal, not a zero that holds`` () =
+    let txt = "meta\tname\tdemo\nlaw\twrap\t1000000 * 1000000 * 1000000 * 1000000 = 0\n"
+    let d = MediaLines.parse txt |> Result.toOption |> Option.get
+    Assert.False(CartridgeLaw.allHold d)
+
+[<Fact>]
+let ``THE LINT CATCHES TYPO'D KINDS AND ODD HEX: 'constent' is a near-miss finding, a dangling nibble is corruption`` () =
+    let d = MediaLines.parse "meta\tname\tdemo\nconstent\tn\t4\twhat\twhy\n" |> Result.toOption |> Option.get
+    Assert.Contains(MediaLines.lint d, fun f -> f.Problem.Contains "one letter from 'constant'")
+    let d2 = MediaLines.parse "meta\tname\tdemo\nframe\tf\tabc\n" |> Result.toOption |> Option.get
+    Assert.Contains(MediaLines.lint d2, fun f -> f.Problem.Contains "odd length")
+
+[<Fact>]
+let ``THE RED LIGHT: every io binding visible — REC for live/adapted/injected, off for mock (no agent recorded without knowledge)`` () =
+    let want = GeneratorRegistry.idOf "algebra.z2-parity" 1
+    let have = GeneratorRegistry.idOf "algebra.braid-memory" 1
+    let txt = sprintf "meta\tname\tdemo\nio\tmic\t%s\nio\ttape\t%s\n" want have
+    let d = MediaLines.parse txt |> Result.toOption |> Option.get
+    let report = MediaLines.bindingsReport (MediaLines.resolveIo (Set.ofList [ have ]) Set.empty) d
+    let lights = report |> List.map MediaLines.bindingLight
+    Assert.Contains(lights, fun (l: string) -> l.Contains "[off ○] mic MOCK")
+    Assert.Contains(lights, fun (l: string) -> l.Contains "[REC ●] tape LIVE")
+    // an adapter sourced from a GRANTED capability now binds Adapted (the ladder's missing rung)
+    match MediaLines.resolveIoWith [ have, want, "mod2" ] Set.empty (Set.ofList [ have ]) { MediaLines.Kind = "io"; MediaLines.Name = "mic"; MediaLines.Fields = [ want ] } with
+    | MediaLines.Adapted _ -> ()
+    | other -> Assert.True(false, sprintf "expected Adapted via granted capability, got %A" other)
