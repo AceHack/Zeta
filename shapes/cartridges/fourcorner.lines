@@ -9,6 +9,8 @@ gen	corners	34421ffaf8cae89e6ad862f4e68812ed	1	7	regime:phasor;samples:256
 constant	corners	4	measurement-setting pairs drawn (a0b0, a0b1, a1b0, a1b1)	CHSH is exactly four corners — three underdetermines S, five is redundant; the geometry IS the inequality
 constant	tsirelson-milli	2828	the phasor regime's S, milli-scale (2*sqrt(2))	the known-answer overlay: the phasor figure must reach THIS width and no further — wider means the renderer (or the physics claim) is lying
 constant	samples	256	seeded lambda draws for the classical regime	enough for the classical S to settle visibly under 2; deterministic from the common-cause seed, so the figure replays
+issue	qsharp-verification	vera	requested	the tsirelson-milli 2828 stop + corner correlators are Q#-verifiable (singlet CHSH) — brief: docs/research/2026-06-12-vera-brief-qsharp-*.md; her verdict lines are HERS to write
+issue	math-sign-off	math-team	requested	after Vera: sign the S<=2 classical / 2*sqrt(2) phasor / staged-4-labeled claims
 anim	draw	corners
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	fsharp	bytes	ratified	TimeGen.chsh: classical <= 2, phasor = 2*sqrt(2), staged = 4 with the STAGED label — tests green
