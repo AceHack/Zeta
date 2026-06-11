@@ -29,7 +29,7 @@ Full grounding + anchors: `docs/research/2026-06-11-universal-action-grammar-rev
    room forever).
 4. **Reversible RISC-V profile** (the novel seam, named as novelty): Pendulum/PISA-class reversibility
    on RISC-V's open opcode space; the un-instruction = ISA-level retraction.
-5. **Fan out**: MIPS (Max) · FPGA Verilog (Aaron) · SPIR-V shaders — each a backend of the SAME grammar.
+5. **Fan out**: MIPS (Max) · FPGA Verilog (Aaron) · **NVIDIA GPU first among shader targets — hardware in hand NOW** (Aaron 2026-06-11: "tons hooked up, ready"; "go small and large" = minimal one-SM room-loop probe AND the large society-graph GPGPU) · SPIR-V — each a backend of the SAME grammar.
 
 ## Acceptance (first slice)
 

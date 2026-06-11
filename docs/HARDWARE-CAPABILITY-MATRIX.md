@@ -23,6 +23,7 @@ replay). Idempotent upsert by (target, surface). No aspirational greens.
 | **raspberry-pi-4/5** (metal) | UNKNOWN (arm64 .NET exists upstream) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN (RNS upstream supports Pi) | UNKNOWN | Aaron has the hardware; nothing recorded |
 | **microcontroller class** (RNode-ish) | ❌ honest-no (no .NET) | ❌ | UNKNOWN (no_std uninvestigated) | UNKNOWN (a C CHIP-8 fits the class) | ❌ (sim is .NET) | UNKNOWN (RNode firmware proves the radio layer) | ❌ | class analysis only — the honest-capability probe is B-1024 rung 5 |
 | **nixos-x64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | named in the 6×6×6 room axis; no recorded run |
+| **nvidia-gpu (CUDA, small AND large)** | UNKNOWN (ILGPU/.NET-CUDA exists upstream) | UNKNOWN | UNKNOWN (cudarc) | UNKNOWN (a shader CHIP-8 is the lens-on-GPU probe) | UNKNOWN | n/a | n/a | **hardware IN HAND — Aaron: "tons hooked up right now, ready" (2026-06-11); B-0725 lineage; the B-1025 shader rung jumps the queue** |
 
 Legend: ✅ proven green · ❌ honest-no (class can't carry it — declared, like Mono1) · UNKNOWN = no
 evidence either way (NOT a no; a cell waiting for its first run).
@@ -37,6 +38,9 @@ evidence either way (NOT a no; a cell waiting for its first run).
    has looked (cheap to scout).
 4. **RNS daemon real-wire** — the sim is proven; the `rnsd` integration is the FinalizerRuntimeLive
    named follow-up. Friction unknown until tried.
+5. **NVIDIA GPU bring-up** — hardware READY NOW (Aaron's bench, "tons hooked up"); "go small and large"
+   = both a minimal kernel probe (one room loop on one SM) and the large fan-out (the swarm board's
+   society graph as GPGPU). The waiting-on-nothing cell: first green is a bench session away.
 
 ## Heat
 

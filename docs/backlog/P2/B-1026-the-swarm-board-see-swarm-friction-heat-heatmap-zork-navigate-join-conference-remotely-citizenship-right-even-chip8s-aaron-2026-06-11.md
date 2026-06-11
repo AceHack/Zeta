@@ -28,6 +28,7 @@ Full grounding: `docs/research/2026-06-11-the-swarm-board-sit-down-see-where-hel
 4. **The CHIP-8 sitter** — a CHIP-8 citizen sits at the board (Mono1 render), finds the hot cell,
    emits go:, joins — the citizenship proof (A·C·T·G exercised end-to-end by the smallest citizen).
 5. **observe.ts TrueColor binding** — the web sit-down (the CYOA surface), same crossings.
+6. **Deploy wide** (Aaron 2026-06-11): "then we do the dotnet version and raspberry pi too and all our treaty languages, and we go small and large on NVIDIA GPUs — I have tons hooked up right now, ready" — the board itself ports across the treaty oracles (.NET/TS/Rust/C#), runs on the Pi rung, and renders/computes small-and-large on the in-hand NVIDIA bench.
 
 ## Acceptance (first slice)
 
