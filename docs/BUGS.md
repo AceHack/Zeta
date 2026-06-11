@@ -113,7 +113,6 @@ tempted to ship.
   check at registration (cheap, additive), and the lint's resolution gap stays covered by THE
   CATALOG LAW test.
 
-
 ### BloomBench.fs referenced but not on disk
 
 **STATUS (triage 2026-06-12): FIXED.** `bench/Benchmarks/BloomBench.fs` exists and was run (see the TECH-RADAR entry below).
@@ -264,7 +263,6 @@ tempted to ship.
   occurrence COUNTS (width-only exemptions; the contains-disjunct excuse); shine dim-assertions;
   self-agreement family literal pins; FluxView full-suffix + monotone recovery; MediaLines hedged
   dimension contract; healthy() boundary case; hand-written HTML golden fragments.
-
 
 ### MerkleTree.LeafDiff is flat O(N), not the branch-pruning walk its docstring claims
 
