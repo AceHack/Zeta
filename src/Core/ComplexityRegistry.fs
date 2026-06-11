@@ -79,7 +79,8 @@ module ComplexityRegistry =
               ("shape.fourcorner", "draw"), c "O(1)" "O(1)" Derived
               ("shape.braid", "draw"), c "O(crossings·strands)" "O(strands)" Derived
               ("shape.spiral", "draw"), c "O(steps)" "O(steps)" Derived
-              ("shape.seam", "draw"), c "O(strands·passes)" "O(strands)" Derived ]
+              ("shape.seam", "draw"), c "O(strands·passes)" "O(strands)" Derived
+              ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived ]
 
     /// THE BUDGET LINT: every registered artifact (generators + layouts + indexes + schemes) whose
     /// costs are entirely UNSTATED. Empty list = the requirement holds across the shelf.
