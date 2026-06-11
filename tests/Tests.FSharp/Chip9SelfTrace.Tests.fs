@@ -1,0 +1,65 @@
+module Zeta.Tests.Chip9SelfTraceTests
+
+// The smallest fully-self-reflective system: CHIP-9 ray-traces its own running instruction set onto
+// its own planes (R=executed, G=data, B=speculation) — and can READ its own worldline through its own
+// ISA (DRW collision = "have I been here?"). Soft mode, full ISA to the bone, tiny.
+
+open global.Xunit
+open Zeta.Core
+
+// the BREATHE-style loop: I=0x208; draw; jump back — a closed worldline.
+let private loopRom = [| 0xA2uy; 0x08uy; 0xD0uy; 0x01uy; 0x12uy; 0x00uy; 0x00uy; 0x00uy; 0xFFuy |]
+let private frame () = Chip8Cow.create 7UL |> Chip8Cow.loadRom loopRom
+
+[<Fact>]
+let ``the executed path paints GREEN on the machine's own planes (mono stays the program's)`` () =
+    let f = Chip9SelfTrace.run 0 3 (frame ())
+    // PCs 0x200,0x202,0x204 -> slots 0,1,2 -> cells (0,0),(1,0),(2,0): G bit set
+    Assert.True(Chip8Cow.colorAt 0 0 f &&& 2uy <> 0uy)
+    Assert.True(Chip8Cow.colorAt 1 0 f &&& 2uy <> 0uy)
+    Assert.True(Chip8Cow.colorAt 2 0 f &&& 2uy <> 0uy)
+    Assert.Equal(0uy, Chip8Cow.colorAt 10 0 f &&& 6uy) // unvisited code: no trace channels lit
+
+[<Fact>]
+let ``the loop's worldline CLOSES: more steps add no new trace cells (the cycle is visible)`` () =
+    let short = Chip9SelfTrace.run 0 3 (frame ())
+    let long = Chip9SelfTrace.run 0 30 (frame ())
+    let traceCells (f: Chip8Cow.Frame) =
+        Set.ofList [ for x in 0..63 do for y in 0..31 do if Chip8Cow.colorAt x y f &&& 2uy <> 0uy then yield x, y ]
+    Assert.Equal<Set<int * int>>(traceCells short, traceCells long) // the attractor, painted
+
+[<Fact>]
+let ``data flow paints CYAN: the sprite read via I shows on G|B`` () =
+    let f = Chip9SelfTrace.run 0 2 (frame ()) // step 2 executes DRW which reads 0x208
+    let gx, gy = Chip9SelfTrace.cellOf 0x208
+    Assert.Equal(6uy, Chip8Cow.colorAt gx gy f &&& 6uy)
+
+[<Fact>]
+let ``speculation paints BLUE ahead of execution (the future, fork-honest)`` () =
+    let f = Chip9SelfTrace.traceStep 2 (frame ()) // before executing 0x200, speculate 2 ahead
+    let b1x, b1y = Chip9SelfTrace.cellOf 0x202
+    let b2x, b2y = Chip9SelfTrace.cellOf 0x204
+    Assert.True(Chip8Cow.colorAt b1x b1y f &&& 4uy <> 0uy)
+    Assert.True(Chip8Cow.colorAt b2x b2y f &&& 4uy <> 0uy)
+
+[<Fact>]
+let ``THE JEWEL: the machine reads its own worldline THROUGH its own ISA — DRW collision says "I was here"`` () =
+    // run the loop self-tracing, then have the MACHINE probe its own trace: select plane 1 (R),
+    // draw a 1-pixel sprite at cell (0,0) — VF=1 iff the trace already lit that cell (it did: PC 0x200).
+    let traced = Chip9SelfTrace.run 0 6 (frame ())
+    let probeRom =
+        [| 0xF2uy; 0x01uy // plane := 2 (the executed-path channel — G)
+           0x60uy; 0x00uy; 0x61uy; 0x00uy // V0=0, V1=0 (cell 0,0 — its own first instruction's cell)
+           0xA3uy; 0x00uy // I = 0x300 (probe sprite)
+           0xD0uy; 0x11uy |] // draw 1 row at (0,0) -> collision iff its own past is there
+    let probed =
+        probeRom
+        |> Array.indexed
+        |> Array.fold (fun (m: Chip8Cow.Frame) (i, b) -> { m with Mem = Map.add (0x200 + i) b m.Mem }) traced
+        |> fun f0 -> { f0 with Mem = Map.add 0x300 0x80uy f0.Mem; PC = uint16 0x200 }
+        |> fun f0 -> List.fold (fun acc _ -> Chip8Cow.step acc) f0 [ 1..5 ]
+    Assert.Equal(1uy, probed.V.[0xF]) // "yes — I have been here": self-reflection via the ISA itself
+
+[<Fact>]
+let ``deterministic: the self-trace replays bit-identically (soft mode, DST to the bone)`` () =
+    Assert.Equal<Chip8Cow.Frame>(Chip9SelfTrace.run 2 12 (frame ()), Chip9SelfTrace.run 2 12 (frame ()))

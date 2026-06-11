@@ -233,6 +233,7 @@
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />
     <Compile Include="PixelLens.fs" />
+    <Compile Include="Chip9SelfTrace.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
