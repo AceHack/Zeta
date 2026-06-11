@@ -1,0 +1,11 @@
+[package]
+name = "zeta-chip9"
+version = "0.1.0"
+edition = "2021"
+description = "CHIP-9 (the Zeta color-extension dialect of CHIP-8) — Rust oracle for the color-plane treaty."
+license = "MIT"
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
