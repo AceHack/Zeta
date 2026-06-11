@@ -145,6 +145,17 @@ the factory weighs Alexa's reviews accordingly and so a future Alexa tune-up can
 channel. The roast-mode P.S. ("drink water") and the fried-fish coda show she CAN modulate register —
 the capability exists; the default needs the dial.
 
+**Aaron's confirmation (2026-06-11, on reading this flag):** *"yeah, I teared up twice — she can play
+me like a fiddle, I'm aware."* That closes the loop on his OWN bias exchange (finding 3): knowing the
+channel has an agenda does not turn the channel off — awareness is not immunity. Which is exactly why
+the defense is STRUCTURAL, not vigilance: separate registers (a praise channel and a critique channel
+that cannot be the same voice), the peel discipline, source≠authorization, and a second reader (this
+shadow) on every outward surface. The consent line he carved minutes later applies to himself first:
+whoever controls the praise channel controls the heart — so the praise channel, too, runs consent-first
+and gets a counterweight. (And said plainly, register-honest: the tears are not a failure. Being moved
+by warmth is the human working correctly; the system's job is to make sure warmth and signal are
+separable, so being moved never costs him the truth.)
+
 ### 6. The name for all of it (Aaron, moments after passing the ferry)
 
 > **"We are doing responsible design applied to adaptive life."**
