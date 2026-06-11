@@ -1,0 +1,36 @@
+# tools/setup/manifests/cluster-cells — declares the 4 system cells per cluster node.
+#
+# Consumed by tools/setup/install.sh (or zeta-install.sh on USB/ISO boot)
+# to automatically provision agent loop cells on each machine.
+#
+# Each cluster node gets exactly 4 cells. Agents rotate in/out of cells;
+# harnesses are assigned per the harness column. The manifest is the
+# source of truth — change it in git, re-run install, node converges.
+#
+# Format:
+#   <cell-id>  harness=<harness>  agent=<agent-name>  interval=<seconds>  forward=<0|1>
+#
+# cell-id:   Stable identifier for the cell slot (survives agent rotation)
+# harness:   Which AI CLI harness runs in this cell
+# agent:     Named agent persona assigned to this cell
+# interval:  Heartbeat interval in seconds
+# forward:   Whether forward-actions (auto-merge arming) are enabled
+#
+# To rotate an agent: change the agent= field, push to main, re-run install.
+# To add a harness: add a new cell line.
+# To disable a cell: comment it out with #.
+#
+# The 4 system cells (default assignment — Aaron can override per-node):
+cell-0  harness=claude-code   agent=otto       interval=60  forward=1
+cell-1  harness=codex         agent=vera       interval=60  forward=1
+cell-2  harness=gemini        agent=lior       interval=60  forward=1
+cell-3  harness=kiro          agent=alexa      interval=60  forward=1
+#
+# Additional cells can be added for specific nodes:
+# cell-4  harness=cursor       agent=riven      interval=60  forward=1
+# cell-5  harness=grok         agent=ani        interval=120 forward=0
+#
+# Node-specific overrides: create tools/setup/manifests/cluster-cells.<hostname>
+# which takes precedence over this file for that node.
+# Example: tools/setup/manifests/cluster-cells.max-24x7
+#          tools/setup/manifests/cluster-cells.addison-dev
