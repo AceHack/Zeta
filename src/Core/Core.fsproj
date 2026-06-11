@@ -232,6 +232,7 @@
     <Compile Include="GeneratorRegistry.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />
+    <Compile Include="PixelLens.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
