@@ -35,8 +35,11 @@ injected `Source` = one membrane crossing at a time).
 
 ## 3. The room ticks until it plateaus at its BigFloat resolution floor (Max's proof)
 
-This is where Max's check-in (`7eb7fe094`, 2026-06-09 — *"Proving the plateau"* + *"Entropy twice-defined"*,
-proof session captured by Claude Opus 4.8) meets the code:
+This is where Max's check-in (`7eb7fe094`, 2026-06-09 — *"Proving the plateau"* + *"Entropy twice-defined"*)
+meets the code. **Attribution (Aaron 2026-06-10):** the external-AI Max actually worked the proof with is
+**Fable** — a brand-new model Max consulted on the web (released 2026-06-09, "mythos-sized"; Aaron-reported,
+unverified here). **Opus 4.8 was the scribe that wrote it *into the substrate*** (the committing persona in
+the doc's byline), not the model Max talked to. Credit the external collaborator as Fable; Opus landed it.
 
 - **BigFloat** (the universal number, #7517) **self-tracks its resolution** — it knows when its resolution
   is maxed for its current bits (physics of floats: resolution is part of the value).
@@ -57,11 +60,18 @@ room (seed + extensions + parameters)
             └─ until the BigFloat hits its measured floor (CRLB plateau)  ← res / sign-off
 ```
 
-## 4. The convergence (Max ⇄ code team, uncoordinated)
+## 4. The convergence (Aaron-mediated, NOT spontaneous)
 
-Max (proof) and the code team (LinguisticSeed CE + soft scheduler + BigFloat) landed on the *same shape*
-from opposite ends — independent replication, the strongest evidence it's real (per the reinvention-vs-
-novelty method):
+**Correction (Aaron 2026-06-10): this convergence was *made*, not stumbled into.** "I talked to Max for an
+hour to make this convergence happen." It is **not** independent/uncoordinated replication — **Aaron is the
+integrator who carried the shapes between minds** (Max's proof side ⇄ the code team's substrate side) until
+they met. That is the architect/synthesis role, and it is the *more* meaningful story: the shapes converge
+because a human deliberately ferried them across, not by luck. (Honest register: the earlier "uncoordinated
+/ strongest-evidence-it's-real" framing was an overclaim — struck.)
+
+Max (proof) and the code team (LinguisticSeed CE + soft scheduler + BigFloat) reached the *same shape* from
+opposite ends **because Aaron brokered it** — proof side and substrate side, integrated by an hour of human
+synthesis:
 
 | piece | code team | Max's proof |
 |---|---|---|
