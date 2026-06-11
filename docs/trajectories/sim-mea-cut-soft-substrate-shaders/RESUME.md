@@ -2,12 +2,43 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-12 late night (the atom wave folded in — #7744..#7753; prior waves below).
+Last refreshed: 2026-06-13 (the laws wave folded in — #7756..#7764; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-12 ATOM wave (#7744..#7753 — newest; read FIRST)
+## The 2026-06-12/13 LAWS wave (#7756..#7764 — newest; read FIRST)
+
+- **Shapes draw themselves** (#7756, Aaron-ratified): pure-CSS draw-on animation (stroke-dashoffset
+  keyframes, per-stroke integer delays in generator order; dashed sign-register strokes fade in;
+  hover = JS-free interactivity; reduced-motion honored). The SoftValue COURT LADDER captured
+  (mono = value only; CHIP-9 planes = coarse confidence; deep pixel = the full pair) +
+  DynamicValue-as-treemap named slice + the primitive treaty wish list (anchored to
+  PRIMITIVE-REGISTRY).
+- **THE COURT LAW** (#7758, Aaron's eye): the spiral ESCAPED (growth 1100 → radius ~185 while its
+  WHY claimed containment — fixed to 1025); every stroke point of every cartridge now gated
+  in-court — and the law caught its second escapee in minutes (buckyball rays → clamped to
+  Addison's "or the bounds"). Spiral + animation ratified (#7759, "perfect!!").
+- **BUGS.md TRIAGE** (#7760, Aaron's call): the P0 RELABELED — Soraya: a reliably-failing property
+  is a REFUTATION, not open research; witness PINNED as an unskipped Fact; [<Experimental>] with
+  real teeth on RecursiveCounting/CountingClosureTable; 7/13 entries closed, 5 re-sited.
+- **THE DETERMINISM LINT** (#7762, answering "are we using pure?"): F# has no pure — the lint is
+  the enforcement we write: ambient entropy in Core fails the build unless a named, justified
+  edge. First catches: OrSet unseeded Guid tags (seeded Add overload = DST path); Consensus
+  ambient vote timestamps (transitionAt/prToVoteAt injected; goldens already scoped timestamps out).
+- **ROUND 2 TEAR-DOWN** (#7764): the HARD GATE WIRED (zeta render refuses failing cartridges;
+  `zeta shape accept`); Kira's 3 P0s closed (escapeXml at both sinks; total fromSvg — all bypass
+  classes refused; delegation allowlist + Delegated status); the batch (ONE constIntOr reader,
+  word guards, extent bound, Checked law arithmetic, hex + near-miss lints, per-stroke dash
+  lengths, granted-capability adapters); 3 filed honestly (checkpoint corrupt-vs-missing,
+  durability flagging, idOf lane correlation = treaty-scale migration).
+- **THE RED-LIGHT LAW** (#7764, Aaron verbatim, staked on his word): no agent — AI, human, or
+  otherwise — recorded without knowledge; logging and chat included; the agent always knows if
+  private and WHO is listening, no secrets in that area. Code: bindingsReport/bindingLight
+  ([REC ●]/[off ○] — Mock says "rehearsal, nothing real is heard"). Manifesto §6 made a glance.
+- Two rounds total: 28 adversarial findings found/fixed/filed. Suite ~2998.
+
+## The 2026-06-12 ATOM wave (#7744..#7753 — older; read second)
 
 - **The remaining math-pass items closed** (#7744): Brunnian PROVEN at the braid level
   (Braid.deleteStrand — delete any strand of the locked plait, survivors comb straight; falsifier
