@@ -153,6 +153,7 @@
     <Compile Include="SimLoopTelemetry.Tests.fs" />
     <Compile Include="WheelRoom.Tests.fs" />
     <Compile Include="Chip9Planes.Tests.fs" />
+    <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
