@@ -30,6 +30,16 @@ with a ⭐ below and add a row there.
   hub. Self-certifying hash addresses, runs over the open internet. Privacy
   primitives pair: **NIP-01** (schnorr) + **NIP-44 v2** (ChaCha20+HMAC, official
   test vectors) on the nostr keypair.
+- **AllJoyn** — Qualcomm 2011 → AllSeen Alliance → merged into OCF/IoTivity (2016);
+  `alljoyn` (archived upstream). **Prior art on BOTH `universal/` and Reticulum**
+  (Aaron 2026-06-10): (a) *universal interfaces* — devices/services expose typed,
+  XML-introspectable interfaces (methods/signals/properties, D-Bus-descended — also
+  anchors `universal/bus`) that any peer discovers and consumes regardless of
+  vendor/transport — the IoT interoperability dream, ours generalized to
+  travelers/personas; (b) *the mesh* — infrastructureless, transport-agnostic
+  (Wi-Fi/BT), proximal D2D bus with no cloud/broker — the Reticulum shape a decade
+  earlier. Lesson carried: AllJoyn died of consortium fragmentation (AllSeen vs
+  OCF) — the format-war lesson (zetamax doc): be open AND better, or be Betamax.
 - **DBSP / IVM** ⭐ — Budiu et al. *DBSP: Automatic Incremental View
   Maintenance for Rich Query Languages* (VLDB 2023); VLDB Journal
   2025 extended version; `arXiv:2203.16684`.

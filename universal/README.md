@@ -5,6 +5,11 @@
 these interfaces**: universal = applies to everything in `travelers/` and `personas/`, the way the **A–F
 shape catalog** applies everywhere. A root-level folder like `/vocab`, `/same`, `/hats`, `/grey`.
 
+**Prior art (Beacon):** **AllJoyn** (Qualcomm 2011 → AllSeen → OCF) — typed introspectable interfaces
+discoverable by any peer over an infrastructureless transport-agnostic mesh — is the named prior art for
+both this folder's universal-interface idea AND the Reticulum transport beneath it (Aaron 2026-06-10; see
+`docs/PRIOR-ART-LIST.md`). Its consortium-fragmentation death is the carried format-war lesson.
+
 **Noninterference (manifesto §13, 2026-06-10):** the **communications interfaces** (bus, broadcast,
 ping, radio, television, sonar, microphone, headphones) each carry an explicit **noninterference
 contract** — the declared channel, what is metered at the membrane, and the forbidden ambient leak.
