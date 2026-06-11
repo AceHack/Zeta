@@ -89,3 +89,22 @@ let ``THE SHAPE CATALOG: a cartridge per shape, each ZetaId'd and cost-declared;
     for s in [ "shape.worldline"; "shape.lightcone"; "shape.fourcorner"; "shape.braid"; "shape.spiral"; "shape.seam" ] do
         Assert.True(GeneratorRegistry.byName s |> Option.isSome)
     Assert.Equal<string list>([], ComplexityRegistry.unstated ())
+
+[<Fact>]
+let ``THE MISSING PIECE: braid memory cannot snap into adinkra parity directly — the mod2 adapter from the toolbox completes the flow`` () =
+    let braidOut = MagneticPorts.port 0 0 MagneticPorts.Source (GeneratorRegistry.idOf "algebra.braid-memory" 1)
+    let adinkraIn = MagneticPorts.port 8 0 MagneticPorts.Sink (GeneratorRegistry.idOf "algebra.z2-parity" 1)
+    // direct: incompatible (different registers — order vs parity); the magnet repels, honestly
+    Assert.False(MagneticPorts.compatible braidOut adinkraIn)
+    // the toolbox holds the quotient: Z -> Z/2 (order forgotten, parity kept — a projection, not an inverse)
+    let mod2 =
+        MagneticPorts.piece "mod2" (GeneratorRegistry.idOf "algebra.mod2" 1) 4 0
+            (GeneratorRegistry.idOf "algebra.braid-memory" 1)
+            (GeneratorRegistry.idOf "algebra.z2-parity" 1)
+    match MagneticPorts.findAdapter [ mod2 ] braidOut adinkraIn with
+    | Some p ->
+        Assert.Equal("mod2", p.Name)
+        Assert.True(MagneticPorts.adapts p braidOut adinkraIn) // the chain snaps: braid -> mod2 -> adinkra
+    | None -> Assert.True(false, "the toolbox piece that completes the flow was not found")
+    // and an empty toolbox reports the gap honestly — no forced fit
+    Assert.True(MagneticPorts.findAdapter [] braidOut adinkraIn |> Option.isNone)

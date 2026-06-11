@@ -75,3 +75,69 @@ module AdinkraViz =
                             let bit = flippedBit (nodeAt col row) (nodeAt col (row + 1))
                             edgeStr bit "│" + "  " ]
                       |> String.concat "" ]
+
+    // ── DASHINGS (the retraction register — the named slice, landed via Aaron's adinkra↔Majorana
+    // question 2026-06-12). An adinkra is not just colored edges: each edge carries a SIGN
+    // (solid = +1, dashed = −1), and the Gates condition is that every 2-colored 4-cycle carries
+    // an ODD number of dashed edges (this is gamma-matrix anticommutation drawn: γiγj = −γjγi).
+    // The twist is GLOBAL: flipping all edges at a vertex (the gauge move) changes which edges
+    // are dashed but can NEVER make a 4-cycle's dash count even — the same sentence THE STUCK LAW
+    // says about the locked braid (no local move removes the twist). Rhyme, made testable;
+    // the break stays honest (adinkra edges are involutions; braid generators remember). ──
+
+    /// An edge of the N=4 hypercube, canonical form: (lower vertex, bit). 32 edges total.
+    type Edge = int * int
+
+    /// All 32 edges (vertex v < v ^^^ (1 <<< bit) — each edge once).
+    let allEdges: Edge list =
+        [ for v in 0..15 do
+              for bit in 0..3 do
+                  if v &&& (1 <<< bit) = 0 then yield v, bit ]
+
+    /// A dashing: the set of DASHED edges (−1 signs); everything else solid (+1).
+    type Dashing = Set<Edge>
+
+    /// The standard (valise/Clifford) dashing: edge (v, i) is dashed iff v has an odd number of
+    /// set bits BELOW bit i — exactly the sign rule of the standard gamma-matrix representation.
+    let standardDashing: Dashing =
+        Set.ofList
+            [ for (v, bit) in allEdges do
+                  if System.Numerics.BitOperations.PopCount(uint (v &&& ((1 <<< bit) - 1))) % 2 = 1 then
+                      yield v, bit ]
+
+    /// Canonicalize an arbitrary (vertex, bit) reference to the edge's stored form.
+    let private canon (v: int) (bit: int) : Edge =
+        (if v &&& (1 <<< bit) = 0 then v else v ^^^ (1 <<< bit)), bit
+
+    /// Is the edge at (v, bit) dashed under d?
+    let isDashed (d: Dashing) (v: int) (bit: int) : bool = Set.contains (canon v bit) d
+
+    /// THE GATES CONDITION on one 2-colored face: the 4-cycle at v in colors (i, j) — edges
+    /// v→v^i, v^i→v^i^j, v^i^j→v^j, v^j→v — must carry an ODD number of dashes.
+    let faceOdd (d: Dashing) (v: int) (i: int) (j: int) : bool =
+        let vi = v ^^^ (1 <<< i)
+        let vj = v ^^^ (1 <<< j)
+        let count =
+            [ isDashed d v i; isDashed d vi j; isDashed d vj i; isDashed d v j ]
+            |> List.filter id
+            |> List.length
+        count % 2 = 1
+
+    /// Does the Gates condition hold on EVERY 2-colored 4-cycle? (16 vertices × 6 color pairs,
+    /// each face counted from each corner — redundancy is fine, the law is per-face.)
+    let allFacesOdd (d: Dashing) : bool =
+        [ for v in 0..15 do
+              for i in 0..3 do
+                  for j in i + 1 .. 3 -> faceOdd d v i j ]
+        |> List.forall id
+
+    /// THE GAUGE MOVE: flip every edge at vertex v (the local sign change — relabeling one node's
+    /// fermion phase). Toggles 4 edges; each adjacent 2-colored face sees exactly TWO of its
+    /// edges toggle, so its dash parity is INVARIANT — the twist cannot be removed locally.
+    let flipVertex (v: int) (d: Dashing) : Dashing =
+        [ 0..3 ]
+        |> List.fold
+            (fun (acc: Dashing) bit ->
+                let e = canon v bit
+                if Set.contains e acc then Set.remove e acc else Set.add e acc)
+            d

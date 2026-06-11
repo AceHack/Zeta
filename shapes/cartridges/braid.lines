@@ -3,7 +3,7 @@
 # un-crossing). The lesson loop: watch three strands weave, swap the crossing order, see that the
 # Artin relation makes two different-looking weaves the SAME braid.
 meta	name	shape-braid
-meta	name-status	provisional — prior-art naming under discussion (Aaron 2026-06-12); leading candidate: BORROMEAN BRAID — (s1*s2^-1)^3 is the standard braid word whose closure is the Borromean rings (three loops, pairwise unlinked, collectively inseparable: remove ANY one and the rest fall apart — Brunnian property, Brunn 1892; the Borromeo crest; Aravind 1997 ties Borromean topology to GHZ entanglement)
+meta	name-status	provisional — Aaron 2026-06-12: ALGEBRAS named right (braid group B3 / pure braid P3, Artin; Brunnian link, Brunn; Borromean rings), MEMORY naming in Microsoft's register (majorana-memory — we test against their Q#, should be a close match); leading candidate unchanged: BORROMEAN BRAID. Prior-art naming under discussion (Aaron 2026-06-12); leading candidate: BORROMEAN BRAID — (s1*s2^-1)^3 is the standard braid word whose closure is the Borromean rings (three loops, pairwise unlinked, collectively inseparable: remove ANY one and the rest fall apart — Brunnian property, Brunn 1892; the Borromeo crest; Aravind 1997 ties Borromean topology to GHZ entanglement)
 meta	catalog	shapes
 meta	shape-zetaid	de84b57aa8bcdd1534c617f0fed3a2e2
 gen	weave	de84b57aa8bcdd1534c617f0fed3a2e2	1	7	strands:3;word:1,2,1;rows:12
@@ -13,6 +13,7 @@ constant	lock-period	6	crossings until the strands return to their own columns	(
 constant	stuck	1	the locked word is NOT the identity braid (1 = true, proven by Artin's faithful action)	Aaron's Majorana reach: strands HOME yet the braid CANNOT be pulled apart — pure-braid-group memory, the configuration topological qubits bank on (Kitaev chain; Microsoft Majorana 1; sigma1*sigma2^-1 is the figure-eight braid word)
 law	stuck-together	code:shape-braid geometry (perm = identity AND Braid.isIdentity = false — locked AND stuck)
 constant	rows	21	vertical rows the weave occupies on the court	three rows per crossing across the 6-crossing period fits the 32-row court with margin; bounded (no one weaves forever)
+edge	same-twist	viz.adinkra	the adinkra's gauge lemma (vertex flips never make a face even) and THE STUCK LAW here are the same sentence — information held as a globally-nontrivial, locally-invisible twist; the break is honest (their edges are involutions, our generators remember)
 anim	draw	weave
 issue	lock-in-place	aaron	closed	RESOLVED 2026-06-12: "the blue messes up… any way to lock them in place?" — the word is now one full plait period (lock-period 6): ends locked, every strand home
 issue	plait-register	aaron	closed	RESOLVED 2026-06-12: his dissent ("blue crosses on top of red for it to be a braid") changed the word to the alternating plait 1,-2,1 — joint meaning, negotiated through the render loop

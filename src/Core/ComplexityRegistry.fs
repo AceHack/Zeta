@@ -88,9 +88,13 @@ module ComplexityRegistry =
               ("shape.buckyball", "draw"), c "O(F)" "O(F)" Derived // F=32 faces: both views + a door per room + itself — linear in rooms, constant for C60
               ("shape.shadow-loop", "draw"), c "O(steps)" "O(steps)" Derived // one closed pass; the crossing costs nothing extra — catching yourself is built into the path
               ("shape.plait-move", "draw"), c "O(crossings·strands)" "O(strands)" Derived // the unit move: one exchange (the gate); the locked braid is this, repeated to its period
+              ("algebra.braid-memory", "carry"), c "O(word)" "O(word)" Derived // crossing order is the payload: Z-valued memory (Artin)
+              ("algebra.z2-parity", "carry"), c "O(1)" "O(1)" Derived // one bit per edge: the dashing register (Gates)
+              ("algebra.mod2", "project"), c "O(word)" "O(1)" Derived // THE MISSING PIECE: Z -> Z/2, order forgotten, parity kept — the adapter that snaps braid-out into adinkra-in
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived
+              ("viz.adinkra", "dashing"), c "O(V·N²)" "O(E)" Derived // all faces checked: 16 vertices x 6 color pairs; the dashing set is at most the 32 edges
               ("spectral.hard-dft", "dft"), c "O(n²)" "O(n)" Derived
               ("spectral.hard-dft", "idft"), c "O(n²)" "O(n)" Derived
               ("spectral.soft-probe", "probe"), c "O(n)" "O(1)" Derived

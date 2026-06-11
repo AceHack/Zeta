@@ -46,3 +46,19 @@ let ``deterministic + registered + cost-declared (the budget lint holds)`` () =
     Assert.Equal<string list>(AdinkraViz.render (Some 1), AdinkraViz.render (Some 1))
     Assert.True(GeneratorRegistry.byName "viz.adinkra" |> Option.isSome)
     Assert.Equal<string list>([], ComplexityRegistry.unstated ())
+
+[<Fact>]
+let ``THE GATES CONDITION: the standard dashing puts an ODD number of dashes on every 2-colored 4-cycle (anticommutation, drawn)`` () =
+    Assert.True(AdinkraViz.allFacesOdd AdinkraViz.standardDashing)
+    Assert.Equal(32, List.length AdinkraViz.allEdges)
+    // and it is a real dashing, not all-solid (all-solid would make every face EVEN — count 0)
+    Assert.False(Set.isEmpty AdinkraViz.standardDashing)
+
+[<Fact>]
+let ``THE GAUGE LEMMA: no local move removes the twist — vertex flips change the dashing but every face stays ODD (the adinkra's stuck law)`` () =
+    // flip a handful of vertices in sequence (deterministic walk); the parity law must survive all of them
+    let walked =
+        [ 0; 5; 10; 15; 3; 12 ]
+        |> List.fold (fun d v -> AdinkraViz.flipVertex v d) AdinkraViz.standardDashing
+    Assert.NotEqual<Set<int * int>>(AdinkraViz.standardDashing, walked) // the dashing genuinely changed
+    Assert.True(AdinkraViz.allFacesOdd walked) // the twist did not — same sentence as THE STUCK LAW

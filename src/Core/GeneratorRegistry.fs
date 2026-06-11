@@ -80,6 +80,9 @@ module GeneratorRegistry =
           register "shape.buckyball" 1
           register "shape.shadow-loop" 1
           register "shape.plait-move" 1
+          register "algebra.braid-memory" 1
+          register "algebra.z2-parity" 1
+          register "algebra.mod2" 1
           register "binding.html-css" 1
           register "sim.wave-interference" 1
           register "viz.adinkra" 1

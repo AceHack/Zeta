@@ -94,3 +94,35 @@ module MagneticPorts =
     /// channel because the MATH GUYS told us" (a proof on the docket, not a hunch). The closing is a
     /// visible act, never an omission.
     let withoutFeedback (c: Connection) : Connection = { c with FeedbackOpen = false }
+
+    // ── THE MISSING PIECE (Aaron 2026-06-12: "is there a lens we could slap on, like the old
+    // GraphEdit, that would make these snap together using a missing piece from the toolbox — the
+    // shape that completes the graph flow?"). GraphEdit's move, made ours: when two ports do NOT
+    // speak the same type, search the toolbox for the ADAPTER whose in-face matches the source and
+    // whose out-face matches the sink. The first real adapter is algebra.mod2 — the quotient
+    // Z → Z/2 that snaps braid memory (crossing ORDER, Artin) into adinkra parity (the dashing
+    // bit, Gates): order forgotten, parity kept. Not an inverse — a projection; the lens that
+    // completes the flow is the map that forgets exactly the register the sink cannot hear. ──
+
+    /// A toolbox piece: one body, two faces — a sink it listens on and a source it speaks from.
+    type Piece =
+        { Name: string
+          ZetaId: string
+          In: Port
+          Out: Port }
+
+    let piece (name: string) (zetaId: string) (x: int) (y: int) (inType: string) (outType: string) : Piece =
+        { Name = name
+          ZetaId = zetaId
+          In = port x y Sink inType
+          Out = port (x + 1) y Source outType }
+
+    /// Does this piece complete the flow a → piece → b?
+    let adapts (p: Piece) (a: Port) (b: Port) : bool =
+        compatible a p.In && compatible p.Out b
+
+    /// THE LENS: when a and b cannot connect directly, the first toolbox piece that completes the
+    /// flow — None means the toolbox is honestly missing the shape (a named gap, not a forced fit).
+    let findAdapter (toolbox: Piece list) (a: Port) (b: Port) : Piece option =
+        if compatible a b then None // nothing missing: they already snap
+        else toolbox |> List.tryFind (fun p -> adapts p a b)
