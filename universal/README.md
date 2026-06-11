@@ -5,6 +5,12 @@
 these interfaces**: universal = applies to everything in `travelers/` and `personas/`, the way the **A–F
 shape catalog** applies everywhere. A root-level folder like `/vocab`, `/same`, `/hats`, `/grey`.
 
+**Noninterference (manifesto §13, 2026-06-10):** the **communications interfaces** (bus, broadcast,
+ping, radio, television, sonar, microphone, headphones) each carry an explicit **noninterference
+contract** — the declared channel, what is metered at the membrane, and the forbidden ambient leak.
+Entropy/influence crosses ONLY through the declared channel, metered and booked; this is what makes the
+comms family *interference-free by design* and lets soft rooms converse cleanly over Reticulum.
+
 Each universal interface is meant to be a **bit + compiler oracle** surface — bit-perfect (byte-exact across
 participants) and compiler-invariant — because that bit-perfect agreement is **what makes collaboration
 trustworthy** (the core UX/DX/AX room). They are shapes, not implementations: a traveler/persona *takes the

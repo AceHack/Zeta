@@ -7,3 +7,11 @@
 
 A candidate **bit + compiler oracle** surface (bit-perfect + compiler-invariant = collaboration-grade).
 See [`universal/README.md`](README.md) and [`/bus`](../bus/README.md).
+
+## Noninterference contract (manifesto §13)
+
+- **Declared channel:** ZetaId-keyed publish/subscribe over Reticulum — the bus IS the door; no side rails.
+- **Metered at the membrane:** every message booked to the room's ledger on cross (ΔU with the payload —
+  uncertainty travels in the message, never ambiently).
+- **Forbidden ambient leak:** out-of-bus signaling between travelers/personas (shared files as covert
+  channels, ambient clocks, unthrottled spawn). If it didn't cross the bus, it didn't happen.
