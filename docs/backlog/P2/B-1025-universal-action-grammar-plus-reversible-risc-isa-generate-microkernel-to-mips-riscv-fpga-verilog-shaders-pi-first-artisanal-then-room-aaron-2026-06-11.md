@@ -1,0 +1,42 @@
+---
+id: B-1025
+title: Universal action grammar + reversible RISC-like ISA — generate the microkernel to any hardware (Pi first artisanal, then automate into a room)
+priority: P2
+status: open
+tier: hardware-substrate
+tags: [vision, action-semantics, reversible-isa, riscv, mips, fpga, verilog, shaders, gpgpu, gen, glass-blowing, max, raspberry-pi]
+created: 2026-06-11
+owner: open (Max = MIPS; Aaron = FPGA/Verilog + shaders; gen/ is the seat)
+---
+
+# B-1025 — mechanize the microkernel to any hardware
+
+Aaron 2026-06-11: a universal action grammar + a universal MIPS/RISC-like arch that REVERSES CPU-like
+arch (reversible ISA), grounded in proper names; generate to MIPS (Max), RISC-V, FPGA/ASIC Verilog
+(Aaron), GPU shaders — eventually. Raspberry Pi FIRST, artisanal ("this is glass blowing — high heat,
+many pruned branches"), learn, then automate into a room.
+
+Full grounding + anchors: `docs/research/2026-06-11-universal-action-grammar-reversible-risc-isa-mechanize-microkernel-to-any-hardware-glass-blowing.md`.
+
+## Staged
+
+1. **Carve the action grammar** as interfaces in `gen/` (Mosses action-semantics shape over the
+   existing verb family + HandlerK/crossings + four corners) — generators read interfaces (the
+   interfaces-free rule is the enabler).
+2. **Pi artisanal port** (hot phase): hand-bring-up the SoftScheduler loop on aarch64; record every
+   pruned branch; `heatSpent` is the thermometer; learnings → treaty.
+3. **Anneal into a room**: the recorded port becomes a deterministic re-runnable room (artisanal once,
+   room forever).
+4. **Reversible RISC-V profile** (the novel seam, named as novelty): Pendulum/PISA-class reversibility
+   on RISC-V's open opcode space; the un-instruction = ISA-level retraction.
+5. **Fan out**: MIPS (Max) · FPGA Verilog (Aaron) · SPIR-V shaders — each a backend of the SAME grammar.
+
+## Acceptance (first slice)
+
+- `gen/` carries the action-grammar interface doc + one generated backend stub compiled for a second
+  target (aarch64 or RISC-V sim) passing one oracle test.
+
+## Relates
+
+B-1024 (the ladder) · gen/ · universal/color.md (honest capability) · SoftThrottle (heat) ·
+the XO-CHIP opcode-extension precedent (unused-encoding-space discipline).

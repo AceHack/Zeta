@@ -18,7 +18,8 @@ replay). Idempotent upsert by (target, surface). No aspirational greens.
 | **windows-x64** (windows-2025) | ✅ | ✅ | ✅ | ✅ | ✅ | UNKNOWN | n/a (host) | windows-2025 workflows (3) incl. servercore container pair |
 | **wsl2-ubuntu on windows** | ✅ | ✅ | ✅ | ✅ | ✅ | UNKNOWN | UNKNOWN | the WSL workflow (Ubuntu-24.04 distribution on windows-2025 host) |
 | **macos-arm64** (macos-15, M-class) | ✅ | ✅ | ✅ | ✅ | ✅ | UNKNOWN | n/a (host) | macos-15 workflow + this dev machine (Darwin 25.4, daily) |
-| **qemu-aarch64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | **UNKNOWN — the B-1024 first slice** | none yet (the next green to buy) |
+| **qemu-x86_64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | ✅ **boots, in CI** | `build-ai-cluster-iso.yml` + `tools/ci/qemu-boot-test.ts` (serial-console login-prompt smoke test) + `qemu-full-install-test.ts`; green runs 2026-06-10 |
+| **qemu-aarch64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN — the remaining B-1024 slice-1 gap (x86_64 proven; arch port of the boot test) | none yet |
 | **raspberry-pi-4/5** (metal) | UNKNOWN (arm64 .NET exists upstream) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN (RNS upstream supports Pi) | UNKNOWN | Aaron has the hardware; nothing recorded |
 | **microcontroller class** (RNode-ish) | ❌ honest-no (no .NET) | ❌ | UNKNOWN (no_std uninvestigated) | UNKNOWN (a C CHIP-8 fits the class) | ❌ (sim is .NET) | UNKNOWN (RNode firmware proves the radio layer) | ❌ | class analysis only — the honest-capability probe is B-1024 rung 5 |
 | **nixos-x64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | named in the 6×6×6 room axis; no recorded run |
@@ -28,8 +29,7 @@ evidence either way (NOT a no; a cell waiting for its first run).
 
 ## Friction map (the red/UNKNOWN cells, priced)
 
-1. **qemu-aarch64 boot** — the B-1024 acceptance slice: one CI job boots an ISO in QEMU, runs one
-   oracle suite inside, green. Unlocks the whole hardware axis (DST for hardware: same image, same
+1. **qemu-aarch64 boot** — x86_64 ALREADY boots green in CI (discovered 2026-06-11: `qemu-boot-test.ts` predates B-1024); the remaining gap is the aarch64 port + running one oracle suite INSIDE the booted system. Unlocks the whole hardware axis (DST for hardware: same image, same
    inputs, same bytes — emulated first, then metal).
 2. **Pi bring-up** — blocked only on slice 1 + Aaron's bench time; .NET arm64 + RNS on Pi are both
    upstream-supported, so expected friction is LOW (the cell is UNKNOWN, not hard).

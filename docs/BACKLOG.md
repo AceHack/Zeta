@@ -970,6 +970,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-1022](backlog/P2/B-1022-fuse-four-corner-harmonic-kleisli-arrow-plus-fourcornerownership-tools-to-src-port-aaron-2026-06-10.md)** Fuse the arrow/four-corner/feedback/scheduler fragments into one four-corner harmonic Kleisli arrow; graduate FourCornerOwnership tools→src + port TS→F#/C#/Rust
 - [ ] **[B-1023](backlog/P2/B-1023-root-declutter-for-dx-max-db-folder-grouping-plus-max-adopts-interfaces-rx-verbs-2026-06-10.md)** Root declutter for DX — Max finds the repo root intimidating; group into folders (e.g. db/) without breaking load-bearing paths
 - [ ] **[B-1024](backlog/P2/B-1024-speak-to-tv-plus-own-microkernel-iso-boot-qemu-tested-raspberry-pi-self-contained-hardware-capability-matrix-friction-heat-visible-aaron-2026-06-11.md)** The hardware ladder: speak-to-the-TV + own microkernel/ISO boot, QEMU-tested, Pi self-contained, capability matrix with visible friction/heat
+- [ ] **[B-1025](backlog/P2/B-1025-universal-action-grammar-plus-reversible-risc-isa-generate-microkernel-to-mips-riscv-fpga-verilog-shaders-pi-first-artisanal-then-room-aaron-2026-06-11.md)** Universal action grammar + reversible RISC-like ISA — generate the microkernel to any hardware (Pi first, artisanal → room)
 
 ## P3 — convenience / deferred
 
