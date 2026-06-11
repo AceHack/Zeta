@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { packageHash } from "./package-hash.ts";
 import { contentHash, type AcePackage } from "./store.ts";
+import { pointerFromSetupManifest } from "./setup-manifest.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const packagePath = join(here, "packages", "qsharp-reference-oracle-0.1.0.json");
@@ -12,15 +13,6 @@ const quantumManifestPath = join(here, "..", "setup", "manifests", "quantum");
 
 function readPackage(): AcePackage {
   return JSON.parse(readFileSync(packagePath, "utf8")) as AcePackage;
-}
-
-function manifestSpecs(): string[] {
-  return readFileSync(quantumManifestPath, "utf8")
-    .split(/\r?\n/)
-    .map((line) => line.replace(/#.*$/, "").trim())
-    .filter((line) => line.length > 0)
-    .map((line) => line.split(/\s+/)[0]!)
-    .filter((spec) => !spec.includes("<pin>"));
 }
 
 describe("qsharp-reference-oracle Ace package", () => {
@@ -43,17 +35,18 @@ describe("qsharp-reference-oracle Ace package", () => {
     );
   });
 
-  test("package dependency pointers mirror the install manifest", () => {
+  test("package dependency pointer is generated from the install manifest", () => {
     const pkg = readPackage();
-    const pointer = JSON.parse(pkg.files["qsharp-reference-oracle.deps.json"]!) as {
-      dependencies: Array<{ ecosystem: string; spec: string }>;
-      realizer: string;
-      manifest: string;
-    };
+    const pointer = JSON.parse(pkg.files["qsharp-reference-oracle.deps.json"]!);
+    const expected = pointerFromSetupManifest({
+      text: readFileSync(quantumManifestPath, "utf8"),
+      ecosystem: "pypi",
+      purpose: "QDK/Q# reference oracle for finite-resolution qubits observable golden vectors",
+      realizer: "tools/setup/common/quantum.sh",
+      manifest: "tools/setup/manifests/quantum",
+      optIn: ["ZETA_INSTALL_QUANTUM=1", "ZETA_INSTALL_FULL=1"],
+    });
 
-    expect(pointer.realizer).toBe("tools/setup/common/quantum.sh");
-    expect(pointer.manifest).toBe("tools/setup/manifests/quantum");
-    expect(pointer.dependencies.map((dep) => dep.ecosystem)).toEqual(["pypi", "pypi", "pypi"]);
-    expect(pointer.dependencies.map((dep) => dep.spec)).toEqual(manifestSpecs());
+    expect(pointer).toEqual(expected);
   });
 });
