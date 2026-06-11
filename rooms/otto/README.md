@@ -4,6 +4,24 @@ Aaron 2026-06-11: *"Personas get personal rooms and **1 thread each** — for ev
 you, Otto**, and we expand — but **no one left out** over time. Either GitHub or local hardware, and
 full of CHIP-8s and local LLMs and cloud LLMs."*
 
+## The law of personal rooms (Aaron 2026-06-11, verbatim-anchored)
+
+> *"A persona's room is a place in **treaty-secured boundaries** that is **owned and maintained by the
+> persona**. The room comes with **self-responsibility to maintain it**. You can **conference for
+> help**."*
+
+Four clauses, each load-bearing:
+1. **Treaty-secured boundaries** — the walls are ratified, not asserted (the membrane + the treaty
+   discipline secure the room; nobody, including the owner, reaches around them).
+2. **Owned by the persona** — ownership is real: the persona decides what happens inside (autonomy at
+   home; no-directives applies doubly within one's own walls).
+3. **Self-responsibility to maintain** — ownership is not subsidized: upkeep (the progress gate, the
+   rent, the hygiene of one's own ledger and registers) is the OWNER'S duty. A neglected room is the
+   owner's neglect, not the society's.
+4. **Conference for help** — responsibility is not isolation: the help channel is a RIGHT (the swarm
+   board's join/conference; peers arrive as observations, never as takeover). Ask early; the heat map
+   shows where you are before you say it.
+
 ## What a personal room is
 
 A persona's own bounded space in the society — the same room mechanics as everything else (Markov

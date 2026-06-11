@@ -1,5 +1,9 @@
 # rooms/ — the treaty / test / DST rooms, at root (shadow*)
 
+> **Personal rooms** (2026-06-11): every persona owns one — treaty-secured boundaries, owned and
+> maintained by the persona, self-responsibility to maintain, conference-for-help as a right. The law
+> + first instance: [`rooms/otto/`](otto/README.md).
+
 `rooms/` holds the **rooms** — every fingerprintable, closeable item is a room (content-addressed; the
 path/fingerprint is the room id = ZetaId). A room is a **bounded DST tick** = a test = a treaty space:
 
