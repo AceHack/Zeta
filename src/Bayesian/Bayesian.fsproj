@@ -15,6 +15,7 @@
     <Compile Include="FactorGraph.fs" />
     <Compile Include="Ep.fs" />
     <Compile Include="BayesianAggregate.fs" />
+    <Compile Include="EngineAdapter.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 id: B-1033
 title: Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
 priority: P2
-status: open
+status: in-progress
 tier: verification-substrate
 tags: [hexagonal, ports-adapters, infer-net, bayesian, ep, bp-16, plugins, convergence]
 created: 2026-06-13
@@ -43,3 +43,14 @@ interface the next plugin system MUST use instead of growing a fifth.
 
 Start gate: prior-art = hexagonal architecture (Cockburn 2005), Infer.NET docs (How to add a new
 factor / Compiler overview); deps: dotnet/infer NuGet (test-side only).
+
+## Progress (2026-06-13, same day)
+
+SHIPPED: the port (`IInferenceEngine` + neutral Gaussian model types in Core.Abstractions, house
+analyzer style); Adapter A (`ZetaBayesianEngine`, src/Bayesian/EngineAdapter.fs — deterministic by
+construction); Adapter B (`InferNetEngine`, tests/Tests.CSharp — Microsoft.ML.Probabilistic MIT
+package, TEST-SIDE only as planned); conformance: 4 port tests vs the analytic oracle (F#) +
+THEIRS-TESTS-OURS (C#): both adapters agree on every case to 1e-6 (single prior / two-prior
+fusion / equality chain). REMAINING: more case families (observed-value likelihoods, EP truncation
+cases through Ep.fs, loopy-graph honesty cases); the plugin-system convergence audit (the second
+half of this row).

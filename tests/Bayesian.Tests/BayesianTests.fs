@@ -128,3 +128,52 @@ let ``BayesianRateOp narrows credible interval as evidence accumulates`` () =
         let narrowWidth = lHi - lLo
         narrowWidth |> should be (lessThan wideWidth)
     }
+
+// ─── THE HEXAGONAL PORT, ADAPTER A (B-1033): conformance through IInferenceEngine ───
+// Cases are hand-checkable: combining Gaussians under equality = precision-weighted product
+// (tau = tau1 + tau2; mean = (tau1*mu1 + tau2*mu2)/tau). The same cases run through Adapter B
+// (dotnet/infer) in Tests.CSharp — theirs tests ours across the port WE own.
+
+open Zeta.Core.Abstractions
+
+[<Fact>]
+let ``PORT C1: a single prior round-trips — the marginal IS the prior`` () =
+    let engine = Zeta.Bayesian.ZetaBayesianEngine() :> IInferenceEngine
+    let model = GaussianModel(1, [| GaussianPrior(0, 3.0, 2.0) |], [||])
+    let r = engine.RunGaussian(model, 50, 1e-9)
+    Assert.True r.Converged
+    Assert.Equal(3.0, r.Marginals.[0].Mean, 9)
+    Assert.Equal(2.0, r.Marginals.[0].Variance, 9)
+
+[<Fact>]
+let ``PORT C2: two priors on one variable fuse as the precision-weighted product (the analytic oracle)`` () =
+    let engine = Zeta.Bayesian.ZetaBayesianEngine() :> IInferenceEngine
+    // N(0, 1) * N(4, 1) -> tau = 2, mean = 2, variance = 0.5
+    let model = GaussianModel(1, [| GaussianPrior(0, 0.0, 1.0); GaussianPrior(0, 4.0, 1.0) |], [||])
+    let r = engine.RunGaussian(model, 50, 1e-9)
+    Assert.True r.Converged
+    Assert.Equal(2.0, r.Marginals.[0].Mean, 9)
+    Assert.Equal(0.5, r.Marginals.[0].Variance, 9)
+
+[<Fact>]
+let ``PORT C3: an equality chain carries belief — var0's prior meets var2's prior and ALL marginals agree`` () =
+    let engine = Zeta.Bayesian.ZetaBayesianEngine() :> IInferenceEngine
+    // priors on 0 and 2; equality (0,1,2): every marginal = N(0,1)*N(4,1) fused = mean 2, var 0.5
+    let model =
+        GaussianModel(
+            3,
+            [| GaussianPrior(0, 0.0, 1.0); GaussianPrior(2, 4.0, 1.0) |],
+            [| EqualityFactor([| 0; 1; 2 |]) |])
+    let r = engine.RunGaussian(model, 100, 1e-9)
+    Assert.True r.Converged
+    for v in 0 .. 2 do
+        Assert.Equal(2.0, r.Marginals.[v].Mean, 6)
+        Assert.Equal(0.5, r.Marginals.[v].Variance, 6)
+
+[<Fact>]
+let ``PORT determinism: same model, same marginals, byte-stable order (the DST clause of the port contract)`` () =
+    let run () =
+        let engine = Zeta.Bayesian.ZetaBayesianEngine() :> IInferenceEngine
+        let model = GaussianModel(2, [| GaussianPrior(0, 1.0, 2.0); GaussianPrior(1, 5.0, 3.0) |], [| EqualityFactor([| 0; 1 |]) |])
+        (engine.RunGaussian(model, 100, 1e-9)).Marginals |> Seq.map (fun m -> m.Variable, m.Mean, m.Variance) |> List.ofSeq
+    Assert.Equal<(int * float * float) list>(run (), run ())
