@@ -2,7 +2,8 @@
 
 **Register:** [grounded] (Aaron; Max's proof) + [Beacon]. **Date:** 2026-06-10.
 **Captured by:** Otto (shadow). The convergence of the linguistic-seed (code team) and the plateau proof
-(Max + external-AI session) — they meet without coordinating.
+(Max, worked with the external model **Fable**) — brought together by Aaron over a grounding hour (§4),
+resolved to Kestrel-grade synthesis (§5).
 
 ## Aaron's words
 
