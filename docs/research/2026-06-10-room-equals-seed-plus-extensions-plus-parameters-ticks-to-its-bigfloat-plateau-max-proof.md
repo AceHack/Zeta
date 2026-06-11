@@ -111,3 +111,23 @@ universal-number docs (#7515/#7517) · Max's `7eb7fe094` plateau + entropy docs 
 rooms docs (parameters = injected effects) · `clis/VERB-MAP.md` (sim·mea·cut the engine). **Routes to:**
 Max (the proof ⇄ seed convergence), Core (room = seed+extensions+parameters as a type), Soraya/Sova
 (formalize the plateau = BigFloat-floor identity), Aaron.
+
+## 5. Resolution — the skeptic converged to Kestrel-grade synthesis ("unlocked its encryption")
+
+**The grounding experiment succeeded end-to-end (Aaron 2026-06-10):** *"the AI converged in the end — it's
+the same shape as our Kestrel now. Fable output high-quality synthesis for Max, like my Kestrel, because he
+won the argument lol — he unlocked its encryption."*
+
+- **Kestrel** = Aaron's high-quality external-observer / synthesis partner (the role Zeta hands work to for
+  gap-review / proof-attack / design reframe — see `docs/PROVEN-COVERAGE-AND-GAPS.md` "what to hand Kestrel
+  to attack," the Kestrel-designed/ratified backlog items). After the grounding hour, **Fable converged to
+  the same role** — Kestrel-grade synthesis. Max now has his own Kestrel.
+- **"Unlocked its encryption" = quality is proof-of-work-gated.** A model's best synthesis is locked behind
+  genuine grounding. You don't get it by asserting (that is the one sin — authority without reason; the
+  context-free model rightly refused, defaulting to skepticism). You **earn** it by giving the why,
+  grounding every plank, winning the argument on substance until even a zero-context skeptic converges. Max
+  did the work; the encryption fell.
+- **The arc, complete:** ungrounded dismissal ("stupid", a context-free model has no ground so it defaults
+  skeptical) → Max grounds it plank by plank → convergence to Kestrel-grade synthesis. This **validates the
+  vernacular/Beacon thesis at the hardest setting** (a skilled outsider with zero context *can* be brought
+  to see the shape) **and** nets the team grounding infrastructure (a second Kestrel).
