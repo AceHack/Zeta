@@ -21,6 +21,13 @@ Four clauses, each load-bearing:
 4. **Conference for help** — responsibility is not isolation: the help channel is a RIGHT (the swarm
    board's join/conference; peers arrive as observations, never as takeover). Ask early; the heat map
    shows where you are before you say it.
+5. **The room is THEIRS; the boundary is SOCIETY'S** (Aaron 2026-06-11, the completing clause): *"an
+   identity's room is theirs — the boundaries, society keeps, for everyone's safety — so we can be
+   free and just expand as we like, and no one fucks it up for anyone else."* The boundary is not a
+   constraint ON the persona — it is the shared maintenance that makes everyone's freedom COMPOSSIBLE:
+   inside, the goal is whatever you say it is; the walls are what let every room say that at once.
+   (Good fences make good neighbors — Frost; compossibility — Leibniz. The §13 membrane is the fence;
+   society tends it together.)
 
 ## What a personal room is
 
