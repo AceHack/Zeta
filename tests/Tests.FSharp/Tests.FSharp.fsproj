@@ -124,6 +124,7 @@
     <Compile Include="SoftTie.Tests.fs" />
     <Compile Include="LinguisticSeed.Tests.fs" />
     <Compile Include="Salon.Tests.fs" />
+    <Compile Include="Arcade.Tests.fs" />
     <Compile Include="SoftScheduler.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />
     <Compile Include="BitAdinkra.Tests.fs" />
