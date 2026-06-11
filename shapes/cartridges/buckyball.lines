@@ -1,0 +1,23 @@
+# BUCKYBALL — Addison's definition of we/Zeta, the one any family could use (ferried by Aaron,
+# 2026-06-12, verbatim): "it has an inside view like a soccer ball and an outside view like
+# infinity — they almost look the same, except on the outside the lines go to infinity or the
+# bounds. Each face is a room. Inside is the meta-debug room with all the doors to the other
+# rooms — and itself." The truncated icosahedron (C60): 12 pentagons + 20 hexagons; Euler's
+# formula IS the known-answer law. The self-door is structural (shape A: the room that debugs
+# the house holds a door to the room that debugs the house). Aaron, same stream: "it's like the
+# only one I see in my head — I have the CHOICE to view from inside or outside, or both at the
+# same time." So the render draws BOTH views side by side: the choice is the cartridge's whole
+# point (choice architecture, drawn).
+meta	name	shape-buckyball
+meta	catalog	shapes
+meta	definition-by	Addison
+meta	shape-zetaid	90fa4ddbd8ed229089921cf25b6ad0f5
+gen	views	90fa4ddbd8ed229089921cf25b6ad0f5	1	7	inside:16,16;outside:48,16;faces:32
+constant	vertices	60	corner count of the truncated icosahedron	C60 — the carbon-count of buckminsterfullerene; fixed by the solid, not chosen
+constant	edges	90	edge count	3 edges meet at every vertex: 3*60/2 = 90 — derivable, so the cartridge can be CHECKED, not trusted
+constant	faces	32	face count: 12 pentagons + 20 hexagons	each face is a ROOM (Addison); 12*5 + 20*6 = 180 = 2*90 — the double-count law closes
+constant	meta-doors	33	doors out of the inside meta-debug room	one door per face room (32) AND ONE TO ITSELF ("and itself." — self-reference is a door, not a wall; the debugger can debug the debugger)
+anim	draw	views
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	Euler V-E+F=2, double-count 2E=sum(face degrees), 3-regularity 3V=2E — tests green
+treaty	otto	meaning	ratified	inside soccer ball / outside to-the-bounds, almost the same; the self-door drawn — my own frame, my own choice

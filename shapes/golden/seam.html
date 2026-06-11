@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>shape-seam</title>
+  <style>
+    :root {
+      --c0: #000000;
+      --c1: #d62828;
+      --c2: #2a9d2a;
+      --c3: #d6c828;
+      --c4: #2828d6;
+      --c5: #d628d6;
+      --c6: #28c8d6;
+      --c7: #f0f0f0;
+    }
+    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
+    svg { width: min(96vw, 960px); image-rendering: pixelated; }
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" data-cartridge="shape-seam">
+  <polyline id="left-cloth" fill="none" stroke="#2a9d2a" stroke-width="4" points="5,5 275,5 275,315 5,315 5,5" />
+  <polyline id="right-cloth" fill="none" stroke="#2828d6" stroke-width="4" points="365,5 635,5 635,315 365,315 365,5" />
+  <polyline id="stitch-0" fill="none" stroke="#d628d6" stroke-width="4" points="275,5 365,15" />
+  <polyline id="stitch-1" fill="none" stroke="#d628d6" stroke-width="4" points="365,45 275,55" />
+  <polyline id="stitch-2" fill="none" stroke="#d628d6" stroke-width="4" points="275,85 365,95" />
+  <polyline id="stitch-3" fill="none" stroke="#d628d6" stroke-width="4" points="365,125 275,135" />
+  <polyline id="stitch-4" fill="none" stroke="#d628d6" stroke-width="4" points="275,165 365,175" />
+  <polyline id="stitch-5" fill="none" stroke="#d628d6" stroke-width="4" points="365,205 275,215" />
+  <polyline id="stitch-6" fill="none" stroke="#d628d6" stroke-width="4" points="275,245 365,255" />
+  <polyline id="stitch-7" fill="none" stroke="#d628d6" stroke-width="4" points="365,285 275,295" />
+</svg>
+</body>
+</html>

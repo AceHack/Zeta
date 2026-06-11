@@ -10,8 +10,27 @@ open Zeta.Core.FSharp.Git
 ///
 /// Network verbs (push / fetch) get a host-agnostic credential source: env token (GH_TOKEN / GITHUB_TOKEN)
 /// over HTTPS. GitHub is a plugin, not git-native — the source only yields a handler or a clean error.
+/// `zeta shape render <cartridge.lines> (svg|html)` — the cartridge's projection printed to stdout.
+/// The cartridge is the single source; SVG/HTML are regenerated, never edited (sync by golden lock).
+let private shapeRender (path: string) (kind: string) : int =
+    match Zeta.Core.MediaLines.parse (IO.File.ReadAllText path) with
+    | Error e ->
+        eprintfn "zeta: %s: %s" path e
+        1
+    | Ok doc ->
+        match kind with
+        | "svg" -> printf "%s" (Zeta.Core.ShapeRender.toSvg doc); 0
+        | "html" -> printf "%s" (Zeta.Core.ShapeRender.toHtml doc); 0
+        | k ->
+            eprintfn "zeta: unknown projection '%s' (svg|html)" k
+            2
+
 [<EntryPoint>]
 let main argv =
+    match argv with
+    | [| "shape"; "render"; path; kind |] -> shapeRender path kind
+    | _ ->
+
     match CliParse.parse argv with
     | Error msg ->
         eprintfn "%s" msg

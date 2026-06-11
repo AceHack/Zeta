@@ -78,8 +78,14 @@ module ComplexityRegistry =
               ("shape.lightcone", "draw"), c "O(w·h)" "O(1)" Derived
               ("shape.fourcorner", "draw"), c "O(1)" "O(1)" Derived
               ("shape.braid", "draw"), c "O(crossings·strands)" "O(strands)" Derived
+              // SAME SHAPE, SEVERAL WAYS, DIFFERENT O — a shape may be drawn by more than one
+              // strategy, each tagged with its own cost; the shape is PARAMETRIZED over its O
+              // (Aaron 2026-06-12). The polyline path is O(steps); the glow-grid path (the SAME
+              // spiral through BoundaryLight.sampleGrid) trades time for area coverage.
               ("shape.spiral", "draw"), c "O(steps)" "O(steps)" Derived
+              ("shape.spiral", "draw-grid"), c "O(w·h·steps)" "O(w·h)" Derived
               ("shape.seam", "draw"), c "O(strands·passes)" "O(strands)" Derived
+              ("shape.buckyball", "draw"), c "O(F)" "O(F)" Derived // F=32 faces: both views + a door per room + itself — linear in rooms, constant for C60
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived
@@ -90,6 +96,13 @@ module ComplexityRegistry =
 
     /// THE BUDGET LINT: every registered artifact (generators + layouts + indexes + schemes) whose
     /// costs are entirely UNSTATED. Empty list = the requirement holds across the shelf.
+    /// All declared ways to perform an operation FAMILY on an artifact — the "same shape,
+    /// different O tradeoffs" query: a renderer (or a budget) picks a strategy BY its cost tag.
+    let strategiesOf (artifact: string) : (string * Cost) list =
+        declared
+        |> Map.toList
+        |> List.choose (fun ((a, op), cost) -> if a = artifact then Some(op, cost) else None)
+
     let unstated () : string list =
         let stated = declared |> Map.toList |> List.map (fst >> fst) |> Set.ofList
         let allNames =

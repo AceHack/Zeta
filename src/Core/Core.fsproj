@@ -272,6 +272,8 @@
     <Compile Include="FingerprintPrism.fs" />
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
+    <Compile Include="ShapeAcceptance.fs" />
+    <Compile Include="ShapeRender.fs" />
     <Compile Include="PhysUI.fs" />
     <Compile Include="ControlScheme.fs" />
     <Compile Include="MetaControl.fs" />
