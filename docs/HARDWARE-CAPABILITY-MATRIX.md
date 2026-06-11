@@ -19,7 +19,7 @@ replay). Idempotent upsert by (target, surface). No aspirational greens.
 | **wsl2-ubuntu on windows** | ✅ | ✅ | ✅ | ✅ | ✅ | UNKNOWN | UNKNOWN | the WSL workflow (Ubuntu-24.04 distribution on windows-2025 host) |
 | **macos-arm64** (macos-15, M-class) | ✅ | ✅ | ✅ | ✅ | ✅ | UNKNOWN | n/a (host) | macos-15 workflow + this dev machine (Darwin 25.4, daily) |
 | **qemu-x86_64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | ✅ **boots, in CI** | `build-ai-cluster-iso.yml` + `tools/ci/qemu-boot-test.ts` (serial-console login-prompt smoke test) + `qemu-full-install-test.ts`; green runs 2026-06-10 |
-| **qemu-aarch64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN — the remaining B-1024 slice-1 gap (x86_64 proven; arch port of the boot test) | none yet |
+| **qemu-aarch64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | ✅ **boots to login, in CI** | `build-aarch64` job (ubuntu-24.04-arm, run 27341005502, 2026-06-11): native nix build of the aarch64 installer ISO + `qemu-boot-test.ts --arch aarch64` (virt + EDK2, TCG, -nic none) — "Login prompt observed: zeta-installer login:" in 3m17s; ISO uploaded as the `zeta-installer-aarch64-iso` artifact (the Pi flash source) |
 | **raspberry-pi-4/5** (metal) | UNKNOWN (arm64 .NET exists upstream) | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN (RNS upstream supports Pi) | UNKNOWN | Aaron has the hardware (Pi + NAS equipment on the bench, 2026-06-11); nothing recorded; the aarch64 CI ISO artifact (slice 1) is the flash source |
 | **microcontroller class** (RNode-ish) | ❌ honest-no (no .NET) | ❌ | UNKNOWN (no_std uninvestigated) | UNKNOWN (a C CHIP-8 fits the class) | ❌ (sim is .NET) | UNKNOWN (RNode firmware proves the radio layer) | ❌ | class analysis only — the honest-capability probe is B-1024 rung 5 |
 | **nixos-x64** | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | named in the 6×6×6 room axis; no recorded run |
@@ -30,8 +30,10 @@ evidence either way (NOT a no; a cell waiting for its first run).
 
 ## Friction map (the red/UNKNOWN cells, priced)
 
-1. **qemu-aarch64 boot** — x86_64 ALREADY boots green in CI (discovered 2026-06-11: `qemu-boot-test.ts` predates B-1024); the remaining gap is the aarch64 port + running one oracle suite INSIDE the booted system. Unlocks the whole hardware axis (DST for hardware: same image, same
-   inputs, same bytes — emulated first, then metal).
+1. ~~qemu-aarch64 boot~~ **DONE 2026-06-11** (the B-1024 slice-1 floor is green both arches; two live
+   failures fixed en route: efi-virtio.rom under --no-install-recommends → `-nic none`, and the
+   burn-the-timeout-on-a-dead-QEMU bug → fast-fail). Remaining slice-1 stretch: run one oracle suite
+   INSIDE the booted guest.
 2. **Pi bring-up** — blocked only on slice 1 + Aaron's bench time; .NET arm64 + RNS on Pi are both
    upstream-supported, so expected friction is LOW (the cell is UNKNOWN, not hard).
 3. **Rust `no_std` probe** — the one language oracle with a plausible microcontroller story; nobody
