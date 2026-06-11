@@ -1,0 +1,45 @@
+---
+id: B-1024
+title: Speak-to-the-TV + own microkernel/ISO boot, QEMU-tested, Raspberry Pi self-contained, hardware capability matrix with visible friction/heat
+priority: P2
+status: open
+tier: hardware-substrate
+tags: [vision, microkernel, qemu, iso, raspberry-pi, microcontroller, hardware-matrix, llmtv, dora, friction, heat, swarm]
+created: 2026-06-11
+owner: open (Dejan infra-adjacent; Kenji integrates; Aaron has the hardware)
+---
+
+# B-1024 — the hardware ladder: speak to the TV → QEMU → microkernel/ISO → Pi → microcontroller
+
+Aaron 2026-06-11: speak to the universal TV interface and have it respond AND evolve; run self-contained
+on a Raspberry Pi (equipment in hand, microcontroller if it can); QEMU stack for testing everything;
+our own microkernel + boot-from-ISO our own kernel; run on QEMU and the microkernel backend; publish
+what we support on what hardware; friction + heat visible to the whole swarm society (Aaron, Addison,
+Max, all agents).
+
+Full vision + anchors: `docs/research/2026-06-11-speak-to-the-tv-microkernel-own-iso-qemu-tested-raspberry-pi-self-contained-hardware-matrix-friction-visible.md`.
+
+## Staged (each rung tests the one below)
+
+1. **QEMU in CI** — boot the existing ISO lineage (B-0830/B-0823) headless in QEMU in a workflow; green
+   = the hardware axis joins the oracle cross-product.
+2. **Hardware capability matrix** — a published table (color-bindings shape): target × what runs ×
+   honest capability; red cells = the friction map; heat from the SoftThrottle ledger; broadcast over
+   LLMTV/DORA (Moonshot #1).
+3. **Microkernel backend** — the SoftScheduler cooperative loop (DoP=1, handlers≈ISRs, crossings≈
+   interrupts) carved toward metal; seL4/L4 minimality as the lodestar; QEMU-tested.
+4. **Pi self-contained** — rooms + Reticulum + TV + DORA in one box.
+5. **Microcontroller probe** — honest-capability binding (CHIP-8 citizen + Reticulum link class;
+   RNode proves the radio layer fits).
+6. **Speak-to-the-TV** — voice/text as injected §13 Source crossings; response = render; evolve = state.
+
+## Acceptance (first slice)
+
+- A CI job boots an ISO in QEMU and runs one oracle suite inside it, green.
+- The capability matrix doc exists with at least {linux-x64, macos-arm64, qemu-aarch64, pi-4} rows and
+  honest UNKNOWN cells.
+
+## Relates
+
+B-0830 · B-0823 · B-0853 · B-0725 · B-0757 · Moonshot #1 · universal/color.md (honest capability) ·
+the citizenship quartet (a Pi node is a citizen's house).
