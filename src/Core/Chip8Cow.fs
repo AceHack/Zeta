@@ -37,7 +37,14 @@ module Chip8Cow =
           Sound: byte
           Display: Map<int, bool>
           Keys: bool[]
-          Rng: uint64 }
+          Rng: uint64
+          /// CHIP-9 (the Zeta color-extension dialect, operator-ratified 2026-06-11): the SELECTED
+          /// plane mask (bit0=R/mono, bit1=G, bit2=B). Default 1uy — original ROMs never change it,
+          /// so the zero case is structural: mono IS plane 1, not a mode.
+          Plane: byte
+          /// CHIP-9: the higher planes' per-pixel bitmask (bits 1-2; plane 0 lives in `Display`,
+          /// untouched, so every existing mono consumer is unaffected). Canonical: zero ⇒ absent.
+          Extra: Map<int, byte> }
 
     let private rd (addr: int) (f: Frame) : byte =
         Map.tryFind addr f.Mem |> Option.defaultValue 0uy
@@ -54,6 +61,14 @@ module Chip8Cow =
         Map.tryFind ((y % Chip8.DisplayH) * Chip8.DisplayW + (x % Chip8.DisplayW)) f.Display
         |> Option.defaultValue false
 
+    /// CHIP-9: the full color mask at a pixel — bit0 (R/mono) from `Display`, bits 1-2 (G,B) from
+    /// `Extra`. A mono frame reads exactly { lit ⇒ 1uy; unlit ⇒ 0uy } — the zero case.
+    let colorAt (x: int) (y: int) (f: Frame) : byte =
+        let idx = (y % Chip8.DisplayH) * Chip8.DisplayW + (x % Chip8.DisplayW)
+        let mono = if Map.tryFind idx f.Display |> Option.defaultValue false then 1uy else 0uy
+        let hi = Map.tryFind idx f.Extra |> Option.defaultValue 0uy
+        mono ||| hi
+
     /// A fresh frame with the font loaded (into the COW map) and the given DST `seed`; `PC = 0x200`.
     let create (seed: uint64) : Frame =
         let mem =
@@ -69,7 +84,9 @@ module Chip8Cow =
           Sound = 0uy
           Display = Map.empty
           Keys = Array.zeroCreate 16
-          Rng = seed }
+          Rng = seed
+          Plane = 1uy
+          Extra = Map.empty }
 
     /// Load a ROM at `0x200` (COW writes).
     let loadRom (rom: byte[]) (f: Frame) : Frame =
@@ -101,7 +118,21 @@ module Chip8Cow =
         match op &&& 0xF000 with
         | 0x0000 ->
             match op with
-            | 0x00E0 -> { f with Display = Map.empty }
+            | 0x00E0 ->
+                // CHIP-9: clear the SELECTED planes only (zero case: mask=1 ⇒ exactly the original
+                // mono clear). Canonical Extra: zero ⇒ absent (Map equality stays meaningful).
+                let d = if f.Plane &&& 1uy <> 0uy then Map.empty else f.Display
+                let keepMask = ~~~f.Plane &&& 0b110uy
+                let e =
+                    if keepMask = 0b110uy then f.Extra
+                    else
+                        f.Extra
+                        |> Map.toSeq
+                        |> Seq.choose (fun (k, m) ->
+                            let m' = m &&& keepMask
+                            if m' = 0uy then None else Some(k, m'))
+                        |> Map.ofSeq
+                { f with Display = d; Extra = e }
             | 0x00EE ->
                 match f.Stack with
                 | top :: rest -> { f with PC = top; Stack = rest }
@@ -138,16 +169,28 @@ module Chip8Cow =
             let ox = int vx % Chip8.DisplayW
             let oy = int vy % Chip8.DisplayH
             let mutable disp = f.Display
+            let mutable extra = f.Extra
             let mutable collision = 0uy
+            let hiSel = f.Plane &&& 0b110uy
+
             for row in 0 .. n - 1 do
                 let sprite = rd (int f.I + row) f
                 for col in 0..7 do
                     if (sprite >>> (7 - col)) &&& 1uy = 1uy then
                         let idx = ((oy + row) % Chip8.DisplayH) * Chip8.DisplayW + ((ox + col) % Chip8.DisplayW)
-                        let cur = Map.tryFind idx disp |> Option.defaultValue false
-                        if cur then collision <- 1uy
-                        disp <- Map.add idx (not cur) disp
-            { f with Display = disp } |> setV 0xF collision
+                        // plane 0 (R/mono) — the original path, untouched when unselected (CHIP-9)
+                        if f.Plane &&& 1uy <> 0uy then
+                            let cur = Map.tryFind idx disp |> Option.defaultValue false
+                            if cur then collision <- 1uy
+                            disp <- Map.add idx (not cur) disp
+                        // planes 1-2 (G,B) — XOR the selected high bits; canonical zero ⇒ absent
+                        if hiSel <> 0uy then
+                            let cur = Map.tryFind idx extra |> Option.defaultValue 0uy
+                            if cur &&& hiSel <> 0uy then collision <- 1uy
+                            let nxt = cur ^^^ hiSel
+                            extra <- if nxt = 0uy then Map.remove idx extra else Map.add idx nxt extra
+
+            { f with Display = disp; Extra = extra } |> setV 0xF collision
         | 0xE000 ->
             match op &&& 0x00FF with
             | 0x9E -> if f.Keys.[int vx &&& 0xF] then { f with PC = f.PC + 2us } else f
@@ -155,6 +198,10 @@ module Chip8Cow =
             | _ -> f
         | 0xF000 ->
             match op &&& 0x00FF with
+            | 0x01 ->
+                // CHIP-9 plane select `Fn01` (XO-CHIP lineage, widened to 3 planes = RGB): n = the
+                // X nibble, masked to 0..7. Unused encoding space — original ROMs never emit it.
+                { f with Plane = byte x &&& 0b111uy }
             | 0x07 -> setV x f.Delay f
             | 0x0A ->
                 match Array.tryFindIndex id f.Keys with
