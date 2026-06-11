@@ -13,8 +13,8 @@ export class Watermark {
     this.Source = source;
   }
 
-  static readonly MinValue = new Watermark(-9223372036854775808, 0);
-  static readonly MaxValue = new Watermark(9223372036854775807, 0);
+  static readonly MinValue = new Watermark(Number.MIN_SAFE_INTEGER, 0);
+  static readonly MaxValue = new Watermark(Number.MAX_SAFE_INTEGER, 0);
 }
 
 export class Timestamped<T> {
@@ -32,8 +32,8 @@ export type WatermarkStrategy =
   | { readonly type: "periodic"; readonly intervalMs: number; readonly latenessMs: number };
 
 export class WatermarkTracker {
-  private _maxSeen = -9223372036854775808;
-  private _lastEmitted = -9223372036854775808;
+  private _maxSeen = Number.MIN_SAFE_INTEGER;
+  private _lastEmitted = Number.MIN_SAFE_INTEGER;
   readonly strategy: WatermarkStrategy;
 
   constructor(strategy: WatermarkStrategy) {
@@ -46,15 +46,15 @@ export class WatermarkTracker {
         return observedMax;
       case "bounded": {
         const lateness = this.strategy.maxLatenessMs;
-        if (observedMax <= -9223372036854775808 + lateness) {
-          return -9223372036854775808;
+        if (observedMax <= Number.MIN_SAFE_INTEGER + lateness) {
+          return Number.MIN_SAFE_INTEGER;
         }
         return observedMax - lateness;
       }
       case "periodic": {
         const lateness = this.strategy.latenessMs;
-        if (observedMax <= -9223372036854775808 + lateness) {
-          return -9223372036854775808;
+        if (observedMax <= Number.MIN_SAFE_INTEGER + lateness) {
+          return Number.MIN_SAFE_INTEGER;
         }
         return observedMax - lateness;
       }
@@ -92,15 +92,15 @@ export class WatermarkTracker {
  * never surfaces in outputs.
  */
 export function observe(strategy: Strategy, lateness: number, events: number[]): number[] {
-  let maxSeen = -9223372036854775808;
-  let lastEmitted = -9223372036854775808;
+  let maxSeen = Number.MIN_SAFE_INTEGER;
+  let lastEmitted = Number.MIN_SAFE_INTEGER;
   const out: number[] = [];
   for (const e of events) {
     if (e > maxSeen) maxSeen = e;
     let candidate = maxSeen;
     if (strategy === "bounded" || strategy === "periodic") {
-      if (maxSeen <= -9223372036854775808 + lateness) {
-        candidate = -9223372036854775808;
+      if (maxSeen <= Number.MIN_SAFE_INTEGER + lateness) {
+        candidate = Number.MIN_SAFE_INTEGER;
       } else {
         candidate = maxSeen - lateness;
       }
@@ -118,12 +118,11 @@ export function isLate(wm: number, eventTime: number): boolean {
 
 /** Combine per-source watermarks downstream: min (can't progress past the slowest input). */
 export function combine(sources: number[]): number {
-  let min = 9223372036854775807;
+  let min = Number.MAX_SAFE_INTEGER;
   let any = false;
   for (const s of sources) {
     any = true;
     if (s < min) min = s;
   }
-  return any ? min : -9223372036854775808;
+  return any ? min : Number.MIN_SAFE_INTEGER;
 }
-
