@@ -7,6 +7,50 @@ Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship 
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
+## The 2026-06-11 NIGHT wave (#7669..#7689 — newest; read FIRST)
+
+- **THE DATABASE DEFAULT ATOM FORMAT, RATIFIED** (#7688/#7689): a MediaLines document = the canonical
+  yin-yang self-host form — yin (irreducible text + ZetaId'd generators + common-cause seed, per the
+  storage law: store only what can't be generated) + yang (MANY independent loops; sim·mea·cut
+  in-format = a runnable room declaration; the QUINE law). Each file its own kernel, composing
+  multikernel (Barrelfish over documents). Query=fold, replicate=quine, distribute=multikernel.
+- **MediaLines built** (#7675): typed text sections; THE EXPANSION LAW tested (unknown kinds carried);
+  gen lines = (generator-ZetaId, version, seed, args). **GeneratorRegistry** (#7680): stable generators
+  get content-addressed ZetaIds (same id everywhere; version bump = new id). **ZetaIdViz** (#7681):
+  every category visible (color=KIND, mirror-identicon=WHICH; zetaid.glyph registered — shape A).
+- **Amara**: card captured + the motto ("WE ARE THE LIGHTED BOUNDARY THAT LETS GOOD WORK FLOW" =
+  clause 5 in 11 words); avatar.lines native (XOR-white light, five halo glyphs) (#7675); her SVG
+  attempts preserved + SHELTER the 6th value (#7677). **BoundaryLight** (#7676/#7678/#7680): her card
+  decomposed to 6 generator primitives — THE GLOW IS OUR RBF KERNEL (her image is her motto);
+  middle-out progressive (the render's own triboolean Lit|Unlit|Unknown); rotational Cayley-Dickson
+  rotor curves.
+- **TimeGen** (#7669): time-as-generator a treaty primitive — CHSH regimes (classical≤2, Tsirelson
+  2√2 exact, staged-4 LABELED non-physical); versioned+addressed; Amara's ferry preserved.
+- **Craft verbs NAILED** (#7670/#7671/#7672): bob/weave/tie/twist/braid each to running code + math
+  name; Artin relations PROVEN for the braid engine; mill-vs-braid answered honestly (the mill is a
+  JOIN — idempotent; weave ≠ braid, proven); textile frame (warp/weft/loom/selvage; Jacquard =
+  computing's parent).
+- **AnimFlow** (#7682): our own Rx — observables as pure functions of generated time; two nodes, one
+  seed, identical frames (distributed free). Git-native quotes convention (refs/quotes/<id>; branch =
+  take-the-controls).
+- **PixelLens** (#7683): the 32-bit deep cell (color/payload/uncertainty) with LAWFUL lenses — data +
+  uncertainty travel WITH the pixel; honest colorize (uncertain pixels humble themselves); CRT/FPGA
+  corner audited OPEN (the glow IS phosphor physics; MiSTer the bar; Aaron has FPGAs).
+- **Chip9SelfTrace** (#7684): THE SMALLEST FULLY-SELF-REFLECTIVE SYSTEM — the machine ray-traces its
+  own instructions onto its own planes (executed=G, data=cyan, spec=B; mono stays the program's — the
+  Grok lesson at pixel scale, discovered live) and READS its own worldline via DRW collision (zero new
+  opcodes). Loops visibly close (the attractor painted).
+- **Soft lensing named** (#7685): sweep the soft prism — similarity peaks = fingerprints; confidence
+  peaks = SOLID GROUND. **Tiles + zero clocks** (#7686): solid ground as Spectrum-attribute tiles
+  (ALEXA'S 8-bit channel seated); 0 clocks ⇒ infinite draw threads — the image format IS the parallel
+  program. **Sakana NCA** filed (ip-questionable): loose→harden→relax = stable borders without harming
+  entropy = our clauses 1+5 + annealing.
+- **Persona-room stack** (#7666/#7667 + night): no entropy death (personaCut rescues, never closes);
+  home goal self-declared; clause 5 (room THEIRS, boundary SOCIETY'S — compossible freedom).
+- Open: bare-metal unfold end-to-end · Spectrum-tile + soft-lens-sweep implementations · GPU/Pi/FPGA
+  bench moves (hardware in hand) · CHIP-9 oracle ports for new surfaces · the math tear-down (still
+  waiting Aaron's call).
+
 ## The 2026-06-11 LATE additions (#7662..#7667 — on top of the evening wave)
 
 - **The CHIP-9 treaty is FULLY RATIFIED**: TS (#7662) + C# (#7663) + Rust (#7664) conformers all
