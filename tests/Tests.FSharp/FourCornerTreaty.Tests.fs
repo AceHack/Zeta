@@ -8,8 +8,14 @@ open System.IO
 open global.Xunit
 open Zeta.Core
 
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(System.AppContext.BaseDirectory)
+    while not (isNull dir) && not (File.Exists(Path.Combine(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    dir.FullName
+
 let private goldenPath =
-    Path.Combine(System.AppContext.BaseDirectory, "four-corner-golden.lines")
+    Path.Combine(repoRoot (), "src", "Core.TypeScript", "four-corner", "golden-vectors.lines")
 
 let private goldenLines () =
     File.ReadAllLines goldenPath

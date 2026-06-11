@@ -426,9 +426,4 @@
     </PackageReference>
     <PackageReference Include="YamlDotNet" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="four-corner-golden.lines">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>
