@@ -179,6 +179,7 @@
     <Compile Include="HtmlCssBinding.Tests.fs" />
     <Compile Include="ShapeCartridge.Tests.fs" />
     <Compile Include="ShapeAcceptance.Tests.fs" />
+    <Compile Include="DeterminismLint.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />

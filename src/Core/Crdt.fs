@@ -94,9 +94,18 @@ type OrSet<'T when 'T : comparison> = { Entries: ZSet<'T * Guid> }
 with
     static member Empty : OrSet<'T> = { Entries = ZSet<'T * Guid>.Empty }
 
-    member this.Add(elem: 'T) : OrSet<'T> =
-        let tag = Guid.NewGuid()
+    /// Add with a CALLER-SUPPLIED tag — the DST-clean path: derive the tag from your seeded
+    /// source (TimeGen/SplitMix fold into a Guid) so replay reproduces the same tag and OrSet
+    /// states byte-lock. Uniqueness is the caller's contract (seeded streams give it for free).
+    member this.Add(elem: 'T, tag: Guid) : OrSet<'T> =
         { Entries = ZSet.add this.Entries (ZSet.ofSeq [ (elem, tag), 1L ]) }
+
+    /// Add with an AMBIENT tag (Guid.NewGuid) — the wall-clock edge: convenient, UNIQUE, and
+    /// NON-REPLAYABLE (determinism-lint finding 2026-06-12: an unseeded tag inside Core meant
+    /// OrSet could never byte-lock under DST). Fine at interactive edges; simulation and
+    /// golden-vector paths MUST use the seeded overload above.
+    member this.Add(elem: 'T) : OrSet<'T> =
+        this.Add(elem, Guid.NewGuid())
 
     /// Remove: retract every `(elem, tag)` the local replica currently
     /// observes for `elem`. Merges with concurrent adds are preserved.

@@ -79,7 +79,12 @@ module Consensus =
         | Ok of RoundState<'T>
         | InvalidTransition of reason: string
 
-    let transition<'T when 'T: equality>
+    /// The DST-clean transition: `now` is INJECTED (determinism-lint finding 2026-06-12 — votes
+    /// were stamping ambient DateTimeOffset.UtcNow inside Core; replay could never reproduce a
+    /// round byte-for-byte). Simulation and golden paths use this; the treaty's byte-locked
+    /// decision core (quorumThreshold/decide) never read the clock at all.
+    let transitionAt<'T when 'T: equality>
+        (now: DateTimeOffset)
         (state: RoundState<'T>)
         (msg: Message<'T>)
         : TransitionResult<'T> =
@@ -101,7 +106,7 @@ module Consensus =
                 let vote =
                     { Node = voter
                       Value = value
-                      Timestamp = DateTimeOffset.UtcNow }
+                      Timestamp = now }
                 Ok { state with Votes = vote :: state.Votes }
         | Voting, Finalize ->
             let result = decide state.Votes
@@ -114,6 +119,11 @@ module Consensus =
             InvalidTransition "cannot finalize before proposal"
         | Voting, Propose _ ->
             InvalidTransition "cannot propose during voting"
+
+    /// The AMBIENT transition (wall-clock edge): convenience for interactive paths; stamps
+    /// DateTimeOffset.UtcNow. Non-replayable by construction — DST paths use `transitionAt`.
+    let transition<'T when 'T: equality> (state: RoundState<'T>) (msg: Message<'T>) : TransitionResult<'T> =
+        transitionAt DateTimeOffset.UtcNow state msg
 
     type MergeVerdict =
         | Merge
@@ -137,13 +147,22 @@ module Consensus =
         else
             Merge
 
-    let prToVote
+    /// DST-clean: timestamp injected (see transitionAt).
+    let prToVoteAt
+        (now: DateTimeOffset)
         (node: NodeId)
         (pr: PrGateState)
         : Vote<MergeVerdict> =
         { Node = node
           Value = evaluateGate pr
-          Timestamp = DateTimeOffset.UtcNow }
+          Timestamp = now }
+
+    /// Ambient wall-clock edge (interactive paths only).
+    let prToVote
+        (node: NodeId)
+        (pr: PrGateState)
+        : Vote<MergeVerdict> =
+        prToVoteAt DateTimeOffset.UtcNow node pr
 
     let prConsensus
         (nodes: NodeId list)
