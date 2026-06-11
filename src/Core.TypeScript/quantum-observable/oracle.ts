@@ -14,12 +14,17 @@ export interface IQuantumObservableOracle {
   runSingletChsh(
     id: string,
     corners: readonly {
-      readonly Id?: string; readonly id?: string;
-      readonly Operation?: string; readonly operation?: string;
-      readonly A?: number; readonly a?: number;
-      readonly B?: number; readonly b?: number;
-      readonly Coefficient?: number; readonly coefficient?: number;
-    }[]
+      readonly Id?: string;
+      readonly id?: string;
+      readonly Operation?: string;
+      readonly operation?: string;
+      readonly A?: number;
+      readonly a?: number;
+      readonly B?: number;
+      readonly b?: number;
+      readonly Coefficient?: number;
+      readonly coefficient?: number;
+    }[],
   ): SingletChsh;
   runBellCoincidence(
     id: string,
@@ -27,7 +32,7 @@ export interface IQuantumObservableOracle {
     operation: string,
     a: number,
     b: number,
-    event: string
+    event: string,
   ): BellCoincidence;
   runInterferenceVisibility(id: string, operation: string, phase?: number): InterferenceVisibility;
 }
@@ -58,12 +63,13 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
     circuit.run();
     const probOne = circuit.probabilities()[0] ?? 0;
     const probZero = 1 - probOne;
-    return {
+    const result: SingleQubitMeasurement = {
       Id: id,
       Operation: operation,
-      ThetaRadians: theta,
       Probabilities: { Zero: probZero, One: probOne },
     };
+
+    return theta === undefined ? result : { ...result, ThetaRadians: theta };
   }
 
   runCanonicalChsh(id: string, a: number, aPrime: number, b: number, bPrime: number): CanonicalChsh {
@@ -100,17 +106,27 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
   runSingletChsh(
     id: string,
     cornersInput: readonly {
-      readonly Id?: string; readonly id?: string;
-      readonly Operation?: string; readonly operation?: string;
-      readonly A?: number; readonly a?: number;
-      readonly B?: number; readonly b?: number;
-      readonly Coefficient?: number; readonly coefficient?: number;
-    }[]
+      readonly Id?: string;
+      readonly id?: string;
+      readonly Operation?: string;
+      readonly operation?: string;
+      readonly A?: number;
+      readonly a?: number;
+      readonly B?: number;
+      readonly b?: number;
+      readonly Coefficient?: number;
+      readonly coefficient?: number;
+    }[],
   ): SingletChsh {
     const corners: BellCorner[] = cornersInput.map((corner) => {
       const a = corner.A !== undefined ? corner.A : corner.a !== undefined ? corner.a : 0;
       const b = corner.B !== undefined ? corner.B : corner.b !== undefined ? corner.b : 0;
-      const coeff = corner.Coefficient !== undefined ? corner.Coefficient : corner.coefficient !== undefined ? corner.coefficient : 1;
+      const coeff =
+        corner.Coefficient !== undefined
+          ? corner.Coefficient
+          : corner.coefficient !== undefined
+            ? corner.coefficient
+            : 1;
       const op = corner.Operation || corner.operation || "";
       const cid = corner.Id || corner.id || "";
 
@@ -161,7 +177,7 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
     operation: string,
     a: number,
     b: number,
-    event: string
+    event: string,
   ): BellCoincidence {
     const circuit = new QuantumCircuit(2);
     circuit.appendGate("h", 0);
@@ -215,12 +231,16 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
     const probOne = circuit.probabilities()[0] ?? 0;
     const probZero = 1 - probOne;
 
-    return {
+    const result: InterferenceVisibility = {
       Id: id,
       Operation: operation,
-      PhaseRadians: phase,
       Probabilities: { Zero: probZero, One: probOne },
-      Visibility: operation.endsWith("Open") ? undefined : 1.0,
+    };
+
+    return {
+      ...result,
+      ...(phase === undefined ? {} : { PhaseRadians: phase }),
+      ...(operation.endsWith("Open") ? {} : { Visibility: 1.0 }),
     };
   }
 }

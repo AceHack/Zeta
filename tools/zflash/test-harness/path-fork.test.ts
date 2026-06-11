@@ -57,10 +57,7 @@ describe("path-fork serial marker assertions", () => {
 
     const result = assertPathForkSerialMarkers(
       migrate,
-      [
-        ...migrate.requiredSerialMarkers.slice(1),
-        ...FRESH_CLUSTER_SERIAL_MARKERS,
-      ].join("\n"),
+      [...migrate.requiredSerialMarkers.slice(1), ...FRESH_CLUSTER_SERIAL_MARKERS].join("\n"),
     );
 
     expect(result).toHaveProperty("error");
@@ -81,10 +78,7 @@ describe("path-fork serial marker assertions", () => {
 
     const result = assertPathForkSerialMarkers(
       migrate,
-      [
-        ...migrate.requiredSerialMarkers,
-        ...FRESH_CLUSTER_SERIAL_MARKERS,
-      ].join("\n"),
+      [...migrate.requiredSerialMarkers, ...FRESH_CLUSTER_SERIAL_MARKERS].join("\n"),
     );
 
     expect(result).toHaveProperty("error");
@@ -147,10 +141,7 @@ describe("path-fork serial marker assertions", () => {
 
     const result = assertPathForkSerialMarkers(
       fresh,
-      [
-        ...fresh.requiredSerialMarkers,
-        ...MIGRATE_EXISTING_CREDS_SERIAL_MARKERS,
-      ].join("\n"),
+      [...fresh.requiredSerialMarkers, ...MIGRATE_EXISTING_CREDS_SERIAL_MARKERS].join("\n"),
     );
 
     expect(result).toHaveProperty("error");

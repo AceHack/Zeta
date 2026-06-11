@@ -8,6 +8,9 @@ open Zeta.Core
 
 module WorkflowEngineTests =
 
+    [<Literal>]
+    let private MaxWorkflowTranscriptBytes = 1024L * 1024L
+
     let getString (el: JsonElement) (prop: string) : string =
         el.GetProperty(prop).GetString()
 
@@ -182,8 +185,11 @@ module WorkflowEngineTests =
     let ``workflow treaty: F# matches TS on all transition vectors`` () =
         let root = repoRoot ()
         let transcriptPath = Path.Join(root, "src", "Core.TypeScript", "workflow-engine", "workflow-treaty-transcript.json")
-        let jsonBytes = File.ReadAllBytes(transcriptPath)
-        use doc = JsonDocument.Parse(jsonBytes)
+        let transcriptInfo = FileInfo(transcriptPath)
+        if transcriptInfo.Length > MaxWorkflowTranscriptBytes then
+            invalidOp $"Workflow treaty transcript is too large: {transcriptInfo.Length} bytes."
+        use jsonStream = File.OpenRead(transcriptPath)
+        use doc = JsonDocument.Parse(jsonStream)
         
         let mutable count = 0
         for el in doc.RootElement.EnumerateArray() do

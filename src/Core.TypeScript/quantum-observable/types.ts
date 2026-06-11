@@ -83,6 +83,20 @@ export interface QuantumObservableDelta {
   readonly weight: number;
 }
 
+export interface QuantumObservableBatch {
+  readonly batchId: number;
+  readonly deltas: readonly QuantumObservableDelta[];
+}
+
+export interface QuantumObservableTranscript {
+  readonly schema: string;
+  readonly metadata?: {
+    readonly generatedBy: string;
+    readonly timestamp: string;
+  };
+  readonly batches: readonly QuantumObservableBatch[];
+}
+
 function compareStrings(a: string, b: string): number {
   if (a < b) return -1;
   if (a > b) return 1;
@@ -98,12 +112,18 @@ function compareNumbers(a?: number, b?: number): number {
 
 function tagOrder(type: QuantumObservableRow["type"]): number {
   switch (type) {
-    case "SingleQubit": return 0;
-    case "CanonicalChsh": return 1;
-    case "SingletChsh": return 2;
-    case "BellCorner": return 3;
-    case "BellCoincidence": return 4;
-    case "InterferenceVisibility": return 5;
+    case "SingleQubit":
+      return 0;
+    case "CanonicalChsh":
+      return 1;
+    case "SingletChsh":
+      return 2;
+    case "BellCorner":
+      return 3;
+    case "BellCoincidence":
+      return 4;
+    case "InterferenceVisibility":
+      return 5;
   }
 }
 

@@ -114,6 +114,7 @@ host-loop setup cleaner? Would you move anything differently? The
 "leave at root" list includes everything your launchd scripts touch.
 
 The three verbosity levels from B-0730 apply here:
+
 - **5yo version:** "We're putting all the messy folders into one neat drawer labeled `db`"
 - **Addison/Max version:** This ADR (what you're reading)
 - **Aaron+Max debugging version:** `git log --follow db/<folder>` still works after the move

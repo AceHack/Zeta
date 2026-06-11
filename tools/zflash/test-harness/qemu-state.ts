@@ -57,8 +57,11 @@ export interface Qcow2SnapshotRetentionPlan {
   readonly requiredSerialMarkers: readonly string[];
 }
 
-export type Qcow2SnapshotRetentionFeedback =
-  | { readonly kind: "invalid-input"; readonly field: keyof Qcow2SnapshotRetentionInput; readonly reason: string };
+export type Qcow2SnapshotRetentionFeedback = {
+  readonly kind: "invalid-input";
+  readonly field: keyof Qcow2SnapshotRetentionInput;
+  readonly reason: string;
+};
 
 export type Qcow2SnapshotRetentionResult =
   | { readonly ok: Qcow2SnapshotRetentionPlan }
@@ -68,12 +71,11 @@ export interface RetentionSerialMarkerAssertion {
   readonly matchedMarkers: readonly string[];
 }
 
-export type RetentionSerialMarkerFeedback =
-  | {
-      readonly kind: "missing-serial-markers";
-      readonly missingMarkers: readonly string[];
-      readonly requiredMarkers: readonly string[];
-    };
+export type RetentionSerialMarkerFeedback = {
+  readonly kind: "missing-serial-markers";
+  readonly missingMarkers: readonly string[];
+  readonly requiredMarkers: readonly string[];
+};
 
 export type RetentionSerialMarkerResult =
   | { readonly ok: RetentionSerialMarkerAssertion }
@@ -117,10 +119,7 @@ export interface QemuCommandExecution {
 }
 
 export interface Qcow2RetentionExecutor {
-  readonly runCommand: (
-    step: Qcow2RetentionExecutionStep,
-    command: QemuCommand,
-  ) => QemuCommandExecution;
+  readonly runCommand: (step: Qcow2RetentionExecutionStep, command: QemuCommand) => QemuCommandExecution;
   readonly runCommandUntilSerialMarkers?: (
     step: Qcow2RetentionExecutionStep,
     command: QemuCommand,
@@ -204,14 +203,9 @@ const DEFAULT_RETENTION_POLL_INTERVAL_MS = 1000;
 const DEFAULT_QEMU_STOP_TIMEOUT_MS = 5000;
 const DEFAULT_QEMU_KILL_TIMEOUT_MS = 1000;
 
-export const RETENTION_SERIAL_MARKERS: readonly string[] = [
-  "zeta-creds-restore:",
-  "already-present",
-];
+export const RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
 
-export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [
-  "[iter-5.1]",
-];
+export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = ["[iter-5.1]"];
 
 export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "panic",
@@ -221,9 +215,7 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "bail",
 ];
 
-export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = [
-  "nixos@zeta-installer:~",
-];
+export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = ["nixos@zeta-installer:~"];
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
@@ -261,9 +253,8 @@ function validateInput(input: Qcow2SnapshotRetentionInput): Qcow2SnapshotRetenti
   return null;
 }
 
-type NormalizedQcow2SnapshotRetentionInput =
-  & Required<Omit<Qcow2SnapshotRetentionInput, "bootImagePath">>
-  & Pick<Qcow2SnapshotRetentionInput, "bootImagePath">;
+type NormalizedQcow2SnapshotRetentionInput = Required<Omit<Qcow2SnapshotRetentionInput, "bootImagePath">> &
+  Pick<Qcow2SnapshotRetentionInput, "bootImagePath">;
 
 export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonly string[] {
   const args: string[] = [
@@ -295,12 +286,7 @@ export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonl
       "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
     );
   } else {
-    args.push(
-      "-cdrom",
-      input.bootMedia.path,
-      "-boot",
-      "d",
-    );
+    args.push("-cdrom", input.bootMedia.path, "-boot", "d");
   }
 
   if (input.kvmAvailable) {
@@ -319,15 +305,14 @@ function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonl
     memoryMB: input.memoryMB,
     cpuCount: input.cpuCount,
     kvmAvailable: input.kvmAvailable,
-    bootMedia: input.bootImagePath === undefined
-      ? { kind: "iso", path: input.isoPath }
-      : { kind: "usb-image", path: input.bootImagePath },
+    bootMedia:
+      input.bootImagePath === undefined
+        ? { kind: "iso", path: input.isoPath }
+        : { kind: "usb-image", path: input.bootImagePath },
   });
 }
 
-export function planQcow2SnapshotRetention(
-  input: Qcow2SnapshotRetentionInput,
-): Qcow2SnapshotRetentionResult {
+export function planQcow2SnapshotRetention(input: Qcow2SnapshotRetentionInput): Qcow2SnapshotRetentionResult {
   const invalid = validateInput(input);
   if (invalid) {
     return { error: invalid };
@@ -400,9 +385,7 @@ interface RetentionExecutionPlannedStep {
   readonly stopCondition?: QemuSerialStopCondition;
 }
 
-function retentionExecutionSteps(
-  plan: Qcow2SnapshotRetentionPlan,
-): readonly RetentionExecutionPlannedStep[] {
+function retentionExecutionSteps(plan: Qcow2SnapshotRetentionPlan): readonly RetentionExecutionPlannedStep[] {
   return [
     { step: "create-disk-image", command: plan.createDiskImage },
     {
@@ -425,10 +408,7 @@ function unknownReason(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-function qemuCommandOptions(
-  cwd: string | undefined,
-  timeoutMs: number,
-): SpawnSyncQemuCommandOptions {
+function qemuCommandOptions(cwd: string | undefined, timeoutMs: number): SpawnSyncQemuCommandOptions {
   return cwd === undefined ? { timeoutMs } : { cwd, timeoutMs };
 }
 
@@ -453,9 +433,10 @@ function defaultSpawnSyncQemuCommand(
   command: QemuCommand,
   options: SpawnSyncQemuCommandOptions,
 ): SpawnSyncQemuCommandResult {
-  const spawnOptions = options.cwd === undefined
-    ? { encoding: "utf8" as const, timeout: options.timeoutMs }
-    : { cwd: options.cwd, encoding: "utf8" as const, timeout: options.timeoutMs };
+  const spawnOptions =
+    options.cwd === undefined
+      ? { encoding: "utf8" as const, timeout: options.timeoutMs }
+      : { cwd: options.cwd, encoding: "utf8" as const, timeout: options.timeoutMs };
   const result = nodeSpawnSync(command.bin, [...command.args], spawnOptions);
   const stdout = stringifySpawnOutput(result.stdout);
   const stderr = appendSpawnError(stringifySpawnOutput(result.stderr), result.error);
@@ -521,11 +502,7 @@ function waitForManagedProcessStop(
   return !managed.isRunning();
 }
 
-function stopManagedProcess(
-  managed: ManagedQemuCommandProcess,
-  signal: NodeJS.Signals,
-  pollIntervalMs: number,
-): void {
+function stopManagedProcess(managed: ManagedQemuCommandProcess, signal: NodeJS.Signals, pollIntervalMs: number): void {
   if (!managed.isRunning()) {
     return;
   }
@@ -539,10 +516,7 @@ function stopManagedProcess(
   }
 }
 
-function readSerialOutputIfPresent(
-  serialLogPath: string,
-  readSerialOutput: (serialLogPath: string) => string,
-): string {
+function readSerialOutputIfPresent(serialLogPath: string, readSerialOutput: (serialLogPath: string) => string): string {
   try {
     return readSerialOutput(serialLogPath);
   } catch (error) {
@@ -569,9 +543,7 @@ function serialOutputAfterBaseline(serialOutput: string, baseline: string): stri
   if (baseline.length === 0) {
     return serialOutput;
   }
-  return serialOutput.startsWith(baseline)
-    ? serialOutput.slice(baseline.length)
-    : serialOutput;
+  return serialOutput.startsWith(baseline) ? serialOutput.slice(baseline.length) : serialOutput;
 }
 
 function runManagedCommandUntilSerialMarkers(

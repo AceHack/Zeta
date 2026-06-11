@@ -7,7 +7,7 @@
 
 _Each entry below is a link to a per-row file under
 `docs/backlog/`. Entries with `- [ ]` are open; `- [x]`
-are closed (status: closed in frontmatter)._
+are closed (status: closed/done in frontmatter)._
 
 ## P0 — critical / blocking
 
@@ -750,7 +750,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0534](backlog/P2/B-0534-backlog-ready-notifier-reads-stale-local-checkout-2026-05-15.md)** backlog-ready-notifier reads stale local working-tree files → publishes work-assignment envelopes for closed rows
 - [ ] **[B-0543](backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md)** QG isomorphism proof path — Remember-When + Pay-Attention root axioms → infinite-poker-game → quantum gravity (defeat the algo-wink critique by grounding the cosmology in falsifiable physics)
 - [ ] **[B-0544](backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md)** QG isomorphism Step 1 — Formalize Remember-When + Pay-Attention as categorical primitives (topos with internal monad + modal operator)
-- [ ] **[B-0545](backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)** B-0498 ID collision — renumber sweep (Riven cursor-terminal scaffold → new ID)
+- [x] **[B-0545](backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md)** B-0498 ID collision — renumber sweep (Riven cursor-terminal scaffold → new ID)
 - [ ] **[B-0546](backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md)** Recast docs/governance/MANIFESTO.md from "manifesto" framing to "building codes" framing per Aaron's correction + Kestrel's reframe — the document is best-practices-with-default-moral-oracle, not ideological commitment
 - [ ] **[B-0547](backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md)** Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 - [ ] **[B-0548](backlog/P2/B-0548-qg-isomorphism-step-1-5-construct-strength-and-a-lifting-2026-05-16.md)** QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
@@ -975,11 +975,11 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-1027](backlog/P2/B-1027-craft-verb-precision-bob-weave-tie-twist-braid-textile-warp-weft-jacquard-braid-relations-test-salon-textile-craft-schools-aaron-2026-06-11.md)** Craft-verb precision (bob/weave/tie/twist/braid) + the textile frame (warp/weft/loom/selvage) — ratify the registry, test the braid relations
 - [ ] **[B-1028](backlog/P2/B-1028-mips-emulator-treaty-room-like-chip8-maxs-machine-hennessy-lineage-aaron-2026-06-11.md)** MIPS emulator as a treaty room — like our CHIP-8, for Max (Hennessy lineage; the B-1025 fan-out's second machine)
 - [ ] **[B-1029](backlog/P2/B-1029-quirk-craft-school-toy-layer-and-quantum-circuit-ts-second-oracle-with-qsharp-export-lior-owner-aaron-2026-06-12.md)** The TS quantum lane — quantum-circuit as second oracle (Q# export, the three Vera jobs) + Quirk as the craft-school toy layer
-- [ ] **[B-1031](backlog/P2/B-1031-drw-clip-vs-wrap-cosmac-vip-correct-edge-semantics-four-oracle-coordinated-golden-regen-aaron-2026-06-13.md)** DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change
-- [x] **[B-1032](backlog/P2/B-1032-wset-ring-generic-circuit-three-rings-one-calculus-dbsp-quantum-inference-gdl-anchor-aaron-2026-06-13.md)** WSet<'K,'W> — three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0); GDL-anchored; first demo SHIPPED (the three-oracle Mach-Zehnder)
-- [ ] **[B-1033](backlog/P2/B-1033-hexagonal-inference-port-own-the-interface-zeta-bayesian-and-infer-net-as-adapters-plugin-system-convergence-aaron-2026-06-13.md)** Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
-- [ ] **[B-1034](backlog/P2/B-1034-research-paper-the-oracle-stack-mutual-oracles-honesty-registers-experience-report-aaron-2026-06-13.md)** Research paper: The Oracle Stack — mutual oracles, honesty registers, refutation witnesses (experience report; the mutual-oracle reversal is the centerpiece)
-- [ ] **[B-1035](backlog/P2/B-1035-sim-mea-cut-test-framework-own-interfaces-xunit-as-adapter-before-after-boundary-enforced-once-aaron-2026-06-11.md)** The sim·mea·cut test framework — our own hexagonal test interfaces; xUnit = host adapter; before/after boundary enforced ONCE (every room inherits)
+- [x] **[B-1031](backlog/P2/B-1031-drw-clip-vs-wrap-cosmac-vip-correct-edge-semantics-four-oracle-coordinated-golden-regen-aaron-2026-06-13.md)** DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change
+- [x] **[B-1032](backlog/P2/B-1032-wset-ring-generic-circuit-three-rings-one-calculus-dbsp-quantum-inference-gdl-anchor-aaron-2026-06-13.md)** WSet<'K,'W> — the ring-generic circuit; three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0), GDL-anchored
+- [x] **[B-1033](backlog/P2/B-1033-hexagonal-inference-port-own-the-interface-zeta-bayesian-and-infer-net-as-adapters-plugin-system-convergence-aaron-2026-06-13.md)** Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
+- [ ] **[B-1034](backlog/P2/B-1034-research-paper-the-oracle-stack-mutual-oracles-honesty-registers-experience-report-aaron-2026-06-13.md)** Research paper: The Oracle Stack — mutual oracles, honesty registers, and refutation witnesses in an autonomous software factory (experience report)
+- [ ] **[B-1035](backlog/P2/B-1035-sim-mea-cut-test-framework-own-interfaces-xunit-as-adapter-before-after-boundary-enforced-once-aaron-2026-06-11.md)** The sim·mea·cut test framework — our own hexagonal test interfaces; xUnit demoted to host adapter; before/after boundary enforced ONCE (rooms inherit)
 
 ## P3 — convenience / deferred
 

@@ -37,10 +37,34 @@ describe("QuantumObservableOracle simulator", () => {
   test("Singlet CHSH corners sum to Tsirelson bound", () => {
     // Standard singlet CHSH configuration: angles a0=0, a1=pi/2, b0=pi/4, b1=-pi/4
     const corners = [
-      { id: "E(a0,b0)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0", a: 0.0, b: Math.PI / 4.0, coefficient: 1 },
-      { id: "E(a0,b1)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1", a: 0.0, b: -Math.PI / 4.0, coefficient: 1 },
-      { id: "E(a1,b0)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0", a: Math.PI / 2.0, b: Math.PI / 4.0, coefficient: 1 },
-      { id: "E(a1,b1)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1", a: Math.PI / 2.0, b: -Math.PI / 4.0, coefficient: -1 }
+      {
+        id: "E(a0,b0)",
+        operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0",
+        a: 0.0,
+        b: Math.PI / 4.0,
+        coefficient: 1,
+      },
+      {
+        id: "E(a0,b1)",
+        operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1",
+        a: 0.0,
+        b: -Math.PI / 4.0,
+        coefficient: 1,
+      },
+      {
+        id: "E(a1,b0)",
+        operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0",
+        a: Math.PI / 2.0,
+        b: Math.PI / 4.0,
+        coefficient: 1,
+      },
+      {
+        id: "E(a1,b1)",
+        operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1",
+        a: Math.PI / 2.0,
+        b: -Math.PI / 4.0,
+        coefficient: -1,
+      },
     ];
 
     const singlet = oracle.runSingletChsh("BellSinglet CHSH corners", corners);
@@ -54,7 +78,7 @@ describe("QuantumObservableOracle simulator", () => {
       "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
       0.0,
       Math.PI / 4.0,
-      "sameOutcome"
+      "sameOutcome",
     );
     // same outcome probability is cos^2((a-b)/2) = cos^2(pi/8) ≈ 0.85355
     expect(c1.Probability).toBeCloseTo(Math.cos(Math.PI / 8.0) ** 2, 5);
@@ -65,17 +89,14 @@ describe("QuantumObservableOracle simulator", () => {
       "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers",
       0.0,
       Math.PI / 4.0,
-      "oppositeOutcome"
+      "oppositeOutcome",
     );
     // opposite outcome probability is cos^2((a-b)/2) = cos^2(pi/8) ≈ 0.85355
     expect(c2.Probability).toBeCloseTo(Math.cos(Math.PI / 8.0) ** 2, 5);
   });
 
   test("Mach-Zehnder interference visibility matches analytic visibility", () => {
-    const openCase = oracle.runInterferenceVisibility(
-      "mach-zehnder-open",
-      "Zeta.ReferenceOracle.ApplyMachZehnderOpen"
-    );
+    const openCase = oracle.runInterferenceVisibility("mach-zehnder-open", "Zeta.ReferenceOracle.ApplyMachZehnderOpen");
     expect(openCase.Probabilities.Zero).toBeCloseTo(0.5, 5);
     expect(openCase.Probabilities.One).toBeCloseTo(0.5, 5);
     expect(openCase.Visibility).toBeUndefined();
@@ -83,7 +104,7 @@ describe("QuantumObservableOracle simulator", () => {
     const closedZero = oracle.runInterferenceVisibility(
       "mach-zehnder-closed-zero-phase",
       "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
-      0.0
+      0.0,
     );
     expect(closedZero.Probabilities.Zero).toBeCloseTo(1.0, 5);
     expect(closedZero.Probabilities.One).toBeCloseTo(0.0, 5);
@@ -92,7 +113,7 @@ describe("QuantumObservableOracle simulator", () => {
     const closedPi = oracle.runInterferenceVisibility(
       "mach-zehnder-closed-pi-phase",
       "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
-      Math.PI
+      Math.PI,
     );
     expect(closedPi.Probabilities.Zero).toBeCloseTo(0.0, 5);
     expect(closedPi.Probabilities.One).toBeCloseTo(1.0, 5);

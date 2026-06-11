@@ -128,6 +128,7 @@ function listBacklogFiles(tierDir: string): readonly string[] {
 
 function checkboxFor(status: string): "[x]" | "[ ]" {
   if (status === "closed") return "[x]";
+  if (status === "done") return "[x]";
   if (status.startsWith("superseded-by-")) return "[x]";
   // open / deferred / decomposed all render as unchecked (still open)
   return "[ ]";
@@ -144,7 +145,7 @@ function generateContent(backlogDir: string): string {
   out.push("");
   out.push("_Each entry below is a link to a per-row file under");
   out.push("`docs/backlog/`. Entries with `- [ ]` are open; `- [x]`");
-  out.push("are closed (status: closed in frontmatter)._");
+  out.push("are closed (status: closed/done in frontmatter)._");
   // No explicit blank line here: the per-tier loop below pushes its
   // own leading "" before each section label, which (after
   // `out.join("\n")`) produces exactly one blank line between the
@@ -211,18 +212,10 @@ function readLineCount(path: string): number {
 }
 
 function emitWriteRefuse(indexPath: string): ExitCode {
-  process.stderr.write(
-    "generate-index.ts: refusing to overwrite existing\n",
-  );
-  process.stderr.write(
-    `${indexPath} — file has substantial content\n`,
-  );
-  process.stderr.write(
-    "(Phase-1a guard). Phase 2 content-migration PR should\n",
-  );
-  process.stderr.write(
-    "set BACKLOG_WRITE_FORCE=1 to authorize the overwrite\n",
-  );
+  process.stderr.write("generate-index.ts: refusing to overwrite existing\n");
+  process.stderr.write(`${indexPath} — file has substantial content\n`);
+  process.stderr.write("(Phase-1a guard). Phase 2 content-migration PR should\n");
+  process.stderr.write("set BACKLOG_WRITE_FORCE=1 to authorize the overwrite\n");
   process.stderr.write("once per-row files have been populated.\n");
   process.stderr.write("\n");
   process.stderr.write("Use --stdout to preview, --check to compare against\n");

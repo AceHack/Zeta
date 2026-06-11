@@ -33,17 +33,41 @@ const chshRow: QuantumObservableRow = {
     0.0,
     Math.PI / 2.0,
     Math.PI / 4.0,
-    (3.0 * Math.PI) / 4.0
+    (3.0 * Math.PI) / 4.0,
   ),
 };
 batch0Deltas.push({ row: chshRow, weight: 1 });
 
 // 3. Singlet CHSH
 const corners = [
-  { id: "E(a0,b0)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0", a: 0.0, b: Math.PI / 4.0, coefficient: 1 },
-  { id: "E(a0,b1)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1", a: 0.0, b: -Math.PI / 4.0, coefficient: 1 },
-  { id: "E(a1,b0)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0", a: Math.PI / 2.0, b: Math.PI / 4.0, coefficient: 1 },
-  { id: "E(a1,b1)", operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1", a: Math.PI / 2.0, b: -Math.PI / 4.0, coefficient: -1 },
+  {
+    id: "E(a0,b0)",
+    operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0",
+    a: 0.0,
+    b: Math.PI / 4.0,
+    coefficient: 1,
+  },
+  {
+    id: "E(a0,b1)",
+    operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1",
+    a: 0.0,
+    b: -Math.PI / 4.0,
+    coefficient: 1,
+  },
+  {
+    id: "E(a1,b0)",
+    operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0",
+    a: Math.PI / 2.0,
+    b: Math.PI / 4.0,
+    coefficient: 1,
+  },
+  {
+    id: "E(a1,b1)",
+    operation: "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1",
+    a: Math.PI / 2.0,
+    b: -Math.PI / 4.0,
+    coefficient: -1,
+  },
 ];
 const singletRow: QuantumObservableRow = {
   type: "SingletChsh",
@@ -63,10 +87,38 @@ for (const corner of corners) {
 
 // 5. Bell Coincidences
 const coincidences = [
-  { id: "PhiPlus same-outcome a=0 b=pi/4", state: "PhiPlus", op: "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers", a: 0.0, b: Math.PI / 4.0, event: "sameOutcome" },
-  { id: "Singlet opposite-outcome a=0 b=pi/4", state: "Singlet", op: "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers", a: 0.0, b: Math.PI / 4.0, event: "oppositeOutcome" },
-  { id: "PhiPlus same-outcome a=0 b=pi/2", state: "PhiPlus", op: "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers", a: 0.0, b: Math.PI / 2.0, event: "sameOutcome" },
-  { id: "PhiPlus same-outcome a=0 b=pi", state: "PhiPlus", op: "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers", a: 0.0, b: Math.PI, event: "sameOutcome" },
+  {
+    id: "PhiPlus same-outcome a=0 b=pi/4",
+    state: "PhiPlus",
+    op: "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+    a: 0.0,
+    b: Math.PI / 4.0,
+    event: "sameOutcome",
+  },
+  {
+    id: "Singlet opposite-outcome a=0 b=pi/4",
+    state: "Singlet",
+    op: "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers",
+    a: 0.0,
+    b: Math.PI / 4.0,
+    event: "oppositeOutcome",
+  },
+  {
+    id: "PhiPlus same-outcome a=0 b=pi/2",
+    state: "PhiPlus",
+    op: "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+    a: 0.0,
+    b: Math.PI / 2.0,
+    event: "sameOutcome",
+  },
+  {
+    id: "PhiPlus same-outcome a=0 b=pi",
+    state: "PhiPlus",
+    op: "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+    a: 0.0,
+    b: Math.PI,
+    event: "sameOutcome",
+  },
 ];
 for (const c of coincidences) {
   const row: QuantumObservableRow = {
@@ -80,9 +132,21 @@ for (const c of coincidences) {
 const mzInterferences = [
   { id: "mach-zehnder-open", op: "Zeta.ReferenceOracle.ApplyMachZehnderOpen" },
   { id: "mach-zehnder-closed-zero-phase", op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase", phase: 0.0 },
-  { id: "mach-zehnder-closed-pi-over-3-phase", op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase", phase: Math.PI / 3.0 },
-  { id: "mach-zehnder-closed-pi-over-2-phase", op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase", phase: Math.PI / 2.0 },
-  { id: "mach-zehnder-closed-two-pi-over-3-phase", op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase", phase: (2.0 * Math.PI) / 3.0 },
+  {
+    id: "mach-zehnder-closed-pi-over-3-phase",
+    op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase",
+    phase: Math.PI / 3.0,
+  },
+  {
+    id: "mach-zehnder-closed-pi-over-2-phase",
+    op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase",
+    phase: Math.PI / 2.0,
+  },
+  {
+    id: "mach-zehnder-closed-two-pi-over-3-phase",
+    op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase",
+    phase: (2.0 * Math.PI) / 3.0,
+  },
   { id: "mach-zehnder-closed-pi-phase", op: "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase", phase: Math.PI },
 ];
 for (const mz of mzInterferences) {
@@ -106,7 +170,11 @@ batch1Deltas.push({ row: mzOpenRetract, weight: -1 });
 // Retract mach-zehnder-closed-zero-phase
 const mzZeroRetract: QuantumObservableRow = {
   type: "InterferenceVisibility",
-  value: oracle.runInterferenceVisibility("mach-zehnder-closed-zero-phase", "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase", 0.0),
+  value: oracle.runInterferenceVisibility(
+    "mach-zehnder-closed-zero-phase",
+    "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+    0.0,
+  ),
 };
 batch1Deltas.push({ row: mzZeroRetract, weight: -1 });
 
@@ -116,7 +184,7 @@ const mzPiOver6Insert: QuantumObservableRow = {
   value: oracle.runInterferenceVisibility(
     "mach-zehnder-closed-pi-over-6-phase",
     "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase", // custom/arbitrary name ending
-    Math.PI / 6.0
+    Math.PI / 6.0,
   ),
 };
 batch1Deltas.push({ row: mzPiOver6Insert, weight: 1 });

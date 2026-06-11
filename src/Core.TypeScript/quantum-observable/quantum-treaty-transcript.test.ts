@@ -1,23 +1,25 @@
 import { describe, expect, test } from "bun:test";
 import transcript from "./quantum-treaty-transcript.json";
-import type { QuantumObservableRow } from "./types";
 import { QuantumObservableOracle } from "./oracle";
+import type { QuantumObservableTranscript } from "./types";
+
+const treatyTranscript = transcript as QuantumObservableTranscript;
 
 describe("Quantum treaty transcript integrity", () => {
   const oracle = new QuantumObservableOracle();
 
   test("transcript schema is correct", () => {
-    expect(transcript.schema).toBe("zeta.quantum.zset-transcript.v1");
-    expect(transcript.batches.length).toBe(2);
+    expect(treatyTranscript.schema).toBe("zeta.quantum.zset-transcript.v1");
+    expect(treatyTranscript.batches.length).toBe(2);
   });
 
   test("batch 0 deltas match simulator expectations", () => {
-    const batch = transcript.batches[0]!;
+    const batch = treatyTranscript.batches[0]!;
     expect(batch.batchId).toBe(0);
 
     for (const delta of batch.deltas) {
       expect(delta.weight).toBe(1);
-      const row = delta.row as QuantumObservableRow;
+      const row = delta.row;
 
       switch (row.type) {
         case "SingleQubit": {
@@ -34,7 +36,7 @@ describe("Quantum treaty transcript integrity", () => {
             expected.Angles.A,
             expected.Angles.APrime,
             expected.Angles.B,
-            expected.Angles.BPrime
+            expected.Angles.BPrime,
           );
           expect(actual.Correlators.EAB).toBeCloseTo(expected.Correlators.EAB, 5);
           expect(actual.Correlators.EABPrime).toBeCloseTo(expected.Correlators.EABPrime, 5);
@@ -67,7 +69,7 @@ describe("Quantum treaty transcript integrity", () => {
             expected.Operation,
             expected.A,
             expected.B,
-            expected.Event
+            expected.Event,
           );
           expect(actual.Probability).toBeCloseTo(expected.Probability, 5);
           break;
@@ -85,28 +87,28 @@ describe("Quantum treaty transcript integrity", () => {
   });
 
   test("batch 1 deltas match simulator expectations", () => {
-    const batch = transcript.batches[1]!;
+    const batch = treatyTranscript.batches[1]!;
     expect(batch.batchId).toBe(1);
 
     for (const delta of batch.deltas) {
-      const row = delta.row as QuantumObservableRow;
+      const row = delta.row;
       if (delta.weight === -1) {
-        expect(row.type).toBe("InterferenceVisibility");
-        if (row.type === "InterferenceVisibility") {
-          const expected = row.value;
-          const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
-          expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
-          expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
+        if (row.type !== "InterferenceVisibility") {
+          throw new Error(`expected InterferenceVisibility retraction row, got ${row.type}`);
         }
+        const expected = row.value;
+        const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
+        expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
+        expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
       } else {
         expect(delta.weight).toBe(1);
-        expect(row.type).toBe("InterferenceVisibility");
-        if (row.type === "InterferenceVisibility") {
-          const expected = row.value;
-          const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
-          expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
-          expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
+        if (row.type !== "InterferenceVisibility") {
+          throw new Error(`expected InterferenceVisibility insert row, got ${row.type}`);
         }
+        const expected = row.value;
+        const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
+        expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
+        expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
       }
     }
   });
