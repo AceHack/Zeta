@@ -151,13 +151,17 @@ module Chip8Cow =
             | 0x1 -> setV x (vx ||| vy) f
             | 0x2 -> setV x (vx &&& vy) f
             | 0x3 -> setV x (vx ^^^ vy) f
+            // VF writes LAST, from PRE-captured operands (Kira r3: with x=F or y=F the old order
+            // let the result clobber the flag — spec says the flag write wins; the mutable oracle
+            // additionally read operands AFTER writing VF, so the two machines diverged exactly
+            // on the registers the cross-check claim covered).
             | 0x4 ->
                 let sum = int vx + int vy
-                f |> setV 0xF (if sum > 0xFF then 1uy else 0uy) |> setV x (byte (sum &&& 0xFF))
-            | 0x5 -> f |> setV 0xF (if vx >= vy then 1uy else 0uy) |> setV x (vx - vy)
-            | 0x6 -> f |> setV 0xF (vx &&& 1uy) |> setV x (vx >>> 1)
-            | 0x7 -> f |> setV 0xF (if vy >= vx then 1uy else 0uy) |> setV x (vy - vx)
-            | 0xE -> f |> setV 0xF ((vx >>> 7) &&& 1uy) |> setV x (vx <<< 1)
+                f |> setV x (byte (sum &&& 0xFF)) |> setV 0xF (if sum > 0xFF then 1uy else 0uy)
+            | 0x5 -> f |> setV x (vx - vy) |> setV 0xF (if vx >= vy then 1uy else 0uy)
+            | 0x6 -> f |> setV x (vx >>> 1) |> setV 0xF (vx &&& 1uy)
+            | 0x7 -> f |> setV x (vy - vx) |> setV 0xF (if vy >= vx then 1uy else 0uy)
+            | 0xE -> f |> setV x (vx <<< 1) |> setV 0xF ((vx >>> 7) &&& 1uy)
             | _ -> f
         | 0x9000 -> if vx <> vy then { f with PC = f.PC + 2us } else f
         | 0xA000 -> { f with I = nnn }

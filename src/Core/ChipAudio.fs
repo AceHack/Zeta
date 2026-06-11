@@ -29,7 +29,11 @@ module ChipAudio =
         match w with
         | Saw -> (p * 255) / 999 - 128
         | Square -> if p < 500 then 127 else -128
-        | Triangle -> if p < 500 then (p * 510) / 499 - 128 else 127 - ((p - 500) * 510) / 499
+        | Triangle ->
+            // r3 fix (found via the test-gap audit's tautology: the old self-equal assertion hid
+            // a 2x amplitude bug — (p*510)/499 reached 382, far outside the -128..127 sample
+            // range the type promises). 255/499 spans exactly -128..127 each half.
+            if p < 500 then (p * 255) / 499 - 128 else 127 - ((p - 500) * 255) / 499
         | SineApprox ->
             // integer parabola: chip-true sine shape (the rotor's projection without floats)
             let q = if p < 500 then p else 999 - p

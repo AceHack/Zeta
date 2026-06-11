@@ -92,6 +92,7 @@ tempted to ship.
 - **Symptom:** corrupt/IO-erroring checkpoints return `null` with no signal — a failing disk is
   invisible forever; a corrupt negative `dataLen` still crashes (only `count < 0` guarded).
 - **Fix:** validate `dataLen` bounds; surface corrupt-vs-missing (enum/out or logged warning).
+- **STATUS (round 3, 2026-06-13): FIXED.** Bounds validated (count and per-section length); `CorruptLoadCount`/`LastCorruptReason` members surface corrupt-vs-missing.
 
 ### Durability claims construction-time flagging that does not exist (round-2 hunt, 2026-06-12)
 
@@ -99,6 +100,7 @@ tempted to ship.
 - **Symptom:** comment says the factory flags StableStorage mismatch; it silently returns
   DiskBackingStore — fsync intent gets page-cache semantics, zero runtime signal.
 - **Fix:** runtime warning or flag-gate like WitnessDurable.
+- **STATUS (round 3, 2026-06-13): FIXED.** Construction-time stderr warning on the StableStorage downgrade.
 
 ### GeneratorRegistry idOf second hash lane is correlated (Kira round 2 #15)
 
@@ -130,7 +132,7 @@ tempted to ship.
 
 ### Durability.createBackingStore error message is 6 lines of prose
 
-**STATUS (triage 2026-06-12): LIVE.** Site drifted to `src/Core/Durability.fs:214`; still ~8 wrapped lines, no FEATURE-FLAGS pointer, no `DbspError.WitnessDurablePreview` case.
+**STATUS (round 3, 2026-06-13): FIXED.** One line + docs/FEATURE-FLAGS.md pointer.
 
 - **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
@@ -175,7 +177,7 @@ tempted to ship.
 
 ### Agent-file edits (`.claude/agents/**`) uncovered in threat model
 
-**STATUS (triage 2026-06-12): LIVE — and grown.** THREAT-MODEL.md still covers only `.claude/skills/**`; all 20 personas now live on the uncovered path. One table row; routes to Aminata.
+**STATUS (round 3, 2026-06-13): FIXED (additive).** `.claude/agents/**` row added to THREAT-MODEL.md; Aminata review welcome on wording.
 
 - **Site:** `docs/security/THREAT-MODEL.md` + `.claude/agents/`
 - **Found:** round 21 by Aminata
@@ -192,7 +194,7 @@ tempted to ship.
 
 ### GLOSSARY.md uncovered as trust artefact
 
-**STATUS (triage 2026-06-12): LIVE.** No glossary mention under docs/security/; no CODEOWNERS. Routes to Aminata with the row above.
+**STATUS (round 3, 2026-06-13): FIXED (additive).** Trust-artefacts row (GLOSSARY + BUGS.md) added to THREAT-MODEL.md.
 
 - **Site:** `docs/GLOSSARY.md` + `docs/security/THREAT-MODEL.md`
 - **Found:** round 21 by Aminata
@@ -209,7 +211,7 @@ tempted to ship.
 
 ### BUGS.md itself is an adversary surface for bug-fixer
 
-**STATUS (triage 2026-06-12): LIVE (site drifted).** The skill moved to `.claude/skills/workflows/blueprints/bug-fixer.md`; its steps still lack a provenance check; THREAT-MODEL.md still silent on BUGS.md as an injection surface.
+**STATUS (round 3, 2026-06-13): FIXED.** Provenance check is now step zero of the blueprint; BUGS.md named in the threat model as work-directing.
 
 - **Site:** `docs/BUGS.md` + `.claude/skills/bug-fixer/SKILL.md`
 - **Found:** round 21 by Aminata
@@ -225,7 +227,7 @@ tempted to ship.
 
 ### FeatureFlags has no Stable-stage branch
 
-**STATUS (triage 2026-06-12): LIVE (latent).** `FlagStage.Stable` exists, no flag maps to it, `isEnabled` still falls through to env resolution for a promoted flag.
+**STATUS (round 3, 2026-06-13): FIXED.** `isEnabled` has the Stable branch (graduated = ON by default; override/env still win).
 
 - **Site:** `src/Core/FeatureFlags.fs:86-91`
 - **Found:** round 20 by Viktor
@@ -243,6 +245,26 @@ tempted to ship.
 ---
 
 ## P2 — nice to have
+
+### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
+
+- **CorrespondencePong serve direction/seed:** docstring promises parameters the signature lacks
+  (hard-coded rightward serve = structural asymmetry the docs deny). Fix = param + doc; touches
+  the apple-message turn protocol — small design decision, Aaron's call on the default.
+- **Chip8 DRW edge semantics:** both machines wrap sprites at edges; COSMAC VIP clips (wraps
+  origin only). Internally consistent + cross-checked, but quirks-test ROMs will flag it; changing
+  it changes golden vectors → treaty-coordinated fix.
+- **Chip8Cow 00EE on empty stack silently no-ops:** stack underflow is a ROM bug being hidden
+  from the trace layer; needs an error register decision (Result vs trace-mark).
+- **Chip9Phys.div by zero throws; int cast truncates >32767px:** hot-path exception convention
+  decision needed (saturate? Result?).
+- **PixelLens.pack masks silently** ("total" reads as no-loss; -1 payload round-trips as 8191):
+  doc fix or checked variant.
+- **Test-gap audit remainder:** HtmlCssBinding injection falsifier; determinism-lint allowlist
+  occurrence COUNTS (width-only exemptions; the contains-disjunct excuse); shine dim-assertions;
+  self-agreement family literal pins; FluxView full-suffix + monotone recovery; MediaLines hedged
+  dimension contract; healthy() boundary case; hand-written HTML golden fragments.
+
 
 ### MerkleTree.LeafDiff is flat O(N), not the branch-pruning walk its docstring claims
 

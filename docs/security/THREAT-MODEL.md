@@ -220,6 +220,8 @@ playbook (see `docs/security/INCIDENT-PLAYBOOK.md`).
 | NuGet package graph | `nuget.org` | `Directory.Packages.props` version pin | `NuGetAudit` transitive (dotnet 10 default) | Dependabot + `package-auditor` skill | Playbook C |
 | Mathlib | `leanprover-community/mathlib@pinned commit` | commit hash pin in `lake-manifest.json` | `lake build` green | Manual bump, Tariq-reviewed | Playbook C-adjacent |
 | Skills / agents | Repo-local (`.claude/skills/**`) | `skill-creator` workflow | harsh-critic + prompt-protector + invisible-Unicode rule 13 + human review | Round-cadence `skill-tune-up` + `skill-gap-finder` | Playbook E |
+| Agent personas | Repo-local (`.claude/agents/**`) | persona/agent edits (all 20 experts live here post-split) | same gate as skills: harsh-critic + prompt-protector + invisible-Unicode + human review | round-cadence tune-up; added round 3 2026-06-13 (BUGS.md triage: this path was uncovered while the whole roster moved onto it) | Playbook E |
+| Trust artefacts (docs) | Repo-local (`docs/GLOSSARY.md`, `docs/BUGS.md`) | doc PRs (glossary = shared vocabulary; BUGS.md = work-directing — an adversarial entry can direct an agent to "fix" working code) | PR review + bug-fixer provenance check (entries must trace to a named round/report) | added round 3 2026-06-13 per the round-2 hunt | Playbook E |
 | Zeta artefacts (future) | `dotnet pack` → `nuget.org` Zeta.* | Not yet — **P0 before public release** | Pre-v1.0: OIDC publish + SLSA L3 + signed packages | TBD | TBD |
 
 ### Supply-chain: residual risks explicitly accepted

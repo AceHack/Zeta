@@ -202,23 +202,18 @@ module DurabilityMode =
         | DurabilityMode.OsBuffered ->
             upcast DiskBackingStore<'K>(workDir, inMemoryQuotaBytes)
         | DurabilityMode.StableStorage ->
-            // Honesty note: the shipped `DiskBackingStore` buffers
-            // via the OS page cache — it does NOT fsync per Save.
-            // Selecting `StableStorage` currently gets you
-            // `OsBuffered` semantics. Tracked as a P0 in
-            // `docs/BACKLOG.md`; split into a real per-Save fsync
-            // path before v0.1 tags.
+            // The shipped `DiskBackingStore` buffers via the OS page cache — it does NOT fsync
+            // per Save: StableStorage currently gets OsBuffered semantics (P0 in docs/BACKLOG.md;
+            // real per-Save fsync before v0.1 tags). The downgrade now SIGNALS at construction
+            // (round-3 fix: the doc above used to claim flagging that did not exist — a caller
+            // selecting fsync durability got page-cache semantics with zero runtime signal).
+            eprintfn
+                "zeta-durability WARNING: DurabilityMode.StableStorage is not yet fsync-backed —                  you are getting OsBuffered (page-cache) semantics. See docs/BACKLOG.md (P0)."
             upcast DiskBackingStore<'K>(workDir, inMemoryQuotaBytes)
         | DurabilityMode.WitnessDurable ->
             if not (FeatureFlags.isEnabled Flag.WitnessDurable) then
                 invalidOp
-                    "DurabilityMode.WitnessDurable is a research \
-                     preview and throws on every Save. Enable the \
-                     WitnessDurable feature flag (via \
-                     FeatureFlags.set, DBSP_FLAG_WITNESSDURABLE=1, \
-                     or DBSP_FLAG_RESEARCHPREVIEW=1) to obtain a \
-                     store anyway, or pick DurabilityMode.OsBuffered \
-                     for a usable default."
+                    "WitnessDurable is gated: set DBSP_FLAG_WITNESSDURABLE=1 (docs/FEATURE-FLAGS.md), or use DurabilityMode.OsBuffered."
             // 512 B matches the default NVMe AWUPF on most consumer
             // drives; many enterprise SSDs support up to 4 KB. The
             // caller is responsible for measuring their device before

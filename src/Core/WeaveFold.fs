@@ -49,7 +49,18 @@ module WeaveFold =
     type Edge = { Key: string; Winner: string; Superseded: string }
 
     let resolve (edges: Edge list) (v: View) : View =
+        // Kira r3: (a) a self-edge (Winner = Superseded) used to ANNIHILATE the only candidate —
+        // refused now; (b) cyclic supersedes {A⊐B, B⊐A} were order-dependent in the module whose
+        // thesis is order-independence — a pair that supersedes in both directions cancels (the
+        // cycle stays residue, honestly uncertain), making resolve commutative again.
+        let cyclic =
+            edges
+            |> List.filter (fun e ->
+                edges |> List.exists (fun o -> o.Key = e.Key && o.Winner = e.Superseded && o.Superseded = e.Winner))
+            |> List.map (fun e -> e.Key, e.Winner, e.Superseded)
+            |> Set.ofList
         edges
+        |> List.filter (fun e -> e.Winner <> e.Superseded && not (Set.contains (e.Key, e.Winner, e.Superseded) cyclic))
         |> List.fold
             (fun (acc: View) e ->
                 match Map.tryFind e.Key acc with

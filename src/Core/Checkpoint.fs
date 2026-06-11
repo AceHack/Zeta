@@ -17,6 +17,12 @@ open System.Threading.Tasks
 /// - WitnessDurableBackingStore path-canonicalization pattern
 [<Sealed>]
 type FileCheckpointStore(rootDir: string) =
+    // Corrupt-vs-missing made VISIBLE (BUGS.md round-2 hunt, fixed round 3): the load path still
+    // degrades to replay-from-stream (never crashes recovery), but a checkpoint that EXISTED and
+    // failed to load is counted and last-reason'd — a failing disk is no longer invisible.
+    let mutable corruptLoadCount = 0
+    let mutable lastCorruptReason = ""
+
     // Canonicalise path once — same TOCTOU-avoidance pattern
     // as WitnessDurableBackingStore.
     let canonicalRoot = Path.GetFullPath rootDir
@@ -45,6 +51,12 @@ type FileCheckpointStore(rootDir: string) =
                 $"Circuit ID would escape checkpoint root: {circuitId}",
                 nameof circuitId))
         candidate
+
+    /// Times an EXISTING checkpoint failed to load (corrupt/truncated/IO) — poll after recovery; alert on nonzero.
+    member _.CorruptLoadCount = corruptLoadCount
+
+    /// The last corrupt-load reason (empty = none) — the human-readable side of the counter.
+    member _.LastCorruptReason = lastCorruptReason
 
     interface ICheckpointStore with
         member _.SaveCheckpointAsync
@@ -130,20 +142,29 @@ type FileCheckpointStore(rootDir: string) =
                 // missing — safer than crashing recovery.
                 // The circuit will fall back to replay from
                 // the event stream (Temporal model).
+                let corrupt (reason: string) =
+                    corruptLoadCount <- corruptLoadCount + 1
+                    lastCorruptReason <- reason
+                    ValueTask.FromResult<CheckpointLoadResult>(null)
+
                 try
                     let bytes = File.ReadAllBytes path
                     use ms = new MemoryStream(bytes)
                     use br = new BinaryReader(ms)
                     let tick = br.ReadInt64()
                     let count = br.ReadInt32()
-                    if count < 0 then
-                        ValueTask.FromResult<CheckpointLoadResult>(null)
+                    if count < 0 || count > bytes.Length then
+                        corrupt (sprintf "section count %d out of range for a %d-byte file" count bytes.Length)
                     else
                         let readers =
                             Array.init count (fun _ ->
                                 let opId = br.ReadInt32()
                                 let _version = br.ReadInt32()
                                 let dataLen = br.ReadInt32()
+                                // negative dataLen used to throw ArgumentOutOfRange THROUGH the
+                                // "safer than crashing" claim; bogus-huge used to OOM. Bounds first.
+                                if dataLen < 0 || int64 dataLen > ms.Length - ms.Position then
+                                    raise (EndOfStreamException(sprintf "section length %d exceeds remaining %d" dataLen (ms.Length - ms.Position)))
                                 let data = br.ReadBytes dataLen
                                 let opMs = new MemoryStream(data)
                                 let opBr = new BinaryReader(opMs)
@@ -166,8 +187,8 @@ type FileCheckpointStore(rootDir: string) =
                         let result = CheckpointLoadResult(tick, readers)
                         ValueTask.FromResult(result)
                 with
-                | :? EndOfStreamException -> ValueTask.FromResult<CheckpointLoadResult>(null)
-                | :? IOException -> ValueTask.FromResult<CheckpointLoadResult>(null)
+                | :? EndOfStreamException as e -> corrupt ("truncated/corrupt: " + e.Message)
+                | :? IOException as e -> corrupt ("io error (transient or failing disk): " + e.Message)
 
 
 /// In-memory checkpoint store for testing and DST.

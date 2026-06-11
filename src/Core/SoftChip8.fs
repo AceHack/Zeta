@@ -68,7 +68,10 @@ module SoftChip8 =
             let op = opAt f
             let keyIdx =
                 let x = (op &&& 0x0F00) >>> 8
-                int f.V.[x] &&& 0xF
+                if op &&& 0xF000 = 0xE000 then
+                    int f.V.[x] &&& 0xF // EX9E/EXA1: V[x] IS the tested key — correct as it was
+                else
+                    0 // FX0A: key 0 EXPLICITLY (Kira r3: V[x] is FX0A's DESTINATION — the old code pressed whatever garbage it was about to overwrite)
             let down = Array.zeroCreate 16
             down.[keyIdx] <- true
             let up = Array.zeroCreate 16

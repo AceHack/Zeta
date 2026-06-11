@@ -38,7 +38,7 @@ module PhysUI =
         else
             let paddleCx = paddle.Body.Pos.X + paddle.Body.Size.X / 2
             let ballCx = ball.Pos.X + ball.Size.X / 2
-            let speed = abs (Chip9Phys.mul e ball.Vel.X)
+            let speed = max (abs (Chip9Phys.mul e ball.Vel.X)) (Chip9Phys.one / 2) // never 0 (Kira r3: zero-x-velocity overlap reflected to 0 — stuck inside the paddle forever)
             // away from the paddle's center; EXACT TIE (thin paddles, thin balls) reverses the
             // incoming direction — a paddle returns the serve, it never ushers the ball through
             // itself (found live: 1px center-ties were tie-breaking OUTWARD through the right paddle)

@@ -52,7 +52,10 @@ module MagneticPorts =
         let dy = b.Body.Pos.Y - a.Body.Pos.Y
         if dx = 0 && dy = 0 then 0, 0
         else
-            let d2 = Chip9Phys.mul dx dx + Chip9Phys.mul dy dy
+            // d² in int64 (Kira r3: fix16 mul wrapped negative past ~181px separation, the clamp
+            // collapsed the divisor to one, and the "magnet" teleported ports 800px/tick)
+            let d2L = (int64 dx * int64 dx + int64 dy * int64 dy) >>> 16
+            let d2 = int (min d2L (int64 System.Int32.MaxValue))
             let sign = if compatible a b then 1 else -1
             let k = Chip9Phys.ofInt (sign * 4) // the feel constant: WHAT = snap strength; WHY = strong enough to feel, weak enough to escape
             Chip9Phys.mul k (Chip9Phys.div dx (max Chip9Phys.one d2)),

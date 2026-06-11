@@ -161,22 +161,28 @@ module Chip8 =
             | 0x1 -> c.V.[x] <- c.V.[x] ||| c.V.[y]
             | 0x2 -> c.V.[x] <- c.V.[x] &&& c.V.[y]
             | 0x3 -> c.V.[x] <- c.V.[x] ^^^ c.V.[y]
+            // operands PRE-captured, VF LAST (Kira r3 — see Chip8Cow for the full note)
             | 0x4 ->
-                let sum = int c.V.[x] + int c.V.[y]
-                c.V.[0xF] <- (if sum > 0xFF then 1uy else 0uy)
+                let ax, ay = c.V.[x], c.V.[y]
+                let sum = int ax + int ay
                 c.V.[x] <- byte (sum &&& 0xFF)
+                c.V.[0xF] <- (if sum > 0xFF then 1uy else 0uy)
             | 0x5 ->
-                c.V.[0xF] <- (if c.V.[x] >= c.V.[y] then 1uy else 0uy)
-                c.V.[x] <- c.V.[x] - c.V.[y]
+                let ax, ay = c.V.[x], c.V.[y]
+                c.V.[x] <- ax - ay
+                c.V.[0xF] <- (if ax >= ay then 1uy else 0uy)
             | 0x6 ->
-                c.V.[0xF] <- c.V.[x] &&& 1uy
-                c.V.[x] <- c.V.[x] >>> 1
+                let ax = c.V.[x]
+                c.V.[x] <- ax >>> 1
+                c.V.[0xF] <- ax &&& 1uy
             | 0x7 ->
-                c.V.[0xF] <- (if c.V.[y] >= c.V.[x] then 1uy else 0uy)
-                c.V.[x] <- c.V.[y] - c.V.[x]
+                let ax, ay = c.V.[x], c.V.[y]
+                c.V.[x] <- ay - ax
+                c.V.[0xF] <- (if ay >= ax then 1uy else 0uy)
             | 0xE ->
-                c.V.[0xF] <- (c.V.[x] >>> 7) &&& 1uy
-                c.V.[x] <- c.V.[x] <<< 1
+                let ax = c.V.[x]
+                c.V.[x] <- ax <<< 1
+                c.V.[0xF] <- (ax >>> 7) &&& 1uy
             | _ -> ()
         | 0x9000 -> if c.V.[x] <> c.V.[y] then c.PC <- c.PC + 2us
         | 0xA000 -> c.I <- nnn

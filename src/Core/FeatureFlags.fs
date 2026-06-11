@@ -126,7 +126,11 @@ module FeatureFlags =
         match overrides.TryGetValue flag with
         | true, v -> v
         | _ ->
-            envTrue (envName flag)
+            // Stable = graduated = ON by default (BUGS.md triage 2026-06-12/13: the documented
+            // graduation semantic had no branch — a promoted flag silently fell through to env
+            // resolution and stayed OFF). Env var / override still force it either way.
+            stage flag = FlagStage.Stable
+            || envTrue (envName flag)
             || (stage flag = FlagStage.ResearchPreview
                 && envTrue "DBSP_FLAG_RESEARCHPREVIEW")
 

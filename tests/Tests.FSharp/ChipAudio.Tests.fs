@@ -12,8 +12,21 @@ let ``the chip waveforms are exact, total, and shaped right (saw ramps, square f
     Assert.Equal(127, ChipAudio.sampleAt ChipAudio.Saw 999)
     Assert.Equal(127, ChipAudio.sampleAt ChipAudio.Square 100)
     Assert.Equal(-128, ChipAudio.sampleAt ChipAudio.Square 700)
-    Assert.Equal(ChipAudio.sampleAt ChipAudio.Triangle 250, ChipAudio.sampleAt ChipAudio.Triangle 250)
-    Assert.True(ChipAudio.sampleAt ChipAudio.Triangle 499 > 100) // peak near the fold
+    // r3: the old line here compared the triangle TO ITSELF (a tautology) — and hid a 2x
+    // amplitude overflow (382 at the fold). Hand-derived literals now pin the shape:
+    Assert.Equal(-128, ChipAudio.sampleAt ChipAudio.Triangle 0)
+    Assert.Equal(-1, ChipAudio.sampleAt ChipAudio.Triangle 250) // mid-ascent
+    Assert.Equal(127, ChipAudio.sampleAt ChipAudio.Triangle 499) // the fold, IN range
+    Assert.Equal(-128, ChipAudio.sampleAt ChipAudio.Triangle 999)
+    // every waveform stays inside the sample range over the whole period (the overflow gate)
+    for w in [ ChipAudio.Saw; ChipAudio.Square; ChipAudio.Triangle; ChipAudio.SineApprox ] do
+        for p in 0 .. 999 do
+            let s = ChipAudio.sampleAt w p
+            Assert.True(s >= -128 && s <= 127, sprintf "%A at %d = %d out of range" w p s)
+    // sine pinned by hand (starts at the trough — a phase convention, stated)
+    Assert.Equal(-128, ChipAudio.sampleAt ChipAudio.SineApprox 0)
+    Assert.Equal(63, ChipAudio.sampleAt ChipAudio.SineApprox 250)
+    Assert.Equal(-127, ChipAudio.sampleAt ChipAudio.SineApprox 500)
     Assert.Equal(ChipAudio.sampleAt ChipAudio.Saw -1, ChipAudio.sampleAt ChipAudio.Saw 999) // total (wraps)
 
 [<Fact>]

@@ -55,7 +55,7 @@ module Chip9SelfTrace =
         | 0xF000 when op &&& 0xFF = 0x65 -> [ for i in 0 .. ((op &&& 0x0F00) >>> 8) -> int f.I + i ]
         | _ -> []
 
-    /// One SELF-TRACING step: paint the about-to-execute PC on R, its data reads on G, the speculated
+    /// One SELF-TRACING step: paint the about-to-execute PC on G, its data reads on CYAN, the speculated
     /// future on B (lookahead PCs) — THEN execute. The machine's worldline accumulates in its own
     /// plane memory as it runs.
     let traceStep (specDepth: int) (f: Chip8Cow.Frame) : Chip8Cow.Frame =
@@ -90,6 +90,6 @@ module Chip9SelfTrace =
                   for x in 0 .. Chip8.DisplayW - 1 do
                       let mask = Chip8Cow.colorAt x y f
                       if mask <> 0uy then
-                          let speculativeOnly = mask &&& 4uy <> 0uy && mask &&& 2uy = 0uy
+                          let speculativeOnly = mask &&& 4uy <> 0uy && mask &&& 2uy = 0uy && mask &&& 1uy = 0uy // bit 0 honored (Kira r3: program-drawn + speculated used to read as pure speculation)
                           let u = if speculativeOnly then 900 else 0
                           yield (x, y), PixelLens.pack mask (y * Chip8.DisplayW + x) u ]

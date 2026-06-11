@@ -19,7 +19,13 @@ let private docOf (name: string) =
     | Ok d -> d
     | Error e -> failwith e
 
-let private shapes = [ "spiral"; "braid"; "worldline"; "lightcone"; "fourcorner"; "seam"; "buckyball"; "shadow-loop"; "plait-move"; "adinkra"; "exchange-worldlines"; "kitaev-chain"; "crossing" ]
+// derived from the directory (test-gap audit #3: the hand list let a 14th cartridge bypass every
+// gate here until someone remembered to add it — now a new cartridge is gated the moment it lands)
+let private shapes =
+    Directory.GetFiles(Path.Combine(repoRoot (), "shapes", "cartridges"), "*.lines")
+    |> Array.map Path.GetFileNameWithoutExtension
+    |> Array.sort
+    |> Array.toList
 
 [<Fact>]
 let ``THE HARD GATE: every catalog shape is accepted on bytes+geometry+honest-labels — never on looks, never on meaning`` () =
@@ -205,3 +211,19 @@ let ``THE RED LIGHT: every io binding visible — REC for live/adapted/injected,
     match MediaLines.resolveIoWith [ have, want, "mod2" ] Set.empty (Set.ofList [ have ]) { MediaLines.Kind = "io"; MediaLines.Name = "mic"; MediaLines.Fields = [ want ] } with
     | MediaLines.Adapted _ -> ()
     | other -> Assert.True(false, sprintf "expected Adapted via granted capability, got %A" other)
+
+// ── round-3 regression gates (Kira r3 + the test-gap audit, 2026-06-13) ──
+
+[<Fact>]
+let ``TREEMAP CONSERVES AREA even with negative weights: no box ever exceeds the boundary (Kira r3 P0)`` () =
+    let tiles = LayoutEngine.treemap 0 0 100 10 true [ "a", 10; "b", -5 ]
+    for r in tiles do
+        Assert.True(r.X >= 0 && r.X + r.W <= 100, "a tile escaped the boundary")
+
+[<Fact>]
+let ``VF IS THE FLAG, EVEN WHEN VF IS AN OPERAND: 8F05 with x=F keeps the flag write (both machines agree)`` () =
+    // V[F]=200, V[1]=50; 8F15 (VF = VF - V1): result 150 but the FLAG write wins per spec -> VF=1
+    let rom = [| 0x6Fuy; 200uy; 0x61uy; 50uy; 0x8Fuy; 0x15uy |]
+    let cow = Chip8Cow.create 7UL |> Chip8Cow.loadRom rom
+    let f = [ 1..3 ] |> List.fold (fun s _ -> Chip8Cow.step s) cow
+    Assert.Equal(1uy, f.V.[0xF]) // the flag, not the difference

@@ -32,7 +32,7 @@ module LayoutEngine =
     /// exact-integer remainders pushed left-to-right (no pixel lost, no pixel invented: the boxes
     /// tile the boundary EXACTLY — boundary-aware by construction).
     let treemap (x: int) (y: int) (w: int) (h: int) (horizontal: bool) (items: (string * int) list) : Rect list =
-        let total = items |> List.sumBy snd
+        let total = items |> List.sumBy (fun (_, w) -> max 0 w) // clamp HERE too (Kira r3 P0: raw sum + clamped walk let one box tile TWICE the boundary on negative weights)
         if total <= 0 then []
         else
             let span = if horizontal then w else h
