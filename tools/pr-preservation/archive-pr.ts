@@ -803,7 +803,7 @@ export function main(argv: readonly string[]): number {
   }
 
   const archivedAt = nowIsoUtcSecs();
-  const content = formatArchive({ fetched, archivedAt }).replace(/\r\n/g, "\n");
+  const content = formatArchive({ fetched, archivedAt }).replace(/\r\n?/g, "\n");
 
   const existing = findExistingArchive(outDir, args.pr);
   const path =
@@ -812,7 +812,7 @@ export function main(argv: readonly string[]): number {
 
   if (existing) {
     try {
-      const existingContent = readFileSync(existing, "utf8").replace(/\r\n/g, "\n");
+      const existingContent = readFileSync(existing, "utf8").replace(/\r\n?/g, "\n");
       const normalize = (s: string) => s.replace(/^archived_at: .*/m, 'archived_at: "PLACEHOLDER"');
       if (normalize(content) === normalize(existingContent)) {
         const staged = gitAddArchive(setup.repoRoot, existing);
@@ -830,7 +830,7 @@ export function main(argv: readonly string[]): number {
     }
   }
 
-  writeFileSync(path, content);
+  writeFileSync(path, content.replace(/\r\n?/g, "\n"));
   const staged = gitAddArchive(setup.repoRoot, path);
   if (typeof staged !== "string") {
     process.stderr.write(`${staged.error}\n`);
