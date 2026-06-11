@@ -82,8 +82,6 @@ module ReticulumQuantum =
         | Some value -> Ok value
         | None -> Error(PacketError.Malformed(sprintf "missing %s" name))
 
-    let private bind f r = Result.bind f r
-
     let private parseFloat name (value: string) =
         match Double.TryParse(value, NumberStyles.Float, inv) with
         | true, value -> Ok value
@@ -114,32 +112,28 @@ module ReticulumQuantum =
                     | _ -> None)
                 |> Map.ofSeq
 
-            field "room" fields
-            |> bind (fun room ->
-                field "source" fields
-                |> bind (fun source ->
-                    field "name" fields
-                    |> bind (fun name ->
-                        field "value" fields
-                        |> bind (parseFloat "value")
-                        |> bind (fun value ->
-                            field "norm" fields
-                            |> bind (parseFloat "norm")
-                            |> bind (fun norm ->
-                                field "support" fields
-                                |> bind (parseInt "support")
-                                |> bind (fun support ->
-                                    field "sequence" fields
-                                    |> bind (parseInt64 "sequence")
-                                    |> bind (fun sequence ->
-                                        Ok
-                                            { Room = dec room
-                                              Source = dec source
-                                              Name = dec name
-                                              Value = value
-                                              Norm = norm
-                                              Support = support
-                                              Sequence = sequence })))))))
+            result {
+                let! room = field "room" fields
+                let! source = field "source" fields
+                let! name = field "name" fields
+                let! valueRaw = field "value" fields
+                let! value = parseFloat "value" valueRaw
+                let! normRaw = field "norm" fields
+                let! norm = parseFloat "norm" normRaw
+                let! supportRaw = field "support" fields
+                let! support = parseInt "support" supportRaw
+                let! sequenceRaw = field "sequence" fields
+                let! sequence = parseInt64 "sequence" sequenceRaw
+
+                return
+                    { Room = dec room
+                      Source = dec source
+                      Name = dec name
+                      Value = value
+                      Norm = norm
+                      Support = support
+                      Sequence = sequence }
+            }
 
     /// Send one observable over an established deterministic link.
     let send

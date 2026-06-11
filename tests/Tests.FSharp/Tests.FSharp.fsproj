@@ -52,6 +52,7 @@
     <Compile Include="SocietyUnbounded.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
+    <Compile Include="Core/Result.Tests.fs" />
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
     <Compile Include="Bonsai/Resume.Tests.fs" />
     <Compile Include="Bonsai/IntrCtx.Tests.fs" />
