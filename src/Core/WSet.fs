@@ -1,8 +1,11 @@
-// DEMOTED TO TEST FIXTURE (Rodney's Razor, 2026-06-13): the GDL unification is essential as
-// MATHEMATICS (the three-ring demos stand) and accidental as CODE — zero non-test consumers; the
-// real engines (ZSet/AmplitudeEmu/FactorGraph) share no code through WSet. Per the razor: WSet
-// lives beside the demos it exists for; it returns to Core only when a non-test consumer exists
-// ON MERIT. (The IBLT reconciliation deliberately took Rodney's branch A: plain keys, no WSet.)
+// PROMOTED BACK TO CORE by operator decision (Aaron, 2026-06-14: "why are we keeping in tests?
+// we need in real code"). Rodney's Razor (2026-06-13) had demoted this to a test fixture —
+// "essential as mathematics, accidental as code; zero non-test consumers" — and that dissent
+// stays on record as ADVISORY: the human maintainer set the product direction instead — the
+// ring-generic type IS intended substrate for the quantum lane (B-1029), the inference port, and
+// future ring instances; consumers arrive ON the shelf, not before it exists. Both registers
+// kept honestly: the razor's bar (a load-bearing consumer) is the standing TODO this header
+// carries until one lands.
 namespace Zeta.Core
 
 open Zeta.Core.Abstractions

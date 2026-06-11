@@ -226,6 +226,7 @@
     <Compile Include="SwarmBoardAnsi.fs" />
     <Compile Include="ZetaMax.fs" />
     <Compile Include="Chip9Phys.fs" />
+    <Compile Include="WSet.fs" />
     <Compile Include="IbltReconcile.fs" />
     <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
