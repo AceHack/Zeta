@@ -179,6 +179,8 @@
     <Compile Include="HtmlCssBinding.Tests.fs" />
     <Compile Include="ShapeCartridge.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
+    <Compile Include="AdinkraViz.Tests.fs" />
+    <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />

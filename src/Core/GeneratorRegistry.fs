@@ -78,7 +78,10 @@ module GeneratorRegistry =
           register "shape.spiral" 1
           register "shape.seam" 1
           register "binding.html-css" 1
-          register "sim.wave-interference" 1 ]
+          register "sim.wave-interference" 1
+          register "viz.adinkra" 1
+          register "spectral.hard-dft" 1
+          register "spectral.soft-probe" 1 ]
 
     /// Look a generator up by its ZetaId (the filetype's reverse direction: id -> what it is).
     let byId (zetaId: string) : Entry option =

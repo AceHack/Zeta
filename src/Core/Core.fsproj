@@ -285,6 +285,8 @@
     <Compile Include="MagneticPorts.fs" />
     <Compile Include="HtmlCssBinding.fs" />
     <Compile Include="WaveSim.fs" />
+    <Compile Include="AdinkraViz.fs" />
+    <Compile Include="SpectralPivot.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
