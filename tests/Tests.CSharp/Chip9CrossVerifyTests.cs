@@ -1,0 +1,57 @@
+// CHIP-9 cross-verify — the C# oracle replays the treaty ROM the F# oracle locked
+// (src/Core.TypeScript/chip9/golden-vectors.lines) and must reproduce the 32x64 color grid exactly.
+
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Xunit;
+using Zeta.Core.CSharp;
+
+namespace Zeta.Tests.CSharp;
+
+public sealed class Chip9CrossVerifyTests
+{
+    private static string RepoRoot()
+    {
+        var dir = new DirectoryInfo(Path.GetDirectoryName(typeof(Chip9CrossVerifyTests).Assembly.Location)!);
+        while (dir is not null && !File.Exists(Path.Join(dir.FullName, "Zeta.sln")))
+        {
+            dir = dir.Parent!;
+        }
+
+        return dir!.FullName;
+    }
+
+    [Fact]
+    public void ByteLockReplayingTheTreatyRomReproducesTheGoldenColorGridExactly()
+    {
+        var path = Path.Join(RepoRoot(), "src", "Core.TypeScript", "chip9", "golden-vectors.lines");
+        Assert.True(File.Exists(path), $"golden not found: {path}");
+        var lines = File.ReadAllLines(path).Where(l => !l.StartsWith('#') && l.Length > 0).ToList();
+
+        var romHex = lines[0].Split('\t')[1];
+        var rom = Enumerable.Range(0, romHex.Length / 2)
+            .Select(i => byte.Parse(romHex.AsSpan(i * 2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture))
+            .ToArray();
+        var goldenPlane = byte.Parse(lines[1].Split('\t')[1], CultureInfo.InvariantCulture);
+        var goldenRows = lines.Skip(2).ToList();
+        Assert.Equal(Chip9Machine.Height, goldenRows.Count);
+
+        var m = new Chip9Machine();
+        m.LoadRom(rom);
+        m.Mem[0x300] = 0xFF; // the treaty sprite (mirrors the F#/TS test setup)
+        for (var s = 0; s < 12; s++)
+        {
+            m.Step();
+        }
+
+        Assert.Equal(goldenPlane, m.Plane);
+        for (var y = 0; y < Chip9Machine.Height; y++)
+        {
+            var row = string.Concat(Enumerable.Range(0, Chip9Machine.Width)
+                .Select(x => m.ColorAt(x, y).ToString("x", CultureInfo.InvariantCulture)));
+            Assert.Equal(goldenRows[y], row);
+        }
+    }
+}

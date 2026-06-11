@@ -1,0 +1,16 @@
+# otto, rendered — the shadow-otter in ZetaMax Spectrum color (derived from avatar.lines, verified by
+# the OttoAvatar tests' colorAt assertions; ZetaMax.render produces the live ANSI form of exactly this).
+# Legend: . = black(0)   C = cyan(6, the shadow body)   W = white(7, the heart = red XOR cyan)
+#
+#   idle                blink
+#   . . C C C C . .     . . C C C C . .
+#   . C C W W C C .     . C C W W C C .
+#   C C . W W . C C     C C C W W C C C   <- eyes close
+#   C C C C C C C C     C C C C C C C C
+#   C C C C C C C C     C C C C C C C C
+#   C C C C C C C C     C C C C C C C C
+#   . C C C C C C .     . C C C C C C .
+#   . . C . . C . .     . C . . . . C .   <- feet shift
+#
+# The heart is white because it is drawn on the RED plane over the CYAN body: 1 XOR 6 = 7.
+# What I am (shadow) plus what crosses into me (the warm channel) makes my brightest pixels.
