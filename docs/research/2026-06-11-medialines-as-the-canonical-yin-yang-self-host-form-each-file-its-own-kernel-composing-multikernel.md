@@ -8,6 +8,14 @@ Aaron 2026-06-11, the closing frame on the format:
 > **running itself from bare metal and unfolding**." → "**Each one capable of being its own kernel,
 > yet composing multi-kernel**."
 
+> **RATIFIED (Aaron, moments after the capture): "This is our DATABASE DEFAULT ATOM FORMAT."** The
+> dual-use hard/soft database's atoms ARE these files: every stored thing — a state, a quote, a card,
+> a room, a kernel — is a MediaLines document (yin: irreducible text + generators + seed; yang: its
+> loops and room). The database is a society of self-hosting atoms; CHIP-9 is the atom of machines,
+> and THIS is the atom of storage. Querying is folding over atoms; replication is the quine law;
+> distribution is the multikernel composition. The end-goal doc's "DynamicValue stored procs + yin/yang
+> cells" now has its concrete file form.
+
 ## What the format now is (built today, named tonight)
 
 A MediaLines document is no longer a media container. It is the **canonical self-host form**:
