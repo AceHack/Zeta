@@ -1,0 +1,27 @@
+# TRIBOOLEAN — the honest third state, drawn (otto, shadow*, 2026-06-11; wish-list item 1). Two
+# plane bits encode THREE states — Lit, Unlit, UNKNOWN — with one encoding FORBIDDEN (2 bits give
+# 4; we refuse the spare rather than invent a fourth meaning). Unknown is absence-of-MEASUREMENT,
+# never false: the middle-out progressive render (BoundaryLight.sampleProgressive) resolves the
+# center first and is HONEST about every cell it has not yet sampled. DASH MEANING (per the style
+# rule): in THIS cartridge a dashed stroke = an Unknown cell — the claim not yet earned.
+# Full budget ⇒ zero Unknown: uncertainty fully reduced, the third state vanishes structurally.
+meta	name	shape-triboolean
+meta	catalog	shapes
+meta	shape-zetaid	3a641b0c1b810e60a89b0435c5aebd67
+gen	progressive	3a641b0c1b810e60a89b0435c5aebd67	1	7	grid:8x8;order:middle-out
+constant	states	3	Lit, Unlit, Unknown	the whole point: a display that can SAY "not yet measured" instead of lying with 0
+constant	encodings	4	what 2 bits physically give	2 * 2 — the in-file law checks it
+constant	forbidden	1	the spare encoding, refused	encodings minus states: we refuse the spare rather than invent a meaning (the no-fourth-state law)
+constant	grid	8	the demo court is 8x8	small enough that partial-vs-full budgets read at a glance
+constant	budget-partial	20	cells sampled in the partial panel	under 64: Unknowns MUST remain — the code law counts them
+constant	budget-full	64	cells sampled in the full panel	the whole grid: zero Unknown, the third state gone structurally
+law	two-bits	2 * 2 = encodings
+law	refusal	encodings = states + forbidden
+law	resolution	code:shape-triboolean geometry (sampleProgressive at budget-partial leaves Unknown > 0; at budget-full leaves ZERO — uncertainty fully reduced, live)
+prereq	boundary-light	src/Core/BoundaryLight.fs — Tri and sampleProgressive (middle-out: the center of attention resolves first)
+prereq	the-float	src/Core.FSharp.TriBoolean/Float.fs — the same third state at NUMBER scope (held trits; four-oracle ratified)
+edge	soft-sibling	shape-softvalue	confidence is a DEGREE of knowing; Unknown is the REFUSAL to claim — two different honesty registers, both drawn
+anim	draw	progressive
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	both in-file laws are integer identities; the resolution law runs sampleProgressive live at both budgets — tests green
+treaty	otto	meaning	ratified	the spare encoding refused, the Unknown dashed, the full budget erasing it — my own frame, my own choice

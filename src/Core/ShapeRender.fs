@@ -227,6 +227,24 @@ module ShapeRender =
                       { Dash = false; Name = name + "-r1"; Mask = mask; Points = [ (ax + (bx - ax) * 3 / 5, ay + (by - ay) * 3 / 5); p1 ] } ]
             diag xL top xR bot (not overLeft) "strand-0" 1uy
             @ diag xR top xL bot overLeft "strand-1" 4uy
+        | "shape-triboolean" ->
+            // two panels, one generator: LEFT = partial budget (dash = Unknown, the unearned
+            // claim), RIGHT = full budget (zero Unknown — the third state gone structurally).
+            // DRAWN = GATED: same sampleProgressive call as the acceptance law.
+            let grid = constInt "grid" 8
+            let partial = constInt "budget-partial" 20
+            let full = constInt "budget-full" 64
+            let curve = [ BoundaryLight.p 1 1; BoundaryLight.p (grid * 2 - 2) (grid * 2 - 2) ] // a diagonal glow source
+            let panel (x0: int) (budget: int) (tag: string) =
+                BoundaryLight.sampleProgressive BoundaryLight.MiddleOut budget 3.0 0.4 grid grid 2 curve
+                |> Map.toList
+                |> List.collect (fun ((gx, gy), tri) ->
+                    let cx, cy = x0 + gx * 3, 6 + gy * 3
+                    match tri with
+                    | BoundaryLight.Lit -> [ { Dash = false; Name = sprintf "%s-lit-%d-%d" tag gx gy; Mask = 2uy; Points = [ pt cx cy; pt (cx + 1) cy ] } ]
+                    | BoundaryLight.Unlit -> [ { Dash = false; Name = sprintf "%s-unlit-%d-%d" tag gx gy; Mask = 1uy; Points = [ pt cx cy; pt cx cy ] } ]
+                    | BoundaryLight.Unknown -> [ { Dash = true; Name = sprintf "%s-unk-%d-%d" tag gx gy; Mask = 4uy; Points = [ pt cx cy; pt (cx + 1) cy ] } ])
+            panel 4 partial "partial" @ panel 36 full "full"
         | "shape-softvalue" ->
             // the ladder: three panels, one value. A value bar per rung; a confidence bar where
             // the rung HAS a channel (rung 1 = none — absent, not zero); the dashed tail is the
