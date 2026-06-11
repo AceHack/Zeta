@@ -32,8 +32,10 @@ Start gate notes: prior-art search done (the 2026-06-13 capture); deps: none new
 Bayesian, AmplitudeEmu all in-tree).
 
 ## Progress (2026-06-13): all three ring demos DONE
+
 - ℂ: the three-oracle Mach-Zehnder (shipped earlier).
 - ℤ: the existing ZSet suite (free).
 - ℝ≥0: discrete sum-product as a WSet circuit vs the analytic Bayesian marginal (the GDL instance) — green.
+
 B-1032 CLOSED. Plus damping (the loopy upgrade, honest limits tested) and SoftPositivity (the probit
 EP twin) landed alongside on the inference port.

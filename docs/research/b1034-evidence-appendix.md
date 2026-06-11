@@ -1200,4 +1200,3 @@ Window: 2026-06-10 00:00..now · 298 signed commits on origin/main · generated 
   - intent: refresh-the-reload-point-with-the-nights-arc
   - register: grounded
   - build: docs-only
-

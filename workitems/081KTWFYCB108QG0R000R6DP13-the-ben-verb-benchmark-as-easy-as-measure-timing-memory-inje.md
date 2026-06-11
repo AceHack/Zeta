@@ -1,15 +1,30 @@
 ---
-id: B-1039
-title: The ben verb — benchmark as easy as measure; timing/memory injected interfaces living with rooms/cartridges; GRADE the ComplexityRegistry's predictions
+id: 081KTWFYCB108QG0R000R6DP13
+type: task
+state: in-progress
 priority: P2
-status: in-progress
-tier: verification-substrate
-tags: [benchmark, ben, sim-mea-cut, testloop, complexity, prediction, rooms, chip8, di-verbs, hexagonal]
-created: 2026-06-11
-owner: open (slice 2 of B-1035's framework; pairs with Naledi's bench lane)
+slug: the-ben-verb-benchmark-as-easy-as-measure-timing-memory-inje
+title: "The ben verb — benchmark as easy as measure; timing/memory injected interfaces living with rooms/cartridges; GRADE the ComplexityRegistry's predictions"
+created: 2026-06-11T23:23:00.000Z
+depends_on: []
+composes_with: []
 ---
 
-# B-1039 — ben(chmark) joins the verb set (Aaron 2026-06-11, verbatim spine)
+# The ben verb — benchmark as easy as measure
+
+<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
+     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
+     Identity is the zetaid prefix — resolve cross-refs by `081KTWFYCB108QG0R000R6DP13-*.md` glob. -->
+
+Migrated from the accidental legacy `B-1039` row so the item lives on the current
+ZetaId workitem surface instead of extending the frozen sequential backlog.
+
+Owner note: open; slice 2 of B-1035's framework; pairs with Naledi's bench lane.
+
+Tags: benchmark, ben, sim-mea-cut, testloop, complexity, prediction, rooms, chip8, di-verbs,
+hexagonal.
+
+## Ben(chmark) joins the verb set
 
 > "We should make ben(chmark) work as easy as measure — it's just injected: the extra interfaces
 > or whatever we need. Timing tests and memory use and stuff that LIVE WITH the room/cartridges.
@@ -46,4 +61,12 @@ Beacon: BenchmarkDotNet; Hoefler & Belli (SC '15, benchmarking rigor); our Compl
 the chip8 emu (exact, no ambient) + ONE dotnet room through a BenchmarkDotNet-backed adapter +
 the n/2n/4n grader over three registry rows.
 
-## Progress (slice 1, 2026-06-11): Ben.fs SHIPS — the exact chip8 tick meter (Steps/MemEntries/DisplayLit/Extra/StackDepth/Faulted, deterministic) + the GRADER (infer doubling-ratio growth class; grade = Confirmed/Tighter/Violated). Two REAL predictions graded CONFIRMED with exact cost proxies (treemap tiles = O(children); IBLT build work = n·k via the table's own count sum); falsifiers prove Violated/Tighter/refusal. Dogfooded through ITestLoop. Remaining: dotnet wall/alloc meters behind the boundary + red light; BenchmarkDotNet senior adapter; the cartridge `ben` line kind + gate refusal.
+## Progress, slice 1, 2026-06-11
+
+Ben.fs SHIPS — the exact chip8 tick meter
+(Steps/MemEntries/DisplayLit/Extra/StackDepth/Faulted, deterministic) + the GRADER
+(infer doubling-ratio growth class; grade = Confirmed/Tighter/Violated). Two REAL predictions
+graded CONFIRMED with exact cost proxies (treemap tiles = O(children); IBLT build work = n·k via
+the table's own count sum); falsifiers prove Violated/Tighter/refusal. Dogfooded through
+ITestLoop. Remaining: dotnet wall/alloc meters behind the boundary + red light; BenchmarkDotNet
+senior adapter; the cartridge `ben` line kind + gate refusal.

@@ -235,8 +235,8 @@ let ``DAMPING never breaks the easy case: on a TREE, damped agrees with undamped
 
 // ─── THE THIRD RING: discrete sum-product over the ℝ semiring vs the analytic marginal ───
 // The GDL instance (Aji-McEliece 2000) demonstrated with the RING DIRECTLY — no connective type
-// (Rodney's razor 2026-06-13: WSet demoted to test fixture; the demo needs only the semiring).
-// ℤ=DBSP, ℂ=Mach-Zehnder (WSet.Fixture in Tests.FSharp), ℝ≥0=THIS: one calculus, three rings.
+// (WSet is back in source as the ring-generic meeting point; this demo needs only the semiring).
+// ℤ=DBSP, ℂ=Mach-Zehnder WSet, ℝ≥0=THIS: one calculus, three rings.
 
 [<Fact>]
 let ``GDL ring demo: discrete sum-product over the real semiring equals the analytic Bayesian marginal (the third ring)`` () =

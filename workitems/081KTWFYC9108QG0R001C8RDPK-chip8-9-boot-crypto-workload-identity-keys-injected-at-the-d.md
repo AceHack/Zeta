@@ -1,15 +1,29 @@
 ---
-id: B-1038
-title: chip8/9 boot crypto + workload identity — keys INJECTED at the door (never in cartridges); Reticulum-native identities; attestation at the host layer
+id: 081KTWFYC9108QG0R001C8RDPK
+type: task
+state: backlog
 priority: P2
-status: open
-tier: security-substrate
-tags: [security, identity, spiffe, reticulum, zflash, keys, membrane, red-light]
-created: 2026-06-11
-owner: open — REVIEW REQUIRED before build: Nazar (ops) + Mateo (research) named; security-sensitive
+slug: chip8-9-boot-crypto-workload-identity-keys-injected-at-the-d
+title: "chip8/9 boot crypto + workload identity — keys INJECTED at the door (never in cartridges); Reticulum-native identities; attestation at the host layer"
+created: 2026-06-11T23:23:00.000Z
+depends_on: []
+composes_with: []
 ---
 
-# B-1038 — auth for the little machine, without teaching it crypto (Aaron 2026-06-11)
+# chip8/9 boot crypto + workload identity
+
+<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
+     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
+     Identity is the zetaid prefix — resolve cross-refs by `081KTWFYC9108QG0R001C8RDPK-*.md` glob. -->
+
+Migrated from the accidental legacy `B-1038` row so the item lives on the current
+ZetaId workitem surface instead of extending the frozen sequential backlog.
+
+Review required before build: Nazar (ops) + Mateo (research); security-sensitive.
+
+Tags: security, identity, spiffe, reticulum, zflash, keys, membrane, red-light.
+
+## Auth for the little machine, without teaching it crypto
 
 > Aaron: "should we give it any crypto primitives inside, for initial boot and such — keys
 > injected for auth, like workload identity?"

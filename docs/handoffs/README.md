@@ -8,6 +8,7 @@ are committed HERE — text, diffable, visible to all — and copied to a clipbo
 the LAST hop of a ferry, never as the home.
 
 Current:
+
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges

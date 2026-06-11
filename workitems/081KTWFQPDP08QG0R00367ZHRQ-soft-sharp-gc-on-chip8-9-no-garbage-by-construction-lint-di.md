@@ -1,15 +1,25 @@
 ---
-id: B-1036
-title: Soft/sharp GC on chip8/9 — no-garbage-by-construction (lint/DI), room-scoped lifetimes, weak refs, RAY-TRACED reachability, history-epoch reclamation
+id: 081KTWFQPDP08QG0R00367ZHRQ
+type: task
+state: backlog
 priority: P2
-status: open
-tier: substrate
-tags: [gc, chip8, chip9, lifetimes, di, weak-references, self-trace, epochs, rx, lint]
-created: 2026-06-11
-owner: open (pairs with the shader-memory/GC loose item and B-1035's sealed rooms)
+slug: soft-sharp-gc-on-chip8-9-no-garbage-by-construction-lint-di
+title: "Soft/sharp GC on chip8/9 — no-garbage-by-construction (lint/DI), room-scoped lifetimes, weak refs, RAY-TRACED reachability, history-epoch reclamation"
+created: 2026-06-11T23:19:33.558Z
+depends_on: []
+composes_with: []
 ---
 
-# B-1036 — garbage collection, our way (Aaron 2026-06-11, verbatim spine)
+# Soft/sharp GC on chip8/9 — no-garbage-by-construction (lint/DI), room-scoped lifetimes, weak refs, RAY-TRACED reachability, history-epoch reclamation
+
+<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
+     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
+     Identity is the zetaid prefix — resolve cross-refs by `081KTWFQPDP08QG0R00367ZHRQ-*.md` glob. -->
+
+Migrated from the accidental legacy `B-1036` row so the item lives on the current
+ZetaId workitem surface instead of extending the frozen sequential backlog.
+
+## Aaron 2026-06-11, verbatim spine
 
 > "Soft/sharp garbage collection on chip8 via our shape cartridges. We make sure we either don't
 > CREATE garbage (via lint or via DI — we're already doing an HKT recursive-types hack to simulate
@@ -18,7 +28,7 @@ owner: open (pairs with the shader-memory/GC loose item and B-1035's sealed room
 > figure out garbage location based on what can still access it or has stopped running. Everything
 > for us is reusable, so we can figure out garbage over time by keeping history."
 
-## The five rungs (each a slice; Beacon anchors attached)
+## The five rungs
 
 1. **Don't create it** — allocation discipline as LINT (the determinism-lint pattern aimed at
    allocation: no unbounded growth inside a sealed loop) + DI lifetimes: room-scoped = ASP.NET
@@ -45,7 +55,7 @@ owner: open (pairs with the shader-memory/GC loose item and B-1035's sealed room
    one). Generational hypothesis (Lieberman–Hewitt/Ungar) + epoch-based reclamation as anchors;
    our event-sourced frames make "figure out garbage over time" a fold over history.
 
-## Honest status notes (2026-06-11)
+## Honest status notes
 
 - The HKT-recursive-DI-lifetimes hack: Aaron's description captured; in-tree location to be
   pinned at slice time (do not overclaim file paths in this row).

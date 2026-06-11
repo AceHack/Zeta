@@ -71,3 +71,64 @@ let ``malformed Reticulum observable payload returns Result error instead of thr
     match ReticulumQuantum.decode "not-a-reticulum-observable" with
     | Error (ReticulumQuantum.PacketError.Malformed "schema") -> ()
     | other -> Assert.Fail(sprintf "expected schema error, got %A" other)
+
+[<Fact>]
+let ``WSet Mach-Zehnder observable Z-set crosses Reticulum as source-owned DBSP rows`` () =
+    let s, medium, _, b, l = link ()
+    let rows = QuantumObservableDbsp.machZehnderZSet ()
+
+    let medium', s' =
+        ReticulumQuantum.sendQuantumObservableZSet l "wset-mach-zehnder" 100L rows s medium
+
+    let delivered, drained = ReticulumQuantum.receiveQuantumObservableZSet b medium'
+
+    Assert.Equal(6, ZSet.count rows)
+    Assert.Equal(706L, s'.Now.Version)
+    Assert.Empty(drained.InFlight)
+    match delivered with
+    | Error e -> Assert.Fail(sprintf "observable Z-set decode failed: %A" e)
+    | Ok actual ->
+        Assert.Equal(ZSet.count rows, ZSet.count actual)
+        Assert.Equal<ZSet<QuantumObservableRow>>(rows, actual)
+
+[<Fact>]
+let ``Reticulum quantum observable deltas preserve DBSP retractions`` () =
+    let s, medium, _, b, l = link ()
+    let openRow = QuantumObservableDbsp.machZehnderOpenRow ()
+    let piOver6Row =
+        QuantumObservableDbsp.machZehnderClosedRow
+            "mach-zehnder-closed-pi-over-6-phase"
+            "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase"
+            (Math.PI / 6.0)
+
+    let deltas: ReticulumQuantum.ObservableDelta list =
+        [ { Source = "reticulum-retraction"
+            Sequence = 200L
+            Row = openRow
+            Weight = 1L }
+          { Source = "reticulum-retraction"
+            Sequence = 201L
+            Row = openRow
+            Weight = -1L }
+          { Source = "reticulum-retraction"
+            Sequence = 202L
+            Row = piOver6Row
+            Weight = 1L } ]
+
+    let medium', s' = ReticulumQuantum.sendDeltas l deltas s medium
+    let delivered, drained = ReticulumQuantum.receiveQuantumObservableZSet b medium'
+
+    Assert.Equal(703L, s'.Now.Version)
+    Assert.Empty(drained.InFlight)
+    match delivered with
+    | Error e -> Assert.Fail(sprintf "observable deltas decode failed: %A" e)
+    | Ok actual ->
+        Assert.Equal(1, ZSet.count actual)
+        Assert.Equal(0L, ZSet.lookup openRow actual)
+        Assert.Equal(1L, ZSet.lookup piOver6Row actual)
+
+[<Fact>]
+let ``malformed Reticulum quantum observable delta payload returns Result error`` () =
+    match ReticulumQuantum.decodeDelta """{"schema":"wrong","delta":{}}""" with
+    | Error (ReticulumQuantum.PacketError.Malformed "schema") -> ()
+    | other -> Assert.Fail(sprintf "expected schema error, got %A" other)
