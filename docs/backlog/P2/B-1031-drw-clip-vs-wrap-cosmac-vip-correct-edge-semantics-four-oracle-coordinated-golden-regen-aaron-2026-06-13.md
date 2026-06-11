@@ -2,7 +2,7 @@
 id: B-1031
 title: DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change
 priority: P2
-status: open
+status: done
 tier: treaty-substrate
 tags: [chip8, chip9, drw, four-oracles, golden-vectors, greenfield, treaty]
 created: 2026-06-13

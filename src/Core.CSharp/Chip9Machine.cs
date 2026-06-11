@@ -135,7 +135,15 @@ public sealed class Chip9Machine
                     continue;
                 }
 
-                var idx = (((oy + row) % Height) * Width) + ((ox + col) % Width);
+                // COSMAC VIP (B-1031): origin wraps (ox/oy), pixels CLIP at right/bottom — not wrapped
+                var px = ox + col;
+                var py = oy + row;
+                if (px >= Width || py >= Height)
+                {
+                    continue;
+                }
+
+                var idx = (py * Width) + px;
                 if ((Plane & 1) != 0)
                 {
                     if (!Display.Add(idx))

@@ -22,25 +22,34 @@ let private goldenPath =
 /// red row at (0,0); green row at (4,2) [V0=4,V1=2]; white row at (8,4); then clear R+G (mask 3) —
 /// leaving only the BLUE bits of the white row. Exercises select/draw/overlap/selective-clear.
 let private treatyRom =
-    [| 0xA3uy; 0x00uy // I = 0x300 (sprite)
-       0xD0uy; 0x01uy // DRW @ (0,0) on plane 1 (default) — RED row
-       0xF2uy; 0x01uy // plane := 2 (G)
-       0x60uy; 0x04uy // V0 := 4
-       0x61uy; 0x02uy // V1 := 2
-       0xD0uy; 0x11uy // DRW @ (4,2) — GREEN row
-       0xF7uy; 0x01uy // plane := 7 (RGB)
-       0x60uy; 0x08uy // V0 := 8
-       0x61uy; 0x04uy // V1 := 4
-       0xD0uy; 0x11uy // DRW @ (8,4) — WHITE row
-       0xF3uy; 0x01uy // plane := 3 (R+G)
-       0x00uy; 0xE0uy |] // CLS — red+green cleared everywhere; blue remains of the white row
+    // B-1031 edge-clip treaty ROM (sprite at 0x300 = a solid 8x8 block, FF x8). Exercises every
+    // clip case Kira's review required: RIGHT edge, BOTTOM edge, CORNER, a COLOR-PLANE edge draw,
+    // the VF COLLISION branch (so clip-vs-wrap is locked on the FLAG, not just the display), and
+    // a DXY0 (n=0) draw-nothing. Wrap-origin / clip-pixels = COSMAC VIP reference.
+    [| 0xA3uy; 0x00uy // I = 0x300 (solid 8x8 sprite)
+       // RIGHT edge: solid block at (60,2) n=8 — cols 60-63 drawn, 64-67 CLIPPED (wrap -> 0-3)
+       0x60uy; 0x3Cuy; 0x6Auy; 0x02uy; 0xD0uy; 0xA8uy
+       // BOTTOM edge: block at (2,28) n=8 — rows 28-31 drawn, 32-35 CLIPPED
+       0x60uy; 0x02uy; 0x6Auy; 0x1Cuy; 0xD0uy; 0xA8uy
+       // CORNER: block at (60,28) n=8 — only the 60-63 x 28-31 quadrant survives
+       0x60uy; 0x3Cuy; 0x6Auy; 0x1Cuy; 0xD0uy; 0xA8uy
+       // VF COLLISION branch: draw at (0,12); then at (60,12) — clip => VF=0, wrap => collides at 0-3 => VF=1
+       0x60uy; 0x00uy; 0x6Auy; 0x0Cuy; 0xD0uy; 0xA1uy
+       0x60uy; 0x3Cuy; 0xD0uy; 0xA1uy
+       0x6Cuy; 0x00uy; 0x6Duy; 0x18uy // marker coords (0,24)
+       0x3Fuy; 0x01uy // SE VF,1 — skip the marker iff VF==1 (so marker present <=> clip, VF=0)
+       0xDCuy; 0xD1uy // DRW marker (0,24) n=1
+       // COLOR-PLANE edge: plane 6, block edge at (60,18) n=1 — hi-plane clip path
+       0xF6uy; 0x01uy; 0x60uy; 0x3Cuy; 0x6Auy; 0x12uy; 0xD0uy; 0xA1uy
+       // n=0: DXY0 draws nothing, VF=0 (pinned so a conformer can't drift toward SCHIP 16-row)
+       0xF1uy; 0x01uy; 0xD0uy; 0xA0uy |]
 
 let private finalFrame () =
     let f0 =
         Chip8Cow.create 7UL
         |> Chip8Cow.loadRom treatyRom
-        |> fun f -> { f with Mem = Map.add 0x300 0xFFuy f.Mem }
-    [ 1..12 ] |> List.fold (fun f _ -> Chip8Cow.step f) f0
+        |> fun f -> { f with Mem = [ for k in 0..7 -> 0x300 + k, 0xFFuy ] |> List.fold (fun m (k, v) -> Map.add k v m) f.Mem }
+    [ 1..30 ] |> List.fold (fun f _ -> Chip8Cow.step f) f0
 
 /// The canonical text form: rom hex line, plane line, then 32 rows of 64 hex color digits.
 let private render (f: Chip8Cow.Frame) : string list =
@@ -67,8 +76,16 @@ let ``BYTE-LOCK: the CHIP-9 treaty ROM's final color grid matches the golden vec
 [<Fact>]
 let ``the treaty ROM's semantics sanity-check (independent of the golden bytes)`` () =
     let f = finalFrame ()
-    Assert.Equal(3uy, f.Plane) // last selected mask
-    Assert.Equal(0uy, Chip8Cow.colorAt 0 0 f) // red row: cleared by the R+G CLS
-    Assert.Equal(0uy, Chip8Cow.colorAt 4 2 f) // green row: cleared
-    Assert.Equal(4uy, Chip8Cow.colorAt 8 4 f) // white row: only BLUE survives
-    Assert.Equal(4uy, Chip8Cow.colorAt 15 4 f) // ...across all 8 sprite pixels
+    Assert.Equal(1uy, f.Plane) // last selected mask (the n=0 tail runs on plane 1)
+    // RIGHT-edge clip: col 63 drawn, col 0 NOT wrapped onto (the whole point)
+    Assert.Equal(1uy, Chip8Cow.colorAt 63 2 f)
+    Assert.Equal(0uy, Chip8Cow.colorAt 0 2 f)
+    // the VF-collision marker at (0,24): present <=> the edge draw did NOT collide (clip, VF=0)
+    Assert.Equal(1uy, Chip8Cow.colorAt 0 24 f)
+    // BOTTOM-edge clip: row 31 drawn (rows 32-35 clipped, off-grid)
+    Assert.Equal(1uy, Chip8Cow.colorAt 2 31 f)
+    // COLOR-PLANE edge clip: hi-plane bit at col 63, nothing wrapped to col 0
+    Assert.Equal(6uy, Chip8Cow.colorAt 63 18 f &&& 6uy)
+    Assert.Equal(0uy, Chip8Cow.colorAt 0 18 f)
+    // the machine took no fault running the ROM
+    Assert.Equal<string option>(None, f.Fault)

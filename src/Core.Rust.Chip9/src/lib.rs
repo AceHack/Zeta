@@ -105,7 +105,13 @@ impl Chip9 {
                 if (sprite >> (7 - col)) & 1 != 1 {
                     continue;
                 }
-                let idx = ((oy + row) % H) * W + ((ox + col) % W);
+                // COSMAC VIP (B-1031): origin wraps (ox/oy), pixels CLIP at right/bottom — not wrapped
+                let px = ox + col;
+                let py = oy + row;
+                if px >= W || py >= H {
+                    continue;
+                }
+                let idx = py * W + px;
                 if self.plane & 1 != 0 && !self.display.insert(idx) {
                     self.display.remove(&idx);
                     collision = 1;

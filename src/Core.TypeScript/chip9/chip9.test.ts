@@ -33,8 +33,8 @@ describe("CHIP-9 — the color-plane treaty (TS oracle)", () => {
 
     let f = create();
     f = loadRom(rom, f);
-    f.mem.set(0x300, 0xff); // the treaty sprite (mirrors the F# test setup)
-    for (let s = 0; s < 12; s++) f = step(f);
+    for (let k = 0; k < 8; k++) f.mem.set(0x300 + k, 0xff); // solid 8x8 treaty sprite (B-1031)
+    for (let s = 0; s < 30; s++) f = step(f);
 
     expect(f.plane).toBe(goldenPlane);
     for (let y = 0; y < H; y++) {

@@ -82,7 +82,11 @@ export function step(f: Frame): Frame {
         const sprite = f.mem.get(f.i + row) ?? 0;
         for (let col = 0; col < 8; col++) {
           if (((sprite >> (7 - col)) & 1) === 1) {
-            const idx = ((oy + row) % H) * W + ((ox + col) % W);
+            // COSMAC VIP (B-1031): origin wraps (ox/oy above), pixels CLIP at right/bottom — not wrapped
+            const px = ox + col;
+            const py = oy + row;
+            if (px < W && py < H) {
+            const idx = py * W + px;
             if (f.plane & 1) {
               const cur = f.display.get(idx) ?? false;
               if (cur) collision = 1;
@@ -94,6 +98,7 @@ export function step(f: Frame): Frame {
               const nxt = cur ^ hiSel;
               if (nxt === 0) f.extra.delete(idx);
               else f.extra.set(idx, nxt);
+            }
             }
           }
         }

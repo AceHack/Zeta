@@ -250,9 +250,9 @@ tempted to ship.
 - **CorrespondencePong serve direction/seed:** docstring promises parameters the signature lacks
   (hard-coded rightward serve = structural asymmetry the docs deny). Fix = param + doc; touches
   the apple-message turn protocol — small design decision, Aaron's call on the default.
-- **Chip8 DRW edge semantics:** both machines wrap sprites at edges; COSMAC VIP clips (wraps
-  origin only). Internally consistent + cross-checked, but quirks-test ROMs will flag it; changing
-  it changes golden vectors → treaty-coordinated fix.
+- **Chip8 DRW edge semantics: FIXED (B-1031, 2026-06-13).** All four oracles now CLIP pixels at
+  the right/bottom edge (wrap origin only) — COSMAC VIP reference; locked by an edge-crossing
+  golden ROM (right/bottom/corner/color-plane/VF-collision/n=0) byte-identical across F#/C#/TS/Rust.
 - **Chip8Cow 00EE on empty stack silently no-ops:** stack underflow is a ROM bug being hidden
   from the trace layer; needs an error register decision (Result vs trace-mark).
 - **Chip9Phys.div by zero throws; int cast truncates >32767px:** hot-path exception convention

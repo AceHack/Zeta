@@ -197,11 +197,13 @@ module Chip8 =
                 let sprite = c.Mem.[int c.I + row]
                 for col in 0..7 do
                     if (sprite >>> (7 - col)) &&& 1uy = 1uy then
-                        let px = (vx + col) % DisplayW
-                        let py = (vy + row) % DisplayH
-                        let idx = py * DisplayW + px
-                        if c.Display.[idx] then c.V.[0xF] <- 1uy // collision
-                        c.Display.[idx] <- not c.Display.[idx]
+                        // COSMAC VIP: origin wraps (vx/vy already % above), pixels CLIP (B-1031)
+                        let px = vx + col
+                        let py = vy + row
+                        if px < DisplayW && py < DisplayH then
+                            let idx = py * DisplayW + px
+                            if c.Display.[idx] then c.V.[0xF] <- 1uy // collision
+                            c.Display.[idx] <- not c.Display.[idx]
         | 0xE000 ->
             match op &&& 0x00FF with
             | 0x9E -> if c.Keys.[int c.V.[x] &&& 0xF] then c.PC <- c.PC + 2us

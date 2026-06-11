@@ -40,8 +40,8 @@ public sealed class Chip9CrossVerifyTests
 
         var m = new Chip9Machine();
         m.LoadRom(rom);
-        m.Mem[0x300] = 0xFF; // the treaty sprite (mirrors the F#/TS test setup)
-        for (var s = 0; s < 12; s++)
+        for (var k = 0; k < 8; k++) m.Mem[0x300 + k] = 0xFF; // solid 8x8 treaty sprite (B-1031)
+        for (var s = 0; s < 30; s++)
         {
             m.Step();
         }

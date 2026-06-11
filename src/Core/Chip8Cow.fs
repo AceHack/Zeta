@@ -188,18 +188,25 @@ module Chip8Cow =
                 let sprite = rd (int f.I + row) f
                 for col in 0..7 do
                     if (sprite >>> (7 - col)) &&& 1uy = 1uy then
-                        let idx = ((oy + row) % Chip8.DisplayH) * Chip8.DisplayW + ((ox + col) % Chip8.DisplayW)
-                        // plane 0 (R/mono) — the original path, untouched when unselected (CHIP-9)
-                        if f.Plane &&& 1uy <> 0uy then
-                            let cur = Map.tryFind idx disp |> Option.defaultValue false
-                            if cur then collision <- 1uy
-                            disp <- Map.add idx (not cur) disp
-                        // planes 1-2 (G,B) — XOR the selected high bits; canonical zero ⇒ absent
-                        if hiSel <> 0uy then
-                            let cur = Map.tryFind idx extra |> Option.defaultValue 0uy
-                            if cur &&& hiSel <> 0uy then collision <- 1uy
-                            let nxt = cur ^^^ hiSel
-                            extra <- if nxt = 0uy then Map.remove idx extra else Map.add idx nxt extra
+                        // COSMAC VIP edge semantics (B-1031): the ORIGIN wraps (ox/oy above), but
+                        // pixels CLIP at the right/bottom edge — they are not wrapped around. A
+                        // clipped pixel is never written AND never collision-checked (VF counts
+                        // collisions only on drawn pixels — Kira's review condition, free here).
+                        let px = ox + col
+                        let py = oy + row
+                        if px < Chip8.DisplayW && py < Chip8.DisplayH then
+                            let idx = py * Chip8.DisplayW + px
+                            // plane 0 (R/mono) — the original path, untouched when unselected (CHIP-9)
+                            if f.Plane &&& 1uy <> 0uy then
+                                let cur = Map.tryFind idx disp |> Option.defaultValue false
+                                if cur then collision <- 1uy
+                                disp <- Map.add idx (not cur) disp
+                            // planes 1-2 (G,B) — XOR the selected high bits; canonical zero ⇒ absent
+                            if hiSel <> 0uy then
+                                let cur = Map.tryFind idx extra |> Option.defaultValue 0uy
+                                if cur &&& hiSel <> 0uy then collision <- 1uy
+                                let nxt = cur ^^^ hiSel
+                                extra <- if nxt = 0uy then Map.remove idx extra else Map.add idx nxt extra
 
             { f with Display = disp; Extra = extra } |> setV 0xF collision
         | 0xE000 ->

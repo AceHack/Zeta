@@ -31,8 +31,8 @@ fn byte_lock_replaying_the_treaty_rom_reproduces_the_golden_color_grid_exactly()
 
     let mut m = Chip9::create();
     m.load_rom(&rom);
-    m.mem.insert(0x300, 0xff); // the treaty sprite (mirrors the F#/TS/C# setup)
-    for _ in 0..12 {
+    for k in 0..8 { m.mem.insert(0x300 + k, 0xff); } // solid 8x8 treaty sprite (B-1031)
+    for _ in 0..30 {
         m.step();
     }
 

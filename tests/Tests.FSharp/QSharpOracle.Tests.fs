@@ -449,6 +449,14 @@ let ``F# validates the TypeScript Q# treaty transcript`` () =
         closeToWithin 1e-5 qsProb faProb
 
     // 3. Validate Interference Visibility
+    // Helpers dropped in the #7766 "move oracle into src" refactor — restored so main builds green
+    // (B-1031 work surfaced the breakage; frame = a detector identity, real/phase = the amplitude
+    // constructors, probabilityFor = the Born-rule lookup).
+    let frame (seed: uint64) = Chip8Cow.create seed
+    let real (r: float) : Complex = Doubled.make r 0.0
+    let phase (theta: float) : Complex = Doubled.make (cos theta) (sin theta)
+    let probabilityFor (target: Chip8Cow.Frame) (probs: (Chip8Cow.Frame * float) list) =
+        probs |> List.filter (fun (g, _) -> g = target) |> List.sumBy snd
     let detectorZero = frame 0UL
     let detectorOne = frame 1UL
     let half = real 0.5
