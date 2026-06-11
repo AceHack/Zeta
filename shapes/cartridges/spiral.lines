@@ -1,0 +1,11 @@
+# SPIRAL — the shape catalog's first cartridge (otto, 2026-06-11). The logarithmic spiral drawn by the
+# Cayley-Dickson rotor: store four numbers, generate the whole boundary. The lesson loop: see it draw
+# (StrokeAnim rides the curve), read the generator, change a number, see it again.
+meta	name	shape-spiral
+meta	catalog	shapes
+meta	shape-zetaid	5dd5dc3c6e86a31ed648571c1e86e2dd
+gen	curve	40525ef32783f79737fb5c1672111dc8	1	7	center:32,16;seed:6,0;turn:1/12;growth:1100;steps:36
+constant	turn-fraction	1/12	the rotor's turn per step as a rational fraction of a circle	exact intent — twelve steps per revolution reads as a clock face, no float angles
+constant	growth-milli	1100	the spiral's outward growth per step (milli-scale)	1.1x per step is visibly logarithmic within the 64x32 court without escaping it in 36 steps
+constant	steps	36	how many rotor applications	three revolutions at 1/12 turn — enough to SEE the growth law, bounded (no one draws forever)
+anim	draw	curve

@@ -154,7 +154,9 @@ module MediaLines =
     /// anims must reference frames that exist; duplicate (kind, name) pairs are flagged.
     let lint (d: Doc) : LintFinding list =
         let isHex32 (s: string) = s.Length = 32 && s |> Seq.forall System.Char.IsAsciiHexDigitLower
-        let frameNames = ofKind "frame" d |> List.map (fun e -> e.Name) |> Set.ofList
+        // anim targets: frames (sprite cycles) OR gen sections (StrokeAnim rides a generated curve)
+        let frameNames =
+            (ofKind "frame" d @ ofKind "gen" d) |> List.map (fun e -> e.Name) |> Set.ofList
 
         let perEntry =
             d.Entries
