@@ -2,12 +2,44 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-11 late (the CHIP-9/society wave folded in — #7626..#7660; prior wave note below).
+Last refreshed: 2026-06-11 morning (the treaty/harmony wave folded in — #7705..#7716; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-11 FINAL wave (#7699..#7703 — newest; read FIRST)
+## The 2026-06-11 MORNING wave (#7705..#7716 — newest; read FIRST)
+
+- **Craft school for Max** (#7705): self-study start point (`docs/craft-school/`) — WHY-before-HOW,
+  play first, every cartridge an experiment; B-1028 MIPS road. (CORRECTION banked in memory: Max is a
+  BUSINESS PARTNER, not Aaron's son; Addison is his daughter — never familial-frame Max.)
+- **HtmlCssBinding** (#7706): the same paradigm in pure static HTML+CSS, no JavaScript (box-shadow
+  pixel art, steps() keyframes; `DoesNotContain("<script")` is a test).
+- **Shape catalog opens** (#7707): `shapes/cartridges/spiral.lines` — rotor ZetaId + 3 constants with
+  WHAT+WHY; the lint learned anim-targets = frames ∪ gens from the first cartridge.
+- **WaveSim** (#7708): honest interference (superposition IS complex.Add; fringes at nλ / (n+½)λ;
+  labeled simulation, no quantum-hardware claims). **AdinkraViz** (#7709): N=4 gray-code checkerboard,
+  generator SHINE. **SpectralPivot** (#7709/#7710): hard DFT (idft∘dft=id) + soft probe + drift/healthy
+  (predictive maintenance by pitch).
+- **The harmony figure** (#7710/#7711): harmonize (rational ratios) · coincidences (downbeats align
+  with ZERO messages — seed-independent tick arithmetic) · freestyle (bounded feedback on phase, never
+  clock) · THE SOUL CLAUSE (deterministic deviation — the imperfections where the soul lives) · THE
+  MULTITRACK LAW (own seed = own mic; the ratio is the sprocket).
+- **THE DROP-IN LAW** (#7713): a seed dropped mid-stream is byte-identical to one playing from tick 0
+  — silent before its entrance, in phase after; late join is a planned downbeat, zero resync.
+- **Cotillion + Henderson** (#7712/#7713): Aaron's lived anchor for the whole figure — "dancing within
+  the lines of coincidence WITH MANNERS"; learned at Henderson Country Club, the same Henderson as the
+  mill — one town's curriculum, taken twice.
+- **The render is the oracle** (#7714, via the Kestrel ferry): cartridges are the validation surface
+  for "does it match what's in my head"; known-answer overlays = the test suite made visible. Kestrel
+  is porting our math function-for-function (bundle on Aaron's Desktop).
+- **The traveler oracle + per-cartridge treaties** (#7715/#7716): perceptual projections (pictures +
+  audio + animations) make treaty ratification possible for ANYONE — and meaning is a TRAVELER
+  register, not human-only (AIs push back too; dissent is a verdict, not a failure). `treaty
+  <oracle> <register> <verdict>` lines per cartridge; consent first (absence = silence); trust at a
+  glance; common geometry for JOINT meaning, never enforcement. Spiral carries the first real block.
+  Plus the inverted imitation game: watching Chip9SelfTrace teaches humans to ray-trace themselves.
+
+## The 2026-06-11 FINAL wave (#7699..#7703 — older; read second)
 
 - **Format laws** (#7700): THE LINT (MediaLines.lint — constants without WHAT+WHY are magic numbers
   and REFUSED; gen/io refs must be 32-hex ZetaIds = DI enforced; anim frames must exist; the future is
