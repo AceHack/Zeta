@@ -19,7 +19,7 @@ public sealed class InferNetEngine : IInferenceEngine
 {
     public string Name => "infer-net";
 
-    public InferenceResult RunGaussian(GaussianModel model, int maxRounds, double tolerance)
+    private static Variable<double>[] BuildVariables(GaussianModel model)
     {
         var vars = new Variable<double>[model.VariableCount];
         var priorsPerVar = new List<GaussianPrior>[model.VariableCount];
@@ -66,15 +66,35 @@ public sealed class InferNetEngine : IInferenceEngine
             }
         }
 
-        var engine = new InferenceEngine { ShowProgress = false, NumberOfIterations = maxRounds };
+        return vars;
+    }
+
+    public InferenceResult RunGaussian(GaussianModel model, int maxRounds, double tolerance)
+    {
+        var vars = BuildVariables(model);
+
+        // P0 fix (claims review 2026-06-11): the first version HARDCODED Converged=true and
+        // ignored `tolerance` — half the conformance suite's "senior oracle" verdicts were a
+        // constant we wrote. Convergence is now OBSERVED: infer at maxRounds and at maxRounds-1;
+        // converged ⇔ every marginal stable within tolerance (one extra iteration changes
+        // nothing on a converged model; a drifting loop fails honestly).
+        var atFull = new InferenceEngine { ShowProgress = false, NumberOfIterations = maxRounds };
+        var atLess = new InferenceEngine { ShowProgress = false, NumberOfIterations = Math.Max(1, maxRounds - 1) };
         var marginals = new GaussianMarginal[model.VariableCount];
+        var converged = true;
         for (var v = 0; v < model.VariableCount; v++)
         {
-            var g = engine.Infer<Gaussian>(vars[v]);
+            var g = atFull.Infer<Gaussian>(vars[v]);
+            var gLess = atLess.Infer<Gaussian>(vars[v]);
             marginals[v] = new GaussianMarginal(v, g.GetMean(), g.GetVariance());
+            if (Math.Abs(g.GetMean() - gLess.GetMean()) > tolerance
+                || Math.Abs(g.GetVariance() - gLess.GetVariance()) > tolerance)
+            {
+                converged = false;
+            }
         }
 
-        return new InferenceResult(Converged: true, Rounds: maxRounds, Marginals: marginals);
+        return new InferenceResult(converged, maxRounds, marginals);
     }
 }
 

@@ -77,22 +77,19 @@ public sealed class InferenceEnginePortTests
 
             if (string.Equals(id, "loopy-equality-cycle", StringComparison.Ordinal))
             {
-                // THE HONESTY CASE, behaving as designed: on a Gaussian equality CYCLE, loopy BP
-                // overcounts precision around the loop — means are exact but variances are
-                // overconfident and our raw-BP engine keeps moving (Weiss & Freeman 2001, the
-                // canonical result). OURS reports Converged=false — TRUTHFULLY (the port makes
-                // non-convergence a value, never a throw); Infer.NET's scheduler settles. So this
-                // case asserts the honesty contract + the means-exact theorem, and variance
-                // comparison is N/A by the literature. Damping is the named upgrade on B-1033.
-                Assert.False(a.Converged, $"{id}: ours claimed convergence on a loop its raw-BP schedule cannot settle — the honesty contract broke");
-                Assert.True(b.Converged, $"{id}: the senior oracle failed its own loop");
+                // THE HONESTY CASE, now mechanically asserted (P0 fix: the senior's Converged was
+                // previously hardcoded; the "reversal" lived in a comment). The truths we assert:
+                // (a) OURS refuses to claim convergence on the leak-free loop (Weiss & Freeman:
+                //     precision overcounts; non-convergence is a value);
+                // (b) means: OURS lands the analytic 2.0 EXACTLY (1e-9); the senior's schedule
+                //     residue is bounded (5e-3) — whatever its convergence flag now honestly says.
+                Assert.False(a.Converged, $"{id}: ours claimed convergence on a loop raw BP cannot settle");
                 for (var v = 0; v < model.VariableCount; v++)
                 {
-                    // delicious reversal, observed 2026-06-13: OURS lands the exact 2.0; the
-                    // senior oracle's loop scheduler stops at 2.0025 — the junior out-precised
-                    // the senior on this case. 5e-3 covers their scheduler residue.
-                    Assert.True(Math.Abs(a.Marginals[v].Mean - b.Marginals[v].Mean) < 5e-3,
-                        $"{id} v{v} mean (means are exact on Gaussian loops): ours={a.Marginals[v].Mean} infer-net={b.Marginals[v].Mean}");
+                    Assert.True(Math.Abs(a.Marginals[v].Mean - 2.0) < 1e-9,
+                        $"{id} v{v}: ours must land the analytic mean 2.0 exactly; got {a.Marginals[v].Mean}");
+                    Assert.True(Math.Abs(b.Marginals[v].Mean - 2.0) < 5e-3,
+                        $"{id} v{v}: senior mean outside its residue bound; got {b.Marginals[v].Mean}");
                 }
 
                 continue;

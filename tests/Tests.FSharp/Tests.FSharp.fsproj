@@ -182,6 +182,7 @@
     <Compile Include="DeterminismLint.Tests.fs" />
     <Compile Include="WSet.MachZehnder.Tests.fs" />
     <Compile Include="IbltReconcile.Tests.fs" />
+    <Compile Include="TestLoop.Host.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />

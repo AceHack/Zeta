@@ -62,3 +62,33 @@ let ``O(|Δ|) IS THE POINT: a 10k-key room with a 3-key difference reconciles th
         Assert.Equal<uint64 list>(keys [ 90001 ], onlyA)
         Assert.Equal<uint64 list>(keys [ 90002; 90003 ], onlyB)
     | IbltReconcile.Partial(_, _, n) -> Assert.True(false, sprintf "16 cells should decode |Δ|=3; %d stuck" n)
+
+// ── the PROPERTY (claims-review upgrade #2): Partial/Decoded soundness over RANDOM rooms ──
+open FsCheck
+open FsCheck.FSharp
+open FsCheck.Xunit
+
+type IbltRoomsArb() =
+    static member Rooms() : Arbitrary<Set<uint64> * Set<uint64> * int> =
+        gen {
+            let! shared = Gen.listOf (Gen.choose (1, 500)) |> Gen.map (List.map uint64 >> Set.ofList)
+            let! onlyA = Gen.listOf (Gen.choose (501, 700)) |> Gen.map (List.map uint64 >> Set.ofList)
+            let! onlyB = Gen.listOf (Gen.choose (701, 900)) |> Gen.map (List.map uint64 >> Set.ofList)
+            let! cells = Gen.choose (3, 64)
+            return Set.union shared onlyA, Set.union shared onlyB, cells
+        }
+        |> Arb.fromGen
+
+[<Property(Arbitrary = [| typeof<IbltRoomsArb> |], MaxTest = 200)>]
+let ``SOUNDNESS PROPERTY: for ANY rooms and ANY geometry, every recovered key is truly in the symmetric difference — and a full Decode is exactly it`` (data: Set<uint64> * Set<uint64> * int) =
+    let roomA, roomB, cells = data
+    let trueOnlyA = Set.difference roomA roomB
+    let trueOnlyB = Set.difference roomB roomA
+    match IbltReconcile.reconcile cells 3 roomA roomB with
+    | IbltReconcile.Decoded(a, b) ->
+        // full decode: EXACTLY the symmetric difference, both sides
+        Set.ofList a = trueOnlyA && Set.ofList b = trueOnlyB
+    | IbltReconcile.Partial(a, b, _) ->
+        // partial: SOUND — never a key that isn't truly in the difference, never side-swapped
+        (a |> List.forall (fun k -> Set.contains k trueOnlyA))
+        && (b |> List.forall (fun k -> Set.contains k trueOnlyB))

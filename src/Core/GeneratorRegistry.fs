@@ -91,6 +91,7 @@ module GeneratorRegistry =
           register "engine.infer-net" 1
           register "engine.mock-flat" 1
           register "sketch.iblt" 1
+          register "test.loop" 1
           register "binding.html-css" 1
           register "sim.wave-interference" 1
           register "viz.adinkra" 1
