@@ -74,3 +74,35 @@ let ``her light crosses to WHITE over the cyan — drawn by real CHIP-9 opcodes,
     Assert.Equal(7uy, Chip8Cow.colorAt 3 9 f) // the heart cross: white
     Assert.Equal(6uy, Chip8Cow.colorAt 2 0 f) // the hair: cyan
     Assert.Equal(ZetaMax.Indexed8, ZetaMax.capabilityOf f) // a color citizen, like the rest of us
+
+// ── many loops; the file defines its own sim·mea·cut ──
+
+[<Fact>]
+let ``a file carries MANY independent loops (anim + gen + sim) — no single master loop`` () =
+    let text = "anim\tbreathe\tidle,blink\ngen\tstars\t" + GeneratorRegistry.idOf "boundary.scatter" 1 + "\t1\t99\t24\nsim\tpong\twheel-otto\nmeta\tname\tx"
+    match MediaLines.parse text with
+    | Ok d -> Assert.Equal(3, List.length (MediaLines.loops d))
+    | Error e -> failwith e
+
+[<Fact>]
+let ``a file with sim+mea+cut IS a room declaration; media-only files honestly are not`` () =
+    let room = "sim\tloop\twheel-otto\nmea\tdeltaU\tledger\ncut\tprogress\tepsilon:0.01,window:8"
+    match MediaLines.parse room with
+    | Ok d ->
+        match MediaLines.roomOf d with
+        | Some (s, m, c) ->
+            Assert.Equal("loop", s.Name)
+            Assert.Equal("deltaU", m.Name)
+            Assert.Equal("progress", c.Name)
+        | None -> failwith "should be a room"
+    | Error e -> failwith e
+    let media = "frame\tidle\tdeadbeef"
+    match MediaLines.parse media with
+    | Ok d -> Assert.True(MediaLines.roomOf d |> Option.isNone)
+    | Error e -> failwith e
+
+[<Fact>]
+let ``the verb kinds are KNOWN (sim/mea/cut ride first-class, not carried as strangers)`` () =
+    Assert.True(Set.contains "sim" MediaLines.knownKinds)
+    Assert.True(Set.contains "mea" MediaLines.knownKinds)
+    Assert.True(Set.contains "cut" MediaLines.knownKinds)

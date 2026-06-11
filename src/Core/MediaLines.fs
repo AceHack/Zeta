@@ -90,8 +90,30 @@ module MediaLines =
 
     /// The kinds THIS reader understands (everything else is carried, untouched — the expansion law).
     let knownKinds: Set<string> =
-        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen" ]
+        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut" ]
 
     /// The entries a reader carries without understanding — future media types in transit.
     let carried (d: Doc) : Entry list =
         d.Entries |> List.filter (fun e -> not (Set.contains e.Kind knownKinds))
+
+    // ── many loops; the file defines its own sim·mea·cut (Aaron 2026-06-11: "there is no single loop
+    // in the file — there are many; it should be able to self-replicate too, and define its
+    // sim/measure/cut in rx"). A file is not one program with one loop: every `anim`, `gen`, and
+    // `sim` section is an INDEPENDENT loop (zero clocks — they need no sequencing between them), and
+    // a file that carries sim+mea+cut lines IS a room declaration: SimLoop can run it (sim = the
+    // generator to drive, mea = the measurement to bank each lap, cut = the closure condition).
+    // SELF-REPLICATION is the quine law: a file may carry a gen line whose generator, applied to the
+    // file's own irreducible sections + seed, EMITS THE FILE — homoiconic to the letter (the format
+    // can ship its own continuation, the spawn-chain move at the document level). ──
+
+    /// All independent loops a document carries (anim + gen + sim sections — many, by design).
+    let loops (d: Doc) : Entry list =
+        d.Entries |> List.filter (fun e -> e.Kind = "anim" || e.Kind = "gen" || e.Kind = "sim")
+
+    /// The document AS a room declaration: Some (sim, mea, cut) when all three verbs are present —
+    /// the file defines its own loop in the verb engine; None = a media-only document (honest).
+    let roomOf (d: Doc) : (Entry * Entry * Entry) option =
+        let one k = d.Entries |> List.tryFind (fun e -> e.Kind = k)
+        match one "sim", one "mea", one "cut" with
+        | Some s, Some m, Some c -> Some(s, m, c)
+        | _ -> None
