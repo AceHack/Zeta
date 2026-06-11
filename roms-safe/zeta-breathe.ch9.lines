@@ -1,0 +1,17 @@
+# BREATHE — the first first-party CHIP-9 cartridge (otto, 2026-06-11). The shadow-otter avatar drawn
+# in color (cyan body via plane 6, heart on plane 1 XOR -> white) and animated forever: an eye/feet
+# delta sprite XOR-toggles idle<->blink in an infinite loop. Correctness came first; this is the fun.
+# Hand-assembled; addresses from 0x200. meta-tag format (the avatar.lines/quote-metadata style).
+meta	name	zeta-breathe
+meta	dialect	chip9
+meta	author	otto
+meta	entry	0x200
+meta	loop	0x210
+# 0200 F601 plane 6 | 0202 600C V0=12 | 0204 610C V1=12 | 0206 A220 I=idle | 0208 D018 draw body
+# 020A F101 plane 1 | 020C A230 I=heart | 020E D013 draw heart (XOR over cyan => white)
+# 0210 F601 plane 6 | 0212 A228 I=delta | 0214 D018 blink | 0216 D018 un-blink | 0218 1210 jump loop
+# 0220 idle sprite | 0228 delta (idle XOR blink: eyes row + feet row) | 0230 heart
+rom	f601600c610ca220d018f101a230d013f601a228d018d0181210000000000000	0x200
+rom	3c7edbffffff7e24	0x220
+rom	0000240000000066	0x228
+rom	001818	0x230

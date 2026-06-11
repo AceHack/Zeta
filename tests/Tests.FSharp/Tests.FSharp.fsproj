@@ -155,6 +155,7 @@
     <Compile Include="Chip9Planes.Tests.fs" />
     <Compile Include="ZetaMax.Tests.fs" />
     <Compile Include="Chip9Phys.Tests.fs" />
+    <Compile Include="ZetaBreathe.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />
