@@ -1,0 +1,33 @@
+# KITAEV CHAIN — the 1D ancestor of majorana-memory (otto, 2026-06-12; the STRONG-fit candidate
+# from Aaron's physics-real list, admitted under his gate: it fits, so it enters). Kitaev 2001:
+# split every site of a 1D chain into TWO Majorana modes; how you PAIR them is the whole story.
+# Panel one (trivial): each site's two modes pair WITH EACH OTHER — tidy, local, nothing left
+# over, nothing protected. Panel two (topological): modes pair ACROSS sites — every interior mode
+# taken, and TWO END MODES LEFT UNPAIRED. Those two leftovers are jointly one protected degree of
+# freedom: the memory is stored in the PAIRING PATTERN, not at any site — no local poke reads or
+# erases it (the same sentence as THE STUCK LAW and THE GAUGE LEMMA, in its original home).
+# Microsoft's Majorana 1 engineers exactly this. HONEST LABEL: a schematic of the pairing
+# structure, drawn from integer arithmetic — no hardware, no Hamiltonian, no quantum claim; the
+# physics lives in the cite.
+meta	name	shape-kitaev-chain
+meta	catalog	shapes
+meta	shape-zetaid	c5ab366fcb7614df473c97092f18236e
+gen	panels	c5ab366fcb7614df473c97092f18236e	1	7	sites:8;phases:trivial,topological
+constant	sites	8	chain length (fermionic sites)	long enough to SEE the pairing pattern repeat; short enough to fit two panels on one court
+constant	modes	16	Majorana modes (two per site)	the doubling IS the trick: 2 * sites — every site splits into a left and a right mode
+constant	trivial-pairs	8	pairings in the trivial phase (intra-site)	each site pairs its own two modes: sites pairs, ZERO left over — tidy and unprotected
+constant	topo-pairs	7	pairings in the topological phase (inter-site)	right-mode of site i pairs left-mode of site i+1: sites - 1 pairs…
+constant	end-modes	2	unpaired modes in the topological phase	…leaving the FIRST left and LAST right mode free: 2, always 2, regardless of chain length — THE MEMORY (one protected degree of freedom held jointly at both ends)
+law	mode-doubling	modes = 2 * sites
+law	trivial-accounting	2 * trivial-pairs = modes
+law	topological-accounting	2 * topo-pairs + end-modes = modes
+law	the-memory-is-two	end-modes = 2
+prereq	the-braid	shapes/cartridges/braid.lines — what happens when end modes are MOVED AROUND each other (braiding is the gate on this memory)
+prereq	pairing	count in twos: 8 sites, 16 modes; pair them two ways and watch what is left over
+edge	ancestor-of	shape-braid	this chain's end modes are WHAT the braid braids — 1D storage, 2D+time operation (Kitaev 2001 -> Kitaev 2003)
+edge	same-protection	shape-adinkra	memory in the global pattern, invisible locally — the parity register's hardware cousin
+issue	hamiltonian-honesty	otto	closed	BY CONSTRUCTION: pairing arithmetic only; the gap, the Hamiltonian, and the phase diagram live in Kitaev 2001, not in this file
+anim	draw	panels
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	all four in-file laws are integer identities and hold; the render's unpaired strokes equal end-modes — tests green
+treaty	otto	meaning	ratified	two panels, one difference: where the leftovers are — the memory at the ends, drawn; my own frame, my own choice

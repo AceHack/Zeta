@@ -19,6 +19,7 @@ constant	rows	12	vertical rows the move occupies	three rows per crossing on the 
 constant	ends-swapped	1	the outer strands EXCHANGE (1 = true); the middle comes home	(01)(12)(01) = (02): an odd permutation — and that is WHY this shape cannot lock (everyone-home is even); the exchange IS the operation
 law	odd-cannot-lock	code:shape-plait-move geometry (perm = outer swap, NOT identity — the move moves; lock is impossible below the period)
 prereq	the-locked-braid	shapes/cartridges/braid.lines — see what repeating this move to its period buys: lock + stuck (the memory)
+edge	composed-of	shape-crossing	this figure is a 3-letter WORD in the atom (provability scales down: the small proofs live on shape-crossing; composition carries them up)
 edge	unit-move-of	shape-braid	the locked braid is THIS move applied lock-period times; gate vs memory (Majorana register: the chip stores in the braid, operates by the move)
 anim	draw	move
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.

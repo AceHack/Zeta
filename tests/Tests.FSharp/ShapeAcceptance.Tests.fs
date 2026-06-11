@@ -19,7 +19,7 @@ let private docOf (name: string) =
     | Ok d -> d
     | Error e -> failwith e
 
-let private shapes = [ "spiral"; "braid"; "worldline"; "lightcone"; "fourcorner"; "seam"; "buckyball"; "shadow-loop"; "plait-move"; "adinkra"; "exchange-worldlines" ]
+let private shapes = [ "spiral"; "braid"; "worldline"; "lightcone"; "fourcorner"; "seam"; "buckyball"; "shadow-loop"; "plait-move"; "adinkra"; "exchange-worldlines"; "kitaev-chain"; "crossing" ]
 
 [<Fact>]
 let ``THE HARD GATE: every catalog shape is accepted on bytes+geometry+honest-labels — never on looks, never on meaning`` () =

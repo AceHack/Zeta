@@ -190,6 +190,52 @@ module ShapeRender =
                     Name = sprintf "event-%d" i
                     Mask = 7uy
                     Points = [ ex, ey - r; ex + r, ey; ex, ey + r; ex - r, ey; ex, ey - r ] } ]
+        | "shape-crossing" ->
+            // THE ATOM: two strands, one crossing. Drawn big and alone — the whole figure is the
+            // lesson (over keeps its line; under carries the gap; the sign decides which).
+            let c = MediaLines.field "constant" "word" d |> Option.bind (fun s -> match System.Int32.TryParse s with | true, v -> Some v | _ -> None) |> Option.defaultValue 1
+            let xL, xR = 24, 40
+            let top, bot = 6, 26
+            let overLeft = c > 0 // positive: the LEFT strand crosses over
+            let diag (x0: int) (y0: int) (x1: int) (y1: int) (gapped: bool) (name: string) (mask: byte) =
+                let p0, p1 = pt x0 y0, pt x1 y1
+                if not gapped then
+                    [ { Dash = false; Name = name; Mask = mask; Points = [ p0; p1 ] } ]
+                else
+                    let (ax, ay), (bx, by) = p0, p1
+                    [ { Dash = false; Name = name; Mask = mask; Points = [ p0; (ax + (bx - ax) * 2 / 5, ay + (by - ay) * 2 / 5) ] }
+                      { Dash = false; Name = name + "-r1"; Mask = mask; Points = [ (ax + (bx - ax) * 3 / 5, ay + (by - ay) * 3 / 5); p1 ] } ]
+            diag xL top xR bot (not overLeft) "strand-0" 1uy
+            @ diag xR top xL bot overLeft "strand-1" 4uy
+        | "shape-kitaev-chain" ->
+            // two panels of the same chain: TOP = trivial (intra-site pairing — tidy, unprotected),
+            // BOTTOM = topological (inter-site pairing — two END MODES left unpaired: the memory,
+            // drawn bright). A site is two Majorana-mode dots (left/right); a pairing is a chevron
+            // arc joining two dots; the unpaired end modes get small bright diamonds.
+            let sites = constInt "sites" 8
+            let dotX site mode = 6 + site * 7 + mode * 3 // mode 0 = left, 1 = right (court cells)
+            let modeDot (x: int) (y: int) (name: string) (mask: byte) =
+                { Dash = false; Name = name; Mask = mask; Points = [ pt x y; pt x (y + 1) ] }
+            let arc (x0: int) (x1: int) (y: int) (name: string) (mask: byte) =
+                { Dash = false; Name = name; Mask = mask
+                  Points = [ pt x0 y; pt ((x0 + x1) / 2) (y - 2); pt x1 y ] }
+            [ // trivial panel (rows ~8): each site pairs its OWN two modes
+              for s in 0 .. sites - 1 do
+                  yield modeDot (dotX s 0) 8 (sprintf "t-mode-%d-l" s) 2uy
+                  yield modeDot (dotX s 1) 8 (sprintf "t-mode-%d-r" s) 2uy
+                  yield arc (dotX s 0) (dotX s 1) 8 (sprintf "t-pair-%d" s) 6uy
+              // topological panel (rows ~22): right mode of site s pairs LEFT mode of site s+1
+              for s in 0 .. sites - 1 do
+                  yield modeDot (dotX s 0) 22 (sprintf "k-mode-%d-l" s) 4uy
+                  yield modeDot (dotX s 1) 22 (sprintf "k-mode-%d-r" s) 4uy
+              for s in 0 .. sites - 2 do
+                  yield arc (dotX s 1) (dotX (s + 1) 0) 22 (sprintf "k-pair-%d" s) 6uy
+              // THE MEMORY: the two unpaired end modes, marked with bright diamonds
+              for (name, x) in [ "end-mode-left", dotX 0 0; "end-mode-right", dotX (sites - 1) 1 ] do
+                  let cx, cy = pt x 22
+                  yield
+                      { Dash = true; Name = name; Mask = 7uy
+                        Points = [ cx, cy - 6; cx + 6, cy; cx, cy + 6; cx - 6, cy; cx, cy - 6 ] } ]
         | "shape-buckyball" ->
             // Addison's two views, schematic and honest: INSIDE reads like a soccer ball (central
             // pentagon room, hexagon ring, a bounding circle); OUTSIDE is almost the same drawing

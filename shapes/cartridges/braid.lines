@@ -13,6 +13,7 @@ constant	lock-period	6	crossings until the strands return to their own columns	(
 constant	stuck	1	the locked word is NOT the identity braid (1 = true, proven by Artin's faithful action)	Aaron's Majorana reach: strands HOME yet the braid CANNOT be pulled apart — pure-braid-group memory, the configuration topological qubits bank on (Kitaev chain; Microsoft Majorana 1; sigma1*sigma2^-1 is the figure-eight braid word)
 law	stuck-together	code:shape-braid geometry (perm = identity AND Braid.isIdentity = false — locked AND stuck)
 constant	rows	21	vertical rows the weave occupies on the court	three rows per crossing across the 6-crossing period fits the 32-row court with margin; bounded (no one weaves forever)
+edge	composed-of	shape-crossing	this figure is a 6-letter WORD in the atom (provability scales down: the small proofs live on shape-crossing; composition carries them up)
 edge	same-twist	viz.adinkra	the adinkra's gauge lemma (vertex flips never make a face even) and THE STUCK LAW here are the same sentence — information held as a globally-nontrivial, locally-invisible twist; the break is honest (their edges are involutions, our generators remember)
 anim	draw	weave
 issue	lock-in-place	aaron	closed	RESOLVED 2026-06-12: "the blue messes up… any way to lock them in place?" — the word is now one full plait period (lock-period 6): ends locked, every strand home

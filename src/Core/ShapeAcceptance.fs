@@ -155,6 +155,25 @@ module ShapeAcceptance =
             let lockedStuck = valid && perm = [| 0; 1; 2 |] && not (Braid.isIdentity 3 word)
             causal && lockedStuck,
             "exchanges causally ordered (|Δx| <= Δt at slope 1/1); the word is the locked+stuck braid — one object, two registers"
+        | "shape-crossing" ->
+            // the atom's three laws, by Artin's faithful action on B2:
+            let ok =
+                not (Braid.isIdentity 2 [ 1 ]) // sigma != 1: the strands really exchange
+                && Braid.isIdentity 2 [ 1; -1 ] // do-undo: the inverse undoes exactly
+                && not (Braid.isIdentity 2 [ 1; 1 ]) // memory at its smallest: sigma^2 != 1
+            ok, "sigma != 1; sigma·sigma⁻¹ = 1; sigma² != 1 — the three smallest braid proofs, on the atom"
+        | "shape-kitaev-chain" ->
+            // the render's own accounting must equal the in-file laws: trivial arcs = sites,
+            // topological arcs = sites − 1, unpaired end diamonds = 2 (the memory, drawn).
+            let c name = MediaLines.field "constant" name d |> Option.map int |> Option.defaultValue -1
+            let strokes = ShapeRender.strokesOf d
+            let count prefix = strokes |> List.filter (fun s -> s.Name.StartsWith(prefix: string)) |> List.length
+            let ok =
+                count "t-pair-" = c "sites"
+                && count "k-pair-" = c "sites" - 1
+                && count "end-mode-" = c "end-modes"
+                && c "end-modes" = 2
+            ok, sprintf "drawn accounting holds: %d trivial pairs, %d topological pairs, %d unpaired end modes (the memory)" (count "t-pair-") (count "k-pair-") (count "end-mode-")
         | "shape-adinkra" ->
             // the two laws run live: Gates condition on the standard dashing, and the gauge lemma
             // (a deterministic vertex walk changes the dashing, never the face parity).

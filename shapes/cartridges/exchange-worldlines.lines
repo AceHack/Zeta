@@ -22,6 +22,7 @@ law	same-braid	code:shape-braid geometry (the word is shape-braid's word: locked
 prereq	worldline	shapes/cartridges/worldline.lines — one particle's path first
 prereq	the-braid	shapes/cartridges/braid.lines — the diagram register of this same object
 prereq	lightcone	shapes/cartridges/lightcone.lines — why the diamonds have that slope
+edge	composed-of	shape-crossing	this figure is a 6-letter WORD in the atom (provability scales down: the small proofs live on shape-crossing; composition carries them up)
 edge	same-object	shape-braid	one braid, two registers: the diagram (columns and crossings) and the spacetime picture (worldlines and exchange events)
 edge	causal-frame	shape-lightcone	every exchange event wears a small copy of the lightcone; the causal-order law is slope arithmetic
 edge	memory-register	shape-adinkra	what the exchanges bank (order memory) projects to parity by algebra.mod2 — the full chain drawn across three cartridges

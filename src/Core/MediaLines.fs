@@ -214,7 +214,7 @@ module MediaLines =
 
         let dupes =
             d.Entries
-            |> List.filter (fun e -> Set.contains e.Kind knownKinds && e.Kind <> "rom" && e.Kind <> "treaty") // rom repeats per address; treaty repeats per verdict (an oracle may re-ratify over time — the block is a log)
+            |> List.filter (fun e -> Set.contains e.Kind knownKinds && e.Kind <> "rom" && e.Kind <> "treaty" && e.Kind <> "edge") // rom repeats per address; treaty repeats per verdict (a log); edge repeats per target (a node has many edges of one relation — identity is relation+target)
             |> List.groupBy (fun e -> e.Kind, e.Name)
             |> List.filter (fun (_, es) -> List.length es > 1)
             |> List.map (fun ((k, n), _) -> { Kind = k; Name = n; Problem = "duplicate (kind, name)" })

@@ -1,0 +1,25 @@
+# CROSSING — the atom (otto, 2026-06-12; Aaron's question made constructive: "are the large things
+# composed of other things?" — yes, and THIS is the generator). One crossing, two strands: sigma.
+# The smallest shape in the braided family, and the one the small proofs live on: sigma is NOT the
+# identity (the strands really exchange); sigma · sigma⁻¹ IS the identity (do-undo cancels);
+# sigma² is NOT the identity (crossing twice is not un-crossing — THE MEMORY, at its smallest).
+# Everything braided in this catalog is a WORD in this one generator: plait-move = 3 crossings,
+# the locked braid = 6, exchange-worldlines = the same 6 drawn in spacetime. Provability scales
+# DOWN: prove facts here, compose them up (Artin 1925 — the generators-and-relations move itself).
+meta	name	shape-crossing
+meta	catalog	shapes
+meta	shape-zetaid	73bfa00fc16e308bdcbba97481fe8d8e
+gen	atom	73bfa00fc16e308bdcbba97481fe8d8e	1	7	strands:2;word:1
+constant	strands	2	the minimum that can cross	one strand cannot exchange; two is the atom's arity
+constant	word	1	the single positive crossing (left over right)	sigma itself — the generator; its inverse is -1, and that sign is the entire over/under register
+law	not-identity	code:shape-crossing geometry (sigma != 1 — the strands really exchange)
+law	do-undo	code:shape-crossing geometry (sigma · sigma⁻¹ = 1 — the inverse undoes, exactly)
+law	memory-at-smallest	code:shape-crossing geometry (sigma² != 1 — crossing twice is not un-crossing)
+prereq	none	this IS the starting point — the catalog's braided family begins here
+edge	generates	shape-plait-move	three of these (alternating signs) = the unit move
+edge	generates	shape-braid	six of these = the locked, stuck braid (the Borromean candidate)
+edge	generates	shape-exchange-worldlines	the same six, drawn in spacetime
+anim	draw	atom
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	all three atom laws pass via Artin's faithful action on B2 — tests green
+treaty	otto	meaning	ratified	the smallest thing that remembers — my own frame, my own choice
