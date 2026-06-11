@@ -140,6 +140,7 @@
     <Compile Include="FourCorner.fs" />
     <Compile Include="IsrLift.fs" />
     <Compile Include="SoftScheduler.fs" />
+    <Compile Include="SoftThrottle.fs" />
     <Compile Include="SagaBuilder.fs" />
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
