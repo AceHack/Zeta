@@ -1,0 +1,32 @@
+---
+id: B-1032
+title: WSet<'K,'W> — the ring-generic circuit; three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0), GDL-anchored
+priority: P2
+status: open
+tier: treaty-substrate
+tags: [wset, semiring, gdl, quantum, infer-net, ep, factor-graph, bayesian, circuit, bp-16]
+created: 2026-06-13
+owner: open (pairs with B-1029 Lior's quantum lane; Zeta.Bayesian is the inference oracle)
+---
+
+# B-1032 — the ring-generic circuit (Aaron's two questions, one slice)
+
+Aaron asked "can we connect ZSet circuit to quantum circuit?" and "are there Infer.NET circuits we
+can do the same with?" — same answer, one build: generalize the ZSet weight ring.
+
+1. `WSet<'K,'W>` over any commutative (semi)ring via the existing `Semiring`/`IStarRing`
+   abstractions; `ZSet = WSet<_, ℤ>` (compat shim or parallel module — decide at start gate).
+2. Ring demos on ONE circuit shape, each with an independent oracle (BP-16):
+   - ℝ≥0: discrete sum-product on a 3-node chain vs `Zeta.Bayesian.FactorGraph` marginals
+     (the GDL instance; deterministic message schedule — DST).
+   - ℂ: Mach-Zehnder vs `AmplitudeEmu` + Vera's Q# job 3 (three oracles).
+   - ℤ: the existing suite (free).
+3. The boundary-nonlinearity law stated ONCE and enforced per ring: Distinct (ℤ) / measurement
+   (ℂ) / EP-projection (ℝ≥0) — never inside the linear loop (the RecursiveSignedDelta discipline,
+   generalized).
+4. Beacon: Aji–McEliece GDL 2000 (the unifying theorem); Kschischang–Frey–Loeliger 2001; Minka
+   EP 2001 + α-divergences; Winn–Bishop VMP 2005; DBSP VLDB 2023; dotnet/infer (MIT — reference,
+   not dependency; our engine is src/Bayesian, already written).
+
+Start gate notes: prior-art search done (the 2026-06-13 capture); deps: none new (Semiring,
+Bayesian, AmplitudeEmu all in-tree).
