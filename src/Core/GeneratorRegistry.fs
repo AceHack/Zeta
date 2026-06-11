@@ -54,7 +54,21 @@ module GeneratorRegistry =
           register "audio.square" 1
           register "audio.triangle" 1
           register "audio.sine" 1
-          register "midi.track" 1 ]
+          register "midi.track" 1
+          register "view.flux-curve" 1
+          register "view.flux-gauge" 1
+          register "view.flux-timeline" 1
+          register "view.interrupt-grid" 1
+          register "ui.magnetic-ports" 1
+          // the pixel-shader family (Aaron: "everything shaderable, ZetaIds again — the existing-
+          // emulator enhancement techniques; shit tons here"): each a post-generator over colorAt.
+          register "shader.antialias" 1
+          register "shader.xbr" 1
+          register "shader.hq2x" 1
+          register "shader.crt-scanline" 1
+          register "shader.crt-phosphor" 1
+          register "shader.crt-curvature" 1
+          register "shader.ntsc" 1 ]
 
     /// Look a generator up by its ZetaId (the filetype's reverse direction: id -> what it is).
     let byId (zetaId: string) : Entry option =

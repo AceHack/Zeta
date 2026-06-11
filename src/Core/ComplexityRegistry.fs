@@ -60,7 +60,20 @@ module ComplexityRegistry =
               ("control.chip9-pad", "translate"), c "O(1)" "O(1)" Derived
               ("control.keyboard-wasd", "translate"), c "O(1)" "O(1)" Derived
               ("control.gamepad-standard", "translate"), c "O(1)" "O(1)" Derived
-              ("control.gamepad-meta", "metaOf"), c "O(1)" "O(1)" Derived ]
+              ("control.gamepad-meta", "metaOf"), c "O(1)" "O(1)" Derived
+              ("view.flux-curve", "admissionCurve"), c "O(rows·cols)" "O(rows·cols)" Derived
+              ("view.flux-gauge", "tankGauge"), c "O(width)" "O(width)" Derived
+              ("view.flux-timeline", "timeline"), c "O(ticks)" "O(ticks)" Derived
+              ("view.interrupt-grid", "interruptGrid"), c "O(handlers·ticks·arrivals)" "O(handlers·ticks)" Derived
+              ("ui.magnetic-ports", "force"), c "O(1)" "O(1)" Derived
+              ("ui.magnetic-ports", "dragTick"), c "O(ports)" "O(1)" Derived
+              ("shader.antialias", "TBD"), c "O(w·h)" "O(w·h)" Derived
+              ("shader.xbr", "TBD"), c "O(w·h)" "O(w·h)" Derived
+              ("shader.hq2x", "TBD"), c "O(w·h)" "O(w·h)" Derived
+              ("shader.crt-scanline", "TBD"), c "O(w·h)" "O(1) streaming" Derived
+              ("shader.crt-phosphor", "TBD"), c "O(w·h·|curve|)" "O(w·h)" Derived
+              ("shader.crt-curvature", "TBD"), c "O(w·h)" "O(w·h)" Derived
+              ("shader.ntsc", "TBD"), c "O(w·h)" "O(w)" Derived ]
 
     /// THE BUDGET LINT: every registered artifact (generators + layouts + indexes + schemes) whose
     /// costs are entirely UNSTATED. Empty list = the requirement holds across the shelf.

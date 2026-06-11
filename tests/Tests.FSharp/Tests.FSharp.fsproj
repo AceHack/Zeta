@@ -174,6 +174,8 @@
     <Compile Include="CorrespondencePong.Tests.fs" />
     <Compile Include="ChipAudio.Tests.fs" />
     <Compile Include="StrokeAnim.Tests.fs" />
+    <Compile Include="FluxView.Tests.fs" />
+    <Compile Include="MagneticPorts.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />

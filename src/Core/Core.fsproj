@@ -281,6 +281,8 @@
     <Compile Include="IndexFormat.fs" />
     <Compile Include="LayoutEngine.fs" />
     <Compile Include="ComplexityRegistry.fs" />
+    <Compile Include="FluxView.fs" />
+    <Compile Include="MagneticPorts.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
