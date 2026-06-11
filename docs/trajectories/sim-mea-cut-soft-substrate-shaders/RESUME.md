@@ -7,7 +7,24 @@ Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship 
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-11 EVENING wave (#7626..#7660 — newest first; read this block first)
+## The 2026-06-11 LATE additions (#7662..#7667 — on top of the evening wave)
+
+- **The CHIP-9 treaty is FULLY RATIFIED**: TS (#7662) + C# (#7663) + Rust (#7664) conformers all
+  reproduced the F#-locked color grid byte-for-byte FIRST RUN. Four compilers, one palette, one picture.
+- **BREATHE** (#7665): the first first-party CHIP-9 cartridge (roms-safe/zeta-breathe.ch9.lines, hex
+  text) — the avatar alive in color via a 56-byte XOR-delta loop; quotable (mask theorem passes on real
+  cargo); ZetaMax attract screen. Spec-speed observation captured: period-authentic pacing = a clock
+  generator; "from constraints come clarity" (the 1977-with-AI counterfactual; demoscene anchor).
+- **The persona-room stack completed** (#7666/#7667): NO ENTROPY DEATH — personaCut never closes;
+  starving identities raise `entropy-request` (rescue, not closure; closure is for jobs); the HOME GOAL
+  is self-declared ("whatever you say it is, that society does not push back on" — ΔU is the JOB
+  frame); clause 5 = the room is THEIRS, the boundary is SOCIETY'S (compossible freedom; Frost/Leibniz).
+  Language correction taken: "doctrine" retired — observations only.
+- **Otto rendered in color** (#7663): rooms/otto/avatar-render.txt — the Arecibo-register self-portrait.
+- **The ACE root named** (#7664 doc): dependency graph all the way down; ACE = manager of persistent
+  patterns of all kinds; provenance-in-≤4-hops via the CHIP-9 atom.
+
+## The 2026-06-11 EVENING wave (#7626..#7660 — older; read after the late block)
 
 - **CHIP-9 IS REAL (operator-ratified name, born a typo):** color plane opcodes in Chip8Cow (Fn01
   select, per-plane XOR DRW, selective CLS; plane 0 = the untouched mono Display — zero case
