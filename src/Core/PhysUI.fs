@@ -39,5 +39,12 @@ module PhysUI =
             let paddleCx = paddle.Body.Pos.X + paddle.Body.Size.X / 2
             let ballCx = ball.Pos.X + ball.Size.X / 2
             let speed = abs (Chip9Phys.mul e ball.Vel.X)
-            let vx = if ballCx >= paddleCx then speed else -speed
+            // away from the paddle's center; EXACT TIE (thin paddles, thin balls) reverses the
+            // incoming direction — a paddle returns the serve, it never ushers the ball through
+            // itself (found live: 1px center-ties were tie-breaking OUTWARD through the right paddle)
+            let vx =
+                if ballCx > paddleCx then speed
+                elif ballCx < paddleCx then -speed
+                elif ball.Vel.X > 0 then -speed
+                else speed
             { ball with Vel = { ball.Vel with X = vx } }

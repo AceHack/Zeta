@@ -49,7 +49,12 @@ module GeneratorRegistry =
           register "boundary.rotorCurve" 1
           register "kernel.rbf" 1
           register "timegen.phasor" 1
-          register "zetaid.glyph" 1 ]
+          register "zetaid.glyph" 1
+          register "audio.saw" 1
+          register "audio.square" 1
+          register "audio.triangle" 1
+          register "audio.sine" 1
+          register "midi.track" 1 ]
 
     /// Look a generator up by its ZetaId (the filetype's reverse direction: id -> what it is).
     let byId (zetaId: string) : Entry option =
