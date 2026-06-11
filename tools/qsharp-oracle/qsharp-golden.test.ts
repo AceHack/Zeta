@@ -17,6 +17,19 @@ function closeComplexTo(actual: Complex, expected: Complex, epsilon = tolerance)
   closeTo(actual.imag, expected.imag, epsilon);
 }
 
+function matrixRow(matrix: Matrix, row: number): Complex[] {
+  const rowValues = matrix[row];
+  expect(rowValues).toBeDefined();
+  return rowValues as Complex[];
+}
+
+function matrixAt(matrix: Matrix, row: number, col: number): Complex {
+  const rowValues = matrixRow(matrix, row);
+  const value = rowValues?.[col];
+  expect(value).toBeDefined();
+  return value as Complex;
+}
+
 function probabilitySum(probabilities: Probabilities) {
   return probabilities.Zero + probabilities.One;
 }
@@ -124,8 +137,12 @@ test("Q# Pauli products pin the hardware-side anticommutation signs", () => {
     const rhs = item.rhsMatrix as Matrix;
 
     for (let row = 0; row < lhs.length; row++) {
-      for (let col = 0; col < lhs[row].length; col++) {
-        closeComplexTo(lhs[row][col], { real: -rhs[row][col].real, imag: -rhs[row][col].imag });
+      const lhsRow = matrixRow(lhs, row);
+
+      for (let col = 0; col < lhsRow.length; col++) {
+        const lhsValue = matrixAt(lhs, row, col);
+        const rhsValue = matrixAt(rhs, row, col);
+        closeComplexTo(lhsValue, { real: -rhsValue.real, imag: -rhsValue.imag });
       }
     }
   }
