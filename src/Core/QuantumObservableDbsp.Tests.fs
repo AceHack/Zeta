@@ -14,8 +14,31 @@ let private repoRoot () =
 
 let private tolerance = 1e-5
 
-let private probFor (k: int) (ps: (int * float) list) =
-    ps |> List.filter (fun (key, _) -> key = k) |> List.sumBy snd
+let private interferenceRowsById (rows: ZSet<QuantumObservableRow>) =
+    rows
+    |> Seq.choose (fun kv ->
+        match kv.Key with
+        | QuantumObservableRow.InterferenceVisibility v -> Some(v.Id, v)
+        | _ -> None)
+    |> Map.ofSeq
+
+let private assertInterferenceNear
+    (actual: QuantumObservableTreaty.InterferenceVisibility)
+    (expected: QuantumObservableTreaty.InterferenceVisibility)
+    =
+    Assert.Equal(expected.Operation, actual.Operation)
+    Assert.Equal<float option>(expected.PhaseRadians, actual.PhaseRadians)
+    Assert.Equal<float option>(expected.Visibility, actual.Visibility)
+
+    Assert.True(
+        abs (actual.Probabilities.Zero - expected.Probabilities.Zero) <= tolerance,
+        sprintf "%s Zero expected %f, got %f" actual.Id expected.Probabilities.Zero actual.Probabilities.Zero
+    )
+
+    Assert.True(
+        abs (actual.Probabilities.One - expected.Probabilities.One) <= tolerance,
+        sprintf "%s One expected %f, got %f" actual.Id expected.Probabilities.One actual.Probabilities.One
+    )
 
 [<Fact>]
 let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`` () =
@@ -49,26 +72,15 @@ let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`
 
     Assert.Equal(6, ZSet.count interferenceRows)
 
-    // Check Mach-Zehnder probabilities
+    let wsetInterferenceRows = QuantumObservableDbsp.machZehnderZSet () |> interferenceRowsById
+    Assert.Equal(6, wsetInterferenceRows.Count)
+
+    // Check Mach-Zehnder probabilities against the source-owned WSet→observable-row bridge.
     for kv in interferenceRows do
         match kv.Key with
         | QuantumObservableRow.InterferenceVisibility v ->
-            let ws =
-                if v.Operation.EndsWith("Open", StringComparison.Ordinal) then
-                    MachZehnderWSet.openArm ()
-                else
-                    let phase =
-                        match v.PhaseRadians with
-                        | Some p -> p
-                        | None -> 0.0
-                    MachZehnderWSet.closed phase
-            
-            // Expected Zero probability from Mach-Zehnder WSet
-            let expectedZero = probFor 0 ws
-            let expectedOne = 1.0 - expectedZero
-
-            Assert.True(abs (v.Probabilities.Zero - expectedZero) <= tolerance, sprintf "%s Zero expected %f, got %f" v.Id expectedZero v.Probabilities.Zero)
-            Assert.True(abs (v.Probabilities.One - expectedOne) <= tolerance, sprintf "%s One expected %f, got %f" v.Id expectedOne v.Probabilities.One)
+            let expected = wsetInterferenceRows.[v.Id]
+            assertInterferenceNear v expected
         | _ -> Assert.Fail("Expected InterferenceVisibility row")
 
     // Query 2: Filter Bell Coincidence rows
@@ -144,9 +156,13 @@ let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`
     let piOver6Key = (Seq.head piOver6RowOpt).Key
     match piOver6Key with
     | QuantumObservableRow.InterferenceVisibility v ->
-        let ws = MachZehnderWSet.closed (System.Math.PI / 6.0)
-        let expectedZero = probFor 0 ws
-        let expectedOne = 1.0 - expectedZero
-        Assert.True(abs (v.Probabilities.Zero - expectedZero) <= tolerance)
-        Assert.True(abs (v.Probabilities.One - expectedOne) <= tolerance)
+        let expected =
+            QuantumObservableDbsp.machZehnderClosedRow
+                "mach-zehnder-closed-pi-over-6-phase"
+                "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase"
+                (System.Math.PI / 6.0)
+
+        match expected with
+        | QuantumObservableRow.InterferenceVisibility expectedVisibility -> assertInterferenceNear v expectedVisibility
+        | _ -> Assert.Fail("Expected InterferenceVisibility row")
     | _ -> Assert.Fail("Expected InterferenceVisibility row")

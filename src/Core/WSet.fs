@@ -3,9 +3,9 @@
 // "essential as mathematics, accidental as code; zero non-test consumers" — and that dissent
 // stays on record as ADVISORY: the human maintainer set the product direction instead — the
 // ring-generic type IS intended substrate for the quantum lane (B-1029), the inference port, and
-// future ring instances; consumers arrive ON the shelf, not before it exists. Both registers
-// kept honestly: the razor's bar (a load-bearing consumer) is the standing TODO this header
-// carries until one lands.
+// future ring instances; consumers arrive ON the shelf, not before it exists. Both registers are
+// kept honestly: the razor's bar is now met by the source-side `QuantumObservableDbsp` bridge, which
+// turns `MachZehnderWSet` output into observable rows and a `ZSet<QuantumObservableRow>`.
 namespace Zeta.Core
 
 open Zeta.Core.Abstractions

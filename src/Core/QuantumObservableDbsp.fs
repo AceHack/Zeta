@@ -82,3 +82,65 @@ type Batch =
 type Transcript =
     { [<JsonPropertyName("schema")>] Schema: string
       [<JsonPropertyName("batches")>] Batches: Batch list }
+
+[<RequireQualifiedAccess>]
+module QuantumObservableDbsp =
+
+    let private probabilityFor (key: int) (probabilities: (int * float) list) : float =
+        probabilities
+        |> List.filter (fun (candidate, _) -> candidate = key)
+        |> List.sumBy snd
+
+    let private probabilitiesFromWSet (probabilities: (int * float) list) : QuantumObservableTreaty.Probabilities =
+        { Zero = probabilityFor 0 probabilities
+          One = probabilityFor 1 probabilities }
+
+    let interferenceVisibilityFromWSet
+        (id: string)
+        (operation: string)
+        (phaseRadians: float option)
+        (visibility: float option)
+        (probabilities: (int * float) list)
+        : QuantumObservableRow =
+        QuantumObservableRow.InterferenceVisibility
+            { Id = id
+              Operation = operation
+              PhaseRadians = phaseRadians
+              Probabilities = probabilitiesFromWSet probabilities
+              Visibility = visibility }
+
+    let machZehnderOpenRow () : QuantumObservableRow =
+        MachZehnderWSet.openArm ()
+        |> interferenceVisibilityFromWSet "mach-zehnder-open" "Zeta.ReferenceOracle.ApplyMachZehnderOpen" None None
+
+    let machZehnderClosedRow (id: string) (operation: string) (phaseRadians: float) : QuantumObservableRow =
+        MachZehnderWSet.closed phaseRadians
+        |> interferenceVisibilityFromWSet id operation (Some phaseRadians) (Some 1.0)
+
+    let machZehnderRows () : QuantumObservableRow list =
+        [ machZehnderOpenRow ()
+          machZehnderClosedRow "mach-zehnder-closed-zero-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase" 0.0
+          machZehnderClosedRow
+              "mach-zehnder-closed-pi-over-3-phase"
+              "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase"
+              (Math.PI / 3.0)
+          machZehnderClosedRow
+              "mach-zehnder-closed-pi-over-2-phase"
+              "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase"
+              (Math.PI / 2.0)
+          machZehnderClosedRow
+              "mach-zehnder-closed-two-pi-over-3-phase"
+              "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase"
+              (2.0 * Math.PI / 3.0)
+          machZehnderClosedRow "mach-zehnder-closed-pi-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase" Math.PI ]
+
+    let delta (row: QuantumObservableRow) (weight: int64) : QuantumObservableDelta = { Row = row; Weight = weight }
+
+    let zsetOfDeltas (deltas: QuantumObservableDelta seq) : ZSet<QuantumObservableRow> =
+        deltas |> Seq.map (fun d -> d.Row, d.Weight) |> ZSet.ofSeq
+
+    let machZehnderDeltas () : QuantumObservableDelta list =
+        machZehnderRows () |> List.map (fun row -> delta row 1L)
+
+    let machZehnderZSet () : ZSet<QuantumObservableRow> =
+        machZehnderDeltas () |> zsetOfDeltas
