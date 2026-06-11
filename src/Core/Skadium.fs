@@ -43,3 +43,41 @@ module Skadium =
     /// The "opening" — in Punch-Out you punch when you've slipped to Center after a weave. Here: Center is
     /// the window. A pure predicate over (period, step); the bob-and-weave finds the opening deterministically.
     let isOpen (period: int) (step: int) : bool = lean period step = Center
+
+    // ── The door (Aaron 2026-06-10: "skatium next — give it its door") — Salon/Arcade/BowlingAlley style ──
+
+    /// A rink in the skatium — one named offering.
+    type Rink =
+        { Name: string
+          Does: string
+          Verb: string option
+          Module: string
+          Live: bool }
+
+    /// The skatium's rinks — the bob-and-weave fittings gathered under the door.
+    let rinks: Rink list =
+        [ { Name = "weave"
+            Does = "the bob-and-weave lean over (period, step) — Punch-Out!! 2×2 dual-observer weave/sonar"
+            Verb = Some "mea"
+            Module = "src/Core/Skadium.fs"
+            Live = true }
+          { Name = "opening"
+            Does = "the opening predicate — Center is the window; the weave finds the opening deterministically"
+            Verb = None
+            Module = "src/Core/Skadium.fs"
+            Live = true } ]
+
+    /// The skatium's name and what work happens here (the signage).
+    let name = "skatium"
+
+    let does =
+        "neon place-memory; the bob-and-weave — Punch-Out!! 2×2 dual-observer weave/sonar (find the opening)"
+
+    /// The rinks that are working slices today.
+    let liveRinks: Rink list = rinks |> List.filter (fun r -> r.Live)
+
+    /// Live entrance: `weave` — the bob-and-weave lean at (period, step). (Alias of `lean` for the door.)
+    let weave (period: int) (step: int) : Lean = lean period step
+
+    /// Live entrance: `openAt` — is the opening (Center) at (period, step). (Alias of `isOpen`.)
+    let openAt (period: int) (step: int) : bool = isOpen period step
