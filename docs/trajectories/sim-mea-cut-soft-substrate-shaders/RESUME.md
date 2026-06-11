@@ -2,12 +2,35 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-13 (the rings wave folded in — #7777..#7785; prior waves below).
+Last refreshed: 2026-06-13 late (the hexagonal wave folded in — #7790..#7796; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-13 RINGS wave (#7777..#7785 — newest; read FIRST)
+## The 2026-06-13 HEXAGONAL wave (#7790..#7796 — newest; read FIRST)
+
+- **The inference port SHIPS** (#7790, "IInferenceEngine lets do it"): the port in
+  Core.Abstractions on OUR standards (DST clause IN the contract; Converged=false is a value);
+  Adapter A = ZetaBayesianEngine (our FactorGraph/Ep — already written); Adapter B =
+  InferNetEngine (Minka & Winn's dotnet/infer, MIT, TEST-SIDE only); THEIRS TESTS OURS — 1e-6
+  agreement on round one.
+- **The plugin-convergence audit** (#7791) → **CORRECTED BY AARON** ("we have universal
+  interfaces too — this smells like that") → **universal/port.md** (#7793): the plug grammar
+  filed as the 39th universal shape — Name (ZetaId) / Adapters (hexagonal) / Ladder
+  (Live→Injected→Adapted→Mock) / Light (red-light glance) / Missing (findAdapter);
+  extension.md's Probe/Zero/Vectors recognized as the SENIOR half; the rule for system five.
+- **InferenceLadder** (#7794, the first customer): engine ZetaIds minted; ladder resolution;
+  THE HONEST MOCK (flat marginals, Converged=false BY CONSTRUCTION — a rehearsal that cannot
+  masquerade); Adapted rung deliberately uncarved until an instance exists.
+- **The richer case families** (#7796, B-1033 CLOSED) — the mechanism earned its name twice:
+  (1) the EP family caught OUR adapter binding the soft probit to the hard-truncation name
+  (Infer.NET exposed 0.564 vs 0.798 — both formulas correct, wrong binding; fixed with
+  Ep.truncatePositiveProject, half-normal verified); (2) THE REVERSAL: on the loopy equality
+  cycle ours truthfully reports Converged=false (Weiss & Freeman 2001 — means exact, variances
+  overconfident) AND lands the exact mean 2.0 where the senior oracle stops at 2.0025. Damping =
+  the one named upgrade. Suites: F# 3013 + Bayesian 90 + C# 295, zero skipped anywhere.
+
+## The 2026-06-13 RINGS wave (#7777..#7785 — older; read second)
 
 - **DRW CLIPS at edges** (#7777, B-1031 DONE — the reviewed treaty change): Kira + Viktor
   pre-change reviews (GO with conditions, all folded BEFORE code); wrap-origin/clip-pixels
