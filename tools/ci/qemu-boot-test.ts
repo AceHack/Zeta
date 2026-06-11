@@ -98,6 +98,12 @@ function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): stri
       "-serial", `file:${serialLogPath}`,
       "-display", "none",
       "-no-reboot",
+      // The virt machine adds a default virtio NIC whose boot ROM
+      // (efi-virtio.rom) is NOT shipped under --no-install-recommends
+      // (live failure 2026-06-11: instant exit 1). The boot FLOOR needs
+      // no network at all — drop the NIC entirely (also: no network in
+      // the boot proof = the membrane discipline at the firmware layer).
+      "-nic", "none",
     ];
     // KVM only accelerates same-arch (an aarch64 host, e.g. the
     // ubuntu-24.04-arm runners); otherwise TCG with -cpu max.
@@ -136,10 +142,23 @@ function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): stri
   return args;
 }
 
-async function waitForLoginPrompt(serialLogPath: string): Promise<BootResult> {
+async function waitForLoginPrompt(
+  serialLogPath: string,
+  abandoned?: () => boolean,
+): Promise<BootResult> {
   const deadline = Date.now() + TIMEOUT_SECONDS * 1000;
 
   while (Date.now() < deadline) {
+    if (abandoned?.()) {
+      const tail = existsSync(serialLogPath)
+        ? readFileSync(serialLogPath, "utf8").slice(-2000)
+        : "(serial log empty or never created)";
+      return {
+        exitCode: 1,
+        reason: "QEMU exited with an error before the login prompt appeared",
+        serialLogTail: tail,
+      };
+    }
     if (existsSync(serialLogPath)) {
       try {
         const content = readFileSync(serialLogPath, "utf8");
@@ -209,12 +228,18 @@ async function main(): Promise<never> {
   });
 
   let qemuExited = false;
+  let qemuExitCode: number | null = null;
   qemu.on("exit", (code) => {
     qemuExited = true;
+    qemuExitCode = code;
     console.log(`[qemu-boot-test] QEMU exited with code ${code}`);
   });
 
-  const result = await waitForLoginPrompt(serialLogPath);
+  const result = await waitForLoginPrompt(serialLogPath, () =>
+    // QEMU died with an error before the prompt: fail NOW, not at the
+    // 300s timeout (live failure 2026-06-11 burned 5min on a 50ms death).
+    qemuExited && qemuExitCode !== 0
+  );
 
   if (!qemuExited) {
     console.log(`[qemu-boot-test] Killing QEMU (PID ${qemu.pid})`);
