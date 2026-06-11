@@ -1,5 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { observe, isLate, combine, type Strategy } from "./watermark";
+import {
+  observe,
+  isLate,
+  combine,
+  type Strategy,
+  Watermark,
+  Timestamped,
+  WatermarkTracker
+} from "./watermark";
 import vectors from "./golden-vectors.json";
 
 // Replays the shared golden seed through the TS oracle; the C#/F#/Rust oracles replay the same file.
@@ -23,3 +31,42 @@ describe("Watermark golden vectors", () => {
     }
   });
 });
+
+describe("WatermarkTracker stateful verification", () => {
+  test("WatermarkTracker monotonic never decreases", () => {
+    const t = new WatermarkTracker({ type: "monotonic" });
+    expect(t.Observe(100)).toBe(100);
+    expect(t.Observe(50)).toBe(100); // no regression
+    expect(t.Observe(200)).toBe(200);
+    expect(t.Current).toBe(200);
+    expect(t.MaxObserved).toBe(200);
+  });
+
+  test("WatermarkTracker bounded-lateness subtracts allowance", () => {
+    const t = new WatermarkTracker({ type: "bounded", maxLatenessMs: 10 });
+    expect(t.Observe(100)).toBe(90);
+    expect(t.Current).toBe(90);
+    expect(t.MaxObserved).toBe(100);
+  });
+
+  test("WatermarkStrategy.Periodic subtracts lateness", () => {
+    const t = new WatermarkTracker({ type: "periodic", intervalMs: 1000, latenessMs: 50 });
+    expect(t.Observe(1000)).toBe(950);
+    expect(t.Current).toBe(950);
+    expect(t.MaxObserved).toBe(1000);
+  });
+
+  test("Watermark structure holds fields", () => {
+    const wm = new Watermark(123, 2);
+    expect(wm.EventTime).toBe(123);
+    expect(wm.Source).toBe(2);
+    expect(Watermark.MinValue.EventTime).toBe(-9223372036854775808);
+  });
+
+  test("Timestamped holds value and eventTime", () => {
+    const ts = new Timestamped("test-val", 456);
+    expect(ts.Value).toBe("test-val");
+    expect(ts.EventTime).toBe(456);
+  });
+});
+

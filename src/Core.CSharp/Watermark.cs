@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Zeta.Core.CSharp;
@@ -10,6 +11,108 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public static class Watermark
 {
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    internal readonly struct Struct
+    {
+        public long EventTime { get; }
+        public int Source { get; }
+
+        public Struct(long eventTime, int source)
+        {
+            EventTime = eventTime;
+            Source = source;
+        }
+
+        public static readonly Struct MinValue = new Struct(long.MinValue, 0);
+        public static readonly Struct MaxValue = new Struct(long.MaxValue, 0);
+    }
+
+    internal readonly struct Timestamped<T>
+    {
+        public T Value { get; }
+        public long EventTime { get; }
+
+        public Timestamped(T value, long eventTime)
+        {
+            Value = value;
+            EventTime = eventTime;
+        }
+    }
+
+    internal enum StrategyKind
+    {
+        Monotonic,
+        BoundedLateness,
+        Periodic
+    }
+
+    internal sealed class Strategy
+    {
+        public StrategyKind Kind { get; }
+        public long MaxLatenessMs { get; }
+        public long IntervalMs { get; }
+
+        private Strategy(StrategyKind kind, long maxLatenessMs, long intervalMs)
+        {
+            Kind = kind;
+            MaxLatenessMs = maxLatenessMs;
+            IntervalMs = intervalMs;
+        }
+
+        public static Strategy Monotonic() => new Strategy(StrategyKind.Monotonic, 0, 0);
+        public static Strategy BoundedLateness(long maxLatenessMs) => new Strategy(StrategyKind.BoundedLateness, maxLatenessMs, 0);
+        public static Strategy Periodic(long intervalMs, long latenessMs) => new Strategy(StrategyKind.Periodic, latenessMs, intervalMs);
+    }
+
+    internal sealed class Tracker
+    {
+        private long _maxSeen = long.MinValue;
+        private long _lastEmitted = long.MinValue;
+
+        public Strategy Strategy { get; }
+
+        public Tracker(Strategy strategy)
+        {
+            Strategy = strategy;
+        }
+
+        private long CandidateFor(long observedMax)
+        {
+            switch (Strategy.Kind)
+            {
+                case StrategyKind.Monotonic:
+                    return observedMax;
+                case StrategyKind.BoundedLateness:
+                    if (observedMax <= long.MinValue + Strategy.MaxLatenessMs)
+                        return long.MinValue;
+                    return observedMax - Strategy.MaxLatenessMs;
+                case StrategyKind.Periodic:
+                    if (observedMax <= long.MinValue + Strategy.MaxLatenessMs)
+                        return long.MinValue;
+                    return observedMax - Strategy.MaxLatenessMs;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(observedMax), "Invalid strategy kind");
+            }
+        }
+
+        public long Observe(long eventTime)
+        {
+            if (eventTime > _maxSeen)
+            {
+                _maxSeen = eventTime;
+            }
+            var candidate = CandidateFor(_maxSeen);
+            if (candidate > _lastEmitted)
+            {
+                _lastEmitted = candidate;
+            }
+            return _lastEmitted;
+        }
+
+        public long Current => _lastEmitted;
+        public long MaxObserved => _maxSeen;
+    }
+
     /// <summary>
     /// The <c>WatermarkTracker</c> fold: the emitted watermark after each observed event time.
     /// maxSeen = running max; candidate = maxSeen (monotonic) or maxSeen - lateness (bounded; the
@@ -29,7 +132,7 @@ public static class Watermark
 
             var candidate = string.Equals(strategy, "monotonic", System.StringComparison.Ordinal)
                 ? maxSeen
-                : (maxSeen == long.MinValue ? long.MinValue : maxSeen - lateness);
+                : (maxSeen <= long.MinValue + lateness ? long.MinValue : maxSeen - lateness);
             if (candidate > lastEmitted)
             {
                 lastEmitted = candidate;

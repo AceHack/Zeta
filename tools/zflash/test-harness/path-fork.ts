@@ -510,7 +510,7 @@ export function executePathForkRuntimePlan(
       };
     }
 
-    const restoreStep = `restore-${fork.forkId}` as const;
+    const restoreStep: PathForkExecutionStep = `restore-${fork.forkId}`;
     let restoreExecution: QemuCommandExecution;
     try {
       restoreExecution = executor.runCommand(restoreStep, fork.restoreStartingState);
@@ -552,7 +552,7 @@ export function executePathForkRuntimePlan(
       };
     }
 
-    const bootStep = `boot-${fork.forkId}` as const;
+    const bootStep: PathForkExecutionStep = `boot-${fork.forkId}`;
     let bootExecution: QemuCommandExecution;
     try {
       if (executor.runCommandUntilSerialMarkers === undefined) {
