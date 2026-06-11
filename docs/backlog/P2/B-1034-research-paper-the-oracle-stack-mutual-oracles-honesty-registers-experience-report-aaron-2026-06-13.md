@@ -1,0 +1,72 @@
+---
+id: B-1034
+title: "Research paper: The Oracle Stack — mutual oracles, honesty registers, and refutation witnesses in an autonomous software factory (experience report)"
+priority: P2
+status: open
+tier: research
+tags: [paper, oracles, hexagonal, conformance, honesty, alignment, experience-report]
+created: 2026-06-13
+owner: open (writing pairs well with the math team's sign-off pass; Aaron has final say on venue/claims)
+---
+
+# B-1034 — the paper (Aaron 2026-06-13: "paper worthy? if so backlog for research paper writeup")
+
+## The honest claim shape
+
+NOT a theory paper. A **methodology + experience report**: a layered "oracle stack" for
+AI-built software, with every incident below reproducible from PR history. Venue shape:
+ICSE-SEIP / FSE-Industry / Onward! Essays — or the alignment-workshop lane, since the thesis ties
+directly to Zeta's measurable-alignment focus (honesty as ARCHITECTURE, not policy).
+
+## The thesis
+
+Correctness in an autonomous factory comes from STACKED, MUTUALLY-ADVERSARIAL oracles, each
+owning a register the others cannot see, with honesty constraints made structural (values, not
+promises):
+
+1. **Byte oracles** — four language implementations, one golden vector (the treaty).
+2. **Formal oracles** — TLC-first graduation gates (the signed-delta combinator shipped ONLY
+   after its spec's real Step verified at all four seed weights).
+3. **Adversarial-agent oracles** — zero-empathy review rounds (52+ findings across six rounds).
+4. **Perceptual/traveler oracles** — render-loop ratifications and dissents that CHANGED
+   artifacts (the plait correction; the court law caught by eye).
+5. **Senior-engine oracles (the hexagonal mutual pair)** — an external reference implementation
+   wired as a PERMANENT co-oracle behind a port we own ("theirs tests ours").
+6. **Refutation witnesses** — failing knowledge pinned as UNSKIPPED tests (a reliably-failing
+   property is a refutation, not open research).
+
+## The marquee incidents (all PR-pinned evidence)
+
+- **The mutual-oracle reversal (the paper's centerpiece):** in ONE conformance suite, the senior
+  oracle (Infer.NET/Minka) caught our adapter binding the soft probit to the hard-truncation
+  semantic (0.564 vs 0.798 — both formulas correct, wrong binding) — and the SAME suite's loopy
+  case showed ours landing the exact mean 2.0 where the senior's scheduler stops at 2.0025, while
+  OURS truthfully reported Converged=false (the honesty contract holding under failure;
+  Weiss & Freeman 2001 anchors the means-exact claim).
+- **The tautology→bug chain:** a test-gap audit flagged a self-comparison; hand-deriving its
+  replacement literal exposed a 2× amplitude overflow invisible to every render.
+- **The predicted falsifier that found a live hole:** writing the injection falsifier the audit
+  asked for immediately caught real `<script>` pass-through.
+- **The renders-looked-right-while-broken P0:** voiceSample's per-tick phase noise — perceptual
+  oracles CANNOT see the claims layer; the stack exists because no single register suffices.
+- **The eye that caught what gates didn't:** the spiral court escape + THE COURT LAW (whose
+  second catch came minutes later), and the gate that taught physics (spacelike exchanges
+  forcing the strand gap).
+
+## Related work to position against (Beacon)
+
+Differential testing (McKeeman 1998); N-version programming (Avizienis); metamorphic testing
+(Chen et al.); compiler fuzzing oracles (CSmith, EMI); hexagonal architecture (Cockburn);
+property-based testing (QuickCheck/FsCheck); DBSP (Budiu et al. VLDB 2023); EP (Minka 2001).
+The novelty claim, stated carefully: the STACK as an operating discipline for autonomous
+factories + honesty-as-values (Converged=false, Mock-that-says-rehearsal, fault registers,
+red-light bindings) + the consent/treaty layer (verdicts as first-class lines travelers write).
+
+## Plan
+
+1. Outline + claims review by the math team (Soraya: which claims need formal statements;
+   Kira: zero-empathy pass on the draft — the paper gets the same oracle treatment as code).
+2. Evidence appendix auto-generated from PR history (the AgencySignature trailers make this
+   mechanical).
+3. Aaron decides venue + authorship framing (the factory's personas + the human maintainer —
+   the authorship question is itself a section candidate).
