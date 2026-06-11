@@ -17,6 +17,7 @@
 
 import { describe, expect, test } from "bun:test";
 import {
+  composeAuthorizedKeysFileContent,
   executeFileBackedZflashImageExecutionPlan,
   generateRandomNodeName,
   isValidHostname,
@@ -256,7 +257,44 @@ describe("generateRandomNodeName", () => {
   });
 });
 
+describe("composeAuthorizedKeysFileContent", () => {
+  test("joins multiple valid OpenSSH pubkey lines", () => {
+    const operator = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIoperator operator@example";
+    const testInfra = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAItestinfra zeta-test-infra";
+    const result = composeAuthorizedKeysFileContent([operator, testInfra]);
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value).toBe(`${operator}\n${testInfra}\n`);
+  });
+
+  test("rejects empty input", () => {
+    const result = composeAuthorizedKeysFileContent([]);
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected failure");
+    expect(result.error).toContain("at least one");
+  });
+});
+
 describe("planFileBackedZflashImage", () => {
+  test("prefers authorizedKeysContent over pubkeyPath for ESP write", () => {
+    const result = planFileBackedZflashImage({
+      authorizedKeysContent: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIoperator operator@example\n",
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.espWrites).toEqual([
+      {
+        content: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIoperator operator@example\n",
+        destination: "/zeta-authorized-keys.pub",
+      },
+    ]);
+  });
+
   test("plans a qemu-img raw copy plus ESP writes for QEMU boot media", () => {
     const result = planFileBackedZflashImage({
       credentialBlobPath: "artifacts/zeta-creds.enc",

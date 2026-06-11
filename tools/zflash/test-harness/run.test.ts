@@ -97,6 +97,7 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(parsed.summary.scaffolded).toBe(0);
     expect(scenarioResult.status).toBe("failed");
     expect(scenarioResult.message).toContain("fails closed");
+    expect(scenarioResult.message).toContain("ZFLASH_QEMU_PATH_FORK_EXECUTE=1");
     expect(scenarioResult.message).toContain("zflash-prepared boot image");
     expect(scenarioResult.pathForkPlan.forks).toHaveLength(2);
 
@@ -200,6 +201,38 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(result.qemuRetentionPlan?.diskPath).toBe(join(runDirectory, "zeta.iso.scenario3.qcow2"));
     expect(result.qemuRetentionPlan?.serialLogPath).toBe(join(runDirectory, "zeta.iso.scenario3.serial.log"));
     expect(result.qemuRetentionPlan?.diskPath.startsWith(resolve("/nix/store/read-only"))).toBe(false);
+  });
+
+  test("path-fork runtime executes through an injected QEMU executor when explicitly enabled", () => {
+    const result = runPathForkRuntime("/tmp/zeta.iso", {
+      execute: true,
+      bootImagePath: "/tmp/zflash-boot.img",
+      executor: {
+        runCommand: successfulExecution,
+        runCommandUntilSerialMarkers: successfulExecution,
+        readSerialOutput: (path) => {
+          if (path.includes("migrate.serial.log")) {
+            return [
+              "[iter-5.1]",
+              "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
+              "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
+            ].join("\n");
+          }
+          return [
+            "[iter-5.1]",
+            "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal",
+          ].join("\n");
+        },
+      },
+    });
+
+    expect(result.status).toBe("passed");
+    expect(result.pathForkExecution).toBeDefined();
+    if (result.pathForkExecution && "ok" in result.pathForkExecution) {
+      expect(result.pathForkExecution.ok.forkExecutions).toHaveLength(2);
+    } else {
+      throw new Error("expected path-fork execution success");
+    }
   });
 
   test("retention runtime stays failed when QEMU output does not prove retention", () => {

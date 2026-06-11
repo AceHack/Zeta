@@ -72,7 +72,11 @@ import {
   composeBundle,
   parseArgs as parsePersistArgs,
 } from "../../tools/installer/zeta-creds-persist";
-import { parseUuidFromDiskutilInfo } from "./zflash-lib";
+import {
+  composeAuthorizedKeysFileContent,
+  parseUuidFromDiskutilInfo,
+  ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
+} from "./zflash-lib";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -693,12 +697,38 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   process.stdout.write(`B-0852: wrote encrypted credential blob to ${target} (USB UUID ${usbUuid})\n`);
 }
 
+function resolveTestInfraPubkeyPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url));
+  return resolve(scriptDir, "../../", ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH);
+}
+
+function readAuthorizedKeysContent(pubkeyPath: string, testMode: boolean): string {
+  const lines = [readFileSync(pubkeyPath, "utf8")];
+  if (testMode) {
+    const testInfraPath = resolveTestInfraPubkeyPath();
+    if (!existsSync(testInfraPath)) {
+      bail(3, `--test inject failed: test-infra pubkey not found at ${testInfraPath}`);
+    }
+    lines.push(readFileSync(testInfraPath, "utf8"));
+    process.stdout.write(`test-mode: ALSO injecting ${testInfraPath} into authorized_keys union\n`);
+  }
+  const composed = composeAuthorizedKeysFileContent(lines);
+  if (!composed.ok) {
+    bail(3, `iter-4.2 inject failed: ${composed.error}`);
+  }
+  return composed.value;
+}
+
 async function injectPubkeyToUsb(
   pubkeyPath: string,
   hostOverride: string | null,
   credBake: CredBakeOptions,
+  testMode: boolean,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
+  if (testMode) {
+    process.stdout.write("test-mode: authorized_keys will be operator pubkey ∪ zeta-test-infra (QEMU-only)\n");
+  }
   if (hostOverride !== null) {
     process.stdout.write(`iter-5.2: ALSO injecting hostname '${hostOverride}' into ESP ...\n`);
   }
@@ -750,20 +780,7 @@ async function injectPubkeyToUsb(
   const mountPoint = mountResult.mountPoint;
   process.stdout.write(`iter-4.2: mounted at ${mountPoint} (via ${mountResult.method})\n`);
 
-  // Read pubkey content
-  const pubkey = readFileSync(pubkeyPath, "utf8").trim();
-  const firstLine = pubkey.split("\n")[0] ?? "";
-  // Per #5083 Copilot P1: broaden to all OpenSSH pubkey type tokens
-  // per sshd(8) AuthorizedKeysFile. Validates structurally: type token
-  // (one of ssh-*, ecdsa-sha2-*, sk-ssh-*, sk-ecdsa-sha2-*) + space +
-  // base64-shaped material (allow any non-whitespace; the actual base64
-  // decode happens on the cluster side).
-  const VALID_PUBKEY = /^(ssh-(ed25519|rsa|dss)|ecdsa-sha2-\S+|sk-ssh-ed25519@\S+|sk-ecdsa-sha2-\S+)\s+\S+/;
-  if (!VALID_PUBKEY.test(firstLine)) {
-    unmountEsp(espPart, mountResult);
-    dumpDiagnostics(`${pubkeyPath} first line is not a recognized OpenSSH pubkey (expected ssh-ed25519 / ssh-rsa / ssh-dss / ecdsa-sha2-* / sk-ssh-ed25519@* / sk-ecdsa-sha2-*)`);
-    bail(3, `iter-4.2 inject failed: ${pubkeyPath} is not a recognized SSH pubkey format.`);
-  }
+  const authorizedKeysContent = readAuthorizedKeysContent(pubkeyPath, testMode);
 
   // Write via sudo tee (stdin avoids shell-quoting hazards). sudo is
   // required for the mount_msdos path (mount is root-owned); harmless
@@ -771,7 +788,7 @@ async function injectPubkeyToUsb(
   const target = join(mountPoint, "zeta-authorized-keys.pub");
   try {
     execFileSync("sudo", ["tee", target], {
-      input: pubkey + "\n",
+      input: authorizedKeysContent,
       stdio: ["pipe", "ignore", "inherit"],
     });
   } catch (e) {
@@ -859,6 +876,7 @@ async function main() {
     "--skip-iso-pull",
     "--host",
     "--agent",
+    "--test",
     "--bake-cred",
     "--bake-passphrase-file",
     "--bake-passphrase-env",
@@ -873,6 +891,7 @@ async function main() {
   let skipIsoPull = false;
   let hostOverride: string | null = null;
   let agentMode = false;
+  let testMode = false;
   const bakeCredArgs: string[] = [];
   let bakePassphraseFile: string | null = null;
   let bakePassphraseEnv: string | null = null;
@@ -911,6 +930,10 @@ async function main() {
     }
     if (a === "--agent") {
       agentMode = true;
+      continue;
+    }
+    if (a === "--test") {
+      testMode = true;
       continue;
     }
     if (a === "--host") {
@@ -1036,6 +1059,9 @@ async function main() {
         "                            operator's Mac (cannot be agent-bypassed). Use when running\n" +
         "                            zflash through a pipe ('| tail', '2>&1 >log', etc.) which\n" +
         "                            breaks the default readline.question stdin-from-terminal flow.\n" +
+        "  --test                    QEMU/CI-only: inject zeta-test-infra.pub alongside the operator\n" +
+        "                            pubkey into /zeta-authorized-keys.pub. Production USB/ISO builds\n" +
+        "                            must omit this flag so prod never trusts the ephemeral test key.\n" +
         "  --bake-cred <id=value>    B-0852 write encrypted /zeta-creds.enc to USB ESP\n" +
         "                            after flashing; repeatable. Values use the existing\n" +
         "                            zeta-creds-persist credential handlers.\n" +
@@ -1211,7 +1237,7 @@ async function main() {
   }
 
   if (willInject) {
-    await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake);
+    await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
   } else {
     process.stdout.write("\n(iter-4.2 inject skipped per --no-inject or missing pubkey)\n");
     if (hostOverride !== null) {

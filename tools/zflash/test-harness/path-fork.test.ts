@@ -3,9 +3,11 @@ import {
   FRESH_CLUSTER_SERIAL_MARKERS,
   MIGRATE_EXISTING_CREDS_SERIAL_MARKERS,
   assertPathForkSerialMarkers,
+  executePathForkRuntimePlan,
   planPathForkRuntime,
   type PathForkRuntimeForkPlan,
 } from "./path-fork";
+import type { QemuCommand, QemuCommandExecution } from "./qemu-state";
 
 const ISO_PATH = "fixtures/zeta.iso";
 const BOOT_IMAGE_PATH = "fixtures/zflash-boot.img";
@@ -93,6 +95,48 @@ describe("path-fork serial marker assertions", () => {
       expect(result.error.forkId).toBe("migrate-existing-creds");
       expect(result.error.presentMarkers).toEqual(FRESH_CLUSTER_SERIAL_MARKERS);
     }
+  });
+
+  test("executePathForkRuntimePlan runs both forks through an injected executor", () => {
+    const planned = planPathForkRuntime({
+      isoPath: ISO_PATH,
+      bootImagePath: BOOT_IMAGE_PATH,
+      startingDiskPath: STARTING_DISK_PATH,
+      migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
+      freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
+    });
+    if ("error" in planned) {
+      throw new Error(planned.error.reason);
+    }
+
+    const serialOutputs: Record<string, string> = {
+      [MIGRATE_SERIAL_LOG_PATH]: planned.ok.forks
+        .find((fork) => fork.forkId === "migrate-existing-creds")!
+        .requiredSerialMarkers.join("\n"),
+      [FRESH_SERIAL_LOG_PATH]: planned.ok.forks
+        .find((fork) => fork.forkId === "fresh-cluster")!
+        .requiredSerialMarkers.join("\n"),
+    };
+
+    const successfulExecution = (step: string, command: QemuCommand): QemuCommandExecution => ({
+      step,
+      command,
+      exitCode: 0,
+      stdout: "",
+      stderr: "",
+    });
+
+    const executed = executePathForkRuntimePlan(planned.ok, {
+      runCommand: successfulExecution,
+      runCommandUntilSerialMarkers: successfulExecution,
+      readSerialOutput: (path) => serialOutputs[path] ?? "",
+    });
+
+    expect("ok" in executed).toBe(true);
+    if (!("ok" in executed)) {
+      throw new Error(JSON.stringify(executed.error));
+    }
+    expect(executed.ok.forkExecutions).toHaveLength(2);
   });
 
   test("rejects forbidden migrate markers in the fresh fork", () => {

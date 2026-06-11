@@ -1,12 +1,17 @@
 #!/usr/bin/env bun
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   createNodeFileBackedZflashImageExecutor,
   createNodeFileBackedZflashInlineStagingDirectory,
 } from "./zflash-file-backed-runtime";
 import {
+  composeAuthorizedKeysFileContent,
   executeFileBackedZflashImageExecutionPlan,
   planFileBackedZflashImage,
   planFileBackedZflashImageExecution,
+  ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
 } from "./zflash-lib";
 import type {
   FileBackedZflashImageExecution,
@@ -20,6 +25,7 @@ export interface FileBackedZflashCliOptions {
   readonly outputImagePath: string;
   readonly espOffsetBytes: number;
   readonly pubkeyPath?: string;
+  readonly testMode?: boolean;
   readonly hostname?: string;
   readonly credentialBlobPath?: string;
   readonly inlineStagingDirectory?: string;
@@ -47,9 +53,43 @@ export type FileBackedZflashCliRunResult =
 const USAGE =
   "Usage: bun full-ai-cluster/tools/zflash-file-backed.ts --iso <installer.iso> --output <raw.img> --esp-offset-bytes <bytes> [ESP writes]\n" +
   "  --ssh-key <path>             write /zeta-authorized-keys.pub from a public key file\n" +
+  "  --test                       QEMU/CI-only: union zeta-test-infra.pub with --ssh-key content\n" +
   "  --host <name>                write /zeta-hostname.txt with an RFC1123 hostname\n" +
   "  --credential-blob <path>     write /zeta-creds.enc from an encrypted credential blob\n" +
   "  --inline-staging-dir <path>  optional staging root for inline content files\n";
+
+function resolveTestInfraPubkeyPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url));
+  return resolve(scriptDir, "../../", ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH);
+}
+
+function resolveAuthorizedKeysContent(
+  pubkeyPath: string | undefined,
+  testMode: boolean,
+): string | { readonly error: string } {
+  if (pubkeyPath === undefined && !testMode) {
+    return { error: "at least one of --ssh-key or --test is required for /zeta-authorized-keys.pub" };
+  }
+  const lines: string[] = [];
+  if (pubkeyPath !== undefined) {
+    if (!existsSync(pubkeyPath)) {
+      return { error: `ssh pubkey not found: ${pubkeyPath}` };
+    }
+    lines.push(readFileSync(pubkeyPath, "utf8"));
+  }
+  if (testMode) {
+    const testInfraPath = resolveTestInfraPubkeyPath();
+    if (!existsSync(testInfraPath)) {
+      return { error: `test-infra pubkey not found: ${testInfraPath}` };
+    }
+    lines.push(readFileSync(testInfraPath, "utf8"));
+  }
+  const composed = composeAuthorizedKeysFileContent(lines);
+  if (!composed.ok) {
+    return { error: composed.error };
+  }
+  return composed.value;
+}
 
 function requireValue(args: readonly string[], index: number, flag: string): string | { readonly error: string } {
   const value = args[index + 1];
@@ -67,10 +107,15 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let hostname: string | undefined;
   let credentialBlobPath: string | undefined;
   let inlineStagingDirectory: string | undefined;
+  let testMode = false;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
     if (arg === "-h" || arg === "--help") return { kind: "help" };
+    if (arg === "--test") {
+      testMode = true;
+      continue;
+    }
 
     if (arg === "--iso" || arg === "--output" || arg === "--esp-offset-bytes" || arg === "--ssh-key" || arg === "--host" || arg === "--credential-blob" || arg === "--inline-staging-dir") {
       const value = requireValue(args, index, arg);
@@ -105,6 +150,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       outputImagePath,
       espOffsetBytes,
       ...(pubkeyPath === undefined ? {} : { pubkeyPath }),
+      ...(testMode ? { testMode: true } : {}),
       ...(hostname === undefined ? {} : { hostname }),
       ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
       ...(inlineStagingDirectory === undefined ? {} : { inlineStagingDirectory }),
@@ -131,11 +177,23 @@ export function runFileBackedZflashCli(
   options: FileBackedZflashCliOptions,
   deps: FileBackedZflashCliRunDeps = {},
 ): FileBackedZflashCliRunResult {
+  let authorizedKeysContent: string | undefined;
+  if (options.testMode === true) {
+    const authorizedKeys = resolveAuthorizedKeysContent(options.pubkeyPath, true);
+    if (typeof authorizedKeys !== "string") {
+      return { ok: false, error: authorizedKeys.error };
+    }
+    authorizedKeysContent = authorizedKeys;
+  }
+
   const planInput: FileBackedZflashImagePlanInput = {
     isoPath: options.isoPath,
     outputImagePath: options.outputImagePath,
     espOffsetBytes: options.espOffsetBytes,
-    ...(options.pubkeyPath === undefined ? {} : { pubkeyPath: options.pubkeyPath }),
+    ...(authorizedKeysContent === undefined ? {} : { authorizedKeysContent }),
+    ...(authorizedKeysContent === undefined && options.pubkeyPath !== undefined
+      ? { pubkeyPath: options.pubkeyPath }
+      : {}),
     ...(options.hostname === undefined ? {} : { hostname: options.hostname }),
     ...(options.credentialBlobPath === undefined ? {} : { credentialBlobPath: options.credentialBlobPath }),
   };

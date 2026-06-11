@@ -24,6 +24,7 @@ on:
       - 'tools/ci/audit-installer-iso-content.ts'
       - 'full-ai-cluster/tools/zflash.ts'
       - 'full-ai-cluster/tools/zflash-lib.ts'
+      - 'full-ai-cluster/tools/zflash-file-backed.ts'
       - 'docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md'
       - '.github/workflows/zflash-qemu-test.yml'
       - 'package.json'
@@ -37,6 +38,7 @@ on:
       - 'tools/ci/audit-installer-iso-content.ts'
       - 'full-ai-cluster/tools/zflash.ts'
       - 'full-ai-cluster/tools/zflash-lib.ts'
+      - 'full-ai-cluster/tools/zflash-file-backed.ts'
       - 'docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md'
       - '.github/workflows/zflash-qemu-test.yml'
       - 'package.json'
@@ -87,5 +89,21 @@ jobs:
           fi
           if ! grep -Fq "fails closed" retention-runtime.json; then
             echo "::error::retention runtime output did not document the fail-closed opt-in guard"
+            exit 1
+          fi
+
+      - name: Validate path-fork runtime fails closed by default
+        run: |
+          set +e
+          bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch zflash-qemu-path-fork-placeholder.iso > path-fork-runtime.json
+          exit_code="$?"
+          set -e
+          cat path-fork-runtime.json
+          if [ "$exit_code" -ne 1 ]; then
+            echo "::error::expected path-fork runtime to exit 1 without ZFLASH_QEMU_PATH_FORK_EXECUTE=1; got $exit_code"
+            exit 1
+          fi
+          if ! grep -Fq "fails closed" path-fork-runtime.json; then
+            echo "::error::path-fork runtime output did not document the fail-closed opt-in guard"
             exit 1
           fi

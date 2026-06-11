@@ -17,7 +17,13 @@ import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
   buildQemuSystemBootArgs,
+  createSpawnSyncQcow2RetentionExecutor,
+  planQcow2SnapshotRetention,
+  type Qcow2RetentionExecutionFeedback,
+  type Qcow2RetentionExecutor,
+  type Qcow2SnapshotRetentionPlan,
   type QemuCommand,
+  type QemuCommandExecution,
   type QemuSerialStopCondition,
 } from "./qemu-state";
 
@@ -314,3 +320,314 @@ export function assertPathForkSerialMarkers(
     },
   };
 }
+
+export type PathForkExecutionStep =
+  | "bootstrap-create-disk-image"
+  | "bootstrap-initial-install-from-iso-with-disk"
+  | "bootstrap-create-baseline-snapshot"
+  | `restore-${PathForkId}`
+  | `boot-${PathForkId}`;
+
+export interface PathForkForkExecution {
+  readonly forkId: PathForkId;
+  readonly commandExecutions: readonly QemuCommandExecution[];
+  readonly serialAssertion: PathForkSerialMarkerAssertion;
+}
+
+export type PathForkExecutionFeedback =
+  | {
+      readonly kind: "missing-runtime-requirements";
+      readonly forkId: PathForkId;
+      readonly requirements: readonly string[];
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    }
+  | {
+      readonly kind: "command-failed";
+      readonly step: PathForkExecutionStep;
+      readonly forkId?: PathForkId;
+      readonly command: QemuCommand;
+      readonly exitCode: number | null;
+      readonly stderr: string;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    }
+  | {
+      readonly kind: "executor-threw";
+      readonly step: PathForkExecutionStep;
+      readonly forkId?: PathForkId;
+      readonly reason: string;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    }
+  | {
+      readonly kind: "serial-marker-failed";
+      readonly forkId: PathForkId;
+      readonly assertion: PathForkSerialMarkerFeedback;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    }
+  | {
+      readonly kind: "bootstrap-failed";
+      readonly bootstrapError: Qcow2RetentionExecutionFeedback;
+      readonly commandExecutions: readonly QemuCommandExecution[];
+    };
+
+export type PathForkExecutionResult =
+  | {
+      readonly ok: {
+        readonly forkExecutions: readonly PathForkForkExecution[];
+        readonly commandExecutions: readonly QemuCommandExecution[];
+      };
+    }
+  | { readonly error: PathForkExecutionFeedback };
+
+export interface PathForkBaselineBootstrapInput {
+  readonly isoPath: string;
+  readonly startingDiskPath: string;
+  readonly baselineSerialLogPath: string;
+  readonly snapshotName?: string;
+  readonly diskSizeGB?: number;
+  readonly memoryMB?: number;
+  readonly cpuCount?: number;
+  readonly kvmAvailable?: boolean;
+}
+
+export function planPathForkBaselineBootstrap(
+  input: PathForkBaselineBootstrapInput,
+): Qcow2SnapshotRetentionPlan | { readonly error: string } {
+  const planned = planQcow2SnapshotRetention({
+    isoPath: input.isoPath,
+    diskPath: input.startingDiskPath,
+    serialLogPath: input.baselineSerialLogPath,
+    snapshotName: input.snapshotName ?? DEFAULT_SNAPSHOT_NAME,
+    ...(input.diskSizeGB === undefined ? {} : { diskSizeGB: input.diskSizeGB }),
+    ...(input.memoryMB === undefined ? {} : { memoryMB: input.memoryMB }),
+    ...(input.cpuCount === undefined ? {} : { cpuCount: input.cpuCount }),
+    ...(input.kvmAvailable === undefined ? {} : { kvmAvailable: input.kvmAvailable }),
+  });
+  if ("error" in planned) {
+    return { error: `${planned.error.field}: ${planned.error.reason}` };
+  }
+  return planned.ok;
+}
+
+function bootstrapExecutionSteps(
+  bootstrapPlan: Qcow2SnapshotRetentionPlan,
+): readonly {
+  readonly step: PathForkExecutionStep;
+  readonly command: QemuCommand;
+  readonly stopCondition?: QemuSerialStopCondition;
+}[] {
+  return [
+    { step: "bootstrap-create-disk-image", command: bootstrapPlan.createDiskImage },
+    {
+      step: "bootstrap-initial-install-from-iso-with-disk",
+      command: bootstrapPlan.initialInstallFromIsoWithDisk,
+      stopCondition: bootstrapPlan.initialInstallStopCondition,
+    },
+    { step: "bootstrap-create-baseline-snapshot", command: bootstrapPlan.createBaselineSnapshot },
+  ];
+}
+
+export function executePathForkRuntimePlan(
+  plan: PathForkRuntimePlan,
+  executor: Qcow2RetentionExecutor,
+  options: { readonly bootstrapPlan?: Qcow2SnapshotRetentionPlan } = {},
+): PathForkExecutionResult {
+  const commandExecutions: QemuCommandExecution[] = [];
+
+  if (options.bootstrapPlan !== undefined) {
+    for (const { step, command, stopCondition } of bootstrapExecutionSteps(options.bootstrapPlan)) {
+      let execution: QemuCommandExecution;
+      try {
+        if (stopCondition !== undefined) {
+          if (executor.runCommandUntilSerialMarkers === undefined) {
+            return {
+              error: {
+                kind: "bootstrap-failed",
+                bootstrapError: {
+                  kind: "command-failed",
+                  step: "initial-install-from-iso-with-disk",
+                  command,
+                  exitCode: null,
+                  stderr: `missing runCommandUntilSerialMarkers executor for bootstrap step ${step}`,
+                  commandExecutions,
+                },
+                commandExecutions,
+              },
+            };
+          }
+          execution = executor.runCommandUntilSerialMarkers(step, command, stopCondition);
+        } else {
+          execution = executor.runCommand(step, command);
+        }
+      } catch (error) {
+        return {
+          error: {
+            kind: "bootstrap-failed",
+            bootstrapError: {
+              kind: "executor-threw",
+              step: "initial-install-from-iso-with-disk",
+              reason: error instanceof Error ? error.message : String(error),
+              commandExecutions,
+            },
+            commandExecutions,
+          },
+        };
+      }
+      commandExecutions.push(execution);
+      if (execution.exitCode !== 0) {
+        return {
+          error: {
+            kind: "bootstrap-failed",
+            bootstrapError: {
+              kind: "command-failed",
+              step: "initial-install-from-iso-with-disk",
+              command,
+              exitCode: execution.exitCode,
+              stderr: execution.stderr,
+              commandExecutions,
+            },
+            commandExecutions,
+          },
+        };
+      }
+    }
+  }
+
+  const forkExecutions: PathForkForkExecution[] = [];
+  for (const fork of plan.forks) {
+    if (fork.missingRuntimeRequirements.length > 0) {
+      return {
+        error: {
+          kind: "missing-runtime-requirements",
+          forkId: fork.forkId,
+          requirements: fork.missingRuntimeRequirements,
+          commandExecutions,
+        },
+      };
+    }
+
+    const restoreStep = `restore-${fork.forkId}` as const;
+    let restoreExecution: QemuCommandExecution;
+    try {
+      restoreExecution = executor.runCommand(restoreStep, fork.restoreStartingState);
+    } catch (error) {
+      return {
+        error: {
+          kind: "executor-threw",
+          step: restoreStep,
+          forkId: fork.forkId,
+          reason: error instanceof Error ? error.message : String(error),
+          commandExecutions,
+        },
+      };
+    }
+    commandExecutions.push(restoreExecution);
+    if (restoreExecution.exitCode !== 0) {
+      return {
+        error: {
+          kind: "command-failed",
+          step: restoreStep,
+          forkId: fork.forkId,
+          command: fork.restoreStartingState,
+          exitCode: restoreExecution.exitCode,
+          stderr: restoreExecution.stderr,
+          commandExecutions,
+        },
+      };
+    }
+
+    const bootCommand = fork.qemuBootCommand;
+    if (bootCommand === undefined) {
+      return {
+        error: {
+          kind: "missing-runtime-requirements",
+          forkId: fork.forkId,
+          requirements: ["qemu boot command"],
+          commandExecutions,
+        },
+      };
+    }
+
+    const bootStep = `boot-${fork.forkId}` as const;
+    let bootExecution: QemuCommandExecution;
+    try {
+      if (executor.runCommandUntilSerialMarkers === undefined) {
+        return {
+          error: {
+            kind: "executor-threw",
+            step: bootStep,
+            forkId: fork.forkId,
+            reason: `missing runCommandUntilSerialMarkers executor for ${bootStep}`,
+            commandExecutions,
+          },
+        };
+      }
+      bootExecution = executor.runCommandUntilSerialMarkers(bootStep, bootCommand, fork.stopCondition);
+    } catch (error) {
+      return {
+        error: {
+          kind: "executor-threw",
+          step: bootStep,
+          forkId: fork.forkId,
+          reason: error instanceof Error ? error.message : String(error),
+          commandExecutions,
+        },
+      };
+    }
+    commandExecutions.push(bootExecution);
+    if (bootExecution.exitCode !== 0) {
+      return {
+        error: {
+          kind: "command-failed",
+          step: bootStep,
+          forkId: fork.forkId,
+          command: bootCommand,
+          exitCode: bootExecution.exitCode,
+          stderr: bootExecution.stderr,
+          commandExecutions,
+        },
+      };
+    }
+
+    let serialOutput: string;
+    try {
+      serialOutput = executor.readSerialOutput(fork.stopCondition.serialLogPath);
+    } catch (error) {
+      return {
+        error: {
+          kind: "executor-threw",
+          step: bootStep,
+          forkId: fork.forkId,
+          reason: error instanceof Error ? error.message : String(error),
+          commandExecutions,
+        },
+      };
+    }
+
+    const assertion = assertPathForkSerialMarkers(fork, serialOutput);
+    if ("error" in assertion) {
+      return {
+        error: {
+          kind: "serial-marker-failed",
+          forkId: fork.forkId,
+          assertion: assertion.error,
+          commandExecutions,
+        },
+      };
+    }
+
+    forkExecutions.push({
+      forkId: fork.forkId,
+      commandExecutions: [restoreExecution, bootExecution],
+      serialAssertion: assertion.ok,
+    });
+  }
+
+  return {
+    ok: {
+      forkExecutions,
+      commandExecutions,
+    },
+  };
+}
+
+export { createSpawnSyncQcow2RetentionExecutor };

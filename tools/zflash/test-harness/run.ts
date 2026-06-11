@@ -60,7 +60,12 @@ import {
   type Qcow2SnapshotRetentionPlan,
 } from "./qemu-state";
 import {
+  createSpawnSyncQcow2RetentionExecutor as createSpawnSyncPathForkExecutor,
+  executePathForkRuntimePlan,
+  planPathForkBaselineBootstrap,
   planPathForkRuntime,
+  type PathForkExecutionFeedback,
+  type PathForkExecutionResult,
   type PathForkRuntimePlan,
 } from "./path-fork";
 
@@ -80,6 +85,7 @@ export interface ScenarioResult {
   readonly qemuRetentionPlan?: Qcow2SnapshotRetentionPlan;
   readonly qemuRetentionExecution?: Qcow2RetentionExecutionResult;
   readonly pathForkPlan?: PathForkRuntimePlan;
+  readonly pathForkExecution?: PathForkExecutionResult;
 }
 
 export interface RetentionRuntimeOptions {
@@ -93,6 +99,11 @@ export interface RetentionRuntimeOptions {
 }
 
 export interface PathForkRuntimeOptions {
+  readonly execute?: boolean;
+  readonly bootstrap?: boolean;
+  readonly executor?: Qcow2RetentionExecutor;
+  readonly cwd?: string;
+  readonly timeoutMs?: number;
   readonly bootImagePath?: string;
   readonly runDirectory?: string;
   readonly kvmAvailable?: boolean;
@@ -105,6 +116,9 @@ const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
 const RETENTION_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_RETENTION_RUN_DIR";
 const PATH_FORK_BOOT_IMAGE_ENV = "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
 const PATH_FORK_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_PATH_FORK_RUN_DIR";
+const PATH_FORK_EXECUTION_ENV = "ZFLASH_QEMU_PATH_FORK_EXECUTE";
+const PATH_FORK_BOOTSTRAP_ENV = "ZFLASH_QEMU_PATH_FORK_BOOTSTRAP";
+const PATH_FORK_TIMEOUT_ENV = "ZFLASH_QEMU_PATH_FORK_TIMEOUT_MS";
 const KVM_PATH = "/dev/kvm";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
@@ -260,6 +274,24 @@ function reportScaffolded(scenario: Scenario): ScenarioResult {
   };
 }
 
+function describePathForkExecutionError(error: PathForkExecutionFeedback): string {
+  switch (error.kind) {
+    case "missing-runtime-requirements":
+      return `QEMU path-fork missing runtime requirement(s) for ${error.forkId}: ${error.requirements.join(", ")}`;
+    case "command-failed":
+      return `QEMU path-fork command failed at ${error.step}${error.forkId === undefined ? "" : ` (${error.forkId})`} with exit ${error.exitCode ?? "unknown"}: ${error.stderr || "no stderr"}`;
+    case "executor-threw":
+      return `QEMU path-fork executor threw at ${error.step}${error.forkId === undefined ? "" : ` (${error.forkId})`}: ${error.reason}`;
+    case "serial-marker-failed":
+      if (error.assertion.kind === "missing-serial-markers") {
+        return `QEMU path-fork fork ${error.forkId} missing serial markers: ${error.assertion.missingMarkers.join(", ")}`;
+      }
+      return `QEMU path-fork fork ${error.forkId} observed forbidden serial markers: ${error.assertion.presentMarkers.join(", ")}`;
+    case "bootstrap-failed":
+      return `QEMU path-fork baseline bootstrap failed: ${describeRetentionExecutionError(error.bootstrapError)}`;
+  }
+}
+
 function describeRetentionExecutionError(error: Qcow2RetentionExecutionFeedback): string {
   switch (error.kind) {
     case "command-failed":
@@ -290,6 +322,23 @@ function retentionBootImagePathFromEnv(): string | undefined {
     return undefined;
   }
   return resolve(raw);
+}
+
+function pathForkExecutionEnabledFromEnv(): boolean {
+  return process.env[PATH_FORK_EXECUTION_ENV] === "1";
+}
+
+function pathForkBootstrapEnabledFromEnv(): boolean {
+  return process.env[PATH_FORK_BOOTSTRAP_ENV] === "1";
+}
+
+function pathForkTimeoutMsFromEnv(): number | undefined {
+  const raw = process.env[PATH_FORK_TIMEOUT_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  const parsed = Number(raw);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
 }
 
 function pathForkBootImagePathFromEnv(): string | undefined {
@@ -341,12 +390,14 @@ function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
 
 function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
   readonly startingDiskPath: string;
+  readonly baselineSerialLogPath: string;
   readonly migrateSerialLogPath: string;
   readonly freshSerialLogPath: string;
 } {
   const artifactStem = basename(absIsoPath);
   return {
     startingDiskPath: join(runDirectory, `${artifactStem}.scenario4.qcow2`),
+    baselineSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.bootstrap.serial.log`),
     migrateSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.migrate.serial.log`),
     freshSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.fresh.serial.log`),
   };
@@ -457,11 +508,65 @@ export function runPathForkRuntime(
     ? ""
     : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
 
+  if (options.execute !== true) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `QEMU path-fork plan generated; set ${PATH_FORK_EXECUTION_ENV}=1 to run the real QEMU process executor. Without that explicit opt-in, the scenario fails closed.${requirementSuffix}`,
+      pathForkPlan: planned.ok,
+    };
+  }
+
+  const executorOptions = options.timeoutMs === undefined
+    ? { cwd: options.cwd ?? REPO_ROOT }
+    : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  const executor = options.executor ?? createSpawnSyncPathForkExecutor(executorOptions);
+  const bootstrapPlan = options.bootstrap === true
+    ? (() => {
+        const plannedBootstrap = planPathForkBaselineBootstrap({
+          isoPath: absIsoPath,
+          startingDiskPath: artifacts.startingDiskPath,
+          baselineSerialLogPath: artifacts.baselineSerialLogPath,
+          kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
+        });
+        if ("error" in plannedBootstrap) {
+          return { error: plannedBootstrap.error };
+        }
+        return { ok: plannedBootstrap };
+      })()
+    : undefined;
+
+  if (bootstrapPlan !== undefined && "error" in bootstrapPlan) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not plan QEMU path-fork baseline bootstrap: ${bootstrapPlan.error}`,
+      pathForkPlan: planned.ok,
+    };
+  }
+
+  const executed = executePathForkRuntimePlan(
+    planned.ok,
+    executor,
+    bootstrapPlan === undefined ? {} : { bootstrapPlan: bootstrapPlan.ok },
+  );
+
+  if ("error" in executed) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: describePathForkExecutionError(executed.error),
+      pathForkPlan: planned.ok,
+      pathForkExecution: executed,
+    };
+  }
+
   return {
     id: "reformat-from-scratch",
-    status: "failed",
-    message: `QEMU path-fork plan generated; scenario 4 still fails closed until a process executor and identity-comparison proof consume both forks.${requirementSuffix}`,
+    status: "passed",
+    message: "QEMU path-fork execution observed both migrate-existing-creds and fresh-cluster serial marker contracts.",
     pathForkPlan: planned.ok,
+    pathForkExecution: executed,
   };
 }
 
@@ -486,7 +591,18 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
         return runRetentionRuntime(isoPath, options);
       }
       if (scenario.id === "reformat-from-scratch") {
-        return runPathForkRuntime(isoPath);
+        const timeoutMs = pathForkTimeoutMsFromEnv();
+        const pathForkOptions = timeoutMs === undefined
+          ? {
+              execute: pathForkExecutionEnabledFromEnv(),
+              bootstrap: pathForkBootstrapEnabledFromEnv(),
+            }
+          : {
+              execute: pathForkExecutionEnabledFromEnv(),
+              bootstrap: pathForkBootstrapEnabledFromEnv(),
+              timeoutMs,
+            };
+        return runPathForkRuntime(isoPath, pathForkOptions);
       }
       return reportScaffolded(scenario);
     case "operator-runtime":

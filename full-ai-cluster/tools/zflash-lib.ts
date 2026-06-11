@@ -25,6 +25,43 @@
  */
 export const VALID_HOSTNAME_REGEX = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
 
+/**
+ * Repo-relative path to the committed QEMU-only test-infra public key.
+ * The matching private key lives in the GitHub secret `ZETA_TEST_INFRA_SSH_KEY`
+ * and is injected only when `--test` is passed.
+ */
+export const ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH =
+  "tools/zflash/test-harness/keys/zeta-test-infra.pub";
+
+/**
+ * Structural validator for a single OpenSSH authorized_keys line.
+ * Mirrors the zflash.ts iter-4.2 inject check so production + QEMU paths
+ * stay aligned.
+ */
+export const OPENSSH_PUBKEY_LINE_REGEX =
+  /^(ssh-(ed25519|rsa|dss)|ecdsa-sha2-\S+|sk-ssh-ed25519@\S+|sk-ecdsa-sha2-\S+)\s+\S+/;
+
+export type AuthorizedKeysComposeResult =
+  | { readonly ok: true; readonly value: string }
+  | { readonly ok: false; readonly error: string };
+
+/** Validate + normalize one-or-more OpenSSH pubkey lines for ESP write. */
+export function composeAuthorizedKeysFileContent(lines: readonly string[]): AuthorizedKeysComposeResult {
+  const normalized = lines
+    .flatMap((line) => line.split("\n"))
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+  if (normalized.length === 0) {
+    return { ok: false, error: "at least one non-empty OpenSSH pubkey line is required" };
+  }
+  for (const line of normalized) {
+    if (!OPENSSH_PUBKEY_LINE_REGEX.test(line)) {
+      return { ok: false, error: `not a recognized OpenSSH pubkey line: ${line}` };
+    }
+  }
+  return { ok: true, value: `${normalized.join("\n")}\n` };
+}
+
 /** Convenience wrapper around the regex. */
 export function isValidHostname(s: string): boolean {
   return VALID_HOSTNAME_REGEX.test(s);
@@ -116,6 +153,8 @@ export interface FileBackedZflashImagePlanInput {
   readonly outputImagePath: string;
   readonly espOffsetBytes: number;
   readonly pubkeyPath?: string;
+  /** When set, writes /zeta-authorized-keys.pub from inline content instead of pubkeyPath. */
+  readonly authorizedKeysContent?: string;
   readonly hostname?: string;
   readonly credentialBlobPath?: string;
 }
@@ -227,12 +266,24 @@ export function planFileBackedZflashImage(
   }
 
   const espWrites: FileBackedEspWrite[] = [];
-  const pubkeyPath = input.pubkeyPath?.trim();
-  if (pubkeyPath !== undefined && pubkeyPath.length > 0) {
+  const authorizedKeysContent = input.authorizedKeysContent?.trim();
+  if (authorizedKeysContent !== undefined && authorizedKeysContent.length > 0) {
+    const composed = composeAuthorizedKeysFileContent(authorizedKeysContent.split("\n"));
+    if (!composed.ok) {
+      return { ok: false, error: composed.error };
+    }
     espWrites.push({
       destination: "/zeta-authorized-keys.pub",
-      sourcePath: pubkeyPath,
+      content: composed.value,
     });
+  } else {
+    const pubkeyPath = input.pubkeyPath?.trim();
+    if (pubkeyPath !== undefined && pubkeyPath.length > 0) {
+      espWrites.push({
+        destination: "/zeta-authorized-keys.pub",
+        sourcePath: pubkeyPath,
+      });
+    }
   }
   const hostname = input.hostname?.trim();
   if (hostname !== undefined && hostname.length > 0) {

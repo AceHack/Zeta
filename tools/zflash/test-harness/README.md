@@ -10,9 +10,10 @@ explicit scenario-3 process-executor wiring, scenario-4 path-fork command
 planning, and serial-marker lifecycle stop conditions for QEMU boot phases.
 
 **NOT in PoC** (deferred to follow-up): default-on QEMU snapshot/restart
-execution for scenarios 3-5 (state preservation between boots); scenario-4
-process execution + identity comparison proof; multi-VM orchestration for
-scenario 5 (cluster-joining); GitHub Actions workflow integration.
+execution for scenarios 3-5 in PR-time CI (state preservation between
+boots is opt-in via env vars); multi-VM orchestration for scenario 5
+(cluster-joining); full SSH/trust assertions after `--test` zflash images
+boot in QEMU.
 
 Operator clarification, 2026-05-31: this harness proves USB/ISO behavior,
 not Kubernetes or ArgoCD health. The USB lane should cover zflash, boot,
@@ -95,12 +96,19 @@ its required success markers, the run fails fast instead of waiting for the
 full QEMU timeout.
 
 Runtime attempts for scenario 4 now emit a two-branch path-fork plan and
-still fail closed with exit `1` until a process executor and identity
-comparison proof consume both forks:
+still fail closed with exit `1` unless the operator explicitly opts into
+the real process executor:
 
 ```bash
-bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch <iso-path>
+ZFLASH_QEMU_PATH_FORK_EXECUTE=1 \
+ZFLASH_QEMU_PATH_FORK_BOOTSTRAP=1 \
+ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE=/path/to/zflash-boot.img \
+  bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch <iso-path>
 ```
+
+`ZFLASH_QEMU_PATH_FORK_BOOTSTRAP=1` creates the baseline qcow2 disk +
+`post-initial-format` snapshot before exercising both forks. The boot-image
+env var supplies the zflash-prepared USB artifact for the migrate fork.
 
 By default the migrate-existing-creds fork records a missing runtime
 requirement because it needs a zflash-prepared boot image containing
