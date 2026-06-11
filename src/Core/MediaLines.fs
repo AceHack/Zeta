@@ -90,7 +90,7 @@ module MediaLines =
 
     /// The kinds THIS reader understands (everything else is carried, untouched — the expansion law).
     let knownKinds: Set<string> =
-        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut" ]
+        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"; "io"; "button" ]
 
     /// The entries a reader carries without understanding — future media types in transit.
     let carried (d: Doc) : Entry list =
@@ -109,6 +109,32 @@ module MediaLines =
     /// All independent loops a document carries (anim + gen + sim sections — many, by design).
     let loops (d: Doc) : Entry list =
         d.Entries |> List.filter (fun e -> e.Kind = "anim" || e.Kind = "gen" || e.Kind = "sim")
+
+    // ── live IO in the cartridge (Aaron 2026-06-11: "it should be able to include the live io
+    // interfaces and buttons to interact with their flows — like the universal TV, that's just a
+    // ZetaId away; if it's not available on host you get a MOCK or an injected capability"). An `io`
+    // line declares an interface BY ZetaId (io <local-name> <interface-zetaid> [args…]); `button`
+    // lines bind inputs to flows. Resolution is the capability calculus at load time:
+    // host has it → LIVE; the door grants it → INJECTED; otherwise → MOCK (deterministic sim — the
+    // zero case: a cartridge NEVER crashes for a missing capability, it degrades honestly). ──
+
+    /// How a declared io interface bound on this host.
+    type IoBinding =
+        | Live of zetaId: string
+        | Injected of zetaId: string
+        | Mock of zetaId: string
+
+    /// All io declarations in a document.
+    let ioOf (d: Doc) : Entry list = ofKind "io" d
+
+    /// Resolve one io declaration against the host's live capabilities and the door's grants.
+    /// Total: absent everywhere ⇒ Mock (never an error — the expansion law for capabilities).
+    let resolveIo (hostLive: Set<string>) (granted: Set<string>) (e: Entry) : IoBinding =
+        match e.Fields with
+        | zid :: _ when Set.contains zid hostLive -> Live zid
+        | zid :: _ when Set.contains zid granted -> Injected zid
+        | zid :: _ -> Mock zid
+        | [] -> Mock ""
 
     /// The document AS a room declaration: Some (sim, mea, cut) when all three verbs are present —
     /// the file defines its own loop in the verb engine; None = a media-only document (honest).

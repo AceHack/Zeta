@@ -106,3 +106,23 @@ let ``the verb kinds are KNOWN (sim/mea/cut ride first-class, not carried as str
     Assert.True(Set.contains "sim" MediaLines.knownKinds)
     Assert.True(Set.contains "mea" MediaLines.knownKinds)
     Assert.True(Set.contains "cut" MediaLines.knownKinds)
+
+// ── live IO: declared by ZetaId; resolved live / injected / mock (the door law for buttons) ──
+
+[<Fact>]
+let ``io and button are first-class kinds; io declarations resolve by ZetaId`` () =
+    Assert.True(Set.contains "io" MediaLines.knownKinds)
+    Assert.True(Set.contains "button" MediaLines.knownKinds)
+    let tvId = GeneratorRegistry.idOf "interface.universal-tv" 1
+    let text = sprintf "io\ttv\t%s\nbutton\ta\tgo:hottest" tvId
+    match MediaLines.parse text with
+    | Ok d -> Assert.Equal(1, List.length (MediaLines.ioOf d))
+    | Error e -> failwith e
+
+[<Fact>]
+let ``resolution is the capability calculus: live when the host has it; injected when the door grants; MOCK otherwise — never a crash`` () =
+    let tvId = GeneratorRegistry.idOf "interface.universal-tv" 1
+    let e: MediaLines.Entry = { Kind = "io"; Name = "tv"; Fields = [ tvId ] }
+    Assert.Equal(MediaLines.Live tvId, MediaLines.resolveIo (Set.ofList [ tvId ]) Set.empty e)
+    Assert.Equal(MediaLines.Injected tvId, MediaLines.resolveIo Set.empty (Set.ofList [ tvId ]) e)
+    Assert.Equal(MediaLines.Mock tvId, MediaLines.resolveIo Set.empty Set.empty e) // degrades honestly
