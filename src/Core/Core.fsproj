@@ -220,6 +220,7 @@
     <Compile Include="SoftChip8Flux.fs" />
     <Compile Include="Chip8Arcade.fs" />
     <Compile Include="Chip8Citizen.fs" />
+    <Compile Include="Chip8Quote.fs" />
     <Compile Include="SwarmBoard.fs" />
     <Compile Include="SwarmBoardAnsi.fs" />
     <Compile Include="ZetaMax.fs" />
