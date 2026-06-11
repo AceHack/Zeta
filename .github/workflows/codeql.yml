@@ -130,6 +130,15 @@ on:
 permissions:
   contents: read
 
+# Workflow-level env: exposes the read-scoped Actions token to
+# tools/setup/common/mise.sh. That script promotes it to
+# MISE_GITHUB_TOKEN and masks the bare GITHUB_TOKEN before running
+# `mise install`, so parallel CodeQL jobs use authenticated release
+# metadata calls instead of exhausting GitHub's anonymous 60/hr
+# quota.
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 concurrency:
   # PR force-push supersedes the previous run. Schedule runs
   # carry a distinct ref (`refs/heads/main` on cron) so they
