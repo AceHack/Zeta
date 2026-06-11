@@ -33,7 +33,7 @@ module AdinkraViz =
     let nodeAt (col: int) (row: int) : int = gray.[col &&& 3] ||| (gray.[row &&& 3] <<< 2)
 
     /// Which bit differs between two grid-adjacent nodes (the edge's GENERATOR = its color).
-    let private flippedBit (a: int) (b: int) : int =
+    let flippedBit (a: int) (b: int) : int =
         let d = a ^^^ b
         [ 0..3 ] |> List.find (fun i -> d = (1 <<< i))
 

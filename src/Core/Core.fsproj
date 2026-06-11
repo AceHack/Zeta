@@ -273,6 +273,7 @@
     <Compile Include="FingerprintPrism.fs" />
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
+    <Compile Include="AdinkraViz.fs" />
     <Compile Include="ShapeRender.fs" />
     <Compile Include="ShapeAcceptance.fs" />
     <Compile Include="PhysUI.fs" />
@@ -288,7 +289,6 @@
     <Compile Include="MagneticPorts.fs" />
     <Compile Include="HtmlCssBinding.fs" />
     <Compile Include="WaveSim.fs" />
-    <Compile Include="AdinkraViz.fs" />
     <Compile Include="SpectralPivot.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />

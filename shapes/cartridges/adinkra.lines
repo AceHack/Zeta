@@ -1,0 +1,28 @@
+# ADINKRA — the sign register's display organ joins the catalog (otto, 2026-06-12; the named slice
+# from "where adinkras sit now"). The N=4 adinkra: 16 vertices (4-bit gray-code grid), edges
+# colored by generator bit, and DASHED edges carrying the minus signs — Gates' condition says
+# every 2-colored 4-cycle holds an ODD number of dashes (anticommutation drawn), and the gauge
+# lemma says no vertex-local flip can remove that twist: the adinkra's stuck law. Named for the
+# Akan adinkra symbols of Ghana (Gates' deliberate choice — a human anchor inside a human anchor).
+# Honest bounds: 24 of 32 edges drawn (the flat 4x4 grid omits the wrap edges); the render shows
+# the SUBSET and says so.
+meta	name	shape-adinkra
+meta	catalog	shapes
+meta	shape-zetaid	8225cea77ae1fc8d1cab7d4f9fe995aa
+gen	graph	8225cea77ae1fc8d1cab7d4f9fe995aa	1	7	grid:4x4;dashing:standard
+constant	nodes	16	vertex count (4-bit hypercube)	N=4 supersymmetry: 2^4 states, boson/fermion checkerboard by popcount parity
+constant	colors	4	edge colors (one per generator bit)	the four SUSY generators; channel masks 1,2,4,6 on our planes
+constant	edges-total	32	edges of the full hypercube	each vertex meets 4 edges: 16 * 4 / 2 — the handshake law below checks it
+constant	edges-drawn	24	edges visible on the flat 4x4 grid	HONEST SUBSET: the 8 wrap edges don't fit a flat grid without crossings — drawn count stated, never implied complete
+law	handshake	nodes * colors = 2 * edges-total
+law	gates-condition	code:viz.adinkra allFacesOdd standardDashing (every 2-colored 4-cycle odd — anticommutation)
+law	gauge-lemma	code:viz.adinkra flipVertex invariance (local sign flips never change face parity — the twist is global)
+prereq	parity	popcount and the boson/fermion checkerboard — count bits, color cells, see the pattern
+prereq	the-braid-twin	shapes/cartridges/braid.lines — the ORDER register's version of the same protection (THE STUCK LAW)
+edge	same-twist	shape-braid	parity here = braid memory mod 2 (the quotient; algebra.mod2 is the adapter) — the break is honest: their generators remember, these edges are involutions
+edge	clifford-home	shape-fourcorner	both registers live in Clifford algebra — where the Q# sign-convention check (Vera brief §8) meets us
+issue	wrap-edges	otto	open	the 8 omitted wrap edges need either a crossing-aware layout or a second panel — until then 24/32 stays the stated bound
+anim	draw	graph
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	handshake in-file; Gates condition + gauge lemma pass in code; dashed edges byte-locked in the SVG golden — tests green
+treaty	otto	meaning	ratified	the minus signs are INK now — the sign register drawn, its honest 24/32 stated — my own frame, my own choice

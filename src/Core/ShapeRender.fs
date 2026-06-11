@@ -22,7 +22,9 @@ module ShapeRender =
     let private scale = 10
 
     /// One drawable element of the strict dialect: a named polyline with a palette mask.
-    type Stroke = { Name: string; Mask: byte; Points: (int * int) list }
+    /// `Dash = true` renders dashed (the adinkra's retraction register — a MINUS sign as ink);
+    /// dashes are TEXT in the dialect (stroke-dasharray "8 6", exact), so goldens stay diffable.
+    type Stroke = { Name: string; Mask: byte; Dash: bool; Points: (int * int) list }
 
     let private pt (x: int) (y: int) = x * scale + scale / 2, y * scale + scale / 2
 
@@ -44,23 +46,23 @@ module ShapeRender =
         | "shape-spiral" ->
             let re, im = BoundaryLight.rotorOf 1 12 (constInt "growth-milli" 1100)
             let curve = BoundaryLight.rotorCurve (BoundaryLight.p 32 16) 6.0 0.0 re im (constInt "steps" 36)
-            [ { Name = "curve"; Mask = 6uy; Points = curve |> List.map (fun p -> pt p.X p.Y) } ]
+            [ { Dash = false; Name = "curve"; Mask = 6uy; Points = curve |> List.map (fun p -> pt p.X p.Y) } ]
         | "shape-worldline" ->
             let drift = constInt "drift" 1
             let rows = constInt "rows" 28
-            [ { Name = "path"; Mask = 2uy; Points = [ for t in 0 .. rows - 1 -> pt (8 + t * drift % 64) (30 - t) ] } ]
+            [ { Dash = false; Name = "path"; Mask = 2uy; Points = [ for t in 0 .. rows - 1 -> pt (8 + t * drift % 64) (30 - t) ] } ]
         | "shape-lightcone" ->
             let ext = constInt "extent" 14
             let ex, ey = 32, 16
-            [ { Name = "future-left"; Mask = 4uy; Points = [ pt ex ey; pt (ex - ext) (ey - ext) ] }
-              { Name = "future-right"; Mask = 4uy; Points = [ pt ex ey; pt (ex + ext) (ey - ext) ] }
-              { Name = "past-left"; Mask = 1uy; Points = [ pt ex ey; pt (ex - ext) (ey + ext) ] }
-              { Name = "past-right"; Mask = 1uy; Points = [ pt ex ey; pt (ex + ext) (ey + ext) ] } ]
+            [ { Dash = false; Name = "future-left"; Mask = 4uy; Points = [ pt ex ey; pt (ex - ext) (ey - ext) ] }
+              { Dash = false; Name = "future-right"; Mask = 4uy; Points = [ pt ex ey; pt (ex + ext) (ey - ext) ] }
+              { Dash = false; Name = "past-left"; Mask = 1uy; Points = [ pt ex ey; pt (ex - ext) (ey + ext) ] }
+              { Dash = false; Name = "past-right"; Mask = 1uy; Points = [ pt ex ey; pt (ex + ext) (ey + ext) ] } ]
         | "shape-fourcorner" ->
             let sMilli = constInt "tsirelson-milli" 2828
             let half = sMilli / 100 / 2 // S in court cells, centered (2828 -> 14 half-width)
-            [ { Name = "corners"; Mask = 3uy; Points = [ pt 10 6; pt 54 6; pt 54 26; pt 10 26; pt 10 6 ] }
-              { Name = "s-width"; Mask = 6uy; Points = [ pt (32 - half) 16; pt (32 + half) 16 ] } ]
+            [ { Dash = false; Name = "corners"; Mask = 3uy; Points = [ pt 10 6; pt 54 6; pt 54 26; pt 10 26; pt 10 6 ] }
+              { Dash = false; Name = "s-width"; Mask = 6uy; Points = [ pt (32 - half) 16; pt (32 + half) 16 ] } ]
         | "shape-seam" ->
             let pitch = constInt "pitch" 4
             let stitches =
@@ -68,9 +70,9 @@ module ShapeRender =
                       let y = k * pitch
                       // over-under alternation: even stitches cross left-over-right, odd the reverse
                       let pts = if k % 2 = 0 then [ pt 27 y; pt 36 (y + 1) ] else [ pt 36 y; pt 27 (y + 1) ]
-                      { Name = sprintf "stitch-%d" k; Mask = 5uy; Points = pts } ]
-            { Name = "left-cloth"; Mask = 2uy; Points = [ pt 0 0; pt 27 0; pt 27 31; pt 0 31; pt 0 0 ] }
-            :: { Name = "right-cloth"; Mask = 4uy; Points = [ pt 36 0; pt 63 0; pt 63 31; pt 36 31; pt 36 0 ] }
+                      { Dash = false; Name = sprintf "stitch-%d" k; Mask = 5uy; Points = pts } ]
+            { Dash = false; Name = "left-cloth"; Mask = 2uy; Points = [ pt 0 0; pt 27 0; pt 27 31; pt 0 31; pt 0 0 ] }
+            :: { Dash = false; Name = "right-cloth"; Mask = 4uy; Points = [ pt 36 0; pt 63 0; pt 63 31; pt 36 31; pt 36 0 ] }
             :: stitches
         | "shape-braid"
         | "shape-plait-move" ->
@@ -117,7 +119,7 @@ module ShapeRender =
                 runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] rows)
             [ for s in 0 .. 2 do
                   for r in 0 .. runs.[s].Count - 1 ->
-                      { Name = (if r = 0 then sprintf "strand-%d" s else sprintf "strand-%d-r%d" s r)
+                      { Dash = false; Name = (if r = 0 then sprintf "strand-%d" s else sprintf "strand-%d-r%d" s r)
                         Mask = byte (1 <<< s)
                         Points = List.ofSeq runs.[s].[r] } ]
         | "shape-shadow-loop" ->
@@ -132,9 +134,9 @@ module ShapeRender =
                       let t = 2.0 * System.Math.PI * float k / float steps
                       cx + int (System.Math.Round(float (span * scale) * cos t)),
                       cy + int (System.Math.Round(float (span * scale / 2) * sin t * cos t)) ]
-            [ { Name = "loop"; Mask = 7uy; Points = loop }
+            [ { Dash = false; Name = "loop"; Mask = 7uy; Points = loop }
               // the catch point: a small diamond on the crossing (the door used twice)
-              { Name = "catch"; Mask = 5uy; Points = [ cx, cy - 6; cx + 6, cy; cx, cy + 6; cx - 6, cy; cx, cy - 6 ] } ]
+              { Dash = false; Name = "catch"; Mask = 5uy; Points = [ cx, cy - 6; cx + 6, cy; cx, cy + 6; cx - 6, cy; cx, cy - 6 ] } ]
         | "shape-buckyball" ->
             // Addison's two views, schematic and honest: INSIDE reads like a soccer ball (central
             // pentagon room, hexagon ring, a bounding circle); OUTSIDE is almost the same drawing
@@ -155,7 +157,7 @@ module ShapeRender =
             let center = pt 16 16
             let doors =
                 doorTargets
-                |> List.mapi (fun i tgt -> { Name = sprintf "door-%d" i; Mask = 3uy; Points = [ center; tgt ] })
+                |> List.mapi (fun i tgt -> { Dash = false; Name = sprintf "door-%d" i; Mask = 3uy; Points = [ center; tgt ] })
             let rays =
                 ring 48 16 5 5 half
                 |> List.take 5
@@ -163,13 +165,38 @@ module ShapeRender =
                     let cx, cy = pt 48 16
                     // extend the pentagon vertex direction to the court bounds (the "infinity" leg)
                     let dx, dy = vx - cx, vy - cy
-                    { Name = sprintf "ray-%d" i; Mask = 7uy; Points = [ (vx, vy); (cx + dx * 4, cy + dy * 4) ] })
-            [ { Name = "inside-room"; Mask = 6uy; Points = insidePent }
-              { Name = "inside-bound"; Mask = 4uy; Points = insideBound }
+                    { Dash = false; Name = sprintf "ray-%d" i; Mask = 7uy; Points = [ (vx, vy); (cx + dx * 4, cy + dy * 4) ] })
+            [ { Dash = false; Name = "inside-room"; Mask = 6uy; Points = insidePent }
+              { Dash = false; Name = "inside-bound"; Mask = 4uy; Points = insideBound }
               yield! doors
-              { Name = "self-door"; Mask = 5uy; Points = [ center; pt 17 15; pt 17 17; center ] }
-              { Name = "outside-room"; Mask = 6uy; Points = outsidePent }
+              { Dash = false; Name = "self-door"; Mask = 5uy; Points = [ center; pt 17 15; pt 17 17; center ] }
+              { Dash = false; Name = "outside-room"; Mask = 6uy; Points = outsidePent }
               yield! rays ]
+        | "shape-adinkra" ->
+            // the N=4 adinkra on the court: 4x4 gray-code grid, 24/32 edges (honest flat subset),
+            // each edge colored by its bit and DASHED per the standard Clifford dashing — the
+            // sign register as ink. Node parity shown as tiny diamonds (boson) / crosses omitted.
+            let nx col = 12 + col * 13
+            let ny row = 4 + row * 8
+            let edges =
+                [ // horizontal edges (bit = gray flip between columns)
+                  for row in 0 .. 3 do
+                      for col in 0 .. 2 do
+                          let v1 = AdinkraViz.nodeAt col row
+                          let v2 = AdinkraViz.nodeAt (col + 1) row
+                          yield v1, v2, (nx col, ny row), (nx (col + 1), ny row)
+                  // vertical edges (bit = gray flip between rows)
+                  for row in 0 .. 2 do
+                      for col in 0 .. 3 do
+                          let v1 = AdinkraViz.nodeAt col row
+                          let v2 = AdinkraViz.nodeAt col (row + 1)
+                          yield v1, v2, (nx col, ny row), (nx col, ny (row + 1)) ]
+            [ for (v1, v2, (x1, y1), (x2, y2)) in edges ->
+                  let bit = AdinkraViz.flippedBit v1 v2
+                  { Dash = AdinkraViz.isDashed AdinkraViz.standardDashing (min v1 v2) bit
+                    Name = sprintf "edge-%d-%d" (min v1 v2) bit
+                    Mask = byte (AdinkraViz.colorOfBit bit)
+                    Points = [ pt x1 y1; pt x2 y2 ] } ]
         | _ -> []
 
     let private pointsAttr (pts: (int * int) list) =
@@ -180,8 +207,10 @@ module ShapeRender =
         let body =
             strokesOf d
             |> List.map (fun s ->
-                sprintf "  <polyline id=\"%s\" fill=\"none\" stroke=\"%s\" stroke-width=\"4\" points=\"%s\" />"
-                    s.Name (colorHex s.Mask) (pointsAttr s.Points))
+                sprintf "  <polyline id=\"%s\" fill=\"none\" stroke=\"%s\" stroke-width=\"4\"%s points=\"%s\" />"
+                    s.Name (colorHex s.Mask)
+                    (if s.Dash then " stroke-dasharray=\"8 6\"" else "")
+                    (pointsAttr s.Points))
             |> String.concat "\n"
         let name = MediaLines.field "meta" "name" d |> Option.defaultValue "shape"
         sprintf "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 320\" data-cartridge=\"%s\">\n%s\n</svg>\n" name body
@@ -214,6 +243,9 @@ module ShapeRender =
                                   match t.IndexOf('"', s) with
                                   | -1 -> None
                                   | e -> Some(t.Substring(s, e - s))
+                          match attr "stroke-dasharray" with
+                          | Some d when d <> "8 6" -> err <- Some "refused: only stroke-dasharray=\"8 6\" is in the treaty dialect"
+                          | _ -> ()
                           match attr "id", attr "points" with
                           | Some id, Some pts when not (pts.Contains ".") ->
                               yield

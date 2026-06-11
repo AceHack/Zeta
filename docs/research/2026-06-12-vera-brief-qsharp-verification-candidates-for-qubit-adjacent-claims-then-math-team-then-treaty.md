@@ -75,3 +75,10 @@ cartridges that earned them.
 10. **The snap itself** (`MagneticPorts.findAdapter`, `MediaLines.resolveIoWith`) — no quantum
     claim; listed so Vera sees the consumption path: a verified `qsharp:` law makes its module a
     trustable toolbox piece — verification feeds the adapter economy directly.
+
+11. **Both physics sides of Clifford (Aaron 2026-06-12):** check the Clifford mappings from both
+    directions — hardware-side (stabilizer/Pauli conventions vs our dashings, §8) AND SUSY-side
+    (the adinkra's gamma-matrix representation built explicitly in C#/Q#, exact integer matrices
+    where possible, against the same anticommutation targets). Both must land on the one Clifford
+    home or the mapping is decoration. Candidate shapes ride the same discipline:
+    docs/research/2026-06-12-physics-real-shape-candidates-*.md (fit or it doesn't enter).

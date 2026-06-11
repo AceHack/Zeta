@@ -91,6 +91,7 @@ module ComplexityRegistry =
               ("algebra.braid-memory", "carry"), c "O(word)" "O(word)" Derived // crossing order is the payload: Z-valued memory (Artin)
               ("algebra.z2-parity", "carry"), c "O(1)" "O(1)" Derived // one bit per edge: the dashing register (Gates)
               ("algebra.mod2", "project"), c "O(word)" "O(1)" Derived // THE MISSING PIECE: Z -> Z/2, order forgotten, parity kept — the adapter that snaps braid-out into adinkra-in
+              ("shape.adinkra", "draw"), c "O(E)" "O(E)" Derived // one stroke per drawn edge (24 on the flat grid); dashing lookup is O(1) per edge
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived

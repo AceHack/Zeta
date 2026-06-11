@@ -115,6 +115,15 @@ module ShapeAcceptance =
             // closure lands at t=0 (span,0), never on the center — so the visit count is exact.
             let ok = closed && visits = c "center-visits"
             ok, sprintf "closed loop; %d center visits (the catch, used twice as one door)" visits
+        | "shape-adinkra" ->
+            // the two laws run live: Gates condition on the standard dashing, and the gauge lemma
+            // (a deterministic vertex walk changes the dashing, never the face parity).
+            let walked = [ 0; 5; 10; 15 ] |> List.fold (fun d v -> AdinkraViz.flipVertex v d) AdinkraViz.standardDashing
+            let ok =
+                AdinkraViz.allFacesOdd AdinkraViz.standardDashing
+                && AdinkraViz.allFacesOdd walked
+                && walked <> AdinkraViz.standardDashing
+            ok, "Gates condition holds; gauge walk changed the dashing but no face went even (the twist is global)"
         | "shape-seam" ->
             // the seam's algebra: the cross-stream fold COMMUTES (order of arrival cannot matter)
             let a = { WeaveFold.Stream = "left"; WeaveFold.Seq = 1; WeaveFold.Key = "row4"; WeaveFold.Value = "over" }

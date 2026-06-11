@@ -83,6 +83,7 @@ module GeneratorRegistry =
           register "algebra.braid-memory" 1
           register "algebra.z2-parity" 1
           register "algebra.mod2" 1
+          register "shape.adinkra" 1
           register "binding.html-css" 1
           register "sim.wave-interference" 1
           register "viz.adinkra" 1
