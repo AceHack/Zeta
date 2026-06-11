@@ -1,7 +1,18 @@
-# Backlog tooling — per-row files + generated index
+# Legacy backlog tooling — B-row files + generated index
 
-Companion to `docs/backlog/` (per-row YAML-frontmatter files)
-and the generated `docs/BACKLOG.md` index.
+Companion to the legacy `docs/backlog/` B-row stockpile and
+the generated `docs/BACKLOG.md` index.
+
+New work-items are not B-NNNN rows. The current backlog/workitem
+substrate is ZetaId-keyed files under `workitems/`, minted with:
+
+```bash
+bun tools/backlog/new-workitem.ts --type task|bug --title "..."
+```
+
+The B-NNNN files remain as a grandfathered legacy index so old
+references stay readable while the factory migrates to
+conflict-free ZetaId workitems.
 
 Origin: maintainer Otto-181 ask to split `docs/BACKLOG.md`
 to eliminate the positional-append conflict cascade
@@ -12,23 +23,26 @@ documented in Otto-171 queue-saturation memory. Design spec:
 
 ```text
 docs/
-  BACKLOG.md                     ← generated index (DO NOT EDIT)
+  BACKLOG.md                     ← generated legacy B-row index (DO NOT EDIT)
   backlog/
-    README.md                    ← schema + how-to
-    P0/B-<NNNN>-<slug>.md        ← one file per row
+    README.md                    ← legacy schema + how-to
+    P0/B-<NNNN>-<slug>.md        ← one grandfathered legacy row
     P1/B-<NNNN>-<slug>.md
     P2/B-<NNNN>-<slug>.md
     P3/B-<NNNN>-<slug>.md
+workitems/
+  <zetaid>-<slug>.md             ← current conflict-free workitem
 tools/
   backlog/
     README.md                    ← this file
-    generate-index.sh            ← regenerates docs/BACKLOG.md
-    new-row.sh                   ← scaffolds a new row file (Phase 1b)
+    generate-index.ts            ← regenerates docs/BACKLOG.md
+    new-workitem.ts              ← mints current ZetaId workitems
+    lint-no-new-bnnnn.ts         ← rejects new legacy B rows
 ```
 
-## Per-row file schema
+## Legacy B-row file schema
 
-Each row is one markdown file with YAML frontmatter:
+Each legacy row is one markdown file with YAML frontmatter:
 
 ```markdown
 ---
@@ -58,7 +72,7 @@ tags: [game-industry, sharding, multi-node]
 
 | Field          | Required | Type         | Notes |
 |----------------|----------|--------------|-------|
-| `id`           | yes      | `B-NNNN`     | Zero-padded 4 digits, sequential. Factory-wide unique. |
+| `id`           | yes      | `B-NNNN`     | Legacy zero-padded 4 digit alias. Grandfathered rows only; do not allocate for new work. |
 | `priority`     | yes      | `P0..P3`     | Directory must match (`P2` row → `docs/backlog/P2/`). |
 | `status`       | yes      | enum         | `open` / `closed` / `superseded-by-B-NNNN` / `deferred` / `decomposed` (broken into child rows; stays open until `closed_by` row closes) |
 | `title`        | yes      | string       | Short index-display title. |
@@ -67,57 +81,54 @@ tags: [game-industry, sharding, multi-node]
 | `ask`          | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. Per Otto-293 mutual-alignment language ("ask" not "directive"). |
 | `created`      | yes      | YYYY-MM-DD   | First-landing date. |
 | `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
-| `depends_on`   | no       | list of `B-NNNN` | Hard prerequisite ordering (this row cannot land until each listed row lands). Distinct from `composes_with` (which is bidirectional cross-reference, not ordering). Empty list `[]` = no known dependencies. Backfill-discipline: incremental on-demand as rows are touched (Aaron 2026-05-02 backfill thesis). Graph-traversal field; not surfaced in `BACKLOG.md` index. |
+| `depends_on`   | no       | list of `B-NNNN` | Legacy hard prerequisite ordering for old rows. New cross-workitem references should use ZetaIds. |
 | `decomposition`| no       | enum         | Optional decomposition marker. `blob` means the row is intentionally too large or fuzzy for a single implement cycle and should be split before pickup. |
-| `composes_with`| no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+. |
+| `composes_with`| no       | list of `B-NNNN` | Legacy cross-references. New cross-workitem references should use ZetaIds. |
 | `tags`         | no       | list of string | Free-form. Examples: `multi-node`, `dst`, `ui-rename`. |
 
-## Adding a new row
+## Adding new work
 
-Phase 1a (current): create the file manually at
-`docs/backlog/P<tier>/B-NNNN-<slug>.md` with the frontmatter
-below. Phase 1b will ship a `new-row.sh` scaffolder that
-auto-assigns `NNNN` and pre-fills the frontmatter template;
-this README is forward-referencing that scaffolder but
-neither the script nor its invocation is available until
-Phase 1b lands.
+Do not add a new `docs/backlog/P*/B-NNNN-*.md` file for new
+work. B-NNNN allocation is sequential and requires cross-agent
+consensus, so it is kept only for the grandfathered legacy stockpile.
 
-Phase 1b target usage (not functional yet):
+Mint current work as a conflict-free ZetaId workitem:
 
 ```bash
-tools/backlog/new-row.sh --priority P2 --slug server-meshing-research
+bun tools/backlog/new-workitem.ts --type task --title "Server meshing research"
 ```
 
-Will create `docs/backlog/P2/B-NNNN-server-meshing-research.md`
-with pre-filled frontmatter. `NNNN` auto-assigned as the
-next unused integer across all priorities.
+That creates `workitems/<zetaid>-server-meshing-research.md`.
+Completion moves the file to `workitems/done/YYYY/MM/` via
+`bun tools/backlog/complete-workitem.ts`.
 
-Edit the file to add your content + fill optional
-frontmatter. Commit the new file. The generator
-regenerates `docs/BACKLOG.md` via
-`tools/backlog/generate-index.sh` manually until Phase 1b
-adds the pre-commit hook.
+If a legacy B-NNNN row genuinely must be added or renumbered,
+update `tools/backlog/frozen-bnnnn-ids.json` in the same commit.
+That makes the exception explicit and reviewable.
 
 ## Regenerating the index
 
 ```bash
-tools/backlog/generate-index.sh
+bun tools/backlog/generate-index.ts
 ```
 
-Walks `docs/backlog/**/*.md`, parses frontmatter via an
-inline awk parser (no external `yq` dependency), emits
-`docs/BACKLOG.md` sorted by (priority ascending, id
-ascending). Phase 1a uses pure awk to minimize toolchain
-surface; if `yq`-style nested-key queries become necessary,
-that's a Phase 1b upgrade.
+Walks legacy `docs/backlog/**/*.md`, parses frontmatter, and
+emits `docs/BACKLOG.md` sorted by priority and B-row id. The
+output is derived from row files; when resolving conflicts, prefer
+regenerating with `BACKLOG_WRITE_FORCE=1` over hand-picking either
+side of the generated file.
 
 ## CI drift check
 
-`.github/workflows/backlog-index-integrity.yml` (Phase 1b)
-will fail if the committed `docs/BACKLOG.md` doesn't
-match the output of `generate-index.sh` run against the
+`.github/workflows/backlog-index-integrity.yml` fails if the
+committed `docs/BACKLOG.md` doesn't
+match the output of `generate-index.ts` run against the
 committed row files. Same pattern as
 `memory-index-integrity.yml`.
+
+`tools/backlog/lint-no-new-bnnnn.ts` fails if a new legacy
+B-NNNN id appears outside the frozen grandfathered allowlist. Use
+`new-workitem.ts` for current work instead.
 
 ## Retirement
 
@@ -126,22 +137,16 @@ SKILL.md files retire by plain deletion, recoverable
 from git history" discipline: retired rows delete the
 file. `git log --diff-filter=D -- docs/backlog/` surfaces
 deleted rows for recovery. The `status: superseded-by-B-NNNN`
-frontmatter is for rows that are retired-but-still-
+frontmatter is for legacy rows that are retired-but-still-
 referenced; once no live row references the retired ID,
 delete the file.
 
 ## Phase status
 
-- **Phase 1a (this PR):** generator + schema + placeholder
-  directory. No content migration yet.
-- **Phase 1b:** CI drift workflow + `new-row.sh`
-  scaffolder.
-- **Phase 2:** content split mega-PR — reads current
-  `docs/BACKLOG.md`, generates per-row files, regenerates
-  index. One-time conflict cascade cost. Recommended to
-  drain queue to <10 BACKLOG-touching PRs first.
-- **Phase 3:** convention updates in `CONTRIBUTING.md` /
-  `AGENTS.md`.
+- **Legacy mode:** `docs/backlog/` plus `docs/BACKLOG.md` preserve
+  grandfathered B-NNNN rows and old references.
+- **Current mode:** `workitems/<zetaid>-*.md` is the backlog/workitem
+  substrate for new work.
 
 ## Cross-references
 

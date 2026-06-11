@@ -12,8 +12,9 @@
 // ADDING a new B-NNNN id fails. That's the mechanical "remember to stop" — an agent reaching for the old
 // habit gets a red gate pointing at new-workitem.ts.
 //
-// Bump procedure (rare, deliberate): if a legacy B-NNNN row genuinely must be added/renumbered, update
-// frozen-bnnnn-ids.json in the same commit — making the exception explicit + reviewable.
+// Bump procedure (rare, deliberate): if a legacy B-NNNN row genuinely must be added/renumbered,
+// update frozen-bnnnn-ids.json in the same commit — making the exception explicit + reviewable.
+// Do not use that path for normal work; ZetaIds/workitems are the backlog/workitem substrate.
 //
 // Exit: 0 = no new B-NNNN ids · 1 = new B-NNNN id(s) found.
 
@@ -61,14 +62,16 @@ function main(): number {
   }
 
   if (offenders.length === 0) {
-    process.stdout.write(`ok: docs/backlog/ frozen — no new B-NNNN ids beyond the ${frozen.size} grandfathered rows\n`);
+    process.stdout.write(
+      `ok: legacy docs/backlog/ frozen — no new B-NNNN ids beyond the ${frozen.size} grandfathered rows\n`,
+    );
     return 0;
   }
   process.stderr.write(`FAIL: ${offenders.length} NEW B-NNNN row(s) — docs/backlog/ is FROZEN.\n`);
   for (const o of offenders) process.stderr.write(`  - ${o}\n`);
   process.stderr.write(
     "\nNew work-items must be minted as conflict-free ZetaIds:\n" +
-      "  bun tools/backlog/new-workitem.ts --type task|bug --title \"...\"\n" +
+      '  bun tools/backlog/new-workitem.ts --type task|bug --title "..."\n' +
       "(→ workitems/<zetaid>-<desc>.md; no cross-agent id consensus — B-0956). If a legacy B-NNNN row\n" +
       "genuinely must be added, update tools/backlog/frozen-bnnnn-ids.json in the same commit.\n",
   );
