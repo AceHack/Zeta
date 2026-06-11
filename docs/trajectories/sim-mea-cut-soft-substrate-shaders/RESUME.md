@@ -2,9 +2,38 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-11 (the qubits/flux-capacitor night folded in).
-Current focus (Aaron): the END GOAL named — see below; Vera driving the Q# reference oracle; Max on
-universal primitives + the root-declutter (B-1023).
+Last refreshed: 2026-06-11 PM (the citizenship/colorspace wave folded in — #7613..#7624).
+Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
+ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
+(B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
+
+## The 2026-06-11 PM wave (newest first — read this block to catch up)
+
+- **Math locked:** `docs/proofs/mercer-closure-psd-preservation-theorems.md` (T1–T10: the closure IS
+  a theorem now — Schur product proved, Schoenberg from parts, conformal identity exact) + FsCheck
+  witness suite over random closure trees. Preceded by the **Math Razor P0 fixes** (#7613:
+  LinguisticSeed.dot zero-extension; ConformalGA euclidSq RBF). Math Razor as standing persona = open
+  recommendation.
+- **The citizenship quartet (A·C·T·G — METAPHOR ONLY for DNA, per Aaron's correction; the real frame is
+  COLORSPACE):** A = `Chip8Arcade.fs` (choice-cell treaty @0x1FF, self-reflection via speculateToward,
+  chooseInSociety = division of labor WITHOUT veto); C = `Chip8Citizen.fs` (governed-ZetaId handle,
+  ISigner injected §13 boundary, simSigner declared NOT-crypto; Ed25519 host-side = remaining step);
+  T = the treaty board; G = library + goal. Grok ferry preserved + corrected.
+- **Colorspace is the real build:** RGB additive = emit/forward trace; CMYK subtractive =
+  retract/antiparticle (Z-set −1). `universal/color.md` = the TV pixel contract (Emit/Absorb/
+  Capability/Animate; honest capability — CHIP-8 Mono1 **until we upgrade** via XO-CHIP-style color
+  opcode extensions, original-compatible, plane≈channel). DORA board feel = BBS/CP437/ANSI on purpose
+  ("like claude code"); observe.ts = the CYOA (playlist preserved in the grounding doc);
+  conferenceOnFork IS the branch menu. **"chip8 becomes our universal lens."**
+- **Folders:** `/saves` (named resumable states over RecordedSource) · `/futures` (unfulfilled
+  promises — Promise Theory; treaty the explicit, DISCOVER the implicit) · `/lens` (ILens product
+  optic; hooks=Rx-triggers ≠ lens=focus).
+- **Moonshot #1 captured:** DORA over LLMTV = the chronovisor (past=RecordedSource / current=live /
+  future=conferenceOnFork), honest because Markov boundaries + Reticulum addressing are tight.
+- **B-1024 filed + slice 2 done:** the hardware ladder (speak-to-TV → QEMU → microkernel/ISO → Pi →
+  MCU) + `docs/HARDWARE-CAPABILITY-MATRIX.md` (honest UNKNOWNs; friction=red cells, heat=SoftThrottle).
+  **Next buildable: slice 1 — ISO boots in QEMU in CI.** SoftScheduler loop IS the microkernel shape.
+- **Open asks on Aaron:** none blocking — colorspace channel semantics grounded; /db gate parked.
 
 ## THE END GOAL (named 2026-06-10, verbatim-anchored)
 
