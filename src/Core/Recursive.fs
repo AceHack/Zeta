@@ -260,6 +260,49 @@ type RecursiveExtensions =
         fb.Connect next
         next
 
+    /// **Gap-monotone signed-delta semi-naive LFP** (option 7 of
+    /// `docs/research/retraction-safe-semi-naive.md`; the user's "let the feedback value dip,
+    /// then recover" proposal; Feldera's production shape — DBSP VLDB 2023 §6.3).
+    ///
+    /// SHIPPED 2026-06-13: the TLA+ spec `tools/tla/specs/RecursiveSignedSemiNaive.tla` carries a
+    /// REAL step relation and TLC verified S1 (termination), S2 (fixpoint: total = seed +
+    /// body(total)), S3/S3' (gap-monotone, single-signed) at all four configured seed weights
+    /// (+1, −1, +2, −2) — the skeleton's graduation gate, cleared. The recurrence below is the
+    /// spec's, exactly:
+    ///
+    ///   tick 0:   Δ = seed,            total = seed
+    ///   tick n>0: Δ' = seedΔ_n + body(Δ),  total' = total + Δ'
+    ///   converged when Δ' consolidates to 0.
+    ///
+    /// THE FEEDBACK CELL CARRIES THE SIGNED DELTA, NOT THE TOTAL — that is the entire fix for the
+    /// refuted multi-tick case: a seed delta arriving at tick n (insert OR retract) enters the
+    /// delta stream ONCE, at its own tick, and propagates through `body^i` linearly from there.
+    /// (`RecursiveCounting` re-reads the INTEGRATED seed against the accumulated total every
+    /// tick — the recurrence that diverged from the oracle on multi-tick seeds; its refutation
+    /// witness is pinned in `RecursiveCounting.MultiSeed.Tests.fs`.)
+    ///
+    /// PRECONDITIONS (the caller's contract, from the spec): body must be Z-LINEAR (P1:
+    /// body(a+b) = body(a)+body(b); P2: body(−a) = −body(a); P3 support-monotone). `Plus`,
+    /// `IndexedJoin`, `Map` qualify; **`Distinct` is FORBIDDEN inside body** (nonlinear) — clamp
+    /// at the OUTER boundary only, after convergence. Same discipline as quantum measurement:
+    /// the nonlinear step lives at the boundary, never inside the linear circuit.
+    ///
+    /// Output: the running signed TOTAL (the integral of the delta stream). Weights may dip
+    /// negative mid-convergence and recover — that is the gap-monotone discipline working, not a
+    /// bug; consolidate/clamp only at the boundary.
+    [<Extension>]
+    static member RecursiveSignedDelta<'K when 'K : comparison>
+        (this: Circuit,
+         seed: Stream<ZSet<'K>>,
+         body: Func<Stream<ZSet<'K>>, Stream<ZSet<'K>>>) : Stream<ZSet<'K>> =
+        // Δ' = seedΔ + body(Δ): the RAW seed stream (deltas, not integrated) joins the recurrence
+        // at its own tick; the feedback cell carries the previous delta only.
+        let fb = this.FeedbackZSet<'K>()
+        let delta = this.Plus(seed, body.Invoke fb.Stream)
+        fb.Connect delta
+        // total = ∫ Δ — the gap-monotone accumulator (signed; clamp at the boundary, never here).
+        this.IntegrateZSet delta
+
     /// **Semi-naive** recursive evaluation of a monotone Datalog-like
     /// rule. Instead of recomputing `body(current)` on the full integrated
     /// relation every iteration (O(n) per step × N iterations = O(n·N)),

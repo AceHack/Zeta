@@ -237,3 +237,59 @@ let ``REFUTATION WITNESS: multi-tick seed diverges from the ClosureTable oracle 
             diverged <- true
 
     Assert.True(diverged, "the pinned multi-tick witness no longer diverges — the defect may be FIXED: restore the skipped property and retire this pin (see its header)")
+
+// ─── RecursiveSignedDelta — the signed-delta combinator, SHIPPED (TLC-verified spec, 2026-06-13) ───
+//
+// The TLA+ spec's successor-chain body, in circuit form: body(T)[k] = T[k-1], keys bounded at 8.
+// Z-linear (Map is linear; the bound is support filtering, not weight logic) — precondition P1-P3.
+
+let private chainBody (c: Circuit) (s: Stream<ZSet<int>>) : Stream<ZSet<int>> =
+    c.FlatMap(s, fun k -> if k < 8 then ZSet.ofSeq [ k + 1, 1L ] else ZSet<int>.Empty)
+
+let private weightOf (z: ZSet<int>) (k: int) : int64 =
+    z.AsSpan().ToArray() |> Array.sumBy (fun (e: ZEntry<int>) -> if e.Key = k then e.Weight else 0L)
+
+[<Fact>]
+let ``SIGNED-DELTA one-shot: the chain LFP from a single seed matches the hand oracle (S2, in code)`` () =
+    let c = Circuit()
+    let input = c.ZSetInput<int>()
+    let stream = c.RecursiveSignedDelta(input.Stream, fun s -> chainBody c s)
+    let out = OutputHandle stream.Op
+    c.Build()
+    input.Send(ZSet.ofSeq [ 0, 1L ])
+    let struct (_, converged) = c.IterateToFixedPoint(stream, 40)
+    Assert.True(converged)
+    // total = seed + body(total): keys 0..8 all weight 1 (the chain, exactly)
+    for k in 0 .. 8 do
+        Assert.Equal(1L, weightOf out.Current k)
+
+[<Fact>]
+let ``SIGNED-DELTA multi-tick INSERT: a seed arriving at a later tick joins the LFP exactly once (the refuted case, fixed)`` () =
+    let c = Circuit()
+    let input = c.ZSetInput<int>()
+    let stream = c.RecursiveSignedDelta(input.Stream, fun s -> chainBody c s)
+    let out = OutputHandle stream.Op
+    c.Build()
+    input.Send(ZSet.ofSeq [ 0, 1L ])
+    c.IterateToFixedPoint(stream, 40) |> ignore
+    input.Send(ZSet.ofSeq [ 3, 1L ]) // mid-LFP second seed — THE multi-tick shape that refuted counting
+    c.IterateToFixedPoint(stream, 40) |> ignore
+    // keys 0..2: weight 1 (first chain only); keys 3..8: weight 2 (both chains pass through)
+    for k in 0 .. 2 do
+        Assert.Equal(1L, weightOf out.Current k)
+    for k in 3 .. 8 do
+        Assert.Equal(2L, weightOf out.Current k)
+
+[<Fact>]
+let ``SIGNED-DELTA RETRACTION: insert then retract converges to ZERO everywhere — the dip-and-recover discipline, no tombstones`` () =
+    let c = Circuit()
+    let input = c.ZSetInput<int>()
+    let stream = c.RecursiveSignedDelta(input.Stream, fun s -> chainBody c s)
+    let out = OutputHandle stream.Op
+    c.Build()
+    input.Send(ZSet.ofSeq [ 0, 1L ])
+    c.IterateToFixedPoint(stream, 40) |> ignore
+    input.Send(ZSet.ofSeq [ 0, -1L ]) // the retraction: a NEGATIVE delta through the same linear body
+    c.IterateToFixedPoint(stream, 40) |> ignore
+    for k in 0 .. 8 do
+        Assert.Equal(0L, weightOf out.Current k) // every derivation cancelled exactly
