@@ -73,7 +73,11 @@ module ShapeRender =
             :: { Name = "right-cloth"; Mask = 4uy; Points = [ pt 36 0; pt 63 0; pt 63 31; pt 36 31; pt 36 0 ] }
             :: stitches
         | "shape-braid" ->
-            // 3 strands at columns 20/32/44; each crossing in the word swaps two strands over 2 rows.
+            // 3 strands at columns 20/32/44; each crossing in the word swaps two strands over 2
+            // rows. THE OVER-UNDER REGISTER (the braid's memory, drawn): at every crossing the
+            // UNDER strand's diagonal carries an occlusion GAP around the midpoint, so the picture
+            // says WHO crossed OVER whom — sigma^2 != identity is visible, not just provable.
+            // A gapped strand becomes several polylines (runs), each its own stroke.
             let word =
                 MediaLines.field "constant" "word" d
                 |> Option.defaultValue "1,2,1"
@@ -82,16 +86,39 @@ module ShapeRender =
             let mutable perm = [| 0; 1; 2 |] // strand index occupying each column slot
             let rows = 12
             let rowsPerCross = rows / (List.length word + 1)
-            let paths = Array.init 3 (fun _ -> ResizeArray<int * int>())
-            for slot in 0 .. 2 do paths.[perm.[slot]].Add(pt cols.[slot] 0)
+            // per strand: the list of runs; a gap closes the current run and opens the next
+            let runs = Array.init 3 (fun _ -> ResizeArray<ResizeArray<int * int>>())
+            for slot in 0 .. 2 do
+                let r = ResizeArray<int * int>()
+                r.Add(pt cols.[slot] 0)
+                runs.[perm.[slot]].Add r
             word
             |> List.iteri (fun i c ->
                 let y = (i + 1) * rowsPerCross
                 let a = abs c - 1
+                // positive crossing: the strand in slot a goes OVER; the slot a+1 strand goes UNDER
+                // (negative reverses it) — Artin's sign carried into the ink.
+                let overSlot, underSlot = (if c > 0 then a, a + 1 else a + 1, a)
+                let under = perm.[underSlot]
+                let x0, y0 = List.last (List.ofSeq (runs.[under].[runs.[under].Count - 1]))
+                let x1, y1 = pt cols.[(if underSlot = a then a + 1 else a)] y
+                // occlusion gap: break the under diagonal at 2/5 and 3/5 of its length (integers)
+                let cur = runs.[under].[runs.[under].Count - 1]
+                cur.Add(x0 + (x1 - x0) * 2 / 5, y0 + (y1 - y0) * 2 / 5)
+                let next = ResizeArray<int * int>()
+                next.Add(x0 + (x1 - x0) * 3 / 5, y0 + (y1 - y0) * 3 / 5)
+                runs.[under].Add next
                 let t = perm.[a] in perm.[a] <- perm.[a + 1]; perm.[a + 1] <- t
-                for slot in 0 .. 2 do paths.[perm.[slot]].Add(pt cols.[slot] y))
-            for slot in 0 .. 2 do paths.[perm.[slot]].Add(pt cols.[slot] rows)
-            [ for s in 0 .. 2 -> { Name = sprintf "strand-%d" s; Mask = byte (1 <<< s); Points = List.ofSeq paths.[s] } ]
+                ignore overSlot
+                for slot in 0 .. 2 do
+                    runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] y))
+            for slot in 0 .. 2 do
+                runs.[perm.[slot]].[runs.[perm.[slot]].Count - 1].Add(pt cols.[slot] rows)
+            [ for s in 0 .. 2 do
+                  for r in 0 .. runs.[s].Count - 1 ->
+                      { Name = (if r = 0 then sprintf "strand-%d" s else sprintf "strand-%d-r%d" s r)
+                        Mask = byte (1 <<< s)
+                        Points = List.ofSeq runs.[s].[r] } ]
         | "shape-shadow-loop" ->
             // the lemniscate of Gerono: x = cos t, y = sin t * cos t — sampled so the crossing is
             // EXACT (steps % 4 = 0 puts t = pi/2 and 3pi/2 on the integer center). Floats stay

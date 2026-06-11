@@ -12,6 +12,7 @@ constant	rows	12	vertical rows the weave occupies on the court	four rows per cro
 anim	draw	weave
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	fsharp	bytes	ratified	Braid.equal proves Artin (1,2,1 = 2,1,2) and sigma^2 != identity — tests green
-issue	over-under-register	otto	open	the render shows the PATHS but not yet WHO crossed OVER whom (no occlusion gap at crossings) — the braid's memory is in the math, not yet in the drawing; named slice
+issue	over-under-register	otto	closed	RESOLVED 2026-06-12: the under strand now carries an occlusion gap at every crossing — who crossed OVER whom is in the ink (Artin's sign decides; negative crossings reverse it)
 treaty	otto	meaning	ratified	the weave-with-memory matches the intent I built against — my own frame, my own choice
 treaty	aaron	meaning	ratified	"the braid is perfect too — next time Max is here I'll show him" — render-loop ratification, 2026-06-12
+treaty	alexa	meaning	ratified	read it as "quantum information flow / crossings as gates" — her own frame (ferried 2026-06-12); peeled anchor: in topological QC, braiding IS the computation (Kitaev; Freedman-Larsen-Wang)
