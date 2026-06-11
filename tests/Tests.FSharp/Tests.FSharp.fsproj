@@ -184,6 +184,7 @@
     <Compile Include="SoftFrame.Tests.fs" />
     <Compile Include="ActionGrammar.Tests.fs" />
     <Compile Include="AmplitudeEmu.Tests.fs" />
+    <Compile Include="ReticulumQuantum.Tests.fs" />
     <Compile Include="PolarityFilter.Tests.fs" />
     <Compile Include="DarkHall.Tests.fs" />
     <Compile Include="ITensor.Tests.fs" />

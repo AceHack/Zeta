@@ -1,11 +1,12 @@
 ---
 id: 081KTGGXMQ008QG0R002BK46CF
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: windows-groupcommitdiskdeltalog-scanentries-io-sharingviolat
 title: "Windows: GroupCommitDiskDeltaLog.scanEntries IO_SharingViolation on torn-write recovery (DiskDeltaLog.fs:231) — file opened without share mode"
 created: 2026-06-07T07:49:23.808Z
+completed: 2026-06-11T04:09:40Z
 depends_on: []
 composes_with: []
 ---
@@ -80,3 +81,18 @@ fixed — a naive `FileShare` widening is the tempting-but-wrong fix this note g
 - `tests/**/DiskDeltaLogTests` ("group-commit segment log truncates torn trailing record on recovery").
 - Relates to the `Log` noun (`081KTGD5JMD`) backend + the fsync durability gap (`Durability.fs` P0).
   Distinct from the CI infra flake `081KTGF7GE8` (that's a `kind` download 504; this is a real code bug).
+
+## Resolution (Vera 2026-06-11)
+
+Closed as fixed in current `origin/main`. The torn-write regression test now scopes the artificial
+`FileShare.Read` append handle so it is disposed before recovery reopens the segment for truncation,
+while `GroupCommitDiskDeltaLog` keeps the append writer at `FileShare.Read` to preserve the
+single-writer invariant.
+
+Verification:
+
+```bash
+dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~DiskDeltaLogTests"
+```
+
+Result: 17 passed, 0 failed, 0 skipped.
