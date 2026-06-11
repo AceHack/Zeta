@@ -19,15 +19,63 @@ let private phase (angle: float) : Complex =
 let private frame (seed: uint64) =
     Chip8Cow.create seed |> Chip8Cow.loadRom [| 0x60uy; byte seed |]
 
-let rec private findRepoRoot (dir: DirectoryInfo) =
-    if File.Exists(Path.Combine(dir.FullName, "Zeta.sln")) then dir.FullName
-    elif isNull dir.Parent then failwith "Could not find repository root from test output directory."
-    else findRepoRoot dir.Parent
+let private goldenRelativePath =
+    Path.Combine("tools", "qsharp-oracle", "qsharp-golden.json")
 
-let private root = findRepoRoot (DirectoryInfo(__SOURCE_DIRECTORY__))
+let private isRepoRoot (path: string) =
+    File.Exists(Path.Combine(path, "Zeta.sln"))
+    && File.Exists(Path.Combine(path, goldenRelativePath))
+
+let rec private tryFindRepoRoot (dir: DirectoryInfo) =
+    if isNull dir then
+        None
+    elif isRepoRoot dir.FullName then
+        Some dir.FullName
+    elif isNull dir.Parent then
+        None
+    else
+        tryFindRepoRoot dir.Parent
+
+let private tryDirectory (path: string) =
+    if String.IsNullOrWhiteSpace path then
+        None
+    else
+        try
+            let dir = DirectoryInfo(path)
+
+            if dir.Exists then
+                tryFindRepoRoot dir
+            else
+                None
+        with
+        | :? ArgumentException
+        | :? NotSupportedException
+        | :? PathTooLongException -> None
+
+let private rootCandidates =
+    [ Environment.GetEnvironmentVariable("ZETA_REPO_ROOT")
+      Environment.GetEnvironmentVariable("GITHUB_WORKSPACE")
+      AppContext.BaseDirectory
+      Directory.GetCurrentDirectory()
+      __SOURCE_DIRECTORY__ ]
+
+let private root =
+    rootCandidates
+    |> List.choose tryDirectory
+    |> List.tryHead
+    |> Option.defaultWith (fun () ->
+        rootCandidates
+        |> List.map (fun candidate ->
+            if isNull candidate then
+                "<null>"
+            else
+                candidate)
+        |> String.concat "; "
+        |> failwithf "Could not find repository root containing %s from candidates: %s" goldenRelativePath)
+
 
 let private goldenPath =
-    Path.Combine(root, "tools", "qsharp-oracle", "qsharp-golden.json")
+    Path.Combine(root, goldenRelativePath)
 
 let private golden =
     JsonDocument.Parse(File.ReadAllText(goldenPath)).RootElement
