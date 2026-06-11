@@ -76,6 +76,32 @@ Exactly Landauer applied to the verb, and it surfaces a founding design decision
   storage rather than heat; "losing it should be temporary, not final" is **reversible computing as an
   ethic**.
 
+## Paying the Bennett price on a TIERED hierarchy — "this is the database we are building" (Aaron)
+
+> Aaron 2026-06-10: "with Zeta, when done in F#, we will have both in-memory and disk versions for
+> spillover." · "**this is the database we are building.**"
+
+The Bennett memory price is not paid on one flat medium — it is paid across a **temperature-graded storage
+hierarchy**, and the substrate already has the bones:
+
+- **Hot** — the in-memory spine (recent, fast, the working reversible state).
+- **Spillover** — `DiskSpine`/`DiskSpineAsync`: history **cools outward** to disk as it grows; nothing is
+  erased, it just moves to colder, cheaper media. "**Cold storage**" is *literally* the thermodynamic term
+  the industry already uses — the memory hierarchy IS a temperature gradient, and spillover is the cooling
+  flow.
+- **The budget knob** — `SpineSelector` auto-picks the spine implementation by **workload size + memory
+  budget** (benchmark-driven): the Bennett price gets paid in the cheapest adequate medium.
+- **Recovery** — `RecoverableSpine` (cadenced snapshots + `IDeltaLog` restore→replay) keeps the cooled
+  history *reconstructible* — cold but never dead; reversibility survives the spill.
+
+**And this IS the database** (the identity statement): Zeta.Core's own description is "Database Stream
+Processing (DBSP) for .NET" — what we are building is a **reversible, retraction-native, finite-resolution
+database** that pays Bennett's memory price across a hot→cold tiered hierarchy **instead of paying
+Landauer's heat** — erasure-free by design (Z-set retraction, event-sourced cuts), incremental by algebra
+(DBSP — deltas cancel instead of forking), bounded per room (the Markov blanket / BigFloat resolution),
+with the rooms/qubits framework as its execution model and the dev room as its console. The database that
+never burns its history — it cools it.
+
 ## Beacon anchors
 
 Landauer, *Irreversibility and Heat Generation in the Computing Process* (IBM JRD 1961) · Bennett,
