@@ -50,3 +50,57 @@ module FourCorner =
     /// Has feedback crossed in either direction? (the backpressure corners)
     let hasFeedback (o: FourCornerOwnership<'TIn, 'TOut, 'TOutFeedback, 'TInFeedback>) : bool =
         o.TOutFeedback.IsSome || o.TInFeedback.IsSome
+
+    // ── The TREATY codec (B-1022 trigger FIRED: "we are the consumer for our treaties") ──
+    // Canonical text-line wire form for the string-quad instantiation (the operator-channel shape).
+    // The F# oracle locks these bytes first; C#/TS/Rust conform to the same golden lines. Format:
+    //   fourcorner1<TAB>esc(tIn)<TAB>opt<TAB>opt<TAB>opt   where opt = "-" (None) | "+" + esc(value)
+    // Escaping: \\ \t \n \r (the RecordedSource house style). Deterministic: same value ⇒ same bytes.
+
+    let private esc (s: string) =
+        s.Replace("\\", "\\\\").Replace("\t", "\\t").Replace("\n", "\\n").Replace("\r", "\\r")
+
+    let private unesc (s: string) =
+        let sb = System.Text.StringBuilder()
+        let mutable i = 0
+        while i < s.Length do
+            if s.[i] = '\\' && i + 1 < s.Length then
+                (match s.[i + 1] with
+                 | 't' -> sb.Append '\t'
+                 | 'n' -> sb.Append '\n'
+                 | 'r' -> sb.Append '\r'
+                 | c -> sb.Append c)
+                |> ignore
+                i <- i + 2
+            else
+                sb.Append s.[i] |> ignore
+                i <- i + 1
+        sb.ToString()
+
+    let private optToText =
+        function
+        | None -> "-"
+        | Some (v: string) -> "+" + esc v
+
+    let private optOfText (s: string) : string option voption =
+        if s = "-" then ValueSome None
+        elif s.StartsWith "+" then ValueSome(Some(unesc (s.Substring 1)))
+        else ValueNone // malformed
+
+    /// Serialize the string-quad four-corner to its canonical treaty line (byte-deterministic).
+    let toLine (o: FourCornerOwnership<string, string, string, string>) : string =
+        sprintf "fourcorner1\t%s\t%s\t%s\t%s" (esc o.TIn) (optToText o.TOut) (optToText o.TOutFeedback) (optToText o.TInFeedback)
+
+    /// Parse a canonical treaty line (inverse of `toLine`); `None` on malformed input (honest refusal).
+    let ofLine (line: string) : FourCornerOwnership<string, string, string, string> option =
+        match line.Split('\t') with
+        | [| "fourcorner1"; tIn; o1; o2; o3 |] ->
+            match optOfText o1, optOfText o2, optOfText o3 with
+            | ValueSome tOut, ValueSome tOutFb, ValueSome tInFb ->
+                Some
+                    { TIn = unesc tIn
+                      TOut = tOut
+                      TOutFeedback = tOutFb
+                      TInFeedback = tInFb }
+            | _ -> None
+        | _ -> None

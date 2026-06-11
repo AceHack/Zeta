@@ -1,0 +1,10 @@
+# four-corner-golden.lines — the FourCornerOwnership treaty golden vectors (B-1022 trigger fired:
+# "we are the consumer for our treaties"). One canonical line per vector; the F# oracle locks these
+# bytes; C#/TS/Rust conform to the SAME lines. Format:
+#   fourcorner1<TAB>esc(tIn)<TAB>opt<TAB>opt<TAB>opt   where opt = "-" | "+"+esc(value)
+# Escapes: \\ \t \n \r. Lines starting with # are comments.
+fourcorner1	operator-message	+emitted	+conv-feedback	+co-owned-ack
+fourcorner1	only-input	-	-	-
+fourcorner1	tab\there\nand-newline	+back\\slash	-	+ends-with-tab\t
+fourcorner1		+	-	-
+fourcorner1	héllo-wörld-⊕-unicode	-	+反馈	-
