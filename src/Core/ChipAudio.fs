@@ -61,6 +61,13 @@ module ChipAudio =
     let harmonize (num: int) (den: int) (freqMilli: int) : int =
         freqMilli * max 1 num / max 1 den
 
+    /// THE SOUL CLAUSE (Aaron, on the freestyle: "the imperfections where the soul lives, within the
+    /// perfection"): the perfect clock is the CANVAS, never the performance — the bounded deviations
+    /// (the freestyle offsets, the bent notes, the humanized micro-timing) are where the soul lives.
+    /// Perfection is what makes the imperfection LEGIBLE: against an exact grid, every deviation is a
+    /// choice, visible, replayable, owned. (Why quantized music feels dead and live music doesn't —
+    /// and why our solos replay: the soul here is deterministic deviation, not noise.)
+    ///
     /// FREESTYLE WITHIN THE HARMONY (Aaron, completing the figure: "then you can move in rhythm and
     /// use feedback channels in the moment to freestyle — within the harmony"): the clock is never
     /// touched (the band does not stop); the variation rides the FEEDBACK CORNER as a BOUNDED phase
@@ -70,6 +77,13 @@ module ChipAudio =
     let freestyle (maxStep: float) (target: float) (observed: float) (phaseOffset: float) : float =
         TimeGen.feedback target observed maxStep phaseOffset
 
+    /// THE MULTITRACK LAW (Aaron: "multiple overlapping streamed seeds in perfect ratio can have each
+    /// percussion or rhythm section independently mic'd, basically — but still aligned"): each section
+    /// runs its OWN generator (its own seed = its own mic — independent character, texture, capture,
+    /// replay) while ALIGNMENT comes from the TICK ARITHMETIC alone (the rational frequency ratios) —
+    /// coincidences below is seed-independent, so sections recorded apart still land their downbeats
+    /// together. The 8-track, literally: one tape, independent tracks, the ratio is the sprocket.
+    ///
     /// Two voices on ONE generator at a rational ratio: returns tick indices (within `span`) where
     /// their phases COINCIDE (both at phase 0 mod 1000) — the downbeats both hit without ever
     /// speaking. Nonempty for any rational ratio: consonance is a theorem of the common cause.

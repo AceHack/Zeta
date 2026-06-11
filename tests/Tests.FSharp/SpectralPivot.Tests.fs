@@ -85,3 +85,17 @@ let ``FREESTYLE within the harmony: the solo bends the phase (bounded), never th
     Assert.Equal(off1, ChipAudio.freestyle 0.05 1.2 0.9 0.0) // the same solo replays (no hidden adaptation)
     // the band's downbeats are untouched by the solo: coincidences depend only on the shared clock
     Assert.Equal<int list>(ChipAudio.coincidences 125 250 16, [ 8; 16 ])
+
+[<Fact>]
+let ``THE MULTITRACK LAW: sections on DIFFERENT seeds (independently mic'd) still align — and keep their own character`` () =
+    // drums and bass: each its own generator (its own seed = its own mic)
+    let drums = TimeGen.mk "drums" 1 0xD2D2UL TimeGen.PhasorTsirelson
+    let bass = TimeGen.mk "bass" 1 0xBA55UL TimeGen.PhasorTsirelson
+    // ALIGNMENT is tick arithmetic (the ratio), independent of either seed:
+    Assert.Equal<int list>([ 8; 16; 24; 32 ], ChipAudio.coincidences 125 250 32)
+    // CHARACTER is the seed: the same waveform/freq/tick sounds DIFFERENT per section (its own mic)
+    Assert.NotEqual(
+        ChipAudio.voiceSample drums 1UL ChipAudio.Saw 125 5,
+        ChipAudio.voiceSample bass 1UL ChipAudio.Saw 125 5)
+    // and each section replays ITSELF exactly (independently recorded, independently replayable)
+    Assert.Equal(ChipAudio.voiceSample drums 1UL ChipAudio.Saw 125 5, ChipAudio.voiceSample drums 1UL ChipAudio.Saw 125 5)
