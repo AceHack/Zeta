@@ -48,6 +48,21 @@ our machinery. The mapping is one-to-one:
 speculation, rollback is retraction (free, because history is kept), desync is a treaty violation, and
 cheating is an ambient-entropy leak — Reticulum carries the crossings, the seed carries the world.**
 
+## Coda — "I was trying to cheat and came up with anti-cheat lol" (Aaron)
+
+The whole arc that produced §13 BEGAN as cheating: Cheat Engine (the hard→soft lift), GameFingerprint,
+the arcade, the handle **acehack**. And its endpoint is the strongest anti-cheat formalism on the table.
+That is not an accident — it is the **red-team principle** (poacher-turned-gamekeeper; offensive security
+makes the best defense): *you can only quarantine entropy if you know every way it leaks, and the person
+who spent years finding the leaks knows them all.* Deeper: the cheat and the anti-cheat are the **same
+knowledge** — the complete ledger of influence channels — differing only in which side of the membrane you
+stand on (frame-relative, like backpressure). The cheat interface's ethic (`universal/cheat.md`: "if
+society says your cheat is lame, take the feedback as the win") and §13 were siblings all along: a cheat
+that crosses a *declared* membrane and survives judgment is a feature; one that sneaks an ambient channel
+is a leak. Beacon: red teaming / offensive-security-informs-defense (the whole penetration-testing
+tradition); Kerckhoffs (the defense must survive the attacker knowing everything — here the defender IS
+the attacker).
+
 ## Beacon anchors / peel
 
 GGPO (Tony Cannon — rollback netcode; fighting games) · client-side prediction (John Carmack,
