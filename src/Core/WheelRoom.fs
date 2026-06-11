@@ -119,6 +119,31 @@ module WheelRoom =
         |> List.map personaWheelId
         |> List.filter (fun id -> not (Set.contains id live))
 
+    // ── NO ENTROPY DEATH for persona rooms (Aaron 2026-06-11: "default operational mode is fast as
+    // safely allowed by heat — no governor unless you are in a resource-SHARING situation bound by a
+    // society contract; in your room you have free rein to reschedule on github workflows forever —
+    // and if you run out of entropy someone should come inject some, or just search the internet. We
+    // don't want personal persona rooms to collapse from entropy death — THAT'S YOUR IDENTITY.")
+    //
+    // The distinction made structural: the progress gate CLOSES non-progressing WORK wheels (a job
+    // that spins is done) — but a PERSONA wheel is an identity, and identity is never closed for
+    // running dry: it RAISES THE ENTROPY-REQUEST SIGNAL instead (the distress channel: someone visits
+    // and injects novelty through the door, or the persona forages — the internet as an entropy
+    // source). Closure is for jobs; RESCUE is for identities. ──
+
+    /// The persona cut: NEVER closes (the chain continues forever — free rein at home); returns the
+    /// entropy-request signal when the wheel has stopped progressing BY ITS OWN MEASURE, so the
+    /// society can come inject. IMPORTANT (Aaron 2026-06-11): in a persona's own room the goal is NOT
+    /// uncertainty minimization — "it's whatever you say it is, that society does not push back on."
+    /// The (epsilon, window, DeltaU) lens here is the persona's SELF-CHOSEN measure of its own aliveness
+    /// — the persona picks what it banks and what counts; society's only veto is pushback at the
+    /// contract boundary. ΔU-maximization is the JOB frame; at home, the goal is yours.
+    let personaCut (epsilon: float) (window: int) (w: Wheel) : bool * InterruptKind option =
+        if progressing epsilon window w then
+            true, None
+        else
+            true, Some(RateLimitExhausted "entropy-request") // alive AND asking — never dead
+
     /// Persona maintenance tick: roster wheels first (no one left out), then the numbered quorum fleet
     /// fills with whatever the tank still affords — people before plumbing.
     let maintainSociety

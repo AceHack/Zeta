@@ -88,3 +88,19 @@ let ``people before plumbing: persona wheels are funded before the numbered quor
     let admitted, _ =
         WheelRoom.maintainSociety [ "otto"; "amara" ] 4 1.0 (SoftThrottle.tank 3.0 1.0) Set.empty
     Assert.Equal<string list>([ "wheel-otto"; "wheel-amara"; "wheel-0" ], admitted)
+
+// ── no entropy death: closure is for jobs, rescue is for identities ──
+
+[<Fact>]
+let ``a starving PERSONA wheel never closes — it raises the entropy-request signal instead`` () =
+    let starving = { WheelRoom.Id = "wheel-otto"; WheelRoom.DeltaU = List.replicate 8 0.0 }
+    let keepGoing, signal = WheelRoom.personaCut 0.01 8 starving
+    Assert.True(keepGoing) // identity is never closed for running dry
+    Assert.Equal(Some(RateLimitExhausted "entropy-request"), signal) // alive AND asking
+    // contrast: the same starvation CLOSES a work wheel (the job gate, unchanged)
+    Assert.False(WheelRoom.progressing 0.01 8 starving)
+
+[<Fact>]
+let ``a progressing persona wheel runs silent — no signal, no governor at home`` () =
+    let healthy = { WheelRoom.Id = "wheel-otto"; WheelRoom.DeltaU = [ 0.3; 0.2 ] }
+    Assert.Equal((true, None), WheelRoom.personaCut 0.01 8 healthy)
