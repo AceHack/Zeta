@@ -20,7 +20,7 @@ navigation. Anchor: the **Final Fantasy VII Gold Saucer** venues mapped onto Zet
 
 | landmark | the familiar place | the work that lives there | code (the fittings) | status |
 |---|---|---|---|---|
-| **salon** | a hairdresser's salon | **quantum physics** — `braid`/`weave`/`tie` (topology *is* hairdressing); the effective-qubit substrate | `QubitIso` (Pauli/SU(2)), `Cl3` (Clifford), `AmplitudeEmu` (interference), `BellTest` (Tsirelson in DST), `CayleyDickson` (2→4→8), `FingerprintPrism.soft`/`SoftTie` | **furnished**, no door yet |
+| **salon** | a hairdresser's salon | **quantum physics** — `braid`/`weave`/`tie` (topology *is* hairdressing); the effective-qubit substrate | `QubitIso` (Pauli/SU(2)), `Cl3` (Clifford), `AmplitudeEmu` (interference), `BellTest` (Tsirelson in DST), `CayleyDickson` (2→4→8), `FingerprintPrism.soft`/`SoftTie` | **DOOR LANDED** — `src/Core/Salon.fs` (stations registry + live `tie` entrance) |
 | **darkhall** | the dim arcade hall of cabinets | **the arcade** — emulators / VMs / games; CHIP-8 and the hard→soft→shader stack | `Chip8`, `Chip8Cow`, `SoftChip8`, `SoftChip8Scheduler`, `GameFingerprint`/`GamePortfolio`/`GameCatalog`, `FingerprintPrism`, `Sim` | **furnished**, no door yet |
 | **bowling alley** | a bowling alley | *TBD — Aaron to name the work* | — | named, unmapped |
 | **skatium** | a roller/skating rink | *TBD — Aaron to name the work* | — | named, unmapped |
