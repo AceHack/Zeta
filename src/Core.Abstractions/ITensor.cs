@@ -26,14 +26,14 @@ public interface ITensor<TCoord, TWeight>
     /// Number of explicitly-stored entries: the support size for sparse tensors, the full cell count for
     /// dense tensors.
     /// </summary>
-    long StoredCount { get; }
+    public long StoredCount { get; }
 
     /// <summary>True when storage is sparse (only nonzero / present coordinates are materialized).</summary>
-    bool IsSparse { get; }
+    public bool IsSparse { get; }
 
     /// <summary>
     /// The explicitly-stored (coordinate, value) entries: the support for sparse tensors, every cell for
     /// dense. Order is implementation-defined but stable (sparse: ordinal by coordinate).
     /// </summary>
-    IEnumerable<KeyValuePair<TCoord, TWeight>> StoredEntries { get; }
+    public IEnumerable<KeyValuePair<TCoord, TWeight>> StoredEntries { get; }
 }

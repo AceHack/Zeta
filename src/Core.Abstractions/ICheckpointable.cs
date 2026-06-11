@@ -5,7 +5,7 @@ namespace Zeta.Core;
 /// </summary>
 public interface ICheckpointable
 {
-    void SaveState(ICheckpointWriter writer);
-    void LoadState(ICheckpointReader reader);
-    int StateVersion { get; }
+    public void SaveState(ICheckpointWriter writer);
+    public void LoadState(ICheckpointReader reader);
+    public int StateVersion { get; }
 }

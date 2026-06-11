@@ -11,11 +11,11 @@ namespace Zeta.Core;
 public interface ISnapshotStore<TKey, TState>
 {
     /// <summary>Persist state at seq; update the durable manifest; return the pointer.</summary>
-    Task<SnapshotPointer> WriteAsync(long seq, TState state, CancellationToken ct);
+    public Task<SnapshotPointer> WriteAsync(long seq, TState state, CancellationToken ct);
 
     /// <summary>Load a snapshot by pointer.</summary>
-    Task<TState> ReadAsync(SnapshotPointer snapshot, CancellationToken ct);
+    public Task<TState> ReadAsync(SnapshotPointer snapshot, CancellationToken ct);
 
     /// <summary>The latest snapshot pointer from the manifest, or null if none written.</summary>
-    Task<SnapshotPointer?> LatestAsync(CancellationToken ct);
+    public Task<SnapshotPointer?> LatestAsync(CancellationToken ct);
 }

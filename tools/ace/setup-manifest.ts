@@ -65,7 +65,7 @@ export function pointerFromSetupManifest(args: {
     manifest: args.manifest,
     dependencies: parseSetupManifest(args.text).map((entry) => {
       const dep: PackageManagerPointerDependency = {
-        ecosystem: args.ecosystem,
+        ecosystem: entry.attrs.ecosystem !== undefined ? entry.attrs.ecosystem : args.ecosystem,
         spec: entry.spec,
       };
       return {

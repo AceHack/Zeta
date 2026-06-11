@@ -9,13 +9,13 @@ namespace Zeta.Core;
 /// </summary>
 public interface ICheckpointStore
 {
-    ValueTask SaveCheckpointAsync(
+    public ValueTask SaveCheckpointAsync(
         string circuitId,
         long tick,
         Tuple<int, ICheckpointable>[] states,
         CancellationToken ct);
 
-    ValueTask<CheckpointLoadResult?> LoadCheckpointAsync(
+    public ValueTask<CheckpointLoadResult?> LoadCheckpointAsync(
         string circuitId,
         CancellationToken ct);
 }

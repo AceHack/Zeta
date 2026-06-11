@@ -5,5 +5,5 @@ namespace Zeta.Core;
 /// </summary>
 public interface IAsyncOperator
 {
-    bool IsAsync { get; }
+    public bool IsAsync { get; }
 }

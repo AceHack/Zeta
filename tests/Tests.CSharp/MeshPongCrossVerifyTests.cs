@@ -1,11 +1,11 @@
 // MeshPong cross-verify — the C# oracle replays the SAME game-state treaty session the F# oracle locked
 // (src/Core.TypeScript/mesh-pong/golden-vectors.lines): four compilers, one match, one world.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Xunit;
-using System;
 using Zeta.Core.CSharp;
 
 namespace Zeta.Tests.CSharp;

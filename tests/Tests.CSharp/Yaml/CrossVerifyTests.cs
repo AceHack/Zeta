@@ -44,36 +44,36 @@ public class CrossVerifyTests
 
     private static string KindName(ScalarKind k) => k switch
     {
-        ScalarKind.Null  => "Null",
-        ScalarKind.Bool  => "Bool",
-        ScalarKind.Int   => "Int",
+        ScalarKind.Null => "Null",
+        ScalarKind.Bool => "Bool",
+        ScalarKind.Int => "Int",
         ScalarKind.Float => "Float",
-        _                => "Str",
+        _ => "Str",
     };
 
     private static string StyleName(ScalarStyle s) => s switch
     {
         ScalarStyle.SingleQuoted => "SingleQuoted",
         ScalarStyle.DoubleQuoted => "DoubleQuoted",
-        _                        => "Plain",
+        _ => "Plain",
     };
 
     private static ScalarKind KindOfName(string name) => name switch
     {
-        "Null"  => ScalarKind.Null,
-        "Bool"  => ScalarKind.Bool,
-        "Int"   => ScalarKind.Int,
+        "Null" => ScalarKind.Null,
+        "Bool" => ScalarKind.Bool,
+        "Int" => ScalarKind.Int,
         "Float" => ScalarKind.Float,
-        "Str"   => ScalarKind.Str,
-        _       => throw new InvalidOperationException($"Unknown ScalarKind name: {name}"),
+        "Str" => ScalarKind.Str,
+        _ => throw new InvalidOperationException($"Unknown ScalarKind name: {name}"),
     };
 
     private static ScalarStyle StyleOfName(string name) => name switch
     {
         "SingleQuoted" => ScalarStyle.SingleQuoted,
         "DoubleQuoted" => ScalarStyle.DoubleQuoted,
-        "Plain"        => ScalarStyle.Plain,
-        _              => throw new InvalidOperationException($"Unknown ScalarStyle name: {name}"),
+        "Plain" => ScalarStyle.Plain,
+        _ => throw new InvalidOperationException($"Unknown ScalarStyle name: {name}"),
     };
 
     // -------------------------------------------------------------------------
@@ -85,12 +85,12 @@ public class CrossVerifyTests
         string tag = el.GetProperty("e").GetString()!;
         return tag switch
         {
-            "StreamStart"   => new YamlEvent.StreamStart(),
-            "StreamEnd"     => new YamlEvent.StreamEnd(),
-            "MappingStart"  => new YamlEvent.MappingStart(),
-            "MappingEnd"    => new YamlEvent.MappingEnd(),
+            "StreamStart" => new YamlEvent.StreamStart(),
+            "StreamEnd" => new YamlEvent.StreamEnd(),
+            "MappingStart" => new YamlEvent.MappingStart(),
+            "MappingEnd" => new YamlEvent.MappingEnd(),
             "SequenceStart" => new YamlEvent.SequenceStart(),
-            "SequenceEnd"   => new YamlEvent.SequenceEnd(),
+            "SequenceEnd" => new YamlEvent.SequenceEnd(),
             "Scalar" =>
                 new YamlEvent.Scalar(
                     el.GetProperty("raw").GetString()!,
@@ -108,20 +108,20 @@ public class CrossVerifyTests
         {
             // { "e": "Scalar", "raw": "...", "kind": "...", "style": "..." }
             // Use JsonSerializer to handle escaping of raw and kind/style strings.
-            string rawJson  = JsonSerializer.Serialize(sc.Raw);
+            string rawJson = JsonSerializer.Serialize(sc.Raw);
             string kindJson = JsonSerializer.Serialize(KindName(sc.Kind));
             string styleJson = JsonSerializer.Serialize(StyleName(sc.Style));
             return $"{{\"e\":\"Scalar\",\"raw\":{rawJson},\"kind\":{kindJson},\"style\":{styleJson}}}";
         }
         string tag = e switch
         {
-            YamlEvent.StreamStart   => "StreamStart",
-            YamlEvent.StreamEnd     => "StreamEnd",
-            YamlEvent.MappingStart  => "MappingStart",
-            YamlEvent.MappingEnd    => "MappingEnd",
+            YamlEvent.StreamStart => "StreamStart",
+            YamlEvent.StreamEnd => "StreamEnd",
+            YamlEvent.MappingStart => "MappingStart",
+            YamlEvent.MappingEnd => "MappingEnd",
             YamlEvent.SequenceStart => "SequenceStart",
-            YamlEvent.SequenceEnd   => "SequenceEnd",
-            _                       => throw new InvalidOperationException($"Unknown event: {e}"),
+            YamlEvent.SequenceEnd => "SequenceEnd",
+            _ => throw new InvalidOperationException($"Unknown event: {e}"),
         };
         return $"{{\"e\":\"{tag}\"}}";
     }
@@ -140,7 +140,7 @@ public class CrossVerifyTests
         var result = new List<Vector>();
         foreach (JsonElement v in doc.RootElement.GetProperty("vectors").EnumerateArray())
         {
-            string id   = v.GetProperty("id").GetString()!;
+            string id = v.GetProperty("id").GetString()!;
             string yaml = v.GetProperty("yaml").GetString()!;
             var expected = new List<YamlEvent>();
             foreach (JsonElement evEl in v.GetProperty("expected").EnumerateArray())
@@ -232,11 +232,11 @@ public class CrossVerifyTests
         {
             switch (ev)
             {
-                case YamlEvent.MappingStart:  result.Add(new DiffEvent(DiffTag.MapStart, null, default)); break;
-                case YamlEvent.MappingEnd:    result.Add(new DiffEvent(DiffTag.MapEnd,   null, default)); break;
+                case YamlEvent.MappingStart: result.Add(new DiffEvent(DiffTag.MapStart, null, default)); break;
+                case YamlEvent.MappingEnd: result.Add(new DiffEvent(DiffTag.MapEnd, null, default)); break;
                 case YamlEvent.SequenceStart: result.Add(new DiffEvent(DiffTag.SeqStart, null, default)); break;
-                case YamlEvent.SequenceEnd:   result.Add(new DiffEvent(DiffTag.SeqEnd,   null, default)); break;
-                case YamlEvent.Scalar sc:     result.Add(new DiffEvent(DiffTag.Scalar, sc.Raw, sc.Style)); break;
+                case YamlEvent.SequenceEnd: result.Add(new DiffEvent(DiffTag.SeqEnd, null, default)); break;
+                case YamlEvent.Scalar sc: result.Add(new DiffEvent(DiffTag.Scalar, sc.Raw, sc.Style)); break;
                 // StreamStart / StreamEnd skipped
                 default: break;
             }
@@ -248,7 +248,7 @@ public class CrossVerifyTests
     {
         YamlDotNet.Core.ScalarStyle.SingleQuoted => ScalarStyle.SingleQuoted,
         YamlDotNet.Core.ScalarStyle.DoubleQuoted => ScalarStyle.DoubleQuoted,
-        _                                         => ScalarStyle.Plain,
+        _ => ScalarStyle.Plain,
     };
 
     private static List<DiffEvent> VendorDiffStream(string yaml)
@@ -263,11 +263,11 @@ public class CrossVerifyTests
                 case YamlDotNet.Core.Events.MappingStart:
                     acc.Add(new DiffEvent(DiffTag.MapStart, null, default)); break;
                 case YamlDotNet.Core.Events.MappingEnd:
-                    acc.Add(new DiffEvent(DiffTag.MapEnd,   null, default)); break;
+                    acc.Add(new DiffEvent(DiffTag.MapEnd, null, default)); break;
                 case YamlDotNet.Core.Events.SequenceStart:
                     acc.Add(new DiffEvent(DiffTag.SeqStart, null, default)); break;
                 case YamlDotNet.Core.Events.SequenceEnd:
-                    acc.Add(new DiffEvent(DiffTag.SeqEnd,   null, default)); break;
+                    acc.Add(new DiffEvent(DiffTag.SeqEnd, null, default)); break;
                 case YamlDotNet.Core.Events.Scalar sc:
                     acc.Add(new DiffEvent(DiffTag.Scalar, sc.Value, VendorStyle(sc.Style))); break;
                 // Skip StreamStart/End, DocumentStart/End, and anything else.
@@ -287,7 +287,7 @@ public class CrossVerifyTests
             ReadResult r = YamlReader.ReadEvents(v.Yaml);
             Assert.True(r.Ok, $"vector {v.Id} declined unexpectedly: feedback={r.Feedback}");
 
-            List<DiffEvent> ours   = OurDiffStream(r.Events!);
+            List<DiffEvent> ours = OurDiffStream(r.Events!);
             List<DiffEvent> theirs = VendorDiffStream(v.Yaml);
 
             if (ours.Count != theirs.Count) { mismatches++; continue; }

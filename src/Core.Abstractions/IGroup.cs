@@ -6,5 +6,5 @@ namespace Zeta.Core;
 public interface IGroup<T> : IMonoid<T>
 {
     /// <summary>Additive inverse.</summary>
-    T Inverse(T a);
+    public T Inverse(T a);
 }

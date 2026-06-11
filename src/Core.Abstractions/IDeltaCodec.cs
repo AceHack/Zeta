@@ -8,8 +8,8 @@ namespace Zeta.Core;
 public interface IDeltaCodec<TKey, TState>
 {
     /// <summary>Encode state to bytes.</summary>
-    byte[] Encode(TState state);
+    public byte[] Encode(TState state);
 
     /// <summary>Decode state from bytes.</summary>
-    TState Decode(byte[] bytes);
+    public TState Decode(byte[] bytes);
 }

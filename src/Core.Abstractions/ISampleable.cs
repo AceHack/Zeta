@@ -6,5 +6,5 @@ namespace Zeta.Core;
 public interface ISampleable<TCoord, TValue>
 {
     /// <summary>The value at a coordinate (the semiring Zero/default where absent).</summary>
-    TValue Sample(TCoord at);
+    public TValue Sample(TCoord at);
 }

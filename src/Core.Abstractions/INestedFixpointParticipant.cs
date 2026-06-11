@@ -5,5 +5,5 @@ namespace Zeta.Core;
 /// </summary>
 public interface INestedFixpointParticipant
 {
-    bool Fixedpoint(int scope);
+    public bool Fixedpoint(int scope);
 }

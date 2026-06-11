@@ -2,8 +2,8 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using Xunit;
-using Sha256Lib = Zeta.Core.CSharp.Sha256.Sha256;
 using Zeta.Core.CSharp.Yaml;
+using Sha256Lib = Zeta.Core.CSharp.Sha256.Sha256;
 
 namespace Zeta.Tests.CSharp.Sha256;
 

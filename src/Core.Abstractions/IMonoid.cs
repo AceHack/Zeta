@@ -6,8 +6,8 @@ namespace Zeta.Core;
 public interface IMonoid<T>
 {
     /// <summary>The identity element.</summary>
-    T Identity { get; }
+    public T Identity { get; }
 
     /// <summary>Associative combination operation.</summary>
-    T Combine(T a, T b);
+    public T Combine(T a, T b);
 }

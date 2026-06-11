@@ -8,5 +8,5 @@ namespace Zeta.Core;
 /// </summary>
 public interface IStrictOperator<out TOut> : IOperator<TOut>
 {
-    ValueTask AfterStepAsync(CancellationToken ct);
+    public ValueTask AfterStepAsync(CancellationToken ct);
 }

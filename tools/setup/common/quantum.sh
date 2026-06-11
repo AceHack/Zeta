@@ -33,7 +33,7 @@ UV_BIN="$(command -v uv)"
 
 SPECS="$(awk '
   { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
-  NF > 0 { print $1 }
+  NF > 0 && !/ecosystem=npm/ { print $1 }
 ' "$MANIFEST")"
 
 if [ -z "$SPECS" ]; then

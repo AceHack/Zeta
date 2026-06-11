@@ -18,5 +18,5 @@ namespace Zeta.Core;
 public interface ITravelerFrame : IFrame
 {
     /// <summary>The DST guarantee — the trace from this frame replays identically, so its result is provable.</summary>
-    bool IsDeterministic { get; }
+    public bool IsDeterministic { get; }
 }

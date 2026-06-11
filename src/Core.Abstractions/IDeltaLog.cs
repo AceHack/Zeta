@@ -14,18 +14,18 @@ public interface IDeltaLog<TKey, TDelta>
     /// <summary>
     /// Append a committed delta; returns the assigned sequence number (monotonic, starting at 1).
     /// </summary>
-    ValueTask<long> AppendAsync(TDelta delta, IReadOnlyDictionary<string, string> captured, CancellationToken ct);
+    public ValueTask<long> AppendAsync(TDelta delta, IReadOnlyDictionary<string, string> captured, CancellationToken ct);
 
     /// <summary>
     /// Replay entries with seq strictly greater than <paramref name="fromSeqExclusive"/>, in order.
     /// </summary>
-    ValueTask<DeltaLogEntry<TKey, TDelta>[]> ReplayAsync(long fromSeqExclusive, CancellationToken ct);
+    public ValueTask<DeltaLogEntry<TKey, TDelta>[]> ReplayAsync(long fromSeqExclusive, CancellationToken ct);
 
     /// <summary>Highest assigned sequence number (0 if empty).</summary>
-    long HighWater { get; }
+    public long HighWater { get; }
 
     /// <summary>
     /// GC entries with seq &lt;= <paramref name="throughSeqInclusive"/> — the log tail a durable snapshot has already absorbed.
     /// </summary>
-    ValueTask TruncateAsync(long throughSeqInclusive, CancellationToken ct);
+    public ValueTask TruncateAsync(long throughSeqInclusive, CancellationToken ct);
 }

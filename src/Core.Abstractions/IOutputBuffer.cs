@@ -5,5 +5,5 @@ namespace Zeta.Core;
 /// </summary>
 public interface IOutputBuffer<in TValue>
 {
-    void Publish(TValue value);
+    public void Publish(TValue value);
 }

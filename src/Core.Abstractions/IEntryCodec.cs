@@ -8,8 +8,8 @@ namespace Zeta.Core;
 public interface IEntryCodec<TKey, TDelta>
 {
     /// <summary>Encode a DeltaLogEntry to bytes.</summary>
-    byte[] Encode(DeltaLogEntry<TKey, TDelta> entry);
+    public byte[] Encode(DeltaLogEntry<TKey, TDelta> entry);
 
     /// <summary>Decode a DeltaLogEntry from bytes.</summary>
-    DeltaLogEntry<TKey, TDelta> Decode(byte[] bytes);
+    public DeltaLogEntry<TKey, TDelta> Decode(byte[] bytes);
 }

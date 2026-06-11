@@ -5,10 +5,10 @@ namespace Zeta.Core;
 /// </summary>
 public interface ICheckpointWriter
 {
-    void WriteInt32(int value);
-    void WriteInt64(long value);
-    void WriteFloat(double value);
-    void WriteBool(bool value);
-    void WriteBytes(byte[] value);
-    void WriteString(string value);
+    public void WriteInt32(int value);
+    public void WriteInt64(long value);
+    public void WriteFloat(double value);
+    public void WriteBool(bool value);
+    public void WriteBytes(byte[] value);
+    public void WriteString(string value);
 }

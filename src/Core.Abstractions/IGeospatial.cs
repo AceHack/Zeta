@@ -27,11 +27,11 @@ namespace Zeta.Core;
 public interface IGeospatial<TCoord>
 {
     /// <summary>Number of dimensions of the locality space (2 = lat/lon, 3 = x/y/z, N = the general topology).</summary>
-    int Dimensions { get; }
+    public int Dimensions { get; }
 
     /// <summary>The coordinate's position in the metric locality space the ray travels through.</summary>
-    IReadOnlyList<double> Position(TCoord at);
+    public IReadOnlyList<double> Position(TCoord at);
 
     /// <summary>Coordinates whose position lies within the axis-aligned box [min, max] (locality/region query).</summary>
-    IEnumerable<TCoord> Within(IReadOnlyList<double> min, IReadOnlyList<double> max);
+    public IEnumerable<TCoord> Within(IReadOnlyList<double> min, IReadOnlyList<double> max);
 }

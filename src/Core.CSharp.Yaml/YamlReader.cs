@@ -37,9 +37,9 @@ public static class YamlReader
         string.Equals(raw, "NULL", StringComparison.Ordinal);
 
     private static bool IsBoolLiteral(string raw) =>
-        string.Equals(raw, "true",  StringComparison.Ordinal) ||
-        string.Equals(raw, "True",  StringComparison.Ordinal) ||
-        string.Equals(raw, "TRUE",  StringComparison.Ordinal) ||
+        string.Equals(raw, "true", StringComparison.Ordinal) ||
+        string.Equals(raw, "True", StringComparison.Ordinal) ||
+        string.Equals(raw, "TRUE", StringComparison.Ordinal) ||
         string.Equals(raw, "false", StringComparison.Ordinal) ||
         string.Equals(raw, "False", StringComparison.Ordinal) ||
         string.Equals(raw, "FALSE", StringComparison.Ordinal);
@@ -84,7 +84,7 @@ public static class YamlReader
     {
         if (IsNullLiteral(raw)) return ScalarKind.Null;
         if (IsBoolLiteral(raw)) return ScalarKind.Bool;
-        if (IsIntLiteral(raw))  return ScalarKind.Int;
+        if (IsIntLiteral(raw)) return ScalarKind.Int;
         if (IsFloatLiteral(raw)) return ScalarKind.Float;
         return ScalarKind.Str;
     }
@@ -159,12 +159,12 @@ public static class YamlReader
                 switch (next)
                 {
                     case '\\': sb.Append('\\'); i += 2; break;
-                    case '"':  sb.Append('"');  i += 2; break;
-                    case 'n':  sb.Append('\n'); i += 2; break;
-                    case 't':  sb.Append('\t'); i += 2; break;
-                    case 'r':  sb.Append('\r'); i += 2; break;
-                    case '0':  sb.Append('\0'); i += 2; break;
-                    case '/':  sb.Append('/');  i += 2; break;
+                    case '"': sb.Append('"'); i += 2; break;
+                    case 'n': sb.Append('\n'); i += 2; break;
+                    case 't': sb.Append('\t'); i += 2; break;
+                    case 'r': sb.Append('\r'); i += 2; break;
+                    case '0': sb.Append('\0'); i += 2; break;
+                    case '/': sb.Append('/'); i += 2; break;
                     default:
                         return (false, string.Empty, YamlFeedback.UnexpectedCharacter);
                 }
@@ -238,14 +238,14 @@ public static class YamlReader
             while (indent < line.Length)
             {
                 char ch = line[indent];
-                if (ch == ' ')       indent++;
+                if (ch == ' ') indent++;
                 else if (ch == '\t') { sawTab = true; indent++; }
-                else                 break;
+                else break;
             }
 
             string body = line[indent..];
             if (body.Length == 0) continue;
-            if (body[0] == '#')  continue;
+            if (body[0] == '#') continue;
             if (sawTab) return (false, null, YamlFeedback.TabIndentation);
             result.Add(new ContentLine(indent, body));
         }
@@ -286,8 +286,8 @@ public static class YamlReader
                     i++;
                 }
             }
-            else if (ch == '\'') { inSingle = true;  i++; }
-            else if (ch == '"')  { inDouble = true;   i++; }
+            else if (ch == '\'') { inSingle = true; i++; }
+            else if (ch == '"') { inDouble = true; i++; }
             else if (ch == '#' && i > 0 && IsWhitespace(text[i - 1]))
                 return null; // comment before colon
             else if (ch == ':' && (i + 1 == text.Length || text[i + 1] == ' '))

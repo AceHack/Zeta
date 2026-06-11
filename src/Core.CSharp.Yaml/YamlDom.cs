@@ -20,9 +20,9 @@ public static class YamlDom
         {
             ScalarKind.Null => ParseResult.Success(YamlValue.YNull.Instance),
             ScalarKind.Bool => ParseResult.Success(new YamlValue.YBool(
-                string.Equals(raw, "true",  StringComparison.Ordinal) ||
-                string.Equals(raw, "True",  StringComparison.Ordinal) ||
-                string.Equals(raw, "TRUE",  StringComparison.Ordinal))),
+                string.Equals(raw, "true", StringComparison.Ordinal) ||
+                string.Equals(raw, "True", StringComparison.Ordinal) ||
+                string.Equals(raw, "TRUE", StringComparison.Ordinal))),
             ScalarKind.Int =>
                 long.TryParse(raw, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out long iv)
                     ? ParseResult.Success(new YamlValue.YInt(iv))
@@ -72,7 +72,7 @@ public static class YamlDom
             YamlEvent? ev = Peek();
             if (ev is null) return ParseResult.Failure(YamlFeedback.UnsupportedConstruct);
             if (ev is YamlEvent.Scalar sc) { _pos++; return ScalarToValue(sc.Raw, sc.Kind); }
-            if (ev is YamlEvent.MappingStart)  return FoldMapping();
+            if (ev is YamlEvent.MappingStart) return FoldMapping();
             if (ev is YamlEvent.SequenceStart) return FoldSequence();
             return ParseResult.Failure(YamlFeedback.UnsupportedConstruct);
         }

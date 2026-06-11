@@ -8,7 +8,7 @@ namespace Zeta.Core;
 /// </summary>
 public interface IOperator<out TOut>
 {
-    string Name { get; }
-    IStreamHandle[] ReadDependencies { get; }
-    ValueTask StepAsync(IOutputBuffer<TOut> output, CancellationToken ct);
+    public string Name { get; }
+    public IStreamHandle[] ReadDependencies { get; }
+    public ValueTask StepAsync(IOutputBuffer<TOut> output, CancellationToken ct);
 }

@@ -50,7 +50,7 @@ public class PayloadTests
     public void PackPayloadThrowsOnOutOfBoundsPayload()
     {
         UInt128 invalidPayload = UInt128.One << 119;
-        
+
         var contentPayload = new ZetaIdPayload.ContentAddress(IdVersion.V1, invalidPayload);
         Assert.Throws<ArgumentOutOfRangeException>(() => ZetaIdCodec.PackPayload(contentPayload, DeterministicEnv.Instance));
 

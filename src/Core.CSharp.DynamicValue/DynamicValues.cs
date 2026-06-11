@@ -653,46 +653,46 @@ public static class DynamicValues
             case 22:
                 return null; // value already Null
             case 25:
-            {
-                if (pos + 2 > b.Length)
                 {
-                    return DecodeError.UnexpectedEnd;
-                }
+                    if (pos + 2 > b.Length)
+                    {
+                        return DecodeError.UnexpectedEnd;
+                    }
 
-                ushort bits16 = (ushort)((b[pos] << 8) | b[pos + 1]);
-                pos += 2;
-                value = new DynamicValue.Float((double)BitConverter.UInt16BitsToHalf(bits16));
-                return null;
-            }
+                    ushort bits16 = (ushort)((b[pos] << 8) | b[pos + 1]);
+                    pos += 2;
+                    value = new DynamicValue.Float((double)BitConverter.UInt16BitsToHalf(bits16));
+                    return null;
+                }
             case 26:
-            {
-                if (pos + 4 > b.Length)
                 {
-                    return DecodeError.UnexpectedEnd;
-                }
+                    if (pos + 4 > b.Length)
+                    {
+                        return DecodeError.UnexpectedEnd;
+                    }
 
-                uint bits32 = ((uint)b[pos] << 24) | ((uint)b[pos + 1] << 16) | ((uint)b[pos + 2] << 8) | b[pos + 3];
-                pos += 4;
-                value = new DynamicValue.Float(BitConverter.UInt32BitsToSingle(bits32));
-                return null;
-            }
+                    uint bits32 = ((uint)b[pos] << 24) | ((uint)b[pos + 1] << 16) | ((uint)b[pos + 2] << 8) | b[pos + 3];
+                    pos += 4;
+                    value = new DynamicValue.Float(BitConverter.UInt32BitsToSingle(bits32));
+                    return null;
+                }
             case 27:
-            {
-                if (pos + 8 > b.Length)
                 {
-                    return DecodeError.UnexpectedEnd;
-                }
+                    if (pos + 8 > b.Length)
+                    {
+                        return DecodeError.UnexpectedEnd;
+                    }
 
-                ulong bits64 = 0;
-                for (int i = 0; i < 8; i++)
-                {
-                    bits64 = (bits64 << 8) | b[pos + i];
-                }
+                    ulong bits64 = 0;
+                    for (int i = 0; i < 8; i++)
+                    {
+                        bits64 = (bits64 << 8) | b[pos + i];
+                    }
 
-                pos += 8;
-                value = new DynamicValue.Float(BitConverter.UInt64BitsToDouble(bits64));
-                return null;
-            }
+                    pos += 8;
+                    value = new DynamicValue.Float(BitConverter.UInt64BitsToDouble(bits64));
+                    return null;
+                }
             default:
                 return DecodeError.Unsupported; // undefined / 1-byte simple value / reserved
         }

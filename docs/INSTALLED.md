@@ -34,6 +34,12 @@ be able to recreate the environment from this doc.
 | **qsharp**        | 1.29.1  | Direct Q# package pin for `qsharp` / `%%qsharp` parity when producing `qsharp-golden.json` observables                   | Same optional quantum path as above                                                                                                                                                                                                               |
 | **azure-quantum** | 3.10.0  | Explicit pin for the optional Azure backend edge owned by `qdk[azure]`; local simulation remains the default oracle path | Same optional quantum path as above                                                                                                                                                                                                               |
 
+## NPM / Bun quantum simulator dependencies
+
+| Package             | Version | Why                                                                                               | How installed                                                                        |
+| ------------------- | ------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **quantum-circuit** | 0.9.247 | TypeScript quantum circuit simulator (second oracle) for Q# golden observables cross-verification | Installed via `bun add -d quantum-circuit` as part of `package.json` devDependencies |
+
 ## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)
 
 | Artifact                  | Version              | Path                                     | Why                                                      | Install command                                                                                                                               |

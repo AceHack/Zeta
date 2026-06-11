@@ -8,6 +8,6 @@ public interface IPublisher
     /// <param name="notification">The notification to broadcast.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task that completes when all handlers have run.</returns>
-    ValueTask Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+    public ValueTask Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
         where TNotification : INotification;
 }

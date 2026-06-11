@@ -5,10 +5,10 @@ namespace Zeta.Core;
 /// </summary>
 public interface ICheckpointReader
 {
-    int ReadInt32();
-    long ReadInt64();
-    double ReadFloat();
-    bool ReadBool();
-    byte[] ReadBytes();
-    string ReadString();
+    public int ReadInt32();
+    public long ReadInt64();
+    public double ReadFloat();
+    public bool ReadBool();
+    public byte[] ReadBytes();
+    public string ReadString();
 }

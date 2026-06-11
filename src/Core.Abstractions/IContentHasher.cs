@@ -6,8 +6,8 @@ namespace Zeta.Core;
 public interface IContentHasher
 {
     /// <summary>A stable name for the algorithm (for golden-vector labelling + diagnostics).</summary>
-    string Name { get; }
+    public string Name { get; }
 
     /// <summary>Hash bytes to a MerkleHash content address.</summary>
-    MerkleHash Hash(byte[] value);
+    public MerkleHash Hash(byte[] value);
 }

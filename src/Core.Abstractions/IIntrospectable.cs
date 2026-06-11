@@ -7,8 +7,8 @@ namespace Zeta.Core;
 public interface IIntrospectable<TCoord>
 {
     /// <summary>Whether a coordinate is defined (a node exists there).</summary>
-    bool Exists(TCoord at);
+    public bool Exists(TCoord at);
 
     /// <summary>The immediate next coordinates from <paramref name="at"/> (the ray's stepping options).</summary>
-    IEnumerable<TCoord> Neighbors(TCoord at);
+    public IEnumerable<TCoord> Neighbors(TCoord at);
 }

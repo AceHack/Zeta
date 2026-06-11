@@ -11,10 +11,10 @@ using Zeta.Core.CSharp.Yaml;
 // Shorthands to keep test bodies compact.
 file static class E
 {
-    public static YamlEvent SS  => new YamlEvent.StreamStart();
-    public static YamlEvent SE  => new YamlEvent.StreamEnd();
-    public static YamlEvent MS  => new YamlEvent.MappingStart();
-    public static YamlEvent ME  => new YamlEvent.MappingEnd();
+    public static YamlEvent SS => new YamlEvent.StreamStart();
+    public static YamlEvent SE => new YamlEvent.StreamEnd();
+    public static YamlEvent MS => new YamlEvent.MappingStart();
+    public static YamlEvent ME => new YamlEvent.MappingEnd();
     public static YamlEvent SQS => new YamlEvent.SequenceStart();
     public static YamlEvent SQE => new YamlEvent.SequenceEnd();
     public static YamlEvent Plain(string raw, ScalarKind kind) =>

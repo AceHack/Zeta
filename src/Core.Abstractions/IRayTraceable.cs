@@ -31,5 +31,5 @@ public interface IRayTraceable<TCoord, TValue> : ITensor<TCoord, TValue>, ISampl
     /// trace is replayable and the result is a **proof** (holds across self-propagating patterns, Zeta
     /// included), even when the field carries irreducible (soft) uncertainty.
     /// </summary>
-    TValue Trace(IFrame from, IReadOnlyList<TCoord> ray, ISemiring<TValue> accumulate);
+    public TValue Trace(IFrame from, IReadOnlyList<TCoord> ray, ISemiring<TValue> accumulate);
 }

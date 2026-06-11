@@ -26,6 +26,7 @@
 qdk[azure]==1.29.1     role=reference-oracle lang=q#
 qsharp==1.29.1         role=reference-oracle lang=q#
 azure-quantum==3.10.0  role=reference-oracle lang=q#
+quantum-circuit==0.9.247 role=second-oracle lang=typescript ecosystem=npm
 #
 # The rest of the quantum-language oracle remains intentionally deferred until
 # the Q# reference vectors exist; uncomment with verified pins when those cells

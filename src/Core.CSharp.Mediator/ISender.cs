@@ -8,12 +8,12 @@ public interface ISender
     /// <param name="request">The request to dispatch.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The handler's response.</returns>
-    ValueTask<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
+    public ValueTask<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
 
     /// <summary>Open a stream for <paramref name="request"/>, yielding its handler's elements.</summary>
     /// <typeparam name="TResponse">The element type streamed back.</typeparam>
     /// <param name="request">The stream request to dispatch.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The handler's asynchronous stream of responses.</returns>
-    IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request, CancellationToken cancellationToken = default);
+    public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request, CancellationToken cancellationToken = default);
 }

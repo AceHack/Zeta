@@ -22,5 +22,5 @@ namespace Zeta.Core;
 public interface IStarRing<TWeight> : ISemiring<TWeight>
 {
     /// <summary>The involution (conjugation): identity on ℝ, complex conjugate on ℂ, recursive beyond.</summary>
-    TWeight Conj(TWeight a);
+    public TWeight Conj(TWeight a);
 }
