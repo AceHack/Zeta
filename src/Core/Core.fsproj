@@ -273,6 +273,7 @@
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
     <Compile Include="PhysUI.fs" />
+    <Compile Include="ControlScheme.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
     <Compile Include="ConformalGA.fs" />
