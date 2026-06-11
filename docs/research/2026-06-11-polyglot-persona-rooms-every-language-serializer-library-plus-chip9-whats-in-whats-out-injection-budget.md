@@ -21,13 +21,14 @@ available for experiments. This is already structurally true and now NAMED as a 
   ephemeral, measurements commit);
 - same for all personas (the no-one-left-out rule extends to substrate: nobody's room is F#-bound).
 
-## 2. "CHIP-9" — the name wants to exist (flagged as a Mirror coinage)
+## 2. "CHIP-9" — RATIFIED by the operator (a typo promoted to a name)
 
-Reading Aaron's "chip9" honestly: our **original-compatible extension of CHIP-8** — color planes in
-unused opcode space, the glyph atlas, the choice cell, the §13 injected effects — is becoming a
-DIALECT, and "CHIP-9" is its natural name (one past 8; the XO-CHIP precedent named itself too).
-Flagged for the naming pass (Ilyana/naming review before public use); until then it is the working
-Mirror name for "CHIP-8 + the Zeta extension set, zero-case compatible."
+Aaron, on reading the flag: *"chip9 was a typo but **I like it for our color extension system** lol."*
+So the name is OPERATOR-RATIFIED: **CHIP-9 = the Zeta color-extension dialect of CHIP-8** — color
+planes in unused opcode space, the glyph atlas, the choice cell, the §13 injected effects — **zero-case
+compatible** (every original CHIP-8 ROM runs unchanged; mono is the degenerate case). One past 8, the
+XO-CHIP naming precedent followed; born as a typo, kept on merit — the best names often are
+(naming-review note: external/public use still gets the Ilyana pass; internally CHIP-9 is now canon).
 
 ## 3. What's IN, what's OUT, and the injection budget (the honest arithmetic)
 
