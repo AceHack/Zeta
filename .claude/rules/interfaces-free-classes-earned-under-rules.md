@@ -22,11 +22,11 @@ is weight-free made concrete at the type level, and it is what lets `gen/`
 generate CHIP-8 asm + reified types **from the F# itself** (pure interfaces).
 
 > **This is a META-RULE** (Aaron 2026-06-10): its subject is the `rules/` system itself (a privilege is
-> earned *under* `rules/`). Recognized + indexed in `meta/` (rules about rules; shape A self-reference).
+> earned *under* `rules/`). Recognized + indexed in `db/meta/` (rules about rules; shape A self-reference).
 
 ## Pointers
 
-- `meta/` — this rule recognized as a meta-rule (rules about rules).
+- `db/meta/` — this rule recognized as a meta-rule (rules about rules).
 - [`manifesto-13-specifications.md`](manifesto-13-specifications.md) — §3 weight-free (class state = weight).
 - `gen/` — generators read pure interfaces, no classes · `universal/` — interfaces = universal shapes.
 - `docs/research/2026-06-10-parser-generator-emits-chip8-assembly-for-the-cut-mea-sim-loop-then-interrupts-thats-our-game.md`

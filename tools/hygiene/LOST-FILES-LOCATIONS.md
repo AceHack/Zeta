@@ -56,10 +56,10 @@ Files in the working tree that aren't committed. May contain partial work.
 
 - **Survey command**: `git status --porcelain --ignored | grep -E '^(\?\?|!!)'`
 - **Common patterns observed (this session)**:
-  - `drop/` — courier-ferry pastes from external AI agents (Amara, Google AI riffs, etc.)
+  - `db/drop/` — courier-ferry pastes from external AI agents (Amara, Google AI riffs, etc.)
   - `.playwright-mcp/` — Playwright browser captures from skill-dispatched sessions
   - `*.tmp`, `*.log` — transient outputs
-- **Triage**: courier-ferry content (`drop/`) is high-value substrate that should land in `docs/aurora/` or similar; transient outputs are safe to ignore.
+- **Triage**: courier-ferry content (`db/drop/`) is high-value substrate that should land in `docs/aurora/` or similar; transient outputs are safe to ignore.
 
 ### 7. Subagent worktree remnants
 
@@ -98,11 +98,11 @@ Per Otto-321, force-push is allowed for own-PR-after-rebase. The force-pushed-ov
 - **Risk**: GitHub doesn't preserve force-pushed-over commits beyond ~30 days in some configurations.
 - **Mitigation**: Otto-321 says "no force-push if you are unsure" — uncertainty itself is a flag for "don't force-push, double-check first."
 
-### 12. Courier-ferry artifacts (`drop/` directory)
+### 12. Courier-ferry artifacts (`db/drop/` directory)
 
 External AI agent outputs pasted in by Aaron. Already covered under #6 but worth calling out separately because the content type is high-value (Amara reviews, Google AI riffs, Codex transcripts, etc.).
 
-- **Survey command**: `ls drop/ 2>/dev/null` + git status check (drop/ is gitignored typically).
+- **Survey command**: `ls db/drop/ 2>/dev/null` + git status check (db/drop/ is gitignored typically).
 - **Triage**: capture courier-ferry content into `docs/aurora/` or appropriate substrate location BEFORE the working tree is reset / cleaned.
 
 ### 13. External-tool exports never committed

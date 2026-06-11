@@ -263,7 +263,7 @@ async function classStash(): Promise<void> {
 
 async function classUntracked(): Promise<void> {
   console.log(
-    "## 6. Untracked working-directory artifacts (drop/, .playwright-mcp/, *.tmp, *.log)",
+    "## 6. Untracked working-directory artifacts (db/drop/, .playwright-mcp/, *.tmp, *.log)",
   );
   const r = await runCmd(["git", "status", "--porcelain", "--ignored"]);
   const lines = r.stdout

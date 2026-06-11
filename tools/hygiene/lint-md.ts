@@ -12,7 +12,7 @@ const DEFAULT_EXCLUDES = [
     "node_modules/",
     "tools/lean4/.lake/",
     ".claude/worktrees/",
-    "drop/",
+    "db/drop/",
     "roms/",
     "obj/",
     "bin/",

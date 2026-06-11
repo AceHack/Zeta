@@ -46,7 +46,7 @@ export const EXCLUDE_BASENAMES = new Set([
   "obj",
   "target",
   ".playwright-mcp",
-  "drop",
+  "db/drop",
   // .NET / Lean / benchmark build outputs (regeneratable; not source).
   "artifacts",
   "TestResults",
