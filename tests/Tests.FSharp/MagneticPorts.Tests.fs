@@ -83,3 +83,9 @@ let ``a snap makes a FOUR-CORNER connection: feedback open by default; closing i
         Assert.False((MagneticPorts.withoutFeedback conn).FeedbackOpen) // closing is visible, never an omission
     | None -> failwith "should snap"
     Assert.True(MagneticPorts.connect src (MagneticPorts.port 40 10 MagneticPorts.Sink tvId) |> Option.isNone)
+
+[<Fact>]
+let ``THE SHAPE CATALOG: a cartridge per shape, each ZetaId'd and cost-declared; the lint holds`` () =
+    for s in [ "shape.worldline"; "shape.lightcone"; "shape.fourcorner"; "shape.braid"; "shape.spiral"; "shape.seam" ] do
+        Assert.True(GeneratorRegistry.byName s |> Option.isSome)
+    Assert.Equal<string list>([], ComplexityRegistry.unstated ())

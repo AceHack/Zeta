@@ -73,7 +73,13 @@ module ComplexityRegistry =
               ("shader.crt-scanline", "TBD"), c "O(w·h)" "O(1) streaming" Derived
               ("shader.crt-phosphor", "TBD"), c "O(w·h·|curve|)" "O(w·h)" Derived
               ("shader.crt-curvature", "TBD"), c "O(w·h)" "O(w·h)" Derived
-              ("shader.ntsc", "TBD"), c "O(w·h)" "O(w)" Derived ]
+              ("shader.ntsc", "TBD"), c "O(w·h)" "O(w)" Derived
+              ("shape.worldline", "draw"), c "O(steps)" "O(steps)" Derived
+              ("shape.lightcone", "draw"), c "O(w·h)" "O(1)" Derived
+              ("shape.fourcorner", "draw"), c "O(1)" "O(1)" Derived
+              ("shape.braid", "draw"), c "O(crossings·strands)" "O(strands)" Derived
+              ("shape.spiral", "draw"), c "O(steps)" "O(steps)" Derived
+              ("shape.seam", "draw"), c "O(strands·passes)" "O(strands)" Derived ]
 
     /// THE BUDGET LINT: every registered artifact (generators + layouts + indexes + schemes) whose
     /// costs are entirely UNSTATED. Empty list = the requirement holds across the shelf.

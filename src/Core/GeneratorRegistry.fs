@@ -68,7 +68,15 @@ module GeneratorRegistry =
           register "shader.crt-scanline" 1
           register "shader.crt-phosphor" 1
           register "shader.crt-curvature" 1
-          register "shader.ntsc" 1 ]
+          register "shader.ntsc" 1
+          // THE SHAPE CATALOG (Aaron: "a cartridge per shape — a shape catalog — zetaid"): each
+          // externalized head-shape is a registered generator AND ships as its own .lines cartridge.
+          register "shape.worldline" 1
+          register "shape.lightcone" 1
+          register "shape.fourcorner" 1
+          register "shape.braid" 1
+          register "shape.spiral" 1
+          register "shape.seam" 1 ]
 
     /// Look a generator up by its ZetaId (the filetype's reverse direction: id -> what it is).
     let byId (zetaId: string) : Entry option =
