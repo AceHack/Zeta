@@ -41,7 +41,7 @@ describe("Workflow Treaty Transcript (TS-side verification)", () => {
             if (actual.ok && vector.expectedResult.ok) {
               expect(actual.state.tag).toBe(vector.expectedResult.state.tag);
               expect(actual.state.row).toEqual(vector.expectedResult.state.row);
-              expect(actual.state.prNumber).toBe(vector.expectedResult.state.prNumber);
+              expect((actual.state as any).prNumber).toBe((vector.expectedResult.state as any).prNumber);
             }
           } else {
             expect(actual).toEqual(vector.expectedResult);

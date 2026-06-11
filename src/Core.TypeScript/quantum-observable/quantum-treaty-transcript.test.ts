@@ -1,8 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import transcript from "./quantum-treaty-transcript.json";
+import type { QuantumObservableRow } from "./types";
 import { QuantumObservableOracle } from "./oracle";
-
-const tolerance = 1e-5;
 
 describe("Quantum treaty transcript integrity", () => {
   const oracle = new QuantumObservableOracle();
@@ -18,7 +17,7 @@ describe("Quantum treaty transcript integrity", () => {
 
     for (const delta of batch.deltas) {
       expect(delta.weight).toBe(1);
-      const row = delta.row;
+      const row = delta.row as QuantumObservableRow;
 
       switch (row.type) {
         case "SingleQubit": {
@@ -90,20 +89,24 @@ describe("Quantum treaty transcript integrity", () => {
     expect(batch.batchId).toBe(1);
 
     for (const delta of batch.deltas) {
-      const row = delta.row;
+      const row = delta.row as QuantumObservableRow;
       if (delta.weight === -1) {
         expect(row.type).toBe("InterferenceVisibility");
-        const expected = row.value;
-        const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
-        expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
-        expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
+        if (row.type === "InterferenceVisibility") {
+          const expected = row.value;
+          const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
+          expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
+          expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
+        }
       } else {
         expect(delta.weight).toBe(1);
         expect(row.type).toBe("InterferenceVisibility");
-        const expected = row.value;
-        const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
-        expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
-        expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
+        if (row.type === "InterferenceVisibility") {
+          const expected = row.value;
+          const actual = oracle.runInterferenceVisibility(expected.Id, expected.Operation, expected.PhaseRadians);
+          expect(actual.Probabilities.Zero).toBeCloseTo(expected.Probabilities.Zero, 5);
+          expect(actual.Probabilities.One).toBeCloseTo(expected.Probabilities.One, 5);
+        }
       }
     }
   });

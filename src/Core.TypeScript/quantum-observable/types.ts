@@ -6,7 +6,7 @@ export interface Probabilities {
 export interface SingleQubitMeasurement {
   readonly Id: string;
   readonly Operation: string;
-  readonly ThetaRadians?: number;
+  readonly ThetaRadians?: number | undefined;
   readonly Probabilities: Probabilities;
 }
 
@@ -65,9 +65,9 @@ export interface BellCoincidence {
 export interface InterferenceVisibility {
   readonly Id: string;
   readonly Operation: string;
-  readonly PhaseRadians?: number;
+  readonly PhaseRadians?: number | undefined;
   readonly Probabilities: Probabilities;
-  readonly Visibility?: number;
+  readonly Visibility?: number | undefined;
 }
 
 export type QuantumObservableRow =

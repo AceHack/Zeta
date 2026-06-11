@@ -1,4 +1,4 @@
-import { ZSet } from "../z-set/z-set";
+import type { ZSet } from "../z-set/z-set";
 
 /**
  * EXPERIMENTAL: Sandbox Q# exporter representing a Z-set as a basis state.

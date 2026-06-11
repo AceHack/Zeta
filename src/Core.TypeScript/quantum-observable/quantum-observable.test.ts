@@ -1,8 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { QuantumObservableOracle } from "./oracle";
 
-const tolerance = 1e-5;
-
 describe("QuantumObservableOracle simulator", () => {
   const oracle = new QuantumObservableOracle();
 

@@ -1,5 +1,5 @@
 import QuantumCircuit from "quantum-circuit";
-import {
+import type {
   SingleQubitMeasurement,
   CanonicalChsh,
   SingletChsh,

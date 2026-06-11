@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 import { QuantumObservableOracle } from "./oracle";
-import { QuantumObservableDelta, QuantumObservableRow } from "./types";
+import type { QuantumObservableDelta, QuantumObservableRow } from "./types";
 
 const currentDir = import.meta.dir;
 const outputPath = join(currentDir, "quantum-treaty-transcript.json");
