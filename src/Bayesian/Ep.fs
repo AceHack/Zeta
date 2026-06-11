@@ -89,6 +89,35 @@ module Ep =
         let vHat = v * (1.0 - (v / (1.0 + v)) * lambda * (z + lambda))
         Gaussian.ofMeanVariance mHat vHat
 
+    /// The HARD-truncation site projection: moment-match `cavity · 1[x > 0]` (the truncated
+    /// Gaussian — the step-function likelihood, NOT the soft probit Φ(x) above). Same Mills-ratio
+    /// machinery with z = m/√v (no +1 in the denominator: there is no probit noise unit).
+    /// For cavity N(0,1): mean = √(2/π) ≈ 0.7979, variance = 1 − 2/π ≈ 0.3634 — the half-normal.
+    /// (Found BY the hexagonal port's theirs-tests-ours: Infer.NET's ConstrainPositive is THIS
+    /// semantic; our adapter had bound the soft probit to the port's hard-truncation name and the
+    /// senior oracle caught the mismatch — both formulas correct, wrong binding. 2026-06-13.)
+    let truncatePositiveProject (cavity: Gaussian) : Gaussian =
+        let m = Gaussian.mean cavity
+        let v = Gaussian.variance cavity
+        let s = sqrt v
+        let z = m / s
+        let lambda = inverseMills z
+        let mHat = m + s * lambda
+        let vHat = v * (1.0 - lambda * (z + lambda))
+        Gaussian.ofMeanVariance mHat vHat
+
+    /// A **hard positivity EP factor** — the observation "x > 0" as a step function (the
+    /// truncated-Gaussian semantic; `universal/port`'s PositivityConstraint binds HERE).
+    let positivityFactor (variable: int) : Factor<Gaussian> =
+        { Neighbors = [ variable ]
+          ComputeMessages =
+            fun incoming ->
+                match Map.tryFind variable incoming with
+                | Some cavity when Gaussian.isProper cavity ->
+                    let projected = truncatePositiveProject cavity
+                    Map.ofList [ variable, Gaussian.divide projected cavity ]
+                | _ -> Map.ofList [ variable, Gaussian.One ] }
+
     /// A **probit EP factor** on a single Gaussian variable — the soft
     /// observation "x > 0" (likelihood Φ(x)). Plugs into `FactorGraph`;
     /// drive with `FactorGraph.runToFixpoint`. Its outgoing message is

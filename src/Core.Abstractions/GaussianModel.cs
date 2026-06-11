@@ -10,4 +10,16 @@ using System.Collections.Generic;
 public sealed record GaussianModel(
     int VariableCount,
     IReadOnlyList<GaussianPrior> Priors,
-    IReadOnlyList<EqualityFactor> Equalities);
+    IReadOnlyList<EqualityFactor> Equalities,
+    IReadOnlyList<PositivityConstraint> Positivities)
+{
+    /// <summary>The pre-EP constructor shape (priors + equalities only) — kept so existing
+    /// call sites and the conformance history stay valid; positivity defaults to none.</summary>
+    public GaussianModel(
+        int variableCount,
+        IReadOnlyList<GaussianPrior> priors,
+        IReadOnlyList<EqualityFactor> equalities)
+        : this(variableCount, priors, equalities, System.Array.Empty<PositivityConstraint>())
+    {
+    }
+}

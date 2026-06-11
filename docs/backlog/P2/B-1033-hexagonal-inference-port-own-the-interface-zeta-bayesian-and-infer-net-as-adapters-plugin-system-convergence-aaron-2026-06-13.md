@@ -2,7 +2,7 @@
 id: B-1033
 title: Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
 priority: P2
-status: in-progress
+status: done
 tier: verification-substrate
 tags: [hexagonal, ports-adapters, infer-net, bayesian, ep, bp-16, plugins, convergence]
 created: 2026-06-13
@@ -66,3 +66,16 @@ ladder-shaped resolution = the remaining follow-up alongside richer case familie
 ## Progress 3 (2026-06-13): the grammar filed as universal/port.md (Aaron's "smells like universal interfaces" — it was; extension.md is the senior half). Remaining: engine ZetaIds + ladder resolution for IInferenceEngine; richer case families.
 
 ## Progress 4 (2026-06-13): InferenceLadder shipped — engine ZetaIds minted (zeta-bayesian/infer-net/mock-flat), ladder resolution (Live/Injected/Mock; Adapted carved when an engine-adapter piece exists), the red light, and the HONEST Mock (flat marginals, Converged=false — a rehearsal that cannot masquerade). universal/port instance row complete. Remaining: richer case families only.
+
+## Progress 5 (2026-06-13): the richer case families — DONE, and the mechanism caught two real things
+
+- Noisy-observations family: green (exact algebra, 1e-6).
+- THE EP FAMILY caught a SEMANTIC BUG: our adapter bound the soft probit Φ(x) to the port's
+  hard-truncation name; Infer.NET's ConstrainPositive exposed it (0.564 vs 0.798 — BOTH formulas
+  correct, wrong binding). Fixed: Ep.truncatePositiveProject/positivityFactor (z = m/√v; the
+  half-normal checks out); the probit stays for a future SoftPositivity case. Agreement 1e-4.
+- THE LOOPY HONESTY CASE works as designed: ours truthfully reports Converged=false on the
+  Gaussian equality cycle (loopy BP precision overcounting — Weiss & Freeman 2001: means exact,
+  variances overconfident); Infer.NET's scheduler settles — at 2.0025 where OURS lands the exact
+  2.0 (the junior out-precised the senior). Damping = the one named upgrade left, filed as a
+  watch item, not a blocker. B-1033 CLOSED.

@@ -46,6 +46,11 @@ public sealed class InferNetEngine : IInferenceEngine
             }
         }
 
+        foreach (var pc in model.Positivities)
+        {
+            Variable.ConstrainPositive(vars[pc.Variable]);
+        }
+
         foreach (var eq in model.Equalities)
         {
             for (var i = 1; i < eq.Variables.Count; i++)

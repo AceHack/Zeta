@@ -27,13 +27,25 @@ type ZetaBayesianEngine() =
                         FactorGraph.addFactor i (Factor.prior p.Variable (Gaussian.ofMeanVariance p.Mean p.Variance)) g)
                     g0
 
-            let graph =
+            let withEqualities =
                 model.Equalities
                 |> Seq.indexed
                 |> Seq.fold
                     (fun g (i, e) ->
                         FactorGraph.addFactor (Seq.length model.Priors + i) (Factor.equality algebra (List.ofSeq e.Variables)) g)
                     withPriors
+
+            // the EP family: each positivity = Minka's probit factor (cavity -> project -> divide)
+            let graph =
+                model.Positivities
+                |> Seq.indexed
+                |> Seq.fold
+                    (fun g (i, pc) ->
+                        FactorGraph.addFactor
+                            (Seq.length model.Priors + Seq.length model.Equalities + i)
+                            (Ep.positivityFactor pc.Variable) // HARD truncation — the port semantic (the soft probit is a different, future port case)
+                            g)
+                    withEqualities
 
             let final, rounds, converged =
                 FactorGraph.runToFixpoint Gaussian.distance tolerance maxRounds graph
