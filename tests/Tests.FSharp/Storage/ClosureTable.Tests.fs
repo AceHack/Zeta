@@ -1,4 +1,6 @@
 module Zeta.Tests.Storage.ClosureTableTests
+// FS57 suppressed knowingly: one-shot-seed coverage of the experimental counting variant (the supported path).
+#nowarn "57"
 #nowarn "0893"
 
 open FsCheck

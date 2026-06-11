@@ -110,8 +110,11 @@ type MerkleTree(leaves: byte array array) =
     /// Find leaf indices whose hash differs from the corresponding
     /// hash in `prior`. Precisely the **minimum set of leaves**
     /// that need to be re-transmitted to sync the prior state to
-    /// this one. O(N) but branch-prunes at every internal level that
-    /// matches — in practice O(changed + log N).
+    /// this one. **Flat O(N)** over the leaf hashes with a root-equality
+    /// short-circuit — it does NOT branch-prune internal levels (BUGS.md
+    /// triage 2026-06-12: the old claim of "O(changed + log N) in
+    /// practice" described a walk this body never performs; the pruning
+    /// walk is a named upgrade, not what this is).
     member this.LeafDiff(prior: MerkleTree) : int array =
         if this.Root = prior.Root then [||]
         else

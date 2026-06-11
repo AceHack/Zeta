@@ -1,5 +1,7 @@
 [<Xunit.Collection("TLC")>]
 module Zeta.Tests.Formal.TlcRunnerTests
+// FS57 suppressed knowingly: references the experimental combinator in formal-harness wiring.
+#nowarn "57"
 #nowarn "0893"
 
 open System

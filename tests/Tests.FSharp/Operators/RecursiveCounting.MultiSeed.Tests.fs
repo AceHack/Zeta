@@ -1,4 +1,6 @@
 module Zeta.Tests.Operators.RecursiveCountingMultiSeedTests
+// FS57 suppressed knowingly: these tests EXERCISE the experimental combinator (incl. the pinned refutation witness).
+#nowarn "57"
 #nowarn "0893"
 
 open FsCheck
@@ -206,8 +208,9 @@ let private buildDelta (ops: EdgeDelta list) : ZSet<struct (int * int)> =
 // gap-monotone signed-delta combinator (`RecursiveSignedSemiNaive`)
 // lands.  Remove the Skip once the research completes.
 [<Property(Arbitrary = [| typeof<MultiTickArb> |], MaxTest = 25,
-           Skip = "Multi-tick seed correctness is open research; \
-                   see docs/BUGS.md §RecursiveCounting multi-tick-seed.")>]
+           Skip = "Multi-tick is REFUTED, not open research (witness pinned as the \
+                   unskipped REFUTATION WITNESS Fact below); this property stays \
+                   skipped until the signed-delta replacement lands — then unskip.")>]
 let ``CountingClosureTable clamped to Distinct matches ClosureTable oracle``
     (ops: MultiTickEdges) =
     // Build two parallel circuits: one using the counting variant,
@@ -242,3 +245,44 @@ let ``CountingClosureTable clamped to Distinct matches ClosureTable oracle``
                 if clamped <> oracleMap then
                     allAgree <- false
     allAgree
+
+// ─── THE PINNED WITNESS (Soraya's routing, math-team triage 2026-06-12) ─────
+//
+// A reliably-failing property is a REFUTATION, not open research: a correctness
+// claim needs a proof; a falsity claim needs one witness, and FsCheck delivered
+// it (pure inserts — no retraction subtlety involved). This Fact pins the named
+// sequence as a DETERMINISTIC, UNSKIPPED gate asserting the divergence EXISTS —
+// the witness lives in the gate, not in a comment (BP-16 for the negative claim:
+// FsCheck found it; this Fact independently replays it). If this test ever FAILS
+// (i.e. the two circuits agree), the defect was fixed — celebrate, then restore
+// the property above to unskipped and delete this pin.
+[<Fact>]
+let ``REFUTATION WITNESS: multi-tick seed diverges from the ClosureTable oracle (known-incorrect, scoped out — not open research)`` () =
+    let ticks =
+        [ [ { U = 0; V = 6; Weight = 1L }; { U = 4; V = 5; Weight = 1L } ]
+          [ { U = 5; V = 6; Weight = 1L }; { U = 2; V = 4; Weight = 1L } ]
+          [ { U = 2; V = 3; Weight = 1L } ] ]
+
+    let counting = Circuit()
+    let countIn = counting.ZSetInput<struct (int * int)>()
+    let countStream = counting.CountingClosureTable(countIn.Stream)
+    let countOut = OutputHandle countStream.Op
+    counting.Build()
+
+    let oracle = Circuit()
+    let oracleIn = oracle.ZSetInput<struct (int * int)>()
+    let oracleStream = oracle.ClosureTable(oracleIn.Stream)
+    let oracleOut = OutputHandle oracleStream.Op
+    oracle.Build()
+
+    let mutable diverged = false
+    for tick in ticks do
+        let delta = buildDelta tick
+        countIn.Send delta
+        oracleIn.Send delta
+        let struct (_, convC) = counting.IterateToFixedPoint(countStream, 40)
+        let struct (_, convO) = oracle.IterateToFixedPoint(oracleStream, 40)
+        if convC && convO && clampToSet countOut.Current <> clampToSet oracleOut.Current then
+            diverged <- true
+
+    Assert.True(diverged, "the pinned multi-tick witness no longer diverges — the defect may be FIXED: restore the skipped property and retire this pin (see its header)")

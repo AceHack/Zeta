@@ -187,12 +187,18 @@ type RecursiveExtensions =
     /// strictly-paired (insert+retract of same edge) delta
     /// sequences on that seed. Multi-tick seed changes mid-LFP —
     /// inserting a new seed edge while the body is still
-    /// iterating, then iterating again — is **not proven** to
-    /// produce `Σ body^i(seed)`-style derivation counts and is
-    /// the subject of the gap-monotone signed-delta research
-    /// plan (`docs/research/retraction-safe-semi-naive.md`). Tests
-    /// exercise the one-shot-seed path; the combinator's
-    /// correctness beyond that is an open research question.
+    /// iterating, then iterating again — is **REFUTED, not open**
+    /// (math-team triage 2026-06-12, Soraya's routing): FsCheck
+    /// reliably finds divergence from the `ClosureTable` oracle on
+    /// pure-insert multi-tick sequences, and the minimal witness is
+    /// PINNED as a deterministic, unskipped Fact
+    /// (`RecursiveCounting.MultiSeed.Tests.fs` §REFUTATION WITNESS).
+    /// Known-incorrect on multi-tick seeds; scoped out. The likely
+    /// defect is implementation-level (the affine iteration
+    /// `T = seedInt + body(T)` is sound for DAG bodies), and the
+    /// positive multi-tick story is the gap-monotone signed-delta
+    /// combinator (`docs/research/retraction-safe-semi-naive.md`,
+    /// TLA+ route). Until then: ONE-SHOT SEEDS ONLY.
     ///
     /// ## Output semantics
     ///
@@ -212,6 +218,7 @@ type RecursiveExtensions =
     /// additionally exposes multiplicity — at the cost of the preconditions
     /// above.
     [<Extension>]
+    [<Experimental("RecursiveCounting is known-incorrect on multi-tick seeds (refuted; witness pinned in RecursiveCounting.MultiSeed.Tests.fs). One-shot seeds only — see docs/BUGS.md and Recursive.fs docstring.")>]
     static member RecursiveCounting<'K when 'K : comparison>
         (this: Circuit,
          seed: Stream<ZSet<'K>>,

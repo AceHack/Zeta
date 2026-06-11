@@ -36,6 +36,8 @@ tempted to ship.
 
 ### Expert/skill split half-done — onboarding confusion
 
+**STATUS (triage 2026-06-12): FIXED.** `.claude/agents/` holds all 20 experts; EXPERT-REGISTRY describes the split as the standing convention. Registry and reality agree.
+
 - **Site:** `.claude/agents/` vs `.claude/skills/` vs `docs/EXPERT-REGISTRY.md`
 - **Found:** round 21 by Rune
 - **Severity:** P0 onboarding
@@ -54,6 +56,8 @@ tempted to ship.
   others as "migrating."
 
 ### RecursiveCounting multi-tick-seed behaviour unproven
+
+**STATUS (triage 2026-06-12): RESOLVED via option (b) — and RELABELED.** Soraya's routing: a reliably-failing property is a REFUTATION, not open research (pure-insert witness; the affine math is sound for DAG bodies — implementation defect). Landed: the witness PINNED as a deterministic unskipped Fact (RecursiveCounting.MultiSeed.Tests.fs §REFUTATION WITNESS); `[<Experimental>]` on RecursiveCounting AND CountingClosureTable (FS57 at consumer call sites); docstring reworded to "refuted; one-shot seeds only." The positive multi-tick story routes to the signed-delta combinator's TLA+ spec (retraction-safe-semi-naive.md §7) when that work starts.
 
 - **Site:** `src/Core/Recursive.fs:152-…`
 - **Found:** round 20 by Kira; reproduced by an FsCheck
@@ -84,6 +88,8 @@ tempted to ship.
 
 ### BloomBench.fs referenced but not on disk
 
+**STATUS (triage 2026-06-12): FIXED.** `bench/Benchmarks/BloomBench.fs` exists and was run (see the TECH-RADAR entry below).
+
 - **Site:** `docs/BUGS.md` and `docs/research/bloom-filter-frontier.md`
   reference `bench/Benchmarks/BloomBench.fs`; the file is
   not present on disk.
@@ -98,6 +104,8 @@ tempted to ship.
 
 ### Durability.createBackingStore error message is 6 lines of prose
 
+**STATUS (triage 2026-06-12): LIVE.** Site drifted to `src/Core/Durability.fs:214`; still ~8 wrapped lines, no FEATURE-FLAGS pointer, no `DbspError.WitnessDurablePreview` case.
+
 - **Site:** `src/Core/Durability.fs:166-174`
 - **Found:** round 21 by Kira
 - **Severity:** P1
@@ -108,6 +116,8 @@ tempted to ship.
   case so callers can pattern-match instead of string-match.
 
 ### RecursiveCounting lacks [<Experimental>] attribute
+
+**STATUS (triage 2026-06-12): FIXED** with the P0 above — attribute on both members; consumers get FS57; deliberate uses carry commented `#nowarn "57"`.
 
 - **Site:** `src/Core/Recursive.fs` (`RecursiveCounting` combinator)
 - **Found:** round 21 by Kira + Tariq
@@ -124,6 +134,8 @@ tempted to ship.
 
 ### FeatureFlags.isEnabled "O(1)" claim is hand-waved
 
+**STATUS (triage 2026-06-12): FIXED (by removal).** No "O(1)" claim remains anywhere; nothing left to pin.
+
 - **Site:** `src/Core/FeatureFlags.fs:121-127`
 - **Found:** round 21 by Hiroshi
 - **Severity:** P1 honesty
@@ -136,6 +148,8 @@ tempted to ship.
   env-var lookup." No code change, doc only.
 
 ### Agent-file edits (`.claude/agents/**`) uncovered in threat model
+
+**STATUS (triage 2026-06-12): LIVE — and grown.** THREAT-MODEL.md still covers only `.claude/skills/**`; all 20 personas now live on the uncovered path. One table row; routes to Aminata.
 
 - **Site:** `docs/security/THREAT-MODEL.md` + `.claude/agents/`
 - **Found:** round 21 by Aminata
@@ -152,6 +166,8 @@ tempted to ship.
 
 ### GLOSSARY.md uncovered as trust artefact
 
+**STATUS (triage 2026-06-12): LIVE.** No glossary mention under docs/security/; no CODEOWNERS. Routes to Aminata with the row above.
+
 - **Site:** `docs/GLOSSARY.md` + `docs/security/THREAT-MODEL.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
@@ -167,6 +183,8 @@ tempted to ship.
 
 ### BUGS.md itself is an adversary surface for bug-fixer
 
+**STATUS (triage 2026-06-12): LIVE (site drifted).** The skill moved to `.claude/skills/workflows/blueprints/bug-fixer.md`; its steps still lack a provenance check; THREAT-MODEL.md still silent on BUGS.md as an injection surface.
+
 - **Site:** `docs/BUGS.md` + `.claude/skills/bug-fixer/SKILL.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
@@ -180,6 +198,8 @@ tempted to ship.
   model row noting BUGS.md as an injection surface.
 
 ### FeatureFlags has no Stable-stage branch
+
+**STATUS (triage 2026-06-12): LIVE (latent).** `FlagStage.Stable` exists, no flag maps to it, `isEnabled` still falls through to env resolution for a promoted flag.
 
 - **Site:** `src/Core/FeatureFlags.fs:86-91`
 - **Found:** round 20 by Viktor
@@ -200,6 +220,8 @@ tempted to ship.
 
 ### MerkleTree.LeafDiff is flat O(N), not the branch-pruning walk its docstring claims
 
+**STATUS (triage 2026-06-12): FIXED.** Docstring now states flat O(N) with the root short-circuit and names the pruning walk as an upgrade, not a description.
+
 - **Site:** `src/Core/Merkle.fs` (`LeafDiff`, ~L134) — docstring says "O(changed + log N) branch-prunes at every matching internal level"; code is a flat loop over the whole leaf arrays.
 - **Found:** 2026-06-06 by Lior
 - **Symptom:** doc/impl gap — actual cost is O(N) on every diff, not the advertised pruned walk (perf, not correctness).
@@ -207,6 +229,8 @@ tempted to ship.
 - **Who:** Naledi / Kenji
 
 ### TECH-RADAR row for Bloom sits at Trial without a bench
+
+**STATUS (triage 2026-06-12): FIXED.** Bloom at Adopt (round 40) with measured numbers (`docs/research/bloom-bench-2026-04.md`) and a regression gate.
 
 - **Site:** `docs/TECH-RADAR.md` (Bloom filter row)
 - **Found:** round 20 by Hiroshi (complexity-reviewer)
@@ -219,6 +243,8 @@ tempted to ship.
   the claim.
 
 ### `docs/EXPERT-REGISTRY.md` / `docs/CONFLICT-RESOLUTION.md` drift
+
+**STATUS (triage 2026-06-12): FIXED.** CONFLICT-RESOLUTION defers to the registry by name — the prescribed registry-is-canon shape.
 
 - **Sites:** both files
 - **Found:** round 20 by Rune

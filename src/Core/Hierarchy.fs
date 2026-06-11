@@ -1,5 +1,9 @@
 namespace Zeta.Core
 
+// FS57 (experimental) deliberately suppressed: this file DEFINES the experimental wrapper around
+// RecursiveCounting — the warning is for consumers, who still get it at their call sites.
+#nowarn "57"
+
 open System
 open System.Runtime.CompilerServices
 
@@ -185,6 +189,7 @@ type HierarchyExtensions =
     /// If you want boolean set-of-tuples semantics over a potentially-
     /// cyclic graph, stay on `ClosureTable`.
     [<Extension>]
+    [<Experimental("CountingClosureTable rides RecursiveCounting, which is known-incorrect on multi-tick edge deltas (refuted; witness pinned). One-shot edge sets only — see docs/BUGS.md.")>]
     static member CountingClosureTable<'N when 'N : comparison and 'N : not null>
         (this: Circuit,
          edges: Stream<ZSet<struct ('N * 'N)>>) : Stream<ZSet<ClosurePair<'N>>> =
