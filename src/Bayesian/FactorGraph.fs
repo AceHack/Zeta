@@ -189,3 +189,39 @@ module FactorGraph =
             converged <- not (moved distance tol current next)
             current <- next
         current, rounds, converged
+
+    /// One DAMPED message pass: each new factor→var message is blended with its previous value,
+    /// `blend alpha newMsg oldMsg` (alpha = 1 ⇒ undamped). THE LOOPY UPGRADE (B-1033's named
+    /// follow-up, landed 2026-06-13): on cyclic graphs raw BP can oscillate/overcount precision
+    /// forever (Weiss & Freeman 2001); damping is the standard fix (Minka's EP papers use it
+    /// routinely; Heskes 2002 analyzes it). Deterministic: same schedule, same blend, same run.
+    let passOnceDamped (blend: float -> 'M -> 'M -> 'M) (alpha: float) (g: FactorGraph<'M>) : FactorGraph<'M> =
+        let undamped = passOnce g
+        let damped =
+            undamped.FactorToVar
+            |> Map.map (fun fid msgs ->
+                msgs
+                |> Map.map (fun v newMsg ->
+                    match Map.tryFind fid g.FactorToVar |> Option.bind (Map.tryFind v) with
+                    | Some oldMsg -> blend alpha newMsg oldMsg
+                    | None -> newMsg))
+        { undamped with FactorToVar = damped }
+
+    /// `runToFixpoint`, damped (see passOnceDamped) — same convergence test, damped steps.
+    let runToFixpointDamped
+        (blend: float -> 'M -> 'M -> 'M)
+        (alpha: float)
+        (distance: 'M -> 'M -> float)
+        (tol: float)
+        (maxRounds: int)
+        (g: FactorGraph<'M>)
+        : FactorGraph<'M> * int * bool =
+        let mutable current = g
+        let mutable rounds = 0
+        let mutable converged = false
+        while rounds < maxRounds && not converged do
+            let next = passOnceDamped blend alpha current
+            rounds <- rounds + 1
+            converged <- not (moved distance tol current next)
+            current <- next
+        current, rounds, converged

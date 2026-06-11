@@ -51,6 +51,13 @@ public sealed class InferNetEngine : IInferenceEngine
             Variable.ConstrainPositive(vars[pc.Variable]);
         }
 
+        foreach (var sp in model.SoftPositivities)
+        {
+            // probit Φ(x): observe that a unit-noise copy of x is positive (the soft likelihood)
+            var noisy = Variable.GaussianFromMeanAndVariance(vars[sp.Variable], 1.0);
+            Variable.ConstrainPositive(noisy);
+        }
+
         foreach (var eq in model.Equalities)
         {
             for (var i = 1; i < eq.Variables.Count; i++)

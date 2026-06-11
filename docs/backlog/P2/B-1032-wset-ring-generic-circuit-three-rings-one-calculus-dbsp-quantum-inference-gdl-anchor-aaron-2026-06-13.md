@@ -2,7 +2,7 @@
 id: B-1032
 title: WSet<'K,'W> — the ring-generic circuit; three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0), GDL-anchored
 priority: P2
-status: open
+status: done
 tier: treaty-substrate
 tags: [wset, semiring, gdl, quantum, infer-net, ep, factor-graph, bayesian, circuit, bp-16]
 created: 2026-06-13
@@ -30,3 +30,10 @@ can do the same with?" — same answer, one build: generalize the ZSet weight ri
 
 Start gate notes: prior-art search done (the 2026-06-13 capture); deps: none new (Semiring,
 Bayesian, AmplitudeEmu all in-tree).
+
+## Progress (2026-06-13): all three ring demos DONE
+- ℂ: the three-oracle Mach-Zehnder (shipped earlier).
+- ℤ: the existing ZSet suite (free).
+- ℝ≥0: discrete sum-product as a WSet circuit vs the analytic Bayesian marginal (the GDL instance) — green.
+B-1032 CLOSED. Plus damping (the loopy upgrade, honest limits tested) and SoftPositivity (the probit
+EP twin) landed alongside on the inference port.

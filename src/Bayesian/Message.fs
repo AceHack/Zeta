@@ -124,6 +124,13 @@ module Gaussian =
     /// non-finite parameter (overflow to ∞/NaN) returns `infinity` so it
     /// always counts as "moved" — `max` would otherwise mask a NaN and
     /// let a divergent run falsely report convergence.
+    /// Damped blend in NATURAL parameters: alpha·new + (1−alpha)·old on (precision,
+    /// precisionMean) — the standard EP/BP damping step (convex in the exponential family's
+    /// natural space, so a damped message is always a valid Gaussian message).
+    let blend (alpha: float) (newMsg: Gaussian) (oldMsg: Gaussian) : Gaussian =
+        { Precision = alpha * newMsg.Precision + (1.0 - alpha) * oldMsg.Precision
+          PrecisionMean = alpha * newMsg.PrecisionMean + (1.0 - alpha) * oldMsg.PrecisionMean }
+
     let distance (a: Gaussian) (b: Gaussian) : float =
         if not (System.Double.IsFinite a.PrecisionMean && System.Double.IsFinite a.Precision
                 && System.Double.IsFinite b.PrecisionMean && System.Double.IsFinite b.Precision) then

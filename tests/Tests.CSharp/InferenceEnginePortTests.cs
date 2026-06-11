@@ -39,6 +39,13 @@ public sealed class InferenceEnginePortTests
         // moment-match (ours: Ep.probitFactor; theirs: ConstrainPositive). This exercises the
         // APPROXIMATION, not just exact algebra; the analytic truth for N(0,1)|x>0 is
         // mean = sqrt(2/pi) ≈ 0.7979, variance = 1 - 2/pi ≈ 0.3634.
+        // SOFT EP family: prior N(0,1) under the probit likelihood Φ(x) — the soft twin
+        yield return ("ep-soft-positivity", new GaussianModel(
+            1,
+            new[] { new GaussianPrior(0, 0.0, 1.0) },
+            Array.Empty<EqualityFactor>(),
+            Array.Empty<PositivityConstraint>(),
+            new[] { new SoftPositivityConstraint(0) }));
         yield return ("ep-positivity", new GaussianModel(
             1,
             new[] { new GaussianPrior(0, 0.0, 1.0) },
@@ -95,7 +102,7 @@ public sealed class InferenceEnginePortTests
 
             // exact-algebra cases agree to 1e-6; EP cases compare two moment-matching
             // implementations — 1e-4 is the honest tolerance for the approximation family
-            var tol = model.Positivities.Count > 0 ? 1e-4 : 1e-6;
+            var tol = (model.Positivities.Count > 0 || model.SoftPositivities.Count > 0) ? 1e-4 : 1e-6;
             for (var v = 0; v < model.VariableCount; v++)
             {
                 Assert.True(Math.Abs(a.Marginals[v].Mean - b.Marginals[v].Mean) < tol,

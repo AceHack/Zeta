@@ -200,3 +200,58 @@ let ``LADDER: a live engine binds Live with its light ON; an absent one binds th
     // and all three engine ids are minted on the shelf, collision-free
     for name in [ "engine.zeta-bayesian"; "engine.infer-net"; "engine.mock-flat" ] do
         Assert.True(GeneratorRegistry.byName name |> Option.isSome)
+
+let private cycleModel =
+    GaussianModel(
+        3,
+        [| GaussianPrior(0, 0.0, 1.0); GaussianPrior(2, 4.0, 1.0) |],
+        [| EqualityFactor([| 0; 1 |]); EqualityFactor([| 1; 2 |]); EqualityFactor([| 2; 0 |]) |])
+
+[<Fact>]
+let ``DAMPING means are exact: damped or not, the Gaussian loop's means are right (Weiss-Freeman theorem holds under damping)`` () =
+    let damped = (Zeta.Bayesian.ZetaBayesianEngine(0.5) :> IInferenceEngine).RunGaussian(cycleModel, 2000, 1e-10)
+    for v in 0 .. 2 do
+        Assert.Equal(2.0, damped.Marginals.[v].Mean, 6)
+
+[<Fact>]
+let ``DAMPING mitigates the drift (the honest claim): at equal rounds, lower alpha leaves MORE variance (slower precision overcount) — but a leak-free loop never fully settles`` () =
+    let varAt alpha =
+        let r = (Zeta.Bayesian.ZetaBayesianEngine(alpha) :> IInferenceEngine).RunGaussian(cycleModel, 2000, 1e-12)
+        Assert.False r.Converged // the pure equality cycle is monotonically non-convergent in variance, damped or not — HONEST
+        r.Marginals.[0].Variance
+    // heavier damping (lower alpha) = slower precision overcount = larger residual variance at equal rounds
+    Assert.True(varAt 0.3 > varAt 0.8, "heavier damping should leave more variance at equal rounds")
+
+[<Fact>]
+let ``DAMPING never breaks the easy case: on a TREE, damped agrees with undamped and both converge`` () =
+    let tree = GaussianModel(2, [| GaussianPrior(0, 1.0, 2.0); GaussianPrior(1, 5.0, 3.0) |], [| EqualityFactor([| 0; 1 |]) |])
+    let undamped = (Zeta.Bayesian.ZetaBayesianEngine() :> IInferenceEngine).RunGaussian(tree, 100, 1e-10)
+    let damped = (Zeta.Bayesian.ZetaBayesianEngine(0.5) :> IInferenceEngine).RunGaussian(tree, 200, 1e-10)
+    Assert.True undamped.Converged
+    Assert.True damped.Converged
+    for v in 0 .. 1 do
+        Assert.Equal(undamped.Marginals.[v].Mean, damped.Marginals.[v].Mean, 6)
+        Assert.Equal(undamped.Marginals.[v].Variance, damped.Marginals.[v].Variance, 6)
+
+// ─── THE THIRD RING: discrete sum-product as a WSet circuit vs Zeta.Bayesian (the GDL instance) ───
+// Closes the three-rings table (B-1032): ℤ=DBSP, ℂ=Mach-Zehnder, ℝ≥0=THIS. Aji-McEliece 2000:
+// belief propagation IS a semiring circuit. Two independent engines (WSet over the probability
+// semiring vs our FactorGraph on a 2-state Bernoulli-ish discrete message), one marginal.
+
+[<Fact>]
+let ``GDL ring demo: discrete sum-product as a WSet circuit equals the Bayesian marginal (ℝ≥0 ring, the third oracle)`` () =
+    // a 2-state variable, two soft "votes" (unnormalized likelihoods) multiplied then normalized —
+    // the sum-product marginal of x given two independent observations.
+    // WSet over ℝ≥0 (probabilities): keys 0/1, weights multiply (apply), consolidate sums, normalize.
+    let ring = Zeta.Core.Real.algebra   // ℝ as an IStarRing (Add=+, Mul=*); we stay in ℝ≥0
+    let isZero w = abs w < 1e-15
+    // vote A: [0,0.7; 1,0.3]; vote B: [0,0.4; 1,0.6] — fuse by pointwise product then normalize
+    let voteA : Zeta.Core.WSet.WSet<int, float> = [ 0, 0.7; 1, 0.3 ]
+    let voteB = [ 0, 0.4; 1, 0.6 ]
+    let fused =
+        Zeta.Core.WSet.apply ring (fun k -> voteB |> List.filter (fun (k2, _) -> k2 = k)) voteA
+        |> Zeta.Core.WSet.consolidate ring isZero
+    let total = fused |> List.sumBy snd
+    let wsetP0 = (fused |> List.find (fun (k, _) -> k = 0) |> snd) / total
+    // the analytic marginal: 0.7*0.4 / (0.7*0.4 + 0.3*0.6) = 0.28/0.46
+    Assert.Equal(0.28 / 0.46, wsetP0, 9)

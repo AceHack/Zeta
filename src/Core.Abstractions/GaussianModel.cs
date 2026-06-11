@@ -11,15 +11,26 @@ public sealed record GaussianModel(
     int VariableCount,
     IReadOnlyList<GaussianPrior> Priors,
     IReadOnlyList<EqualityFactor> Equalities,
-    IReadOnlyList<PositivityConstraint> Positivities)
+    IReadOnlyList<PositivityConstraint> Positivities,
+    IReadOnlyList<SoftPositivityConstraint> SoftPositivities)
 {
+    /// <summary>Priors + equalities + hard positivity (the pre-soft shape); soft positivity none.</summary>
+    public GaussianModel(
+        int variableCount,
+        IReadOnlyList<GaussianPrior> priors,
+        IReadOnlyList<EqualityFactor> equalities,
+        IReadOnlyList<PositivityConstraint> positivities)
+        : this(variableCount, priors, equalities, positivities, System.Array.Empty<SoftPositivityConstraint>())
+    {
+    }
+
     /// <summary>The pre-EP constructor shape (priors + equalities only) — kept so existing
     /// call sites and the conformance history stay valid; positivity defaults to none.</summary>
     public GaussianModel(
         int variableCount,
         IReadOnlyList<GaussianPrior> priors,
         IReadOnlyList<EqualityFactor> equalities)
-        : this(variableCount, priors, equalities, System.Array.Empty<PositivityConstraint>())
+        : this(variableCount, priors, equalities, System.Array.Empty<PositivityConstraint>(), System.Array.Empty<SoftPositivityConstraint>())
     {
     }
 }

@@ -8,10 +8,16 @@ open Zeta.Core.Abstractions
 /// determinism lint fences Core; this module inherits the discipline). Adapter B (dotnet/infer,
 /// Minka & Winn) implements the SAME port test-side; conformance cases run through both —
 /// theirs tests ours.
-type ZetaBayesianEngine() =
+type ZetaBayesianEngine(alpha: float) =
+    // alpha < 1.0 = blended messages in natural params (Gaussian.blend; Heskes 2002). Honest
+    // limit: damping MITIGATES oscillation, it does not cure a leak-free loop — the pure equality
+    // cycle's precision diverges monotonically (means stay exact); damping only slows the drift.
+    // alpha = 1.0 = raw BP. Both behaviors are real and tested. Two explicit ctors so C# consumers
+    // get a clean parameterless `new ZetaBayesianEngine()` (F# optional args don't expose well).
+    new() = ZetaBayesianEngine(1.0)
 
     interface IInferenceEngine with
-        member _.Name = "zeta-bayesian"
+        member _.Name = if alpha < 1.0 then sprintf "zeta-bayesian(damped %.2f)" alpha else "zeta-bayesian"
 
         member _.RunGaussian(model: GaussianModel, maxRounds: int, tolerance: float) : InferenceResult =
             let algebra = Gaussian.algebra
@@ -47,8 +53,24 @@ type ZetaBayesianEngine() =
                             g)
                     withEqualities
 
+            let withSoft =
+                model.SoftPositivities
+                |> Seq.indexed
+                |> Seq.fold
+                    (fun g (i, sp) ->
+                        FactorGraph.addFactor
+                            (Seq.length model.Priors + Seq.length model.Equalities + Seq.length model.Positivities + i)
+                            (Ep.probitFactor sp.Variable)
+                            g)
+                    graph
+
+            let graph = withSoft
+
             let final, rounds, converged =
-                FactorGraph.runToFixpoint Gaussian.distance tolerance maxRounds graph
+                if alpha < 1.0 then
+                    FactorGraph.runToFixpointDamped Gaussian.blend alpha Gaussian.distance tolerance maxRounds graph
+                else
+                    FactorGraph.runToFixpoint Gaussian.distance tolerance maxRounds graph
 
             let marginals =
                 [| for v in 0 .. model.VariableCount - 1 ->
