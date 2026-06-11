@@ -494,6 +494,7 @@ are closed (status: closed in frontmatter)._
 
 ## P2 — research-grade
 
+- [ ] **[B-1022](backlog/P2/B-1022-fuse-four-corner-harmonic-kleisli-arrow-plus-fourcornerownership-tools-to-src-port-aaron-2026-06-10.md)** Fuse the arrow/four-corner/feedback/scheduler fragments into ONE four-corner harmonic Kleisli arrow (ISR feedback channel = FourCornerOwnership; Policy = decision-arrow; FeedbackThrottle = harmonic coupling; SoftScheduler/FerryThrottler = the tick; Cayley-Dickson = the oscillator; CHIP-8 = first client) + graduate `FourCornerOwnership` tools→src and port TS→F#/C#/Rust. Accidental-complexity cleanup (expected at speed); run with Rodney; DST-verified behaviorally-equal (Aaron 2026-06-10 "let's not lose this fusion")
 - [x] **[B-0001](backlog/P2/B-0001-example-schema-self-reference.md)** Example row — self-reference demonstrating the per-row-file schema
 - [ ] **[B-0004](backlog/P2/B-0004-translate-repo-to-other-human-languages.md)** Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional
 - [ ] **[B-0004.1](backlog/P2/B-0004.1-substrate-inventory-scanner-ts.md)** B-0004.1 — TS substrate inventory scanner for translatable content surfaces
