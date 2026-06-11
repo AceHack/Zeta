@@ -14,7 +14,7 @@ composes_with:
   - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
   - docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
-  - tools/agent-loop/state-machine.ts
+  - src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts
   - agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md
 tags: [workflow-du, bft, summonable-bft, compiler-summons, observe-keystone, oracle-class, ople, multi-oracle, research, core-architecture]
 ---
@@ -61,7 +61,7 @@ questions are in
    oracle-class declaration + the summon/join + the constitution-gate escalation, in the F# DU canon
    (and the cross-language ballot per B-0944).
 3. **Implement** against the existing keystone (`agentic-organization/packages/application/src/observe.ts` +
-   `tools/agent-loop/`) without forking it; wire compiler-summons (B-0944 4-compiler ballot) +
+   `src/Core.TypeScript/workflow-engine/agent-loop/`) without forking it; wire compiler-summons (B-0944 4-compiler ballot) +
    LLM-summons (self-recursive observe) as first-class.
 4. **DST/replay** the whole summon tree (deterministic-rule + constitution gate bound the recursion).
 

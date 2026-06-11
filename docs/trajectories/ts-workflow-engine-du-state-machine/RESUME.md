@@ -26,7 +26,7 @@ It is the software sibling of the two hardware-bringup workstreams
 Shipped artifacts:
 
 - [`.claude/skills/agent-loop/SKILL.md`](../../../.claude/skills/agent-loop/SKILL.md) — the distributable workflow-engine skill (active, ratified 2026-05-28)
-- [`tools/agent-loop/`](../../../tools/agent-loop/) — TS behavior layer: `state-machine.ts` + `work-lifecycle-state-machine.ts` (+ test + README)
+- [`src/Core.TypeScript/workflow-engine/agent-loop/`](../../../src/Core.TypeScript/workflow-engine/agent-loop/) — TS behavior layer: `state-machine.ts` + `work-lifecycle-state-machine.ts` (+ test + README)
 
 Grounding backlog:
 

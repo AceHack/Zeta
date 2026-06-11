@@ -56,7 +56,7 @@ Turn GitHub Actions into an infinite recursive compute platform for the agent-lo
 
 - `.github/workflows/agent-loop-swarm.yml` workflow that:
   - Reads current state from `agent-state/{persona}/{trajectory}/` branches
-  - Invokes `tools/agent-loop/state-machine.ts` for `move-next` decision
+  - Invokes `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` for `move-next` decision
   - Appends new event to Git via direct push (no PR)
   - Triggers next workflow run via `workflow_dispatch` API
 - Bounded-iteration safety (per Kestrel's push-cycle-limit B-0867.17 framing) — workflows include a max-recursion-depth + abandonment-condition guard

@@ -1,4 +1,4 @@
-// tools/agent-loop/state-machine.test.ts
+// src/Core.TypeScript/workflow-engine/agent-loop/state-machine.test.ts
 //
 // Unit tests for the pure-logic exports of state-machine.ts.
 
@@ -23,7 +23,7 @@ function idle(): AgentState {
   return { tag: "Idle", context: ctx() };
 }
 
-function workCandidate(id: string = "B-0867", lane: WorkCandidate["lane"] = "operational"): WorkCandidate {
+function workCandidate(id = "B-0867", lane: WorkCandidate["lane"] = "operational"): WorkCandidate {
   return {
     id,
     lane,

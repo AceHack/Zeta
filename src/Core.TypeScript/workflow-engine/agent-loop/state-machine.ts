@@ -1,4 +1,4 @@
-// tools/agent-loop/state-machine.ts
+// src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts
 //
 // B-0867.5 substrate: agent-loop state machine types + pure-logic
 // state transition function.
@@ -35,15 +35,7 @@
 
 // ─── Agent context (per-cycle invocation context) ─────────────────────
 
-export type AgentPersona =
-  | "otto"
-  | "alexa"
-  | "riven"
-  | "vera"
-  | "lior"
-  | "aaron"
-  | "addison"
-  | "max";
+export type AgentPersona = "otto" | "alexa" | "riven" | "vera" | "lior" | "aaron" | "addison" | "max";
 
 export interface AgentContext {
   readonly agent: AgentPersona;
@@ -266,10 +258,7 @@ export type MenuOption =
  *
  * Pure; no I/O.
  */
-export function transition(
-  state: AgentState,
-  option: MenuOption,
-): AgentState {
+export function transition(state: AgentState, option: MenuOption): AgentState {
   const ctx = state.context;
   switch (option.tag) {
     case "PickWork":
@@ -296,9 +285,7 @@ export function transition(
         tag: "NamedBoundedWait",
         context: ctx,
         namedDep: option.namedDep,
-        ...(option.eta === undefined
-          ? {}
-          : { expectedResolutionIso: option.eta }),
+        ...(option.eta === undefined ? {} : { expectedResolutionIso: option.eta }),
       };
     case "RequestOperatorAttention":
       return {
@@ -323,9 +310,7 @@ export function transition(
         tag: "Paused",
         context: ctx,
         reason: option.reason,
-        ...(option.expectedResumeIso === undefined
-          ? {}
-          : { expectedResumeIso: option.expectedResumeIso }),
+        ...(option.expectedResumeIso === undefined ? {} : { expectedResumeIso: option.expectedResumeIso }),
       };
     case "EnterOpenEndedExploration":
       // Per operator 2026-05-28: "there's a menu button for that lol" —
@@ -356,10 +341,7 @@ export function transition(
  *
  * Pure; no I/O.
  */
-export function postResultTransition(
-  state: AgentState,
-  result: WorkResult,
-): AgentState {
+export function postResultTransition(state: AgentState, result: WorkResult): AgentState {
   switch (state.tag) {
     case "ExecutingWork":
       return { tag: "EmittingResult", context: state.context, result };

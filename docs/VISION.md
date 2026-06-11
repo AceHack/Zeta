@@ -1315,7 +1315,7 @@ outpout."*
 Three pieces, cleanly separated:
 
 1. **Deterministic script** holds the STATE MACHINE
-   (TS modules in `tools/agent-loop/`, F# DU types as
+   (TS modules in `src/Core.TypeScript/workflow-engine/agent-loop/`, F# DU types as
    algebraic-spec documentation in `src/Core.FSharp/`
    when the F# port lands).
 2. **LLM (any agent)** is a pure MENU-SELECTOR —
@@ -1332,7 +1332,7 @@ script executes the choice and appends the new state.
 
 #### Two composing state machines
 
-- **Agent-state machine** (`tools/agent-loop/state-machine.ts`):
+- **Agent-state machine** (`src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts`):
   10 states forming a cycle around `Idle` —
   `InspectingStatus`, `SelectingWork`, `ExecutingWork`,
   `EmittingResult`, `RecordingHeartbeat`, `NamedBoundedWait`,
@@ -1342,7 +1342,7 @@ script executes the choice and appends the new state.
   and `EnterOpenEndedExploration` (per operator:
   *"there's a menu button for that lol"*).
 - **Work-lifecycle state machine**
-  (`tools/agent-loop/work-lifecycle-state-machine.ts`):
+  (`src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts`):
   11 states modelling `Backlog → Claimed → InProgress →
   PrOpen → InReview ↔ RevisionRequested ↔ RevisionPushed →
   Approved → Merged`, with the cycle-push-review-a-few-times
@@ -1465,7 +1465,7 @@ simultaneously, no single vendor as choke point:
 
 | Channel | Surface | Operator-authority |
 |---|---|---|
-| **Native TS + bun** | Direct `bun tools/agent-loop/` invocation; works in any harness with bun installed | Full — operator controls the bits on disk |
+| **Native TS + bun** | Direct `bun src/Core.TypeScript/workflow-engine/agent-loop/` invocation; works in any harness with bun installed | Full — operator controls the bits on disk |
 | **Vendor skill-store** | Claude skills marketplace, Cursor extension registry, Kiro skill catalog, future vendor stores | Vendor-policy-bound — operator authority subject to vendor curation |
 | **Ace package manager** | Zeta-internal package distribution; bypasses vendor stores; cryptographic + reputation-anchored | Operator-controlled — Aaron + the maintainer-collective |
 | **zflash USB** | Reproducible USB image with the agent-loop runtime + skill catalog burned in | Fully air-gapped — operator-controlled bits, no network dependency |

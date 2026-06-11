@@ -64,7 +64,7 @@ Choice depends on query patterns. Final allocation deferred to implementation; b
 
 ## Acceptance criteria
 
-- `tools/agent-loop/zeta-id.ts` exports `generateZetaID({trajectory, persona, lifecycle_stage})` returning 128-bit value as 26-char Crockford base32 string (ULID-compatible) OR hex string
+- `src/Core.TypeScript/workflow-engine/agent-loop/zeta-id.ts` exports `generateZetaID({trajectory, persona, lifecycle_stage})` returning 128-bit value as 26-char Crockford base32 string (ULID-compatible) OR hex string
 - Pure function; deterministic given (timestamp, structured-bits, random-source)
 - Tests cover: time-ordering preservation under sort, no-collision under 1M generated in same microsecond, structured-bit extraction
 - Composes with event-sourcing layer (B-0867.2) — events use ZetaID as primary key

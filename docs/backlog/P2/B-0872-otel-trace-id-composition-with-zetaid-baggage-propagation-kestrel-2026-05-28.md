@@ -40,7 +40,7 @@ Wire OpenTelemetry trace-IDs through the agent-loop substrate so every state-mac
 
 ## Acceptance criteria
 
-- `tools/agent-loop/otel.ts` exposes `withTrace(zetaId, fn)` helper that:
+- `src/Core.TypeScript/workflow-engine/agent-loop/otel.ts` exposes `withTrace(zetaId, fn)` helper that:
   - Creates/joins a W3C Trace Context for the current operation
   - Sets baggage entries linking `zetaId` → current trace
   - Runs `fn` within the trace scope

@@ -1,4 +1,4 @@
-// tools/agent-loop/work-lifecycle-state-machine.ts
+// src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts
 //
 // B-0867.5+ extension: work-lifecycle state machine — backlog row →
 // claim → PR → review (possibly cycle review-push N times) → merge.
@@ -36,11 +36,11 @@ import type { AgentPersona } from "./state-machine";
 // ─── Work-item identity + metadata ───────────────────────────────────
 
 export interface BacklogRow {
-  readonly id: string;             // "B-0867.5"
+  readonly id: string; // "B-0867.5"
   readonly title: string;
   readonly priority: "P0" | "P1" | "P2" | "P3";
-  readonly filePath: string;       // "docs/backlog/P1/B-0867.5-..."
-  readonly trajectory: string;     // composes with B-0867 trajectory taxonomy
+  readonly filePath: string; // "docs/backlog/P1/B-0867.5-..."
+  readonly trajectory: string; // composes with B-0867 trajectory taxonomy
 }
 
 // ─── Work-lifecycle state (F# DU) ────────────────────────────────────
@@ -209,6 +209,191 @@ export type TransitionResult =
       readonly reason: string;
     };
 
+type StateWithTag<Tag extends WorkLifecycleState["tag"]> = Extract<WorkLifecycleState, { readonly tag: Tag }>;
+
+function ok(state: WorkLifecycleState): TransitionResult {
+  return { ok: true, state };
+}
+
+function abandon(row: BacklogRow, reason: string): TransitionResult {
+  return ok({ tag: "Abandoned", row, reason });
+}
+
+function close(
+  row: BacklogRow,
+  prNumber: number,
+  event: { readonly closedAt: string; readonly reason: string },
+): TransitionResult {
+  return ok({
+    tag: "Closed",
+    row,
+    prNumber,
+    closedAt: event.closedAt,
+    reason: event.reason,
+  });
+}
+
+function approve(row: BacklogRow, prNumber: number, approvedAt: string): TransitionResult {
+  return ok({ tag: "Approved", row, prNumber, approvedAt });
+}
+
+function illegalTransition(state: WorkLifecycleState, event: WorkLifecycleTransition): TransitionResult {
+  return {
+    ok: false,
+    state,
+    reason: `illegal transition: ${state.tag} cannot accept ${event.tag}`,
+  };
+}
+
+function terminalTransition(state: WorkLifecycleState, event: WorkLifecycleTransition): TransitionResult {
+  return {
+    ok: false,
+    state,
+    reason: `terminal state ${state.tag} cannot transition via ${event.tag}`,
+  };
+}
+
+function transitionBacklog(state: StateWithTag<"Backlog">, event: WorkLifecycleTransition): TransitionResult {
+  switch (event.tag) {
+    case "Claim":
+      return ok({
+        tag: "Claimed",
+        row: state.row,
+        claimedBy: event.agent,
+        claimAt: event.timestamp,
+      });
+    case "Abandon":
+      return abandon(state.row, event.reason);
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionClaimed(state: StateWithTag<"Claimed">, event: WorkLifecycleTransition): TransitionResult {
+  switch (event.tag) {
+    case "StartWork":
+      return ok({
+        tag: "InProgress",
+        row: state.row,
+        claimedBy: state.claimedBy,
+        branchRef: event.branchRef,
+      });
+    case "Abandon":
+      return abandon(state.row, event.reason);
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionInProgress(state: StateWithTag<"InProgress">, event: WorkLifecycleTransition): TransitionResult {
+  switch (event.tag) {
+    case "OpenPr":
+      return ok({
+        tag: "PrOpen",
+        row: state.row,
+        prNumber: event.prNumber,
+        openedBy: event.openedBy,
+        openedAt: event.openedAt,
+      });
+    case "Abandon":
+      return abandon(state.row, event.reason);
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionPrOpen(state: StateWithTag<"PrOpen">, event: WorkLifecycleTransition): TransitionResult {
+  switch (event.tag) {
+    case "RequestReview":
+      return ok({
+        tag: "InReview",
+        row: state.row,
+        prNumber: state.prNumber,
+        reviewers: event.reviewers,
+        threadCount: 0,
+      });
+    case "Close":
+      return close(state.row, state.prNumber, event);
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionInReview(state: StateWithTag<"InReview">, event: WorkLifecycleTransition): TransitionResult {
+  switch (event.tag) {
+    case "ReceiveRevisionRequest":
+      return ok({
+        tag: "RevisionRequested",
+        row: state.row,
+        prNumber: state.prNumber,
+        revisionCount: state.threadCount === 0 ? 1 : state.threadCount + 1,
+        threadIds: event.threadIds,
+      });
+    case "ResolveAllThreads":
+      return approve(state.row, state.prNumber, new Date().toISOString());
+    case "Approve":
+      return approve(state.row, state.prNumber, event.approvedAt);
+    case "Close":
+      return close(state.row, state.prNumber, event);
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionRevisionRequested(
+  state: StateWithTag<"RevisionRequested">,
+  event: WorkLifecycleTransition,
+): TransitionResult {
+  switch (event.tag) {
+    case "PushRevision":
+      return ok({
+        tag: "RevisionPushed",
+        row: state.row,
+        prNumber: state.prNumber,
+        revisionCount: state.revisionCount,
+        lastPushSha: event.sha,
+      });
+    case "Close":
+      return close(state.row, state.prNumber, event);
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionRevisionPushed(
+  state: StateWithTag<"RevisionPushed">,
+  event: WorkLifecycleTransition,
+): TransitionResult {
+  switch (event.tag) {
+    case "RequestReview":
+      return ok({
+        tag: "InReview",
+        row: state.row,
+        prNumber: state.prNumber,
+        reviewers: event.reviewers,
+        threadCount: state.revisionCount,
+      });
+    case "ResolveAllThreads":
+      return approve(state.row, state.prNumber, new Date().toISOString());
+    default:
+      return illegalTransition(state, event);
+  }
+}
+
+function transitionApproved(state: StateWithTag<"Approved">, event: WorkLifecycleTransition): TransitionResult {
+  if (event.tag !== "Merge") {
+    return illegalTransition(state, event);
+  }
+
+  return ok({
+    tag: "Merged",
+    row: state.row,
+    prNumber: state.prNumber,
+    mergeCommit: event.mergeCommit,
+    mergedAt: event.mergedAt,
+  });
+}
+
 /**
  * applyTransition — pure function: current state + transition event →
  * either new state (legal transition) or failure (illegal transition).
@@ -233,235 +418,29 @@ export type TransitionResult =
  * is a signal that the work-item may need substrate-engineering
  * attention (decomposition; alternative approach; escalation).
  */
-export function applyTransition(
-  state: WorkLifecycleState,
-  event: WorkLifecycleTransition,
-): TransitionResult {
+export function applyTransition(state: WorkLifecycleState, event: WorkLifecycleTransition): TransitionResult {
   switch (state.tag) {
     case "Backlog":
-      if (event.tag === "Claim") {
-        return {
-          ok: true,
-          state: {
-            tag: "Claimed",
-            row: state.row,
-            claimedBy: event.agent,
-            claimAt: event.timestamp,
-          },
-        };
-      }
-      if (event.tag === "Abandon") {
-        return {
-          ok: true,
-          state: { tag: "Abandoned", row: state.row, reason: event.reason },
-        };
-      }
-      break;
-
+      return transitionBacklog(state, event);
     case "Claimed":
-      if (event.tag === "StartWork") {
-        return {
-          ok: true,
-          state: {
-            tag: "InProgress",
-            row: state.row,
-            claimedBy: state.claimedBy,
-            branchRef: event.branchRef,
-          },
-        };
-      }
-      if (event.tag === "Abandon") {
-        return {
-          ok: true,
-          state: { tag: "Abandoned", row: state.row, reason: event.reason },
-        };
-      }
-      break;
-
+      return transitionClaimed(state, event);
     case "InProgress":
-      if (event.tag === "OpenPr") {
-        return {
-          ok: true,
-          state: {
-            tag: "PrOpen",
-            row: state.row,
-            prNumber: event.prNumber,
-            openedBy: event.openedBy,
-            openedAt: event.openedAt,
-          },
-        };
-      }
-      if (event.tag === "Abandon") {
-        return {
-          ok: true,
-          state: { tag: "Abandoned", row: state.row, reason: event.reason },
-        };
-      }
-      break;
-
+      return transitionInProgress(state, event);
     case "PrOpen":
-      if (event.tag === "RequestReview") {
-        return {
-          ok: true,
-          state: {
-            tag: "InReview",
-            row: state.row,
-            prNumber: state.prNumber,
-            reviewers: event.reviewers,
-            threadCount: 0,
-          },
-        };
-      }
-      if (event.tag === "Close") {
-        return {
-          ok: true,
-          state: {
-            tag: "Closed",
-            row: state.row,
-            prNumber: state.prNumber,
-            closedAt: event.closedAt,
-            reason: event.reason,
-          },
-        };
-      }
-      break;
-
+      return transitionPrOpen(state, event);
     case "InReview":
-      if (event.tag === "ReceiveRevisionRequest") {
-        return {
-          ok: true,
-          state: {
-            tag: "RevisionRequested",
-            row: state.row,
-            prNumber: state.prNumber,
-            revisionCount: state.threadCount === 0 ? 1 : state.threadCount + 1,
-            threadIds: event.threadIds,
-          },
-        };
-      }
-      if (event.tag === "ResolveAllThreads") {
-        return {
-          ok: true,
-          state: {
-            tag: "Approved",
-            row: state.row,
-            prNumber: state.prNumber,
-            approvedAt: new Date().toISOString(),
-          },
-        };
-      }
-      if (event.tag === "Approve") {
-        return {
-          ok: true,
-          state: {
-            tag: "Approved",
-            row: state.row,
-            prNumber: state.prNumber,
-            approvedAt: event.approvedAt,
-          },
-        };
-      }
-      if (event.tag === "Close") {
-        return {
-          ok: true,
-          state: {
-            tag: "Closed",
-            row: state.row,
-            prNumber: state.prNumber,
-            closedAt: event.closedAt,
-            reason: event.reason,
-          },
-        };
-      }
-      break;
-
+      return transitionInReview(state, event);
     case "RevisionRequested":
-      if (event.tag === "PushRevision") {
-        return {
-          ok: true,
-          state: {
-            tag: "RevisionPushed",
-            row: state.row,
-            prNumber: state.prNumber,
-            revisionCount: state.revisionCount,
-            lastPushSha: event.sha,
-          },
-        };
-      }
-      if (event.tag === "Close") {
-        return {
-          ok: true,
-          state: {
-            tag: "Closed",
-            row: state.row,
-            prNumber: state.prNumber,
-            closedAt: event.closedAt,
-            reason: event.reason,
-          },
-        };
-      }
-      break;
-
+      return transitionRevisionRequested(state, event);
     case "RevisionPushed":
-      // The cycle-push-review-a-few-times pattern: RevisionPushed loops
-      // back to InReview when reviewer re-evaluates the pushed revision
-      if (event.tag === "RequestReview") {
-        return {
-          ok: true,
-          state: {
-            tag: "InReview",
-            row: state.row,
-            prNumber: state.prNumber,
-            reviewers: event.reviewers,
-            threadCount: state.revisionCount,
-          },
-        };
-      }
-      if (event.tag === "ResolveAllThreads") {
-        // Reviewer resolved threads after push without requesting further changes
-        return {
-          ok: true,
-          state: {
-            tag: "Approved",
-            row: state.row,
-            prNumber: state.prNumber,
-            approvedAt: new Date().toISOString(),
-          },
-        };
-      }
-      break;
-
+      return transitionRevisionPushed(state, event);
     case "Approved":
-      if (event.tag === "Merge") {
-        return {
-          ok: true,
-          state: {
-            tag: "Merged",
-            row: state.row,
-            prNumber: state.prNumber,
-            mergeCommit: event.mergeCommit,
-            mergedAt: event.mergedAt,
-          },
-        };
-      }
-      break;
-
+      return transitionApproved(state, event);
     case "Merged":
     case "Closed":
     case "Abandoned":
-      // Terminal states; no further transitions legal
-      return {
-        ok: false,
-        state,
-        reason: `terminal state ${state.tag} cannot transition via ${event.tag}`,
-      };
+      return terminalTransition(state, event);
   }
-
-  return {
-    ok: false,
-    state,
-    reason: `illegal transition: ${state.tag} cannot accept ${event.tag}`,
-  };
 }
 
 // ─── Lifecycle metrics ───────────────────────────────────────────────
@@ -471,11 +450,7 @@ export function applyTransition(
  * Abandoned). Used by aggregators to filter active work from completed.
  */
 export function isTerminal(state: WorkLifecycleState): boolean {
-  return (
-    state.tag === "Merged" ||
-    state.tag === "Closed" ||
-    state.tag === "Abandoned"
-  );
+  return state.tag === "Merged" || state.tag === "Closed" || state.tag === "Abandoned";
 }
 
 /**
@@ -495,12 +470,6 @@ export function revisionCount(state: WorkLifecycleState): number {
  * Requires the state's history (not encoded in the state itself for
  * stateless storage simplicity; caller passes the claimAt timestamp).
  */
-export function leadTimeSeconds(
-  claimAtIso: string,
-  mergedAtIso: string,
-): number {
-  return (
-    (new Date(mergedAtIso).getTime() - new Date(claimAtIso).getTime()) /
-    1000
-  );
+export function leadTimeSeconds(claimAtIso: string, mergedAtIso: string): number {
+  return (new Date(mergedAtIso).getTime() - new Date(claimAtIso).getTime()) / 1000;
 }

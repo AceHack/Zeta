@@ -24,7 +24,7 @@ and continue to iterate; the *direction* is locked.
 
 **Owner:** operator (shaping-decision owner; authorized the canonical-retrofit to proceed without waiting on Max — see Status) + Max (corporate `Menu16` author; informed-after, after-the-fact review); Otto-CLI synthesis.
 **Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
-engine `tools/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
+engine `src/Core.TypeScript/workflow-engine/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
 local-no-cloud stance is long-standing; the 16-direction framing is the operator's own from the
 2026-05-28/30 conversations). What's new here is composing them into one loop + proposing a concrete
 16-slot grammar. The composition is sound; the exact grammar layout is a first draft.
@@ -35,7 +35,7 @@ Across 2026-05-28 -> 2026-05-31 the operator + Ani named a foreground-loop archi
 currently **built-as-engine but not yet wired as the live agent loop**, and **designed-but-not-
 deployed** for its compute substrate:
 
-- **The move-next engine exists.** `tools/agent-loop/state-machine.ts` (B-0867.5) implements
+- **The move-next engine exists.** `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts` (B-0867.5) implements
   "execute script -> look at choose-your-own-adventure output -> take action based on output."
   Operator framing: *"the agent loop basically becomes execute script look at choose your own
   adventure output, take action based on outpout."* Clean separation: the **deterministic script
@@ -222,7 +222,7 @@ with these four properties:
    -> **render** the menu as the fixed 16-direction grammar -> **select** (the LLM picks ONE
    direction, returning an index 0..15, not free text) -> **act** (the deterministic script executes
    the chosen direction) -> **append** the new state event to Git -> repeat. This is `observe.ts`:
-   the observe-step entrypoint over the existing `tools/agent-loop/` (move-next) state machine.
+   the observe-step entrypoint over the existing `src/Core.TypeScript/workflow-engine/agent-loop/` (move-next) state machine.
 2. **16-direction universal action grammar** — a FIXED set of 16 action slots (Xbox-controller
    layout). The directions are stable across all states (learnable); each state's move-next supplies
    the **labels + availability** for the 16 slots. Availability is **tri-boolean** (composes with
@@ -245,7 +245,7 @@ with these four properties:
    git log  |  observe.ts                                      |
    (state) -+-> read current state (latest events)            |
             |   -> move-next(state): build the 16-slot menu    |   deterministic script
-            |        (labels + Tri availability per slot)      |   (tools/agent-loop, F# DU canon)
+            |        (labels + Tri availability per slot)      |   (src/Core.TypeScript/workflow-engine/agent-loop, F# DU canon)
             |                                                  |
             |  render 16-direction grammar  ------------------>|
             |                                                  |
@@ -324,7 +324,7 @@ the menu-builder slice must honor.)*
 
 ### Layering (clean separation)
 
-- **Deterministic script** (`tools/agent-loop/` TS today; the canonical F# DU in
+- **Deterministic script** (`src/Core.TypeScript/workflow-engine/agent-loop/` TS today; the canonical F# DU in
   `src/Core.FSharp/WorkflowEngine/` is PLANNED future-work, B-0867.1 — does not exist yet): owns the
   state machine + `move-next(state) -> 16-slot menu`. No LLM here. Replayable / DST-able.
 - **LLM selector** (local, no cloud): a pure function `menu -> index 0..15` over only-`T` slots.
@@ -576,7 +576,7 @@ onto the canonical algebra, not the reverse.
 - **`agentic-organization/docs/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` +
   `RUNTIME_TECH_AND_PACKAGE_STRATEGY.md` + `AI_CLUSTER_SCAFFOLD_CONTEXT.md`** (the cluster deployment
   target — k3s/Temporal/Dapr/Orleans/NATS/Cockroach; local-model gating — vs this ADR's single-node)
-- `tools/agent-loop/` (B-0867.5 — the move-next state machine; the local TS form of the keystone's
+- `src/Core.TypeScript/workflow-engine/agent-loop/` (B-0867.5 — the move-next state machine; the local TS form of the keystone's
   composer that this ADR puts a 16-slot face on)
 - B-0944 (tri-boolean digital qubit — the `Tri` cell IS the per-slot availability; the `Tri[16]`
   menu is a projection of the keystone's `ObserveResult` readout + deterministic-rule vetoes)

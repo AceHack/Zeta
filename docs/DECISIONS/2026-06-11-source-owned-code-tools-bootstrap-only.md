@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Date:** 2026-06-11
-**Backlog:** (to be filed for repo-wide migration; this ADR ships the boundary and the Q# first slice)
+**Backlog:** (to be filed for repo-wide migration; this ADR ships the boundary and staged migration slices)
 
 ## Context & Problem Statement
 
@@ -67,3 +67,7 @@ and migrate in slices without hiding the debt.
   - The first slice moves the Q# reference oracle from `tools/qsharp-oracle/` to
     `src/Core.QSharp.ReferenceOracle/` and runs both source-owned oracle tests in
     CI cross-verification.
+  - The next slice moves the pure TypeScript agent-loop state machines from
+    `tools/agent-loop/` to
+    `src/Core.TypeScript/workflow-engine/agent-loop/`, preserving the tested DU
+    contract while putting workflow-engine behavior under `src/`.

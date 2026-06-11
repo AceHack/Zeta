@@ -40,10 +40,10 @@ A review surface that operates at TRAJECTORY scope (not per-PR, not per-event) f
 
 ## Acceptance criteria
 
-- `tools/agent-loop/trajectory-review.ts` exposes:
+- `src/Core.TypeScript/workflow-engine/agent-loop/trajectory-review.ts` exposes:
   - `summarizeTrajectory(trajectoryId, sinceIso)` — produces a trajectory-shape summary (phase progression, claims-vs-merges, DORA-curve, key events) suitable for async review
   - `listActiveTrajectories({sortBy: "recency" | "dora-contribution" | "uncertainty"})` — operator's at-a-glance dashboard
-- CLI wrapper: `bun tools/agent-loop/trajectory-review.ts --since 1week` produces markdown report
+- CLI wrapper: `bun src/Core.TypeScript/workflow-engine/agent-loop/trajectory-review.ts --since 1week` produces markdown report
 - Composes with event-sourced trajectory phase classification (B-0867.18) — phase is derived from events; the review surface reads the derivation
 - README documents the asymmetry between enterprise-PR-per-deploy and operator-trajectory-async-review modes
 

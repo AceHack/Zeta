@@ -65,8 +65,8 @@ Mechanism 1 handles per-event write-time speed (no PR per event); Mechanism 2 ha
 
 ## Acceptance criteria
 
-- `tools/agent-loop/events/fast-lane-write.ts` — agent-side helper that writes events to the fast-lane path / trajectory branch with appropriate metadata (composes with B-0867.2 event-sourcing layer)
-- `tools/agent-loop/events/batch-merge-coordinator.ts` — periodic coordinator:
+- `src/Core.TypeScript/workflow-engine/agent-loop/events/fast-lane-write.ts` — agent-side helper that writes events to the fast-lane path / trajectory branch with appropriate metadata (composes with B-0867.2 event-sourcing layer)
+- `src/Core.TypeScript/workflow-engine/agent-loop/events/batch-merge-coordinator.ts` — periodic coordinator:
   - Reads accumulated events across trajectory branches
   - Assembles batch PR (or batch-merge to main if branch protection permits direct path-scoped merge)
   - Configurable batching policy (cadence / threshold / hybrid)

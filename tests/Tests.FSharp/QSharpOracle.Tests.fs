@@ -449,33 +449,12 @@ let ``F# validates the TypeScript Q# treaty transcript`` () =
         closeToWithin 1e-5 qsProb faProb
 
     // 3. Validate Interference Visibility
-    // Helpers dropped in the #7766 "move oracle into src" refactor — restored so main builds green
-    // (B-1031 work surfaced the breakage; frame = a detector identity, real/phase = the amplitude
-    // constructors, probabilityFor = the Born-rule lookup).
-    let frame (seed: uint64) = Chip8Cow.create seed
-    let real (r: float) : Complex = Doubled.make r 0.0
-    let phase (theta: float) : Complex = Doubled.make (cos theta) (sin theta)
-    let probabilityFor (target: Chip8Cow.Frame) (probs: (Chip8Cow.Frame * float) list) =
-        probs |> List.filter (fun (g, _) -> g = target) |> List.sumBy snd
-    let detectorZero = frame 0UL
-    let detectorOne = frame 1UL
-    let half = real 0.5
-    let invSqrt2 = real (1.0 / sqrt 2.0)
-
-    let closedInterferometer (phi: float) : AmplitudeEmu.Amp =
-        let phase0 = phase (-phi / 2.0)
-        let phase1 = phase (phi / 2.0)
-
-        [ detectorZero, c.Mul(half, phase0)
-          detectorZero, c.Mul(half, phase1)
-          detectorOne, c.Mul(half, phase0)
-          detectorOne, c.Negate(c.Mul(half, phase1)) ]
-
     let interferenceResults = jobs.GetProperty("interferenceGrid").GetProperty("results").EnumerateArray() |> Seq.toArray
     for res in interferenceResults do
+        let id = res.GetProperty("id").GetString()
+        let expected = fsharpInterferenceCase id
         let phaseValEl = res.GetProperty("phase")
-        let isOpen = res.GetProperty("operation").GetString().EndsWith("Open")
-        
+
         let tsZero = res.GetProperty("ts").GetProperty("Zero").GetDouble()
         let tsOne = res.GetProperty("ts").GetProperty("One").GetDouble()
         let qsZero = res.GetProperty("qsharp").GetProperty("Zero").GetDouble()
@@ -483,20 +462,14 @@ let ``F# validates the TypeScript Q# treaty transcript`` () =
         let faZero = res.GetProperty("fsharpAnalytic").GetProperty("Zero").GetDouble()
         let faOne = res.GetProperty("fsharpAnalytic").GetProperty("One").GetDouble()
 
-        let amp =
-            if isOpen then
-                [ detectorZero, invSqrt2
-                  detectorOne, invSqrt2 ]
-            else
-                let phi = if phaseValEl.ValueKind = JsonValueKind.Null then 0.0 else phaseValEl.GetDouble()
-                closedInterferometer phi
+        Assert.Equal(expected.Operation, res.GetProperty("operation").GetString())
 
-        let actual = amp |> AmplitudeEmu.merge |> AmplitudeEmu.bornProb
-        let fsharpZeroProb = probabilityFor detectorZero actual
-        let fsharpOneProb = probabilityFor detectorOne actual
+        match expected.PhaseRadians with
+        | None -> Assert.Equal(JsonValueKind.Null, phaseValEl.ValueKind)
+        | Some phase -> closeToWithin 1e-12 phase (phaseValEl.GetDouble())
 
-        closeTo faZero fsharpZeroProb
-        closeTo faOne fsharpOneProb
+        closeTo faZero expected.Probabilities.Zero
+        closeTo faOne expected.Probabilities.One
         closeToWithin 1e-5 tsZero faZero
         closeToWithin 1e-5 tsOne faOne
         closeToWithin 1e-5 qsZero faZero

@@ -73,8 +73,8 @@ B-0874 stays in the cluster but its framing is now the implementation-detail (Gi
 
 Review is NOT a separate subsystem. It's:
 
-1. **MenuOption cases** in the existing `MenuOption` DU (per `tools/agent-loop/state-machine.ts`) — `move-next` can return `ReviewWork` / `ApproveTrajectoryCompletion` / `RaiseClassFindingForTechDebtSweep` / etc. just like any other action
-2. **WorkLifecycle DU cases** (per `tools/agent-loop/work-lifecycle-state-machine.ts`) — review-related state transitions are first-class lifecycle stages
+1. **MenuOption cases** in the existing `MenuOption` DU (per `src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts`) — `move-next` can return `ReviewWork` / `ApproveTrajectoryCompletion` / `RaiseClassFindingForTechDebtSweep` / etc. just like any other action
+2. **WorkLifecycle DU cases** (per `src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts`) — review-related state transitions are first-class lifecycle stages
 3. **A reusable shippable skill** — `.claude/skills/zeta-native-review/SKILL.md` distributes the review-substrate to any agent harness with bun; no GitHub-PR-workflow dependency
 4. **Composes with existing playbook + event-log substrate** — review threads ARE playbook sections; review events ARE event-log entries; no parallel infrastructure
 
@@ -147,8 +147,8 @@ Composes with:
 
 ## Acceptance criteria
 
-- `tools/agent-loop/review/branch-protection.ts` — implements Zeta-native branch-protection (configurable per-trajectory: required-approvals, required-canaries, required-class-fix-completion)
-- `tools/agent-loop/review/playbook-as-review-surface.ts` — wires the playbook substrate as the review-thread surface (composes with B-0867.21)
+- `src/Core.TypeScript/workflow-engine/agent-loop/review/branch-protection.ts` — implements Zeta-native branch-protection (configurable per-trajectory: required-approvals, required-canaries, required-class-fix-completion)
+- `src/Core.TypeScript/workflow-engine/agent-loop/review/playbook-as-review-surface.ts` — wires the playbook substrate as the review-thread surface (composes with B-0867.21)
 - Adapter shims for existing reviewer sources (Copilot / CodeQL / Semgrep / Sonar) emit findings into Zeta-native review substrate alongside their existing GitHub-PR-comment surface (parallel-track during transition)
 - Tests: round-trip a review cycle (open trajectory → reviewer-agent appends finding → fix-push event → approval event → branch-protection allows completion)
 - Documentation: rule extension (existing PR-specific rules updated to reference Zeta-native equivalent where applicable) + new rule documenting the Zeta-native review substrate

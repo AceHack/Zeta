@@ -1,4 +1,4 @@
-// tools/agent-loop/work-lifecycle-state-machine.test.ts
+// src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.test.ts
 //
 // Unit tests for the pure-logic exports of work-lifecycle-state-machine.ts.
 
@@ -13,7 +13,7 @@ import {
   type WorkLifecycleState,
 } from "./work-lifecycle-state-machine";
 
-function row(id: string = "B-0867.5"): BacklogRow {
+function row(id = "B-0867.5"): BacklogRow {
   return {
     id,
     title: "Agent-loop MVP",
@@ -382,10 +382,7 @@ describe("helpers", () => {
   });
 
   test("leadTimeSeconds: 30min lead time", () => {
-    const sec = leadTimeSeconds(
-      "2026-05-28T00:00:00Z",
-      "2026-05-28T00:30:00Z",
-    );
+    const sec = leadTimeSeconds("2026-05-28T00:00:00Z", "2026-05-28T00:30:00Z");
     expect(sec).toBe(1800);
   });
 });
