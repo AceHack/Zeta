@@ -81,3 +81,40 @@ let ``same shape, several ways, different O: a shape is parametrized over its co
     Assert.NotEqual<string>(strategies.["draw"].Time, strategies.["draw-grid"].Time) // a real tradeoff, not a duplicate tag
     // and the budget lint still holds shelf-wide: every strategy is still a stated cost
     Assert.Empty(ComplexityRegistry.unstated ())
+
+[<Fact>]
+let ``HOMOICONIC LAWS: the buckyball's own law lines check from its own constants — and a broken law fails the gate`` () =
+    let d = docOf "buckyball"
+    let verdicts = CartridgeLaw.check d
+    Assert.Equal(4, List.length verdicts) // euler, double-count, three-regular, self-door
+    Assert.True(CartridgeLaw.allHold d)
+    Assert.True(ShapeAcceptance.accepted (ShapeAcceptance.acceptOne d))
+    // sabotage: a wrong constant breaks the IN-FILE law and the geometry gate with it
+    let broken =
+        { d with
+            MediaLines.Entries =
+                d.Entries
+                |> List.map (fun e ->
+                    if e.Kind = "constant" && e.Name = "edges" then { e with MediaLines.Fields = "89" :: List.tail e.Fields } else e) }
+    Assert.False(CartridgeLaw.allHold broken)
+    Assert.False(ShapeAcceptance.accepted (ShapeAcceptance.acceptOne broken))
+
+[<Fact>]
+let ``the self-description kinds carry: prereqs point somewhere, edges name the graph, issues are owned, math sign-off is PENDING not assumed`` () =
+    let d = docOf "buckyball"
+    Assert.Equal(3, List.length (MediaLines.ofKind "prereq" d))
+    Assert.Equal(3, List.length (MediaLines.ofKind "edge" d))
+    Assert.Equal(2, List.length (MediaLines.ofKind "issue" d)) // schlegel projection + the owed tear-down
+    Assert.Contains(("math-team", "math", "pending"), MediaLines.treatiesOf d)
+    Assert.Empty(MediaLines.lint d) // all of it lints clean (structure checked, future kinds silent)
+
+[<Fact>]
+let ``delegated laws name their checker: tool-prefixed laws are documented here, checked there — and Aaron's ratification is in the treaty block`` () =
+    let txt = "meta\tname\tdemo\nconstant\tn\t4\twhat\twhy\nlaw\tarith\tn = 4\nlaw\tliveness\ttla:SpineSpec.EventuallyDrains\nlaw\tsat\tz3:fourcorner-bound\n"
+    let d = MediaLines.parse txt |> Result.toOption |> Option.get
+    let verdicts = CartridgeLaw.check d
+    Assert.True(CartridgeLaw.allHold d)
+    Assert.Contains(verdicts, fun v -> v.Law = "liveness" && v.Evidence.Contains "checked by tla")
+    Assert.Contains(verdicts, fun v -> v.Law = "sat" && v.Evidence.Contains "checked by z3")
+    // the first human-traveler render-loop ratification, recorded by his own words
+    Assert.Contains(("aaron", "meaning", "ratified"), MediaLines.treatiesOf (docOf "buckyball"))

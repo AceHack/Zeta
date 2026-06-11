@@ -90,7 +90,9 @@ module MediaLines =
 
     /// The kinds THIS reader understands (everything else is carried, untouched — the expansion law).
     let knownKinds: Set<string> =
-        Set.ofList [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"; "io"; "button"; "constant"; "dimension"; "treaty" ]
+        Set.ofList
+            [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"
+              "io"; "button"; "constant"; "dimension"; "treaty"; "law"; "prereq"; "edge"; "issue" ]
 
     /// The entries a reader carries without understanding — future media types in transit.
     let carried (d: Doc) : Entry list =
@@ -168,6 +170,14 @@ module MediaLines =
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a dimension must declare field and semantics" } ]
                 | "treaty" when List.length e.Fields < 2 ->
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a treaty line must declare register (bytes|meaning) and verdict" } ]
+                | "law" when List.length e.Fields < 1 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "a law must carry its equation (the file states its own check)" } ]
+                | "prereq" when List.length e.Fields < 1 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "a prereq must point somewhere (what to learn first, and where)" } ]
+                | "edge" when List.length e.Fields < 2 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "an edge must declare relation and target (the related-shapes graph)" } ]
+                | "issue" when List.length e.Fields < 2 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "an issue must declare owner and status (outstanding work is named, never hidden)" } ]
                 | "gen"
                 | "io" when (match e.Fields with z :: _ -> not (isHex32 z) | [] -> true) ->
                     [ { Kind = e.Kind; Name = e.Name; Problem = "first field must be a 32-hex ZetaId (DI-from-the-start: references are injection points)" } ]

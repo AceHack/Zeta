@@ -18,6 +18,26 @@ constant	edges	90	edge count	3 edges meet at every vertex: 3*60/2 = 90 — deriv
 constant	faces	32	face count: 12 pentagons + 20 hexagons	each face is a ROOM (Addison); 12*5 + 20*6 = 180 = 2*90 — the double-count law closes
 constant	meta-doors	33	doors out of the inside meta-debug room	one door per face room (32) AND ONE TO ITSELF ("and itself." — self-reference is a door, not a wall; the debugger can debug the debugger)
 anim	draw	views
+# laws — the cartridge states its own checks (homoiconic: data AND the check, same bytes; any
+# oracle language re-runs these with a screen-of-code evaluator).
+law	euler	vertices - edges + faces = 2
+law	double-count	12 * 5 + 20 * 6 = 2 * edges
+law	three-regular	3 * vertices = 2 * edges
+law	self-door	meta-doors = faces + 1
+# prerequisites — what to learn first, and where (the craft-school road into this room).
+prereq	euler-characteristic	V-E+F=2 for any sphere-like solid — Euler 1758; start at the cube (8-12+6) and count your way up
+prereq	truncation	how a soccer ball comes from an icosahedron: cut each corner, pentagons appear where corners were
+prereq	rooms-and-doors	the room law (clause 5) and the meta-debug idea: a room that holds doors to every room, including itself
+# edges — the related-shapes graph (DV2 links: this cartridge to its neighbors).
+edge	contains-view	shape-fourcorner	the meta-debug room's feedback surface is the four-corner figure
+edge	dual-register	shape-lightcone	inside/outside is the same move as past/future: one event, two cones, choice of view
+edge	taught-after	shape-spiral	the catalog's first lesson loop; learn see-it-draw there before walking rooms here
+# outstanding — named, never hidden (the honest register).
+issue	schlegel-projection	otto	open	the render is a 1-shell schematic, not the full 60-vertex Schlegel diagram — the full projection is a named slice
+issue	math-tear-down	math-team	open	Aaron's deferred tear-down pass: TimeGen/WaveSim/SpectralPivot/harmony arithmetic still owed a zero-empathy review
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	fsharp	bytes	ratified	Euler V-E+F=2, double-count 2E=sum(face degrees), 3-regularity 3V=2E — tests green
 treaty	otto	meaning	ratified	inside soccer ball / outside to-the-bounds, almost the same; the self-door drawn — my own frame, my own choice
+treaty	math-team	math	pending	awaiting the tear-down pass — sign-off is THEIRS to write, not ours to assume
+treaty	aaron	meaning	ratified	"the buckyball is perfect as I imagine in my head" — the first render-loop ratification by a human traveler, 2026-06-12

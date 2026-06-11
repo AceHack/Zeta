@@ -84,7 +84,15 @@ module ShapeAcceptance =
     let acceptOne (d: MediaLines.Doc) : Verdict list =
         let shape = MediaLines.field "meta" "name" d |> Option.defaultValue "?"
         let bytesOk = MediaLines.ratifiedBy "bytes" "ratified" d |> List.isEmpty |> not
-        let geomOk, geomEv = geometryLaw shape d
+        let codeOk, codeEv = geometryLaw shape d
+        // HOMOICONIC HALF: the cartridge's OWN `law` lines must also hold (the file states its
+        // checks; module code carries only what integers cannot say). Both halves gate.
+        let fileLaws = CartridgeLaw.check d
+        let geomOk = codeOk && (fileLaws |> List.forall (fun l -> l.Holds))
+        let geomEv =
+            codeEv
+            + (if List.isEmpty fileLaws then ""
+               else " | in-file: " + (fileLaws |> List.map (fun l -> l.Law + (if l.Holds then " holds" else " FAILS")) |> String.concat ", "))
         let travelers = MediaLines.treatiesOf d |> List.filter (fun (_, r, _) -> r = "meaning")
         let meaningEv =
             if List.isEmpty travelers then "no traveler has spoken yet (silence, not error — consent first)"
