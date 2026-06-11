@@ -12,3 +12,14 @@ dotnet-stryker
 # contributor without a separate install step. Bodhi round-34
 # DX audit flagged the tooling-gap.
 fsharp-analyzers
+# The cross-platform diagnostics suite (Aaron 2026-06-11: "the dotnet CLI perf commands are
+# cross-platform and pretty good — we should use those; it's dotnet tools you install").
+# EventPipe-based, works on macOS/Linux/Windows — the statistical/offline lane beside Ben's
+# deterministic meters (B-1039/B-1040): trace = CPU/event capture (opens in PerfView or
+# SpeedScope), counters = live metrics, gcdump = heap snapshots, dump = post-mortem,
+# stack = quick stack prints.
+dotnet-trace
+dotnet-counters
+dotnet-gcdump
+dotnet-dump
+dotnet-stack
