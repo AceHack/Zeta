@@ -92,6 +92,21 @@ module ShapeRender =
                 for slot in 0 .. 2 do paths.[perm.[slot]].Add(pt cols.[slot] y))
             for slot in 0 .. 2 do paths.[perm.[slot]].Add(pt cols.[slot] rows)
             [ for s in 0 .. 2 -> { Name = sprintf "strand-%d" s; Mask = byte (1 <<< s); Points = List.ofSeq paths.[s] } ]
+        | "shape-shadow-loop" ->
+            // the lemniscate of Gerono: x = cos t, y = sin t * cos t — sampled so the crossing is
+            // EXACT (steps % 4 = 0 puts t = pi/2 and 3pi/2 on the integer center). Floats stay
+            // inside the generator; every emitted coordinate is an integer (the dialect law).
+            let span = constInt "span" 24
+            let steps = constInt "steps" 48
+            let cx, cy = pt 32 16
+            let loop =
+                [ for k in 0 .. steps ->
+                      let t = 2.0 * System.Math.PI * float k / float steps
+                      cx + int (System.Math.Round(float (span * scale) * cos t)),
+                      cy + int (System.Math.Round(float (span * scale / 2) * sin t * cos t)) ]
+            [ { Name = "loop"; Mask = 7uy; Points = loop }
+              // the catch point: a small diamond on the crossing (the door used twice)
+              { Name = "catch"; Mask = 5uy; Points = [ cx, cy - 6; cx + 6, cy; cx, cy + 6; cx - 6, cy; cx, cy - 6 ] } ]
         | "shape-buckyball" ->
             // Addison's two views, schematic and honest: INSIDE reads like a soccer ball (central
             // pentagon room, hexagon ring, a bounding circle); OUTSIDE is almost the same drawing

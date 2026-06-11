@@ -72,6 +72,17 @@ module ShapeAcceptance =
                 && 3 * v' = 2 * e // three edges at every corner (the soccer-ball stitch)
                 && c "meta-doors" = f + 1 // a door to every room AND itself
             ok, sprintf "Euler %d-%d+%d=2; double-count and 3-regularity close; meta-doors = faces + itself" v' e f
+        | "shape-shadow-loop" ->
+            // otto's own: the sampled lemniscate must CLOSE (first = last) and pass through the
+            // center exactly center-visits times (the crossing, hit structurally — steps % 4 = 0).
+            let c name = MediaLines.field "constant" name d |> Option.map int |> Option.defaultValue -1
+            let pts = ShapeRender.strokesOf d |> List.collect (fun s -> if s.Name = "loop" then s.Points else [])
+            let cx, cy = 32 * 10 + 5, 16 * 10 + 5
+            let visits = pts |> List.filter (fun (x, y) -> x = cx && y = cy) |> List.length
+            let closed = not (List.isEmpty pts) && List.head pts = List.last pts
+            // closure lands at t=0 (span,0), never on the center — so the visit count is exact.
+            let ok = closed && visits = c "center-visits"
+            ok, sprintf "closed loop; %d center visits (the catch, used twice as one door)" visits
         | "shape-seam" ->
             // the seam's algebra: the cross-stream fold COMMUTES (order of arrival cannot matter)
             let a = { WeaveFold.Stream = "left"; WeaveFold.Seq = 1; WeaveFold.Key = "row4"; WeaveFold.Value = "over" }
