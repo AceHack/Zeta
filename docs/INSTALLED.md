@@ -7,81 +7,89 @@ be able to recreate the environment from this doc.
 
 ## Runtime SDKs (installed before project started — reused)
 
-| Tool | Version | Why | How installed |
-|---|---|---|---|
-| **.NET SDK** | 10.0.203 | Primary build runtime for F# + C# projects | mise-managed via `.mise.toml` + `global.json`; installed by `tools/setup/install.sh` (the canonical update path — see `memory/feedback_install_script_is_preferred_update_method_2026_04_24.md`). Older Homebrew / system installs (`/usr/local/share/dotnet`, `/opt/homebrew/Cellar/dotnet/`) MAY remain on personal machines but are NOT used for the build — `mise exec -- dotnet` resolves to the pinned SDK. |
-| **Java** | OpenJDK 21.0.1 LTS | Required by TLA+ `tla2tools.jar` and Alloy `alloy.jar` | Pre-installed (Oracle JDK) |
-| **Rust / cargo** | rustc 1.94.1 (Homebrew) | Building Feldera (apples-to-apples benchmark) | Pre-installed via Homebrew |
-| **Python 3** | 3.14 (mise-pinned) | Package-audit script JSON parsing + helper scripts; uv venv auto-source per `.mise.toml` | mise-managed via `.mise.toml` (`python = "3.14"`); resolved through `mise exec -- python3` for dev/CI parity. System Python may remain on personal machines but is not used for the build. |
-| **bash / awk / curl / git** | system default | `tools/*.sh` helper scripts | Pre-installed |
+| Tool                        | Version                 | Why                                                                                      | How installed                                                                                                                                                                                                                                                                                                                                                                                                     |
+| --------------------------- | ----------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **.NET SDK**                | 10.0.203                | Primary build runtime for F# + C# projects                                               | mise-managed via `.mise.toml` + `global.json`; installed by `tools/setup/install.sh` (the canonical update path — see `memory/feedback_install_script_is_preferred_update_method_2026_04_24.md`). Older Homebrew / system installs (`/usr/local/share/dotnet`, `/opt/homebrew/Cellar/dotnet/`) MAY remain on personal machines but are NOT used for the build — `mise exec -- dotnet` resolves to the pinned SDK. |
+| **Java**                    | OpenJDK 21.0.1 LTS      | Required by TLA+ `tla2tools.jar` and Alloy `alloy.jar`                                   | Pre-installed (Oracle JDK)                                                                                                                                                                                                                                                                                                                                                                                        |
+| **Rust / cargo**            | rustc 1.94.1 (Homebrew) | Building Feldera (apples-to-apples benchmark)                                            | Pre-installed via Homebrew                                                                                                                                                                                                                                                                                                                                                                                        |
+| **Python 3**                | 3.14 (mise-pinned)      | Package-audit script JSON parsing + helper scripts; uv venv auto-source per `.mise.toml` | mise-managed via `.mise.toml` (`python = "3.14"`); resolved through `mise exec -- python3` for dev/CI parity. System Python may remain on personal machines but is not used for the build.                                                                                                                                                                                                                        |
+| **bash / awk / curl / git** | system default          | `tools/*.sh` helper scripts                                                              | Pre-installed                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ## System CLI tools (declared through install manifests)
 
-| Tool | Version | Why | How installed |
-|---|---|---|---|
-| **QEMU / qemu-img** | OS package manager version | USB/ISO boot, full-install, and B-0891 retention QEMU proofs | `tools/setup/install.sh` via `tools/setup/manifests/{apt,brew}`; Windows via `tools/setup/manifests/windows`; Nix dev/cluster surfaces via `full-ai-cluster/**/flake.nix` and `full-ai-cluster/nixos/modules/common.nix` |
-| **mtools / mcopy** | OS package manager version | File-backed zflash ESP writes into raw QEMU boot images without mounting physical USB devices | `tools/setup/install.sh` via `tools/setup/manifests/{apt,brew}`; Nix dev/cluster surfaces via `full-ai-cluster/**/flake.nix` and NixOS package lists |
-| **k3d** | 5.8.3 | Local K3S/Cilium parity substrate for B-0967 Kubernetes + ArgoCD health tests | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh` |
-| **kind** | 0.31.0 | Conservative Docker/Podman Kubernetes substrate for B-0967 CI smoke tests | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh` |
-| **kubectl** | 1.36.1 | Kubernetes control-plane inspection and ArgoCD Application health assertions | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh` |
-| **helm** | 4.2.0 | Installs bootstrap ArgoCD/Cilium charts for local cluster health tests | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh` |
+| Tool                | Version                    | Why                                                                                           | How installed                                                                                                                                                                                                            |
+| ------------------- | -------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **QEMU / qemu-img** | OS package manager version | USB/ISO boot, full-install, and B-0891 retention QEMU proofs                                  | `tools/setup/install.sh` via `tools/setup/manifests/{apt,brew}`; Windows via `tools/setup/manifests/windows`; Nix dev/cluster surfaces via `full-ai-cluster/**/flake.nix` and `full-ai-cluster/nixos/modules/common.nix` |
+| **mtools / mcopy**  | OS package manager version | File-backed zflash ESP writes into raw QEMU boot images without mounting physical USB devices | `tools/setup/install.sh` via `tools/setup/manifests/{apt,brew}`; Nix dev/cluster surfaces via `full-ai-cluster/**/flake.nix` and NixOS package lists                                                                     |
+| **k3d**             | 5.8.3                      | Local K3S/Cilium parity substrate for B-0967 Kubernetes + ArgoCD health tests                 | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh`                                                                                                                                                     |
+| **kind**            | 0.31.0                     | Conservative Docker/Podman Kubernetes substrate for B-0967 CI smoke tests                     | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh`                                                                                                                                                     |
+| **kubectl**         | 1.36.1                     | Kubernetes control-plane inspection and ArgoCD Application health assertions                  | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh`                                                                                                                                                     |
+| **helm**            | 4.2.0                      | Installs bootstrap ArgoCD/Cilium charts for local cluster health tests                        | mise-managed via `.mise.toml`; installed by `tools/setup/install.sh`                                                                                                                                                     |
+
+## Python reference-oracle libraries
+
+| Package           | Version | Why                                                                                                                      | How installed                                                                                                                                                                                                                                     |
+| ----------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **qdk[azure]**    | 1.29.1  | Microsoft QDK Python entrypoint for Q# reference-oracle tests over finite-resolution qubits observables                  | Optional install through `ZETA_INSTALL_QUANTUM=1 tools/setup/install.sh` or `ZETA_INSTALL_FULL=1 tools/setup/install.sh`; realized by `tools/setup/common/quantum.sh` from `tools/setup/manifests/quantum` into repo `.venv` via `uv pip install` |
+| **qsharp**        | 1.29.1  | Direct Q# package pin for `qsharp` / `%%qsharp` parity when producing `qsharp-golden.json` observables                   | Same optional quantum path as above                                                                                                                                                                                                               |
+| **azure-quantum** | 3.10.0  | Explicit pin for the optional Azure backend edge owned by `qdk[azure]`; local simulation remains the default oracle path | Same optional quantum path as above                                                                                                                                                                                                               |
 
 ## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)
 
-| Artifact | Version | Path | Why | Install command |
-|---|---|---|---|---|
-| **TLA+ / TLC** | tla2tools.jar v1.8.0 | `tools/tla/tla2tools.jar` | Model-check every `docs/*.tla` spec in CI | `curl -sL -o tools/tla/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar` |
-| **Alloy** | v6.2.0 dist jar | `tools/alloy/alloy.jar` | Bounded-model structural invariants (Spine sizeDoubling) | `curl -sL -o tools/alloy/alloy.jar https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar` |
-| **Feldera (cloned)** | `main` branch | `references/prior-art/feldera/` | Apples-to-apples Nexmark benchmarks | `git clone --depth 1 https://github.com/feldera/feldera.git` |
-| **CTFP book (Milewski)** | v1.3.0 PDF | `docs/category-theory/ctfp-milewski.pdf` | Required-reading category theory reference | `curl -sL -o ... https://github.com/hmemcpy/milewski-ctfp-pdf/.../category-theory-for-programmers.pdf` |
-| **CTFP .NET (Bouderaux)** | archived snapshot | `docs/category-theory/ctfp-dotnet/` | F#/C# CT examples (no upstream tracking, .git stripped) | `git clone ... && rm -rf .git .github` |
+| Artifact                  | Version              | Path                                     | Why                                                      | Install command                                                                                                                               |
+| ------------------------- | -------------------- | ---------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **TLA+ / TLC**            | tla2tools.jar v1.8.0 | `tools/tla/tla2tools.jar`                | Model-check every `docs/*.tla` spec in CI                | `curl -sL -o tools/tla/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar`                               |
+| **Alloy**                 | v6.2.0 dist jar      | `tools/alloy/alloy.jar`                  | Bounded-model structural invariants (Spine sizeDoubling) | `curl -sL -o tools/alloy/alloy.jar https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar` |
+| **Feldera (cloned)**      | `main` branch        | `references/prior-art/feldera/`          | Apples-to-apples Nexmark benchmarks                      | `git clone --depth 1 https://github.com/feldera/feldera.git`                                                                                  |
+| **CTFP book (Milewski)**  | v1.3.0 PDF           | `docs/category-theory/ctfp-milewski.pdf` | Required-reading category theory reference               | `curl -sL -o ... https://github.com/hmemcpy/milewski-ctfp-pdf/.../category-theory-for-programmers.pdf`                                        |
+| **CTFP .NET (Bouderaux)** | archived snapshot    | `docs/category-theory/ctfp-dotnet/`      | F#/C# CT examples (no upstream tracking, .git stripped)  | `git clone ... && rm -rf .git .github`                                                                                                        |
 
 ## dotnet global tools
 
-| Tool | Version | Why | Install |
-|---|---|---|---|
-| **dotnet-stryker** | latest | Mutation testing against `Zeta.Core.fsproj` | `dotnet tool install -g dotnet-stryker` |
+| Tool                   | Version                                                                                          | Why                                                                     | Install                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **dotnet-stryker**     | latest                                                                                           | Mutation testing against `Zeta.Core.fsproj`                             | `dotnet tool install -g dotnet-stryker`                                                            |
 | **elan / lean / lake** | elan-installed, toolchain `leanprover/lean4:v4.30.0-rc1` at `/opt/homebrew/bin/{elan,lean,lake}` | Lean 4 version manager + compiler + build tool; drives chain-rule proof | `tools/setup/install.sh` runs the elan installer; toolchain pinned by `tools/lean4/lean-toolchain` |
 
 ## NuGet packages (pinned in `Directory.Packages.props`)
 
 See `Directory.Packages.props` for the authoritative list. Current pins:
 
-| Package | Version | Purpose |
-|---|---|---|
-| FSharp.Core | 10.1.202 | F# runtime |
-| G-Research.FSharp.Analyzers | 0.22.0 | F# static analysis |
-| Ionide.Analyzers | 0.15.0 | F# static analysis |
-| FSharp.Analyzers.Build | 0.5.0 | Analyzer build hook |
-| Meziantou.Analyzer | 3.0.48 | C# static analysis (shim project) |
-| xunit.v3 | 3.2.2 | Test framework |
-| xunit.runner.visualstudio | 3.1.5 | VS test runner |
-| Microsoft.NET.Test.Sdk | 18.4.0 | dotnet test host |
-| FsCheck | 3.3.2 | Property-based testing |
-| FsCheck.Xunit.v3 | 3.3.2 | FsCheck × xUnit v3 glue |
-| FsUnit.Xunit | 7.1.0 | F# test DSL |
-| Unquote | 7.0.1 | F# assertion debugger |
-| BenchmarkDotNet | 0.15.8 | Perf harness |
-| coverlet.collector | 10.0.0 | Code-coverage collector |
-| coverlet.msbuild | 10.0.0 | MSBuild coverage target |
-| Microsoft.Z3 | 4.12.2 | SMT-prover for pointwise axioms |
-| System.IO.Hashing | 10.0.6 | XxHash + CRC32 |
-| System.Reactive | 6.1.0 | Rx .NET |
-| System.Numerics.Tensors | 10.0.6 | SIMD Tensor ops |
-| FsPickler | 5.3.2 | Canonical F# binary pickler |
-| Apache.Arrow | 22.1.0 | Arrow IPC wire format |
+| Package                     | Version  | Purpose                           |
+| --------------------------- | -------- | --------------------------------- |
+| FSharp.Core                 | 10.1.202 | F# runtime                        |
+| G-Research.FSharp.Analyzers | 0.22.0   | F# static analysis                |
+| Ionide.Analyzers            | 0.15.0   | F# static analysis                |
+| FSharp.Analyzers.Build      | 0.5.0    | Analyzer build hook               |
+| Meziantou.Analyzer          | 3.0.48   | C# static analysis (shim project) |
+| xunit.v3                    | 3.2.2    | Test framework                    |
+| xunit.runner.visualstudio   | 3.1.5    | VS test runner                    |
+| Microsoft.NET.Test.Sdk      | 18.4.0   | dotnet test host                  |
+| FsCheck                     | 3.3.2    | Property-based testing            |
+| FsCheck.Xunit.v3            | 3.3.2    | FsCheck × xUnit v3 glue           |
+| FsUnit.Xunit                | 7.1.0    | F# test DSL                       |
+| Unquote                     | 7.0.1    | F# assertion debugger             |
+| BenchmarkDotNet             | 0.15.8   | Perf harness                      |
+| coverlet.collector          | 10.0.0   | Code-coverage collector           |
+| coverlet.msbuild            | 10.0.0   | MSBuild coverage target           |
+| Microsoft.Z3                | 4.12.2   | SMT-prover for pointwise axioms   |
+| System.IO.Hashing           | 10.0.6   | XxHash + CRC32                    |
+| System.Reactive             | 6.1.0    | Rx .NET                           |
+| System.Numerics.Tensors     | 10.0.6   | SIMD Tensor ops                   |
+| FsPickler                   | 5.3.2    | Canonical F# binary pickler       |
+| Apache.Arrow                | 22.1.0   | Arrow IPC wire format             |
 
 Run `tools/audit-packages.sh` to diff pins against NuGet's latest. The
 audit is idempotent; `⚠ bump available` lines are actionable.
 
 ## Still required but NOT yet installed on this box
 
-| Tool | Reason deferred | When to install |
-|---|---|---|
-| **CodeQL CLI** | 500 MB; skipped pending concrete rules-authoring session | `brew install codeql` on macOS |
-| **Semgrep** | Not installed on this box; rules in `.semgrep.yml` run wherever Semgrep is invoked from (CI or dev laptop) | `brew install semgrep` or `pip3 install --user semgrep` |
-| **Infer.NET F# wrapper native libs** | Only needed if `Zeta.Bayesian` ever grows a full graphical-model operator (roadmap P2); current conjugate-prior impl has zero native deps | Install on-demand per that task |
-| **Feldera build** | Cloned but not `cargo build`-ed yet — ~15 min build | `cd references/prior-art/feldera && cargo build --release` when apples-to-apples run is scheduled |
+| Tool                                 | Reason deferred                                                                                                                           | When to install                                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **CodeQL CLI**                       | 500 MB; skipped pending concrete rules-authoring session                                                                                  | `brew install codeql` on macOS                                                                    |
+| **Semgrep**                          | Not installed on this box; rules in `.semgrep.yml` run wherever Semgrep is invoked from (CI or dev laptop)                                | `brew install semgrep` or `pip3 install --user semgrep`                                           |
+| **Infer.NET F# wrapper native libs** | Only needed if `Zeta.Bayesian` ever grows a full graphical-model operator (roadmap P2); current conjugate-prior impl has zero native deps | Install on-demand per that task                                                                   |
+| **Feldera build**                    | Cloned but not `cargo build`-ed yet — ~15 min build                                                                                       | `cd references/prior-art/feldera && cargo build --release` when apples-to-apples run is scheduled |
 
 ## How to recreate this environment from scratch
 
@@ -121,13 +129,13 @@ The working Lean project lives at `tools/lean4/`. Build with:
 cd tools/lean4 && lake build
 ```
 
-| Path | Contents |
-|---|---|
-| `tools/lean4/lakefile.toml` | Declares `[[require]] name = "mathlib" scope = "leanprover-community" rev = "v4.30.0-rc1"`; library target `Lean4` |
-| `tools/lean4/lean-toolchain` | Pins `leanprover/lean4:v4.30.0-rc1` (matches Mathlib rev) |
-| `tools/lean4/Lean4/Basic.lean` | Template sanity stub (`def hello := "world"`) |
+| Path                                   | Contents                                                                                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/lean4/lakefile.toml`            | Declares `[[require]] name = "mathlib" scope = "leanprover-community" rev = "v4.30.0-rc1"`; library target `Lean4`                                                |
+| `tools/lean4/lean-toolchain`           | Pins `leanprover/lean4:v4.30.0-rc1` (matches Mathlib rev)                                                                                                         |
+| `tools/lean4/Lean4/Basic.lean`         | Template sanity stub (`def hello := "world"`)                                                                                                                     |
 | `tools/lean4/Lean4/DbspChainRule.lean` | Current chain-rule scaffold; namespace `Dbsp.ChainRule`, 7 outstanding `sorry` obligations. Supersedes the older `proofs/lean/ChainRule.lean` on the v4.12.0 pin. |
-| `tools/lean4/.lake/packages/mathlib/` | Pre-warmed Mathlib checkout (aesop, batteries, Cli, LeanSearchClient, Qq, importGraph, plausible, proofwidgets siblings) |
+| `tools/lean4/.lake/packages/mathlib/`  | Pre-warmed Mathlib checkout (aesop, batteries, Cli, LeanSearchClient, Qq, importGraph, plausible, proofwidgets siblings)                                          |
 
 The older scaffold at `proofs/lean/ChainRule.lean` (Mathlib v4.12.0
 dep; unbuilt) is superseded and slated for deletion once the migrated
@@ -135,10 +143,10 @@ file builds green. See DEBT.md.
 
 ## Reference material (non-executable, cited in docs/papers)
 
-| Artifact | Source | Path | Why |
-|---|---|---|---|
-| **Lamport *Specifying Systems*** | Lamport's personal site (PDF) | `references/tla-book/specifying-systems.pdf` | Canonical TLA+ textbook; cited in `docs/SPEC-CAUGHT-A-BUG.md` |
-| **Adam Shostack EoP card game** | `elevationofprivilege.com` | upstream only (not vendored) | Teaching tool for threat modelling (CC-BY-3.0) |
+| Artifact                         | Source                        | Path                                         | Why                                                           |
+| -------------------------------- | ----------------------------- | -------------------------------------------- | ------------------------------------------------------------- |
+| **Lamport _Specifying Systems_** | Lamport's personal site (PDF) | `references/tla-book/specifying-systems.pdf` | Canonical TLA+ textbook; cited in `docs/SPEC-CAUGHT-A-BUG.md` |
+| **Adam Shostack EoP card game**  | `elevationofprivilege.com`    | upstream only (not vendored)                 | Teaching tool for threat modelling (CC-BY-3.0)                |
 
 ## Changelog
 

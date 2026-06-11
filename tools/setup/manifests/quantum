@@ -1,36 +1,37 @@
-# tools/setup/manifests/quantum — the quantum-language toolchain (desired-state, declarative).
-# Q# is the TOY-MODEL validator that grounds F#'s physics-flavoured claims (S=4, CHSH,
-# common cause, topological stability) in a real toy quantum model; the other free quantum
-# languages are the rest of the 4×4 quantum-language ORACLE convened in the UN room (shape G)
-# — same byte-lock discipline as the 4-language (F#/C#/TS/Rust) oracle, but for quantum.
+# tools/setup/manifests/quantum — quantum-language oracle deps (desired-state).
+# Q# is the reference oracle for the finite-resolution qubits framework: Zeta
+# computes measurable observables with finite BigFloat precision; QDK/Q# supplies
+# the textbook continuous-amplitude reference values for convergence checks.
 #
-# DECLARATIVE DESIRED-STATE ONLY — never imperative (Aaron 2026-06-08): install.sh REALIZES
-# this; there is no bare `pip install`. Consumed by `common/quantum.sh` (to be wired by Dejan,
-# GOVERNANCE §24 — the one install script), mirroring `common/local-llm.sh`: BEST-EFFORT +
-# GRACEFUL (a registry/network failure WARNS and continues; must never brick install.sh).
-# DEFAULT-SKIP in generic CI / scripted runs (heavyweight); opt in with ZETA_INSTALL_FULL=1.
-# All are free + open + easy to use (Aaron). Tests skip-if-absent (exceptions-as-signals).
+# DECLARATIVE DESIRED-STATE ONLY: install.sh realizes this through
+# common/quantum.sh; no one-off bare pip command. Best-effort + graceful
+# (network/registry failure warns and continues; must never brick install.sh).
+# Default-skip in generic CI / scripted runs; opt in with ZETA_INSTALL_QUANTUM=1
+# or ZETA_INSTALL_FULL=1.
 #
 # These are LIBRARIES (imported), not `uv tool install` CLIs — so they install into the
 # project's Python env via uv (`uv pip install`), NOT `uv tool install`. The `common/quantum.sh`
 # consumer handles that distinction (see the script header).
 #
-# Format per line:
+# Format per line (the installer consumes the first field as the pip spec):
 #   <pip-package-id>[==X.Y.Z]   [role=<toy-validator|oracle>]  [lang=<q#|qiskit|cirq|...>]
-# Pins: dep-pin-search-first (WebSearch before landing real pins — placeholders below are
-# UNPINNED and MUST be pinned by Dejan before this is wired; left unpinned on purpose so the
-# manifest is the spec, not an unverified install).
+# Pins verified 2026-06-10 against Microsoft Learn QDK setup guidance and PyPI:
+# qdk 1.29.1, qsharp 1.29.1, azure-quantum 3.10.0.
 #
-# Q# — the toy-model validator (Microsoft Quantum; modern Q# ships as the `qsharp` Python
-# package + VS Code ext; grounds F# physics claims in a toy quantum model):
-qsharp                 role=toy-validator   lang=q#
-azure-quantum          role=toy-validator   lang=q#     # optional cloud backends; local sim is default
+# Q# — reference oracle for H/Ry measurement stats, gate-set observables,
+# Bell/CHSH, and interference visibility. qdk[azure] owns the supported
+# Microsoft QDK Python entrypoint; qsharp is pinned directly so %%qsharp /
+# import qsharp parity stays explicit; azure-quantum is pinned to close the
+# optional-cloud-backend transitive edge.
+qdk[azure]==1.29.1     role=reference-oracle lang=q#
+qsharp==1.29.1         role=reference-oracle lang=q#
+azure-quantum==3.10.0  role=reference-oracle lang=q#
 #
-# The rest of the 4×4 quantum-language oracle (free, easy; the UN-room byte-lock cells):
-qiskit                 role=oracle          lang=qiskit       # IBM
-cirq                   role=oracle          lang=cirq         # Google
-pennylane              role=oracle          lang=pennylane    # Xanadu (differentiable)
+# The rest of the quantum-language oracle remains intentionally deferred until
+# the Q# reference vectors exist; uncomment with verified pins when those cells
+# become active.
+# qiskit==<pin>         role=oracle          lang=qiskit       # IBM
+# cirq==<pin>           role=oracle          lang=cirq         # Google
+# pennylane==<pin>      role=oracle          lang=pennylane    # Xanadu
 #
-# NOTE: roster is the SPEC; which cells seat in the 4×4 is the UN-room (Max) + math-team call.
-# Real version pins + the `common/quantum.sh` wiring + the `ace` registry publish (signed) are
-# routed to Dejan — see docs/research/2026-06-10-quantum-language-oracle-*.md.
+# See docs/research/2026-06-10-vera-brief-qsharp-reference-oracle-for-the-finite-resolution-qubits-framework.md.

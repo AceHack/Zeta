@@ -793,7 +793,7 @@ describe("install --frozen (slice 5.3)", () => {
 
   // Builds an inline root->A graph in a temp dir, installs it once with --lockfile to
   // generate the lock (the lock's node url points at the temp A.json — registry never used),
-  // then returns paths so a --frozen run can replay it against an EMPTY registry.
+  // then returns paths so a --frozen run can replay it without consulting the user registry.
   function buildInlineGraph() {
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-pkgs-"));
     const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
@@ -810,9 +810,10 @@ describe("install --frozen (slice 5.3)", () => {
     // 1. Generate the lock via a normal install (inline graph; no registry add ever happens).
     expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
     expect(existsSync(g.lockPath)).toBe(true);
-    // 2. Replay into a fresh store with --frozen. Registry is empty (no registry add); the
-    //    replay must install entirely from the lock's pinned url, never consulting the registry.
-    expect(loadRegistry().size).toBe(0);
+    // 2. Replay into a fresh store with --frozen. The user registry is empty (no registry add);
+    //    the bundled registry may carry unrelated packages. Frozen replay must install entirely
+    //    from the lock's pinned url, never consulting registry entries for the inline graph.
+    expect(loadRegistry(join(g.dir, "missing-bundled-registry.json")).size).toBe(0);
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-replay-"));
     const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
     expect(code).toBe(0);

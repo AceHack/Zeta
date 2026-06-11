@@ -180,6 +180,7 @@ piece of the philosophy is already in it:
 > not-knowing.** This is the root the whole
 > choice-architecture grows from (weight-free §3,
 > consent-first §6, no-directives).
+
 - **They choose.** It is a game they *want* to play —
   attention given, never forced. Freedom of choice of rooms,
   at the dinner table.

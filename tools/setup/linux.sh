@@ -9,19 +9,21 @@
 #                           per .mise.toml
 #   4. common/python-tools.sh — uv-managed Python CLI tools
 #                              (ruff, etc.) from manifests/uv-tools
-#   5. common/elan.sh     — Lean toolchain
-#   6. common/dotnet-tools.sh — dotnet global tools from
+#   5. common/quantum.sh  — optional Q# reference-oracle deps from
+#                           manifests/quantum (opt-in)
+#   6. common/elan.sh     — Lean toolchain
+#   7. common/dotnet-tools.sh — dotnet global tools from
 #                              manifests/dotnet-tools
-#   7. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
-#   7b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
+#   8. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
+#   8b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
 #                              ZETA_INSTALL_FULL (heavy OCaml build)
-#   8. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#   9. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
+#   9. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
+#  10. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
 #                                  from manifests/one-liner-tools
-#  10. common/local-llm.sh   — local-LLM core primitive (ollama + pinned tiny model) from
+#  11. common/local-llm.sh   — local-LLM core primitive (ollama + pinned tiny model) from
 #                              manifests/local-llm
-#  11. common/shellenv.sh    — managed PATH file
-#  12. common/profile-edit.sh — append the managed-PATH source line to the shell profile
+#  12. common/shellenv.sh    — managed PATH file
+#  13. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
 # install-script layering supports adding them alongside apt.
@@ -209,6 +211,7 @@ for shim_dir in \
 done
 
 "$SETUP_DIR/common/python-tools.sh"
+"$SETUP_DIR/common/quantum.sh"
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
 # process so dotnet-tools.sh can install globals (semgrep / stryker)
