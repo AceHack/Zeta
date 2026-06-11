@@ -243,6 +243,23 @@ WINEOF
 esac
 
 echo
+
+# --- Provision agent loop cells (B-0248.2) ---
+# After deps are installed, provision the 4 system cells from the
+# cluster-cells manifest. Runs on every install/update — idempotent
+# (cells that already exist get updated, new cells get created).
+# Skip on CI (no launchd) and skip if ZETA_SKIP_CELLS=1.
+if [ "${CI:-}" != "true" ] && [ "${ZETA_SKIP_CELLS:-0}" != "1" ]; then
+  if [ -f "$SETUP_DIR/host-loop-bootstrap.sh" ]; then
+    echo ""
+    echo "=== Provisioning agent loop cells (B-0248.2) ==="
+    bash "$SETUP_DIR/host-loop-bootstrap.sh" --skip-health-check || {
+      echo "Warning: cell provisioning failed (non-fatal). Cells can be"
+      echo "provisioned manually: bash tools/setup/host-loop-bootstrap.sh"
+    }
+  fi
+fi
+
 echo "=== Install complete ==="
 echo "If this is your first run, open a new shell or source"
 echo "\$HOME/.config/zeta/shellenv.sh to pick up PATH changes."
