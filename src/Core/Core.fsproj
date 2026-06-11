@@ -228,6 +228,7 @@
     <Compile Include="TimeGen.fs" />
     <Compile Include="Braid.fs" />
     <Compile Include="MediaLines.fs" />
+    <Compile Include="BoundaryLight.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
