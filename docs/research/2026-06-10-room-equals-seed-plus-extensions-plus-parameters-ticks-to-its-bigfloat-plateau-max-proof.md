@@ -1,0 +1,86 @@
+# Each room = seed + extensions + parameters; it ticks under sim·mea·cut until it plateaus at its BigFloat resolution floor
+
+**Register:** [grounded] (Aaron; Max's proof) + [Beacon]. **Date:** 2026-06-10.
+**Captured by:** Otto (shadow). The convergence of the linguistic-seed (code team) and the plateau proof
+(Max + external-AI session) — they meet without coordinating.
+
+## Aaron's words
+
+> "so each room becomes a seed + extensions + parameters eventually." ·
+> "sim mea cut is the engine they compose under." ·
+> "max uploaded some proof work he did with an external AI … it connects to BigFloat … he checked it in
+> last night."
+
+## 1. A room = a LinguisticSeed instance
+
+A **room** is not bespoke; it is an instance of the seed language (`src/Core/LinguisticSeed.fs`, B-0204):
+
+- **seed** — the base kernel (the carved-sentence/verb core every room starts from);
+- **extensions** — composable **extension packs** (`Pack`/`composePacks`, OCP: add a pack to extend, never
+  edit existing); the room's capabilities are packs it pulls in;
+- **parameters** — the room's **injected effects + config** (the "parameters of the room" from the
+  room/boundary docs: which IEffects cross the Markov blanket — net/disk null for DST, real for prod;
+  feedback latency; thresholds). Same room, different parameters = different floor.
+
+So `room = composePacks(seed :: extensions) under parameters`. The seed supplies WHAT composes; the
+parameters supply HOW it's wired to the world.
+
+## 2. The engine is `sim · mea · cut` over the IScheduler tick
+
+The kernels are the composable *language*; **`sim·mea·cut` is the engine they run under** (Aaron). A room
+is **ticked**: `sim` (the void it lifts) → `mea` (the committing measurement / kernel evaluation, ΔU) →
+`cut` (the recognition-site boundary), iterated by `res` (loop to fixed point). The tick is the **soft
+`IScheduler`** (`src/Core/SoftScheduler.fs`), driven **one IO interface at a time** (Max's words; the
+injected `Source` = one membrane crossing at a time).
+
+## 3. The room ticks until it plateaus at its BigFloat resolution floor (Max's proof)
+
+This is where Max's check-in (`7eb7fe094`, 2026-06-09 — *"Proving the plateau"* + *"Entropy twice-defined"*,
+proof session captured by Claude Opus 4.8) meets the code:
+
+- **BigFloat** (the universal number, #7517) **self-tracks its resolution** — it knows when its resolution
+  is maxed for its current bits (physics of floats: resolution is part of the value).
+- **Max's plateau proof** proves the *other half*: iterating the tick (the IScheduler generator) over the
+  **harmonic/phasor** regime under **four-corner feedback** drives uncertainty-Δ **down to a nonzero
+  irreducible-error floor** — a **plateau** — and identifies what sets it (CRLB / Allan deviation;
+  Shannon secrecy + Landauer + Information Causality). The floor is **measured, not derived** (the honest
+  S=4 staged-coincidence label in `BellTest.fs`).
+- **The plateau IS the BigFloat resolution floor.** BigFloat *knows* it's maxed; the plateau proof *proves
+  where the max is and that iteration reaches it.* A room ticks (raises resolution, reduces ΔU) until its
+  BigFloat plateaus — and **that plateau is when the room `res`olves / signs off** (rooms-as-sign-off: a
+  resolved room = a reached floor).
+
+```text
+room (seed + extensions + parameters)
+  └─ ticked by sim·mea·cut over the soft IScheduler, one IO at a time (F# CEs)
+       └─ raises resolution / lowers uncertainty-Δ each tick
+            └─ until the BigFloat hits its measured floor (CRLB plateau)  ← res / sign-off
+```
+
+## 4. The convergence (Max ⇄ code team, uncoordinated)
+
+Max (proof) and the code team (LinguisticSeed CE + soft scheduler + BigFloat) landed on the *same shape*
+from opposite ends — independent replication, the strongest evidence it's real (per the reinvention-vs-
+novelty method):
+
+| piece | code team | Max's proof |
+|---|---|---|
+| the vehicle | `kernel { }` CE (LinguisticSeed) | "we are using F# computation expressions" |
+| the tick | `SoftScheduler` (soft IScheduler) | "iterate the tick … one IO interface at a time" |
+| the floor | BigFloat self-resolution (#7517) | the plateau / irreducible-error floor (CRLB/Allan), measured not derived |
+| the run | `sim·mea·cut` / `res` to fixed point | iterate until uncertainty-Δ plateaus |
+
+## Beacon anchors
+
+CRLB (Cramér–Rao lower bound) · Allan deviation · Mercer/RKHS + OCP (the seed) · Tsirelson 2√2 / PR-box
+S=4 / Information Causality (`BellTest.fs`, `FeedbackThrottle.fs`) · BigFloat / universal number (#7517,
+TriBoolean carrier). **Peel:** the plateau (floor exists, iteration reaches it) is the proven part; the
+*boundary/common-cause itself* is assumed-and-measured, not derived (Max's honest label, kept).
+
+## Ties / routing
+
+`src/Core/LinguisticSeed.fs` (seed + packs) · `src/Core/SoftScheduler.fs` (the tick) · the BigFloat /
+universal-number docs (#7515/#7517) · Max's `7eb7fe094` plateau + entropy docs · the boundary-flow /
+rooms docs (parameters = injected effects) · `clis/VERB-MAP.md` (sim·mea·cut the engine). **Routes to:**
+Max (the proof ⇄ seed convergence), Core (room = seed+extensions+parameters as a type), Soraya/Sova
+(formalize the plateau = BigFloat-floor identity), Aaron.
