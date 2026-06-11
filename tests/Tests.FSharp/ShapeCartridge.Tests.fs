@@ -36,7 +36,7 @@ let ``the gen line resolves to the REAL rotor generator on the shelf (DI by Zeta
 [<Fact>]
 let ``UNFOLDING the cartridge draws the promised spiral: 36 rotor steps, outward growth, bounded`` () =
     // the runner's unfold: read the constants, apply the registered generator
-    let re, im = BoundaryLight.rotorOf 1 12 1100
+    let re, im = BoundaryLight.rotorOf 1 12 1025
     let curve = BoundaryLight.rotorCurve (BoundaryLight.p 32 16) 6.0 0.0 re im 36
     Assert.Equal(37, List.length curve) // steps + the seed point
     // outward growth: the last point is farther from center than the first (the logarithmic law)
@@ -69,6 +69,12 @@ let ``THE CATALOG LAW: every cartridge parses, lints clean, resolves its gen on 
         Assert.Contains("otto", MediaLines.ratifiedBy "meaning" "ratified" d)
         // every constant already passed lint (WHAT+WHY); anims ride declared gens/frames (lint again)
         Assert.True(MediaLines.ofKind "anim" d |> List.isEmpty |> not, name + " must animate (see it draw)")
+        // THE COURT LAW (Aaron's eye, 2026-06-12 — the spiral escaped): every stroke point of
+        // every cartridge lies on the court (viewBox 0 0 640 320; pt() maps cell 0..63/0..31
+        // inside it). A generator that leaves the court is a WHY that lied.
+        for s in ShapeRender.strokesOf d do
+            for (x, y) in s.Points do
+                Assert.True(x >= 0 && x <= 640 && y >= 0 && y <= 320, sprintf "%s/%s point (%d,%d) off court" name s.Name x y)
 
 [<Fact>]
 let ``the braid cartridge's known answer holds: its word equals the Artin twin, and crossing twice is NOT un-crossing`` () =

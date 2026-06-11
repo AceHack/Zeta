@@ -39,11 +39,16 @@ module ShapeAcceptance =
     let geometryLaw (shape: string) (d: MediaLines.Doc) : bool * string =
         match shape with
         | "shape-spiral" ->
-            let re, im = BoundaryLight.rotorOf 1 12 1100
-            let curve = BoundaryLight.rotorCurve (BoundaryLight.p 32 16) 6.0 0.0 re im 36
+            let growth = MediaLines.field "constant" "growth-milli" d |> Option.map int |> Option.defaultValue 1025
+            let steps = MediaLines.field "constant" "steps" d |> Option.map int |> Option.defaultValue 36
+            let re, im = BoundaryLight.rotorOf 1 12 growth
+            let curve = BoundaryLight.rotorCurve (BoundaryLight.p 32 16) 6.0 0.0 re im steps
             let d2 (pt: BoundaryLight.P) = (pt.X - 32) * (pt.X - 32) + (pt.Y - 16) * (pt.Y - 16)
-            let ok = List.length curve = 37 && d2 (List.last curve) > d2 (List.head curve)
-            ok, "37 rotor points; outward logarithmic growth (last farther than first)"
+            // bounds joined the law after Aaron's eye caught the 1100 escape — growth alone was
+            // never the whole claim; "visibly logarithmic ON THE COURT" is.
+            let inCourt = curve |> List.forall (fun p -> p.X >= 0 && p.X < 64 && p.Y >= 0 && p.Y < 32)
+            let ok = List.length curve = steps + 1 && d2 (List.last curve) > d2 (List.head curve) && inCourt
+            ok, "rotor points complete; outward growth; every point ON the court (the escape class, gated)"
         | "shape-braid" ->
             // Artin holds; memory holds; and THE LOCK: the drawn word's permutation is identity
             // (every strand returns to its own column — Aaron's lock-in-place, checked).

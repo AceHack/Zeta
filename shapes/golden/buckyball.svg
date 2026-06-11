@@ -8,9 +8,9 @@
   <polyline id="door-4" fill="none" stroke="#d6c828" stroke-width="4" points="165,165 100,76" />
   <polyline id="self-door" fill="none" stroke="#d628d6" stroke-width="4" points="165,165 175,155 175,175 165,165" />
   <polyline id="outside-room" fill="none" stroke="#28c8d6" stroke-width="4" points="485,115 533,150 514,205 456,205 437,150 485,115" />
-  <polyline id="ray-0" fill="none" stroke="#f0f0f0" stroke-width="4" points="485,115 485,-35" />
-  <polyline id="ray-1" fill="none" stroke="#f0f0f0" stroke-width="4" points="533,150 677,105" />
-  <polyline id="ray-2" fill="none" stroke="#f0f0f0" stroke-width="4" points="514,205 601,325" />
-  <polyline id="ray-3" fill="none" stroke="#f0f0f0" stroke-width="4" points="456,205 369,325" />
-  <polyline id="ray-4" fill="none" stroke="#f0f0f0" stroke-width="4" points="437,150 293,105" />
+  <polyline id="ray-0" fill="none" stroke="#f0f0f0" stroke-width="4" points="485,115 485,3" />
+  <polyline id="ray-1" fill="none" stroke="#f0f0f0" stroke-width="4" points="533,150 635,119" />
+  <polyline id="ray-2" fill="none" stroke="#f0f0f0" stroke-width="4" points="514,205 597,320" />
+  <polyline id="ray-3" fill="none" stroke="#f0f0f0" stroke-width="4" points="456,205 373,320" />
+  <polyline id="ray-4" fill="none" stroke="#f0f0f0" stroke-width="4" points="437,150 5,15" />
 </svg>

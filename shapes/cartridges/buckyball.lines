@@ -33,6 +33,7 @@ edge	contains-view	shape-fourcorner	the meta-debug room's feedback surface is th
 edge	dual-register	shape-lightcone	inside/outside is the same move as past/future: one event, two cones, choice of view
 edge	taught-after	shape-spiral	the catalog's first lesson loop; learn see-it-draw there before walking rooms here
 # outstanding — named, never hidden (the honest register).
+issue	ray-overshoot	otto	closed	CAUGHT BY THE COURT LAW 2026-06-12 (its second catch, minutes after its first): the outside-view rays overshot the bounds by 4x — clamped to the court edge, which is what Addison's definition said all along ("to infinity OR THE BOUNDS")
 issue	schlegel-projection	otto	open	the render is a 1-shell schematic, not the full 60-vertex Schlegel diagram — the full projection is a named slice
 issue	math-tear-down	math-team	closed	RAN 2026-06-12 (Kira + Soraya): 13 findings (2 P0) all fixed/filed — see docs/research/2026-06-12-the-math-team-pass-*; sign-off treaty lines remain theirs to write
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.

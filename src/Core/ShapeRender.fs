@@ -262,9 +262,19 @@ module ShapeRender =
                 |> List.take 5
                 |> List.mapi (fun i (vx, vy) ->
                     let cx, cy = pt 48 16
-                    // extend the pentagon vertex direction to the court bounds (the "infinity" leg)
+                    // "lines go to infinity OR THE BOUNDS" (Addison) — THE BOUNDS it is: extend the
+                    // vertex direction exactly to the court edge, never past it (THE COURT LAW
+                    // caught the old *4 overshoot at (485,-35); her definition already knew).
                     let dx, dy = vx - cx, vy - cy
-                    { Dash = false; Name = sprintf "ray-%d" i; Mask = 7uy; Points = [ (vx, vy); (cx + dx * 4, cy + dy * 4) ] })
+                    let kFor (delta: int) (pos: int) (lo: int) (hi: int) =
+                        if delta > 0 then (hi - pos) * 8 / delta
+                        elif delta < 0 then (lo - pos) * 8 / delta
+                        else System.Int32.MaxValue
+                    let k = min (kFor dx vx 0 640) (kFor dy vy 0 320) // eighths: integer, never out
+                    { Dash = false
+                      Name = sprintf "ray-%d" i
+                      Mask = 7uy
+                      Points = [ (vx, vy); (vx + dx * k / 8, vy + dy * k / 8) ] })
             [ { Dash = false; Name = "inside-room"; Mask = 6uy; Points = insidePent }
               { Dash = false; Name = "inside-bound"; Mask = 4uy; Points = insideBound }
               yield! doors
