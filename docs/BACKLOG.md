@@ -975,6 +975,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-1027](backlog/P2/B-1027-craft-verb-precision-bob-weave-tie-twist-braid-textile-warp-weft-jacquard-braid-relations-test-salon-textile-craft-schools-aaron-2026-06-11.md)** Craft-verb precision (bob/weave/tie/twist/braid) + the textile frame (warp/weft/loom/selvage) — ratify the registry, test the braid relations
 - [ ] **[B-1028](backlog/P2/B-1028-mips-emulator-treaty-room-like-chip8-maxs-machine-hennessy-lineage-aaron-2026-06-11.md)** MIPS emulator as a treaty room — like our CHIP-8, for Max (Hennessy lineage; the B-1025 fan-out's second machine)
 - [ ] **[B-1029](backlog/P2/B-1029-quirk-craft-school-toy-layer-and-quantum-circuit-ts-second-oracle-with-qsharp-export-lior-owner-aaron-2026-06-12.md)** The TS quantum lane — quantum-circuit as second oracle (Q# export, the three Vera jobs) + Quirk as the craft-school toy layer
+- [ ] **[B-1031](backlog/P2/B-1031-drw-clip-vs-wrap-cosmac-vip-correct-edge-semantics-four-oracle-coordinated-golden-regen-aaron-2026-06-13.md)** DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change
 
 ## P3 — convenience / deferred
 
@@ -1145,6 +1146,5 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-1014](backlog/P3/B-1014-conflict-resolution-two-classes-factual-shared-data-values-residual-faithful-representation-data-driven-wellbeing-deescalation-aaron-2026-06-03.md)** Conflict-resolution two-classes — factual conflicts resolve by shared mutually-monitorable data (anti-attrition), values-residual conflicts get faithfully represented not falsely resolved; bug-induced-stuck-state de-escalation is a data-driven hypothesis with a can-say-no wellbeing-inclusive metric + auto repair/escape (Aaron 2026-06-03)
 - [ ] **[B-1015](backlog/P3/B-1015-jurisdiction-relative-federated-sovereignty-opa-per-jurisdiction-mutual-permission-exchange-nexus-meta-jurisdiction-forkable-aaron-2026-06-03.md)** Jurisdiction-relative federated sovereignty — relative geospatial borders + per-jurisdiction OPA (recognized external identities + exchange policies) + mutual-permission (intersection) cross-jurisdiction exchange + Nexus meta-jurisdiction (Zeta as peer sovereign, non-central by supported structural+interoperable forkability); legal vetting per jurisdiction (Aaron 2026-06-03)
 - [ ] **[B-1030](backlog/P3/B-1030-evaluate-microsoft-quantum-viz-js-circuit-diagram-rendering-for-ts-apps-aaron-2026-06-12.md)** Evaluate @microsoft/quantum-viz.js for circuit-diagram rendering in our TS apps
-- [x] **[B-1031](backlog/P2/B-1031-drw-clip-vs-wrap-cosmac-vip-correct-edge-semantics-four-oracle-coordinated-golden-regen-aaron-2026-06-13.md)** DRW edge semantics — clip (COSMAC VIP correct) not wrap; coordinated four-oracle golden change (greenfield window)
 
 <!-- END AUTO-GENERATED -->
