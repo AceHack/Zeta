@@ -251,6 +251,7 @@
     <Compile Include="DarkHall.fs" />
     <Compile Include="Arcade.fs" />
     <Compile Include="Skadium.fs" />
+    <Compile Include="BowlingAlley.fs" />
     <Compile Include="HendersonTextileMill.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
   </ItemGroup>
