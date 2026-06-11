@@ -145,6 +145,7 @@
     <Compile Include="SoftThrottle.fs" />
     <Compile Include="RecordedSource.fs" />
     <Compile Include="SimFramework.fs" />
+    <Compile Include="MeshPong.fs" />
     <Compile Include="SagaBuilder.fs" />
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />

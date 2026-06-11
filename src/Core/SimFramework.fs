@@ -96,3 +96,38 @@ module SimFramework =
 
     /// Run a room on the default harness (the common path).
     let run (r: Room<'S>) (seed: int64) : Task<RoomReport<'S>> = harness.Run(r, seed)
+
+    // ── Arrival-aware rooms (additive, 2026-06-11) — for rooms that fold crossing PAYLOADS (lockstep) ──
+
+    /// A room whose handlers receive the matched crossing itself (`SoftScheduler.HandlerK`).
+    type RoomK<'S> =
+        { Name: string
+          Initial: int64 -> 'S
+          HandlersK: SoftScheduler.HandlerK<'S> list
+          Source: int64 -> SoftScheduler.Source
+          Budget: int
+          Resolved: 'S -> bool }
+
+    /// Run an arrival-aware room on the default deterministic harness shape (driveK at DoP=1).
+    let runK (r: RoomK<'S>) (seed: int64) : Task<RoomReport<'S>> =
+        task {
+            let ctx: IntrCtx =
+                { Memetic = "sim:" + r.Name
+                  Prompt = ""
+                  Trust = ""
+                  Log = ""
+                  Otel = System.Diagnostics.ActivityContext() }
+
+            let! final = (SoftScheduler.driveK r.HandlersK (r.Source seed)).Run ctx seed (r.Initial seed) r.Budget
+
+            let signedOff =
+                match final with
+                | Ok s -> r.Resolved s
+                | Error _ -> false
+
+            return
+                { Room = r.Name
+                  Ticks = r.Budget
+                  Final = final
+                  SignedOff = signedOff }
+        }

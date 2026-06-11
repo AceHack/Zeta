@@ -100,3 +100,49 @@ module SoftScheduler =
     /// path — null I/O). Returns the final state or the interrupt that stopped it.
     let runDeterministic (handlers: Handler<'S> list) (ctx: IntrCtx) (seed: int64) (initial: 'S) (budget: int) : Task<Result<'S, InterruptFeedback>> =
         (drive handlers (seedSource seed)).Run ctx seed initial budget
+
+    // ── Arrival-AWARE handlers (additive, 2026-06-11; discovered by the MeshPong lockstep demo) ──
+    // `Handler.Run` never sees the arrival itself, so a room cannot read a crossing's PAYLOAD (e.g. an
+    // input message). `HandlerK` passes the matched `InterruptKind` to the arrow — needed by any room
+    // that folds message contents (lockstep inputs, operator messages). `Handler`/`drive` untouched.
+
+    /// An arrival-aware handler: `RunK` receives the matched crossing (its content), then the state.
+    type HandlerK<'S> =
+        { Name: string
+          Matches: InterruptKind -> bool
+          RunK: InterruptKind -> ISR<'S, 'S> }
+
+    /// Build an arrival-aware handler.
+    let handlerK (name: string) (matches: InterruptKind -> bool) (runK: InterruptKind -> ISR<'S, 'S>) : HandlerK<'S> =
+        { Name = name; Matches = matches; RunK = runK }
+
+    /// Drive arrival-aware handlers — same single cooperative loop as `drive` (DoP=1, deterministic,
+    /// stops on first Error), but the matched arrival is handed to the arrow.
+    let driveK (handlers: HandlerK<'S> list) (source: Source) : ISoftScheduler<'S> =
+        let hs = List.toArray handlers
+        { new ISoftScheduler<'S> with
+            member _.Run ctx seed initial budget =
+                task {
+                    let mutable state = initial
+                    let mutable err: InterruptFeedback option = None
+                    let mutable n = 0
+                    while n < budget && Option.isNone err do
+                        let arrivals = source n |> List.toArray
+                        let mutable a = 0
+                        while a < arrivals.Length && Option.isNone err do
+                            let intr = arrivals.[a]
+                            let mutable hI = 0
+                            while hI < hs.Length && Option.isNone err do
+                                let h = hs.[hI]
+                                if h.Matches intr then
+                                    let! res = h.RunK intr ctx state
+                                    match res with
+                                    | Ok s -> state <- s
+                                    | Error e -> err <- Some e
+                                hI <- hI + 1
+                            a <- a + 1
+                        n <- n + 1
+                    match err with
+                    | Some e -> return Error e
+                    | None -> return Ok state
+                } }
