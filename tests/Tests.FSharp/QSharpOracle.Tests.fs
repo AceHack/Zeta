@@ -49,6 +49,9 @@ let private gateMatrix (name: string) =
 let private matrixEntry (matrix: JsonElement) row col =
     matrix[row][col] |> jsonComplex
 
+let private jsonFloatArray (element: JsonElement) =
+    element.EnumerateArray() |> Seq.map _.GetDouble() |> Seq.toArray
+
 let private singleQubitCase (id: string) =
     vectors.GetProperty("singleQubitMeasurement").EnumerateArray()
     |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
@@ -64,6 +67,12 @@ let private probabilities (case: JsonElement) =
 let private assertQSharpColumn (matrix: JsonElement) col (state: QubitIso.JoinState) =
     complexCloseTo (matrixEntry matrix 0 col) state.A
     complexCloseTo (matrixEntry matrix 1 col) state.B
+
+let private assertQSharpBellColumn (matrix: JsonElement) col (state: BellState.State) =
+    complexCloseTo (matrixEntry matrix 0 col) state.ZeroZero
+    complexCloseTo (matrixEntry matrix 1 col) state.ZeroOne
+    complexCloseTo (matrixEntry matrix 2 col) state.OneZero
+    complexCloseTo (matrixEntry matrix 3 col) state.OneOne
 
 let private probabilityFor frame probabilities =
     probabilities
@@ -165,6 +174,22 @@ let ``BellTest canonical CHSH observables match the Q# golden vector`` () =
     closeTo (correlators.GetProperty("E(aPrime,bPrime)").GetDouble()) (BellTest.correlation a' b')
     closeTo (canonical.GetProperty("s").GetDouble()) (BellTest.chsh a a' b b')
     closeTo (canonical.GetProperty("tsirelson").GetDouble()) BellTest.TsirelsonBound
+
+[<Fact>]
+let ``BellState PhiPlus preparation matches the Q# two-qubit oracle`` () =
+    let bell = vectors.GetProperty("bellChsh")
+    let prepared = BellState.phiPlus ()
+
+    assertQSharpBellColumn (gateMatrix "BellPhiPlusPrep") 0 prepared
+
+    let expectedProbabilities = bell.GetProperty("preparation").GetProperty("probabilities") |> jsonFloatArray
+    let actualProbabilities = BellState.probabilities prepared
+    Assert.Equal(expectedProbabilities.Length, actualProbabilities.Length)
+
+    Array.zip expectedProbabilities actualProbabilities
+    |> Array.iter (fun (expected, actual) -> closeTo expected actual)
+
+    closeTo 1.0 (BellState.normSq prepared)
 
 [<Fact>]
 let ``single-qubit probability formulas match the Q# observable treaty`` () =

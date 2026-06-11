@@ -212,6 +212,7 @@
     <Compile Include="ForwardMomentum.fs" />
     <Compile Include="QubitIso.fs" />
     <Compile Include="BellTest.fs" />
+    <Compile Include="BellState.fs" />
     <Compile Include="FeedbackThrottle.fs" />
     <Compile Include="Chip8.fs" />
     <Compile Include="Chip8Cow.fs" />
