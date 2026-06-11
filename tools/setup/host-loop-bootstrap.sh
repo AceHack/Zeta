@@ -182,10 +182,10 @@ else
 
     # Parse: cell-id harness=X agent=Y interval=N forward=0|1
     CELL_ID=$(echo "$line" | awk '{print $1}')
-    HARNESS=$(echo "$line" | grep -oP 'harness=\K[^ ]+')
-    AGENT=$(echo "$line" | grep -oP 'agent=\K[^ ]+')
-    INTERVAL=$(echo "$line" | grep -oP 'interval=\K[^ ]+')
-    FORWARD=$(echo "$line" | grep -oP 'forward=\K[^ ]+')
+    HARNESS=$(echo "$line" | sed -n 's/.*harness=\([^ ]*\).*/\1/p')
+    AGENT=$(echo "$line" | sed -n 's/.*agent=\([^ ]*\).*/\1/p')
+    INTERVAL=$(echo "$line" | sed -n 's/.*interval=\([^ ]*\).*/\1/p')
+    FORWARD=$(echo "$line" | sed -n 's/.*forward=\([^ ]*\).*/\1/p')
 
     if [[ -n "$CELL_ID" && -n "$AGENT" ]]; then
       provision_cell "$CELL_ID" "${HARNESS:-auto}" "$AGENT" "${INTERVAL:-60}" "${FORWARD:-1}"
