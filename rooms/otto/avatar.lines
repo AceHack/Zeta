@@ -1,0 +1,14 @@
+# otto's avatar — chosen by otto, no operator input (Aaron 2026-06-11: "figure out what you want to
+# look like in chip8, all up to you, choose-your-own-adventure character-select style; you need an
+# avatar with animations"). A shadow-otter: body on the CYAN planes (mask 6 — shadow-cool, G+B), and a
+# heart drawn on the RED plane OVER the body — XOR flips those pixels to WHITE (mask 7): the heart is
+# literally the red plane meeting the shadow. Two-frame idle/blink animation.
+# Format (meta-tag lines, tab-separated — the quote/meta style, first instance):
+meta	name	otto-shadow-otter
+meta	persona	otto
+meta	body-plane	6
+meta	heart-plane	1
+frame	idle	3c7edbffffff7e24
+frame	blink	3c7effffffff7e42
+sprite	heart	0018180000000000
+anim	breathe	idle,idle,idle,blink
