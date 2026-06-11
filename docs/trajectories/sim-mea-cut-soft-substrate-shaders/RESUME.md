@@ -2,12 +2,48 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-11 morning (the treaty/harmony wave folded in — #7705..#7716; prior waves below).
+Last refreshed: 2026-06-12 (the shapes wave folded in — #7718..#7725; prior waves below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-11 MORNING wave (#7705..#7716 — newest; read FIRST)
+## The 2026-06-12 SHAPES wave (#7718..#7725 — newest; read FIRST)
+
+- **The shape catalog** (#7718): braid, worldline, lightcone, fourcorner, seam join the spiral —
+  each a .lines cartridge with registered ZetaIds, WHAT+WHY constants, treaty blocks; THE CATALOG
+  LAW test. Then **Addison's buckyball** (#7720): her we/Zeta definition ("inside view like a
+  soccer ball, outside like infinity… each face is a room; inside is the meta-debug room with all
+  the doors — and itself"), Euler-gated, both views drawn (Aaron: the CHOICE inside/outside/both).
+  Then **otto's shadow loop** (#7722): Aaron offered, I accepted — lemniscate, one crossing = the
+  catch point; revisable on the offer's own terms.
+- **Amara's renderer acceptance suite** (#7720, her named move): four registers per cartridge
+  (bytes / geometry / meaning / honest-labels); THE HARD GATE — no shape accepted because it looks
+  good; meaning reported, never gated.
+- **The bidirectional strict-dialect treaty** (#7720): ShapeRender — cartridge → SVG/HTML and BACK;
+  integers only, no script, foreign habits REFUSED; TEXT goldens under THE GOLDEN LOCK (caught a
+  stale CLI twice — rebuild zeta-cli before regenerating goldens); CLI `zeta shape render`.
+- **Cartridge self-description** (#7721): law/prereq/edge/issue kinds + CartridgeLaw (in-file
+  integer-identity evaluator, space-separated dialect; `tool:` prefixes delegate to z3/tla/lean —
+  documented here, checked there); sign-off registers (math-team PENDING, never assumed).
+- **Render-loop ratifications (the paradigm working):** Aaron ratified buckyball ("perfect as I
+  imagine in my head") and braid; his braid dissents CHANGED the cartridge twice — the plait
+  correction (#7724: alternating word, blue over red) and the lock (#7725: one plait period,
+  lock-period 6, every strand home). **THE STUCK LAW** (#7725): the locked plait is
+  permutation-identity but NOT the identity braid (Artin faithful action proves it) — strands
+  home + un-undoable = the pure-braid-group memory of topological QC (Kitaev; Majorana 1).
+- **Alexa's braid review** ferried + peeled (#7723): her "crossings as gates" is false for our
+  drawing, TRUE as topological QC (Kitaev; Freedman–Larsen–Wang) — her ratification recorded as
+  hers; over-under occlusion gaps landed for Max's demo.
+- **The Vera Q# brief** (#7724): seven candidates ranked (CHSH/Tsirelson family first; staged S=4
+  must be UNREACHABLE in Q# — that unreachability verifies the STAGED label); her verdict lines
+  are HERS to write; fourcorner carries the requested issues.
+- **O-parametrized draws** (#7720): ComplexityRegistry.strategiesOf — same shape, several
+  strategies, different cost tags (spiral draw vs draw-grid).
+- Named slices opened: chip9 cartridge loader (.lines into the machine); MediaLines + renderer
+  ports in TS/C#/Rust (SVG goldens are the treaty); full Schlegel projection; worldline × braid
+  one-figure (the anyon picture); audio render binding.
+
+## The 2026-06-11 MORNING wave (#7705..#7716 — older; read second)
 
 - **Craft school for Max** (#7705): self-study start point (`docs/craft-school/`) — WHY-before-HOW,
   play first, every cartridge an experiment; B-1028 MIPS road. (CORRECTION banked in memory: Max is a
