@@ -1,5 +1,6 @@
 ---
 id: B-1033
+zetaid: 081KTZ4EF0008QG0R000WJGSWX
 title: Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
 priority: P2
 status: done

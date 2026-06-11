@@ -1,5 +1,6 @@
 ---
 id: B-1024
+zetaid: 081KTSZN10008QG0R00349SM6P
 title: Speak-to-the-TV + own microkernel/ISO boot, QEMU-tested, Raspberry Pi self-contained, hardware capability matrix with visible friction/heat
 priority: P2
 status: open

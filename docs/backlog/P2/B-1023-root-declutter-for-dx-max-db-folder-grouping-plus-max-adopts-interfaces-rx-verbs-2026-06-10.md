@@ -1,5 +1,6 @@
 ---
 id: B-1023
+zetaid: 081KTQD8A0008QG0R0030HWMZV
 title: Root declutter for DX — Max finds the repo root intimidating; group into folders (e.g. db/) without breaking load-bearing paths
 priority: P2
 status: open

@@ -1,5 +1,6 @@
 ---
 id: B-1026
+zetaid: 081KTSZN10008QG0R0003SDRWD
 title: The swarm board — sit down, see the swarm + friction/heat heatmap, Zork-navigate, join/conference rooms remotely; a citizenship right (even CHIP-8s)
 priority: P2
 status: open

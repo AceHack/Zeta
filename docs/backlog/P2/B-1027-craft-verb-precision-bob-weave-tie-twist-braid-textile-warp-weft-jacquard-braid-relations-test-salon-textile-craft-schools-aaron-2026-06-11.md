@@ -1,5 +1,6 @@
 ---
 id: B-1027
+zetaid: 081KTSZN10008QG0R001BW91GT
 title: Craft-verb precision (bob/weave/tie/twist/braid) + the textile frame (warp/weft/loom/selvage) — ratify the registry, test the braid relations
 priority: P2
 status: open

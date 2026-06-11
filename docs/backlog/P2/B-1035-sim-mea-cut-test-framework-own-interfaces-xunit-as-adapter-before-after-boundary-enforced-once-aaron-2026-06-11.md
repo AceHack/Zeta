@@ -1,5 +1,6 @@
 ---
 id: B-1035
+zetaid: 081KTSZN10008QG0R002J0GE0Z
 title: The sim·mea·cut test framework — our own hexagonal test interfaces; xUnit demoted to host adapter; before/after boundary enforced ONCE (rooms inherit)
 priority: P2
 status: open

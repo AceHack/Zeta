@@ -1,5 +1,6 @@
 ---
 id: B-1029
+zetaid: 081KTWJ1R0008QG0R001ZBWKTR
 title: The TS quantum lane — quantum-circuit as second oracle (Q# export, the three Vera jobs) + Quirk as the craft-school toy layer
 priority: P2
 status: open

@@ -1,5 +1,6 @@
 ---
 id: B-1025
+zetaid: 081KTSZN10008QG0R000VZHRQ4
 title: Universal action grammar + reversible RISC-like ISA — generate the microkernel to any hardware (Pi first artisanal, then automate into a room)
 priority: P2
 status: open

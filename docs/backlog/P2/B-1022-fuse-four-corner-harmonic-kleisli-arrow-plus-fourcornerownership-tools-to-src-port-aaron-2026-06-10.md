@@ -1,5 +1,6 @@
 ---
 id: B-1022
+zetaid: 081KTQD8A0008QG0R0005EFYPV
 title: Fuse the arrow/four-corner/feedback/scheduler fragments into one four-corner harmonic Kleisli arrow; graduate FourCornerOwnership tools→src + port TS→F#/C#/Rust
 priority: P2
 status: executed-per-rodney-razor (2026-06-10; residual items deferred-with-reasons below)

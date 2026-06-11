@@ -1,5 +1,6 @@
 ---
 id: B-1028
+zetaid: 081KTSZN10008QG0R001BCCTXT
 title: MIPS emulator as a treaty room — like our CHIP-8, for Max (Hennessy lineage; the B-1025 fan-out's second machine)
 priority: P2
 status: open

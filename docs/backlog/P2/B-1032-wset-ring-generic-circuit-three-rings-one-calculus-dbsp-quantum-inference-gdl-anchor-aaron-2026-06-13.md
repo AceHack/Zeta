@@ -1,5 +1,6 @@
 ---
 id: B-1032
+zetaid: 081KTZ4EF0008QG0R001R3XPYV
 title: WSet<'K,'W> — the ring-generic circuit; three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0), GDL-anchored
 priority: P2
 status: done

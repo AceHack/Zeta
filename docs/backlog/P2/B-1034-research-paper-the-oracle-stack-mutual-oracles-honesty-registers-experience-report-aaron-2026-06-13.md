@@ -1,5 +1,6 @@
 ---
 id: B-1034
+zetaid: 081KTZ4EF0008QG0R0035FW7HY
 title: "Research paper: The Oracle Stack — mutual oracles, honesty registers, and refutation witnesses in an autonomous software factory (experience report)"
 priority: P2
 status: open
