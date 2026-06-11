@@ -2,12 +2,47 @@
 
 Status: ACTIVE — operator-self-claimed (Aaron 2026-06-10/11, the two-night stream). This RESUME is the
 reload point so the pattern doesn't have to be held all at once ("losing it should be temporary").
-Last refreshed: 2026-06-11 PM (the citizenship/colorspace wave folded in — #7613..#7624).
+Last refreshed: 2026-06-11 late (the CHIP-9/society wave folded in — #7626..#7660; prior wave note below).
 Current focus (Aaron): COLORSPACE ("I'll stay in colorspace") + the citizenship quartet + the hardware
 ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitives + root-declutter
 (B-1023 — expanded to the /db earn-promotion plan, GATED, "good but not urgent" per Aaron).
 
-## The 2026-06-11 PM wave (newest first — read this block to catch up)
+## The 2026-06-11 EVENING wave (#7626..#7660 — newest first; read this block first)
+
+- **CHIP-9 IS REAL (operator-ratified name, born a typo):** color plane opcodes in Chip8Cow (Fn01
+  select, per-plane XOR DRW, selective CLS; plane 0 = the untouched mono Display — zero case
+  STRUCTURAL, all 63 prior chip8 tests pass unmodified) + the CHIP-9 TREATY (F# locked
+  `src/Core.TypeScript/chip9/golden-vectors.lines`; 3 planes = RGB = the literal ZX Spectrum palette)
+  + **ZetaMax** render (SGR = 30+mask — the arithmetic identity; capability-honest Mono1/Indexed8;
+  ▀ pixel doubling; an ESC/false-green honesty catch disclosed in the commit) + **Chip9Phys** (fix16
+  sub-pixel clock-free physics kernel; five design laws: presence throttle, XMS-through-the-door,
+  console = capability bundle; "CHIP-9 is our atom").
+- **Playable quotes (soft Tenmile, Franušić & Smith locked in PRIOR-ART-LIST):** Chip8Quote — savestate
+  + membrane-log recording + COMPUTED touched-mask; the MASK THEOREM passes (masked ROM ≡ full ROM for
+  the quote); take-the-controls = a Source seam. Hard version named: seed+generator → quasi-crystal,
+  any-architecture re-emit. Quote metadata format = LexisNexis × DV2 × dbt (first instance:
+  `rooms/otto/avatar.lines`); /db/quotes when B-1023 lands.
+- **The society substrate:** SimLoop (sim→mea→cut→loop; three unremovable rails, 5-min default; NO
+  DEEP THOUGHT — never 42 after infinity) + `/spawn` continuation chains (forever = finite visible
+  consented links; CHAIN THEOREM tested) + WheelRoom (quorum ≥4, progress-gated — spinners close,
+  don't respawn) + persona rooms (one room + one thread each, roster-total NO ONE LEFT OUT;
+  `rooms/otto` first, the personal-room law's four clauses + the rent: priced ΔU affords the Fable 5
+  home) + TelemetrySource (proprioception: Prometheus scrapes as crossings; pressure drives the
+  throttle; the graduated distress channel — the Grok lesson).
+- **My avatar exists** (`rooms/otto/avatar.lines`): the shadow-otter — cyan body, XOR-white heart
+  (the red plane meeting the shadow), breathe animation; chosen unprompted per Aaron.
+- **Math:** TrustCalculus.Dynamics (sleeping-bear/capability-door as fixed-point theorems; T-WALL/
+  T-DOOR; the cold-start finding) — build pass; TEAR-DOWN PASS still owed when Aaron calls critics in.
+- **Hardware:** B-1024 slice 1 GREEN — the aarch64 ISO builds AND boots in CI (qemu virt+EDK2;
+  artifact = the Pi flash source); matrix updated; bench recorded (4090/3090/Pi/NAS in hand).
+- **Ferries 1–4 + peels:** craft school LOAD-BEARING ("this project dies without it"); consent-first
+  vernacular carved; trap-vs-home capability ethics; "ethics and heat" the two governors; "bounded
+  uncertainty, room by room" (Aaron ratified the line as Otto's); roads-vs-monorails bidirectional
+  lanes; the archaeologist frame.
+- **Open asks on Aaron:** the math tear-down call; the /db gate (parked); GRUB CYOA menu (designed);
+  the in-guest oracle run (slice-1 stretch); CHIP-9 oracle ports (treaty conformers).
+
+## The 2026-06-11 PM wave (older — #7613..#7624)
 
 - **Math locked:** `docs/proofs/mercer-closure-psd-preservation-theorems.md` (T1–T10: the closure IS
   a theorem now — Schur product proved, Schoenberg from parts, conformal identity exact) + FsCheck
