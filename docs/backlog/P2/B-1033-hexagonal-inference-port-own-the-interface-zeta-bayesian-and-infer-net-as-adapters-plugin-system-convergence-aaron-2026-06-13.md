@@ -54,3 +54,11 @@ THEIRS-TESTS-OURS (C#): both adapters agree on every case to 1e-6 (single prior 
 fusion / equality chain). REMAINING: more case families (observed-value likelihoods, EP truncation
 cases through Ep.fs, loopy-graph honesty cases); the plugin-system convergence audit (the second
 half of this row).
+
+## Progress 2 (2026-06-13, the audit half)
+
+DONE: the plugin-convergence audit — docs/research/2026-06-13-the-plugin-convergence-audit-*.md.
+Verdict: converge the VOCABULARY, not the implementations (ZetaId port names · the
+Live/Injected/Adapted/Mock ladder · the red-light glance form · findAdapter for what's-missing);
+the rule for system five stated; IInferenceEngine named the first customer (engine ZetaIds + a
+ladder-shaped resolution = the remaining follow-up alongside richer case families).
