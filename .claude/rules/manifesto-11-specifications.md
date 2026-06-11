@@ -29,7 +29,10 @@ morality; #11 is the default oracle). See the manifesto.
 ## Overlap with the always-active engineering disciplines
 
 Specs 1, 2, 3, 7, 8 are *also* always-active engineering disciplines.
-**Idempotency** is a 6th always-active discipline but is NOT one of the 11.
+**Idempotency** (6th) and **Noninterference** (7th, 2026-06-10 — entropy/influence
+enters only through declared, metered channels; the weight-free sibling: weight-free
+= no captured authority, noninterference = no unaccounted influence) are
+always-active disciplines but NOT among the 11.
 Full discipline checklist: [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md).
 
 ## Pointers for detail
