@@ -45,6 +45,106 @@
           "|10>",
           "|11>"
         ]
+      },
+      "singletCorners": {
+        "analytic": 2.828427124746,
+        "checks": [
+          "TimeGen.chsh",
+          "BellTest.correlation",
+          "Q# singlet analyzer probabilities"
+        ],
+        "classicalBound": 2.0,
+        "combination": "E(a0,b0)+E(a0,b1)+E(a1,b0)-E(a1,b1)",
+        "corners": [
+          {
+            "anglesRadians": {
+              "a": 0.0,
+              "b": 0.785398163397,
+              "delta": -0.785398163397
+            },
+            "basisProbabilities": {
+              "|00>": 0.073223277604,
+              "|01>": 0.426776064961,
+              "|10>": 0.426776064961,
+              "|11>": 0.073223277604
+            },
+            "coefficient": 1,
+            "correlator": 0.707104259844,
+            "correlatorFormula": "E=2*P(opposite)-1=cos(a-b)",
+            "id": "E(a0,b0)",
+            "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0",
+            "oppositeOutcomeProbability": 0.853552129922,
+            "probabilityFormula": "P(opposite)=cos((a-b)/2)^2",
+            "sameOutcomeProbability": 0.146446555208
+          },
+          {
+            "anglesRadians": {
+              "a": 0.0,
+              "b": -0.785398163397,
+              "delta": 0.785398163397
+            },
+            "basisProbabilities": {
+              "|00>": 0.073223277604,
+              "|01>": 0.426776064961,
+              "|10>": 0.426776064961,
+              "|11>": 0.073223277604
+            },
+            "coefficient": 1,
+            "correlator": 0.707104259844,
+            "correlatorFormula": "E=2*P(opposite)-1=cos(a-b)",
+            "id": "E(a0,b1)",
+            "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1",
+            "oppositeOutcomeProbability": 0.853552129922,
+            "probabilityFormula": "P(opposite)=cos((a-b)/2)^2",
+            "sameOutcomeProbability": 0.146446555208
+          },
+          {
+            "anglesRadians": {
+              "a": 1.570796326795,
+              "b": 0.785398163397,
+              "delta": 0.785398163397
+            },
+            "basisProbabilities": {
+              "|00>": 0.073223277604,
+              "|01>": 0.426776064961,
+              "|10>": 0.426776064961,
+              "|11>": 0.073223277604
+            },
+            "coefficient": 1,
+            "correlator": 0.707104259844,
+            "correlatorFormula": "E=2*P(opposite)-1=cos(a-b)",
+            "id": "E(a1,b0)",
+            "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0",
+            "oppositeOutcomeProbability": 0.853552129922,
+            "probabilityFormula": "P(opposite)=cos((a-b)/2)^2",
+            "sameOutcomeProbability": 0.146446555208
+          },
+          {
+            "anglesRadians": {
+              "a": 1.570796326795,
+              "b": -0.785398163397,
+              "delta": 2.356194490192
+            },
+            "basisProbabilities": {
+              "|00>": 0.426776064961,
+              "|01>": 0.073223277604,
+              "|10>": 0.073223277604,
+              "|11>": 0.426776064961
+            },
+            "coefficient": -1,
+            "correlator": -0.707106889584,
+            "correlatorFormula": "E=2*P(opposite)-1=cos(a-b)",
+            "id": "E(a1,b1)",
+            "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1",
+            "oppositeOutcomeProbability": 0.146446555208,
+            "probabilityFormula": "P(opposite)=cos((a-b)/2)^2",
+            "sameOutcomeProbability": 0.853552129922
+          }
+        ],
+        "id": "BellSinglet CHSH corners",
+        "s": 2.828419669116,
+        "scope": "Q# pins the four observable singlet corners; Tsirelson maximality is cited/proved separately, not sampled here.",
+        "state": "Singlet"
       }
     },
     "bellCoincidence": [
@@ -395,22 +495,26 @@
       {
         "checks": [
           "AmplitudeEmu.merge",
-          "AmplitudeEmu.intensity"
+          "AmplitudeEmu.intensity",
+          "Q# dumped unitary first column"
         ],
         "id": "mach-zehnder-open",
         "operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
         "probabilities": {
-          "One": 0.5,
-          "Zero": 0.5
+          "One": 0.499999690551,
+          "Zero": 0.500000309449
         }
       },
       {
         "checks": [
           "AmplitudeEmu.merge",
-          "AmplitudeEmu.intensity"
+          "AmplitudeEmu.intensity",
+          "Q# dumped unitary first column"
         ],
+        "formula": "P(Zero)=cos(phase/2)^2; P(One)=sin(phase/2)^2",
         "id": "mach-zehnder-closed-zero-phase",
         "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+        "phaseRadians": 0.0,
         "probabilities": {
           "One": 0.0,
           "Zero": 1.0
@@ -420,15 +524,233 @@
       {
         "checks": [
           "AmplitudeEmu.merge",
-          "AmplitudeEmu.intensity"
+          "AmplitudeEmu.intensity",
+          "Q# dumped unitary first column"
         ],
+        "formula": "P(Zero)=cos(phase/2)^2; P(One)=sin(phase/2)^2",
+        "id": "mach-zehnder-closed-pi-over-3-phase",
+        "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase",
+        "phaseRadians": 1.047197551197,
+        "probabilities": {
+          "One": 0.250000699375,
+          "Zero": 0.749999300625
+        },
+        "visibility": 1.0
+      },
+      {
+        "checks": [
+          "AmplitudeEmu.merge",
+          "AmplitudeEmu.intensity",
+          "Q# dumped unitary first column"
+        ],
+        "formula": "P(Zero)=cos(phase/2)^2; P(One)=sin(phase/2)^2",
+        "id": "mach-zehnder-closed-pi-over-2-phase",
+        "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase",
+        "phaseRadians": 1.570796326795,
+        "probabilities": {
+          "One": 0.499999690551,
+          "Zero": 0.500000309449
+        },
+        "visibility": 1.0
+      },
+      {
+        "checks": [
+          "AmplitudeEmu.merge",
+          "AmplitudeEmu.intensity",
+          "Q# dumped unitary first column"
+        ],
+        "formula": "P(Zero)=cos(phase/2)^2; P(One)=sin(phase/2)^2",
+        "id": "mach-zehnder-closed-two-pi-over-3-phase",
+        "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase",
+        "phaseRadians": 2.094395102393,
+        "probabilities": {
+          "One": 0.75,
+          "Zero": 0.25
+        },
+        "visibility": 1.0
+      },
+      {
+        "checks": [
+          "AmplitudeEmu.merge",
+          "AmplitudeEmu.intensity",
+          "Q# dumped unitary first column"
+        ],
+        "formula": "P(Zero)=cos(phase/2)^2; P(One)=sin(phase/2)^2",
         "id": "mach-zehnder-closed-pi-phase",
         "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
+        "phaseRadians": 3.14159265359,
         "probabilities": {
           "One": 1.0,
           "Zero": 0.0
         },
         "visibility": 1.0
+      }
+    ],
+    "pauliAnticommutation": [
+      {
+        "checks": [
+          "QubitIso Pauli anticommutation",
+          "Cl3 basis anticommutation",
+          "AdinkraViz odd-face parity"
+        ],
+        "id": "X after Z = -(Z after X)",
+        "lhsMatrix": [
+          [
+            {
+              "imag": 0.0,
+              "real": 0.0
+            },
+            {
+              "imag": 0.0,
+              "real": -1.0
+            }
+          ],
+          [
+            {
+              "imag": 0.0,
+              "real": 1.0
+            },
+            {
+              "imag": 0.0,
+              "real": 0.0
+            }
+          ]
+        ],
+        "lhsOperation": "Zeta.ReferenceOracle.ApplyPauliXAfterZ",
+        "relation": "lhsMatrix = -rhsMatrix",
+        "rhsMatrix": [
+          [
+            {
+              "imag": 0.0,
+              "real": 0.0
+            },
+            {
+              "imag": 0.0,
+              "real": 1.0
+            }
+          ],
+          [
+            {
+              "imag": 0.0,
+              "real": -1.0
+            },
+            {
+              "imag": 0.0,
+              "real": 0.0
+            }
+          ]
+        ],
+        "rhsOperation": "Zeta.ReferenceOracle.ApplyPauliZAfterX"
+      },
+      {
+        "checks": [
+          "QubitIso Pauli anticommutation",
+          "Cl3 basis anticommutation",
+          "AdinkraViz odd-face parity"
+        ],
+        "id": "X after Y = -(Y after X)",
+        "lhsMatrix": [
+          [
+            {
+              "imag": 1.0,
+              "real": 0.0
+            },
+            {
+              "imag": 0.0,
+              "real": 0.0
+            }
+          ],
+          [
+            {
+              "imag": 0.0,
+              "real": 0.0
+            },
+            {
+              "imag": -1.0,
+              "real": 0.0
+            }
+          ]
+        ],
+        "lhsOperation": "Zeta.ReferenceOracle.ApplyPauliXAfterY",
+        "relation": "lhsMatrix = -rhsMatrix",
+        "rhsMatrix": [
+          [
+            {
+              "imag": -1.0,
+              "real": 0.0
+            },
+            {
+              "imag": 0.0,
+              "real": 0.0
+            }
+          ],
+          [
+            {
+              "imag": 0.0,
+              "real": 0.0
+            },
+            {
+              "imag": 1.0,
+              "real": 0.0
+            }
+          ]
+        ],
+        "rhsOperation": "Zeta.ReferenceOracle.ApplyPauliYAfterX"
+      },
+      {
+        "checks": [
+          "QubitIso Pauli anticommutation",
+          "Cl3 basis anticommutation",
+          "AdinkraViz odd-face parity"
+        ],
+        "id": "Y after Z = -(Z after Y)",
+        "lhsMatrix": [
+          [
+            {
+              "imag": 0.0,
+              "real": 0.0
+            },
+            {
+              "imag": 1.0,
+              "real": 0.0
+            }
+          ],
+          [
+            {
+              "imag": 1.0,
+              "real": 0.0
+            },
+            {
+              "imag": 0.0,
+              "real": 0.0
+            }
+          ]
+        ],
+        "lhsOperation": "Zeta.ReferenceOracle.ApplyPauliYAfterZ",
+        "relation": "lhsMatrix = -rhsMatrix",
+        "rhsMatrix": [
+          [
+            {
+              "imag": 0.0,
+              "real": 0.0
+            },
+            {
+              "imag": -1.0,
+              "real": 0.0
+            }
+          ],
+          [
+            {
+              "imag": -1.0,
+              "real": 0.0
+            },
+            {
+              "imag": 0.0,
+              "real": 0.0
+            }
+          ]
+        ],
+        "rhsOperation": "Zeta.ReferenceOracle.ApplyPauliZAfterY"
       }
     ],
     "singleQubitMeasurement": [

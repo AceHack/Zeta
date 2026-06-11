@@ -56,6 +56,18 @@ def dump_operation(name: str, qubits: int) -> list[list[complex]]:
     return qsharp.dump_operation(full_name, qubits)
 
 
+def single_qubit_probs_from_operation(name: str) -> dict[str, float]:
+    matrix = dump_operation(name, 1)
+    zero_amp = matrix[0][0]
+    one_amp = matrix[1][0]
+    return single_qubit_probs(abs(zero_amp) ** 2)
+
+
+def two_qubit_probs_from_operation(name: str) -> list[float]:
+    matrix = dump_operation(name, 2)
+    return [clean_float(abs(matrix[row][0]) ** 2) for row in range(4)]
+
+
 def chsh(a: float, ap: float, b: float, bp: float) -> dict[str, Any]:
     eab = math.cos(a - b)
     eabp = math.cos(a - bp)
@@ -78,6 +90,64 @@ def chsh(a: float, ap: float, b: float, bp: float) -> dict[str, Any]:
         "s": clean_float(s),
         "tsirelson": clean_float(2.0 * math.sqrt(2.0)),
         "classicalBound": 2.0,
+    }
+
+
+def singlet_chsh_corner(
+    id: str,
+    operation: str,
+    a: float,
+    b: float,
+    coefficient: int,
+) -> dict[str, Any]:
+    basis_probs = two_qubit_probs_from_operation(operation)
+    opposite = clean_float(basis_probs[1] + basis_probs[2])
+    same = clean_float(basis_probs[0] + basis_probs[3])
+    return {
+        "id": id,
+        "operation": f"Zeta.ReferenceOracle.{operation}",
+        "anglesRadians": {
+            "a": clean_float(a),
+            "b": clean_float(b),
+            "delta": clean_float(a - b),
+        },
+        "basisProbabilities": {
+            "|00>": basis_probs[0],
+            "|01>": basis_probs[1],
+            "|10>": basis_probs[2],
+            "|11>": basis_probs[3],
+        },
+        "oppositeOutcomeProbability": opposite,
+        "sameOutcomeProbability": same,
+        "correlator": clean_float((2.0 * opposite) - 1.0),
+        "coefficient": coefficient,
+        "probabilityFormula": "P(opposite)=cos((a-b)/2)^2",
+        "correlatorFormula": "E=2*P(opposite)-1=cos(a-b)",
+    }
+
+
+def singlet_chsh_corners() -> dict[str, Any]:
+    a0 = 0.0
+    a1 = math.pi / 2.0
+    b0 = math.pi / 4.0
+    b1 = -math.pi / 4.0
+    corners = [
+        singlet_chsh_corner("E(a0,b0)", "ApplyBellSingletChshA0B0", a0, b0, 1),
+        singlet_chsh_corner("E(a0,b1)", "ApplyBellSingletChshA0B1", a0, b1, 1),
+        singlet_chsh_corner("E(a1,b0)", "ApplyBellSingletChshA1B0", a1, b0, 1),
+        singlet_chsh_corner("E(a1,b1)", "ApplyBellSingletChshA1B1", a1, b1, -1),
+    ]
+    s = sum(corner["coefficient"] * corner["correlator"] for corner in corners)
+    return {
+        "id": "BellSinglet CHSH corners",
+        "state": "Singlet",
+        "combination": "E(a0,b0)+E(a0,b1)+E(a1,b0)-E(a1,b1)",
+        "corners": corners,
+        "s": clean_float(s),
+        "analytic": clean_float(2.0 * math.sqrt(2.0)),
+        "classicalBound": 2.0,
+        "checks": ["TimeGen.chsh", "BellTest.correlation", "Q# singlet analyzer probabilities"],
+        "scope": "Q# pins the four observable singlet corners; Tsirelson maximality is cited/proved separately, not sampled here.",
     }
 
 
@@ -106,6 +176,38 @@ def coincidence_case(
         "probability": clean_float(coincidence(a, b)),
         "formula": "cos((a-b)/2)^2",
         "checks": ["BellTest.coincidenceProbability", "PhasorEndurance.overlap"],
+    }
+
+
+def interference_case(
+    id: str,
+    operation: str,
+    phase: float | None,
+    visibility: float | None = None,
+) -> dict[str, Any]:
+    item: dict[str, Any] = {
+        "id": id,
+        "operation": f"Zeta.ReferenceOracle.{operation}",
+        "probabilities": single_qubit_probs_from_operation(operation),
+        "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity", "Q# dumped unitary first column"],
+    }
+    if phase is not None:
+        item["phaseRadians"] = clean_float(phase)
+        item["formula"] = "P(Zero)=cos(phase/2)^2; P(One)=sin(phase/2)^2"
+    if visibility is not None:
+        item["visibility"] = visibility
+    return item
+
+
+def pauli_anticommutation_case(id: str, lhs: str, rhs: str) -> dict[str, Any]:
+    return {
+        "id": id,
+        "lhsOperation": f"Zeta.ReferenceOracle.{lhs}",
+        "rhsOperation": f"Zeta.ReferenceOracle.{rhs}",
+        "lhsMatrix": matrix_to_json(dump_operation(lhs, 1)),
+        "rhsMatrix": matrix_to_json(dump_operation(rhs, 1)),
+        "relation": "lhsMatrix = -rhsMatrix",
+        "checks": ["QubitIso Pauli anticommutation", "Cl3 basis anticommutation", "AdinkraViz odd-face parity"],
     }
 
 
@@ -174,6 +276,7 @@ def build_vectors() -> dict[str, Any]:
                 },
                 "correlatorFormula": "E(a,b)=cos(a-b)",
                 "canonical": chsh(0.0, math.pi / 2.0, math.pi / 4.0, 3.0 * math.pi / 4.0),
+                "singletCorners": singlet_chsh_corners(),
                 "checks": ["BellTest.correlation", "BellTest.chsh", "BellTest.TsirelsonBound"],
             },
             "bellCoincidence": [
@@ -211,26 +314,32 @@ def build_vectors() -> dict[str, Any]:
                 ),
             ],
             "interferenceVisibility": [
-                {
-                    "id": "mach-zehnder-open",
-                    "operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
-                    "probabilities": single_qubit_probs(0.5),
-                    "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
-                },
-                {
-                    "id": "mach-zehnder-closed-zero-phase",
-                    "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
-                    "probabilities": single_qubit_probs(1.0),
-                    "visibility": 1.0,
-                    "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
-                },
-                {
-                    "id": "mach-zehnder-closed-pi-phase",
-                    "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
-                    "probabilities": single_qubit_probs(0.0),
-                    "visibility": 1.0,
-                    "checks": ["AmplitudeEmu.merge", "AmplitudeEmu.intensity"],
-                },
+                interference_case("mach-zehnder-open", "ApplyMachZehnderOpen", None),
+                interference_case("mach-zehnder-closed-zero-phase", "ApplyMachZehnderClosedZeroPhase", 0.0, 1.0),
+                interference_case(
+                    "mach-zehnder-closed-pi-over-3-phase",
+                    "ApplyMachZehnderClosedPiOver3Phase",
+                    math.pi / 3.0,
+                    1.0,
+                ),
+                interference_case(
+                    "mach-zehnder-closed-pi-over-2-phase",
+                    "ApplyMachZehnderClosedPiOver2Phase",
+                    math.pi / 2.0,
+                    1.0,
+                ),
+                interference_case(
+                    "mach-zehnder-closed-two-pi-over-3-phase",
+                    "ApplyMachZehnderClosedTwoPiOver3Phase",
+                    2.0 * math.pi / 3.0,
+                    1.0,
+                ),
+                interference_case("mach-zehnder-closed-pi-phase", "ApplyMachZehnderClosedPiPhase", math.pi, 1.0),
+            ],
+            "pauliAnticommutation": [
+                pauli_anticommutation_case("X after Z = -(Z after X)", "ApplyPauliXAfterZ", "ApplyPauliZAfterX"),
+                pauli_anticommutation_case("X after Y = -(Y after X)", "ApplyPauliXAfterY", "ApplyPauliYAfterX"),
+                pauli_anticommutation_case("Y after Z = -(Z after Y)", "ApplyPauliYAfterZ", "ApplyPauliZAfterY"),
             ],
         },
     }

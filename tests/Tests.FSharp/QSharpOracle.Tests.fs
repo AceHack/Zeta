@@ -7,10 +7,14 @@ open global.Xunit
 open Zeta.Core
 
 let private tolerance = 1e-6
+let private qsharpDumpTolerance = 1e-5
 
 let private c = ImaginaryStack.complex
 
 let private real (value: float) : Complex = { Real = value; Imag = 0.0 }
+
+let private phase (angle: float) : Complex =
+    { Real = cos angle; Imag = sin angle }
 
 let private frame (seed: uint64) =
     Chip8Cow.create seed |> Chip8Cow.loadRom [| 0x60uy; byte seed |]
@@ -30,14 +34,20 @@ let private golden =
 
 let private vectors = golden.GetProperty("vectors")
 
-let private closeTo (expected: float) (actual: float) =
+let private closeToWithin (epsilon: float) (expected: float) (actual: float) =
     Assert.True(
-        abs (actual - expected) <= tolerance,
+        abs (actual - expected) <= epsilon,
         sprintf "Expected %.12f, got %.12f" expected actual)
 
+let private closeTo (expected: float) (actual: float) =
+    closeToWithin tolerance expected actual
+
+let private complexCloseToWithin (epsilon: float) (expected: Complex) (actual: Complex) =
+    closeToWithin epsilon expected.Real actual.Real
+    closeToWithin epsilon expected.Imag actual.Imag
+
 let private complexCloseTo (expected: Complex) (actual: Complex) =
-    closeTo expected.Real actual.Real
-    closeTo expected.Imag actual.Imag
+    complexCloseToWithin tolerance expected actual
 
 let private jsonComplex (element: JsonElement) : Complex =
     { Real = element.GetProperty("real").GetDouble()
@@ -62,6 +72,10 @@ let private interferenceCase (id: string) =
 
 let private bellCoincidenceCase (id: string) =
     vectors.GetProperty("bellCoincidence").EnumerateArray()
+    |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
+
+let private pauliAnticommutationCase (id: string) =
+    vectors.GetProperty("pauliAnticommutation").EnumerateArray()
     |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
 
 let private probabilities (case: JsonElement) =
@@ -180,6 +194,35 @@ let ``BellTest canonical CHSH observables match the Q# golden vector`` () =
     closeTo (canonical.GetProperty("tsirelson").GetDouble()) BellTest.TsirelsonBound
 
 [<Fact>]
+let ``TimeGen phasor CHSH matches Q# singlet corner observables and the analytic value`` () =
+    let singlet = vectors.GetProperty("bellChsh").GetProperty("singletCorners")
+    let corners = singlet.GetProperty("corners").EnumerateArray() |> Seq.toArray
+
+    Assert.Equal(4, corners.Length)
+    Assert.Contains("Tsirelson maximality is cited/proved separately", singlet.GetProperty("scope").GetString())
+
+    let mutable observedS = 0.0
+
+    for corner in corners do
+        let angles = corner.GetProperty("anglesRadians")
+        let a = angles.GetProperty("a").GetDouble()
+        let b = angles.GetProperty("b").GetDouble()
+        let expectedOpposite = corner.GetProperty("oppositeOutcomeProbability").GetDouble()
+        let expectedCorrelation = corner.GetProperty("correlator").GetDouble()
+        let coefficient = corner.GetProperty("coefficient").GetInt32()
+
+        closeToWithin qsharpDumpTolerance expectedOpposite (BellTest.coincidenceProbability a b)
+        closeToWithin qsharpDumpTolerance expectedCorrelation (BellTest.correlation a b)
+        observedS <- observedS + float coefficient * expectedCorrelation
+
+    let generator = TimeGen.mk "qsharp-singlet-corners" 1 0UL TimeGen.PhasorTsirelson
+    let analytic = singlet.GetProperty("analytic").GetDouble()
+
+    closeTo analytic (TimeGen.chsh generator 1)
+    closeToWithin qsharpDumpTolerance analytic observedS
+    closeToWithin qsharpDumpTolerance analytic (singlet.GetProperty("s").GetDouble())
+
+[<Fact>]
 let ``BellState PhiPlus preparation matches the Q# two-qubit oracle`` () =
     let bell = vectors.GetProperty("bellChsh")
     let prepared = BellState.phiPlus ()
@@ -237,6 +280,15 @@ let ``AmplitudeEmu interference observables match the Q# Mach-Zehnder treaty`` (
     let half = real 0.5
     let invSqrt2 = real (1.0 / sqrt 2.0)
 
+    let closedInterferometer (phi: float) : AmplitudeEmu.Amp =
+        let phase0 = phase (-phi / 2.0)
+        let phase1 = phase (phi / 2.0)
+
+        [ detectorZero, c.Mul(half, phase0)
+          detectorZero, c.Mul(half, phase1)
+          detectorOne, c.Mul(half, phase0)
+          detectorOne, c.Negate(c.Mul(half, phase1)) ]
+
     let assertCase id (amp: AmplitudeEmu.Amp) =
         let expectedZero, expectedOne = interferenceCase id |> probabilities
         let actual = amp |> AmplitudeEmu.merge |> AmplitudeEmu.bornProb
@@ -248,16 +300,28 @@ let ``AmplitudeEmu interference observables match the Q# Mach-Zehnder treaty`` (
         [ detectorZero, invSqrt2
           detectorOne, invSqrt2 ]
 
-    assertCase
-        "mach-zehnder-closed-zero-phase"
-        [ detectorZero, half
-          detectorZero, half
-          detectorOne, half
-          detectorOne, c.Negate half ]
+    [ "mach-zehnder-closed-zero-phase", 0.0
+      "mach-zehnder-closed-pi-over-3-phase", Math.PI / 3.0
+      "mach-zehnder-closed-pi-over-2-phase", Math.PI / 2.0
+      "mach-zehnder-closed-two-pi-over-3-phase", 2.0 * Math.PI / 3.0
+      "mach-zehnder-closed-pi-phase", Math.PI ]
+    |> List.iter (fun (id, phi) -> assertCase id (closedInterferometer phi))
 
-    assertCase
-        "mach-zehnder-closed-pi-phase"
-        [ detectorZero, half
-          detectorZero, c.Negate half
-          detectorOne, half
-          detectorOne, half ]
+[<Fact>]
+let ``Q# Pauli products pin the hardware-side anticommutation signs`` () =
+    let assertCase id =
+        let item = pauliAnticommutationCase id
+        Assert.Equal("lhsMatrix = -rhsMatrix", item.GetProperty("relation").GetString())
+
+        let lhs = item.GetProperty("lhsMatrix")
+        let rhs = item.GetProperty("rhsMatrix")
+
+        for row in 0..1 do
+            for col in 0..1 do
+                complexCloseTo
+                    (matrixEntry lhs row col)
+                    (c.Negate(matrixEntry rhs row col))
+
+    assertCase "X after Z = -(Z after X)"
+    assertCase "X after Y = -(Y after X)"
+    assertCase "Y after Z = -(Z after Y)"

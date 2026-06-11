@@ -14,9 +14,14 @@ LAW, with the break stated in both places (their edges are involutions; our gene
 
 ## "Are they inverse in some way?" — no: a QUOTIENT
 
-The precise relation: adinkra parity is braid memory **mod 2**. Z (crossing order, Artin) → Z/2
-(the dashing bit, Gates): order forgotten, parity kept. A projection, not an inverse — the lens
+The precise relation Soraya signs is the unique homomorphism χ: B₃ → Z/2 with
+χ(σᵢ^±1)=1: abelianization/writhe reduced mod 2, coinciding with the permutation's
+sign character. Order is forgotten, parity is kept. A projection, not an inverse — the lens
 that completes the flow is the map that forgets exactly the register the sink cannot hear.
+
+Do not conflate this with per-pair crossing parity: that is a different, finer invariant on pure
+braids. The adapter named `algebra.mod2` is the coarse sign/writhe projection unless a future
+cartridge explicitly asks for the finer pure-braid invariant.
 
 ## The GraphEdit lens — THE MISSING PIECE, working
 

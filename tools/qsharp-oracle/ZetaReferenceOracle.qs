@@ -71,6 +71,52 @@ namespace Zeta.ReferenceOracle {
         ApplyBellSingletAnalyzers(0.0, 3.141592653589793 / 4.0, qs);
     }
 
+    operation ApplyBellSingletChshA0B0(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyBellSingletAnalyzers(0.0, 3.141592653589793 / 4.0, qs);
+    }
+
+    operation ApplyBellSingletChshA0B1(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyBellSingletAnalyzers(0.0, -3.141592653589793 / 4.0, qs);
+    }
+
+    operation ApplyBellSingletChshA1B0(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyBellSingletAnalyzers(3.141592653589793 / 2.0, 3.141592653589793 / 4.0, qs);
+    }
+
+    operation ApplyBellSingletChshA1B1(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyBellSingletAnalyzers(3.141592653589793 / 2.0, -3.141592653589793 / 4.0, qs);
+    }
+
+    operation ApplyPauliXAfterZ(qs : Qubit[]) : Unit is Adj + Ctl {
+        Z(qs[0]);
+        X(qs[0]);
+    }
+
+    operation ApplyPauliZAfterX(qs : Qubit[]) : Unit is Adj + Ctl {
+        X(qs[0]);
+        Z(qs[0]);
+    }
+
+    operation ApplyPauliXAfterY(qs : Qubit[]) : Unit is Adj + Ctl {
+        Y(qs[0]);
+        X(qs[0]);
+    }
+
+    operation ApplyPauliYAfterX(qs : Qubit[]) : Unit is Adj + Ctl {
+        X(qs[0]);
+        Y(qs[0]);
+    }
+
+    operation ApplyPauliYAfterZ(qs : Qubit[]) : Unit is Adj + Ctl {
+        Z(qs[0]);
+        Y(qs[0]);
+    }
+
+    operation ApplyPauliZAfterY(qs : Qubit[]) : Unit is Adj + Ctl {
+        Y(qs[0]);
+        Z(qs[0]);
+    }
+
     operation ApplyMachZehnderOpen(qs : Qubit[]) : Unit is Adj + Ctl {
         H(qs[0]);
     }
@@ -83,6 +129,24 @@ namespace Zeta.ReferenceOracle {
     operation ApplyMachZehnderClosedPiPhase(qs : Qubit[]) : Unit is Adj + Ctl {
         H(qs[0]);
         Z(qs[0]);
+        H(qs[0]);
+    }
+
+    operation ApplyMachZehnderClosedPiOver3Phase(qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        Rz(3.141592653589793 / 3.0, qs[0]);
+        H(qs[0]);
+    }
+
+    operation ApplyMachZehnderClosedPiOver2Phase(qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        Rz(3.141592653589793 / 2.0, qs[0]);
+        H(qs[0]);
+    }
+
+    operation ApplyMachZehnderClosedTwoPiOver3Phase(qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        Rz(2.0 * 3.141592653589793 / 3.0, qs[0]);
         H(qs[0]);
     }
 }

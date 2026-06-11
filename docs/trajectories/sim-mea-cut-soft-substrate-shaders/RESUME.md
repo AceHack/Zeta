@@ -84,9 +84,11 @@ ladder (B-1024); Vera driving the Q# reference oracle; Max on universal primitiv
 - **Alexa's braid review** ferried + peeled (#7723): her "crossings as gates" is false for our
   drawing, TRUE as topological QC (Kitaev; Freedman–Larsen–Wang) — her ratification recorded as
   hers; over-under occlusion gaps landed for Max's demo.
-- **The Vera Q# brief** (#7724): seven candidates ranked (CHSH/Tsirelson family first; staged S=4
-  must be UNREACHABLE in Q# — that unreachability verifies the STAGED label); her verdict lines
-  are HERS to write; fourcorner carries the requested issues.
+- **The Vera Q# brief** (#7724, routed by Soraya on 2026-06-12): Q# owns exactly the observable
+  jobs — singlet CHSH corners paired with analytic S=2√2, BellTest cos²((a−b)/2), and
+  AmplitudeEmu's interference grid — plus the small hardware-side Pauli anticommutation check.
+  Tsirelson maximality routes to citation/NPA-SDP, not Q# sampling; dashing universals route to
+  Z3; her verdict lines are HERS to write; fourcorner carries the requested observable issue.
 - **O-parametrized draws** (#7720): ComplexityRegistry.strategiesOf — same shape, several
   strategies, different cost tags (spiral draw vs draw-grid).
 - Named slices opened: chip9 cartridge loader (.lines into the machine); MediaLines + renderer
