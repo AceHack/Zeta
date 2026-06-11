@@ -166,6 +166,8 @@
     <Compile Include="AnimFlow.Tests.fs" />
     <Compile Include="PixelLens.Tests.fs" />
     <Compile Include="Chip9SelfTrace.Tests.fs" />
+    <Compile Include="SoftLens.Tests.fs" />
+    <Compile Include="WeaveFold.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />
