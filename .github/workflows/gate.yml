@@ -1133,7 +1133,7 @@ jobs:
     # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
     # oracle via tools/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
     # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
-    # TS golden-vector oracle) plus `bun test tools/ace/` and the Q# observable fixture test. The
+    # TS golden-vector oracle) plus `bun test tools/ace/` and the Q# source-oracle tests. The
     # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
     # npm deps (z3-solver) + uses the runner node for its solver Z3 differential. This is the
     # ENFORCEMENT half of the canonical-primitive gate (proof + 4-language byte-lock); the proof half
@@ -1187,8 +1187,8 @@ jobs:
       - name: Ace package-manager suite
         run: bun test tools/ace/
 
-      - name: Q# reference-observable golden vectors
-        run: bun test tools/qsharp-oracle/qsharp-golden.test.ts
+      - name: Q# source-owned reference oracles
+        run: bun test src/Core.QSharp.ReferenceOracle/qsharp-golden.test.ts src/Core.QSharp.ReferenceOracle/quantum-circuit.test.ts
 
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun tools/ci/cross-verify-all.ts

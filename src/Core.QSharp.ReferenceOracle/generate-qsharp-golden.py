@@ -25,8 +25,8 @@ except ImportError as exc:  # pragma: no cover - exercised by opt-in env shape.
 
 
 ROOT = Path(__file__).resolve().parents[2]
-QSHARP_SOURCE = ROOT / "tools" / "qsharp-oracle" / "ZetaReferenceOracle.qs"
-DEFAULT_OUTPUT = ROOT / "tools" / "qsharp-oracle" / "qsharp-golden.json"
+QSHARP_SOURCE = ROOT / "src" / "Core.QSharp.ReferenceOracle" / "ZetaReferenceOracle.qs"
+DEFAULT_OUTPUT = ROOT / "src" / "Core.QSharp.ReferenceOracle" / "qsharp-golden.json"
 
 
 def clean_float(value: float) -> float:
@@ -233,8 +233,8 @@ def build_vectors() -> dict[str, Any]:
 
     return {
         "schema": "zeta.qsharp.reference-observables.v1",
-        "generatedBy": "tools/qsharp-oracle/generate-qsharp-golden.py",
-        "qsharpSource": "tools/qsharp-oracle/ZetaReferenceOracle.qs",
+        "generatedBy": "src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py",
+        "qsharpSource": "src/Core.QSharp.ReferenceOracle/ZetaReferenceOracle.qs",
         "qdkPackage": "qdk[azure]==1.29.1",
         "qsharpPackage": "qsharp==1.29.1",
         "observableContract": "Compare measurable observables, not raw state vectors; finite BigFloat rooms converge toward these continuous-amplitude references as precision increases.",

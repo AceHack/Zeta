@@ -17,7 +17,7 @@ Regenerate after changing the Q# source:
 
 ```bash
 ZETA_INSTALL_QUANTUM=1 tools/setup/install.sh
-.venv/bin/python tools/qsharp-oracle/generate-qsharp-golden.py
+.venv/bin/python src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py
 ```
 
 The contract is observable-first: compare probabilities, CHSH correlators, and

@@ -1,9 +1,9 @@
 {
-  "generatedBy": "tools/qsharp-oracle/generate-qsharp-golden.py",
+  "generatedBy": "src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py",
   "observableContract": "Compare measurable observables, not raw state vectors; finite BigFloat rooms converge toward these continuous-amplitude references as precision increases.",
   "qdkPackage": "qdk[azure]==1.29.1",
   "qsharpPackage": "qsharp==1.29.1",
-  "qsharpSource": "tools/qsharp-oracle/ZetaReferenceOracle.qs",
+  "qsharpSource": "src/Core.QSharp.ReferenceOracle/ZetaReferenceOracle.qs",
   "schema": "zeta.qsharp.reference-observables.v1",
   "vectors": {
     "bellChsh": {

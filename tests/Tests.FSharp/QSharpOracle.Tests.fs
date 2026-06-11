@@ -20,7 +20,7 @@ let private frame (seed: uint64) =
     Chip8Cow.create seed |> Chip8Cow.loadRom [| 0x60uy; byte seed |]
 
 let private goldenRelativePath =
-    Path.Combine("tools", "qsharp-oracle", "qsharp-golden.json")
+    Path.Combine("src", "Core.QSharp.ReferenceOracle", "qsharp-golden.json")
 
 let private isRepoRoot (path: string) =
     File.Exists(Path.Combine(path, "Zeta.sln"))
@@ -149,7 +149,7 @@ let private probabilityFor frame probabilities =
 [<Fact>]
 let ``F# reads the committed Q# observable treaty without depending on QDK at test time`` () =
     Assert.Equal("zeta.qsharp.reference-observables.v1", golden.GetProperty("schema").GetString())
-    Assert.Equal("tools/qsharp-oracle/ZetaReferenceOracle.qs", golden.GetProperty("qsharpSource").GetString())
+    Assert.Equal("src/Core.QSharp.ReferenceOracle/ZetaReferenceOracle.qs", golden.GetProperty("qsharpSource").GetString())
     Assert.Equal("qsharp==1.29.1", golden.GetProperty("qsharpPackage").GetString())
 
 [<Fact>]

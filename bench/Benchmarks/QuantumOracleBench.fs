@@ -38,7 +38,7 @@ type QuantumOracleOps() =
                 |> Chip8Cow.loadRom [| 0x60uy; byte i |])
 
         let root = QuantumOracleOps.FindRepoRoot(DirectoryInfo(Environment.CurrentDirectory))
-        let path = Path.Combine(root, "tools", "qsharp-oracle", "qsharp-golden.json")
+        let path = Path.Combine(root, "src", "Core.QSharp.ReferenceOracle", "qsharp-golden.json")
         this.goldenBytes <- File.ReadAllBytes(path)
 
     static member FindRepoRoot(dir: DirectoryInfo) =

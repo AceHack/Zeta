@@ -1,8 +1,16 @@
 import { expect, test } from "bun:test";
 import golden from "./qsharp-golden.json";
 
-type Probabilities = { Zero: number; One: number };
-type Complex = { real: number; imag: number };
+interface Probabilities {
+  readonly Zero: number;
+  readonly One: number;
+}
+
+interface Complex {
+  readonly real: number;
+  readonly imag: number;
+}
+
 type Matrix = Complex[][];
 
 const tolerance = 1e-6;
@@ -17,17 +25,18 @@ function closeComplexTo(actual: Complex, expected: Complex, epsilon = tolerance)
   closeTo(actual.imag, expected.imag, epsilon);
 }
 
+function expectDefined<T>(value: T | undefined, label: string): T {
+  expect(value, label).toBeDefined();
+  return value as T;
+}
+
 function matrixRow(matrix: Matrix, row: number): Complex[] {
-  const rowValues = matrix[row];
-  expect(rowValues).toBeDefined();
-  return rowValues as Complex[];
+  return expectDefined(matrix[row], `missing matrix row ${String(row)}`);
 }
 
 function matrixAt(matrix: Matrix, row: number, col: number): Complex {
   const rowValues = matrixRow(matrix, row);
-  const value = rowValues?.[col];
-  expect(value).toBeDefined();
-  return value as Complex;
+  return expectDefined(rowValues[col], `missing matrix cell ${String(row)},${String(col)}`);
 }
 
 function probabilitySum(probabilities: Probabilities) {
@@ -36,7 +45,7 @@ function probabilitySum(probabilities: Probabilities) {
 
 test("Q# golden fixture exposes the observable treaty", () => {
   expect(golden.schema).toBe("zeta.qsharp.reference-observables.v1");
-  expect(golden.qsharpSource).toBe("tools/qsharp-oracle/ZetaReferenceOracle.qs");
+  expect(golden.qsharpSource).toBe("src/Core.QSharp.ReferenceOracle/ZetaReferenceOracle.qs");
   expect(golden.qdkPackage).toBe("qdk[azure]==1.29.1");
   expect(golden.qsharpPackage).toBe("qsharp==1.29.1");
 });
@@ -44,17 +53,17 @@ test("Q# golden fixture exposes the observable treaty", () => {
 test("single-qubit measurement observables match textbook probabilities", () => {
   const cases = new Map(golden.vectors.singleQubitMeasurement.map((v) => [v.id, v]));
 
-  const h = cases.get("H|0>")?.probabilities as Probabilities;
+  const h = expectDefined(cases.get("H|0>"), "H|0>").probabilities;
   closeTo(h.Zero, 0.5);
   closeTo(h.One, 0.5);
   closeTo(probabilitySum(h), 1);
 
-  const ryPiOver3 = cases.get("Ry(pi/3)|0>")?.probabilities as Probabilities;
+  const ryPiOver3 = expectDefined(cases.get("Ry(pi/3)|0>"), "Ry(pi/3)|0>").probabilities;
   closeTo(ryPiOver3.Zero, 0.75);
   closeTo(ryPiOver3.One, 0.25);
   closeTo(probabilitySum(ryPiOver3), 1);
 
-  const ryPiOver2 = cases.get("Ry(pi/2)|0>")?.probabilities as Probabilities;
+  const ryPiOver2 = expectDefined(cases.get("Ry(pi/2)|0>"), "Ry(pi/2)|0>").probabilities;
   closeTo(ryPiOver2.Zero, 0.5);
   closeTo(ryPiOver2.One, 0.5);
   closeTo(probabilitySum(ryPiOver2), 1);
@@ -78,54 +87,63 @@ test("Bell/CHSH vector pins the canonical correlators and singlet corner observa
   closeTo(singlet.s, singlet.analytic, qsharpDumpTolerance);
 
   const cornerMap = new Map(singlet.corners.map((v) => [v.id, v]));
-  closeTo(cornerMap.get("E(a0,b0)")?.correlator as number, Math.SQRT1_2, qsharpDumpTolerance);
-  closeTo(cornerMap.get("E(a0,b1)")?.correlator as number, Math.SQRT1_2, qsharpDumpTolerance);
-  closeTo(cornerMap.get("E(a1,b0)")?.correlator as number, Math.SQRT1_2, qsharpDumpTolerance);
-  closeTo(cornerMap.get("E(a1,b1)")?.correlator as number, -Math.SQRT1_2, qsharpDumpTolerance);
+  closeTo(expectDefined(cornerMap.get("E(a0,b0)"), "E(a0,b0)").correlator, Math.SQRT1_2, qsharpDumpTolerance);
+  closeTo(expectDefined(cornerMap.get("E(a0,b1)"), "E(a0,b1)").correlator, Math.SQRT1_2, qsharpDumpTolerance);
+  closeTo(expectDefined(cornerMap.get("E(a1,b0)"), "E(a1,b0)").correlator, Math.SQRT1_2, qsharpDumpTolerance);
+  closeTo(expectDefined(cornerMap.get("E(a1,b1)"), "E(a1,b1)").correlator, -Math.SQRT1_2, qsharpDumpTolerance);
 });
 
 test("Bell coincidence observables pin PhiPlus and singlet outcome conventions", () => {
   const cases = new Map(golden.vectors.bellCoincidence.map((v) => [v.id, v]));
 
-  const phiPiOver4 = cases.get("PhiPlus same-outcome a=0 b=pi/4");
-  closeTo(phiPiOver4?.probability as number, Math.cos(Math.PI / 8) ** 2);
-  expect(phiPiOver4?.event).toBe("sameOutcome");
+  const phiPiOver4 = expectDefined(cases.get("PhiPlus same-outcome a=0 b=pi/4"), "PhiPlus pi/4");
+  closeTo(phiPiOver4.probability, Math.cos(Math.PI / 8) ** 2);
+  expect(phiPiOver4.event).toBe("sameOutcome");
 
-  const singletPiOver4 = cases.get("Singlet opposite-outcome a=0 b=pi/4");
-  closeTo(singletPiOver4?.probability as number, Math.cos(Math.PI / 8) ** 2);
-  expect(singletPiOver4?.event).toBe("oppositeOutcome");
+  const singletPiOver4 = expectDefined(cases.get("Singlet opposite-outcome a=0 b=pi/4"), "Singlet pi/4");
+  closeTo(singletPiOver4.probability, Math.cos(Math.PI / 8) ** 2);
+  expect(singletPiOver4.event).toBe("oppositeOutcome");
 
-  const phiPiOver2 = cases.get("PhiPlus same-outcome a=0 b=pi/2");
-  closeTo(phiPiOver2?.probability as number, 0.5);
+  const phiPiOver2 = expectDefined(cases.get("PhiPlus same-outcome a=0 b=pi/2"), "PhiPlus pi/2");
+  closeTo(phiPiOver2.probability, 0.5);
 
-  const phiPi = cases.get("PhiPlus same-outcome a=0 b=pi");
-  closeTo(phiPi?.probability as number, 0);
+  const phiPi = expectDefined(cases.get("PhiPlus same-outcome a=0 b=pi"), "PhiPlus pi");
+  closeTo(phiPi.probability, 0);
 });
 
 test("interference observables distinguish open, reinforce, and cancel cases", () => {
   const cases = new Map(golden.vectors.interferenceVisibility.map((v) => [v.id, v]));
 
-  const open = cases.get("mach-zehnder-open")?.probabilities as Probabilities;
+  const open = expectDefined(cases.get("mach-zehnder-open"), "mach-zehnder-open").probabilities;
   closeTo(open.Zero, 0.5, qsharpDumpTolerance);
   closeTo(open.One, 0.5, qsharpDumpTolerance);
 
-  const reinforced = cases.get("mach-zehnder-closed-zero-phase")?.probabilities as Probabilities;
+  const reinforced = expectDefined(cases.get("mach-zehnder-closed-zero-phase"), "mach-zehnder-zero").probabilities;
   closeTo(reinforced.Zero, 1);
   closeTo(reinforced.One, 0);
 
-  const piOver3 = cases.get("mach-zehnder-closed-pi-over-3-phase")?.probabilities as Probabilities;
+  const piOver3 = expectDefined(
+    cases.get("mach-zehnder-closed-pi-over-3-phase"),
+    "mach-zehnder-pi-over-3",
+  ).probabilities;
   closeTo(piOver3.Zero, 0.75, qsharpDumpTolerance);
   closeTo(piOver3.One, 0.25, qsharpDumpTolerance);
 
-  const piOver2 = cases.get("mach-zehnder-closed-pi-over-2-phase")?.probabilities as Probabilities;
+  const piOver2 = expectDefined(
+    cases.get("mach-zehnder-closed-pi-over-2-phase"),
+    "mach-zehnder-pi-over-2",
+  ).probabilities;
   closeTo(piOver2.Zero, 0.5, qsharpDumpTolerance);
   closeTo(piOver2.One, 0.5, qsharpDumpTolerance);
 
-  const twoPiOver3 = cases.get("mach-zehnder-closed-two-pi-over-3-phase")?.probabilities as Probabilities;
+  const twoPiOver3 = expectDefined(
+    cases.get("mach-zehnder-closed-two-pi-over-3-phase"),
+    "mach-zehnder-two-pi-over-3",
+  ).probabilities;
   closeTo(twoPiOver3.Zero, 0.25, qsharpDumpTolerance);
   closeTo(twoPiOver3.One, 0.75, qsharpDumpTolerance);
 
-  const cancelled = cases.get("mach-zehnder-closed-pi-phase")?.probabilities as Probabilities;
+  const cancelled = expectDefined(cases.get("mach-zehnder-closed-pi-phase"), "mach-zehnder-pi").probabilities;
   closeTo(cancelled.Zero, 0);
   closeTo(cancelled.One, 1);
 });
