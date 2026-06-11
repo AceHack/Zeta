@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import QuantumCircuit from "quantum-circuit";
 import golden from "./qsharp-golden.json";
+import transcript from "./treaty-transcript.json";
 
 interface Complex {
   readonly real: number;
@@ -449,6 +450,48 @@ describe("quantum-circuit simulator (second observable oracle)", () => {
           closeComplexTo(lhsValue, { real: -rhsValue.real, imag: -rhsValue.imag }, qsharpDumpTolerance);
         }
       }
+    }
+  });
+
+  test("treaty transcript integrity: TS, Q#, and F#/Analytic values match within tolerance", () => {
+    expect(transcript.schema).toBe("zeta.qsharp.treaty-transcript.v1");
+
+    const t = 1e-5;
+
+    // Check CHSH corners
+    const chsh = transcript.jobs.chshCorners;
+    closeTo(chsh.sParameter.ts, chsh.sParameter.fsharpAnalytic, t);
+    closeTo(chsh.sParameter.ts, chsh.sParameter.qsharp, 1e-4);
+
+    for (const res of chsh.results) {
+      closeTo(res.ts.pOpposite, res.fsharpAnalytic.pOpposite, t);
+      closeTo(res.ts.pOpposite, res.qsharp.pOpposite, t);
+      closeTo(res.ts.correlator, res.fsharpAnalytic.correlator, t);
+      closeTo(res.ts.correlator, res.qsharp.correlator, t);
+
+      const qsharp = chsh.qsharpCircuits[res.id as keyof typeof chsh.qsharpCircuits];
+      expect(qsharp).toBeDefined();
+      expect(qsharp).toContain("operation Circuit()");
+    }
+
+    // Check Bell coincidence
+    for (const res of transcript.jobs.bellCoincidence.results) {
+      closeTo(res.ts, res.fsharpAnalytic, t);
+      closeTo(res.ts, res.qsharp, t);
+
+      const qsharp = transcript.jobs.bellCoincidence.qsharpCircuits[res.id as keyof typeof transcript.jobs.bellCoincidence.qsharpCircuits];
+      expect(qsharp).toBeDefined();
+      expect(qsharp).toContain("operation Circuit()");
+    }
+
+    // Check Interference visibility
+    for (const res of transcript.jobs.interferenceGrid.results) {
+      closeTo(res.ts.Zero, res.fsharpAnalytic.Zero, t);
+      closeTo(res.ts.Zero, res.qsharp.Zero, t);
+
+      const qsharp = transcript.jobs.interferenceGrid.qsharpCircuits[res.id as keyof typeof transcript.jobs.interferenceGrid.qsharpCircuits];
+      expect(qsharp).toBeDefined();
+      expect(qsharp).toContain("operation Circuit()");
     }
   });
 });

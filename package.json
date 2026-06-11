@@ -7,6 +7,7 @@
   },
   "scripts": {
     "tally:substrates": "bun ./tools/invariant-substrates/tally.ts",
+    "generate:transcript": "bun ./src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
     "lint:typescript": "eslint .",
     "lint:markdown": "markdownlint-cli2",
     "lint:css": "stylelint \"**/*.css\" --allow-empty-input",

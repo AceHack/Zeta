@@ -11,5 +11,7 @@ declare module "quantum-circuit" {
     probabilities(): readonly number[];
 
     run(): void;
+
+    exportToQSharp(): string;
   }
 }

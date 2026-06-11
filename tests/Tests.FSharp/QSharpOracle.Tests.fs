@@ -373,3 +373,136 @@ let ``Q# Pauli products pin the hardware-side anticommutation signs`` () =
     assertCase "X after Z = -(Z after X)"
     assertCase "X after Y = -(Y after X)"
     assertCase "Y after Z = -(Z after Y)"
+
+[<Fact>]
+let ``F# validates the TypeScript Q# treaty transcript`` () =
+    let transcriptRelativePath =
+        Path.Combine("src", "Core.QSharp.ReferenceOracle", "treaty-transcript.json")
+
+    let transcriptPath =
+        Path.Combine(root, transcriptRelativePath)
+
+    let transcript =
+        JsonDocument.Parse(File.ReadAllText(transcriptPath)).RootElement
+
+    Assert.Equal("zeta.qsharp.treaty-transcript.v1", transcript.GetProperty("schema").GetString())
+
+    let jobs = transcript.GetProperty("jobs")
+    
+    // 1. Validate CHSH Corners
+    let chsh = jobs.GetProperty("chshCorners")
+    let sParam = chsh.GetProperty("sParameter")
+    let sAnalytic = sParam.GetProperty("fsharpAnalytic").GetDouble()
+    let sTS = sParam.GetProperty("ts").GetDouble()
+    let sQSharp = sParam.GetProperty("qsharp").GetDouble()
+
+    // Assert S parameters are consistent within tolerances
+    closeTo sAnalytic sTS
+    closeToWithin 1e-4 sAnalytic sQSharp
+
+    let chshResults = chsh.GetProperty("results").EnumerateArray() |> Seq.toArray
+    Assert.Equal(4, chshResults.Length)
+
+    for res in chshResults do
+        let angles = res.GetProperty("angles")
+        let a = angles.GetProperty("a").GetDouble()
+        let b = angles.GetProperty("b").GetDouble()
+        
+        let ts = res.GetProperty("ts")
+        let tsOpposite = ts.GetProperty("pOpposite").GetDouble()
+        let tsCorrelator = ts.GetProperty("correlator").GetDouble()
+
+        let qs = res.GetProperty("qsharp")
+        let qsOpposite = qs.GetProperty("pOpposite").GetDouble()
+        let qsCorrelator = qs.GetProperty("correlator").GetDouble()
+
+        let fa = res.GetProperty("fsharpAnalytic")
+        let faOpposite = fa.GetProperty("pOpposite").GetDouble()
+        let faCorrelator = fa.GetProperty("correlator").GetDouble()
+
+        // Assert that the F# code values match the expected analytic values
+        closeTo faOpposite (BellTest.coincidenceProbability a b)
+        closeTo faCorrelator (BellTest.correlation a b)
+
+        // Assert that TS matches F# Analytic
+        closeToWithin 1e-5 tsOpposite faOpposite
+        closeToWithin 1e-5 tsCorrelator faCorrelator
+
+        // Assert that Q# matches F# Analytic
+        closeToWithin 1e-5 qsOpposite faOpposite
+        closeToWithin 1e-5 qsCorrelator faCorrelator
+
+    // 2. Validate Bell Coincidence
+    let coincidenceResults = jobs.GetProperty("bellCoincidence").GetProperty("results").EnumerateArray() |> Seq.toArray
+    for res in coincidenceResults do
+        let angles = res.GetProperty("angles")
+        let a = angles.GetProperty("a").GetDouble()
+        let b = angles.GetProperty("b").GetDouble()
+        let state = res.GetProperty("state").GetString()
+        let event = res.GetProperty("event").GetString()
+        
+        let tsProb = res.GetProperty("ts").GetDouble()
+        let qsProb = res.GetProperty("qsharp").GetDouble()
+        let faProb = res.GetProperty("fsharpAnalytic").GetDouble()
+
+        let fsharpProb =
+            if state = "Singlet" then
+                if event = "oppositeOutcome" then
+                    BellTest.coincidenceProbability a b
+                else
+                    1.0 - BellTest.coincidenceProbability a b
+            else // PhiPlus
+                if event = "sameOutcome" then
+                    BellTest.coincidenceProbability a b
+                else
+                    1.0 - BellTest.coincidenceProbability a b
+
+        closeTo faProb fsharpProb
+        closeToWithin 1e-5 tsProb faProb
+        closeToWithin 1e-5 qsProb faProb
+
+    // 3. Validate Interference Visibility
+    let detectorZero = frame 0UL
+    let detectorOne = frame 1UL
+    let half = real 0.5
+    let invSqrt2 = real (1.0 / sqrt 2.0)
+
+    let closedInterferometer (phi: float) : AmplitudeEmu.Amp =
+        let phase0 = phase (-phi / 2.0)
+        let phase1 = phase (phi / 2.0)
+
+        [ detectorZero, c.Mul(half, phase0)
+          detectorZero, c.Mul(half, phase1)
+          detectorOne, c.Mul(half, phase0)
+          detectorOne, c.Negate(c.Mul(half, phase1)) ]
+
+    let interferenceResults = jobs.GetProperty("interferenceGrid").GetProperty("results").EnumerateArray() |> Seq.toArray
+    for res in interferenceResults do
+        let phaseValEl = res.GetProperty("phase")
+        let isOpen = res.GetProperty("operation").GetString().EndsWith("Open")
+        
+        let tsZero = res.GetProperty("ts").GetProperty("Zero").GetDouble()
+        let tsOne = res.GetProperty("ts").GetProperty("One").GetDouble()
+        let qsZero = res.GetProperty("qsharp").GetProperty("Zero").GetDouble()
+        let qsOne = res.GetProperty("qsharp").GetProperty("One").GetDouble()
+        let faZero = res.GetProperty("fsharpAnalytic").GetProperty("Zero").GetDouble()
+        let faOne = res.GetProperty("fsharpAnalytic").GetProperty("One").GetDouble()
+
+        let amp =
+            if isOpen then
+                [ detectorZero, invSqrt2
+                  detectorOne, invSqrt2 ]
+            else
+                let phi = if phaseValEl.ValueKind = JsonValueKind.Null then 0.0 else phaseValEl.GetDouble()
+                closedInterferometer phi
+
+        let actual = amp |> AmplitudeEmu.merge |> AmplitudeEmu.bornProb
+        let fsharpZeroProb = probabilityFor detectorZero actual
+        let fsharpOneProb = probabilityFor detectorOne actual
+
+        closeTo faZero fsharpZeroProb
+        closeTo faOne fsharpOneProb
+        closeToWithin 1e-5 tsZero faZero
+        closeToWithin 1e-5 tsOne faOne
+        closeToWithin 1e-5 qsZero faZero
+        closeToWithin 1e-5 qsOne faOne

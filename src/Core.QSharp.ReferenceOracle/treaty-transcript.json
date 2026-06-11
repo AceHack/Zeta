@@ -1,0 +1,333 @@
+{
+  "schema": "zeta.qsharp.treaty-transcript.v1",
+  "metadata": {
+    "generatedBy": "src/Core.QSharp.ReferenceOracle/generate-treaty-transcript.ts",
+    "timestamp": "2026-06-11T19:47:38.182Z",
+    "tolerances": {
+      "chsh": 0.00001,
+      "coincidence": 0.00001,
+      "interference": 0.00001
+    }
+  },
+  "jobs": {
+    "chshCorners": {
+      "sParameter": {
+        "ts": 2.82842712474619,
+        "qsharp": 2.828419669116,
+        "fsharpAnalytic": 2.828427124746
+      },
+      "results": [
+        {
+          "id": "E(a0,b0)",
+          "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B0",
+          "angles": {
+            "a": 0,
+            "b": 0.785398163397,
+            "delta": -0.785398163397
+          },
+          "coefficient": 1,
+          "ts": {
+            "probabilities": {
+              "|00>": 0.07322330470328385,
+              "|01>": 0.42677669529671614,
+              "|10>": 0.42677669529671614,
+              "|11>": 0.07322330470328385
+            },
+            "pSame": 0.1464466094065677,
+            "pOpposite": 0.8535533905934323,
+            "correlator": 0.7071067811868645
+          },
+          "qsharp": {
+            "pSame": 0.146446555208,
+            "pOpposite": 0.853552129922,
+            "correlator": 0.707104259844
+          },
+          "fsharpAnalytic": {
+            "pSame": 0.14644660940656773,
+            "pOpposite": 0.8535533905934323,
+            "correlator": 0.7071067811868645
+          }
+        },
+        {
+          "id": "E(a0,b1)",
+          "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA0B1",
+          "angles": {
+            "a": 0,
+            "b": -0.785398163397,
+            "delta": 0.785398163397
+          },
+          "coefficient": 1,
+          "ts": {
+            "probabilities": {
+              "|00>": 0.07322330470328385,
+              "|01>": 0.42677669529671614,
+              "|10>": 0.42677669529671614,
+              "|11>": 0.07322330470328385
+            },
+            "pSame": 0.1464466094065677,
+            "pOpposite": 0.8535533905934323,
+            "correlator": 0.7071067811868645
+          },
+          "qsharp": {
+            "pSame": 0.146446555208,
+            "pOpposite": 0.853552129922,
+            "correlator": 0.707104259844
+          },
+          "fsharpAnalytic": {
+            "pSame": 0.14644660940656773,
+            "pOpposite": 0.8535533905934323,
+            "correlator": 0.7071067811868645
+          }
+        },
+        {
+          "id": "E(a1,b0)",
+          "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B0",
+          "angles": {
+            "a": 1.570796326795,
+            "b": 0.785398163397,
+            "delta": 0.7853981633980001
+          },
+          "coefficient": 1,
+          "ts": {
+            "probabilities": {
+              "|00>": 0.07322330470346067,
+              "|01>": 0.4267766952965393,
+              "|10>": 0.4267766952965393,
+              "|11>": 0.07322330470346067
+            },
+            "pSame": 0.14644660940692134,
+            "pOpposite": 0.8535533905930786,
+            "correlator": 0.7071067811861572
+          },
+          "qsharp": {
+            "pSame": 0.146446555208,
+            "pOpposite": 0.853552129922,
+            "correlator": 0.707104259844
+          },
+          "fsharpAnalytic": {
+            "pSame": 0.14644660940692134,
+            "pOpposite": 0.8535533905930787,
+            "correlator": 0.7071067811861573
+          }
+        },
+        {
+          "id": "E(a1,b1)",
+          "operation": "Zeta.ReferenceOracle.ApplyBellSingletChshA1B1",
+          "angles": {
+            "a": 1.570796326795,
+            "b": -0.785398163397,
+            "delta": 2.3561944901920002
+          },
+          "coefficient": -1,
+          "ts": {
+            "probabilities": {
+              "|00>": 0.42677669529657597,
+              "|01>": 0.07322330470342409,
+              "|10>": 0.07322330470342409,
+              "|11>": 0.42677669529657597
+            },
+            "pSame": 0.8535533905931519,
+            "pOpposite": 0.14644660940684817,
+            "correlator": -0.7071067811863038
+          },
+          "qsharp": {
+            "pSame": 0.853552129922,
+            "pOpposite": 0.146446555208,
+            "correlator": -0.707106889584
+          },
+          "fsharpAnalytic": {
+            "pSame": 0.8535533905931519,
+            "pOpposite": 0.1464466094068481,
+            "correlator": -0.7071067811863038
+          }
+        }
+      ],
+      "qsharpCircuits": {
+        "E(a0,b0)": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(qubits[0]);\n            X(qubits[1]);\n            Z(qubits[1]);\n            Ry(-0.785398163397, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "E(a0,b1)": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(qubits[0]);\n            X(qubits[1]);\n            Z(qubits[1]);\n            Ry(0.785398163397, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "E(a1,b0)": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(-1.570796326795, qubits[0]);\n            X(qubits[1]);\n            Z(qubits[1]);\n            Ry(-0.785398163397, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "E(a1,b1)": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(-1.570796326795, qubits[0]);\n            X(qubits[1]);\n            Z(qubits[1]);\n            Ry(0.785398163397, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n"
+      }
+    },
+    "bellCoincidence": {
+      "results": [
+        {
+          "id": "PhiPlus same-outcome a=0 b=pi/4",
+          "state": "PhiPlus",
+          "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+          "angles": {
+            "a": 0,
+            "b": 0.785398163397,
+            "delta": -0.785398163397
+          },
+          "event": "sameOutcome",
+          "ts": 0.8535533905934323,
+          "qsharp": 0.853553390593,
+          "fsharpAnalytic": 0.8535533905934323
+        },
+        {
+          "id": "Singlet opposite-outcome a=0 b=pi/4",
+          "state": "Singlet",
+          "operation": "Zeta.ReferenceOracle.ApplyBellSingletAnalyzers",
+          "angles": {
+            "a": 0,
+            "b": 0.785398163397,
+            "delta": -0.785398163397
+          },
+          "event": "oppositeOutcome",
+          "ts": 0.8535533905934323,
+          "qsharp": 0.853553390593,
+          "fsharpAnalytic": 0.8535533905934323
+        },
+        {
+          "id": "PhiPlus same-outcome a=0 b=pi/2",
+          "state": "PhiPlus",
+          "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+          "angles": {
+            "a": 0,
+            "b": 1.570796326795,
+            "delta": -1.570796326795
+          },
+          "event": "sameOutcome",
+          "ts": 0.49999999999994815,
+          "qsharp": 0.5,
+          "fsharpAnalytic": 0.49999999999994826
+        },
+        {
+          "id": "PhiPlus same-outcome a=0 b=pi",
+          "state": "PhiPlus",
+          "operation": "Zeta.ReferenceOracle.ApplyBellPhiPlusAnalyzers",
+          "angles": {
+            "a": 0,
+            "b": 3.14159265359,
+            "delta": -3.14159265359
+          },
+          "event": "sameOutcome",
+          "ts": 1.0693949408680808e-26,
+          "qsharp": 0,
+          "fsharpAnalytic": 1.0693949408680808e-26
+        }
+      ],
+      "qsharpCircuits": {
+        "PhiPlus same-outcome a=0 b=pi/4": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(qubits[0]);\n            Ry(-0.785398163397, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "Singlet opposite-outcome a=0 b=pi/4": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(qubits[0]);\n            X(qubits[1]);\n            Z(qubits[1]);\n            Ry(-0.785398163397, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "PhiPlus same-outcome a=0 b=pi/2": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(qubits[0]);\n            Ry(-1.570796326795, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "PhiPlus same-outcome a=0 b=pi": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[2]) {\n            H(qubits[0]);\n            CNOT(qubits[0], qubits[1]);\n            Ry(qubits[0]);\n            Ry(-3.14159265359, qubits[1]);\n            ResetAll(qubits);\n        }\n    }\n}\n"
+      }
+    },
+    "interferenceGrid": {
+      "results": [
+        {
+          "id": "mach-zehnder-open",
+          "operation": "Zeta.ReferenceOracle.ApplyMachZehnderOpen",
+          "phase": null,
+          "ts": {
+            "Zero": 0.5,
+            "One": 0.5
+          },
+          "qsharp": {
+            "One": 0.499999690551,
+            "Zero": 0.500000309449
+          },
+          "fsharpAnalytic": {
+            "Zero": 0.5,
+            "One": 0.5
+          }
+        },
+        {
+          "id": "mach-zehnder-closed-zero-phase",
+          "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase",
+          "phase": 0,
+          "ts": {
+            "Zero": 1,
+            "One": 0
+          },
+          "qsharp": {
+            "One": 0,
+            "Zero": 1
+          },
+          "fsharpAnalytic": {
+            "Zero": 1,
+            "One": 0
+          }
+        },
+        {
+          "id": "mach-zehnder-closed-pi-over-3-phase",
+          "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase",
+          "phase": 1.047197551197,
+          "ts": {
+            "Zero": 0.74999999999983,
+            "One": 0.25000000000017
+          },
+          "qsharp": {
+            "One": 0.250000699375,
+            "Zero": 0.749999300625
+          },
+          "fsharpAnalytic": {
+            "Zero": 0.7499999999998259,
+            "One": 0.2500000000001741
+          }
+        },
+        {
+          "id": "mach-zehnder-closed-pi-over-2-phase",
+          "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase",
+          "phase": 1.570796326795,
+          "ts": {
+            "Zero": 0.49999999999995004,
+            "One": 0.50000000000005
+          },
+          "qsharp": {
+            "One": 0.499999690551,
+            "Zero": 0.500000309449
+          },
+          "fsharpAnalytic": {
+            "Zero": 0.49999999999994826,
+            "One": 0.5000000000000517
+          }
+        },
+        {
+          "id": "mach-zehnder-closed-two-pi-over-3-phase",
+          "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase",
+          "phase": 2.094395102393,
+          "ts": {
+            "Zero": 0.25000000000008005,
+            "One": 0.74999999999992
+          },
+          "qsharp": {
+            "One": 0.75,
+            "Zero": 0.25
+          },
+          "fsharpAnalytic": {
+            "Zero": 0.2500000000000847,
+            "One": 0.7499999999999153
+          }
+        },
+        {
+          "id": "mach-zehnder-closed-pi-phase",
+          "operation": "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase",
+          "phase": 3.14159265359,
+          "ts": {
+            "Zero": 0,
+            "One": 1
+          },
+          "qsharp": {
+            "One": 1,
+            "Zero": 0
+          },
+          "fsharpAnalytic": {
+            "Zero": 1.0693949408680808e-26,
+            "One": 1
+          }
+        }
+      ],
+      "qsharpCircuits": {
+        "mach-zehnder-open": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[1]) {\n            H(qubits[0]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "mach-zehnder-closed-zero-phase": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[1]) {\n            H(qubits[0]);\n            H(qubits[0]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "mach-zehnder-closed-pi-over-3-phase": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[1]) {\n            H(qubits[0]);\n            Rz(1.047197551197, qubits[0]);\n            H(qubits[0]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "mach-zehnder-closed-pi-over-2-phase": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[1]) {\n            H(qubits[0]);\n            Rz(1.570796326795, qubits[0]);\n            H(qubits[0]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "mach-zehnder-closed-two-pi-over-3-phase": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[1]) {\n            H(qubits[0]);\n            Rz(2.094395102393, qubits[0]);\n            H(qubits[0]);\n            ResetAll(qubits);\n        }\n    }\n}\n",
+        "mach-zehnder-closed-pi-phase": "namespace Quantum {\n    open Microsoft.Quantum.Intrinsic;\n    open Microsoft.Quantum.Canon;\n    open Microsoft.Quantum.Math;\n    open Microsoft.Quantum.Convert;\n\n    function SetBitValue(reg: Int, bit: Int, value: Bool): Int {\n        if(value) {\n            return reg ||| (1 <<< bit);\n        } else {\n            return reg &&& ~~~(1 <<< bit);\n        }\n    }\n    \n    operation Circuit() : Unit {\n        using(qubits = Qubit[1]) {\n            H(qubits[0]);\n            Z(qubits[0]);\n            H(qubits[0]);\n            ResetAll(qubits);\n        }\n    }\n}\n"
+      }
+    }
+  }
+}
