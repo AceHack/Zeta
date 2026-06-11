@@ -70,16 +70,18 @@ module HtmlCssBinding =
 
         let divs =
             (MediaLines.ofKind "glyph" d @ MediaLines.ofKind "frame" d)
-            |> List.map (fun e -> sprintf "  <div class=\"px-%s\" title=\"%s\"></div>" e.Name e.Name)
+            |> List.map (fun e -> sprintf "  <div class=\"px-%s\" title=\"%s\"></div>" (ShapeRender.escapeXml e.Name) (ShapeRender.escapeXml e.Name))
 
         String.concat "\n"
             [ "<!doctype html>"
-              sprintf "<html lang=\"en\"><head><meta charset=\"utf-8\"><title>%s</title><style>" title
+              sprintf "<html lang=\"en\"><head><meta charset=\"utf-8\"><title>%s</title><style>" (ShapeRender.escapeXml title)
               paletteCss
               yield! sprites
               yield! anims
               "</style></head><body>"
-              sprintf "<h1>%s</h1>" title
-              (match motto with Some m -> sprintf "<p>%s</p>" m | None -> "")
+              sprintf "<h1>%s</h1>" (ShapeRender.escapeXml title)
+              (match motto with
+               | Some m -> sprintf "<p>%s</p>" (ShapeRender.escapeXml m) // r3b: the falsifier found a LIVE hole here — a hostile motto smuggled script through the no-JS page
+               | None -> "")
               yield! divs
               "</body></html>" ]

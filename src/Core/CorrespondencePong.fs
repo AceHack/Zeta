@@ -50,16 +50,21 @@ module CorrespondencePong =
     /// The match outcome both ends watch: rally length and which side conceded (None = survived).
     type Outcome = { Rally: int; Conceded: string option }
 
-    /// Play the round: both paddles run MetaControl.pongPolicy under their committed objectives;
-    /// pure function of (left, right, serveDir, steps) — DETERMINISTIC: this is the correspondence
-    /// integrity (and why retries are free: call it as many times as you like before you reply).
-    let play (left: Turn) (right: Turn) (steps: int) : Outcome =
+    /// Play the round from an explicit serve direction (+1 = toward the right player, −1 = toward
+    /// the left): both paddles run MetaControl.pongPolicy under their committed objectives; pure
+    /// function of (left, right, serveDir, steps) — DETERMINISTIC: the correspondence integrity
+    /// (retries are free: call it as many times as you like before you reply). Round-3 fix (Kira):
+    /// the old doc promised serveDir/seed parameters the signature lacked while hard-coding a
+    /// rightward serve — the right player ALWAYS defended first, a structural asymmetry the docs
+    /// denied. Fair play alternates serves across rounds: `playFrom -1` for the return game.
+    let playFrom (serveDir: int) (left: Turn) (right: Turn) (steps: int) : Outcome =
         let w, h = P.ofInt 64, P.ofInt 32
         let mutable lp = { P.Pos = P.v2 (P.ofInt 2) (P.ofInt 13); P.Size = P.v2 P.one (P.ofInt 6); P.Vel = P.v2 0 0 }
         let mutable rp = { P.Pos = P.v2 (P.ofInt 61) (P.ofInt 13); P.Size = P.v2 P.one (P.ofInt 6); P.Vel = P.v2 0 0 }
         // vx = 1 px/tick: no tunneling past a 1-px paddle (the integer physics is exact, so the
         // court geometry must respect the step size — a real constraint, honestly held)
-        let mutable ball = { P.Pos = P.v2 (P.ofInt 32) (P.ofInt 16); P.Size = P.v2 P.one P.one; P.Vel = P.v2 P.one (P.one / 4) }
+        let serve = if serveDir >= 0 then P.one else -P.one
+        let mutable ball = { P.Pos = P.v2 (P.ofInt 32) (P.ofInt 16); P.Size = P.v2 P.one P.one; P.Vel = P.v2 serve (P.one / 4) }
         let mutable rally = 0
         let mutable conceded: string option = None
         let mutable i = 0
@@ -84,3 +89,7 @@ module CorrespondencePong =
             i <- i + 1
 
         { Rally = rally; Conceded = conceded }
+
+    /// The rightward-serve convenience (the original behavior, now an HONEST default rather than
+    /// a hidden asymmetry — alternate with `playFrom -1` for fair correspondence play).
+    let play (left: Turn) (right: Turn) (steps: int) : Outcome = playFrom 1 left right steps

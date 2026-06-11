@@ -28,24 +28,24 @@ let private banned =
 /// means adding a row HERE, with a reason a reviewer can refuse.
 let private allowlist =
     [ // the wall-clock door itself: the ONE place ambient time/entropy is abstracted behind IEnvironment
-      "Environment.fs", "DateTime.UtcNow", "the docstring NAMES the ambient sources this interface fences off"
-      "Environment.fs", "Guid.NewGuid", "the ambient implementation of IEnvironment.NewGuid — the fenced door"
-      "Environment.fs", "Random.Shared", "docstring reference to what is being fenced"
-      "Environment.fs", "Environment.TickCount", "the ambient implementation of IEnvironment.Ticks"
+      "Environment.fs", "DateTime.UtcNow", 1, "the docstring NAMES the ambient sources this interface fences off"
+      "Environment.fs", "Guid.NewGuid", 2, "the ambient implementation of IEnvironment.NewGuid — the fenced door"
+      "Environment.fs", "Random.Shared", 3, "docstring reference to what is being fenced"
+      "Environment.fs", "Environment.TickCount", 1, "the ambient implementation of IEnvironment.Ticks"
       // seeded by construction: System.Random(seed + i) — deterministic per seed, the LawRunner contract
-      "LawRunner.fs", "System.Random(", "every instance is seeded (seed + sampleIndex); reproducible by design"
+      "LawRunner.fs", "System.Random(", 3, "every instance is seeded (seed + sampleIndex); reproducible by design"
       // IO-infrastructure edges: temp-file / instance names (affect disk layout, never logical state)
-      "Checkpoint.fs", "Guid.NewGuid", "tmp-file suffix for atomic rename — IO edge, not logical state"
-      "DiskSpine.fs", "Guid.NewGuid", "per-instance disk prefix — IO edge, not logical state"
-      "DiskSpineAsync.fs", "Guid.NewGuid", "per-instance disk prefix — IO edge, not logical state"
+      "Checkpoint.fs", "Guid.NewGuid", 1, "tmp-file suffix for atomic rename — IO edge, not logical state"
+      "DiskSpine.fs", "Guid.NewGuid", 1, "per-instance disk prefix — IO edge, not logical state"
+      "DiskSpineAsync.fs", "Guid.NewGuid", 1, "per-instance disk prefix — IO edge, not logical state"
       // interactive-edge convenience overload, documented as non-replayable; seeded overload exists
-      "Crdt.fs", "Guid.NewGuid", "OrSet.Add ambient overload — documented wall-clock edge; the seeded Add(elem, tag) is the DST path"
+      "Crdt.fs", "Guid.NewGuid", 2, "OrSet.Add ambient overload — documented wall-clock edge; the seeded Add(elem, tag) is the DST path"
       // the ambient wall-clock EDGES of consensus (the DST paths are transitionAt/prToVoteAt)
-      "Consensus.fs", "DateTimeOffset.UtcNow", "two documented ambient wrappers (transition/prToVote); injected -At variants are the DST paths"
-      "Environment.fs", "DateTimeOffset.UtcNow", "the ambient implementation of IEnvironment.Now — the fenced door"
-      "Injection.fs", "DateTimeOffset.UtcNow", "wall-time instrumentation at the injection edge — observability only"
+      "Consensus.fs", "DateTimeOffset.UtcNow", 4, "two documented ambient wrappers (transition/prToVote) + their two doc-comment mentions; injected -At variants are the DST paths"
+      "Environment.fs", "DateTimeOffset.UtcNow", 1, "the ambient implementation of IEnvironment.Now — the fenced door"
+      "Injection.fs", "DateTimeOffset.UtcNow", 2, "wall-time instrumentation at the injection edge — observability only"
       // timing instrumentation at the injection boundary (observability, not logic)
-      "Injection.fs", "Stopwatch.StartNew", "wall-time instrumentation at the injection edge — observability only" ]
+      "Injection.fs", "Stopwatch.StartNew", 1, "wall-time instrumentation at the injection edge — observability only" ]
 
 [<Fact>]
 let ``THE DETERMINISM LINT: no ambient entropy in src/Core outside the named, justified edges`` () =
@@ -57,16 +57,24 @@ let ``THE DETERMINISM LINT: no ambient entropy in src/Core outside the named, ju
               for i in 0 .. lines.Length - 1 do
                   for pat in banned do
                       if lines.[i].Contains pat then
-                          let allowed = allowlist |> List.exists (fun (f, p, _) -> f = name && pat.StartsWith p || (f = name && lines.[i].Contains p))
+                          let allowed = allowlist |> List.exists (fun (f, p, _, _) -> f = name && p = pat) // exact rows only (the old contains-disjunct excused pattern Y on any line mentioning X)
                           if not allowed then
                               yield sprintf "%s:%d uses '%s' — ambient entropy in Core; seed it, fence it behind IEnvironment, or add a justified allowlist row" name (i + 1) pat ]
     Assert.True(List.isEmpty violations, String.concat "\n" violations)
 
 [<Fact>]
-let ``the allowlist rows all still exist — a stale exemption is a hole waiting for a new occupant`` () =
+let ``the allowlist pins EXACT occurrence counts — a third wall clock cannot slide in behind two justified ones`` () =
     let core = Path.Combine(repoRoot (), "src", "Core")
-    for (file, pat, _why) in allowlist do
+    for (file, pat, expected, _why) in allowlist do
         let path = Path.Combine(core, file)
         Assert.True(File.Exists path, file + " vanished — remove its allowlist rows")
-        let contains = (File.ReadAllText path).Contains pat
-        Assert.True(contains, sprintf "%s no longer contains '%s' — remove the stale allowlist row" file pat)
+        let actual =
+            File.ReadAllLines path
+            |> Array.sumBy (fun (l: string) ->
+                let mutable c = 0
+                let mutable i = l.IndexOf(pat)
+                while i >= 0 do
+                    c <- c + 1
+                    i <- l.IndexOf(pat, i + 1)
+                c)
+        Assert.True((actual = expected), sprintf "%s: '%s' occurs %d times, allowlist pins %d — justify the new edge with a count bump and a WHY, or remove the stale row" file pat actual expected)

@@ -227,3 +227,13 @@ let ``VF IS THE FLAG, EVEN WHEN VF IS AN OPERAND: 8F05 with x=F keeps the flag w
     let cow = Chip8Cow.create 7UL |> Chip8Cow.loadRom rom
     let f = [ 1..3 ] |> List.fold (fun s _ -> Chip8Cow.step s) cow
     Assert.Equal(1uy, f.V.[0xF]) // the flag, not the difference
+
+
+[<Fact>]
+let ``HTMLCSSBINDING INJECTION FALSIFIER: a hostile motto cannot smuggle script through render (test-gap #2)`` () =
+    let hostile = "meta\tname\tx\nmeta\tmotto\t</style><script>alert(1)</script>\nframe\tidle\tff\nanim\tbreathe\tidle\npalette\t1\tred\n"
+    match MediaLines.parse hostile with
+    | Error e -> Assert.True(false, e)
+    | Ok d ->
+        let html = HtmlCssBinding.render d
+        Assert.DoesNotContain("<script", html)

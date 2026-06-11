@@ -28,7 +28,10 @@ module PixelLens =
     /// A sub-pixel cell: the 32-bit deep pixel.
     type Cell = uint32
 
-    /// Pack (color, payload, uncertainty) into a cell — masked to their fields (total; no overflow).
+    /// Pack (color, payload, uncertainty) into a cell — MASKED to their fields. Total in the
+    /// never-throws sense ONLY: out-of-range inputs silently truncate to field width (pack _ -1 _
+    /// round-trips payload as 8191 — r3 doc fix: "no overflow" overstated this as no-loss).
+    /// Callers needing refusal-on-overflow validate before packing.
     let pack (color: byte) (payload: int) (uncertaintyMilli: int) : Cell =
         (uint32 color &&& 0x7u)
         ||| ((uint32 payload &&& 0x1FFFu) <<< 3)
