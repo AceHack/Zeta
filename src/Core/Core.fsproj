@@ -252,6 +252,7 @@
     <Compile Include="FingerprintPrism.fs" />
     <Compile Include="SoftTie.fs" />
     <Compile Include="LinguisticSeed.fs" />
+    <Compile Include="ConformalGA.fs" />
     <Compile Include="Salon.fs" />
     <Compile Include="GameCatalog.fs" />
     <Compile Include="ControlMerge.fs" />

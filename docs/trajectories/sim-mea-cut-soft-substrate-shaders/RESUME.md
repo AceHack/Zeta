@@ -78,8 +78,7 @@ meters the speculative future in BYTES.
    triggers: Limiter-as-fold into boats WHEN a third limiter kind has a consumer; Tank-funded
    MaxBatchBytes WHEN a resonance consumer measures it (Naledi bench first); gradient front-door WHEN a
    queue-depth surface is exposed. Soft side: partition-keyed multi-boat when multi-stream arrives.
-5. ~~Salon as a LinguisticSeed.Pack~~ **DONE 2026-06-11** (Salon.seedPack — Jaccard/min-max kernel is PSD, the Mercer witness holds; Salon.asRoom = seed+extensions+parameters literal; OCP proven: an added pack lifts the room over its threshold without editing it) · conformal-GA
-   slice (Cl3's flagged "Sequoia soft memory distance") · B-1023 (gated) · B-0945 substrate.
+5. ~~Salon as a LinguisticSeed.Pack~~ **DONE 2026-06-11** (Salon.seedPack — Jaccard/min-max kernel is PSD, the Mercer witness holds; Salon.asRoom = seed+extensions+parameters literal; OCP proven: an added pack lifts the room over its threshold without editing it) · ~~conformal-GA slice~~ **DONE 2026-06-11** (`ConformalGA.fs` — null-vector embedding, distance = ONE inner product, cross-checked vs Cl3.distSq; memory-RBF kernel PSD, composes into the seed) · B-1023 (gated) · B-0945 substrate.
 6. Loose: sim/mea/cut console binary; the floated outside-cube verbs (rem/whe/pay/att/how/man/whi/way —
    Aaron's call); shader memory/GC; Q# golden vectors (Vera).
 
