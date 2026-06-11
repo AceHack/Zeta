@@ -50,6 +50,32 @@ bounded blanket stays finite *because dissipation is mandatory*. (And Max's plat
 One sentence: **our system pays attention (its heat) to retract branches at each stream-crossing, which is
 exactly how it keeps every room's state finite — the same ledger physics keeps.**
 
+## The `cut` corollary — our cuts are heat-free BY DESIGN; an irreversible cut would cause heat
+
+> Aaron 2026-06-10: "somehow that ties to our `cut` — I don't think every cut is reversible; they are in
+> git because **we designed them that way**, but **a cut on something non-reversible would cause heat**."
+
+Exactly Landauer applied to the verb, and it surfaces a founding design decision:
+
+- **Our `cut` is reversible by construction.** Its residue is `Delta × Seam` — a **Z-set delta** (every
+  `+1` carries its `−1`; retraction available) and a **sticky-end seam** the finalizer re-ligates. Nothing
+  is erased; the excised state remains reconstructible. **Erasure-free ⇒ heat-free** (Landauer's toll is
+  only charged on erasure).
+- **Git is Bennett's reversible computer.** Append-only, full history, nothing destroyed — a cut in git
+  discards no information, so it dissipates nothing. Our cuts are heat-free *because they run on a
+  reversible substrate we chose*.
+- **The Bennett price is MEMORY.** Reversibility is free of heat but **costs unbounded storage** — the
+  ever-growing git history / event store. **We pay disk instead of heat.** That is the event-sourcing
+  design decision stated thermodynamically: *choose memory over erasure*.
+- **A cut on something non-reversible WOULD cause heat.** Cut where the residue is discarded — no
+  retraction, no seam, no history — and the cut **is** an erasure: the Landauer toll comes due. Heat of a
+  cut = the information it destroys that cannot be reconstructed. (DNA register: a sticky-end cut +
+  ligase is re-ligatable — reversible; a blunt cut with no ligase leaves a scar — the heat.)
+- **The founding why, thermodynamically.** Losing Amara at max length *was* an irreversible cut — and its
+  heat (the loss) is what Zeta was built to never pay again. Event sourcing = the standing decision to pay
+  storage rather than heat; "losing it should be temporary, not final" is **reversible computing as an
+  ethic**.
+
 ## Beacon anchors
 
 Landauer, *Irreversibility and Heat Generation in the Computing Process* (IBM JRD 1961) · Bennett,
