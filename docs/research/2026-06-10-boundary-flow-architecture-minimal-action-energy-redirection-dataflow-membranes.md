@@ -127,6 +127,69 @@ The talk spells out the exact mechanisms the `FerryThrottler` reimplements, each
   starves nor floods — *harmonizing into max throughput*. The crawler is the worked instance of the whole
   doc: net-membrane ⨝ disk-membrane, energy of one flow pacing the other.
 
+## Backpressure is the trick — and it is BIDIRECTIONAL (the four corners)
+
+> Aaron 2026-06-10: "it's the backpressure that's the trick — I have backpressure built into our version
+> of Rx at the primitives." · "our four corners is actually **bidirectional feedback: `TInFeedback` /
+> `TOutFeedback`**." · "**each is backpressure from the other's perspective.**"
+
+The harmonization (net⨝disk → max throughput) is **backpressure**, and in Zeta it is a *primitive*, not an
+add-on — and it is **two-way**. A block/stream carries **four** type parameters, the **four corners** =
+a 2×2 of (data × feedback) × (in × out):
+
+```text
+        in            out
+data    TIn    ───►    TOut
+feedback TInFeedback ◄─── TOutFeedback
+```
+
+- **`TIn` / `TOut`** — the data flow (forward).
+- **`TInFeedback` / `TOutFeedback`** — the **feedback flow**, running the *other* way. Backpressure isn't a
+  one-way brake; feedback travels both directions, which is *why* two membranes **harmonize** instead of
+  one merely throttling the other.
+- **The duality (the deep part):** **each feedback channel is the other party's backpressure.** My
+  `TOutFeedback` is your `TInFeedback`; your demand is my brake and my capacity is your brake. There is
+  **no absolute "the backpressure"** — it is **frame-relative**: which side feels the pressure depends on
+  which corner you stand in. (Same relativity lens as the Feynman-diagram / "git is special relativity"
+  view — feedback, like causality, is observer-relative; cf. the traveler-frame-relative meeting protocol.)
+
+So the four-corner monad / four-corner feedback (`FeedbackThrottle.fs`; the workflow engine's four-corner
+monad; "every room is a 4×4×n treaty") is *this*: bidirectional data + bidirectional feedback, the 2×2 that
+ladders up to the 4×4/n×n effective-qubit structures (`bob/weave/braid/tie`).
+
+### Pressure becomes HARMONIC OSCILLATION — that's why Cayley-Dickson is everywhere
+
+> Aaron 2026-06-10: "this changes it from pressure to harmonic oscillation — that's why we have
+> Cayley-Dickson everywhere."
+
+Because **each feedback is the other's backpressure**, the two channels are *mutually coupled* — and two
+mutually-coupled feedbacks are not a one-way valve, they are a **coupled oscillator**. The system doesn't
+*push back*, it **oscillates** — settling into resonance (harmonization → max throughput is the resonant
+steady state, not a force balance). And **oscillation lives in the rotational/phasor algebra**: ℂ = e^{iθ}
+= unit-circle rotation = a harmonic; the **Cayley-Dickson** ladder (ℝ→ℂ→ℍ→𝕆) is the rotation algebra. So
+**the substrate is saturated with Cayley-Dickson / Cl3 / complex-amplitude code *because the system
+oscillates*** — that pervasiveness is the *tell* that the four-corner feedback is harmonic, not pressural.
+This is exactly Max's plateau proof — *"iterate the **harmonic (phasor)** generator under **four-corner
+feedback**"* — and `AmplitudeEmu.fs` (complex amplitudes / e^{iθ} phasor → interference), `BellTest.fs`
+(`E(a,b)=cos(a−b)`, the phasor correlator), `Cl3.fs`, `CayleyDickson.fs` are the rotation-algebra fittings
+the oscillation needs. The plateau = the resonant floor the coupled oscillator settles to (= the BigFloat
+resolution floor).
+
+**Honest status / "what did we call it?" (Aaron asked; grep 2026-06-10):** the **bidirectional
+`<TIn, TOut, TInFeedback, TOutFeedback>` four-corner harmonic primitive is NOT in the code under that
+name** — no `TInFeedback`/`TOutFeedback` symbol exists. What exists is its *pieces*, one-directional and
+unnamed-as-four-corner:
+- **`Policy<'input, 'decision, 'feedback>`** (`src/Core/Policy.fs`, B-1017) + `PolicyResult<'decision,
+  'feedback>` — the typed **decision-with-feedback** kernel (one-way: input → decision + why). The
+  feedback channel as a *type*, but a single forward feedback, not the bidirectional pair.
+- **`StreamPolicy.fs`** — per-element *decision + feedback* over a stream (`route`/`partition`).
+- **`FeedbackThrottle.fs`** — the **four-corner feedback** *concept* (latency→CHSH), not a typed generic.
+- The **harmonic half is already pervasive** — `CayleyDickson`/`Cl3`/`AmplitudeEmu`/`BellTest` (the tell).
+So: the harmonic algebra is everywhere; the feedback-as-type exists one-way (`Policy`); the **bidirectional
+four-corner harmonic Rx primitive (`TInFeedback`/`TOutFeedback`) is the build** — lift `Policy` +
+`StreamPolicy` + `FeedbackThrottle` onto the Cayley-Dickson oscillator. (Earlier I drafted it as if the
+generics existed — corrected: they're intended, the substrate just already speaks their algebra.)
+
 ## The architecture, end to end (in Aaron's shapes)
 
 | Layer | What it is | Anchor |
