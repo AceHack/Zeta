@@ -104,7 +104,7 @@ let ``the self-description kinds carry: prereqs point somewhere, edges name the 
     let d = docOf "buckyball"
     Assert.Equal(3, List.length (MediaLines.ofKind "prereq" d))
     Assert.Equal(3, List.length (MediaLines.ofKind "edge" d))
-    Assert.Equal(2, List.length (MediaLines.ofKind "issue" d)) // schlegel projection + the owed tear-down
+    Assert.Equal(3, List.length (MediaLines.ofKind "issue" d)) // schlegel (open) + tear-down (closed) + ray-overshoot (closed, THE COURT LAW's second catch)
     Assert.Contains(("math-team", "math", "pending"), MediaLines.treatiesOf d)
     Assert.Empty(MediaLines.lint d) // all of it lints clean (structure checked, future kinds silent)
 
