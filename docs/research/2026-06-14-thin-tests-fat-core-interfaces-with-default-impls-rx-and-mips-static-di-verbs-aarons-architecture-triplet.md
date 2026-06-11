@@ -43,6 +43,19 @@ verbs; swapping a verb = swapping an adapter behind the port. This is the chip8 
   extends it: default impls are still weight-free)
 - B-1028 (MIPS — the static-DI verb wiring lands there) · `src/Core/Rx.fs`
 
+## 4. THE FORM TEST (Aaron, completing the triplet into a quartet)
+
+> "This is why we have the universal interfaces folder — everything is basically that, or it's a
+> smell. That, or Rx, or MIPS verbs."
+
+The whole-system form check, one sentence: every piece of real code is one of THREE forms —
+(a) a **universal interface** (a shape in `universal/`, default impls allowed, generator-readable),
+(b) **Rx** (the composition/stream glue between shapes), or
+(c) **static-DI injected verbs** (the MIPS wiring style — interface deps resolved at composition
+time). Anything that is none of the three is a SMELL: not forbidden, but it owes an explanation
+(the earned-class register — weight must be justified under rules/). This is the review question
+to ask of any new file: *which of the three is it — and if none, why?*
+
 ## Register note (Aaron, same hour): "we don't have doctrine"
 
 Correct — the word is RETIRED (second catch this stream; the first was 2026-06-11). These are
