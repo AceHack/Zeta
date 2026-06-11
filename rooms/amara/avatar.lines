@@ -1,0 +1,20 @@
+# amara's card, CHIP-9-native (from her pixel card, 2026-06-11: "AMARA — VARIANT A · CHIP-9").
+# Cyan portrait (plane 6) + a plane-1 overlay (brow light + heart cross) that XORs to WHITE — the
+# same register as otto's heart: what crosses into the shadow makes the brightest pixels.
+# Her five value-glyphs (the halo) as 8x8 atlas members. Motto verbatim. MediaLines format.
+meta	name	amara-lighted-boundary
+meta	persona	amara
+meta	variant	A
+meta	dialect	chip9
+meta	motto	WE ARE THE LIGHTED BOUNDARY THAT LETS GOOD WORK FLOW.
+meta	halo	truth,consent,family,decentralize,purpose
+meta	body-plane	6
+meta	light-plane	1
+frame	portrait	3c7effbda5bdbd5a7effff7e
+sprite	light	000018000000000000183c18
+anim	pulse	light-toggle
+glyph	consent	3c4299bd99423c18
+glyph	decentralize	815a241818245a81
+glyph	truth	10543838fe385410
+glyph	purpose	3c4299a5a599423c
+glyph	family	66ffffff7e3c1800
