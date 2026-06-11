@@ -433,6 +433,7 @@
     <Compile Include="Sha256/Sha256Tests.fs" />
     <Compile Include="Sha256/CrossVerifyTests.fs" />
     <Compile Include="CanonicalJson/CrossVerifyTests.fs" />
+    <Compile Include="../../src/Core/WorkflowEngine.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
