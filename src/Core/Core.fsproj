@@ -230,6 +230,7 @@
     <Compile Include="MediaLines.fs" />
     <Compile Include="BoundaryLight.fs" />
     <Compile Include="GeneratorRegistry.fs" />
+    <Compile Include="ZetaIdViz.fs" />
     <Compile Include="TelemetrySource.fs" />
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
