@@ -53,3 +53,12 @@ Every system above is the same five-part sentence:
   `GeneratorRegistry` (idOf/collisions) · `MagneticPorts` (compatible/findAdapter) ·
   `IInferenceEngine` (the first customer of the converged grammar) · B-1033 (this closes its
   audit half; the engine-ZetaId + ladder follow-up stays on the row)
+
+## Addendum (same day) — Aaron: "we have universal interfaces too; this smells like that"
+
+Correct, and SENIOR: `universal/extension.md` already carried Probe/Zero/Vectors — the resolution,
+the honest zero-case binding, and the conformance halves of this grammar, written before the audit.
+The verdict therefore lands where it belongs: the converged vocabulary is now a UNIVERSAL SHAPE —
+[`universal/port.md`](../../universal/port.md) (Name/Adapters/Ladder/Light/Missing, cross-anchored
+to extension.md) — not a research-doc convention. The rule for system five becomes: implement
+universal/port, or carve the exception.

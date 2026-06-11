@@ -62,3 +62,5 @@ Verdict: converge the VOCABULARY, not the implementations (ZetaId port names · 
 Live/Injected/Adapted/Mock ladder · the red-light glance form · findAdapter for what's-missing);
 the rule for system five stated; IInferenceEngine named the first customer (engine ZetaIds + a
 ladder-shaped resolution = the remaining follow-up alongside richer case families).
+
+## Progress 3 (2026-06-13): the grammar filed as universal/port.md (Aaron's "smells like universal interfaces" — it was; extension.md is the senior half). Remaining: engine ZetaIds + ladder resolution for IInferenceEngine; richer case families.
