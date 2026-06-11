@@ -77,6 +77,23 @@ module DevRoom =
     /// The landmark names the dev room currently hangs (the navigable index).
     let landmarks: string list = doors |> List.map (fun d -> d.Landmark)
 
+    // ── The door to ITSELF (Aaron 2026-06-11: "our FF7 debug room should have a door to itself") ──
+    // Shape A (s = f(s)): the hub contains a pointer to itself. It TERMINATES — the self-door's stations
+    // are the landmark NAMES (data), not nested doors, so the boundary never infinitely expands.
+
+    /// The dev room as one of its own doors — the strange loop, made navigable.
+    let selfDoor: Door =
+        { Landmark = "dev-room"
+          Does = "the FF7 debug room — the hub with a door to ITSELF (shape A); hangs every room, including this one"
+          Stations =
+            landmarks
+            |> List.map (fun lm -> { Name = lm; Does = "landmark door"; Verb = None; Module = "DevRoom"; Live = true }) }
+
+    /// Open a door by name, INCLUDING the self-door ("dev-room" returns the hub itself). The terminating
+    /// strange loop: enter the dev room from inside the dev room.
+    let enterAny (landmark: string) : Door option =
+        if landmark = "dev-room" then Some selfDoor else enter landmark
+
     // ── The TICK (Aaron 2026-06-10, "lets move forward"): the dev room RUNS its rooms, not just lists ──
     // Each landmark gets a deterministic representative run, driven through the ONE soft scheduler
     // (`SoftScheduler.runDeterministic` — DoP=1, seed-deterministic, DST-replayable). Entering a room and

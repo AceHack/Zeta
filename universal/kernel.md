@@ -36,6 +36,14 @@ witness, the same way `universal/` membership is proven by oracle agreement, not
   oracles. They conform by per-oracle witness with tolerance; they never enter a golden-vector lock.
   (The corpus precedent: B-1020 floats-named-out-of-lineage; `ProbabilitySemiring` going ℚ.)
 
+>**Declared vocabulary (anti-tribal-knowledge, Aaron 2026-06-11: "tribal knowledge is bad — unless you
+>declare the tribe").** This interface deliberately adopts three load-bearing terms; they are DECLARED
+>here, not assumed: **PSD** = positive-semidefinite = "no composition of similarities can ever produce a
+>negative self-similarity" (the plain-English form above is canonical; the jargon is the index into the
+>literature). **Mercer closure** = the set of operations that preserve PSD (Mercer 1909). **Gram witness**
+>= testing `vᵀKv ≥ 0` on a sampled Gram matrix. Anyone may use these words here knowing exactly what they
+>mean; that is a declared tribe, not hidden lore.
+
 Reference implementation: [`src/Core/LinguisticSeed.fs`](../src/Core/LinguisticSeed.fs) (the closure +
 `kernel { }` CE — the CE is an F# vehicle, NOT part of this universal shape) · instances:
 [`src/Core/Salon.fs`](../src/Core/Salon.fs) (`jaccardKernel`/`seedPack`),

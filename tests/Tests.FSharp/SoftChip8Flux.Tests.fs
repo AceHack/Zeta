@@ -77,3 +77,50 @@ let ``DST: funded speculation replays identically (same frame, same tank => same
     let a = run ()
     let b = run ()
     Assert.Equal(a, b)
+
+[<Fact>]
+let ``SELF-AWARENESS: starved of flux, the system KNOWS its confidence shortfall and SIGNALS it`` () =
+    let f = frameWith loopRom
+    // goal 100 steps, but only 30 units of flux: the system must know it saw 30/100
+    let _, report, _ = SoftChip8Flux.speculateToward 100 1.0 (SoftThrottle.tank 30.0 0.0) f
+    Assert.True(report.Starved)
+    Assert.False(report.HitBranch)
+    Assert.Equal(30, report.Achieved)
+    Assert.Equal(0.3, report.Confidence, 9) // self-known uncertainty: 70% of the knowable future unseen
+    Assert.Equal(Some(RateLimitExhausted "speculation-flux"), SoftChip8Flux.signalIfStarved report)
+
+[<Fact>]
+let ``a fork-limited stop is NOT a power problem: confidence 1.0, no signal (the honest distinction)`` () =
+    let f = frameWith inputRom
+    let _, report, _ = SoftChip8Flux.speculateToward 100 1.0 (SoftThrottle.tank 1000.0 0.0) f
+    Assert.True(report.HitBranch)
+    Assert.False(report.Starved)
+    Assert.Equal(1.0, report.Confidence, 9) // it saw everything KNOWABLE; the rest needs the present
+    Assert.Equal(None, SoftChip8Flux.signalIfStarved report)
+
+[<Fact>]
+let ``fully funded goal: confidence 1.0, no signal, future reached`` () =
+    let f = frameWith loopRom
+    let _, report, _ = SoftChip8Flux.speculateToward 50 1.0 (SoftThrottle.tank 50.0 0.0) f
+    Assert.Equal(50, report.Achieved)
+    Assert.False(report.Starved)
+    Assert.Equal(1.0, report.Confidence, 9)
+    Assert.Equal(None, SoftChip8Flux.signalIfStarved report)
+
+[<Fact>]
+let ``CONFERENCE: a banana-split (input fork) convenes the projected future selves; reconcile picks the survivor`` () =
+    // at the fork, the room conferences both key-worlds; the actual present picks one, the other retracts.
+    let atFork, _ = SoftChip8.lookAhead 99 (frameWith inputRom)
+    match SoftChip8Flux.conferenceOnFork atFork with
+    | Some conf ->
+        Assert.Equal(2, conf.Futures.Length) // two future selves at the table
+        let down = Array.zeroCreate 16 in down.[0xC] <- true
+        let survivor = SoftChip8Flux.reconcile down conf
+        // the survivor is the realized future for the pressed-key world
+        Assert.Equal(Chip8Cow.step (SoftChip8Flux.applyKey 0xC true atFork), survivor)
+    | None -> Assert.Fail "an input fork must convene a conference"
+
+[<Fact>]
+let ``no conference on a deterministic line (the room is alone on its worldline — no banana split)`` () =
+    let f = frameWith loopRom
+    Assert.True((SoftChip8Flux.conferenceOnFork f).IsNone)

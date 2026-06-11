@@ -79,3 +79,14 @@ let ``the payload codec round-trips and refuses non-pong traffic honestly`` () =
     Assert.Equal(Some(0, 0), MeshPong.parseInputs "pong:0,0")
     Assert.True((MeshPong.parseInputs "chat:hello").IsNone)
     Assert.True((MeshPong.parseInputs "pong:x,y").IsNone)
+
+[<Fact>]
+let ``NETWORK SONAR: a clean channel returns None; an injected deviation is LOCATED at its tick`` () =
+    let expected = RecordedSource.record (MeshPong.inputsSource 42L) 200
+    Assert.Equal(None, MeshPong.channelSonar expected expected) // we KNOW how the game plays out
+    let observed: RecordedSource.Recording =
+        { Crossings =
+            expected.Crossings
+            |> Map.map (fun tick arrivals ->
+                if tick = 137 then [ OperatorMessageArrived(MeshPong.encodeInputs -1 1) ] else arrivals) }
+    Assert.Equal(Some 137, MeshPong.channelSonar expected observed) // the uncertainty came from the channel — at tick 137

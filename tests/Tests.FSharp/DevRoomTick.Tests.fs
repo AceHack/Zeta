@@ -63,3 +63,15 @@ let ``unknown landmark errors cleanly; tickAll sweeps the whole register`` () =
         Assert.Equal(DevRoom.landmarks.Length, all.Length)
         Assert.True(all |> List.forall (fun r -> not (r.Summary.StartsWith "ERROR")))
     }
+
+[<Fact>]
+let ``the dev room has a door to ITSELF (shape A) that terminates (stations are landmark names, not nested doors)`` () =
+    match DevRoom.enterAny "dev-room" with
+    | Some self ->
+        Assert.Equal("dev-room", self.Landmark)
+        // the self-door lists the landmark NAMES — finite, no recursion into nested doors
+        Assert.Equal<string list>(DevRoom.landmarks, self.Stations |> List.map (fun s -> s.Name))
+    | None -> Assert.Fail "the dev room must have a door to itself"
+    // ordinary landmarks still resolve; the boundary did NOT infinitely expand
+    Assert.True((DevRoom.enterAny "salon").IsSome)
+    Assert.True((DevRoom.enterAny "nope").IsNone)

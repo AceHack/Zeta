@@ -186,3 +186,21 @@ module MeshPong =
                       ScoreB = sb }
             | _ -> None
         | _ -> None
+
+    // ── Pong as NETWORK SONAR (Aaron 2026-06-11): "we KNOW how the game should play out; if it does
+    // not, the uncertainty came from Reticulum." The deterministic match is the known signal (the
+    // harmonic oscillation); any deviation isolates CHANNEL-injected uncertainty — ping-pong, literally.
+
+    /// Locate where a channel injected uncertainty: the FIRST tick at which the observed session's
+    /// crossings differ from the expected session (None = the channel was clean — the game plays out
+    /// exactly as known). This attributes divergence to the membrane, by tick.
+    let channelSonar (expected: RecordedSource.Recording) (observed: RecordedSource.Recording) : int option =
+        let ticks =
+            Set.union (Set.ofSeq (Map.keys expected.Crossings)) (Set.ofSeq (Map.keys observed.Crossings))
+
+        ticks
+        |> Set.toList
+        |> List.sort
+        |> List.tryFind (fun t ->
+            (Map.tryFind t expected.Crossings |> Option.defaultValue [])
+            <> (Map.tryFind t observed.Crossings |> Option.defaultValue []))
