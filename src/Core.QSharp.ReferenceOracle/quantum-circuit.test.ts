@@ -197,7 +197,13 @@ function append(circuit: QuantumCircuit, gate: string, wire: number | readonly n
     return;
   }
 
-  circuit.appendGate(gate, wire, { params });
+  if (gate === "ry" && params[0] !== undefined) {
+    circuit.appendGate(gate, wire, { params: { theta: params[0] } });
+  } else if (gate === "rz" && params[0] !== undefined) {
+    circuit.appendGate(gate, wire, { params: { phi: params[0] } });
+  } else {
+    circuit.appendGate(gate, wire, { params });
+  }
 }
 
 function applyGates(circuit: QuantumCircuit, first: string, second: string) {

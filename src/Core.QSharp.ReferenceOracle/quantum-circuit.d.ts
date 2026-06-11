@@ -4,7 +4,7 @@ declare module "quantum-circuit" {
 
     readonly state: readonly unknown[];
 
-    appendGate(gate: string, wire: number | readonly number[], options?: { readonly params: readonly number[] }): void;
+    appendGate(gate: string, wire: number | readonly number[], options?: { readonly params: readonly number[] | { readonly theta?: number; readonly phi?: number } }): void;
 
     circuitMatrix(): readonly (readonly unknown[])[];
 
