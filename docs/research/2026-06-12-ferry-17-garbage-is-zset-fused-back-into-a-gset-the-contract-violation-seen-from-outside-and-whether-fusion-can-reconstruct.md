@@ -150,6 +150,23 @@ The trade hierarchy this completes: **fusion** (honest projection, new type) · 
 imperfect by theorem, valuable *because* imperfect — if retraction were perfect the skill would
 be a no-op).
 
+**Refinement (Aaron, immediately after, verbatim):**
+
+> repair in the same type, which can't be an inverse. not in that streaming but in the history
+> stream of git it can be revered undone
+
+Correct, and the reason is the ferry's own theorem: **reversibility lives in whichever stream
+still holds the deltas.** In the *live* stream the projection already consolidated — only
+compensation remains. In the *history* stream — git — nothing was erased, so the inverse patch
+exists and `git revert` applies it exactly: **perfect retraction is possible precisely where
+Landauer has not been paid.** Two precisions keep it honest: (1) even git's undo is
+append-only — a revert is a *new* +1 commit carrying the −1 patch; the history stream reverses
+*content* without ever rewriting *itself* (the G-contract holds at the meta level while ℤ runs
+inside — the same two-layer shape as Vera's signature); (2) the form of git undo that does
+erase — `reset`/force-push — is exactly where perfect retraction dies, which is why force-push
+is a gated class in this factory's governance: the gate guards the boundary between the two
+reversibility regimes.
+
 ## Honest bounds
 
 The CRDT anchor is exact (2P-set, tombstone GC, causal stability — real theorems, real
