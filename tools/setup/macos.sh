@@ -96,10 +96,21 @@ if [ -f "$BREW_MANIFEST" ]; then
     { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
     NF > 0 { print }
   ' "$BREW_MANIFEST")"
+  # HOST TIERS — entries may carry tier=<slim|standard|full>; host declares or auto-detects
+  # (workitem 081KTWQZY7F08QG0R0034KN17T).
+  # shellcheck disable=SC1091
+  . "$SETUP_DIR/common/host-tier.sh"
   if [ -n "$PKGS" ]; then
     echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
     # `brew install` is idempotent on already-installed formulae.
-    printf '%s\n' "$PKGS" | while IFS= read -r pkg; do
+    printf '%s\n' "$PKGS" | while IFS= read -r pkg_line; do
+      required_tier="$(zeta_tier_of_line "$pkg_line")"
+      pkg="$(zeta_strip_tier "$pkg_line" | awk '{print $1}')"
+      [ -z "$pkg" ] && continue
+      if ! zeta_tier_allows "$required_tier"; then
+        echo "→ $pkg skipped: requires tier=$required_tier, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+        continue
+      fi
       if brew list --formula "$pkg" >/dev/null 2>&1; then
         brew upgrade "$pkg" >/dev/null 2>&1 || true
       else

@@ -36,7 +36,7 @@ ollama  # CPU-served tiny model for the move-next selector + observe.ts
 # for qcow2 snapshot/restart state preservation. The file-backed zflash
 # image builder uses mtools' mcopy to write ESP payloads into raw images
 # without mounting physical USB devices.
-qemu
+qemu tier=standard
 mtools
 
 # Formal-verification rung 3 — TLAPS (tlapm, TLA+ proof manager) toolchain
@@ -46,7 +46,7 @@ mtools
 # opam = the OCaml package manager that builds tlapm from a pinned source
 # commit (see common/tlaps.sh). The SMT backend (z3) is declared below.
 # Bottled; idempotent (brew install skips if present).
-opam  # OCaml package manager — builds tlapm from source per common/tlaps.sh
+opam tier=standard  # OCaml package manager — builds tlapm from source per common/tlaps.sh
 
 # Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
 # is the default OCI runtime: Apache-2.0, rootless, daemonless. Coexists with an
@@ -54,7 +54,7 @@ opam  # OCaml package manager — builds tlapm from source per common/tlaps.sh
 # /`podman-docker` (they shadow the real docker CLI). macOS one-time bootstrap:
 # `podman machine init && podman machine start`. Version unpinned (fast-mover CLI;
 # brew default) per dep-pin-search-first-authority. Idempotent: brew skips if present.
-podman
+podman tier=standard
 
 # Z3 SMT solver — the formal-verification portfolio's SMT prover (tools/Z3Verify +
 # Formal/Z3.Laws.Tests shell `z3 -in`). Was UNDECLARED (the test self-skips when absent =
@@ -68,7 +68,7 @@ z3
 # "the patterns in R are timeless… scatter plots… to find solid ground over memory space").
 # Pin per dep-pin-search-first (WebSearch 2026-06-08): brew formula `r`, GPL-2; brew default
 # version; idempotent (brew skips if present). Symmetric with apt `r-base` + windows `r`.
-r
+r tier=standard
 
 # tectonic — lean single-binary LaTeX engine (Leslie Lamport's LaTeX on a self-contained XeTeX;
 # Aaron 2026-06-08 "pull in Lamport's LaTeX"). COST-AWARE: a few-MB binary that fetches packages
@@ -76,7 +76,7 @@ r
 # rendering + LaTeX-source as an LLM-readable math representation. Pin per dep-pin-search-first
 # (WebSearch 2026-06-08): brew formula `tectonic`, MIT; idempotent. Symmetric with windows
 # `tectonic` (scoop main). Linux: best-effort gap — see the NOTE in manifests/apt.
-tectonic
+tectonic tier=standard
 gnupg  # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)
 
 # Network plane — Reticulum + Headscale (Aaron 2026-06-10: "we are using Reticulum and

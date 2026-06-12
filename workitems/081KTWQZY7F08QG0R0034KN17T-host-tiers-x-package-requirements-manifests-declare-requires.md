@@ -37,8 +37,24 @@ resolver. Prior art in-repo: one-liner-tools.sh ZETA_INSTALL_FULL opt-in (a 2-ti
 - Applied in dotnet-tools.sh; the diagnostics suite + stryker + fsharp-analyzers tagged standard
   (build/test on slim lanes need none of them; gate lanes default to full).
 
+## Slice 2 (Aaron: "what else we got — do that too")
+
+- `common/host-tier.sh` — THE shared helper: explicit `ZETA_HOST_TIER` wins, else AUTO-DETECT
+  from memory (>=16GB full / >=8GB standard / else slim; unknown hardware degrades to full —
+  permissive, never silently slim); skip messages name declared-vs-detected.
+- Consumers: dotnet-tools.sh (refactored onto the helper), dotnet-workloads.sh (entries may
+  carry tier=), macos.sh brew loop (tier-aware parse — a tier= token no longer reaches
+  `brew install`).
+- brew manifest: qemu/podman/opam/r/tectonic tagged standard (z3 stays slim — tests use it;
+  ollama/hermes stay slim — operator-declared core).
+
 ## Remaining
 
-- Auto-detect host capabilities (mem/cores) instead of/alongside the env declaration.
-- Extend to brew/mise/one-liner manifests (fold ZETA_INSTALL_FULL into the same tiers).
+- apt manifest: all current entries are dotnet-required (slim) — tier the loop when a heavy
+  entry first appears.
+- mise: `.mise.toml` installs wholesale; tiering means splitting the k8s set (k3d/kind/kubectl/
+  helm/kubeconform) out — a real change, decide deliberately.
+- Fold the legacy full-tier gates (ZETA_INSTALL_FULL in one-liner-tools/tlaps, ZETA_INSTALL_QUANTUM)
+  into the same vocabulary.
+- verifiers.sh jars: tests may invoke TLC/Alloy — audit before tiering.
 - Unify with db/capabilities resolver wiring (one cap/support vocabulary across setup + runtime).
