@@ -375,5 +375,5 @@ on next run.
 - `.github/workflows/github-settings-drift.yml` — cadence
   workflow.
 - `docs/FACTORY-HYGIENE.md` row #40 — the hygiene row.
-- `docs/backlog/P1/B-0155-github-settings-ruleset-split-git-native-preferred-aaron-2026-05-01.md`
+- `docs/backlog/P1/081KQGDBJ0008QG0R0028YTDQ2-github-settings-ruleset-split-git-native-preferred-aaron-202.md`
   — the multi-phase refactor row this audit serves.

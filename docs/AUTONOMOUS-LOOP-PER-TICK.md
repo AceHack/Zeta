@@ -39,8 +39,8 @@ Never act on stale state. Minimum refresh:
 - `git fetch origin main && git status` — main HEAD + local state
 - `CronList` — verify the autonomous-loop sentinel is still armed
 - `bun tools/orchestrator-checks/cron-sentinel-mutex.ts --json` — detect concurrent Otto-CLI peer sessions
-  ([B-0530](backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md);
-  Pattern 8 of [B-0519](backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md))
+  ([B-0530](backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05.md);
+  Pattern 8 of [B-0519](backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md))
 
 #### When peers are detected
 

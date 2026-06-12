@@ -52,7 +52,7 @@ Broadcasting these columns over DORA/LLMTV is Moonshot #1's first metric set.
 
 ## Pointers
 
-- `docs/backlog/P2/B-1024-...md` — the ladder this matrix serves (QEMU → microkernel/ISO → Pi → MCU → speak-to-TV).
+- `docs/backlog/P2/081KTSZN10008QG0R00349SM6P.md` — the ladder this matrix serves (QEMU → microkernel/ISO → Pi → MCU → speak-to-TV).
 - `universal/color.md` — the honest-capability rule this table instantiates.
 - B-0830 / B-0823 / B-0853 — the ISO lineage slice 1 boots; B-0725 — accelerator hardware (a future column group).
 - `.github/workflows/` — the evidence source for every ✅ above.

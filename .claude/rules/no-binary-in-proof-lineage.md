@@ -24,5 +24,5 @@ images, forensic logs) — never proofs.
 
 - `docs/PROVEN-COVERAGE-AND-GAPS.md` — the audit (all golden vectors `.json`/hex).
 - The `golden-vectors-*.json` files (cbor/arrow/merkle/bloom/countmin) — the pattern.
-- `docs/backlog/P2/B-0982-four-oracle-multi-format-golden-vector-seeds-*` — the seed doctrine.
+- `docs/backlog/P2/081KT07NV0008QG0R0032MCYER-four-oracle-multi-format-golden-vector-seeds-cbor-json-yaml-*` — the seed doctrine.
 - [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — DST (#4) + idempotency: text golden vectors replay deterministically.
