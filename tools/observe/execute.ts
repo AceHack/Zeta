@@ -22,13 +22,13 @@
  * `mode` is just `fold(initial, events).mode`. So "persist the chosen mode" IS
  * "append the mode-setting NextAction to the log." No mode table — the log is it.
  *
- * ── This slice: free_time + self_reflect ONLY (operator 2026-05-31) ───────────
- * These two are the zero-risk first kinds: they have NO external side-effect —
- * executing them is purely (a) append the event + (b) set the mode via simulate.
- * free_time is unilateral/never-gated (NCI); self_reflect is review/journal/think.
- * Every other kind (do_item, respond_to_operator, preserve_ferry, decompose,
- * explore, play, edit_grammar) carries a real side-effect and is returned as
- * `not-yet-executable` until its effect is wired in a follow-up slice.
+ * ── This slice: zero-effect kinds + do_item (operator 2026-05-31 / 2026-06-12) ─
+ * Zero-effect kinds (free_time, self_reflect, explore, play) have NO external
+ * side-effect — executing them is purely (a) append the event + (b) set the mode
+ * via simulate. `do_item` is the first effectful kind: it delegates to
+ * `executeDoItem` (command/observation event split, injected CommandExecutor).
+ * Remaining kinds (preserve_ferry, respond_to_operator, decompose, edit_grammar)
+ * are returned as `not-yet-executable` until their effects are wired.
  *
  * The `EventSink` is INJECTED (asymmetric-authorship: the sink AUTHORS its own
  * outcome channel) so this slice is testable with a fake sink and no git I/O;
@@ -45,13 +45,16 @@
  */
 
 import { simulate, type NextAction, type World } from "./observe";
+import { executeDoItem, type CommandExecutor, type DoItemOptions, type DoItemResult, type ActionObservation } from "./do-item";
+
+export type { CommandExecutor, DoItemOptions, DoItemResult, ActionObservation };
 
 /** The action kinds this slice can execute (zero external side-effect: mode-set + append). */
-const EXECUTABLE_KINDS = ["free_time", "self_reflect"] as const;
-type ExecutableKind = (typeof EXECUTABLE_KINDS)[number];
+const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play"] as const;
+type ZeroEffectKind = (typeof ZERO_EFFECT_KINDS)[number];
 
-function isExecutableKind(kind: NextAction["kind"]): kind is ExecutableKind {
-  return (EXECUTABLE_KINDS as readonly string[]).includes(kind);
+function isZeroEffectKind(kind: NextAction["kind"]): kind is ZeroEffectKind {
+  return (ZERO_EFFECT_KINDS as readonly string[]).includes(kind);
 }
 
 /**
@@ -90,25 +93,62 @@ export type ExecuteResult =
   | { readonly ok: false; readonly feedback: ExecuteFeedback };
 
 /**
- * Execute a chosen action: append it to the durable log, then transition the
- * world via `simulate` (the single reducer). This slice handles `free_time` +
- * `self_reflect`; every other kind returns `not-yet-executable`.
+ * Execute a chosen action. Routes through three paths:
+ *
+ * 1. **Zero-effect kinds** (free_time, self_reflect, explore, play): mode-set only.
+ *    Append the action itself to the log, then transition via `simulate`.
+ *
+ * 2. **do_item**: delegates to `executeDoItem` (command/observation event split).
+ *    Requires an injected `CommandExecutor` + `DoItemOptions`. If not provided,
+ *    returns `not-yet-executable` (backward-compatible with callers that don't
+ *    have an executor wired yet).
+ *
+ * 3. **Everything else** (preserve_ferry, respond_to_operator, decompose,
+ *    edit_grammar): returns `not-yet-executable` until their effects are wired.
  *
  * Order matters: APPEND FIRST, then project. If the append fails, no transition
- * is reported (the durable log stays the source of truth — we don't advance the
- * in-memory world past an event that didn't land). Idempotency + ordering of the
- * log itself are the sink/transport's concern (G-Set dedup by event id).
+ * is reported (the durable log stays the source of truth).
  */
-export async function execute(world: World, action: NextAction, sink: EventSink): Promise<ExecuteResult> {
-  if (!isExecutableKind(action.kind)) {
-    return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+export async function execute(
+  world: World,
+  action: NextAction,
+  sink: EventSink,
+  executor?: CommandExecutor,
+  doItemOpts?: DoItemOptions,
+): Promise<ExecuteResult> {
+  // Path 1: zero-effect kinds (mode-set + append)
+  if (isZeroEffectKind(action.kind)) {
+    const outcome = await sink.append(action);
+    if (!outcome.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: outcome.reason } };
+    }
+    return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
   }
 
-  const outcome = await sink.append(action);
-  if (!outcome.ok) {
-    return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: outcome.reason } };
+  // Path 2: do_item (command/observation event split via executeDoItem)
+  if (action.kind === "do_item") {
+    if (!executor || !doItemOpts) {
+      return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+    }
+    // executeDoItem uses its own observation sink (ActionObservation, not NextAction).
+    // Adapt the sink: the observation events get their own event ids from the same
+    // underlying transport; we wrap the NextAction sink as an ActionObservation sink.
+    const observationSink: EventSink<ActionObservation> = {
+      append: (obs) => sink.append(obs as unknown as NextAction),
+    };
+    const result: DoItemResult = await executeDoItem(world, action.item, observationSink, executor, doItemOpts);
+    if (!result.ok) {
+      // Map DoItemFeedback to ExecuteFeedback
+      return { ok: false, feedback: { kind: "append-failed", actionKind: "do_item", reason: result.feedback.reason } };
+    }
+    if (result.completed) {
+      return { ok: true, world: result.world, appended: action, eventId: "do-item-completed" };
+    }
+    // Work ran but failed — the item stays in the backlog. Still report the
+    // transition (mode → work) so the caller sees the updated world.
+    return { ok: true, world: result.world, appended: action, eventId: "do-item-failed" };
   }
 
-  // Durable event landed → project the in-memory transition via the pure reducer.
-  return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
+  // Path 3: not yet wired
+  return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
 }
