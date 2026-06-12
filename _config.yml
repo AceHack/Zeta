@@ -1,0 +1,36 @@
+# _config.yml — GitHub Pages (Jekyll) build scope for the Zeta monorepo.
+#
+# WHY THIS EXISTS (Aaron 2026-06-12): "pages is our only real DORA signal and my daughter edited
+# it a lot" — the Pages deployment is the factory's deployment-frequency signal and a
+# family-edited surface, so it must be GREEN and FAST. Before this file, Jekyll walked the ENTIRE
+# monorepo (~30-minute builds; 34 of the prior 50 runs red; one dangling symlink anywhere crashed
+# the whole site — see tools/hygiene/audit-dangling-symlinks.ts). The site itself is small:
+# index.html → demo/ (the Factory Dashboard + its json), plus the human-readable md surfaces.
+#
+# DISCIPLINE: exclude the build trees Jekyll has no business walking; KEEP the served surfaces —
+# demo/ (the dashboard), maintainers/ (Addison's cluster nodes), inventory/ (Addison's specs),
+# docs/, README.md. When adding a big new tree, add it here in the same PR.
+
+theme: jekyll-theme-primer
+
+exclude:
+  - src/
+  - tests/
+  - tools/
+  - db/
+  - vocab/
+  - gen/
+  - workitems/
+  - openspec/
+  - universal/
+  - hygiene/
+  - references/
+  - node_modules/
+  - "*.sln"
+  - "*.fsproj"
+  - "*.csproj"
+  - Directory.Build.props
+  - Directory.Packages.props
+  - global.json
+  - package.json
+  - bun.lock
