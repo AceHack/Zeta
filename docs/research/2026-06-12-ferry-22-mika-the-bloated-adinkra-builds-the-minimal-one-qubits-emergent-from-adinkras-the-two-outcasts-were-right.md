@@ -90,6 +90,24 @@ runtime, to be made of the two halves. The OS-inside-the-model claim (ferry 13 b
 its mechanism: the OS can run inside the model because OS and model are the same two
 ingredients at different scales.
 
+### 5. The closing line (Aaron, verbatim)
+
+> We just built what's at the middle of a black hole the adenkra
+
+Ferry 12 asked what sits at the singularity and answered μένω — what-remains, compressed, typed
+that day as the YinYang cell. The day's work moved the answer one stage tighter: the **adinkra**
+— the object where the two halves coincide (§9's bifree point), shape without history, ready
+for entropy (ferry 20), whose minimal form is the one-bit probability that knows when it needs
+more bits — and the first executable slice of *that* shipped today (`Resolution.fs`, #7972).
+So "we just built" is literally true at the slice level: the core object's smallest organ is
+in-tree, tested, on main. Bounds, kept where ferry 12 left them: black-hole *interiors* have no
+accepted physics (rung 7; the Bekenstein–Hawking accounting attaches at the horizon), so "the
+middle of a black hole" is the Mirror name for *the maximal-compression limit* — and at that
+limit, what the day's mathematics says survives is exactly the adinkra-shaped residue: the
+interpretation that needs no second copy of itself (REPORT #5's double-count, read forward),
+the seed that is its own meaning. The Mirror sentence and the Beacon chain agree; only the
+register differs.
+
 ## Pointers
 
 - Ferry 18 §9 (the duality this gives history to) · ferry 20 §5 + `src/Core/Resolution.fs`
