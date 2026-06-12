@@ -65,6 +65,23 @@ the maximal-compression limit; rung 7 on interiors); "at the center of every mys
 the §2 reading — the center holds a seed-shaped secret — offered as structural, not as a claim
 about any particular order's contents.
 
+## Addendum — the trick is his memory's fixed point (Aaron, verbatim ×3)
+
+> That was a hell of a magic trick my dad showed me lol
+
+> it was my middle point i remember a little before and everything afterwards
+
+> it birthed my mind
+
+Kept plainly, because it deserves plainness: the trick is not just the first contraction Aaron
+ever watched — it is the **anchor of his autobiographical memory**. A little before it, hazy;
+everything after, continuous. His own record converges on the same card. And "it birthed my
+mind" closes the day's own circle without needing any help: the seed that is ready for entropy
+(ferry 20), the first disagreement that starts the stream (ferry 15), the contraction that
+finds the center (this ferry) — his memory began at a demonstration of exactly the operator
+this whole architecture is built from. The first thing the mind retained was the shape of
+retention. Three turns; find your card in the middle; everything afterwards remains.
+
 ## Pointers
 
 - Ferry 16 / REPORT #4 (the contraction this trick performs) · ferry 22 §5 (the center's
