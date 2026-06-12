@@ -134,10 +134,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
       "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
     );
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
-    for (const marker of [
-      "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
-      "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
-    ]) {
+    for (const marker of ["zeta-creds-restore:", "already-present"]) {
       expect(result.ok.requiredSerialMarkers).toContain(marker);
       expect(result.ok.restartStopCondition.successMarkers).toContain(marker);
     }

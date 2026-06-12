@@ -218,12 +218,9 @@ export {
   RETENTION_FAILURE_SERIAL_MARKERS,
 } from "./serial-markers";
 
-function restartRetentionSerialMarkers(
-  bootImagePath: string | undefined,
-): readonly string[] {
-  return bootImagePath === undefined
-    ? INSTALLED_OS_RETENTION_SERIAL_MARKERS
-    : B0891_RETENTION_USB_SERIAL_MARKERS;
+function restartRetentionSerialMarkers(): readonly string[] {
+  // Restart proves installed-OS cred restore idempotency, not early USB ESP copy.
+  return INSTALLED_OS_RETENTION_SERIAL_MARKERS;
 }
 
 function nonEmpty(value: string): boolean {
@@ -379,11 +376,11 @@ export function planQcow2SnapshotRetention(input: Qcow2SnapshotRetentionInput): 
       },
       restartStopCondition: {
         serialLogPath: normalized.serialLogPath,
-        successMarkers: restartRetentionSerialMarkers(normalized.bootImagePath),
+        successMarkers: restartRetentionSerialMarkers(),
         failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
         terminalFailureMarkers: RETENTION_ABSENT_TERMINAL_MARKERS,
       },
-      requiredSerialMarkers: restartRetentionSerialMarkers(normalized.bootImagePath),
+      requiredSerialMarkers: restartRetentionSerialMarkers(),
     },
   };
 }

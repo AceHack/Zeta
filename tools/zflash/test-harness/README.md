@@ -169,7 +169,7 @@ When a scenario transitions to composes-with-existing:
 
 | Scenario | Where it runs | Notes |
 |---|---|---|
-| 1 initial-format | every `build-ai-cluster-iso` PR | `audit-installer-iso-content` + `zflash-file-backed --test` + `qemu-boot-test` |
+| 1 initial-format | every `build-ai-cluster-iso` PR | `audit-installer-iso-content` + `zflash-file-backed --test` + `qemu-boot-test --usb-image` |
 | 2 boot-cluster-up | push / `workflow_dispatch` on ISO workflow | delegates to `qemu-full-install-test.ts` |
 | 3 retention | `workflow_dispatch` on ISO workflow | `ZFLASH_QEMU_RETENTION_EXECUTE=1`; auto-bakes boot image when ISO exists |
 | 4 path-fork | `workflow_dispatch` on ISO workflow | `ZFLASH_QEMU_PATH_FORK_EXECUTE=1` + bootstrap; fork boots stop on B-0891 markers only (one full install in bootstrap) |

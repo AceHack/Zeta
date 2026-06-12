@@ -17,6 +17,7 @@
  *
  * Usage:
  *   bun tools/ci/qemu-boot-test.ts <iso-path>
+ *   bun tools/ci/qemu-boot-test.ts --usb-image <zflash-raw.img>
  *
  * Exit codes:
  *   0 — boot succeeded (login prompt observed within timeout)
@@ -49,8 +50,14 @@ interface BootResult {
 
 type Arch = "x86_64" | "aarch64";
 
+interface BootMedia {
+  readonly kind: "iso" | "usb-image";
+  readonly path: string;
+}
+
 function usage(): never {
   console.error("usage: bun tools/ci/qemu-boot-test.ts <iso-path> [--arch x86_64|aarch64]");
+  console.error("       bun tools/ci/qemu-boot-test.ts --usb-image <zflash-raw.img> [--arch x86_64|aarch64]");
   process.exit(2);
 }
 
@@ -82,10 +89,13 @@ function checkDependencies(arch: Arch): string | null {
   return null;
 }
 
-function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): string[] {
+function buildQemuArgs(arch: Arch, bootMedia: BootMedia, serialLogPath: string): string[] {
   const kvm = existsSync(KVM_PATH);
 
   if (arch === "aarch64") {
+    if (bootMedia.kind === "usb-image") {
+      throw new Error("aarch64 --usb-image boot is not supported yet");
+    }
     // -machine virt + EDK2 UEFI; the PL011 serial (ttyAMA0 — matched by
     // the installer's console= kernel param) lands in the serial log.
     const efi = AARCH64_EFI_CANDIDATES.find((f) => existsSync(f))!;
@@ -94,7 +104,7 @@ function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): stri
       "-m", String(MEMORY_MB),
       "-smp", "2",
       "-bios", efi,
-      "-cdrom", isoPath,
+      "-cdrom", bootMedia.path,
       "-boot", "d",
       "-serial", `file:${serialLogPath}`,
       "-display", "none",
@@ -121,14 +131,25 @@ function buildQemuArgs(arch: Arch, isoPath: string, serialLogPath: string): stri
     "-machine", "q35",
     "-m", String(MEMORY_MB),
     "-smp", "2",
-    "-cdrom", isoPath,
-    "-boot", "d",
     "-serial", `file:${serialLogPath}`,
     "-display", "none",
     "-no-reboot",
     // BIOS instead of UEFI — simpler boot path; ISO supports both but
     // BIOS requires no extra firmware package.
   ];
+
+  if (bootMedia.kind === "usb-image") {
+    args.push(
+      "-drive",
+      `file=${bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
+      "-device",
+      "qemu-xhci,id=xhci",
+      "-device",
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+  } else {
+    args.push("-cdrom", bootMedia.path, "-boot", "d");
+  }
 
   // KVM acceleration when /dev/kvm is available (GitHub Actions
   // ubuntu-24.04 supports nested KVM). Falls back to TCG (slow but
@@ -197,6 +218,20 @@ async function waitForLoginPrompt(
   };
 }
 
+function parseBootMedia(argv: string[]): BootMedia | null {
+  const usbFlag = argv.indexOf("--usb-image");
+  if (usbFlag >= 0) {
+    const path = argv[usbFlag + 1];
+    if (!path) return null;
+    argv.splice(usbFlag, 2);
+    return { kind: "usb-image", path };
+  }
+  const [isoPath] = argv;
+  if (!isoPath) return null;
+  argv.shift();
+  return { kind: "iso", path: isoPath };
+}
+
 async function main(): Promise<never> {
   const argv = process.argv.slice(2);
   const archFlag = argv.indexOf("--arch");
@@ -207,11 +242,11 @@ async function main(): Promise<never> {
     arch = v;
     argv.splice(archFlag, 2);
   }
-  const [isoPath] = argv;
-  if (!isoPath) usage();
+  const bootMedia = parseBootMedia(argv);
+  if (!bootMedia) usage();
 
-  if (!existsSync(isoPath)) {
-    console.error(`[qemu-boot-test] ISO not found: ${isoPath}`);
+  if (!existsSync(bootMedia.path)) {
+    console.error(`[qemu-boot-test] boot media not found: ${bootMedia.path}`);
     process.exit(2);
   }
 
@@ -226,13 +261,19 @@ async function main(): Promise<never> {
 
   const timeoutSeconds = timeoutSecondsFor(arch);
 
-  console.log(`[qemu-boot-test] ISO: ${isoPath}`);
+  console.log(`[qemu-boot-test] Boot media: ${bootMedia.kind} ${bootMedia.path}`);
   console.log(`[qemu-boot-test] Serial log: ${serialLogPath}`);
   console.log(`[qemu-boot-test] Memory: ${MEMORY_MB}MB; timeout: ${timeoutSeconds}s`);
   console.log(`[qemu-boot-test] Expecting login prompt: "${EXPECTED_LOGIN_PROMPT}"`);
 
   console.log(`[qemu-boot-test] Arch: ${arch}`);
-  const qemuArgs = buildQemuArgs(arch, isoPath, serialLogPath);
+  let qemuArgs: string[];
+  try {
+    qemuArgs = buildQemuArgs(arch, bootMedia, serialLogPath);
+  } catch (error) {
+    console.error(`[qemu-boot-test] ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(2);
+  }
   console.log(`[qemu-boot-test] Launching: ${qemuBinary(arch)} ${qemuArgs.join(" ")}`);
 
   const qemu = spawn(qemuBinary(arch), qemuArgs, {

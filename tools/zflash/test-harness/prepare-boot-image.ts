@@ -62,12 +62,12 @@ export function resolveEspOffsetBytesForIso(isoPath: string): number {
 }
 
 export function checkZflashToolchain(): string | null {
-  for (const [bin, installHint] of [
-    ["qemu-img", "qemu-utils"],
-    ["mcopy", "mtools"],
+  for (const [bin, installHint, probeArgs] of [
+    ["qemu-img", "qemu-utils", ["--version"] as const],
+    ["mcopy", "mtools", ["-V"] as const],
   ] as const) {
     try {
-      const result = spawnSync(bin, ["--version"], { encoding: "utf8" });
+      const result = spawnSync(bin, [...probeArgs], { encoding: "utf8" });
       if (result.status !== 0) {
         return `${bin} not usable (exit ${String(result.status)}); install via apt/brew (${installHint})`;
       }

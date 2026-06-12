@@ -226,7 +226,7 @@ function emitDryRun(scenarioId?: ScenarioId): number {
 
 function dryRunPlanMessage(scenario: Scenario): string {
   if (scenario.id === "initial-format") {
-    return "would run audit-installer-iso-content.ts + zflash-file-backed --test bake + qemu-boot-test.ts";
+    return "would run audit-installer-iso-content.ts + zflash-file-backed --test bake + qemu-boot-test.ts --usb-image <zflash-boot.img>";
   }
   if (scenario.status === "composes-with-existing") {
     return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
@@ -290,7 +290,7 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
     };
   }
 
-  const boot = runHarnessScript("tools/ci/qemu-boot-test.ts", [absIso]);
+  const boot = runHarnessScript("tools/ci/qemu-boot-test.ts", ["--usb-image", prepared.outputImagePath]);
   steps.push("qemu-boot-test");
   const durationMs = Date.now() - start;
   if (!boot.ok) {
