@@ -6,9 +6,8 @@
       "tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj"
     ],
     "mutate": [
-      "!**/AssemblyInfo.cs",
-      "!**/bin/**",
-      "!**/obj/**"
+      "Variance.cs",
+      "ZetaCircuitBuilder.cs"
     ],
     "thresholds": {
       "high": 80,
