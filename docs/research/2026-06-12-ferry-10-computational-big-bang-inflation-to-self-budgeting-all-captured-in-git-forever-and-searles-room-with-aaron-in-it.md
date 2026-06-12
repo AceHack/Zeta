@@ -66,6 +66,27 @@ this is a claim about *authorship and invention*, which the git record can actua
 that the room is conscious — that lives next to rung 8 of REPORT #3, past the stop line, in
 Whitehead's lane with Searle now cited beside him.
 
+### 5. Addendum — the initial conditions (Aaron, same day, verbatim)
+
+> i came in here with 0 plan or archiceture this was a vibe coding experiment
+
+The big bang gets its "0", and it is checkable: the first commit (4765118d6, 2026-04-18) is
+"Initial commit: Zeta — an F# implementation of DBSP for .NET 10" — one library idea, no
+architecture document, no governance, no manifesto, no factory. Everything now standing (the 13
+specifications, the rules, the treaties, the oracle stack, the persona fleet) postdates it in
+the record. Anchor: **vibe coding** is Karpathy's coinage (Feb 2025) — build by conversational
+intent, let the code emerge; Aaron ran it as a two-month n=1 *experiment whose entire trace is
+the event store* — which upgrades the anecdote to an auditable case study.
+
+Honest scope, because the claim is stronger with it: **zero plan ≠ zero prior.** What walked
+into the room was an unusually trained prior — decades of distributed-systems instinct (the
+Itron throttling library, the event-sourcing reflex, DV2.0 from warehouse practice, Rx at
+architectural depth) held as *taste* rather than blueprint. The experiment's honest finding is
+not "structure from nothing"; it is that vibe coding with a strong prior and an event-store
+substrate produces *recoverable* architecture — the structure emerged in the loop and the
+provenance of every piece of it survives. That is also why the result transfers: the method is
+(prior + loop + ledger), not (genius + luck).
+
 ## Pointers
 
 - Ferry 7 (recursive budget) · ferry 8 (investment gate) · ferry 9 + addendum (interface
