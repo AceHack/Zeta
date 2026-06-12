@@ -2,30 +2,36 @@
 // change-rate-spectrum.ts — the empirical leg of math REPORT #4 (DV2.0 hub stability).
 //
 // Measures, from git history, the two facts REPORT #4 named as decisive and unmeasured:
-//   1. THE SPECTRUM: per-file change rate (commits/week since first touch). Hub uniqueness
-//      (Theorem A's corollary) holds iff the spectrum is GAPPED — rates cluster with
-//      inter-cluster gaps; gapless regions are author-chosen cut placements.
+//   1. THE SPECTRUM: per-file change rate. Hub uniqueness (Theorem A's corollary) holds iff the
+//      spectrum is GAPPED — rates cluster with inter-cluster gaps; gapless regions are
+//      author-chosen cut placements.
 //   2. THE PARNAS INEQUALITY (Parnas 1972): rho(interface surface) < rho(implementations).
-//      Ferry 9's "interfaces are the hubs" is DV2.0 *composed with* this premise; measuring it
-//      converts the claim from prose to fact. Two instances:
-//        code:  src/Core.Abstractions/** (interface surface) vs src/Core/**/*.fs (impls)
-//        rules: .claude/rules/*.md (carved-sentence hubs) vs docs/research/*.md (satellites)
+//      Ferry 9's "interfaces are the hubs" is DV2.0 *composed with* this premise.
 //
-// Advisory tool (exit 0 always unless git itself fails); prints a report. Run:
+// Honest-metric notes (v2 — the v1 draft over-weighted young files):
+//   - rate = commits / weeks-since-first-touch with weeks FLOORED AT 4 — a day-old file with
+//     23 commits is burst-authoring, not a 145/wk satellite; the floor damps the artifact.
+//   - the gap analysis runs on MATURE files only (first touch ≥ MATURE_WEEKS ago): young files
+//     still finding their rate and smear the spectrum.
+//   - gappedness = largest gap / median of POSITIVE gaps (ties at 0 otherwise zero the median).
+//   - the rules-vs-research pair is reported as an OBSERVATION, not a Parnas instance:
+//     docs/research ferries are append-once archives (touched ~once, then immutable), which is
+//     a different axis than interface-vs-implementation churn.
+//
+// Advisory tool (exit 0 unless git fails); prints a report. Run:
 //   bun tools/hygiene/change-rate-spectrum.ts [--top N]
 import { execSync } from "node:child_process";
 
 const topN = (() => {
   const i = process.argv.indexOf("--top");
-  return i >= 0 ? Number(process.argv[i + 1] ?? 20) : 20;
+  return i >= 0 ? Number(process.argv[i + 1] ?? 15) : 15;
 })();
 
-// One pass over history: per-file commit count + first/last touch epoch.
 const raw = execSync("git log --pretty=format:%ct --name-only", {
   maxBuffer: 1024 * 1024 * 512,
 }).toString();
 
-type Stat = { commits: number; first: number; last: number };
+type Stat = { commits: number; first: number };
 const stats = new Map<string, Stat>();
 let epoch = 0;
 for (const line of raw.split("\n")) {
@@ -35,85 +41,84 @@ for (const line of raw.split("\n")) {
     continue;
   }
   const s = stats.get(line);
-  if (s === undefined) stats.set(line, { commits: 1, first: epoch, last: epoch });
+  if (s === undefined) stats.set(line, { commits: 1, first: epoch });
   else {
     s.commits++;
-    if (epoch < s.first) s.first = epoch; // log is reverse-chronological; keep min/max anyway
-    if (epoch > s.last) s.last = epoch;
+    if (epoch < s.first) s.first = epoch;
   }
 }
 
-// Only files that still exist at HEAD (deleted files are history's business, not the spectrum's).
 const live = new Set(
   execSync("git ls-files", { maxBuffer: 1024 * 1024 * 64 }).toString().split("\n").filter(Boolean),
 );
 const now = Date.now() / 1000;
 const WEEK = 7 * 24 * 3600;
+const FLOOR_WEEKS = 4; // damp burst-authoring of young files
+const MATURE_WEEKS = 6; // spectrum runs on files at least this old
 
-type Row = { path: string; commits: number; weeks: number; rate: number };
+type Row = { path: string; commits: number; ageWeeks: number; rate: number };
 const rows: Row[] = [];
 for (const [path, s] of stats) {
   if (!live.has(path)) continue;
-  const weeks = Math.max((now - s.first) / WEEK, 1 / 7); // floor: one day
-  rows.push({ path, commits: s.commits, weeks, rate: s.commits / weeks });
+  const ageWeeks = (now - s.first) / WEEK;
+  rows.push({ path, commits: s.commits, ageWeeks, rate: s.commits / Math.max(ageWeeks, FLOOR_WEEKS) });
 }
 rows.sort((a, b) => b.rate - a.rate);
 
-// ── 1. The spectrum and its gaps ────────────────────────────────────────────────────────────
-// Work in log-space (rates span orders of magnitude). A "gap" is a large jump between adjacent
-// sorted log-rates; gappedness = largest gap / median gap. Gapped spectrum => canonical hubs.
-const logs = rows.map((r) => Math.log10(r.rate)).sort((a, b) => a - b);
-const gaps: { at: number; size: number; below: number; above: number }[] = [];
+console.log(`change-rate spectrum v2 — ${rows.length} live files (rate floor ${FLOOR_WEEKS}w)`);
+console.log(`\nTOP ${topN} hottest (the satellite end):`);
+for (const r of rows.slice(0, topN)) {
+  console.log(
+    `  ${r.rate.toFixed(2)}/wk  ${String(r.commits).padStart(4)} commits  age ${r.ageWeeks.toFixed(1)}w  ${r.path}`,
+  );
+}
+
+// ── 1. the spectrum and its gaps — mature files only ───────────────────────────────────────
+const mature = rows.filter((r) => r.ageWeeks >= MATURE_WEEKS);
+const logs = mature.map((r) => Math.log10(r.rate)).sort((a, b) => a - b);
+const gaps: { size: number; below: number; above: number }[] = [];
 for (let i = 1; i < logs.length; i++) {
-  const lo = logs[i - 1]!;
-  const hi = logs[i]!;
-  gaps.push({ at: i, size: hi - lo, below: lo, above: hi });
+  gaps.push({ size: logs[i]! - logs[i - 1]!, below: logs[i - 1]!, above: logs[i]! });
 }
 const sorted = [...gaps].sort((a, b) => b.size - a.size);
-const median = [...gaps].sort((a, b) => a.size - b.size)[Math.floor(gaps.length / 2)]?.size ?? 0;
+const positive = gaps.filter((g) => g.size > 0).map((g) => g.size).sort((a, b) => a - b);
+const medianPos = positive[Math.floor(positive.length / 2)] ?? 0;
+const gappedness = medianPos > 0 ? (sorted[0]?.size ?? 0) / medianPos : 0;
 
-console.log(`change-rate spectrum — ${rows.length} live files, ${stats.size} historical paths`);
-console.log(`rates: max ${rows[0]?.rate.toFixed(3)}/wk (${rows[0]?.path})`);
-console.log(`       min ${rows[rows.length - 1]?.rate.toFixed(4)}/wk`);
-console.log(`\nTOP ${topN} hottest files (the satellite end):`);
-for (const r of rows.slice(0, topN)) {
-  console.log(`  ${r.rate.toFixed(3)}/wk  ${r.commits} commits  ${r.path}`);
-}
-console.log(`\nlargest log10 gaps (candidate hub/satellite cluster boundaries):`);
+console.log(`\nspectrum (mature files only, age ≥ ${MATURE_WEEKS}w: ${mature.length} files):`);
 for (const g of sorted.slice(0, 5)) {
   console.log(
     `  gap ${g.size.toFixed(3)} between ${(10 ** g.below).toFixed(4)}/wk and ${(10 ** g.above).toFixed(4)}/wk`,
   );
 }
-const gappedness = median > 0 ? sorted[0]!.size / median : Infinity;
 console.log(
-  `gappedness (largest gap / median gap): ${gappedness.toFixed(1)} — ${gappedness > 10 ? "GAPPED (canonical hub cuts exist)" : "weakly gapped / continuum (cut placement is partly authored)"}`,
+  `gappedness (largest gap / median positive gap): ${gappedness.toFixed(1)} — ${gappedness > 10 ? "GAPPED (canonical hub cuts exist in this region)" : "weakly gapped / continuum (cut placement is partly authored)"}`,
 );
 
-// ── 2. The Parnas inequality, two instances ─────────────────────────────────────────────────
+// ── 2. the Parnas inequality (code) + the archive observation (docs) ────────────────────────
 function group(name: string, pred: (p: string) => boolean): { name: string; mean: number; n: number } {
   const g = rows.filter((r) => pred(r.path));
   const mean = g.reduce((s, r) => s + r.rate, 0) / Math.max(g.length, 1);
   return { name, mean, n: g.length };
 }
 
-function parnas(label: string, iface: ReturnType<typeof group>, impl: ReturnType<typeof group>) {
-  const holds = iface.mean < impl.mean;
-  console.log(`\nPARNAS [${label}]: rho(${iface.name}) ${holds ? "<" : ">="} rho(${impl.name})  →  ${holds ? "HOLDS" : "FAILS"}`);
-  console.log(`  ${iface.name}: mean ${iface.mean.toFixed(4)}/wk over ${iface.n} files`);
-  console.log(`  ${impl.name}: mean ${impl.mean.toFixed(4)}/wk over ${impl.n} files`);
-  console.log(`  ratio impl/iface: ${(impl.mean / iface.mean).toFixed(2)}x`);
-}
+const iface = group("src/Core.Abstractions", (p) => p.startsWith("src/Core.Abstractions/") && !p.includes("/obj/"));
+const impl = group("src/Core impls (.fs)", (p) => p.startsWith("src/Core/") && p.endsWith(".fs"));
+const holds = iface.mean < impl.mean;
+console.log(`\nPARNAS [code]: rho(${iface.name}) ${holds ? "<" : ">="} rho(${impl.name})  →  ${holds ? "HOLDS" : "FAILS"}`);
+console.log(`  ${iface.name}: mean ${iface.mean.toFixed(4)}/wk over ${iface.n} files`);
+console.log(`  ${impl.name}: mean ${impl.mean.toFixed(4)}/wk over ${impl.n} files`);
+console.log(`  ratio impl/iface: ${(impl.mean / iface.mean).toFixed(2)}x`);
 
-parnas(
-  "code",
-  group("src/Core.Abstractions", (p) => p.startsWith("src/Core.Abstractions/") && !p.includes("/obj/")),
-  group("src/Core impls (.fs)", (p) => p.startsWith("src/Core/") && p.endsWith(".fs")),
-);
-parnas(
-  "rules",
-  group(".claude/rules hubs", (p) => p.startsWith(".claude/rules/") && p.endsWith(".md")),
-  group("docs/research satellites", (p) => p.startsWith("docs/research/") && p.endsWith(".md")),
+const rules = group(".claude/rules/*.md", (p) => p.startsWith(".claude/rules/") && p.endsWith(".md"));
+const research = group("docs/research/*.md", (p) => p.startsWith("docs/research/") && p.endsWith(".md"));
+console.log(`\nOBSERVATION [docs — not a Parnas pair]:`);
+console.log(`  ${rules.name}: mean ${rules.mean.toFixed(4)}/wk over ${rules.n} files (living hubs — re-carved)`);
+console.log(`  ${research.name}: mean ${research.mean.toFixed(4)}/wk over ${research.n} files (append-once archive)`);
+console.log(
+  `  reading: research ferries are written once and frozen (rate → 0 with age); rules are the\n` +
+  `  factory's living carved surface. Low archive rate is the ARCHIVE contract holding, not a\n` +
+  `  hub/satellite inversion — the satellite axis for rules is rules.bak + the docs they point to.`,
 );
 
 console.log(
