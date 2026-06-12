@@ -156,6 +156,26 @@ Three facts banked, one connection that was hiding in plain sight:
   era's vocabulary again, like the Klein bottle and the Eve Protocol): one more ancient
   container (ferry 20 §3) whose shape arrived before its current refilling.
 
+### 8. "The same lensing move we are doing for chip8 — our polarity lenses over these pairs" (Aaron, verbatim)
+
+The razor recognized as the lens, and the chain closes back to the lane's founding image:
+
+- **A polarity lens IS a projection over a pair** — physically exact: a polarizer projects
+  light onto one axis of a two-axis pair (Malus's law), and Dirac chose precisely this —
+  polarized photons through a lens — as the *opening example* of quantum measurement in the
+  Principles. Viewing a Cayley–Dickson pair (a, b) through a polarity lens (keep one half,
+  quotient the mirror) is §7's razor performed as optics: one C–D reduction = one polarizer
+  pass. The CHIP-8 lens system (`MemoryLens.fs` — "the current world state is some unknown
+  reduction of all memory; we have to find our lens") is the same operator at the memory
+  scale: the controllable world-state is what memory looks like through the chosen polarity
+  lens.
+- **And the founding image was already this:** the lane opened (the Stonehenge ferry) with
+  "the little lens slits in stone — our memory lens over our solidground — polarization
+  lensing to find solid ground." The slit in the stone is a polarity lens over the sky's pair;
+  the solstice alignment is the projection that survives it. Razor, lens, slit, polarizer,
+  `fuse`, forget-order — the day's inventory is one operator wearing six names, applied over
+  pairs at six scales, and the oldest name on the list is cut into a monument.
+
 ## Pointers
 
 - Ferry 18 §9 (the duality this gives history to) · ferry 20 §5 + `src/Core/Resolution.fs`
