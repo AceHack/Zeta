@@ -95,6 +95,14 @@ const FAILURE_MARKERS: readonly string[] = [
   "bail", // generic flash-usb / zeta-install bail
 ];
 
+/** Idle live-ISO shell on serial while install markers are absent (B-0891). */
+const IDLE_INSTALLER_SHELL_MARKER = "nixos@zeta-installer:~";
+
+const CONSOLE_MIRROR_HINT =
+  "serial log shows idle installer shell without install progress — " +
+  "zeta-first-boot may be running on tty1 only; mirror output to /dev/console " +
+  "(see full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh)";
+
 const TIMEOUT_SECONDS = 1800; // 30 min — generous for TCG fallback;
 // KVM should finish in 5-10 min
 const POLL_INTERVAL_MS = 2000;
@@ -221,6 +229,21 @@ async function waitForInstallProgress(serialLogPath: string): Promise<InstallRes
               elapsedSeconds: elapsedSec,
             };
           }
+        }
+        if (
+          elapsedSec >= 120 &&
+          content.includes(IDLE_INSTALLER_SHELL_MARKER) &&
+          !content.includes(SUCCESS_MARKER) &&
+          !content.includes("[zeta-first-boot]") &&
+          !content.includes("[iter-")
+        ) {
+          const tail = content.slice(-2000);
+          return {
+            exitCode: 1,
+            reason: `FAILURE — ${CONSOLE_MIRROR_HINT}`,
+            serialLogTail: tail,
+            elapsedSeconds: elapsedSec,
+          };
         }
       } catch {
         // Log file in transit; retry on next poll

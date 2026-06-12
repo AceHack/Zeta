@@ -295,6 +295,8 @@
       Type = "idle";
       ExecStart = "/run/current-system/sw/bin/zeta-first-boot";
       StandardInput = "tty";
+      # tty1 for the operator; zeta-first-boot.sh tees the same stream to
+      # /dev/console so QEMU serial (B-0891) sees [iter-5.1] + retention markers.
       StandardOutput = "tty";
       StandardError = "tty";
       TTYPath = "/dev/tty1";

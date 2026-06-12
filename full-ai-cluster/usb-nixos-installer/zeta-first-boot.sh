@@ -25,6 +25,16 @@
 
 set -uo pipefail
 
+# B-0891: mirror first-boot + zeta-install progress to the kernel console.
+# zeta-first-boot.service binds stdout to tty1 for the operator; QEMU and
+# CI harnesses capture serial (console=ttyS0 → /dev/console). Without this
+# tee, [iter-5.1] and retention markers never appear in serial logs even
+# when install succeeds on tty1.
+if [[ -w /dev/console ]]; then
+  exec 3>&1
+  exec > >(/run/current-system/sw/bin/tee -a /dev/console >&3) 2>&1
+fi
+
 CONF=/etc/zeta-firstboot.conf
 [[ -f "$CONF" ]] && . "$CONF"
 HOST="${HOST:-control-plane}"
