@@ -61,6 +61,23 @@ Done below the horizon it is compaction (LSM merge, git gc, B-1036 rung 5's hist
 done above it, it is a contract violation with a resurrection bug attached. The difference is
 not the operation — it is *where the membrane says the past is no longer owed*.
 
+### Addendum — Vera types the boundary (same day, verbatim)
+
+> Vera: Yes. In implementation terms I'd name it as a projection/reconstruction boundary:
+> `fuse : ZSet<'a> -> GSet<'fused>` or `tryFuse` when invariants can fail. Outside sees one
+> monotone fused fact; inside keeps the signed deltas that made it true.
+
+The ferry's whole content, compressed into a signature. Three things the typing gets exactly
+right: (1) **`'a` vs `'fused`** — the type parameter *changes* across the boundary: the fused
+fact is not the same kind of thing as the deltas, so the type system itself forbids pretending
+the projection is lossless. (2) **`tryFuse`** — the causal-stability check surfaces as a
+*refusal*, not an exception (the repo's Result-over-exception convention): fusing above the
+horizon doesn't throw, it is *declined*, which makes §1's theorem a compile-visible contract
+rather than a runtime surprise. (3) **Outside monotone / inside signed** — the grey hole's
+two faces as an API: the public face honors the G-contract (open/closed, §2), the private face
+keeps the Z-history that made it true (the log remains the authority — DurableDiplomacy's law).
+The membrane, typed. (Captured from Vera's lane; her worktree owns any implementation.)
+
 ## Honest bounds
 
 The CRDT anchor is exact (2P-set, tombstone GC, causal stability — real theorems, real
