@@ -31,3 +31,16 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
 ];
 
 export const RETENTION_ABSENT_TERMINAL_MARKERS: readonly string[] = ["nixos@zeta-installer:~"];
+
+/** Emitted on tty1 and mirrored to ttyS0 while zeta-first-boot.service runs. */
+export const FIRST_BOOT_PROGRESS_SERIAL_MARKERS: readonly string[] = [
+  "Zeta cluster installer",
+  "Role selected:",
+  "[3/3] Running zeta-install",
+  "[zeta-first-boot]",
+];
+
+/** serial-getty autologin on ttyS0 can appear before mirrored first-boot output. */
+export function serialFirstBootInProgress(serialOutput: string): boolean {
+  return FIRST_BOOT_PROGRESS_SERIAL_MARKERS.some((marker) => serialOutput.includes(marker));
+}

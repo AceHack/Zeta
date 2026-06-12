@@ -63,6 +63,7 @@ import { execFileSync, spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { serialFirstBootInProgress } from "../../src/Core.TypeScript/zflash/test-harness/serial-markers";
 
 // Success marker: the `[iter-5.1]` prefix appears at the wifi-persistence
 // step in zeta-install.sh (Step 6.7; line 527). This is the correct
@@ -235,7 +236,8 @@ async function waitForInstallProgress(serialLogPath: string): Promise<InstallRes
           content.includes(IDLE_INSTALLER_SHELL_MARKER) &&
           !content.includes(SUCCESS_MARKER) &&
           !content.includes("[zeta-first-boot]") &&
-          !content.includes("[iter-")
+          !content.includes("[iter-") &&
+          !serialFirstBootInProgress(content)
         ) {
           const tail = content.slice(-2000);
           return {

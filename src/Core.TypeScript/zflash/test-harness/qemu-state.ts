@@ -5,6 +5,7 @@ import {
   INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
+  serialFirstBootInProgress,
 } from "./serial-markers";
 
 /**
@@ -622,7 +623,13 @@ function runManagedCommandUntilSerialMarkers(
     }
 
     const terminalFailureMarker = firstMatchedMarker(phaseSerialOutput, stopCondition.terminalFailureMarkers ?? []);
-    if (terminalFailureMarker !== undefined) {
+    if (
+      terminalFailureMarker !== undefined &&
+      !(
+        terminalFailureMarker === "nixos@zeta-installer:~" &&
+        serialFirstBootInProgress(phaseSerialOutput)
+      )
+    ) {
       stopManagedProcess(managed, "SIGTERM", pollIntervalMs);
       return {
         step,
