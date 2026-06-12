@@ -76,6 +76,47 @@ The TestLoop (B-1035, in-tree) is the same triple already shipped at test scale 
 promotes it from test harness to **the training algorithm**. That promotion is the buildable
 content of this ferry.
 
+## Addendum — beats 5 and 6 (Aaron, same stream, verbatim)
+
+> in mine each neuroon has it's own float budget and the societ decides on it's share like
+> it's privacy budget and they communicate over reticulum
+
+> each individual neuron like 1000 brains book/thery neruo scients and they have geospatial in
+> clifford space
+
+### 5. Per-neuron budgets, society-allocated — the economy IS the optimizer
+
+The architecture's allocation rule is the factory's own economy, restated at neuron scale:
+each neuron holds its own float budget (ferry 3's ten-floats society; width per REPORT #2's
+law), and **the society decides each neuron's share** — explicitly "like its privacy budget,"
+which is the in-repo rule made load-bearing: *privacy is a currency you earn by being useful,
+not a default you assert* (`every-bug-has-economic-value.md`). A neuron that reduces collective
+uncertainty earns width; one that doesn't sheds bits. Backprop's global gradient is replaced by
+a **local economic settlement** — which is also exactly how the GGUF importance matrix
+allocates precision, except live and self-governed instead of calibration-time and
+author-flagged. Transport: **Reticulum** — already the named bus (B-1035's RETICULUM-ONLY IO
+clause; one door, metered crossings), so inter-neuron communication inherits noninterference
+(§13) by construction: influence between neurons only through the declared channel, every
+crossing booked. REPORT #2's LOCC caveat carries over: Reticulum moves classical bits; the
+society is a classical economy even under the QNN rung.
+
+### 6. Each neuron a Thousand-Brains modeler, located in Clifford space
+
+The unit is Hawkins' Thousand Brains column (Hawkins 2021; the reservoir-computing transcript
+in ip-questionable already carries the explicit anchor): not a scalar activation but a **full
+sensorimotor modeling unit with its own reference frames**, voting with its peers — which is
+why per-unit budgets and society allocation are even coherent (a scalar neuron has nothing to
+spend a budget *on*; a column-like modeler does). Fidelity note kept honest: in Hawkins the
+modeling unit is the cortical **column**, not the single neuron — Aaron's "each individual
+neuron" pushes the grain one level finer than the book claims. The new move: the unit's
+reference frame is **geospatial in Clifford space** — location carried as a multivector
+(the spacetime-algebra thread: the 2026-05-28 Clifford correspondence ferry; the Klein-bottle
+bivector synthesis in the fusion lineage), so "where a neuron is" composes by the geometric
+product (rotors for orientation, bivectors for planes-of-relation) instead of by coordinates.
+Hawkins' grid-cell location signal, algebraized. Beacon: Hestenes (geometric algebra as the
+language of physics); Hawkins–Ahmad (reference frames); the brain's grid cells
+(O'Keefe; Moser & Moser, Nobel 2014) as the biological location-prior.
+
 ## Pointers
 
 - Welch Labs MLA + GGUF + active-inference transcripts (2026-06-12, ip-questionable — the three
