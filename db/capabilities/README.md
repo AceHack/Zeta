@@ -7,6 +7,8 @@ The data half of `universal/port`: capabilities named by ZetaId (the registry mi
 support rows per (system, language) carrying the LADDER status — live / injected / mock /
 absent — so a resolver (or a human) reads what a host can bind before asking. Format =
 MediaLines (our own dogfood): `cap` rows declare, `support` rows place. Per-emu ledgers live at
-`db/emus/<machine>/capabilities.lines` (the chip8 one is first). Follow-ups: a lint (support
-rows must reference declared caps; cap ZetaIds must resolve on the shelf) and resolver wiring —
-this ledger becomes the hostLive/granted input the ladders read.
+`db/emus/<machine>/capabilities.lines` (the chip8 one is first). The promised lint + resolver landed 2026-06-12: `Zeta.Core.CapabilityLedger` (parse / `resolve`
+with re-planning refusals / `systemsAtLeast` / `lint`) — pure over MediaLines, no IO in the
+module; CI sweeps BOTH real ledgers through the lint via tests/Tests.FSharp/CapabilityLedger
+.Tests.fs (dangling support rows, alien statuses, and dark caps all fail the gate). Next: feed
+`systemsAtLeast` into the inference/host ladders as the hostLive/granted input.

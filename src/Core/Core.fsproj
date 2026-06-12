@@ -236,6 +236,7 @@
     <Compile Include="Braid.fs" />
     <Compile Include="MediaLines.fs" />
     <Compile Include="CartridgeLaw.fs" />
+    <Compile Include="CapabilityLedger.fs" />
     <Compile Include="BoundaryLight.fs" />
     <Compile Include="GeneratorRegistry.fs" />
     <Compile Include="ZetaIdViz.fs" />

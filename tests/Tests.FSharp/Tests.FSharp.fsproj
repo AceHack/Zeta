@@ -185,6 +185,7 @@
     <Compile Include="TestLoop.Host.fs" />
     <Compile Include="Ben.Tests.fs" />
     <Compile Include="BenPort.Tests.fs" />
+    <Compile Include="CapabilityLedger.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />
