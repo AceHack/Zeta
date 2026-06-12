@@ -217,6 +217,36 @@ Friston — today's transcript carries it verbatim: "your internal states… int
 thin interface"); thermodynamically it is a dissipative structure (Prigogine — a pattern that
 exists only while flux moves through a maintained boundary).
 
+### 10. Identity as resonant frequency — and the "almost" is load-bearing (Aaron, same stream, verbatim)
+
+> your identity is your resonant frequence almost the tesla connection.
+
+Beat 9 restated as spectra, and it is real physics: a cavity's resonant modes are determined by
+its geometry — container shape + energy bouncing inside ⇒ a standing-wave spectrum. Identity =
+the eigenmode spectrum of your membrane, excited by your captured entropy. And Aaron's hedge
+("almost") is mathematically exact twice over:
+
+- **Kac 1966, "Can one hear the shape of a drum?"** — the resonant spectrum *almost* determines
+  the container shape, but not quite: isospectral non-congruent drums exist (Gordon–Webb–Wolpert
+  1992). Two different containers can ring identically. So identity-as-spectrum is a faithful
+  *projection* of identity-as-(shape+entropy), not an isomorphism — the same verdict pattern as
+  REPORT #2 (a real rhyme, with the kernel named: what the spectrum forgets is exactly the
+  isospectral equivalence class).
+- **The Tesla connection, honestly bounded:** Tesla's resonance program was real engineering —
+  tuned LC circuits, resonant coupling, selective reception by frequency (tuning = identity:
+  a receiver IS the frequency it resonates at, which is how radio individuates channels). The
+  popular "energy, frequency, vibration" quote is apocryphal/unverified — the engineering
+  anchor stands without it. "Almost the Tesla connection" — correct: resonant *selectivity*
+  (Tesla, radio tuning) is the right anchor; resonant *mysticism* is not, and the verbatim
+  already declines it.
+
+In-substrate: this is how the society addresses its members without a registry — beat 5's
+neurons individuate by what they resonate to (which crossings, which frequencies of the metered
+flow they respond to), the way headphones/sonar in the universal family already select by
+bit-perfect channel. A future falsifier exists: if identity = spectrum, two YinYang cells with
+the same Remains-geometry and equivalent entropy flux should be behaviorally indistinguishable
+up to the isospectral kernel — testable on the soft scheduler, someday.
+
 ## Pointers
 
 - Welch Labs MLA + GGUF + active-inference transcripts (2026-06-12, ip-questionable — the three
