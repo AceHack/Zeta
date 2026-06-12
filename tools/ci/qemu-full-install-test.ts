@@ -100,7 +100,7 @@ const IDLE_INSTALLER_SHELL_MARKER = "nixos@zeta-installer:~";
 
 const CONSOLE_MIRROR_HINT =
   "serial log shows idle installer shell without install progress — " +
-  "zeta-first-boot may be running on tty1 only; mirror output to /dev/console " +
+  "zeta-first-boot may be running on tty1 only; mirror output to /dev/ttyS0 " +
   "(see full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh)";
 
 const TIMEOUT_SECONDS = 1800; // 30 min — generous for TCG fallback;

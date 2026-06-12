@@ -25,14 +25,21 @@
 
 set -uo pipefail
 
-# B-0891: mirror first-boot + zeta-install progress to the kernel console.
-# zeta-first-boot.service binds stdout to tty1 for the operator; QEMU and
-# CI harnesses capture serial (console=ttyS0 → /dev/console). Without this
-# tee, [iter-5.1] and retention markers never appear in serial logs even
-# when install succeeds on tty1.
-if [[ -w /dev/console ]]; then
+# B-0891: mirror first-boot + zeta-install progress to the serial UART.
+# zeta-first-boot.service binds stdout to tty1 for the operator; QEMU/CI
+# harnesses poll ttyS0 (x86) or ttyAMA0 (aarch64). Kernel cmdline lists
+# console=tty1 last, so /dev/console is tty1 — tee there is a no-op for
+# serial. Mirror to the hardware UART instead.
+_b0891_serial_dev=""
+for _dev in /dev/ttyS0 /dev/ttyAMA0; do
+  if [[ -w "$_dev" ]]; then
+    _b0891_serial_dev="$_dev"
+    break
+  fi
+done
+if [[ -n "$_b0891_serial_dev" ]]; then
   exec 3>&1
-  exec > >(/run/current-system/sw/bin/tee -a /dev/console >&3) 2>&1
+  exec > >(/run/current-system/sw/bin/tee -a "$_b0891_serial_dev" >&3) 2>&1
 fi
 
 CONF=/etc/zeta-firstboot.conf

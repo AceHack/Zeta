@@ -632,7 +632,7 @@ function runManagedCommandUntilSerialMarkers(
         stderr:
           `terminal marker observed before required serial markers: ${terminalFailureMarker}; ` +
           `still waiting for ${stopCondition.successMarkers.join(", ")}. ` +
-          `If install is progressing on tty1 only, ensure zeta-first-boot mirrors to /dev/console (B-0891).`,
+          `If install is progressing on tty1 only, ensure zeta-first-boot mirrors to /dev/ttyS0 (B-0891).`,
       };
     }
 

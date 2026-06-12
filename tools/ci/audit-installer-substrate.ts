@@ -127,8 +127,8 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "ETHERNET_WAIT_SECS", // eth-30s wait
       "nmtui", // wifi setup TUI launch
       "zeta-install", // calls into zeta-install.sh after network up
-      "/dev/console", // B-0891 serial mirror for QEMU harness
-      "tee -a /dev/console", // preserves tty1 + mirrors to kernel console
+      "/dev/ttyS0", // B-0891 serial mirror target (x86 QEMU / CI)
+      "tee -a", // preserves tty1 + mirrors to serial UART
     ],
     rationale: "first-boot script must include eth-wait + nmtui + zeta-install call",
   },
