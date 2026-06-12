@@ -290,6 +290,7 @@
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
     <Compile Include="AdinkraViz.fs" />
+    <Compile Include="DashedWalk.fs" />
     <Compile Include="LayoutEngine.fs" />
     <Compile Include="ShapeRender.fs" />
     <Compile Include="ShapeAcceptance.fs" />

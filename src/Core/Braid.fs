@@ -103,6 +103,19 @@ module Braid =
     let writhe (b: int list) : int =
         b |> List.sumBy (fun c -> if c > 0 then 1 else -1)
 
+    /// Per-pair SIGNED crossing load: (positive, negative) crossing counts per adjacent
+    /// strand-pair. REPORT #5 §2's refinement of `pairLoad` — the word-level sign record (NOT a
+    /// braid invariant: H₁(Bₙ) = ℤ means only the writhe survives the Artin relations; this is
+    /// word data, which is exactly where the dashed-walk span lives).
+    let signedPairLoad (n: int) (b: int list) : Map<int, int * int> =
+        let counts =
+            b
+            |> List.groupBy (fun c -> abs c - 1)
+            |> List.map (fun (i, cs) ->
+                i, (cs |> List.filter (fun c -> c > 0) |> List.length, cs |> List.filter (fun c -> c < 0) |> List.length))
+            |> Map.ofList
+        [ 0 .. n - 2 ] |> List.map (fun i -> i, defaultArg (counts.TryFind i) (0, 0)) |> Map.ofList
+
     /// Per-pair crossing load: how many crossings (either sign) act on each adjacent strand-pair
     /// (generator index i = the pair (i, i+1), 0-based). The ferry-12 dense-vs-sparse measure:
     /// dense braiding = high load concentrated on pairs; sparse = load near zero. Sums to word length.
