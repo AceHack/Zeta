@@ -109,6 +109,9 @@ jobs:
         # common/tlaps.sh (opam source-build of tlapm) + installs z3 (the
         # SMT backend, declared in manifests) + opam. tlaps.sh is
         # idempotent — a warm ~/.opam cache makes it a fast no-op.
+        env:
+          # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
+          MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
 
       - name: Verify TLAPS toolchain

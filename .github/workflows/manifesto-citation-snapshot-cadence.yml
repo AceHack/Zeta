@@ -65,6 +65,9 @@ jobs:
           fetch-depth: 1
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
+          MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
 
       - name: Verify required tooling

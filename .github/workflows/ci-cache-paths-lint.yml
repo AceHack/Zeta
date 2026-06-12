@@ -63,6 +63,9 @@ jobs:
         # memory-index-duplicate-lint.yml. shellenv.sh wires
         # BASH_ENV so subsequent run: steps auto-source the managed
         # shellenv with bun on PATH.
+        env:
+          # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
+          MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
 
       - name: Run audit-ci-cache-paths

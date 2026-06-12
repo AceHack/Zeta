@@ -144,6 +144,7 @@ jobs:
         # entries (stryker, analyzers, the diagnostics suite) are skipped LOUDLY by
         # dotnet-tools.sh. Workitem 081KTWQZY7F08QG0R0034KN17T (host tiers x package requires).
         env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
           ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 

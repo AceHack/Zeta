@@ -54,6 +54,9 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
         # gate.yml + memory-index-duplicate-lint.yml (#1377).
+        env:
+          # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
+          MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
 
       - name: run reference-existence lint
