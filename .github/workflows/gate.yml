@@ -354,7 +354,7 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
 
       - name: Cache elan (Lean 4 toolchain)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -500,6 +500,9 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          # kubeconform lives in .mise.full.toml — declare full explicitly (workitem 081KTWQZY7F)
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: yamllint (k8s manifests)

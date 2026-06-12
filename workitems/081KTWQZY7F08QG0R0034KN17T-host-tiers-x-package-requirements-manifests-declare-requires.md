@@ -52,9 +52,22 @@ resolver. Prior art in-repo: one-liner-tools.sh ZETA_INSTALL_FULL opt-in (a 2-ti
 
 - apt manifest: all current entries are dotnet-required (slim) — tier the loop when a heavy
   entry first appears.
-- mise: `.mise.toml` installs wholesale; tiering means splitting the k8s set (k3d/kind/kubectl/
-  helm/kubeconform) out — a real change, decide deliberately.
 - Fold the legacy full-tier gates (ZETA_INSTALL_FULL in one-liner-tools/tlaps, ZETA_INSTALL_QUANTUM)
   into the same vocabulary.
 - verifiers.sh jars: tests may invoke TLC/Alloy — audit before tiering.
 - Unify with db/capabilities resolver wiring (one cap/support vocabulary across setup + runtime).
+
+## Slice 3 (Aaron: "do the mise k8s split too… addison and max and every cluster to have full…
+we want to test full")
+
+- `.mise.full.toml` — the k8s set (k3d/kind/kubectl/helm/kubeconform) at the SAME pins, merged
+  only on full hosts via MISE_ENV=full (mise.sh sources host-tier.sh; slim/standard skip LOUDLY).
+- Cluster nodes are full BY DECLARATION (Aaron verbatim): zeta-install.sh pins ZETA_HOST_TIER=full
+  at its install.sh call — hardware auto-detect never decides for a cluster node.
+- "Test full" honored: the gate `lint (yaml/k8s)` job + both k8s-argocd-health install steps
+  declare ZETA_HOST_TIER=full explicitly (never rely on runner-size auto-detect).
+- Cache keys (gate + low-memory) hash BOTH mise files; manifest-symmetry reads the PAIR;
+  install.ps1 defaults Windows to full (merges .mise.full.toml) unless declared otherwise.
+- Drive-by main fix: #7477's headscale-cli/tailscale brew entries had no Windows symmetry —
+  tailscale joins manifests/windows (winget client, optional), headscale-cli allowlisted
+  (server-side ops CLI).

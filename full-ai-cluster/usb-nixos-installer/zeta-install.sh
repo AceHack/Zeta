@@ -1426,7 +1426,7 @@ if [ -d "$ZETA_HOME" ]; then
       BUN_INSTALL="$ZETA_HOME/.bun" \
       ZETA_INSTALL_NIXOS_MODE=installed \
       ZETA_INSTALL_FULL=1 \
-      bash -c "cd $ZETA_HOME/Zeta && tools/setup/install.sh" 2>&1 | tail -10 || \
+      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 | tail -10 || \
         echo "[iter-5.5.0]   WARN: install.sh FAILED — runtimes/agent CLIs may be partial; can retry post-reboot via 'cd ~/Zeta && tools/setup/install.sh'"
   fi
 

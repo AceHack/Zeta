@@ -20,7 +20,21 @@ fi
 # a project-local .mise.toml. Silent on repeat runs.
 mise trust "$REPO_ROOT/.mise.toml" >/dev/null
 
-echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
+# HOST TIERS (workitem 081KTWQZY7F08QG0R0034KN17T): full-tier hosts also merge
+# .mise.full.toml (the k8s set: k3d/kind/kubectl/helm/kubeconform) via MISE_ENV=full.
+# Cluster nodes declare full at the zeta-install.sh call site (Aaron 2026-06-12:
+# "addison and max and every cluster [node gets] full"); CI k8s lanes declare full
+# explicitly; slim/standard hosts skip the set LOUDLY here.
+# shellcheck source=tools/setup/common/host-tier.sh disable=SC1091
+. "$(cd "$(dirname "$0")" && pwd)/host-tier.sh"
+if zeta_tier_allows full; then
+  export MISE_ENV=full
+  mise trust "$REPO_ROOT/.mise.full.toml" >/dev/null
+  echo "↓ mise install (reading .mise.toml + .mise.full.toml — host is full/$ZETA_HOST_TIER_SOURCE)..."
+else
+  echo "→ .mise.full.toml (k8s set) skipped: requires tier=full, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+  echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
+fi
 if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
    [ -n "${GITHUB_TOKEN:-}" ] &&
    [ -z "${MISE_GITHUB_TOKEN:-}" ] &&

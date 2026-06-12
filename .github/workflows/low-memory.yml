@@ -111,7 +111,7 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
 
       - name: Cache elan (Lean 4 toolchain)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5

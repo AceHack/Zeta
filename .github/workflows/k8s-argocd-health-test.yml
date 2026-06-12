@@ -60,6 +60,9 @@ jobs:
       - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
+          # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm) — declare full
+          # explicitly, never rely on runner-size auto-detect (workitem 081KTWQZY7F).
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Install bun dependencies
@@ -97,6 +100,9 @@ jobs:
       - name: Install toolchain via three-way-parity script
         env:
           MISE_GITHUB_TOKEN: ${{ github.token }}
+          # k8s lane NEEDS the .mise.full.toml set (k3d/kubectl/helm) — declare full
+          # explicitly, never rely on runner-size auto-detect (workitem 081KTWQZY7F).
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Install bun dependencies

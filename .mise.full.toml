@@ -1,0 +1,16 @@
+# Full-tier runtime pins — merged into .mise.toml ONLY when the host is tier=full
+# (MISE_ENV=full, set by tools/setup/common/mise.sh via the host-tier helper).
+# Workitem 081KTWQZY7F08QG0R0034KN17T; Aaron 2026-06-12: "addison and max and every cluster
+# [node gets] full" — cluster nodes declare full at the zeta-install.sh call site regardless of
+# hardware auto-detect; CI k8s lanes declare full explicitly; slim/standard hosts skip these.
+#
+# Cluster integration + GitOps health tooling (operator 2026-05-31): B-0967 proves
+# Kubernetes + ArgoCD health through k3d/kind; kubeconform validates the k8s manifests in
+# the `lint (yaml/k8s)` gate job. Same pins as before the split — one tool graph, tiered.
+
+[tools]
+k3d = "5.8.3"
+kind = "0.31.0"
+kubectl = "1.36.1"
+helm = "4.2.0"
+"ubi:yannh/kubeconform" = "0.7.0"

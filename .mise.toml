@@ -60,16 +60,10 @@ actionlint = "1.7.12"
 # slim + ubuntu-24.04-arm runners don't ship shellcheck pre-
 # installed, so declarative pin here ensures dev/CI parity.
 shellcheck = "0.11.0"
-# Cluster integration + GitOps health tooling (operator 2026-05-31):
-# B-0891 keeps USB/ISO tests focused on zflash/boot/retention, while
-# B-0967 proves Kubernetes + ArgoCD health separately through k3d/kind.
-# Pin these here so dev laptops, CI runners, devcontainers, Windows
-# install.ps1, and NixOS-installed nodes running install.sh converge on
-# one tool graph instead of ad hoc `brew install ...` instructions.
-k3d = "5.8.3"
-kind = "0.31.0"
-kubectl = "1.36.1"
-helm = "4.2.0"
+# Cluster integration + GitOps tooling (k3d/kind/kubectl/helm/kubeconform) moved to
+# .mise.full.toml (host-tier split, workitem 081KTWQZY7F08QG0R0034KN17T): full-tier hosts
+# (dev laptops, cluster nodes, CI k8s lanes) still converge on the one pinned tool graph
+# via MISE_ENV=full; slim/standard hosts skip the k8s set.
 # Node + npm: required for the npm-backed mise tools below.
 # Mise's `npm:` backend installs via `npm install -g`, so the
 # Node runtime must be installed first. Pinned here so dev
@@ -113,14 +107,6 @@ node = "24"
 # pip (the uv-canonical ADR; identical to `pipx:semgrep` above). No pip anywhere.
 # Pin per dep-pin-search-first (PyPI 2026-06-10: 1.38.0).
 "pipx:yamllint" = "1.38.0"
-# kubeconform: FAST offline Kubernetes-manifest schema validator (the other half
-# of the `lint (yaml/k8s)` gate — validates ArgoCD Application CRs + k8s manifests
-# against API schemas; --ignore-missing-schemas so CRDs don't false-fail). A Go
-# binary, installed cross-platform via mise's `ubi:` backend (GitHub-release
-# universal binary installer) — one pin covers mac/linux/windows, install.sh +
-# install.ps1 in sync. Pin per dep-pin-search-first (GitHub releases 2026-06-10:
-# v0.7.0; ubi strips the leading v).
-"ubi:yannh/kubeconform" = "0.7.0"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)

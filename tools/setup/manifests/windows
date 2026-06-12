@@ -61,3 +61,8 @@ r         winget=RProject.R    choco=R.Project
 # scoop, the resolver-primary). MIT. `optional` (best-effort): network-bundle fetch on first run.
 tectonic    optional
 gnupg     winget=GnuPG.GnuPG    choco=gnupg    # GPG — commit/artifact signing
+
+# Mesh networking client (symmetry with manifests/brew tailscale, PR #7477's network-dep
+# precedent). headscale-cli is the SERVER-side CLI (Linux/macOS ops) — allowlisted exception
+# in manifest-symmetry.test.ts, not installed on Windows dev boxes.
+tailscale    winget=Tailscale.Tailscale    choco=tailscale    optional

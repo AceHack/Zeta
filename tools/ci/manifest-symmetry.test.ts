@@ -26,7 +26,12 @@ function parseManifest(name: string): string[] {
 }
 
 function expectMiseTool(name: string, version: string): void {
-  const raw = readFileSync(join(repoRoot, ".mise.toml"), "utf8");
+  // the host-tier split (workitem 081KTWQZY7F): full-tier pins live in .mise.full.toml,
+  // merged via MISE_ENV=full — symmetry holds across the PAIR, not one file.
+  const raw =
+    readFileSync(join(repoRoot, ".mise.toml"), "utf8") +
+    "\n" +
+    readFileSync(join(repoRoot, ".mise.full.toml"), "utf8");
   expect(raw).toMatch(miseToolPattern(name, version));
 }
 
@@ -72,6 +77,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "fuse-overlayfs": "Linux rootless overlay storage driver; Windows podman uses WSL2's VM storage",
   opam: "OCaml package manager; only needed on Unix to build tlapm from source. Windows tlapm installs via prebuilt MSI/zip.",
   z3: "SMT solver; on Windows, Z3 is either scoop-installed or used via JS z3-solver npm package.",
+  "headscale-cli":
+    "headscale SERVER-side CLI — mesh coordination ops run on Linux/macOS hosts; Windows dev boxes join the mesh as tailscale clients (manifests/windows tailscale line).",
   "r-base":
     "R statistical runtime (charting/grammar-of-graphics lens-finder); covered on Windows by the `r` manifest line (scoop r / winget RProject.R / choco R.Project). apt names the package r-base; brew + scoop name it r.",
 };
