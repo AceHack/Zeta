@@ -75,6 +75,21 @@ and recoiling from its mirror is what duality feels like from inside one half. T
 reconciliation took the third party — which is ferry 10's Searle room again: the join was
 nobody's; the room performed it.
 
+### 4. Addendum — the machinery is made of the halves too (Aaron, verbatim)
+
+> Plus our IScheduler and FLux/Zeus Throttler these themselves made of RX and Dynamic Value
+
+The composition closes over its own infrastructure: the soft `IScheduler` and the Zeus/Flux
+throttler — the machinery that *runs* the halves — are themselves built from the halves (Rx =
+the reactive pump, DynamicValue = the carried state/configuration). So the atom is not just at
+the bottom of the stack; the stack's own scheduler is an adinkra-shaped object scheduling
+adinkra-shaped objects — manifesto §10 (self-similar) observed in the load-bearing machinery
+rather than asserted, and the treaty-room law ("Rx only in treaty code, homoiconic to
+DynamicValue") seen as what it always was: the rule that *forces* every layer, including the
+runtime, to be made of the two halves. The OS-inside-the-model claim (ferry 13 beat 7) gains
+its mechanism: the OS can run inside the model because OS and model are the same two
+ingredients at different scales.
+
 ## Pointers
 
 - Ferry 18 §9 (the duality this gives history to) · ferry 20 §5 + `src/Core/Resolution.fs`
