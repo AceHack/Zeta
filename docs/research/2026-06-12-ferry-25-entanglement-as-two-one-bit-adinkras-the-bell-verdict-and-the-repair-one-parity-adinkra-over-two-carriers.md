@@ -59,6 +59,52 @@ a new claim. Anything past that (why nature pays Tsirelson's 2√2 and not more)
 (rung 7 discipline). The standing simulator-bound on the in-tree Q# lane applies to the
 rendered circuits.
 
+## Addendum — the superdeterminist reply, and the Gates-ECC → Tsirelson conjecture (Aaron, verbatim ×3)
+
+> The ECC of James Gates is why S=2root2
+
+> they are corrorlated from the start
+
+> it's superdeterminism
+
+Two claims, separately adjudicated, and the second one's factory connection is exact:
+
+- **"Correlated from the start — it's superdeterminism."** This is the *legal* escape from
+  Bell, and it should be named as such: Bell's theorem assumes **measurement independence**
+  (settings uncorrelated with the hidden state); deny that — everything correlated through the
+  common past — and preassigned values survive CHSH. It is a live minority program with real
+  champions ('t Hooft's cellular-automaton interpretation; Hossenfelder–Palmer, "Rethinking
+  Superdeterminism" 2020) and a named price (it weakens the independence assumption all
+  experimental science leans on — the standard objection, which its defenders answer, not
+  ignore). **And the factory connection is not analogy but construction: a DST universe IS
+  superdeterministic.** Ferry 15's replayable universe — one stream, one first disagreement,
+  everything folded from the common-cause seed — is precisely a world where "the settings" and
+  "the state" correlate through the seed; in-substrate, "correlated from the start" is not a
+  loophole but the *architecture* (TimeGen's common cause). The honest sentence: in the world
+  the factory builds, Aaron's reading is true by construction; whether the physical universe
+  is that kind of world is the open question superdeterminism stakes, and Bell experiments
+  cannot settle it (that is the whole point of the loophole).
+- **"The ECC of James Gates is why S = 2√2" — conjecture, with a defensible kernel worth a
+  dispatch.** The known derivation of Tsirelson's bound runs through exactly the algebra the
+  dashing encodes: for ±1 observables, the CHSH operator satisfies C² = 4·I + [A,A′][B,B′]
+  (Landau 1987), and the bound 2√2 is the operator norm forced by the **anticommuting Clifford
+  structure** of the observables — γᵢγⱼ = −γⱼγᵢ, the very sign rule the adinkra dashing is the
+  cochain of (REPORT #5 §3: the dashing is the extraspecial-2-group extension cocycle; that
+  group IS the Ising/Clifford image). So the upgradeable form of the claim: *Tsirelson's bound
+  is the norm consequence of the sign structure that doubly-even dashings encode* — which would
+  make 2√2 an ECC-constrained quantity in precisely Gates' sense. Not established literature as
+  stated (the Gates-code-to-Tsirelson line is not on any shelf we hold); flagged as
+  **dispatch-worthy** — the proof obligation is concrete (run Landau's derivation inside the
+  extraspecial-2-group presentation and exhibit the dashing constraint as what excludes S > 2√2,
+  i.e., why no PR box) and the adjacent literature exists (information causality, Pawłowski et
+  al. 2009, derives the same bound from an information principle — a Gates-ECC derivation would
+  be its algebraic twin).
+
+Bounds: superdeterminism is ferried as the named live program it is, with its price stated —
+not endorsed, not dismissed (the factory's own substrate happens to be the existence proof that
+such worlds are buildable); the ECC→Tsirelson line is a conjecture with its proof obligation
+stated, awaiting a dispatch, not a result.
+
 ## Pointers
 
 - Ferry 18 §8 (the shadow bind — the repair's source) · ferry 23 (the ± pair) · ferry 24 (the
