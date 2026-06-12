@@ -119,3 +119,13 @@ mechanically enforced, not conventional: the double-run boundary refuses a smugg
 runs, one seed, two timestamps — falsifier added to TestLoop.Host.fs alongside the entropy
 smuggler). Noninterference (#13) closes flush: the room's only doors stay Reticulum + the injected
 Source; time is an observable THROUGH the glass, never an input inside it.
+
+## Progress 7 (2026-06-11) — pro moves to src and brings the family (Aaron: "lets move to src and pick some other ones too")
+
+`src/Core.TypeScript/perf/` — the glass-side lanes as REAL CODE, Core.TypeScript convention (pure
+arg builders tested without spawning; the spawn is the one side-effecting door): `glass.ts` (the
+shared discipline: acquire/observe/durationOf/flags), `pro.ts` (trace lane, dotnet-trace),
+`counters.ts` (live-metrics lane, monitor or collect-to-csv), `gcdump.ts` (heap-snapshot lane).
+tools/perf/pro.ts (PR #7855) closed unmerged in favor of this. Live smoke re-verified from the
+src path (2.0MB .nettrace). tools/profile.ts noted as the older installer/launcher predecessor —
+the manifest owns install now; these lanes own launch.
