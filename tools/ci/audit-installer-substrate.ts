@@ -98,6 +98,8 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "/dev/urandom", // install-time hostname generator
       // ── iter-5.4 sentinels (PR #5364 + #5352 + #5354 substrate) ──
       "Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy", // iter-5.4.0 anchor
+      "clamp_root_size_for_boot_disk", // B-0891 small-disk / QEMU clamp
+      "ROOT_SIZE clamped", // operator-visible shrink message
       "Step 6.9: iter-5.4.1 self-registration commit+push", // iter-5.4.1 self-reg anchor
       "gh auth login", // device-flow auth invocation
       "gh auth setup-git", // B-0835 Bug 2a fix — wires git credential helper to gh token

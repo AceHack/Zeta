@@ -12,7 +12,7 @@
 #   4. Confirm full wipe (typed confirmation required; bypass via
 #      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot flow)
 #   5. Wipe + partition:
-#        BOOT disk: ESP 1G + root ${ROOT_SIZE:-256G} + longhorn1 (rest)
+#        BOOT disk: ESP 1G + root ${ROOT_SIZE:-256G} (clamped to disk) + longhorn1 (rest)
 #        DATA disks: each becomes a single longhorn{2..N} whole-disk
 #   6. Format (FAT32 ESP + ext4 root + ext4 longhorn{1..N})
 #   7. Mount per the standard /mnt/var/lib/longhorn-disk{1..N} layout
@@ -78,6 +78,49 @@ disk_class() {
   fi
 }
 
+# sgdisk size specs (256G, 512M, …) → bytes for capacity checks.
+size_spec_to_bytes() {
+  local spec="$1"
+  local num="${spec%[KkMmGgTt]}"
+  local unit="${spec:${#num}}"
+  [[ "$num" =~ ^[0-9]+$ ]] || bail "invalid size spec: $spec"
+  case "${unit^^}" in
+    K) echo $((num * 1024)) ;;
+    M) echo $((num * 1024 * 1024)) ;;
+    G) echo $((num * 1024 * 1024 * 1024)) ;;
+    T) echo $((num * 1024 * 1024 * 1024 * 1024)) ;;
+    *) bail "invalid size unit in spec: $spec" ;;
+  esac
+}
+
+# Round down to whole gibibytes for sgdisk (+NG syntax).
+bytes_to_gib_spec() {
+  local bytes="$1"
+  local gib=$((bytes / 1024 / 1024 / 1024))
+  [[ "$gib" -ge 1 ]] || bail "computed root size under 1G (${bytes} bytes)"
+  echo "${gib}G"
+}
+
+# Prefer ROOT_SIZE (default 256G) but shrink on small BOOT disks (QEMU CI, tiny VMs).
+clamp_root_size_for_boot_disk() {
+  local disk="$1" requested="$2"
+  local disk_bytes requested_bytes esp_bytes min_longhorn_bytes min_root_bytes max_root_bytes
+  disk_bytes=$(blockdev --getsize64 "$disk")
+  requested_bytes=$(size_spec_to_bytes "$requested")
+  esp_bytes=$((1024 * 1024 * 1024))
+  min_longhorn_bytes=$((1024 * 1024 * 1024))
+  min_root_bytes=$((4 * 1024 * 1024 * 1024))
+  max_root_bytes=$((disk_bytes - esp_bytes - min_longhorn_bytes))
+  if (( max_root_bytes < min_root_bytes )); then
+    bail "BOOT disk $disk too small for ESP 1G + root + longhorn1 (need >= ~6G, have $(lsblk -d -n -o SIZE "$disk"))"
+  fi
+  if (( requested_bytes <= max_root_bytes )); then
+    echo "$requested"
+    return
+  fi
+  bytes_to_gib_spec "$max_root_bytes"
+}
+
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
@@ -125,6 +168,12 @@ fi
 BOOT_OK=0
 for d in "${SORTED[@]}"; do [[ "$d" == "$BOOT_DISK" ]] && BOOT_OK=1; done
 [[ "$BOOT_OK" -eq 1 ]] || bail "BOOT_DISK $BOOT_DISK not in internal-disk set: ${SORTED[*]}"
+
+REQUESTED_ROOT_SIZE="$ROOT_SIZE"
+ROOT_SIZE="$(clamp_root_size_for_boot_disk "$BOOT_DISK" "$ROOT_SIZE")"
+if [[ "$ROOT_SIZE" != "$REQUESTED_ROOT_SIZE" ]]; then
+  echo "[zeta-install] ROOT_SIZE clamped from ${REQUESTED_ROOT_SIZE} to ${ROOT_SIZE} (BOOT disk $(lsblk -d -n -o SIZE "$BOOT_DISK") capacity)"
+fi
 
 # DATA_DISKS = everything except BOOT_DISK, preserving sort order.
 DATA_DISKS=()
