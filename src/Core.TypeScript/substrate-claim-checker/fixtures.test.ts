@@ -99,12 +99,12 @@ describe("eval-set fixtures / path-form drift", () => {
     // is captured in a follow-on fixture (B-0170.4.1).
     expect(finding.line).toBe(28);
     expect(finding.resolvedPath).toBe(
-      "tools/substrate-claim-checker/check-counts.ts",
+      "src/Core.TypeScript/substrate-claim-checker/check-counts.ts",
     );
     const forms = finding.forms.map((f) => f.path).sort();
     expect(forms).toEqual([
       "check-counts.ts",
-      "tools/substrate-claim-checker/check-counts.ts",
+      "src/Core.TypeScript/substrate-claim-checker/check-counts.ts",
     ]);
   });
 });
@@ -127,7 +127,7 @@ describe("eval-set fixtures / convention drift", () => {
     // checker's logical-line scanner drifts off the physical line.
     expect(finding.line).toBe(36);
     expect(finding.target).toBe(
-      "tools/substrate-claim-checker/fixtures/_convention-drift-target-adr.md",
+      "src/Core.TypeScript/substrate-claim-checker/fixtures/_convention-drift-target-adr.md",
     );
     expect(finding.reason).toContain("not reciprocated");
     expect(finding.reason).toContain("Superseded by");

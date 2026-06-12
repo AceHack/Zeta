@@ -27,4 +27,4 @@ cannot be masked by a comment-side match.
 
 See the bare form `check-counts.ts` for the count-drift checker.
 
-The fully-qualified path `tools/substrate-claim-checker/check-counts.ts` points to the same file.
+The fully-qualified path `src/Core.TypeScript/substrate-claim-checker/check-counts.ts` points to the same file.

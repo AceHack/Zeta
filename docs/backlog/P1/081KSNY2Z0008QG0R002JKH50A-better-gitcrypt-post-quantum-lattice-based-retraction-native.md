@@ -2,12 +2,14 @@
 id: B-0883
 zetaid: 081KSNY2Z0008QG0R002JKH50A
 priority: P1
-status: open
+status: closed
+closed: 2026-06-12
+closed_by: "docs/research/2026-06-12-better-gitcrypt-post-quantum-lattice-based-architecture.md"
 title: Better git-crypt — post-quantum lattice-based (ML-KEM/Kyber/Saber/NTRU family) + retraction-native + diff-readable; supersedes 2026-04-21 git-crypt rejection; TS-first + Bouncy Castle pattern study
 effort: XL
 ask: aaron 2026-05-28
 created: 2026-05-28
-last_updated: 2026-05-28
+last_updated: 2026-06-12
 depends_on: []
 composes_with:
   - B-0883.1

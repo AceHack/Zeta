@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT } from "./types";
 import { coauthorFor } from "../../../tools/observe/event-sink-folder";
-import type { SenderAgentId } from "../../../tools/bus/types";
+import type { SenderAgentId } from "../bus/types";
 
 function walkJson(dir: string): string[] {
   if (!existsSync(dir)) return [];

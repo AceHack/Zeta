@@ -12,7 +12,7 @@ import {
   type AssignmentHistory,
   type BacklogRow,
 } from "./backlog-ready-notifier";
-import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
+import type { AgentId, MessageEnvelope, SenderAgentId } from "../../src/Core.TypeScript/bus/types";
 
 type FakeAssignmentCall = {
   from: SenderAgentId;

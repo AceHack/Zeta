@@ -40,6 +40,12 @@ export const FIRST_BOOT_PROGRESS_SERIAL_MARKERS: readonly string[] = [
   "[zeta-first-boot]",
 ];
 
+/** Scenario 5 cluster-joining success markers. */
+export const B0891_CLUSTER_JOIN_SERIAL_MARKERS: readonly string[] = [
+  "[B-0891-joining]     cluster join successful",
+  "[B-0891-joining]     joining-node added to the cluster state",
+];
+
 /** serial-getty autologin on ttyS0 can appear before mirrored first-boot output. */
 export function serialFirstBootInProgress(serialOutput: string): boolean {
   return FIRST_BOOT_PROGRESS_SERIAL_MARKERS.some((marker) => serialOutput.includes(marker));

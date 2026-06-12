@@ -18,7 +18,6 @@ import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
   buildQemuSystemBootArgs,
-  createSpawnSyncQcow2RetentionExecutor,
   type Qcow2RetentionExecutor,
   type QemuCommand,
   type QemuCommandExecution,
@@ -74,10 +73,6 @@ const DEFAULT_SNAPSHOT_NAME = "post-initial-format";
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
-}
-
-function positiveInteger(value: number): boolean {
-  return Number.isInteger(value) && value > 0;
 }
 
 function validateInput(input: MultiVMRuntimeInput): MultiVMRuntimeFeedback | null {

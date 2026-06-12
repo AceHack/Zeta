@@ -25,7 +25,7 @@ import {
   type GateReport,
   type PollOutcome,
 } from "./poll-pr-gate-batch";
-import type { ClaimRecord } from "../bus/claim.ts";
+import type { ClaimRecord } from "../../src/Core.TypeScript/bus/claim.ts";
 
 // Fixed-shape factory keeps tests terse + deterministic. Every field
 // has a default; tests override only what they're asserting on.

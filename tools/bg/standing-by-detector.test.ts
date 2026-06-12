@@ -6,7 +6,7 @@ import {
   pollOnce,
   type Adapters,
 } from "./standing-by-detector";
-import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
+import type { AgentId, MessageEnvelope, SenderAgentId } from "../../src/Core.TypeScript/bus/types";
 
 type FakeNudgeCall = {
   from: SenderAgentId;

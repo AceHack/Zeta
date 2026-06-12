@@ -14,8 +14,8 @@
 
 import { readdirSync, readFileSync, renameSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { publish } from "../bus/bus";
-import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
+import { publish } from "../../src/Core.TypeScript/bus/bus";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../../src/Core.TypeScript/bus/types";
 
 export type NotifierConfig = {
   /** How often to poll, in minutes */

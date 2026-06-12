@@ -19,7 +19,7 @@
  * publish.ts / subscribe.ts so tests + importers never touch git or the real folder.
  */
 import { join } from "node:path";
-import { TTL_MS, type AgentId, type SenderAgentId, type BusMessage, type MessageEnvelope } from "../../../tools/bus/types";
+import { TTL_MS, type AgentId, type SenderAgentId, type BusMessage, type MessageEnvelope } from "../bus/types";
 import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
 import {
   Category,

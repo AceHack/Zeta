@@ -56,8 +56,8 @@
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { allActiveClaims } from "../bus/claim.ts";
-import type { ClaimRecord } from "../bus/claim.ts";
+import { allActiveClaims } from "../../src/Core.TypeScript/bus/claim.ts";
+import type { ClaimRecord } from "../../src/Core.TypeScript/bus/claim.ts";
 import { PriorityFerryThrottlerWithResult } from "../../src/Core.TypeScript/ferry-throttler/priority-ferry-throttler-with-result.ts";
 import type { PriorityFerryThrottlerConfig } from "../../src/Core.TypeScript/ferry-throttler/priority-config.ts";
 import type { ProcessBatchWithResult } from "../../src/Core.TypeScript/ferry-throttler/ferry-throttler.ts";

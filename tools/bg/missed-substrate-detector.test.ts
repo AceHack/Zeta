@@ -16,7 +16,7 @@ import {
   type PRRefsResult,
 } from "./missed-substrate-detector";
 import type { RecoveryResult } from "./missed-substrate-recovery";
-import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
+import type { AgentId, MessageEnvelope, SenderAgentId } from "../../src/Core.TypeScript/bus/types";
 
 type FakeCascadeCall = {
   from: SenderAgentId;

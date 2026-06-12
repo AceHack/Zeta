@@ -14,8 +14,8 @@
 // This is the Cursor-native complement to the headless launchd loop.
 // Both run in parallel for defense-in-depth autonomy.
 
-import { publish } from "../bus/bus";
-import type { HeartbeatPayload } from "../bus/types";
+import { publish } from "../../src/Core.TypeScript/bus/bus";
+import type { HeartbeatPayload } from "../../src/Core.TypeScript/bus/types";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";

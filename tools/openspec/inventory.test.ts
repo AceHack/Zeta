@@ -490,7 +490,8 @@ describe("integration: real repo scan", () => {
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     const report = buildGapReport(specs, [], { artifactRoot: repoRoot });
 
-    expect(specs.map((s) => s.capability)).not.toContain("retraction-native");
+    // retraction-native was promoted to a full spec, so it should be contained.
+    expect(specs.map((s) => s.capability)).toContain("retraction-native");
     expect(report.unmappedSpecs).not.toContain("retraction-native");
   });
 });
