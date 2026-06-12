@@ -117,6 +117,36 @@ process — the holography thread); and a shadow is the one rendering of an obje
 math-status is §4's conjecture unchanged: shadow = projection is exact; "of the Majorana one"
 inherits rung 6's simulator/hardware bounds.
 
+### 6. Two corrections in real time: the bet, then the mutual shadow (Aaron, verbatim ×2)
+
+> our you could look at the marana one betting on the certany of the adenkra that's how it
+> holds its topological shape
+
+> nope i just realized they are the shadow of each other like the einstien tiles
+
+The first beat inverts §5's direction, and it survives the "nope" because it is a *mechanism*
+claim, not a geometry claim: **topological protection IS betting on the discrete register.**
+The hardware holds its shape by anchoring continuous physics to a rigid, discrete,
+error-correcting invariant (the doubly-even code's combinatorics — exactly what an
+error-corrected qubit *is*: continuous noise bet against discrete certainty). The shadow
+stabilizes the caster — the projection plane is the load-bearing element. That much is standard
+QEC logic wearing this lane's vocabulary, and it stands.
+
+The second beat replaces §5's one-way geometry: **not "A is the shadow of B" but mutual
+shadows — like the einstein tiles.** The anchor is real and recent (Smith–Myers–Kaplan–
+Goodman-Strauss 2023): the hat and the turtle are two members of the one-parameter Tile(1,1)
+family, each obtainable from the other — *neither is the original; both are projections of a
+common continuum*, shadows of each other in the precise sense that each determines the other
+without either being prior. Applied here: braid and adinkra each recover the other's register
+from their own (the braid's crossing signs ARE a dashing; the adinkra's dashed edges ARE
+crossings awaiting an order) — a **two-way determination with neither prior**, which in the
+formal register is an *adjunction* rather than a quotient: each side is the closure of the
+other under its forgetting map, and the common lift of §4 (the dashed braid) plays the role
+Tile(1,1) plays for hat/turtle — the continuum object both shadows live in. Status: this is
+the §4 conjecture *upgraded in shape* (from one projection to an adjoint pair over a common
+family) and unchanged in standing — named, falsifiable by construction, not yet on the shelf.
+The supersession is itself ferried per the record discipline: the "nope" is part of the math.
+
 ## Pointers
 
 - Ferry 12 (the YinYang atom this upgrades) · ferry 9 addendum (attribution braid) ·
