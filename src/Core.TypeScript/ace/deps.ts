@@ -56,12 +56,18 @@ export interface ChartOutputsSpec {
 
 export function toJs(v: YamlValue): any {
   switch (v.t) {
-    case "Null": return null;
-    case "Bool": return v.value;
-    case "Int": return Number(v.value);
-    case "Float": return v.value;
-    case "Str": return v.value;
-    case "Seq": return v.items.map(toJs);
+    case "Null":
+      return null;
+    case "Bool":
+      return v.value;
+    case "Int":
+      return Number(v.value);
+    case "Float":
+      return v.value;
+    case "Str":
+      return v.value;
+    case "Seq":
+      return v.items.map(toJs);
     case "Map": {
       const obj: Record<string, any> = {};
       for (const [k, val] of v.entries) {
@@ -135,15 +141,18 @@ export function getTargetPath(target: string): string {
 
 export function setNestedProperty(obj: any, path: string, value: any): void {
   const parts = path.split(".");
+  if (parts.length === 0 || parts[0] === "") {
+    throw new Error("nested path must be non-empty");
+  }
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i];
+    const part = parts[i]!;
     if (!(part in current)) {
       current[part] = {};
     }
     current = current[part];
   }
-  current[parts[parts.length - 1]] = value;
+  current[parts[parts.length - 1]!] = value;
 }
 
 export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string): ResolvedGraph {
@@ -189,11 +198,20 @@ export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string):
           for (const cons of out.consumes) {
             const parts = cons.target.split(".");
             if (parts.length < 2) {
-              throw new Error(`Validation error: target '${cons.target}' is malformed (must be '<chart>.values.<path>')`);
+              throw new Error(
+                `Validation error: target '${cons.target}' is malformed (must be '<chart>.values.<path>')`,
+              );
             }
             const consumer = parts[0];
+            if (consumer === undefined || consumer.length === 0) {
+              throw new Error(
+                `Validation error: target '${cons.target}' is malformed (must be '<chart>.values.<path>')`,
+              );
+            }
             if (!nodes.has(consumer)) {
-              throw new Error(`Validation error: consumer target '${cons.target}' references unknown chart '${consumer}'`);
+              throw new Error(
+                `Validation error: consumer target '${cons.target}' references unknown chart '${consumer}'`,
+              );
             }
             // If consumer uses producer's output, consumer depends on producer
             adj.get(consumer)!.add(producer);
@@ -217,7 +235,9 @@ export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string):
         if (entry.outputs) {
           for (const out of entry.outputs) {
             if (!declaredOutputs.has(out.name)) {
-              throw new Error(`Validation error: chart '${chart}' references output '${out.name}' which is not declared in its outputs contract`);
+              throw new Error(
+                `Validation error: chart '${chart}' references output '${out.name}' which is not declared in its outputs contract`,
+              );
             }
           }
         }
@@ -366,7 +386,6 @@ export function generateArgoCD(resolved: ResolvedGraph, namespace: string = "def
 
   for (const chart of resolved.order) {
     const wave = resolved.waves.get(chart) ?? 0;
-    const node = resolved.nodes.get(chart)!;
 
     const app: any = {
       apiVersion: "argoproj.io/v1alpha1",

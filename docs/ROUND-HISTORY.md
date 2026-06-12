@@ -60,6 +60,7 @@ Anchor: Round 46 is the round where the portable, engine-agnostic Helm dependenc
 ### Arc 1 — Subcommand execution wiring and verification (B-0821)
 
 The CLI subcommands (`ace deps validate` and `ace deps resolve`) are wired into the main entrypoint `src/Core.TypeScript/ace/ace.ts` and evaluated against all verification gates.
+
 - Staged and fast-forward merged the implementation and test suites from branch `riven/b0821-deps-engine` to the `main` branch.
 - Verified TypeScript test suite (`deps.test.ts` and `ace.test.ts`) resulting in all 153 tests passing.
 - Verified `.NET` test suite and Release builds resulting in a warning-free compile and 3,362 passing tests.
