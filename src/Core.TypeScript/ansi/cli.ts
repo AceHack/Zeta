@@ -1,21 +1,21 @@
 #!/usr/bin/env bun
 /**
- * tools/ansi/cli.ts — render/round-trip color markup ⇄ terminal ANSI.
+ * src/Core.TypeScript/ansi/cli.ts — render/round-trip color markup ⇄ terminal ANSI.
  *
  * The copy-paste color round-trip (Otto↔operator), per the 2026-06-02 vision §10:
  *
  *   # Otto emits markup in a message; you render it to SEE the color:
- *   echo '{c:#ff5555}LIFE{/c} {c:46}LIVING{/c}' | bun tools/ansi/cli.ts
+ *   echo '{c:#ff5555}LIFE{/c} {c:46}LIVING{/c}' | bun src/Core.TypeScript/ansi/cli.ts
  *
  *   # Already-colored output → round-trippable markup you can paste back to Otto:
- *   some-colored-command | bun tools/ansi/cli.ts --from-ansi
+ *   some-colored-command | bun src/Core.TypeScript/ansi/cli.ts --from-ansi
  *   #   (also accepts `cat -v` caret notation, e.g. `^[[38;5;203m…`)
  *
  *   # Strip color → plain text:
- *   some-colored-command | bun tools/ansi/cli.ts --strip
+ *   some-colored-command | bun src/Core.TypeScript/ansi/cli.ts --strip
  *
  *   # See the convention live:
- *   bun tools/ansi/cli.ts --demo
+ *   bun src/Core.TypeScript/ansi/cli.ts --demo
  *
  * Markup: {c:SPEC}…{/c} foreground, {bg:SPEC}…{/bg} background; SPEC is a name
  * (red/brightcyan/…), a 256-index (0-255), or hex (#rrggbb). Exact round-trip
@@ -68,5 +68,11 @@ async function main(argv: readonly string[]): Promise<number> {
 }
 
 if (import.meta.main) {
-  main(process.argv).then((code) => process.exit(code));
+  void main(process.argv).then(
+    (code) => process.exit(code),
+    (error: unknown) => {
+      console.error(error);
+      process.exit(1);
+    },
+  );
 }

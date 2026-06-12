@@ -1,5 +1,5 @@
 /**
- * tools/ansi/color-markup.test.ts — text-carried color round-trip.
+ * src/Core.TypeScript/ansi/color-markup.test.ts — text-carried color round-trip.
  *
  * The load-bearing property: markup → ANSI → markup is the IDENTITY for the three
  * color forms (named / 256-index / hex), so color survives the plain-text channel.
@@ -31,9 +31,7 @@ describe("color-markup — render markup → ANSI", () => {
   });
   test("nested fg+bg both render and unwind", () => {
     // open bg(black=40), open fg(cyan=36)+bg, close fg → bg-only, close bg → reset
-    expect(renderToAnsi("{bg:black}{c:cyan}x{/c}{/bg}")).toBe(
-      `${ESC}[0;40m${ESC}[0;36;40mx${ESC}[0;40m${ESC}[0m`,
-    );
+    expect(renderToAnsi("{bg:black}{c:cyan}x{/c}{/bg}")).toBe(`${ESC}[0;40m${ESC}[0;36;40mx${ESC}[0;40m${ESC}[0m`);
   });
 });
 
@@ -66,14 +64,12 @@ describe("color-markup — parse ANSI → markup", () => {
 });
 
 describe("color-markup — exact round-trip (markup → ANSI → markup = identity)", () => {
-  test.each([
-    "{c:#ff5555}hi{/c}",
-    "{c:203}hi{/c}",
-    "{c:red}hi{/c}",
-    "plain {c:green}go{/c} plain {c:#00aaff}blue{/c}",
-  ])("round-trips %s", (markup) => {
-    expect(parseFromAnsi(renderToAnsi(markup))).toBe(markup);
-  });
+  test.each(["{c:#ff5555}hi{/c}", "{c:203}hi{/c}", "{c:red}hi{/c}", "plain {c:green}go{/c} plain {c:#00aaff}blue{/c}"])(
+    "round-trips %s",
+    (markup) => {
+      expect(parseFromAnsi(renderToAnsi(markup))).toBe(markup);
+    },
+  );
 });
 
 describe("color-markup — utilities", () => {
