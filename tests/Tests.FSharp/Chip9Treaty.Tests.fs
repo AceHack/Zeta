@@ -71,7 +71,26 @@ let ``BYTE-LOCK: the CHIP-9 treaty ROM's final color grid matches the golden vec
     if not (File.Exists goldenPath) then
         File.WriteAllLines("/tmp/chip9-golden-actual.lines", actual)
         failwith "golden file missing — actual dumped to /tmp/chip9-golden-actual.lines"
-    Assert.Equal<string list>(goldenLines (), actual)
+    // the fault-treaty keys follow the grid: the grid lock is the first 2 + 32 lines
+    Assert.Equal<string list>(goldenLines () |> List.truncate (2 + Chip8.DisplayH), actual)
+
+let private keyed (key: string) =
+    goldenLines ()
+    |> List.pick (fun l -> if l.StartsWith(key + "\t") then Some(l.Split('\t').[1]) else None)
+
+[<Theory>]
+[<InlineData("underflow")>]
+[<InlineData("overflow")>]
+let ``FAULT TREATY: the ORACLE locks text + pc + depth — recorded never fatal, refused CALL falls through`` (which: string) =
+    let romHex = keyed (sprintf "fault-rom-%s" which)
+    let rom = [| for i in 0 .. romHex.Length / 2 - 1 -> System.Convert.ToByte(romHex.Substring(i * 2, 2), 16) |]
+    let steps = int (keyed (sprintf "fault-steps-%s" which))
+    let final =
+        [ 1..steps ]
+        |> List.fold (fun f _ -> Chip8Cow.step f) (Chip8Cow.create 7UL |> Chip8Cow.loadRom rom)
+    Assert.Equal(Some(keyed (sprintf "fault-text-%s" which)), final.Fault)
+    Assert.Equal(keyed (sprintf "fault-pc-%s" which), sprintf "%04x" final.PC)
+    Assert.Equal(int (keyed (sprintf "fault-depth-%s" which)), List.length final.Stack)
 
 [<Fact>]
 let ``the treaty ROM's semantics sanity-check (independent of the golden bytes)`` () =

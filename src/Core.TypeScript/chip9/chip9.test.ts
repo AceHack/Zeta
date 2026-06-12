@@ -28,7 +28,7 @@ describe("CHIP-9 — the color-plane treaty (TS oracle)", () => {
 
     const rom = new Uint8Array((romHex.match(/.{2}/g) ?? []).map((h) => parseInt(h, 16)));
     const goldenPlane = parseInt(planeText, 10);
-    const goldenRows = lines.slice(2);
+    const goldenRows = lines.slice(2, 2 + H); // the fault-treaty keys follow the grid
     expect(goldenRows.length).toBe(H);
 
     let f = create();
@@ -46,4 +46,22 @@ describe("CHIP-9 — the color-plane treaty (TS oracle)", () => {
       expect(row).toBe(expected);
     }
   });
+
+  const keyed = (key: string): string => {
+    const line = lines.find((l) => l.startsWith(key + "\t"));
+    expect(line).toBeDefined();
+    return line?.split("\t")[1] ?? "";
+  };
+
+  for (const which of ["underflow", "overflow"] as const) {
+    it(`FAULT TREATY (${which}): recorded never fatal; refused CALL falls through; text/pc/depth byte-locked`, () => {
+      const rom = new Uint8Array((keyed(`fault-rom-${which}`).match(/.{2}/g) ?? []).map((h) => parseInt(h, 16)));
+      const steps = parseInt(keyed(`fault-steps-${which}`), 10);
+      let f = loadRom(rom, create());
+      for (let s = 0; s < steps; s++) f = step(f);
+      expect(f.fault).toBe(keyed(`fault-text-${which}`));
+      expect(f.pc.toString(16).padStart(4, "0")).toBe(keyed(`fault-pc-${which}`));
+      expect(f.stack.length).toBe(parseInt(keyed(`fault-depth-${which}`), 10));
+    });
+  }
 });

@@ -12,7 +12,10 @@ support	isa.chip9	fsharp	live	treaty-locking oracle
 support	isa.chip9	csharp	live	golden conformer
 support	isa.chip9	typescript	live	golden conformer
 support	isa.chip9	rust	live	golden conformer
-support	fault.register	fsharp	live	Frame.Fault (chip9 dialect; conformers: wish — fault parity is a treaty change)
+support	fault.register	fsharp	live	Frame.Fault — the locking oracle (chip9 dialect)
+support	fault.register	csharp	live	fault-parity treaty 2026-06-12 (Chip9Machine.Fault/CallStack)
+support	fault.register	typescript	live	fault-parity treaty 2026-06-12 (Frame.fault/stack)
+support	fault.register	rust	live	fault-parity treaty 2026-06-12 (Chip9.fault/stack)
 support	rng.seeded	fsharp	live	all four conformers share the golden's determinism
 support	meter.ticks	fsharp	live	Ben slice 1
 support	trace.self	fsharp	live	the reflection channels (G/cyan/B; mono stays the program's)

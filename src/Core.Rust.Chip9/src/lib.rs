@@ -18,6 +18,10 @@ pub struct Chip9 {
     pub plane: u8,
     pub display: HashSet<usize>,
     pub extra: HashMap<usize, u8>,
+    /// The call stack (FAULT TREATY 2026-06-12: classic 16-frame cap).
+    pub stack: Vec<usize>,
+    /// The fault register — recorded, never fatal; the first fault wins.
+    pub fault: Option<String>,
 }
 
 impl Default for Chip9 {
@@ -37,6 +41,8 @@ impl Chip9 {
             plane: 1,
             display: HashSet::new(),
             extra: HashMap::new(),
+            stack: Vec::new(),
+            fault: None,
         }
     }
 
@@ -54,7 +60,7 @@ impl Chip9 {
         mono | self.extra.get(&idx).copied().unwrap_or(0)
     }
 
-    /// Execute one instruction (treaty subset: 00E0, 6XNN, ANNN, DXYN, Fn01).
+    /// Execute one instruction (treaty subset: 00E0, 00EE, 2NNN, 6XNN, ANNN, DXYN, Fn01).
     pub fn step(&mut self) {
         let op = ((self.mem.get(&self.pc).copied().unwrap_or(0) as usize) << 8)
             | self.mem.get(&(self.pc + 1)).copied().unwrap_or(0) as usize;
@@ -65,6 +71,30 @@ impl Chip9 {
         self.pc += 2;
 
         match op & 0xf000 {
+            0x0000 if op == 0x00ee => {
+                // FAULT TREATY: RET — pop, or record underflow (never fatal; first fault wins)
+                match self.stack.pop() {
+                    Some(top) => self.pc = top,
+                    None => {
+                        if self.fault.is_none() {
+                            self.fault =
+                                Some("stack underflow: 00EE (RET) on empty stack".to_string());
+                        }
+                    }
+                }
+            }
+            0x2000 => {
+                // FAULT TREATY: CALL — at depth 16 the CALL is REFUSED (fall through)
+                if self.stack.len() >= 16 {
+                    if self.fault.is_none() {
+                        self.fault =
+                            Some("stack overflow: CALL (2NNN) at depth 16 refused".to_string());
+                    }
+                } else {
+                    self.stack.push(self.pc);
+                    self.pc = nnn;
+                }
+            }
             0x0000 if op == 0x00e0 => self.clear_selected(),
             0x6000 => self.v[x] = nn,
             0xa000 => self.i = nnn,

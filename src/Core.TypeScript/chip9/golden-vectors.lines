@@ -43,3 +43,18 @@ plane	1
 0011111111000000000000000000000000000000000000000000000000001111
 0011111111000000000000000000000000000000000000000000000000001111
 0011111111000000000000000000000000000000000000000000000000001111
+
+# FAULT TREATY (2026-06-12, fault-parity): the fault REGISTER is part of the treaty — faults are
+# RECORDED, never fatal; the first fault wins; a refused CALL falls through (PC advances). Two
+# vectors: 00EE on an empty stack (underflow), and a 17-deep CALL chain (the 17th refused at the
+# classic 16-frame cap). All four oracles replay these and must match text/pc/depth exactly.
+fault-rom-underflow	00ee
+fault-steps-underflow	1
+fault-text-underflow	stack underflow: 00EE (RET) on empty stack
+fault-pc-underflow	0202
+fault-depth-underflow	0
+fault-rom-overflow	2202220422062208220a220c220e22102212221422162218221a221c221e22202222
+fault-steps-overflow	17
+fault-text-overflow	stack overflow: CALL (2NNN) at depth 16 refused
+fault-pc-overflow	0222
+fault-depth-overflow	16

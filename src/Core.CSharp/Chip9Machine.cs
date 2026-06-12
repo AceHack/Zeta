@@ -41,6 +41,12 @@ public sealed class Chip9Machine
     /// <summary>The higher planes' per-pixel bitmask (bits 1-2; zero ⇒ absent).</summary>
     public IDictionary<int, byte> Extra { get; } = new Dictionary<int, byte>();
 
+    /// <summary>The call stack (FAULT TREATY 2026-06-12: classic 16-frame cap).</summary>
+    public IList<int> CallStack { get; } = new List<int>();
+
+    /// <summary>The fault register — recorded, never fatal; the first fault wins.</summary>
+    public string? Fault { get; private set; }
+
     /// <summary>Load a ROM at 0x200.</summary>
     public void LoadRom(IReadOnlyList<byte> rom)
     {
@@ -58,7 +64,7 @@ public sealed class Chip9Machine
         return (byte)(mono | (Extra.TryGetValue(idx, out var hi) ? hi : (byte)0));
     }
 
-    /// <summary>Execute one instruction (treaty subset: 00E0, 6XNN, ANNN, DXYN, Fn01).</summary>
+    /// <summary>Execute one instruction (treaty subset: 00E0, 00EE, 2NNN, 6XNN, ANNN, DXYN, Fn01).</summary>
     public void Step()
     {
         var op = ((Mem.TryGetValue(Pc, out var hiB) ? hiB : 0) << 8)
@@ -73,6 +79,32 @@ public sealed class Chip9Machine
         {
             case 0x0000 when op == 0x00E0:
                 ClearSelected();
+                break;
+            case 0x0000 when op == 0x00EE:
+                // FAULT TREATY: RET — pop, or record underflow (never fatal; first fault wins)
+                if (CallStack.Count > 0)
+                {
+                    Pc = CallStack[^1];
+                    CallStack.RemoveAt(CallStack.Count - 1);
+                }
+                else
+                {
+                    Fault ??= "stack underflow: 00EE (RET) on empty stack";
+                }
+
+                break;
+            case 0x2000:
+                // FAULT TREATY: CALL — at depth 16 the CALL is REFUSED (fall through)
+                if (CallStack.Count >= 16)
+                {
+                    Fault ??= "stack overflow: CALL (2NNN) at depth 16 refused";
+                }
+                else
+                {
+                    CallStack.Add(Pc);
+                    Pc = nnn;
+                }
+
                 break;
             case 0x6000:
                 V[x] = nn;
