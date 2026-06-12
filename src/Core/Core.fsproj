@@ -34,6 +34,7 @@
     <Compile Include="GSet.fs" />
     <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
+    <Compile Include="FusionReconstruction.fs" />
     <Compile Include="WeightedSet.fs" />
     <Compile Include="RayTensor.fs" />
     <Compile Include="ToffoliGate.fs" />
