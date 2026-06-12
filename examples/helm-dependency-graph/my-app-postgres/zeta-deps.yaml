@@ -1,0 +1,19 @@
+# Canonical AppDependencyGraph example (B-0821 acceptance).
+# my-app depends on postgres; postgres connection-url flows into my-app database.url.
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: AppDependencyGraph
+metadata:
+  name: my-app
+  namespace: staging
+spec:
+  dependsOn:
+    - chart: postgres
+      version: "15.2.0"
+      outputs:
+        - name: connection-url
+          source: ".Values.postgres.connectionUrl"
+          consumes:
+            - target: my-app.values.database.url
+        - name: admin-password
+          source: ".Values.postgres.adminPassword"
+          consumes: []

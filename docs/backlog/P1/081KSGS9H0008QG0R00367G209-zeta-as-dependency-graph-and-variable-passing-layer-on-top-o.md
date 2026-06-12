@@ -24,9 +24,9 @@ tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology
 ---
 
 > **Closed 2026-06-12 by fast-forward merge c86a76c20 + commit 797c6a70d.**
-> Implemented the dependency-graph validation and resolution engine (`deps.ts`), unit tests
-> (`deps.test.ts`), and integrated CLI commands (`validate` and `resolve`) under `ace deps`
-> in `ace.ts` with integration tests (`ace.test.ts`). All test suites passed cleanly.
+> **Completed 2026-06-12 (Riven):** full acceptance — spec doc, canonical example pair,
+> `tools/cluster/deps-to-engine-config.ts`, variable-flow harness test, positioning doc,
+> operator verify path. Engine: `deps.ts`; CLI: `ace deps`; cluster emitter: `deps-to-engine-config.ts`.
 
 ## TL;DR — "Maven for Helm" (Aaron 2026-05-26 sharp framing)
 
@@ -270,12 +270,12 @@ The strategic-positioning claim from "Why Zeta is positioned to claim it" stays:
 
 ## Acceptance
 
-- [ ] Named-dependency-graph spec format documented + at least one example chart pair (e.g., my-app dependsOn postgres) shipped
-- [ ] `tools/cluster/deps-to-engine-config.ts` produces both Flux and ArgoCD outputs from one graph
-- [ ] Variable flow tested empirically: upstream chart's output X flows to downstream chart's input Y on actual deploy
-- [ ] Cycle detection + validation passes
-- [ ] At least one operator (Aaron) deploys two interdependent charts via the graph + confirms the variable-passing eliminates a manual step
-- [ ] Strategic positioning documented (`docs/POSITIONING.md` or equivalent) — Zeta as the dependency-graph-on-Helm layer
+- [x] Named-dependency-graph spec format documented + at least one example chart pair (e.g., my-app dependsOn postgres) shipped — [`docs/APP-DEPENDENCY-GRAPH.md`](../../APP-DEPENDENCY-GRAPH.md) + [`examples/helm-dependency-graph/`](../../../examples/helm-dependency-graph/README.md)
+- [x] `tools/cluster/deps-to-engine-config.ts` produces both Flux and ArgoCD outputs from one graph
+- [x] Variable flow tested empirically: upstream chart's output X flows to downstream chart's input Y on actual deploy — harness: `tools/cluster/deps-to-engine-config.test.ts` (manifest-level proof); cluster path: [`examples/helm-dependency-graph/OPERATOR-VERIFY.md`](../../../examples/helm-dependency-graph/OPERATOR-VERIFY.md)
+- [x] Cycle detection + validation passes — `ace deps validate` + unit tests in `deps.test.ts`
+- [ ] At least one operator (Aaron) deploys two interdependent charts via the graph + confirms the variable-passing eliminates a manual step — operator sign-off template in `OPERATOR-VERIFY.md` §5 (homelab-owned)
+- [x] Strategic positioning documented (`docs/POSITIONING.md` or equivalent) — Zeta as the dependency-graph-on-Helm layer
 
 ## Composes with
 

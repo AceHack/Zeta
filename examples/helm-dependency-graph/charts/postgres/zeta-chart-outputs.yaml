@@ -1,0 +1,11 @@
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: ChartOutputs
+metadata:
+  name: postgres
+outputs:
+  - name: connection-url
+    type: string
+    value: ".Values.postgres.connectionUrl"
+  - name: admin-password
+    type: string
+    value: ".Values.postgres.adminPassword"

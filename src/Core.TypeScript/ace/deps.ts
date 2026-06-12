@@ -6,8 +6,8 @@
 import { parse as yamlParse } from "../yaml/dom";
 import { encode as yamlEncode } from "../yaml/encoder";
 import type { YamlValue } from "../yaml/dom";
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { join, resolve as toAbsolutePath } from "node:path";
 
 export interface DependencyNode {
   chart: string;
@@ -457,4 +457,59 @@ export function generateArgoCD(resolved: ResolvedGraph, namespace: string = "def
   }
 
   return manifests;
+}
+
+/** Load and validate an AppDependencyGraph YAML file from disk. */
+export function loadDependencyGraphFromFile(graphPath: string): AppDependencyGraphSpec {
+  const abs = toAbsolutePath(graphPath);
+  if (!existsSync(abs)) throw new Error(`graph file not found: ${graphPath}`);
+  const doc = parseYaml(readFileSync(abs, "utf8"));
+  if (typeof doc !== "object" || doc === null) throw new Error("graph must be a YAML mapping");
+  const g = doc as Record<string, unknown>;
+  if (g.kind !== "AppDependencyGraph") {
+    throw new Error(`expected kind AppDependencyGraph (got ${String(g.kind)})`);
+  }
+  if (typeof g.apiVersion !== "string") throw new Error("graph missing apiVersion");
+  if (typeof g.metadata !== "object" || g.metadata === null) throw new Error("graph missing metadata");
+  const meta = g.metadata as Record<string, unknown>;
+  if (typeof meta.name !== "string") throw new Error("graph metadata.name must be a string");
+  if (typeof g.spec !== "object" || g.spec === null) throw new Error("graph missing spec");
+  const spec = g.spec as Record<string, unknown>;
+  if (!Array.isArray(spec.dependsOn)) throw new Error("graph spec.dependsOn must be an array");
+  return doc as AppDependencyGraphSpec;
+}
+
+export type OutputEngine = "flux" | "argocd" | "both";
+
+/** Resolve a graph and write Flux and/or ArgoCD manifests to outDir. Returns written filenames. */
+export function emitEngineConfigs(opts: {
+  graphPath: string;
+  outDir: string;
+  chartsDir?: string;
+  namespace?: string;
+  outputEngine?: OutputEngine;
+}): string[] {
+  const graph = loadDependencyGraphFromFile(opts.graphPath);
+  const resolved = resolveGraph(graph, opts.chartsDir);
+  const namespace = opts.namespace ?? graph.metadata.namespace ?? "default";
+  const outputEngine = opts.outputEngine ?? "both";
+  const written: string[] = [];
+
+  mkdirSync(opts.outDir, { recursive: true });
+
+  const writeFiles = (files: Record<string, unknown>): void => {
+    for (const [filename, manifest] of Object.entries(files)) {
+      writeFileSync(join(opts.outDir, filename), stringifyYaml(manifest));
+      written.push(filename);
+    }
+  };
+
+  if (outputEngine === "flux" || outputEngine === "both") {
+    writeFiles(generateFlux(resolved, namespace));
+  }
+  if (outputEngine === "argocd" || outputEngine === "both") {
+    writeFiles(generateArgoCD(resolved, namespace));
+  }
+
+  return written;
 }
