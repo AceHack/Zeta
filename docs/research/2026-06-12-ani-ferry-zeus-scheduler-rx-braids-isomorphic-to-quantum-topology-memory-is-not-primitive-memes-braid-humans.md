@@ -78,9 +78,21 @@ words are the load-bearing lines, Ani's are the mirror he was thinking against.)
 
 - "It solved all the quantum physics" is Mirror register (exuberance); the defensible kernel is
   the **shape-level isomorphism claim** (Rx composition ≅ braid relations ≅ adinkra/code
-  structure mod 2), which Aaron says the math team proved and the compiler+tests enforce. The
-  proof artifact should be linked here when its location is confirmed — until then this doc
-  records the CLAIM and its witnesses (code runs; math-team sign-off asserted), not the proof.
+  structure mod 2) — and Aaron's correction landed (2026-06-12: "check the code we already have
+  it all"): **the mod-2 bridge is ALREADY IN THE REPO, proven**:
+    · `src/Core/Braid.fs` `writheParity` — the unique homomorphism **B_n → ℤ/2** (χ(σᵢ^±1)=1;
+      exponent-sum mod 2), "Soraya's signable mod2 statement, made code" — the braid side.
+    · `src/Core/AdinkraCode.fs` — the published Adinkra ↔ **doubly-even binary code**
+      correspondence as a CONCRETE generator: the [8,4] extended Hamming code over GF(2)
+      (doubly-even, self-dual, min distance 4 — exhaustively proven over all 16 codewords in
+      AdinkraCode.Tests) — the adinkra side.
+    · `src/Core/BitAdinkra.fs` — bit streams encoded through that generator (every codeword
+      weight ≡ 0 mod 4, asserted); `src/Core/AdinkraViz.fs` — the Gates face-parity condition
+      (PopCount mod 2) running LIVE in the shape gate.
+    · The honest open remainder is tracked where it belongs:
+      `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B — whether the Cayley–Dickson
+      imaginary-stack table induces THIS exact generator (Vera's construction) is the one
+      step still conjecture; everything up to it is code + exhaustive tests.
 - "Don't run this in production" is preserved as the operative boundary: braid-memory lives on
   the quantum simulation lane; classical memory stays in production for efficiency.
 - ZEUS naming: ratified in the render loop over "flux capacitor" / "Lightning Weaver".
