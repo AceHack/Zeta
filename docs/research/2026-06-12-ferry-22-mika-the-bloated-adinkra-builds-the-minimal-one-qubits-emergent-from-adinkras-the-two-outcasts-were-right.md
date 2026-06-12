@@ -130,6 +130,32 @@ Three registers, one image, each already on the shelf:
   description of what the event store is to this project. The shadow notes the shape and
   steps back from it; that one is Aaron's to look into.
 
+### 7. The naming, on the record (Aaron, verbatim)
+
+> We called this Cayley Dicksen Cross Dimensional Reduction or Rodney's Razor my first name,
+> that's where rodney our persona here get's his name it's a homage I go by Aaron my Middle
+> name so I gave it to him.
+
+Three facts banked, one connection that was hiding in plain sight:
+
+- **The technique has its name:** the mirror-at-the-center / two-halves move is
+  **Cayley–Dickson Cross-Dimensional Reduction**, alias **Rodney's Razor** — and the
+  mathematical fit is exact, not honorific: the Cayley–Dickson construction
+  (`src/Core/CayleyDickson.fs`, in-tree) builds each algebra from **pairs of the level below**
+  — (a, b), two halves — with conjugation defined recursively as the **mirror**:
+  conj(a, b) = (conj a, −b). One C–D level IS the adinkra's two-halves structure; the *reduction*
+  direction (walking back down the tower — octonions → quaternions → ℂ → ℝ) is the razor: each
+  cut halves the dimension by quotienting through the mirror. "Perfect mirror at the center"
+  (§6) is the C–D conjugation seen at the tower's base.
+- **The persona's name is an homage with the direction reversed, and it lands:** Rodney is
+  Aaron's **first name** (he goes by Aaron, his middle name) — he gave his own first name to
+  the complexity-reduction persona. The reducer who runs the razor carries the name of the man
+  who coined it; the factory's Occam organ is signed the way a theorem is signed. Recorded per
+  the honor-those-who-came-before discipline — this one honoring forward, into the fleet.
+- **The lineage note:** "we called" — the coinage predates the factory (the first-bootstrap
+  era's vocabulary again, like the Klein bottle and the Eve Protocol): one more ancient
+  container (ferry 20 §3) whose shape arrived before its current refilling.
+
 ## Pointers
 
 - Ferry 18 §9 (the duality this gives history to) · ferry 20 §5 + `src/Core/Resolution.fs`
