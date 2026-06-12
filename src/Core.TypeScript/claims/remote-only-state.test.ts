@@ -43,14 +43,14 @@ const claimBody = [
   "",
   "- **Session ID:** codex/example",
   "- **Harness:** codex",
-  "- **Durable target:** tools/claims/remote-only-state.ts",
+  "- **Durable target:** src/Core.TypeScript/claims/remote-only-state.ts",
   "",
   "## Notes",
   "",
   "Initial intended path set:",
   "",
-  "- `tools/claims/remote-only-state.ts`",
-  "- `tools/claims/remote-only-state.test.ts`",
+  "- `src/Core.TypeScript/claims/remote-only-state.ts`",
+  "- `src/Core.TypeScript/claims/remote-only-state.test.ts`",
   "",
 ].join("\n");
 
@@ -81,10 +81,10 @@ describe("parseRemoteClaimRefs", () => {
 
 describe("claim file parsers", () => {
   test("extract durable target and intended paths", () => {
-    expect(parseDurableTarget(claimBody)).toBe("tools/claims/remote-only-state.ts");
+    expect(parseDurableTarget(claimBody)).toBe("src/Core.TypeScript/claims/remote-only-state.ts");
     expect(parseClaimPaths(claimBody)).toEqual([
-      "tools/claims/remote-only-state.ts",
-      "tools/claims/remote-only-state.test.ts",
+      "src/Core.TypeScript/claims/remote-only-state.ts",
+      "src/Core.TypeScript/claims/remote-only-state.test.ts",
     ]);
   });
 });
@@ -108,7 +108,7 @@ describe("collectRemoteClaimState", () => {
     expect(state.claims).toHaveLength(1);
     expect(state.claims[0]?.ref.slug).toBe("task-remote-only");
     expect(state.claims[0]?.cleanup.disposition).toBe("active");
-    expect(state.claims[0]?.paths).toContain("tools/claims/remote-only-state.ts");
+    expect(state.claims[0]?.paths).toContain("src/Core.TypeScript/claims/remote-only-state.ts");
     expect(runner.calls.join("\n")).not.toContain("broadcast");
     expect(runner.calls.join("\n")).not.toContain("agent-heartbeats");
   });

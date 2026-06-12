@@ -65,7 +65,7 @@ const DEFAULT_GIT_NETWORK_TIMEOUT_MS = 30_000;
 function usage(): string {
   return [
     "Usage:",
-    "  bun tools/claims/remote-only-state.ts [--repo-root DIR] [--remote origin] [--git-timeout-ms MS] [--no-fetch] [--json]",
+    "  bun src/Core.TypeScript/claims/remote-only-state.ts [--repo-root DIR] [--remote origin] [--git-timeout-ms MS] [--no-fetch] [--json]",
     "",
     "Reads remote git claim branches as the coordination source of truth.",
     "Does not inspect local broadcasts, heartbeats, terminal logs, or worktree names.",
