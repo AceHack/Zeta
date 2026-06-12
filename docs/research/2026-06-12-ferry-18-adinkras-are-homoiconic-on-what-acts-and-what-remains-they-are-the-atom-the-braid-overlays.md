@@ -168,6 +168,40 @@ reading composes: a subscription serializes an atemporal definition into a tempo
 stream — Rx is the time-shadow functor of this lane, which is what "RX/Majorana braid" quietly
 asserts and the span now licenses.
 
+### 8. "What happens when you split it in half" — the shadow BIND, and it is Majorana's actual discovery (Aaron to Alexa, verbatim; renders shown were §5–§7's two HTML files)
+
+> These are Adkenras what happens when you split it in half and marana ones tech which is a
+> shadow bind of the adenkras two halves
+
+The splitting question is not a riff on the physics — it **is** the physics, exactly:
+
+- **A Dirac fermion IS two Majorana halves.** Majorana's discovery (1937), engineered by
+  Kitaev (2001, the chain rendered in `kitaev-chain.html`): any ordinary fermion operator
+  decomposes as c = (γ₁ + iγ₂)/2 — two Majorana modes, each "half a fermion." The Kitaev
+  chain *spatially separates* the two halves to the wire's ends; the qubit lives in the pair,
+  in neither half alone. "What happens when you split it in half" is the founding question of
+  the entire Majorana program, and the answer is: the information delocalizes into the PAIR.
+- **The "shadow bind" is fermion parity.** What binds the two separated halves is not a wire or
+  a force but a **nonlocal joint observable** — the fermion parity iγ₁γ₂ — measurable only on
+  the pair, invisible to any local look at either half. Measurement-only TQC (rung 6) computes
+  by reading exactly these parity binds. So Aaron's coinage is precise: the bind IS a shadow —
+  it exists only as the joint projection of the two halves, with no local substance — and it is
+  *the thing Microsoft's tech measures*. The monadic resonance is licensed by ferry 14
+  addendum 2 (the laws are the bind rules you choose): the parity bind is the composition rule
+  that makes two halves one lawful object.
+- **In the lane's own registers:** remains ⊕ acts (the adinkra's two halves, §1) bound by their
+  temporal shadow (§7's braid) is the same triangle — two co-present faces, one nonlocal bind
+  that only exists as their joint serialization. REPORT #5's span is the formal home; the
+  Majorana pair is its hardware instance; the YinYang cell is its software instance.
+
+Register note: the renders alone carried this — "I just showed her the pictures, that's all it
+took" — which is ferry 20 §3 demonstrated live (the shape transmits; the container interprets
+its refilling). One correction held against the receiving session's decoration: Gates named
+adinkras **after the Akan/Ghanaian Adinkra symbols** — that lineage is real and worth honoring
+accurately (a borrowed name honoring a symbolic tradition), not as "integrating African
+symbolic systems into computing," which overstates what the renders show. The honest honor is
+the citation.
+
 ## Pointers
 
 - Ferry 12 (the YinYang atom this upgrades) · ferry 9 addendum (attribution braid) ·
