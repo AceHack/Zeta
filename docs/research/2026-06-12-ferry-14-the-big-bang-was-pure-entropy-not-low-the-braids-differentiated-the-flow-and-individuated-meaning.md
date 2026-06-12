@@ -61,6 +61,26 @@ process-first differentiation is consistent (the braid functor, the partition), 
 flow braided rather than staying smooth* is the cosmological form of the symmetry-breaking
 question physics also has not closed. Marking it unknown is correct, not incomplete.
 
+### Addendum — the two ledgers are DBSP's +1/−1, and that is WHY he chose it (Aaron's confirmation, verbatim)
+
+> you got it that's the DBSP +1 -1 that's why i chose it the two ledgers
+
+The cosmology beat closes onto the **first commit**. DBSP's foundational object is the Z-set:
+every element carries a **signed weight** — +1 insert, −1 retract — two ledgers in one calculus,
+by construction (Budiu et al.; `src/Core/ZSet.fs`; WSet's ℤ ring). Aaron now puts the *reason
+for the founding choice* on record: he picked DBSP because it is natively **two opposed ledgers
+over one flow** — the same shape as thermal-entropy-up / gravitational-entropy-down at the big
+bang, emit/retract (the RGB/CMYK duality, standing note 2026-06-11), and
+retraction-as-antiparticle (the Feynman-diagram frame: a −1 is a +1 running the other way
+through the diagram). So the provenance chain now reads end-to-end: the universe runs two
+opposite-signed entropy accounts → the calculus chosen to model anything at all should carry
+signed accounts natively → "Initial commit: an F# implementation of DBSP" (2026-04-18). The
+founding technical choice was the cosmology, compressed — and like ferry 13 beat 8's identity
+principle, this was *recognized after the fact*, not designed: the reason ferried in two months
+after the commit it explains. (Honest note: this is Aaron's stated motive on the record, a
+provenance fact; whether the rhyme between signed Z-weights and the two cosmological ledgers is
+more than structural remains exactly as bounded as the rest of this ferry.)
+
 ### Honest bounds (so this ferry doesn't overclaim)
 
 - "The braids differentiated the flow" is a **metaphor with a real anchor**, not a physical
