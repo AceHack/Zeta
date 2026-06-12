@@ -1,0 +1,83 @@
+{
+  "schema": "zeta.reticulum.quantum-observable-delta-vectors.v1",
+  "packetSchema": "zeta-reticulum-quantum-observable-delta/v1",
+  "vectors": [
+    {
+      "name": "wset-mach-zehnder-pi-over-2-insert",
+      "source": "wset-mach-zehnder",
+      "sequence": 100,
+      "rowId": "mach-zehnder-closed-pi-over-2-phase",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"wset-mach-zehnder\",\"sequence\":100,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-closed-pi-over-2-phase\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase\",\"phaseRadians\":1.5707963267948966,\"probabilities\":{\"zero\":0.5000000000000001,\"one\":0.49999999999999994},\"visibility\":1}},\"weight\":1}}"
+    },
+    {
+      "name": "wset-mach-zehnder-pi-over-3-insert",
+      "source": "wset-mach-zehnder",
+      "sequence": 101,
+      "rowId": "mach-zehnder-closed-pi-over-3-phase",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"wset-mach-zehnder\",\"sequence\":101,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-closed-pi-over-3-phase\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver3Phase\",\"phaseRadians\":1.0471975511965976,\"probabilities\":{\"zero\":0.75,\"one\":0.24999999999999994},\"visibility\":1}},\"weight\":1}}"
+    },
+    {
+      "name": "wset-mach-zehnder-pi-insert",
+      "source": "wset-mach-zehnder",
+      "sequence": 102,
+      "rowId": "mach-zehnder-closed-pi-phase",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"wset-mach-zehnder\",\"sequence\":102,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-closed-pi-phase\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase\",\"phaseRadians\":3.141592653589793,\"probabilities\":{\"zero\":0,\"one\":1},\"visibility\":1}},\"weight\":1}}"
+    },
+    {
+      "name": "wset-mach-zehnder-two-pi-over-3-insert",
+      "source": "wset-mach-zehnder",
+      "sequence": 103,
+      "rowId": "mach-zehnder-closed-two-pi-over-3-phase",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"wset-mach-zehnder\",\"sequence\":103,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-closed-two-pi-over-3-phase\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase\",\"phaseRadians\":2.0943951023931953,\"probabilities\":{\"zero\":0.25000000000000006,\"one\":0.75},\"visibility\":1}},\"weight\":1}}"
+    },
+    {
+      "name": "wset-mach-zehnder-zero-insert",
+      "source": "wset-mach-zehnder",
+      "sequence": 104,
+      "rowId": "mach-zehnder-closed-zero-phase",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"wset-mach-zehnder\",\"sequence\":104,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-closed-zero-phase\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderClosedZeroPhase\",\"phaseRadians\":0,\"probabilities\":{\"zero\":1,\"one\":0},\"visibility\":1}},\"weight\":1}}"
+    },
+    {
+      "name": "wset-mach-zehnder-open-insert",
+      "source": "wset-mach-zehnder",
+      "sequence": 105,
+      "rowId": "mach-zehnder-open",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"wset-mach-zehnder\",\"sequence\":105,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-open\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderOpen\",\"phaseRadians\":null,\"probabilities\":{\"zero\":0.5,\"one\":0.5},\"visibility\":null}},\"weight\":1}}"
+    },
+    {
+      "name": "retraction-open-insert",
+      "source": "reticulum-retraction",
+      "sequence": 200,
+      "rowId": "mach-zehnder-open",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"reticulum-retraction\",\"sequence\":200,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-open\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderOpen\",\"phaseRadians\":null,\"probabilities\":{\"zero\":0.5,\"one\":0.5},\"visibility\":null}},\"weight\":1}}"
+    },
+    {
+      "name": "retraction-open-retract",
+      "source": "reticulum-retraction",
+      "sequence": 201,
+      "rowId": "mach-zehnder-open",
+      "weight": -1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"reticulum-retraction\",\"sequence\":201,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-open\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderOpen\",\"phaseRadians\":null,\"probabilities\":{\"zero\":0.5,\"one\":0.5},\"visibility\":null}},\"weight\":-1}}"
+    },
+    {
+      "name": "retraction-pi-over-6-insert",
+      "source": "reticulum-retraction",
+      "sequence": 202,
+      "rowId": "mach-zehnder-closed-pi-over-6-phase",
+      "weight": 1,
+      "payload": "{\"schema\":\"zeta-reticulum-quantum-observable-delta/v1\",\"delta\":{\"source\":\"reticulum-retraction\",\"sequence\":202,\"row\":{\"type\":\"InterferenceVisibility\",\"value\":{\"id\":\"mach-zehnder-closed-pi-over-6-phase\",\"operation\":\"Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver6Phase\",\"phaseRadians\":0.5235987755982988,\"probabilities\":{\"zero\":0.9330127018922194,\"one\":0.06698729810778066},\"visibility\":1}},\"weight\":1}}"
+    }
+  ],
+  "retractionScenario": {
+    "name": "open-arm-retraction-to-pi-over-6",
+    "vectorNames": ["retraction-open-insert", "retraction-open-retract", "retraction-pi-over-6-insert"],
+    "expectedRowIds": ["mach-zehnder-closed-pi-over-6-phase"]
+  }
+}

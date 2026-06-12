@@ -1,9 +1,44 @@
 import { describe, expect, test } from "bun:test";
-import { encode, decode, ofQuantumObservableRow, type Observable } from "./reticulum-quantum";
+import {
+  consolidateQuantumObservableDeltas,
+  decode,
+  decodeDelta,
+  encode,
+  encodeDelta,
+  ofQuantumObservableDelta,
+  ofQuantumObservableRow,
+  type Observable,
+} from "./reticulum-quantum";
+import deltaVectors from "./reticulum-quantum-delta-vectors.json";
 import transcript from "./quantum-treaty-transcript.json";
-import type { QuantumObservableTranscript } from "./types";
+import type { QuantumObservableRow, QuantumObservableTranscript } from "./types";
 
 const treatyTranscript = transcript as QuantumObservableTranscript;
+const deltaTreaty = deltaVectors as ReticulumQuantumDeltaVectorFile;
+
+interface ReticulumQuantumDeltaVector {
+  readonly name: string;
+  readonly source: string;
+  readonly sequence: number;
+  readonly rowId: string;
+  readonly weight: number;
+  readonly payload: string;
+}
+
+interface ReticulumQuantumDeltaVectorFile {
+  readonly schema: string;
+  readonly packetSchema: string;
+  readonly vectors: readonly ReticulumQuantumDeltaVector[];
+  readonly retractionScenario: {
+    readonly name: string;
+    readonly vectorNames: readonly string[];
+    readonly expectedRowIds: readonly string[];
+  };
+}
+
+function rowId(row: QuantumObservableRow): string {
+  return row.value.Id;
+}
 
 describe("ReticulumQuantum symmetry and codec", () => {
   test("encode and decode are symmetric", () => {
@@ -64,6 +99,61 @@ describe("ReticulumQuantum symmetry and codec", () => {
 
         sequence++;
       }
+    }
+  });
+
+  test("delta golden vectors are byte-locked against the F# Reticulum encoder", () => {
+    expect(deltaTreaty.schema).toBe("zeta.reticulum.quantum-observable-delta-vectors.v1");
+    expect(deltaTreaty.packetSchema).toBe("zeta-reticulum-quantum-observable-delta/v1");
+    expect(deltaTreaty.vectors.length).toBeGreaterThanOrEqual(9);
+
+    for (const vector of deltaTreaty.vectors) {
+      const decoded = decodeDelta(vector.payload);
+      expect(decoded.ok).toBe(true);
+      if (!decoded.ok) {
+        continue;
+      }
+
+      expect(decoded.value.source).toBe(vector.source);
+      expect(decoded.value.sequence).toBe(vector.sequence);
+      expect(rowId(decoded.value.row)).toBe(vector.rowId);
+      expect(decoded.value.weight).toBe(vector.weight);
+      expect(encodeDelta(decoded.value)).toBe(vector.payload);
+
+      const lifted = ofQuantumObservableDelta(vector.source, vector.sequence, {
+        row: decoded.value.row,
+        weight: vector.weight,
+      });
+      expect(encodeDelta(lifted)).toBe(vector.payload);
+    }
+  });
+
+  test("delta golden vectors replay DBSP retractions", () => {
+    const vectorsByName = new Map(deltaTreaty.vectors.map((vector) => [vector.name, vector]));
+    const decoded = deltaTreaty.retractionScenario.vectorNames.map((name) => {
+      const vector = vectorsByName.get(name);
+      expect(vector).toBeDefined();
+      if (vector === undefined) {
+        throw new Error(`missing vector ${name}`);
+      }
+      const result = decodeDelta(vector.payload);
+      expect(result.ok).toBe(true);
+      if (!result.ok) {
+        throw new Error(result.error.reason);
+      }
+      return result.value;
+    });
+
+    const consolidated = consolidateQuantumObservableDeltas(decoded);
+    expect(consolidated.map((delta) => rowId(delta.row))).toEqual([...deltaTreaty.retractionScenario.expectedRowIds]);
+    expect(consolidated.map((delta) => delta.weight)).toEqual([1]);
+  });
+
+  test("delta decode returns malformed error for invalid schema", () => {
+    const decoded = decodeDelta('{"schema":"wrong","delta":{}}');
+    expect(decoded.ok).toBe(false);
+    if (!decoded.ok) {
+      expect(decoded.error.reason).toBe("schema");
     }
   });
 });

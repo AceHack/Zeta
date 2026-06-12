@@ -28,7 +28,14 @@ fi
 # sharing a name prefix (dotnet-ef vs dotnet-ef-tools) don't collide.
 INSTALLED="$(dotnet tool list -g 2>/dev/null | awk 'NR>2 {print tolower($1)}' || echo '')"
 
-grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
+MANIFEST_LINES="$(mktemp)"
+trap 'rm -f "$MANIFEST_LINES"' EXIT
+awk '
+  { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+  NF > 0 { print }
+' "$MANIFEST" > "$MANIFEST_LINES"
+
+while IFS= read -r line || [ -n "$line" ]; do
   # Manifest lines are "<tool> <version>" or just "<tool>".
   tool="$(echo "$line" | awk '{print $1}')"
   version="$(echo "$line" | awk '{print $2}')"
@@ -48,4 +55,6 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
     fi
     echo "✓ $tool installed"
   fi
-done
+done < "$MANIFEST_LINES"
+
+echo "✓ dotnet global tools up to date"

@@ -1,7 +1,6 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import {
-  B0891_RETENTION_USB_SERIAL_MARKERS,
   INITIAL_INSTALL_SERIAL_MARKERS,
   INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,

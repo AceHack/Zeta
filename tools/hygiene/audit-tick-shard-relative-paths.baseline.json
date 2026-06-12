@@ -5883,5 +5883,345 @@
     "file": "docs/hygiene-history/ticks/2026/05/29/0609Z.md",
     "line": 76,
     "target": "../../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2012Z.md",
+    "line": 20,
+    "target": "../../../../../../docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2040Z.md",
+    "line": 26,
+    "target": "../../../../../../docs/backlog/P3/B-0553-audit-backlog-status-drift-detection-2026-05-16.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0944Z.md",
+    "line": 30,
+    "target": "../../../../../backlog/P1/B-0418-amplification-ratio-metric-dashboard-2026-05-11.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1131Z.md",
+    "line": 19,
+    "target": "../../../../../backlog/P2/B-0037.2-meta-cognition-round-close-checklist.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0213Z.md",
+    "line": 28,
+    "target": "../../../../../../docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1045Z.md",
+    "line": 22,
+    "target": "../../../../../backlog/P2/B-0457-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1045Z.md",
+    "line": 52,
+    "target": "../../../../../backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1118Z.md",
+    "line": 18,
+    "target": "../../../../../backlog/P2/B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0210Z.md",
+    "line": 29,
+    "target": "../../../../../../docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1053Z.md",
+    "line": 21,
+    "target": "../../../../../backlog/P2/B-0118-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1053Z.md",
+    "line": 38,
+    "target": "../../../../../backlog/P2/B-0458-amara-ts-readme-update-courier-debt-closure-test-invoke-ts-first-riven-2026-05-11.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0823Z.md",
+    "line": 30,
+    "target": "../../../../../backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1644Z.md",
+    "line": 74,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1136Z.md",
+    "line": 20,
+    "target": "../../../../../backlog/P2/B-0037.3-meta-cognition-measurables-wiring.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1027Z.md",
+    "line": 21,
+    "target": "../../../../../backlog/P2/B-0049.2-mystery-schools-stage1-mithraic-bibliographic-scaffold.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1008Z.md",
+    "line": 19,
+    "target": "../../../../../backlog/P3/B-0129-tick-history-schema-prediction-vs-receipt-column-aaron-2026-05-01.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0922Z.md",
+    "line": 18,
+    "target": "../../../../../backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1547Z.md",
+    "line": 38,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1547Z.md",
+    "line": 94,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1221Z.md",
+    "line": 7,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1618Z.md",
+    "line": 17,
+    "target": "../../../../../backlog/P1/B-0549-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0912Z.md",
+    "line": 18,
+    "target": "../../../../../backlog/P2/B-0411-grok-ts-persona-flag-impl-2026-05-11.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0736Z.md",
+    "line": 19,
+    "target": "../../../../../backlog/P1/B-0346-backport-spec-gaps-to-openspec-b0193.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0044Z.md",
+    "line": 36,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1207Z.md",
+    "line": 18,
+    "target": "../../../../../backlog/P2/B-0206-claude-code-env-mapping-skill-with-carved-sentences-references-ts-files-aaron-2026-05-05.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0904Z.md",
+    "line": 31,
+    "target": "../../../../../backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0928Z.md",
+    "line": 36,
+    "target": "../../../../../backlog/P2/B-0534-backlog-ready-notifier-reads-stale-local-checkout-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0727Z.md",
+    "line": 18,
+    "target": "../../../../../backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1017Z.md",
+    "line": 20,
+    "target": "../../../../../backlog/P2/B-0197-lean-prop-3-5-misattribution-cleanup-aaron-2026-05-05.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/1448Z.md",
+    "line": 17,
+    "target": "../../../../../backlog/P1/B-0343-test-repo-seeding-script-ts-b0193.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0234Z.md",
+    "line": 32,
+    "target": "../../../../../../docs/backlog/P2/B-0545-b0498-collision-renumber-sweep-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0425Z.md",
+    "line": 38,
+    "target": "../../../../../backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/16/0815Z.md",
+    "line": 17,
+    "target": "../../../../../backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/28/0208Z.md",
+    "line": 52,
+    "target": "../../../../../../docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1424Z.md",
+    "line": 58,
+    "target": "../../../../../../docs/backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1416Z.md",
+    "line": 77,
+    "target": "../../../../../../docs/backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/1404Z.md",
+    "line": 75,
+    "target": "../../../../../../docs/backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0418Z.md",
+    "line": 77,
+    "target": "../../../../../../docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/17/0418Z.md",
+    "line": 213,
+    "target": "../../../../../../docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/19/0007Z-c.md",
+    "line": 7,
+    "target": "../../../../../../docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/1410Z.md",
+    "line": 41,
+    "target": "../../../../../backlog/P3/B-0686-tick-shard-immutability-ci-gate-2026-05-21.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1643Z.md",
+    "line": 7,
+    "target": "../../../../../backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1939Z.md",
+    "line": 11,
+    "target": "../../../../../backlog/P3/B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1939Z.md",
+    "line": 67,
+    "target": "../../../../../backlog/P3/B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1731Z.md",
+    "line": 32,
+    "target": "../../../../../backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2038Z.md",
+    "line": 70,
+    "target": "../../../../../backlog/P3/B-0536-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2038Z.md",
+    "line": 70,
+    "target": "../../../../../backlog/P3/B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 6,
+    "target": "../../../../../backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 6,
+    "target": "../../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 36,
+    "target": "../../../../../backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 36,
+    "target": "../../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1807Z.md",
+    "line": 9,
+    "target": "../../../../../backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0717Z.md",
+    "line": 7,
+    "target": "../../../../../backlog/P3/B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1949Z.md",
+    "line": 62,
+    "target": "../../../../../backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "line": 6,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "line": 7,
+    "target": "../../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "line": 20,
+    "target": "../../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1036Z.md",
+    "line": 9,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1833Z.md",
+    "line": 75,
+    "target": "../../../../../backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1820Z.md",
+    "line": 25,
+    "target": "../../../../../backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1931Z.md",
+    "line": 70,
+    "target": "../../../../../backlog/P3/B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1844Z.md",
+    "line": 79,
+    "target": "../../../../../backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0230Z.md",
+    "line": 15,
+    "target": "../../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1338Z.md",
+    "line": 25,
+    "target": "../../../../../../docs/backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2032Z.md",
+    "line": 71,
+    "target": "../../../../../backlog/P3/B-0535-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/2032Z.md",
+    "line": 71,
+    "target": "../../../../../backlog/P3/B-0536-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1855Z.md",
+    "line": 53,
+    "target": "../../../../../backlog/P3/B-0036-section33-archive-header-backfill-and-ci-wire-otto-346-pattern.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1855Z.md",
+    "line": 54,
+    "target": "../../../../../backlog/P3/B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md"
   }
 ]

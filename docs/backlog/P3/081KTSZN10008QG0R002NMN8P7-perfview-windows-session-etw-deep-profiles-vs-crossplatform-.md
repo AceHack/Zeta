@@ -17,6 +17,7 @@ Framework). But its ENGINE is not: `Microsoft.Diagnostics.Tracing.TraceEvent` (t
 PerfView is built on) parses EventPipe traces CROSS-PLATFORM — and collection is cross-platform
 via `dotnet-trace` (EventPipe works on macOS/Linux; traces open in PerfView on Windows, or in
 SpeedScope/Chrome tracing anywhere). So the lane splits honestly:
+
 - **macOS/Linux (the factory's daily lane):** dotnet-trace collect + dotnet-counters +
   dotnet-gcdump; analyze with TraceEvent or SpeedScope. Deterministic meters stay Ben's
   (ticks + allocBytes); these traces are the STATISTICAL layer.

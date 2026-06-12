@@ -439,7 +439,11 @@ jobs:
     # THREAT-MODEL.md "mitigation validation" section + round-30
     # elevation design (docs/research/threat-model-elevation.md).
     name: lint (semgrep)
-    timeout-minutes: 10
+    # Repo-wide generic-mode Semgrep has grown past the old 10-minute
+    # cap on cold runners (2026-06-12: CI canceled semgrep-core before
+    # any findings were emitted). Keep the full ruleset and give the
+    # scan enough wall clock instead of weakening coverage.
+    timeout-minutes: 20
     runs-on: ubuntu-24.04
 
     # Toolchain via three-way-parity install.sh (GOVERNANCE §24): same

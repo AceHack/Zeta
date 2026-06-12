@@ -57,6 +57,7 @@ which wins? The ordering:
 ```
 
 This ordering is the **design content** of this ADR. It encodes:
+
 - Operator always preempts (consent-first, NCI)
 - Infrastructure health before feature work (broken cells block everything)
 - Free forward progress before new work (merge what's done before starting new)
@@ -77,6 +78,7 @@ Ani architecture conversation. The mapping:
 | The loop | `loadWorld → observe → execute → loadWorld → ...` |
 
 The hexagonal architecture pattern:
+
 - **Core** (pure): observe.ts, grammar-16.ts, fold/simulate
 - **Ports** (interfaces): World, NextAction, OperatorChannel, CellState, PRState
 - **Adapters** (impure): load-world.ts, world-infra.ts, execute.ts, event-sink-folder.ts
@@ -89,6 +91,7 @@ shell out to git/gh/launchctl).
 ### 4. Golden vector extension
 
 Add one golden vector per new priority path:
+
 - Cell starving + backlog available → provision_cell wins
 - PR clean + no operator + no starving cell → merge_pr wins
 - Both empty → falls through to backlog as today

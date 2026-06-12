@@ -16,13 +16,20 @@ if ! command -v dotnet >/dev/null 2>&1; then
 fi
 
 if [ -f "$MANIFEST" ]; then
-  grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r workload; do
+  MANIFEST_LINES="$(mktemp)"
+  trap 'rm -f "$MANIFEST_LINES"' EXIT
+  awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$MANIFEST" > "$MANIFEST_LINES"
+
+  while IFS= read -r workload || [ -n "$workload" ]; do
     workload="$(echo "$workload" | awk '{print $1}')"
     [ -z "$workload" ] && continue
     echo "↓ dotnet workload install $workload..."
     dotnet workload install "$workload" --skip-sign-check 2>/dev/null \
       || dotnet workload install "$workload"
-  done
+  done < "$MANIFEST_LINES"
 fi
 
 # Bring whatever is installed up to the SDK's matching versions (no-op when none).

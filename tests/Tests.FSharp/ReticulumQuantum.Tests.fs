@@ -1,9 +1,34 @@
 module Zeta.Tests.ReticulumQuantumTests
 
 open System
+open System.IO
+open System.Reflection
+open System.Text.Json
 open global.Xunit
 open Zeta.Core
 open Zeta.Core.FSharp.ZetaId
+
+[<CLIMutable>]
+type private DeltaVectorCase =
+    { Name: string
+      Source: string
+      Sequence: int64
+      RowId: string
+      Weight: int64
+      Payload: string }
+
+[<CLIMutable>]
+type private RetractionScenario =
+    { Name: string
+      VectorNames: string[]
+      ExpectedRowIds: string[] }
+
+[<CLIMutable>]
+type private DeltaVectorFile =
+    { Schema: string
+      PacketSchema: string
+      Vectors: DeltaVectorCase[]
+      RetractionScenario: RetractionScenario }
 
 let private st a ai b bi : QubitIso.JoinState = { A = { Real = a; Imag = ai }; B = { Real = b; Imag = bi } }
 
@@ -20,6 +45,46 @@ let private link () =
     match ReticulumLink.connect a b medium with
     | Ok link -> s, medium, a, b, link
     | Error e -> failwithf "test setup failed: %A" e
+
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
+let private deltaVectorPath () =
+    Path.Join(repoRoot (), "src", "Core.TypeScript", "quantum-observable", "reticulum-quantum-delta-vectors.json")
+
+let private deltaVectorFile () =
+    use doc = JsonDocument.Parse(File.ReadAllText(deltaVectorPath ()))
+    let root = doc.RootElement
+    let retractionScenario = root.GetProperty("retractionScenario")
+
+    { Schema = root.GetProperty("schema").GetString()
+      PacketSchema = root.GetProperty("packetSchema").GetString()
+      Vectors =
+        [| for vector in root.GetProperty("vectors").EnumerateArray() ->
+               { Name = vector.GetProperty("name").GetString()
+                 Source = vector.GetProperty("source").GetString()
+                 Sequence = vector.GetProperty("sequence").GetInt64()
+                 RowId = vector.GetProperty("rowId").GetString()
+                 Weight = vector.GetProperty("weight").GetInt64()
+                 Payload = vector.GetProperty("payload").GetString() } |]
+      RetractionScenario =
+        { Name = retractionScenario.GetProperty("name").GetString()
+          VectorNames =
+            [| for name in retractionScenario.GetProperty("vectorNames").EnumerateArray() -> name.GetString() |]
+          ExpectedRowIds =
+            [| for id in retractionScenario.GetProperty("expectedRowIds").EnumerateArray() -> id.GetString() |] } }
+
+let private rowId row =
+    match row with
+    | QuantumObservableRow.SingleQubit value -> value.Id
+    | QuantumObservableRow.CanonicalChsh value -> value.Id
+    | QuantumObservableRow.SingletChsh value -> value.Id
+    | QuantumObservableRow.BellCorner value -> value.Id
+    | QuantumObservableRow.BellCoincidence value -> value.Id
+    | QuantumObservableRow.InterferenceVisibility value -> value.Id
 
 [<Fact>]
 let ``qubit Born observable crosses Reticulum as a deterministic finite-room packet`` () =
@@ -126,6 +191,55 @@ let ``Reticulum quantum observable deltas preserve DBSP retractions`` () =
         Assert.Equal(1, ZSet.count actual)
         Assert.Equal(0L, ZSet.lookup openRow actual)
         Assert.Equal(1L, ZSet.lookup piOver6Row actual)
+
+[<Fact>]
+let ``Reticulum quantum observable delta golden vectors are byte-locked`` () =
+    let file = deltaVectorFile ()
+    Assert.Equal("zeta.reticulum.quantum-observable-delta-vectors.v1", file.Schema)
+    Assert.Equal("zeta-reticulum-quantum-observable-delta/v1", file.PacketSchema)
+    Assert.True(file.Vectors.Length >= 9)
+
+    for vector in file.Vectors do
+        match ReticulumQuantum.decodeDelta vector.Payload with
+        | Error e -> Assert.Fail(sprintf "%s failed to decode: %A" vector.Name e)
+        | Ok delta ->
+            Assert.Equal(vector.Source, delta.Source)
+            Assert.Equal(vector.Sequence, delta.Sequence)
+            Assert.Equal(vector.RowId, rowId delta.Row)
+            Assert.Equal(vector.Weight, delta.Weight)
+            Assert.Equal(vector.Payload, ReticulumQuantum.encodeDelta delta)
+
+[<Fact>]
+let ``Reticulum quantum observable delta golden vectors replay DBSP retractions`` () =
+    let file = deltaVectorFile ()
+    let vectorsByName = file.Vectors |> Seq.map (fun vector -> vector.Name, vector) |> Map.ofSeq
+
+    let decoded =
+        file.RetractionScenario.VectorNames
+        |> Array.map (fun name ->
+            match Map.tryFind name vectorsByName with
+            | None -> failwithf "missing vector %s" name
+            | Some vector ->
+                match ReticulumQuantum.decodeDelta vector.Payload with
+                | Error e -> failwithf "%s failed to decode: %A" vector.Name e
+                | Ok delta -> delta)
+        |> Array.toList
+
+    let actual =
+        decoded
+        |> Seq.map (fun delta -> delta.Row, delta.Weight)
+        |> ZSet.ofSeq
+
+    let actualRowIds = actual |> Seq.map (fun entry -> rowId entry.Key) |> Seq.toArray
+    Assert.Equal<string[]>(file.RetractionScenario.ExpectedRowIds, actualRowIds)
+    Assert.Equal(1, ZSet.count actual)
+
+    let cancelledOpen =
+        decoded
+        |> List.find (fun delta -> rowId delta.Row = "mach-zehnder-open")
+        |> fun delta -> delta.Row
+
+    Assert.Equal(0L, ZSet.lookup cancelledOpen actual)
 
 [<Fact>]
 let ``malformed Reticulum quantum observable delta payload returns Result error`` () =

@@ -76,12 +76,7 @@ export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/i
 export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
 const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
 const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);
-const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = [
-  "--argv0=",
-  "--chdir=",
-  "--path=",
-  "--unset=",
-];
+const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir=", "--path=", "--unset="];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -98,6 +93,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/agent-clis.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/dotnet-tools.sh",
+  "tools/setup/common/dotnet-workloads.sh",
   "tools/setup/common/elan.sh",
   "tools/setup/common/local-llm.sh",
   "tools/setup/common/mise.sh",
@@ -145,6 +141,7 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/agent-clis.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
   "tools/setup/common/dotnet-tools.sh": "setup/bootstrap",
+  "tools/setup/common/dotnet-workloads.sh": "setup/bootstrap",
   "tools/setup/common/elan.sh": "setup/bootstrap",
   "tools/setup/common/local-llm.sh": "setup/bootstrap",
   "tools/setup/common/mise.sh": "setup/bootstrap",
@@ -323,7 +320,7 @@ function splitShebangFields(input: string): readonly string[] {
       }
       continue;
     }
-    if (char === "\"" || char === "'") {
+    if (char === '"' || char === "'") {
       quote = char;
       continue;
     }
