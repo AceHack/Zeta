@@ -120,8 +120,7 @@ function listBacklogFiles(tierDir: string): readonly string[] {
   const out: string[] = [];
   for (const e of entries) {
     if (!e.isFile()) continue;
-    if (!e.name.startsWith("B-")) continue;
-    if (!e.name.endsWith(".md")) continue;
+    if (!e.name.endsWith(".md")) continue; // accept all .md files (zetaid or legacy B-)
     out.push(join(tierDir, e.name));
   }
   return out.sort((a, b) => basename(a).localeCompare(basename(b)));
