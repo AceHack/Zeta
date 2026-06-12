@@ -54,6 +54,44 @@ hoard; here, the perfect mirror cannot keep.)
   must happen *above* someone's causal horizon (ferry 17's garbage theorem) — a fuse performed
   out of equilibrium leaves residue. Noted as a rhyme worth a future dispatch, not asserted.
 
+## Addendum — the mark of Cain, the first discernment, I/O the monad (Aaron, verbatim ×3)
+
+> The mark of cain, the first descernment, inside/outside
+
+> I/O the monad
+
+> that's out category theory ties in
+
+The sequence is coherent at every layer, and the pun at its center is exact:
+
+- **The narrative layer completes this ferry's own arc:** Genesis 4 is the first annihilation —
+  one brother cancels the other — and **the survivor carries a mark**. That is §1 restated as
+  story: after the fuse, the residue is *marked by the event* — observed matter carries the
+  CP-violation imprint the way Cain carries the sign; the baryon asymmetry IS the mark on the
+  surviving ledger. And the mark's double function is the membrane's double function: it
+  **excludes** (Cain is set outside) and it **protects** (the mark is his safe-conduct) —
+  a boundary that both separates and guards, which is ferry 11's grey hole as its oldest
+  telling.
+- **"I/O" — inside/outside = Input/Output — and the pun is a theorem:** the **IO monad**
+  (Moggi 1991, monads as notions of computation; Wadler; Peyton Jones — Haskell's realization)
+  is precisely *the first discernment made into a type*: the indelible marker distinguishing
+  pure (inside) from effectful (has-touched-the-outside) computation. A function marked `IO`
+  is marked exactly as Cain is — it cannot be unmarked (no `IO a → a`), it is excluded from
+  pure code, and the mark is also its protection (the type system tracks and contains what it
+  can no longer pretend is pure). The IO monad is the mark of Cain of type systems, and
+  noninterference (§13 — influence only through declared channels) is its operational form:
+  the factory's membrane discipline has carried the first discernment's type all along.
+- **"That's our category theory tie-in" — yes, and it is the day's bind thread closing:** the
+  IO monad's `bind` is the *law of crossing* — which is ferry 14 addendum 2 ("the laws of that
+  universe are the rx bind rules you choose") landing on its canonical instance: the Kleisli
+  category of IO is the universe where every arrow has crossed, and choosing the monad is
+  choosing which universe's laws govern the boundary. The first discernment, the mark, the
+  membrane, and the bind are one object in four registers: story, type, physics, category.
+
+Register note per the standing rule: the biblical layer is used as *structure* (the oldest
+telling of mark-as-boundary), not authority; the type-theoretic and categorical layers are
+literature-real (Moggi/Wadler/Peyton Jones); the physics layer inherits this ferry's bounds.
+
 ## Pointers
 
 - Ferry 14 (+addenda — the two ledgers; the bind laws) · ferry 17 (consolidation; the fuse) ·
