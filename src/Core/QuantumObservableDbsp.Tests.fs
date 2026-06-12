@@ -166,3 +166,18 @@ let ``F# parses quantum Z-set transcript and verifies parity under DBSP updates`
         | QuantumObservableRow.InterferenceVisibility expectedVisibility -> assertInterferenceNear v expectedVisibility
         | _ -> Assert.Fail("Expected InterferenceVisibility row")
     | _ -> Assert.Fail("Expected InterferenceVisibility row")
+
+[<Fact>]
+let ``Q# oracle observable rows live on the signed Z-set ledger`` () =
+    let row =
+        QuantumObservableDbsp.machZehnderClosedRow
+            "mach-zehnder-closed-pi-phase"
+            "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase"
+            Math.PI
+
+    let signed =
+        [ QuantumObservableDbsp.delta row 1L
+          QuantumObservableDbsp.delta row -1L ]
+        |> QuantumObservableDbsp.zsetOfDeltas
+
+    Assert.True(ZSet.isEmpty signed)

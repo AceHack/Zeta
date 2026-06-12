@@ -336,6 +336,24 @@ def build_vectors() -> dict[str, Any]:
                 ),
                 interference_case("mach-zehnder-closed-pi-phase", "ApplyMachZehnderClosedPiPhase", math.pi, 1.0),
             ],
+            "flowBitDistinction": [
+                {
+                    "id": "external-bit-zero",
+                    "operation": "Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero",
+                    "externalBit": False,
+                    "probabilities": single_qubit_probs_from_operation("ApplyExternalBitDistinguishZero"),
+                    "formula": "H; optional Z(externalBit); H maps phase distinction into the measured Z basis",
+                    "checks": ["BitFromFlow", "external entropy bit", "identity/distinction"],
+                },
+                {
+                    "id": "external-bit-one",
+                    "operation": "Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne",
+                    "externalBit": True,
+                    "probabilities": single_qubit_probs_from_operation("ApplyExternalBitDistinguishOne"),
+                    "formula": "H; optional Z(externalBit); H maps phase distinction into the measured Z basis",
+                    "checks": ["BitFromFlow", "external entropy bit", "identity/distinction"],
+                },
+            ],
             "pauliAnticommutation": [
                 pauli_anticommutation_case("X after Z = -(Z after X)", "ApplyPauliXAfterZ", "ApplyPauliZAfterX"),
                 pauli_anticommutation_case("X after Y = -(Y after X)", "ApplyPauliXAfterY", "ApplyPauliYAfterX"),

@@ -82,6 +82,24 @@ const machZehnderActions = new Map<string, CircuitAction>([
   ],
 ]);
 
+const flowBitActions = new Map<string, CircuitAction>([
+  [
+    "Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero",
+    (circuit) => {
+      append(circuit, "h", 0);
+      append(circuit, "h", 0);
+    },
+  ],
+  [
+    "Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne",
+    (circuit) => {
+      append(circuit, "h", 0);
+      append(circuit, "z", 0);
+      append(circuit, "h", 0);
+    },
+  ],
+]);
+
 const singleQubitGateActions = new Map<string, CircuitAction>([
   [
     "H",
@@ -407,6 +425,21 @@ describe("quantum-circuit simulator (second observable oracle)", () => {
 
       closeTo(probZero, v.probabilities.Zero, qsharpDumpTolerance);
       closeTo(probOne, v.probabilities.One, qsharpDumpTolerance);
+    }
+  });
+
+  test("flow-bit distinction maps external entropy bits into measured identity bits", () => {
+    for (const v of golden.vectors.flowBitDistinction) {
+      const circuit = new QuantumCircuit(1);
+      applyKnownOperation(circuit, v.operation, flowBitActions);
+      circuit.run();
+
+      const probOne = probabilityOne(circuit);
+      const probZero = 1 - probOne;
+
+      closeTo(probZero, v.probabilities.Zero, qsharpDumpTolerance);
+      closeTo(probOne, v.probabilities.One, qsharpDumpTolerance);
+      closeTo(probOne, v.externalBit ? 1 : 0, qsharpDumpTolerance);
     }
   });
 

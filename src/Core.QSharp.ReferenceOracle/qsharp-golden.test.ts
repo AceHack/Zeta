@@ -148,6 +148,22 @@ test("interference observables distinguish open, reinforce, and cancel cases", (
   closeTo(cancelled.One, 1);
 });
 
+test("flow-bit distinction turns one external entropy bit into a measured identity bit", () => {
+  const cases = new Map(golden.vectors.flowBitDistinction.map((v) => [v.id, v]));
+
+  const zero = expectDefined(cases.get("external-bit-zero"), "external-bit-zero");
+  expect(zero.operation).toBe("Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero");
+  expect(zero.externalBit).toBe(false);
+  closeTo(zero.probabilities.Zero, 1);
+  closeTo(zero.probabilities.One, 0);
+
+  const one = expectDefined(cases.get("external-bit-one"), "external-bit-one");
+  expect(one.operation).toBe("Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne");
+  expect(one.externalBit).toBe(true);
+  closeTo(one.probabilities.Zero, 0);
+  closeTo(one.probabilities.One, 1);
+});
+
 test("Q# Pauli products pin the hardware-side anticommutation signs", () => {
   for (const item of golden.vectors.pauliAnticommutation) {
     expect(item.relation).toBe("lhsMatrix = -rhsMatrix");

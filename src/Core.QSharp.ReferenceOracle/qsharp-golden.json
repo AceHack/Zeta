@@ -217,6 +217,38 @@
         "state": "PhiPlus"
       }
     ],
+    "flowBitDistinction": [
+      {
+        "checks": [
+          "BitFromFlow",
+          "external entropy bit",
+          "identity/distinction"
+        ],
+        "externalBit": false,
+        "formula": "H; optional Z(externalBit); H maps phase distinction into the measured Z basis",
+        "id": "external-bit-zero",
+        "operation": "Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero",
+        "probabilities": {
+          "One": 0.0,
+          "Zero": 1.0
+        }
+      },
+      {
+        "checks": [
+          "BitFromFlow",
+          "external entropy bit",
+          "identity/distinction"
+        ],
+        "externalBit": true,
+        "formula": "H; optional Z(externalBit); H maps phase distinction into the measured Z basis",
+        "id": "external-bit-one",
+        "operation": "Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne",
+        "probabilities": {
+          "One": 1.0,
+          "Zero": 0.0
+        }
+      }
+    ],
     "gateUnitaries": {
       "BellPhiPlusPrep": [
         [

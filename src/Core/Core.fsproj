@@ -237,6 +237,7 @@
     <Compile Include="InferenceLadder.fs" />
     <Compile Include="TimeGen.fs" />
     <Compile Include="Braid.fs" />
+    <Compile Include="VisionAttention.fs" />
     <Compile Include="MediaLines.fs" />
     <Compile Include="CartridgeLaw.fs" />
     <Compile Include="CapabilityLedger.fs" />

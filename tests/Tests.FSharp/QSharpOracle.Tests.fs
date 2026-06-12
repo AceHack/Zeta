@@ -110,6 +110,10 @@ let private interferenceCase (id: string) =
     vectors.GetProperty("interferenceVisibility").EnumerateArray()
     |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
 
+let private flowBitCase (id: string) =
+    vectors.GetProperty("flowBitDistinction").EnumerateArray()
+    |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
+
 let private bellCoincidenceCase (id: string) =
     vectors.GetProperty("bellCoincidence").EnumerateArray()
     |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
@@ -224,6 +228,22 @@ let ``QubitIso raw kernels match Q# gate matrices on computational basis states`
     assertRaw "Ry(pi/3)" (QubitIso.Raw.ry (Math.PI / 3.0))
     assertRaw "Ry(pi/2)" (QubitIso.Raw.ry (Math.PI / 2.0))
     assertRaw "Rz(pi/3)" (QubitIso.Raw.rz (Math.PI / 3.0))
+
+[<Fact>]
+let ``Q# flow-bit oracle turns external entropy into deterministic distinction`` () =
+    let zero = flowBitCase "external-bit-zero"
+    let zeroProb = zero.GetProperty("probabilities")
+    Assert.False(zero.GetProperty("externalBit").GetBoolean())
+    Assert.Equal("Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero", zero.GetProperty("operation").GetString())
+    closeTo 1.0 (zeroProb.GetProperty("Zero").GetDouble())
+    closeTo 0.0 (zeroProb.GetProperty("One").GetDouble())
+
+    let one = flowBitCase "external-bit-one"
+    let oneProb = one.GetProperty("probabilities")
+    Assert.True(one.GetProperty("externalBit").GetBoolean())
+    Assert.Equal("Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne", one.GetProperty("operation").GetString())
+    closeTo 0.0 (oneProb.GetProperty("Zero").GetDouble())
+    closeTo 1.0 (oneProb.GetProperty("One").GetDouble())
 
 [<Fact>]
 let ``BellTest canonical CHSH observables match the Q# golden vector`` () =

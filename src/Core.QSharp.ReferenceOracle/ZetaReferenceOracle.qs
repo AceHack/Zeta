@@ -149,4 +149,28 @@ namespace Zeta.ReferenceOracle {
         Rz(2.0 * 3.141592653589793 / 3.0, qs[0]);
         H(qs[0]);
     }
+
+    operation ApplyExternalBitDifferentiator(externalBit : Bool, qs : Qubit[]) : Unit is Adj + Ctl {
+        H(qs[0]);
+        if externalBit {
+            Z(qs[0]);
+        }
+        H(qs[0]);
+    }
+
+    operation ApplyExternalBitDistinguishZero(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyExternalBitDifferentiator(false, qs);
+    }
+
+    operation ApplyExternalBitDistinguishOne(qs : Qubit[]) : Unit is Adj + Ctl {
+        ApplyExternalBitDifferentiator(true, qs);
+    }
+
+    operation MeasureExternalBitDifferentiator(externalBit : Bool) : Result {
+        use q = Qubit();
+        ApplyExternalBitDifferentiator(externalBit, [q]);
+        let measured = M(q);
+        Reset(q);
+        return measured;
+    }
 }
