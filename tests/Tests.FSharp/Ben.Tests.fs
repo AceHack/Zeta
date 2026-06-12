@@ -27,31 +27,72 @@ let ``BEN METER (chip8 ticks): exact, replayable, fault-aware — through the Te
                 else Ok()))
 
 [<Fact>]
-let ``THE GRADER confirms a TRUE prediction: treemap tile count is O(children) — measured linear, declared linear`` () =
-    // the registry's ("shape.dynamicvalue","draw") O(children) prediction, graded with EXACT costs
+let ``THE GRADER confirms treemap tile growth at a 16x span — a grader-PIPELINE check on exact counts (cardinality, NOT the time column: the math team's tautology note stands in B-1039)`` () =
     let cost n =
-        LayoutEngine.treemap 0 0 6000 10 true [ for i in 1 .. n -> string i, 1 ]
+        LayoutEngine.treemap 0 0 60000 10 true [ for i in 1 .. n -> string i, 1 ]
         |> List.length |> int64
-    let samples = [ 8, cost 8; 16, cost 16; 32, cost 32 ]
+    let samples = [ 8, cost 8; 16, cost 16; 32, cost 32; 64, cost 64; 128, cost 128 ]
     Assert.Equal(Some Ben.Linear, Ben.infer samples)
     Assert.Equal(Ben.Confirmed, Ben.grade Ben.Linear (Ben.infer samples).Value)
 
 [<Fact>]
-let ``THE GRADER confirms IBLT build work is O(n·k): the table's total count IS the exact work done`` () =
-    // ("sketch.iblt","build") O(n·k): sum of |Count| after build = n·k bucket updates, exactly
+let ``THE GRADER confirms IBLT build work at a 16x span (the table's own count sum IS the n·k work done)`` () =
     let work n =
-        let t = IbltReconcile.build 4096 3 (Seq.map uint64 (seq { 1 .. n }))
+        let t = IbltReconcile.build 16384 3 (Seq.map uint64 (seq { 1 .. n }))
         t.Cells |> Array.sumBy (fun c -> int64 (abs c.Count))
-    let samples = [ 100, work 100; 200, work 200; 400, work 400 ]
-    Assert.Equal(300L, work 100) // n·k exactly — the proxy is the work, not an estimate
+    Assert.Equal(300L, work 100)
+    let samples = [ 100, work 100; 200, work 200; 400, work 400; 800, work 800; 1600, work 1600 ]
     Assert.Equal(Some Ben.Linear, Ben.infer samples)
-    Assert.Equal(Ben.Confirmed, Ben.grade Ben.Linear (Ben.infer samples).Value)
 
 [<Fact>]
-let ``THE GRADER'S FALSIFIERS: quadratic growth against a linear claim is VIOLATED; slower growth is TIGHTER; garbage refuses`` () =
-    let quadratic = [ 10, 100L; 20, 400L; 40, 1600L ]
-    Assert.Equal(Some Ben.Quadratic, Ben.infer quadratic)
-    Assert.Equal(Ben.Violated, Ben.grade Ben.Linear Ben.Quadratic) // the WHY lied — a priced bug
-    Assert.Equal(Ben.Tighter, Ben.grade Ben.Quadratic Ben.Linear) // undersold — update the WHY
-    Assert.Equal(Some Ben.Constant, Ben.infer [ 10, 50L; 20, 50L; 40, 50L ])
-    Assert.Equal(None, Ben.infer [ 10, 0L ]) // degenerate input: refusal, never a guess
+let ``THE MATH TEAM'S P0s STAY DEAD: n^1.5 refuses (no fabricated bug); zero interior cost refuses; tiny spans refuse; loglinear is nameable`` () =
+    // n^1.5 — the dead-band victim: slope 1.5 sits in the gap between Loglinear and Quadratic → None
+    let n15 = [ for n in [ 8; 16; 32; 64; 128 ] -> n, int64 (float n ** 1.5) ]
+    Assert.Equal(None, Ben.infer n15)
+    // zero interior cost — the old guard only checked the head
+    Assert.Equal(None, Ben.infer [ 10, 5L; 20, 0L; 40, 5L; 80, 5L; 160, 5L ])
+    // preasymptotic span (4x) — refused, so additive lower-order terms can't fake Tighter
+    Assert.Equal(None, Ben.infer [ 8, 108L; 16, 116L; 32, 132L ])
+    // O(n log n) — now a first-class verdict, not a coin flip
+    let nlogn = [ for n in [ 8; 32; 128; 512; 2048 ] -> n, int64 (float n * log (float n)) ]
+    Assert.Equal(Some Ben.Loglinear, Ben.infer nlogn)
+    // quadratic at proper span still convicts — Violated stays reachable for real offenders
+    let quad = [ for n in [ 8; 16; 32; 64; 128 ] -> n, int64 (n * n) ]
+    Assert.Equal(Some Ben.Quadratic, Ben.infer quad)
+    Assert.Equal(Ben.Violated, Ben.grade Ben.Linear Ben.Quadratic)
+
+[<Fact>]
+let ``THE ALLOCATION METER: exact thread-local bytes, replay-equal after warmup — the one deterministic APM hook .NET gives us`` () =
+    let work () = ZSet.ofSeq [ for i in 1 .. 200 -> i, 1L ]
+    let a = Ben.allocBytes 2 work
+    let b = Ben.allocBytes 2 work
+    Assert.True(a > 0L, "the workload allocates; the meter must see it")
+    Assert.Equal(a, b) // deterministic code ⇒ deterministic allocation — the double-run, on memory
+
+// ── SEARCH BY BIG-O (Aaron: constrain function selection by time, not just memory) ──
+
+[<Fact>]
+let ``parseO names the shapes honestly: degrees count variable factors, logs stay separate, garbage refuses`` () =
+    Assert.Equal(Some { ComplexityRegistry.Degree = 0; ComplexityRegistry.Logs = 0 }, ComplexityRegistry.parseO "O(1)")
+    Assert.Equal(Some { ComplexityRegistry.Degree = 1; ComplexityRegistry.Logs = 0 }, ComplexityRegistry.parseO "O(steps)")
+    Assert.Equal(Some { ComplexityRegistry.Degree = 2; ComplexityRegistry.Logs = 0 }, ComplexityRegistry.parseO "O(n·k)")
+    Assert.Equal(Some { ComplexityRegistry.Degree = 2; ComplexityRegistry.Logs = 0 }, ComplexityRegistry.parseO "O(n²)")
+    Assert.Equal(Some { ComplexityRegistry.Degree = 3; ComplexityRegistry.Logs = 0 }, ComplexityRegistry.parseO "O(w·h·sources)")
+    Assert.Equal(Some { ComplexityRegistry.Degree = 1; ComplexityRegistry.Logs = 0 }, ComplexityRegistry.parseO "O(2·sim + mea + cut)")
+    Assert.Equal(None, ComplexityRegistry.parseO "fast-ish")
+
+[<Fact>]
+let ``the TIME search returns constant rows at degree 0; blind spots stay visible`` () =
+    let constant = ComplexityRegistry.searchTimeAtMost 0
+    Assert.True(constant |> List.exists (fun ((a, _), _) -> a = "shape.fourcorner"))
+    Assert.True(constant |> List.forall (fun (_, c) -> (ComplexityRegistry.parseO c.Time).Value.Degree = 0))
+    Assert.True(List.length (ComplexityRegistry.searchTimeAtMost 9) > List.length constant)
+    for (_, raw) in ComplexityRegistry.unsearchable () do
+        Assert.True(raw.StartsWith "O(", sprintf "not even O-shaped: %s" raw)
+
+[<Fact>]
+let ``BOTH AXES: time and space are independent budgets (hard-dft is space-cheap, time-expensive)`` () =
+    let timeCheap = ComplexityRegistry.searchTimeAtMost 1 |> List.map fst |> Set.ofList
+    let spaceCheap = ComplexityRegistry.searchSpaceAtMost 1 |> List.map fst |> Set.ofList
+    Assert.Contains(("spectral.hard-dft", "dft"), spaceCheap)
+    Assert.False(Set.contains ("spectral.hard-dft", "dft") timeCheap)

@@ -117,6 +117,71 @@ module ComplexityRegistry =
 
     /// THE BUDGET LINT: every registered artifact (generators + layouts + indexes + schemes) whose
     /// costs are entirely UNSTATED. Empty list = the requirement holds across the shelf.
+    /// THE SEARCHABLE SHAPE of an O-string (Aaron 2026-06-11: "make sure we can search by big O
+    /// later… constrain function selection by how long it takes — we have TIME too, not just
+    /// memory"). Degree = the count of multiplied VARIABLE factors in the dominant '+' term
+    /// (n²=2, n·k=2, w·h·sources=3, steps=1, 1=0); Logs counted separately (no pretended total
+    /// order between n·log n and n² beyond degree — honesty over cleverness). Numeric factors
+    /// (the 2 in 2·sim) don't count. Unparseable ⇒ None: refusal, never a guess.
+    type OShape = { Degree: int; Logs: int }
+
+    let parseO (o: string) : OShape option =
+        let inner =
+            let s = o.Trim()
+            if s.StartsWith "O(" && s.EndsWith ")" then Some(s.Substring(2, s.Length - 3)) else None
+        match inner with
+        | None -> None
+        | Some body ->
+            let termShape (term: string) : OShape option =
+                let factors =
+                    term.Split([| '·'; '*' |])
+                    |> Array.map (fun f -> f.Trim())
+                    |> Array.filter (fun f -> f.Length > 0)
+                if factors.Length = 0 then None
+                else
+                    let mutable deg = 0
+                    let mutable logs = 0
+                    let mutable ok = true
+                    for f in factors do
+                        if f |> Seq.forall System.Char.IsDigit then () // numeric factor: free
+                        elif f.StartsWith "log" then logs <- logs + 1
+                        elif f.EndsWith "²" then deg <- deg + 2
+                        elif f.EndsWith "³" then deg <- deg + 3
+                        elif f |> Seq.forall (fun ch -> System.Char.IsLetterOrDigit ch || ch = '-' || ch = '|' || ch = 'Δ') then
+                            deg <- deg + 1
+                        else ok <- false
+                    if ok then Some { Degree = deg; Logs = logs } else None
+            // '+' terms: the dominant one wins (max degree, then max logs)
+            body.Split('+')
+            |> Array.map (fun t -> t.Trim())
+            |> Array.filter (fun t -> t.Length > 0)
+            |> Array.map termShape
+            |> fun shapes ->
+                if shapes |> Array.exists Option.isNone then None
+                else shapes |> Array.choose id |> Array.sortByDescending (fun s -> s.Degree, s.Logs) |> Array.tryHead
+
+    /// Search the shelf by TIME budget: every (artifact, op) whose declared time degree ≤ d.
+    /// (The function-selection constraint Aaron named: pick strategies by how long they take.)
+    let searchTimeAtMost (d: int) : ((string * string) * Cost) list =
+        declared
+        |> Map.toList
+        |> List.filter (fun (_, c) -> match parseO c.Time with Some s -> s.Degree <= d | None -> false)
+
+    /// Search by SPACE budget — the memory axis, same discipline.
+    let searchSpaceAtMost (d: int) : ((string * string) * Cost) list =
+        declared
+        |> Map.toList
+        |> List.filter (fun (_, c) -> match parseO c.Space with Some s -> s.Degree <= d | None -> false)
+
+    /// Rows whose O-strings the parser REFUSES — the search's honest blind spots (keep this
+    /// visible: an unsearchable row is a row the budget-constrained picker cannot see).
+    let unsearchable () : ((string * string) * string) list =
+        declared
+        |> Map.toList
+        |> List.collect (fun (k, c) ->
+            [ if (parseO c.Time).IsNone then yield k, c.Time
+              if (parseO c.Space).IsNone then yield k, c.Space ])
+
     /// All declared ways to perform an operation FAMILY on an artifact — the "same shape,
     /// different O tradeoffs" query: a renderer (or a budget) picks a strategy BY its cost tag.
     let strategiesOf (artifact: string) : (string * Cost) list =

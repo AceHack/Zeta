@@ -70,3 +70,27 @@ graded CONFIRMED with exact cost proxies (treemap tiles = O(children); IBLT buil
 the table's own count sum); falsifiers prove Violated/Tighter/refusal. Dogfooded through
 ITestLoop. Remaining: dotnet wall/alloc meters behind the boundary + red light; BenchmarkDotNet
 senior adapter; the cartridge `ben` line kind + gate refusal.
+
+## Progress 2 (2026-06-11): the math team's critique APPLIED — infer rewritten to log₂-log₂ OLS slope + R² ≥ 0.99 + minimum-span (≥8×) + band-gap REFUSAL (n^1.5 returns None — no fabricated bugs) + Loglinear class; Tighter advisory below 32× span; Violated bug-grade criteria documented. Their tautology note on the slice-1 proxies stands: the treemap/IBLT grades validate the GRADER PIPELINE on exact cardinality, not the time column — true time grading needs the alloc/instruction meters. The deterministic APM answer landed: Ben.allocBytes (GC.GetAllocatedBytesForCurrentThread — exact, warmup-gated, replay-equal, tested); wall time stays statistical (BenchmarkDotNet senior lane; EventPipe/dotnet-trace/PerfView = offline lane). Search-by-O landed in ComplexityRegistry (parseO degree+logs; searchTimeAtMost/searchSpaceAtMost; unsearchable() keeps blind spots visible).
+
+## Progress 3 (2026-06-11) — pro(file) joins the verbs; THE VACUUM MODEL
+
+Aaron: "now lets have ben and pro(file) and all in our framework — air tight, vacuum tight, only
+memory and index loaded into memory, in our MUMPS; if cached you get it."
+
+`pro` is the verb set's next member (sim·mea·cut·ben·pro), and the architecture falls out of the
+B-1035 sealed-room clause: **the room stays vacuum-tight; profilers watch THROUGH THE GLASS.**
+EventPipe is out-of-process by design — `dotnet-trace`/`dotnet-counters` attach from OUTSIDE the
+seal without injecting a syscall into the loop, so Reticulum-only IO survives profiling
+(observation without contamination; the red light still names the watcher). INSIDE the vacuum,
+only the deterministic meters run: `chip8Ticks` and `allocBytes` (replay-equal, double-run
+checked). THE MUMPS REGISTER (Aaron's anchor): M's globals ARE the database — memory-resident,
+index + data as one sparse tree, no file door at query time. Our warm-cache-at-startup clause
+(B-1035, Reticulum-only IO) is that discipline by another name — memory + index loaded at room
+boot, then the loop runs sealed; "if cached, you get it." Our Map-keyed frames/ledgers already
+have the globals shape.
+
+Beacon: MUMPS/M (Octo Barnett & Neil Pappalardo, Massachusetts General Hospital, 1966; ANSI
+X11.1-1977) — the memory-mapped hierarchical-global lineage; .NET EventPipe (out-of-process
+tracing, the diagnostics-IPC design) — observation that never enters the observed process's
+code path.

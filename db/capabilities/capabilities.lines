@@ -1,0 +1,24 @@
+# The generic capability ledger — cap rows declare (name = the shelf generator), support rows
+# place: support <cap> <system> <status: live|injected|mock|absent> <note>. Seeded with the
+# capabilities this stream made real; grow by PR like any treaty surface.
+meta	name	capability-ledger
+cap	engine.zeta-bayesian	inference engine (ours; FactorGraph/EP)
+cap	engine.infer-net	inference engine (Minka & Winn; senior oracle)
+cap	engine.mock-flat	the rehearsal inference engine (Converged=false by construction)
+cap	sketch.iblt	O(|Δ|) set reconciliation (build/subtract/peel)
+cap	test.loop	the sim·mea·cut test boundary (seed required, double-run, replay line)
+cap	test.ben	exact meters + the prediction grader (ticks; thread-alloc bytes)
+cap	chip9.machine	the CHIP-9 color machine (four-oracle treaty)
+support	engine.zeta-bayesian	dotnet	live	src/Bayesian — DST-deterministic schedules
+support	engine.infer-net	dotnet	injected	tests-side only by design (MIT; never in Core)
+support	engine.mock-flat	dotnet	live	the ladder's honest Mock rung
+support	sketch.iblt	fsharp	live	src/Core/IbltReconcile.fs
+support	sketch.iblt	csharp	absent	wish: the sync-lane port
+support	sketch.iblt	typescript	absent	wish
+support	sketch.iblt	rust	absent	wish
+support	test.loop	fsharp	live	src/Core/TestLoop.fs + the xUnit host shim
+support	test.ben	fsharp	live	ticks + allocBytes; dotnet wall/alloc-statistical = next slice
+support	chip9.machine	fsharp	live	the locking oracle (Chip8Cow)
+support	chip9.machine	csharp	live	conformer (Chip9Machine)
+support	chip9.machine	typescript	live	conformer (chip9.ts)
+support	chip9.machine	rust	live	conformer (Core.Rust.Chip9)

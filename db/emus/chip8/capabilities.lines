@@ -1,0 +1,18 @@
+# The chip8/9 emu's own capability ledger (db/emus/chip8) — what THIS machine offers a room,
+# straight from the primitives census (docs/research/2026-06-11-what-chip89-carries-*).
+meta	name	chip8-emu-capabilities
+cap	isa.chip8	the full classic opcode set (00E0..FX65; VF-write-last; DRW origin-wrap pixel-clip COSMAC)
+cap	isa.chip9	color extension: Fn01 plane select, per-plane DRW + collision, selective CLS, Extra map
+cap	fault.register	stack underflow + 16-frame overflow RECORDED, never fatal
+cap	rng.seeded	CXNN from the DST seed — no ambient entropy
+cap	meter.ticks	Ben.chip8Ticks — exact deterministic benchmark (ticks, not seconds)
+cap	trace.self	Chip9SelfTrace — the machine ray-traces its own execution onto its planes
+support	isa.chip8	fsharp	live	Chip8Cow (the oracle) + Chip8 (mutable cross-check)
+support	isa.chip9	fsharp	live	treaty-locking oracle
+support	isa.chip9	csharp	live	golden conformer
+support	isa.chip9	typescript	live	golden conformer
+support	isa.chip9	rust	live	golden conformer
+support	fault.register	fsharp	live	Frame.Fault (chip9 dialect; conformers: wish — fault parity is a treaty change)
+support	rng.seeded	fsharp	live	all four conformers share the golden's determinism
+support	meter.ticks	fsharp	live	Ben slice 1
+support	trace.self	fsharp	live	the reflection channels (G/cyan/B; mono stays the program's)
