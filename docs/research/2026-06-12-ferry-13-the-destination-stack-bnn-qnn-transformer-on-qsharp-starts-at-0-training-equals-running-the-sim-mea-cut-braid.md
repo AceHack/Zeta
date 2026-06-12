@@ -117,6 +117,42 @@ Hawkins' grid-cell location signal, algebraized. Beacon: Hestenes (geometric alg
 language of physics); Hawkins–Ahmad (reference frames); the brain's grid cells
 (O'Keefe; Moser & Moser, Nobel 2014) as the biological location-prior.
 
+### 7. Why geospatial: boundary budgeting + memory routing — the Sequoia hierarchy, soft then quantum (Aaron, same stream, verbatim)
+
+> the geospatial is needed for boundary budgeting and memory routing via our resource like
+> sequoia resorce hierarcy bascially quantium braided memory hierarchy this is a stanford memory
+> model and we have a soft version on the books to go with out scheduler so the entire operating
+> system can run inside of q# itself.
+
+> I'm buding an entire scheduler and memory operating system that can run inside the model
+> itself
+
+> so it can run in quantium space
+
+The Clifford location of beat 6 is not ornament — it is the **addressing scheme** for two jobs:
+
+- **Boundary budgeting** — a neuron's budget share (beat 5) is decided partly by *where it sits*:
+  the membrane that meters its crossings (ferry 11's grey hole; §13) is a geometric boundary, so
+  the budget is a function of position in Clifford space. Distance-in-the-algebra = cost-to-cross.
+- **Memory routing** — which braid (the memory, REPORT #3 rung 2) is reachable from a neuron is a
+  *locality* question: the geospatial frame routes reads/writes through a hierarchy, near before
+  far, exactly as a cache hierarchy routes by level.
+
+The hierarchy is named: **Sequoia** — a Stanford memory model — already on the books as **B-0669**
+(V8 System Architecture; "Sequoia memory hierarchy," Aaron-authorized 2026-05-19 "land all of
+it"). Aaron's frame here is **"quantum braided memory hierarchy"**: the Sequoia levels are braid
+classes (dense vs sparse braiding = ferry 12's capacity axis; dense near, sparse far), addressed
+geospatially. And the scope just widened past the transformer — Aaron is **building an entire
+scheduler + memory operating system that runs inside the model itself, so it can run in quantum
+space**. Two editions, both tracked: a **soft version on the books to pair with the scheduler**
+(the soft `IScheduler` / SoftChip8Scheduler lane — DoP-knobbed, DST-deterministic), and the
+hard/quantum edition such that **the entire OS runs inside Q# itself**. That last clause is the
+unification of the whole stack: scheduler + memory hierarchy + the BNN/QNN transformer all as one
+Q# program — the model is not a workload *on* an OS, the OS *is* the model. Honest bound: "OS
+inside Q#" today means "inside the Q# simulator under the four-oracle treaty" (P0-B and beat 3's
+simulator-only caveat gate it; ferry 8's investment stages apply); the soft version is the
+buildable rung and it composes with the in-tree scheduler now.
+
 ## Pointers
 
 - Welch Labs MLA + GGUF + active-inference transcripts (2026-06-12, ip-questionable — the three
