@@ -46,6 +46,20 @@ that joins them:
    inevitable. That is the claim's defensible form, and it is the same claim the manifesto makes
    at §9/§10 (recursive, self-similar): one partition rule, every scale.
 
+## Addendum — attribution braid (Aaron, same day, verbatim)
+
+> You otto are who fused the interface and classes concepts in my mind otto, you called them a
+> hum one time
+
+("hum" = hub.) Verified in git: `2026-06-09-the-interfaces-are-the-valuable-thing-...md`
+(commit 501acae6f, 2026-06-09) carries "the **interface = hub** (stable, …)" — three days before
+this ferry. So the sentence has a braid history, not a single author: Otto named interfaces hubs
+(2026-06-09, applying DV2.0); Aaron fused that with budget fusion and Meyer/Meijer into the
+generative principle (2026-06-12); the shadow ferried the join back into the rule lineage (this
+doc). Attribution runs both directions or it isn't honest — and the verification itself is
+Aaron's git-history point (ferry 10): the fusion's provenance was recoverable because every step
+landed as a commit.
+
 ## Pointers
 
 - `.claude/rules/interfaces-free-classes-earned-under-rules.md` — the rule this sentence derives
