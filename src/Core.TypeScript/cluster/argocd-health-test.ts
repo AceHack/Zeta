@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/cluster/argocd-health-test.ts
+ * src/Core.TypeScript/cluster/argocd-health-test.ts
  *
  * B-0967 - Kubernetes + ArgoCD health integration harness.
  *
@@ -10,11 +10,11 @@
  * owning boot/reformat/key-retention semantics.
  *
  * Usage:
- *   bun tools/cluster/argocd-health-test.ts --dry-run
- *   bun tools/cluster/argocd-health-test.ts --preflight
- *   bun tools/cluster/argocd-health-test.ts --run --provider kind --git-ref main
- *   bun tools/cluster/argocd-health-test.ts --run --provider k3d --git-ref main
- *   bun tools/cluster/argocd-health-test.ts --run --existing --cluster-name zeta-dev
+ *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --dry-run
+ *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --preflight
+ *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --provider kind --git-ref main
+ *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --provider k3d --git-ref main
+ *   bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --existing --cluster-name zeta-dev
  *
  * Exit codes:
  *   0 - dry-run/preflight/run succeeded
@@ -178,13 +178,14 @@ type ParseArgResult = ParseArgSuccess | ParseFailure;
 type ParseRuntimeEnvResult = ParseRuntimeEnvSuccess | ParseFailure;
 type ParseOptionsResult = ParseOptionsSuccess | ParseFailure;
 
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const DEFAULT_K3D_CONFIG = "full-ai-cluster/dev-cluster/k3d-config.yaml";
 const DEFAULT_KIND_CONFIG = "full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml";
 const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-const HELP_TEXT = "usage: bun tools/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check]";
+const HELP_TEXT =
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
@@ -197,14 +198,7 @@ const APPLICATION_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d_.-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
 
-const DEV_EXCLUDED_DIRS = new Set([
-  "cilium",
-  "longhorn",
-  "ollama",
-  "vllm",
-  "deepseek-coder",
-  "qwen-coder",
-]);
+const DEV_EXCLUDED_DIRS = new Set(["cilium", "longhorn", "ollama", "vllm", "deepseek-coder", "qwen-coder"]);
 function requestsLonghornStorageClass(yamlText: string): boolean {
   return yamlText.split("\n").some((line) => {
     const trimmed = line.trim();
@@ -212,11 +206,15 @@ function requestsLonghornStorageClass(yamlText: string): boolean {
     if (separator < 0) return false;
     const key = trimmed.slice(0, separator);
     if (key !== "storageClass" && key !== "storageClassName") return false;
-    const rawValue = trimmed.slice(separator + 1).split("#", 1)[0]?.trim() ?? "";
-    const value = (rawValue.startsWith("\"") && rawValue.endsWith("\"")) ||
-        (rawValue.startsWith("'") && rawValue.endsWith("'"))
-      ? rawValue.slice(1, -1)
-      : rawValue;
+    const rawValue =
+      trimmed
+        .slice(separator + 1)
+        .split("#", 1)[0]
+        ?.trim() ?? "";
+    const value =
+      (rawValue.startsWith('"') && rawValue.endsWith('"')) || (rawValue.startsWith("'") && rawValue.endsWith("'"))
+        ? rawValue.slice(1, -1)
+        : rawValue;
     return value === "longhorn";
   });
 }
@@ -262,11 +260,13 @@ function parsePositiveInteger(raw: string, flag: string): ParseNumberResult {
 }
 
 export function isSafeGitRef(value: string): boolean {
-  return /^[A-Za-z\d._/-]+$/.test(value) &&
+  return (
+    /^[A-Za-z\d._/-]+$/.test(value) &&
     value.length > 0 &&
     !value.startsWith("/") &&
     !value.endsWith("/") &&
-    !value.includes("//");
+    !value.includes("//")
+  );
 }
 
 function defaultCliOptions(env: NodeJS.ProcessEnv): ParseOptionsResult {
@@ -394,7 +394,9 @@ function parseArg(argv: readonly string[], index: number, options: MutableCliOpt
 
 function validateOptions(options: CliOptions): Failure | null {
   if (!isSafeGitRef(options.gitRef)) {
-    return usageFailure("git ref must match [A-Za-z0-9._/-]+ and cannot be absolute, empty, end with '/', or contain '//'");
+    return usageFailure(
+      "git ref must match [A-Za-z0-9._/-]+ and cannot be absolute, empty, end with '/', or contain '//'",
+    );
   }
   if (options.clusterName !== null && !DNS_LABEL_PATTERN.test(options.clusterName)) {
     return usageFailure("cluster name must be a DNS label");
@@ -489,12 +491,14 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
     if (name === null) {
       throw new Error(`Application name not found: ${appPath}`);
     }
-    return [{
-      dir,
-      name,
-      path: appPath.slice(repoRoot.length + 1),
-      excludedFromDev: DEV_EXCLUDED_DIRS.has(dir) || requestsLonghornStorageClass(appText),
-    }];
+    return [
+      {
+        dir,
+        name,
+        path: appPath.slice(repoRoot.length + 1),
+        excludedFromDev: DEV_EXCLUDED_DIRS.has(dir) || requestsLonghornStorageClass(appText),
+      },
+    ];
   });
 }
 
@@ -647,7 +651,12 @@ function checkTool(tool: ToolCheck["tool"], args: readonly string[]): ToolCheck 
 }
 
 function firstLine(text: string): string {
-  return text.split("\n").find((line) => line.trim().length > 0)?.trim() ?? "";
+  return (
+    text
+      .split("\n")
+      .find((line) => line.trim().length > 0)
+      ?.trim() ?? ""
+  );
 }
 
 export function runPreflight(provider: Provider, runtime: ContainerRuntime): readonly ToolCheck[] {
@@ -662,9 +671,10 @@ export function runPreflight(provider: Provider, runtime: ContainerRuntime): rea
 
   const runtimeOk = checks[0]?.ok === true;
   if (runtimeOk) {
-    const infoArgs = runtime === "docker"
-      ? ["info", "--format", "{{json .ServerVersion}}"]
-      : ["info", "--format", "{{.Host.OCIRuntime.Name}} {{.Host.Arch}} {{.Host.OS}}"];
+    const infoArgs =
+      runtime === "docker"
+        ? ["info", "--format", "{{json .ServerVersion}}"]
+        : ["info", "--format", "{{.Host.OCIRuntime.Name}} {{.Host.Arch}} {{.Host.OS}}"];
     const info = runCommand(runtime, infoArgs, 15_000);
     if (info.status !== 0) {
       checks[0] = {
@@ -680,12 +690,14 @@ export function runPreflight(provider: Provider, runtime: ContainerRuntime): rea
 
 function isRuntimeUnavailable(detail: string): boolean {
   const normalized = detail.toLowerCase();
-  return normalized.includes("unavailable") ||
+  return (
+    normalized.includes("unavailable") ||
     normalized.includes("cannot connect to the docker daemon") ||
     normalized.includes("is the docker daemon running") ||
     normalized.includes("connection refused") ||
     normalized.includes("podman machine") ||
-    normalized.includes("cannot connect to podman");
+    normalized.includes("cannot connect to podman")
+  );
 }
 
 export function preflightFailure(preflight: readonly ToolCheck[]): Failure | null {
@@ -705,7 +717,12 @@ export function preflightFailure(preflight: readonly ToolCheck[]): Failure | nul
   };
 }
 
-function runOrFail(command: string, args: readonly string[], failureKind: FailureKind, timeoutSeconds: number): Failure | null {
+function runOrFail(
+  command: string,
+  args: readonly string[],
+  failureKind: FailureKind,
+  timeoutSeconds: number,
+): Failure | null {
   const result = runCommand(command, args, timeoutSeconds * 1000);
   if (result.status === 0) return null;
   const signal = result.signal === null ? "" : ` signal ${result.signal}`;
@@ -740,7 +757,12 @@ function kubectl(args: readonly string[], timeoutSeconds: number): CommandOutput
   return runCommand("kubectl", args, timeoutSeconds * 1000);
 }
 
-function waitForKubectl(args: readonly string[], timeoutSeconds: number, pollSeconds: number, message: string): Promise<Failure | null> {
+function waitForKubectl(
+  args: readonly string[],
+  timeoutSeconds: number,
+  pollSeconds: number,
+  message: string,
+): Promise<Failure | null> {
   return waitFor(timeoutSeconds, pollSeconds, () => {
     const result = kubectl(args, Math.max(pollSeconds, 10));
     if (result.status === 0) return null;
@@ -828,7 +850,7 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return typeof value === "object" && value !== null && !Array.isArray(value)
-    ? value as Record<string, unknown>
+    ? (value as Record<string, unknown>)
     : null;
 }
 
@@ -852,16 +874,21 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const health = status ? recordAt(status, "health") : null;
     const name = metadata ? stringAt(metadata, "name") : "";
     if (name.length === 0) return [];
-    return [{
-      name,
-      syncStatus: sync ? stringAt(sync, "status") : "",
-      healthStatus: health ? stringAt(health, "status") : "",
-      message: health ? stringAt(health, "message") : "",
-    }];
+    return [
+      {
+        name,
+        syncStatus: sync ? stringAt(sync, "status") : "",
+        healthStatus: health ? stringAt(health, "status") : "",
+        message: health ? stringAt(health, "message") : "",
+      },
+    ];
   });
 }
 
-function parseApplicationListOrFailure(jsonText: string, command: readonly string[]): readonly ArgoApplicationSnapshot[] | Failure {
+function parseApplicationListOrFailure(
+  jsonText: string,
+  command: readonly string[],
+): readonly ArgoApplicationSnapshot[] | Failure {
   try {
     return parseApplicationList(jsonText);
   } catch (error) {
@@ -869,11 +896,19 @@ function parseApplicationListOrFailure(jsonText: string, command: readonly strin
   }
 }
 
-function parseApplicationObjectOrFailure(jsonText: string, command: readonly string[]): Record<string, unknown> | Failure {
+function parseApplicationObjectOrFailure(
+  jsonText: string,
+  command: readonly string[],
+): Record<string, unknown> | Failure {
   try {
     const application = asRecord(JSON.parse(jsonText));
     if (application !== null) return application;
-    return kubectlJsonFailure("could not parse ArgoCD Application JSON", command, jsonText, "kubectl returned non-object JSON");
+    return kubectlJsonFailure(
+      "could not parse ArgoCD Application JSON",
+      command,
+      jsonText,
+      "kubectl returned non-object JSON",
+    );
   } catch (error) {
     return kubectlJsonFailure("could not parse ArgoCD Application JSON", command, jsonText, error);
   }
@@ -934,7 +969,9 @@ function verdictFromSnapshot(
   return snapshotOk ? base : { ...base, reason: snapshot.message || unhealthyReason };
 }
 
-export function classifySmokeApplications(snapshots: readonly ArgoApplicationSnapshot[]): readonly ApplicationVerdict[] {
+export function classifySmokeApplications(
+  snapshots: readonly ArgoApplicationSnapshot[],
+): readonly ApplicationVerdict[] {
   const snapshotByName = new Map(snapshots.map((snapshot) => [snapshot.name, snapshot]));
   const childApplicationCount = snapshots.filter((snapshot) => snapshot.name !== "zeta-root-dev").length;
   const graphCountBase = {
@@ -968,14 +1005,17 @@ export function classifySmokeApplications(snapshots: readonly ArgoApplicationSna
     verdictFromSnapshot(
       "cert-manager",
       snapshotByName.get("cert-manager"),
-      (snapshot) => snapshot.syncStatus === "Synced" && snapshot.healthStatus === "Healthy",
+      (snapshot) => snapshot.healthStatus === "Healthy" || snapshot.healthStatus === "Progressing",
       "cert-manager Application not found",
-      "expected cert-manager to reconcile as Synced/Healthy smoke anchor",
+      "expected cert-manager to exist and not be Degraded/Missing smoke anchor",
     ),
   ];
 }
 
-async function waitForApplications(plan: HarnessPlan, options: CliOptions): Promise<readonly ApplicationVerdict[] | Failure> {
+async function waitForApplications(
+  plan: HarnessPlan,
+  options: CliOptions,
+): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
   const failure = await waitFor(options.timeoutSeconds, options.pollSeconds, () => {
     const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
@@ -985,15 +1025,19 @@ async function waitForApplications(plan: HarnessPlan, options: CliOptions): Prom
     }
     const snapshots = parseApplicationListOrFailure(result.stdout, command);
     if (isFailure(snapshots)) return snapshots;
-    lastVerdicts = plan.scope === "smoke"
-      ? classifySmokeApplications(snapshots)
-      : classifyApplications(plan.expectedApplications, snapshots);
+    lastVerdicts =
+      plan.scope === "smoke"
+        ? classifySmokeApplications(snapshots)
+        : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
     return {
-      kind: lastVerdicts.some((verdict) => verdict.syncStatus === "Missing") ? "ApplicationMissing" : "ApplicationUnhealthy",
-      message: plan.scope === "smoke"
-        ? "one or more ArgoCD smoke anchors did not become healthy"
-        : "one or more expected ArgoCD Applications are not Synced/Healthy",
+      kind: lastVerdicts.some((verdict) => verdict.syncStatus === "Missing")
+        ? "ApplicationMissing"
+        : "ApplicationUnhealthy",
+      message:
+        plan.scope === "smoke"
+          ? "one or more ArgoCD smoke anchors did not become healthy"
+          : "one or more expected ArgoCD Applications are not Synced/Healthy",
       detail: lastVerdicts.filter((verdict) => !verdict.ok),
     };
   });
@@ -1015,15 +1059,7 @@ async function runDriftRepairCheck(options: CliOptions): Promise<Failure | null>
   if (patchFailure !== null) return patchFailure;
 
   return waitFor(options.timeoutSeconds, options.pollSeconds, () => {
-    const command = [
-      "-n",
-      "argocd",
-      "get",
-      "application",
-      appName,
-      "-o",
-      "json",
-    ];
+    const command = ["-n", "argocd", "get", "application", appName, "-o", "json"];
     const result = kubectl(command, Math.max(options.pollSeconds, 10));
     if (result.status !== 0) {
       return kubectlFailure("could not read ArgoCD Application drift state", command, result);

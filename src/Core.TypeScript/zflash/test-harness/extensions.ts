@@ -1,5 +1,5 @@
 /**
- * tools/zflash/test-harness/extensions.ts
+ * src/Core.TypeScript/zflash/test-harness/extensions.ts
  *
  * B-0891 — substrate-engineering substrate primitives that extend the
  * scaffolded scenarios (3, 4, 5) from "blocked-on-X" status to
@@ -124,8 +124,7 @@ export const DEFAULT_PATH_FORK: PathForkSubstrate = {
         "existing cluster running with credentials (scenario 2 success)",
         "operator chooses migrate path at zflash invocation",
       ],
-      testInvocation:
-        "zflash --reformat --migrate-credentials --existing-cluster <baseline-snapshot>",
+      testInvocation: "zflash --reformat --migrate-credentials --existing-cluster <baseline-snapshot>",
       expectedOutcome:
         "new USB UUID + existing credential set; existing cluster recognizes new USB; cluster state preserved",
     },
@@ -137,8 +136,7 @@ export const DEFAULT_PATH_FORK: PathForkSubstrate = {
         "no migration of existing cluster credentials",
       ],
       testInvocation: "zflash --reformat --fresh-cluster",
-      expectedOutcome:
-        "new USB UUID + new credentials + new cluster identity; old cluster orphaned (operator-aware)",
+      expectedOutcome: "new USB UUID + new credentials + new cluster identity; old cluster orphaned (operator-aware)",
     },
   ],
   comparisonStrategy: { kind: "both-must-pass" },
@@ -247,18 +245,15 @@ export const SCENARIO_IMPL_DESIGN: Record<
 > = {
   "reformat-with-retention": {
     kind: "design-spec-complete",
-    specRef:
-      "extensions.ts PersistedKVSubstrate + DEFAULT_PERSISTED_KV (qcow2 snapshot-restore)",
+    specRef: "extensions.ts PersistedKVSubstrate + DEFAULT_PERSISTED_KV (qcow2 snapshot-restore)",
   },
   "reformat-from-scratch": {
     kind: "design-spec-complete",
-    specRef:
-      "extensions.ts PathForkSubstrate + DEFAULT_PATH_FORK (migrate-creds + fresh-cluster forks)",
+    specRef: "extensions.ts PathForkSubstrate + DEFAULT_PATH_FORK (migrate-creds + fresh-cluster forks)",
   },
   "cluster-joining": {
     kind: "design-spec-complete",
-    specRef:
-      "extensions.ts MultiVMOrchestrationSubstrate + DEFAULT_MULTI_VM (shared-bridge + credential-provisioning)",
+    specRef: "extensions.ts MultiVMOrchestrationSubstrate + DEFAULT_MULTI_VM (shared-bridge + credential-provisioning)",
   },
 };
 
@@ -276,11 +271,8 @@ export function computeImplDesignProgress(): {
   const statuses = Object.values(SCENARIO_IMPL_DESIGN);
   return {
     total: statuses.length,
-    designComplete: statuses.filter((s) => s.kind === "design-spec-complete")
-      .length,
-    designPending: statuses.filter((s) => s.kind === "design-spec-pending")
-      .length,
-    blockedOnUpstream: statuses.filter((s) => s.kind === "blocked-on-upstream")
-      .length,
+    designComplete: statuses.filter((s) => s.kind === "design-spec-complete").length,
+    designPending: statuses.filter((s) => s.kind === "design-spec-pending").length,
+    blockedOnUpstream: statuses.filter((s) => s.kind === "blocked-on-upstream").length,
   };
 }

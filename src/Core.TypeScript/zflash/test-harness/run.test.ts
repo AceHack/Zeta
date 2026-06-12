@@ -2,11 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
 import { runPathForkRuntime, runRetentionRuntime } from "./run";
-import type {
-  Qcow2RetentionExecutionStep,
-  QemuCommand,
-  QemuCommandExecution,
-} from "./qemu-state";
+import type { Qcow2RetentionExecutionStep, QemuCommand, QemuCommandExecution } from "./qemu-state";
 
 const SCRIPT = join(import.meta.dir, "run.ts");
 
@@ -22,10 +18,7 @@ function run(...args: string[]): { readonly stdout: string; readonly stderr: str
   };
 }
 
-function successfulExecution(
-  step: Qcow2RetentionExecutionStep,
-  command: QemuCommand,
-): QemuCommandExecution {
+function successfulExecution(step: Qcow2RetentionExecutionStep, command: QemuCommand): QemuCommandExecution {
   return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
 }
 
@@ -68,9 +61,7 @@ describe("B-0891 test-harness dispatcher", () => {
       "post-initial-format",
       diskPath,
     ]);
-    expect(parsed.results[0].qemuRetentionPlan.restoreBaselineSnapshot.args).toContain(
-      diskPath,
-    );
+    expect(parsed.results[0].qemuRetentionPlan.restoreBaselineSnapshot.args).toContain(diskPath);
     expect(parsed.results[0].qemuRetentionPlan.restartFromIsoWithDisk.args).toContain(
       `file=${diskPath},if=virtio,format=qcow2`,
     );
@@ -101,7 +92,9 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(scenarioResult.message).toContain("zflash-prepared boot image");
     expect(scenarioResult.pathForkPlan.forks).toHaveLength(2);
 
-    const migrate = scenarioResult.pathForkPlan.forks.find((fork: { forkId: string }) => fork.forkId === "migrate-existing-creds");
+    const migrate = scenarioResult.pathForkPlan.forks.find(
+      (fork: { forkId: string }) => fork.forkId === "migrate-existing-creds",
+    );
     const fresh = scenarioResult.pathForkPlan.forks.find((fork: { forkId: string }) => fork.forkId === "fresh-cluster");
     expect(migrate).toBeDefined();
     expect(fresh).toBeDefined();
@@ -130,9 +123,7 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(migrate?.qemuBootCommand?.args).toContain(
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
-    expect(migrate?.qemuBootCommand?.args).toContain(
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
-    );
+    expect(migrate?.qemuBootCommand?.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
     expect(fresh?.qemuBootCommand?.args).toContain("-cdrom");
     expect(fresh?.qemuBootCommand?.args).toContain("/tmp/zeta.iso");
   });
@@ -150,10 +141,11 @@ describe("B-0891 test-harness dispatcher", () => {
           observedSteps.push(step);
           return successfulExecution(step, command);
         },
-        readSerialOutput: () => [
-          "zeta-creds-restore: reading preserved ESP blob",
-          "zeta-creds-restore: already-present, skipping credential rewrite",
-        ].join("\n"),
+        readSerialOutput: () =>
+          [
+            "zeta-creds-restore: reading preserved ESP blob",
+            "zeta-creds-restore: already-present, skipping credential rewrite",
+          ].join("\n"),
       },
     });
 

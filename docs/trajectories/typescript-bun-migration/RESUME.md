@@ -1,7 +1,7 @@
 # Trajectory — TypeScript / Bun migration
 
 **Status**: Closed-maintained bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean shell surface is the repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist)
-**Milestone**: 43 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21), cluster-inventory capture. Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean shell-family inventory is guarded repo-wide by `tools/hygiene/check-bash-retirement-inventory.ts` and wired through package script `hygiene:check-bash-retirement-inventory` plus the `gate.yml` bash-retirement inventory lint job.
+**Milestone**: 43 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21), cluster-inventory capture. Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean shell-family inventory is guarded repo-wide by `src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts` and wired through package script `hygiene:check-bash-retirement-inventory` plus the `gate.yml` bash-retirement inventory lint job.
 **Current blocker**: None.
 **Next concrete action**: Maintain the bash-retirement inventory guard and treat
 any newly tracked non-Lean shell-family file outside the allowlist as drift. Do
@@ -12,27 +12,27 @@ not revive the old Cluster G/H/I or budget-cluster port queues.
 
 Per B-0086 + maintainer-channel input 2026-04-29: TypeScript on Bun is the factory's default scripting language going forward. The migration is incremental — one coherent slice at a time, each PR a measurable increment.
 
-Per the maintainer-channel correction via the multi-AI review surface (2026-04-29): this is the trajectory the maintainer cares about. The CodeQL host-ownership investigation was the *blocker*, not the trajectory.
+Per the maintainer-channel correction via the multi-AI review surface (2026-04-29): this is the trajectory the maintainer cares about. The CodeQL host-ownership investigation was the _blocker_, not the trajectory.
 
-> *Carved: CodeQL was the blocker. TypeScript/Bun is the trajectory.*
+> _Carved: CodeQL was the blocker. TypeScript/Bun is the trajectory._
 
 ## Landed slices
 
-| PR | Date | Files | Status |
-|---|---|---|---|
-| [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849) | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}` | Merged |
-| [#866](https://github.com/Lucent-Financial-Group/Zeta/pull/866) | 2026-04-30 (commit `d3b0be8`) | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | Merged |
-| [#868](https://github.com/Lucent-Financial-Group/Zeta/pull/868) | 2026-04-30 (commit `b1dab4d`) | `tools/hygiene/audit-machine-specific-content.{sh→ts}`, `tools/hygiene/audit-git-hotspots.{sh→ts}`, `tools/hygiene/audit-cross-platform-parity.{sh→ts}` | Merged |
-| [#870](https://github.com/Lucent-Financial-Group/Zeta/pull/870) | 2026-04-30 (commit `cab59ca`) | `tools/alignment/audit_archive_headers.{sh→ts}`, `tools/alignment/audit_personas.{sh→ts}`, `tools/alignment/audit_commit.{sh→ts}` | Merged |
-| [#872](https://github.com/Lucent-Financial-Group/Zeta/pull/872) | 2026-04-30 (commit `2f3275a`) | `tools/alignment/audit_skills.{sh→ts}`, `tools/alignment/citations.{sh→ts}` | Merged |
-| [#874](https://github.com/Lucent-Financial-Group/Zeta/pull/874) | 2026-04-30 (commit `3f33b51`) | `tools/hygiene/audit-tick-history-bounded-growth.{sh→ts}`, `tools/hygiene/audit-post-setup-script-stack.{sh→ts}`, `tools/hygiene/audit-missing-prevention-layers.{sh→ts}` | Merged |
-| [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876) | 2026-04-30 (commit `02baabc`) | `tools/hygiene/check-no-conflict-markers.{sh→ts}`, `tools/hygiene/check-archive-header-section33.{sh→ts}`, `tools/hygiene/check-tick-history-order.{sh→ts}` | Merged |
-| [#878](https://github.com/Lucent-Financial-Group/Zeta/pull/878) | 2026-04-30 | `tools/lint/no-empty-dirs.{sh→ts}`, `tools/lint/safety-clause-audit.{sh→ts}`, `tools/lint/doc-comment-history-audit.{sh→ts}` | Merged |
-| [#880](https://github.com/Lucent-Financial-Group/Zeta/pull/880) | 2026-04-30 (commit `988de70`) | `tools/lint/runner-version-freshness.{sh→ts}`, `tools/lint/no-directives-otto-prose.{sh→ts}`, `tools/audit/live-lock-audit.{sh→ts}` | Merged |
-| [#882](https://github.com/Lucent-Financial-Group/Zeta/pull/882) | 2026-04-30 (commit `02266a7`) | `tools/hygiene/validate-agencysignature-pr-body.{sh→ts}`, `tools/hygiene/audit-agencysignature-main-tip.{sh→ts}`, `tools/hygiene/capture-tick-snapshot.{sh→ts}` | Merged |
-| [#883](https://github.com/Lucent-Financial-Group/Zeta/pull/883) | 2026-04-30 (commit `271bc38`) | `tools/hygiene/counterweight-audit.{sh→ts}`, `tools/hygiene/append-tick-history-row.{sh→ts}` | Merged |
-| [#884](https://github.com/Lucent-Financial-Group/Zeta/pull/884) | 2026-04-30 (commit `9237756`) | `tools/skill-catalog/backfill_dv2_frontmatter.{sh→ts}`, `tools/audit-packages.{sh→ts}` | Merged |
-| [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764) | 2026-05-12 (commit `b563ba0`) | `tools/hygiene/check-bash-retirement-inventory.ts`, `tools/hygiene/check-bash-retirement-inventory.test.ts` | Merged |
+| PR                                                                | Date                          | Files                                                                                                                                                                     | Status |
+| ----------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| [#849](https://github.com/Lucent-Financial-Group/Zeta/pull/849)   | 2026-04-29 (commit `40344c9`) | `tools/hygiene/sort-tick-history-canonical.{py→ts}`, `tools/hygiene/fix-markdown-md032-md026.{py→ts}`                                                                     | Merged |
+| [#866](https://github.com/Lucent-Financial-Group/Zeta/pull/866)   | 2026-04-30 (commit `d3b0be8`) | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}`                | Merged |
+| [#868](https://github.com/Lucent-Financial-Group/Zeta/pull/868)   | 2026-04-30 (commit `b1dab4d`) | `tools/hygiene/audit-machine-specific-content.{sh→ts}`, `tools/hygiene/audit-git-hotspots.{sh→ts}`, `tools/hygiene/audit-cross-platform-parity.{sh→ts}`                   | Merged |
+| [#870](https://github.com/Lucent-Financial-Group/Zeta/pull/870)   | 2026-04-30 (commit `cab59ca`) | `tools/alignment/audit_archive_headers.{sh→ts}`, `tools/alignment/audit_personas.{sh→ts}`, `tools/alignment/audit_commit.{sh→ts}`                                         | Merged |
+| [#872](https://github.com/Lucent-Financial-Group/Zeta/pull/872)   | 2026-04-30 (commit `2f3275a`) | `tools/alignment/audit_skills.{sh→ts}`, `tools/alignment/citations.{sh→ts}`                                                                                               | Merged |
+| [#874](https://github.com/Lucent-Financial-Group/Zeta/pull/874)   | 2026-04-30 (commit `3f33b51`) | `tools/hygiene/audit-tick-history-bounded-growth.{sh→ts}`, `tools/hygiene/audit-post-setup-script-stack.{sh→ts}`, `tools/hygiene/audit-missing-prevention-layers.{sh→ts}` | Merged |
+| [#876](https://github.com/Lucent-Financial-Group/Zeta/pull/876)   | 2026-04-30 (commit `02baabc`) | `tools/hygiene/check-no-conflict-markers.{sh→ts}`, `tools/hygiene/check-archive-header-section33.{sh→ts}`, `tools/hygiene/check-tick-history-order.{sh→ts}`               | Merged |
+| [#878](https://github.com/Lucent-Financial-Group/Zeta/pull/878)   | 2026-04-30                    | `tools/lint/no-empty-dirs.{sh→ts}`, `tools/lint/safety-clause-audit.{sh→ts}`, `tools/lint/doc-comment-history-audit.{sh→ts}`                                              | Merged |
+| [#880](https://github.com/Lucent-Financial-Group/Zeta/pull/880)   | 2026-04-30 (commit `988de70`) | `tools/lint/runner-version-freshness.{sh→ts}`, `tools/lint/no-directives-otto-prose.{sh→ts}`, `tools/audit/live-lock-audit.{sh→ts}`                                       | Merged |
+| [#882](https://github.com/Lucent-Financial-Group/Zeta/pull/882)   | 2026-04-30 (commit `02266a7`) | `tools/hygiene/validate-agencysignature-pr-body.{sh→ts}`, `tools/hygiene/audit-agencysignature-main-tip.{sh→ts}`, `tools/hygiene/capture-tick-snapshot.{sh→ts}`           | Merged |
+| [#883](https://github.com/Lucent-Financial-Group/Zeta/pull/883)   | 2026-04-30 (commit `271bc38`) | `tools/hygiene/counterweight-audit.{sh→ts}`, `tools/hygiene/append-tick-history-row.{sh→ts}`                                                                              | Merged |
+| [#884](https://github.com/Lucent-Financial-Group/Zeta/pull/884)   | 2026-04-30 (commit `9237756`) | `tools/skill-catalog/backfill_dv2_frontmatter.{sh→ts}`, `tools/audit-packages.{sh→ts}`                                                                                    | Merged |
+| [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764) | 2026-05-12 (commit `b563ba0`) | `src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts`, `src/Core.TypeScript/hygiene/check-bash-retirement-inventory.test.ts`                                   | Merged |
 
 ## Inventory — Python (tools/, Zeta-authored)
 
@@ -45,7 +45,7 @@ After PR #849, Zeta has zero Python files in `tools/` (Zeta-authored — the 22 
 Current count is repo-derived and guarded by:
 
 ```bash
-bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
+bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce
 bun run hygiene:check-bash-retirement-inventory
 ```
 
@@ -278,13 +278,13 @@ re-verified within its currency window (default 30 days), OR the
 slice's freshness pass re-verifies before proceeding.
 
 > **Carved**:
-> *TypeScript is the language. Bun is the host. Repo scripting is the
-> composition.*
+> _TypeScript is the language. Bun is the host. Repo scripting is the
+> composition._
 >
-> *Do not name the stack. Name the layers.*
+> _Do not name the stack. Name the layers._
 >
-> *The expert baseline is not a new lane. It is the ignition key for
-> the next slice.*
+> _The expert baseline is not a new lane. It is the ignition key for
+> the next slice._
 
 The trajectory references the layered docs; it does NOT own them.
 `docs/best-practices/` is durable substrate that outlives any
@@ -355,11 +355,11 @@ If any source is unavailable or known-stale, surface that as a freshness gap rat
 
 ### Carved
 
-- *Assume stale until refreshed.*
-- *Freshness before mutation.*
-- *Scope before action.*
-- *Boundaries before escalation.*
-- *Observation is how autonomy stays attached to reality.*
+- _Assume stale until refreshed._
+- _Freshness before mutation._
+- _Scope before action._
+- _Boundaries before escalation._
+- _Observation is how autonomy stays attached to reality._
 
 **Discipline bounds autonomous work; it does not replace autonomous work.** Trajectory-scoped standing authority is the safety. The trajectory exists to enable autonomous scoped work, not to create waiting gates. (Earlier "first action must be read-only" wording was self-defeating — it became a wait gate for trajectory-scoped code work it was supposed to enable. "Assume stale until refreshed" inverts the framing from permission-shaped to obligation-shaped: freshness precedes mutation rather than gating it.)
 

@@ -1,5 +1,5 @@
 /**
- * tools/zflash/test-harness/extensions.test.ts
+ * src/Core.TypeScript/zflash/test-harness/extensions.test.ts
  *
  * Tests for B-0891 extensions — substrate-engineering substrate primitives
  * for scenarios 3 (reformat-with-retention), 4 (reformat-from-scratch),

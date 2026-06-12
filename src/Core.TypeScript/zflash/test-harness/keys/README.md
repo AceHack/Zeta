@@ -2,9 +2,9 @@
 
 The **zeta test infra SSH key** lets the QEMU harness SSH into **ephemeral test VMs** to assert the headless /
 remember-creds / trust / self-heal flow **without real hardware or a human** (Aaron tests `gh auth` by hand; this
-key tests everything else). Aaron, 2026-06-09: *"create a zeta test infra ssh key for testing everything else in
+key tests everything else). Aaron, 2026-06-09: _"create a zeta test infra ssh key for testing everything else in
 QEMU … the ssh key does NOT get regular USB trust on regular zflash usb/iso noun-verbs — that needs a `--test` flag
-to trust those."*
+to trust those."_
 
 ## The two hard rules
 
@@ -12,11 +12,11 @@ to trust those."*
    regular noun-verb **must never** trust this key. The test key is injected into the `zeta` user's
    `authorized_keys` **only** when an explicit **`--test`** flag is passed.
    - **`--test` build trusts `{prod operator keys} ∪ {zeta-test-infra}`** — so test/QEMU machines are reachable by
-     the **real production credentials** and the QEMU suite exercises the *actual prod-credential path*, not an
-     isolated test-only path. (Aaron: *"--test can also test the prod credentials."*)
+     the **real production credentials** and the QEMU suite exercises the _actual prod-credential path_, not an
+     isolated test-only path. (Aaron: _"--test can also test the prod credentials."_)
    - **Production build trusts `{prod operator keys}` ONLY** — the test key is **never** in
      `operator-ssh-keys.txt` / `maintainers/*/ssh-pubkeys.txt`.
-   - **The asymmetry:** *test machines may trust prod; prod never trusts test.* Adding prod keys to a test machine
+   - **The asymmetry:** _test machines may trust prod; prod never trusts test._ Adding prod keys to a test machine
      changes nothing (they're already trusted everywhere); adding the test key to prod would be the breach — so it
      never happens. "No one grants the test key access to real machines; test machines can trust real machines."
 2. **Private key is NEVER committed — it lives in the GH Actions secret `ZETA_TEST_INFRA_SSH_KEY`** (repo scope on
@@ -28,7 +28,7 @@ to trust those."*
 ## Generate it
 
 ```sh
-ssh-keygen -t ed25519 -f tools/zflash/test-harness/keys/zeta-test-infra -N "" \
+ssh-keygen -t ed25519 -f src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra -N "" \
   -C "zeta-test-infra-EPHEMERAL-QEMU-ONLY-do-not-trust-on-real-nodes"
 ```
 

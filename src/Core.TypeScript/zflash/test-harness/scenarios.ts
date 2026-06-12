@@ -1,5 +1,5 @@
 /**
- * tools/zflash/test-harness/scenarios.ts
+ * src/Core.TypeScript/zflash/test-harness/scenarios.ts
  *
  * B-0891 — zflash "done" acceptance criteria + QEMU test harness
  *
@@ -41,8 +41,8 @@ export type ScenarioId =
 
 export type ImplStatus =
   | "composes-with-existing" // can run today via existing qemu-full-install-test.ts substrate
-  | "scaffolded"             // declarative definition only; QEMU integration pending
-  | "operator-runtime";       // requires physical USB OR operator-collaborative testing
+  | "scaffolded" // declarative definition only; QEMU integration pending
+  | "operator-runtime"; // requires physical USB OR operator-collaborative testing
 
 export interface Scenario {
   readonly id: ScenarioId;
@@ -231,9 +231,7 @@ export function determineRunnability(
 ): RunnabilityVerdict {
   // Upstream gate check applies regardless of status — if any gate
   // scenario isn't runnable, this scenario can't run end-to-end either.
-  const missingGates = scenario.gates.filter(
-    (g) => !runnableUpstream.has(g),
-  );
+  const missingGates = scenario.gates.filter((g) => !runnableUpstream.has(g));
   if (missingGates.length > 0 && scenario.gates.length > 0) {
     // Special-case: a scenario's gates name DOWNSTREAM scenarios it
     // GATES, not UPSTREAM scenarios it depends on. Per scenarios.ts
@@ -305,9 +303,7 @@ export function determineRunnability(
  * Iterates SCENARIOS reflexively; a scenario is runnable iff
  * determineRunnability returns "can-run-now".
  */
-export function computeRunnableSet(
-  scenarios: ReadonlyArray<Scenario> = SCENARIOS,
-): ReadonlySet<ScenarioId> {
+export function computeRunnableSet(scenarios: ReadonlyArray<Scenario> = SCENARIOS): ReadonlySet<ScenarioId> {
   const set = new Set<ScenarioId>();
   for (const s of scenarios) {
     // Use empty runnableUpstream — determineRunnability's gate-check is
@@ -331,9 +327,7 @@ export function computeRunnableSet(
  */
 export function validateScenarios(scenarios: ReadonlyArray<Scenario>): void {
   if (scenarios.length !== 5) {
-    throw new Error(
-      `expected exactly 5 scenarios per B-0891 matrix; got ${scenarios.length}`,
-    );
+    throw new Error(`expected exactly 5 scenarios per B-0891 matrix; got ${scenarios.length}`);
   }
   const ids = new Set<string>();
   const orders = new Set<number>();

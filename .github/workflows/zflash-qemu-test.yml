@@ -18,35 +18,35 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - 'tools/zflash/test-harness/**'
-      - 'tools/zflash/test-harness/prepare-boot-image.ts'
-      - 'tools/zflash/test-harness/serial-markers.ts'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'full-ai-cluster/tools/zflash.ts'
-      - 'full-ai-cluster/tools/zflash-lib.ts'
-      - 'full-ai-cluster/tools/zflash-file-backed.ts'
-      - 'docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md'
-      - '.github/workflows/zflash-qemu-test.yml'
-      - 'package.json'
-      - 'bun.lock'
+      - "src/Core.TypeScript/zflash/test-harness/**"
+      - "src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts"
+      - "src/Core.TypeScript/zflash/test-harness/serial-markers.ts"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "full-ai-cluster/tools/zflash.ts"
+      - "full-ai-cluster/tools/zflash-lib.ts"
+      - "full-ai-cluster/tools/zflash-file-backed.ts"
+      - "docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md"
+      - ".github/workflows/zflash-qemu-test.yml"
+      - "package.json"
+      - "bun.lock"
   push:
     branches: [main]
     paths:
-      - 'tools/zflash/test-harness/**'
-      - 'tools/zflash/test-harness/prepare-boot-image.ts'
-      - 'tools/zflash/test-harness/serial-markers.ts'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'full-ai-cluster/tools/zflash.ts'
-      - 'full-ai-cluster/tools/zflash-lib.ts'
-      - 'full-ai-cluster/tools/zflash-file-backed.ts'
-      - 'docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md'
-      - '.github/workflows/zflash-qemu-test.yml'
-      - 'package.json'
-      - 'bun.lock'
+      - "src/Core.TypeScript/zflash/test-harness/**"
+      - "src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts"
+      - "src/Core.TypeScript/zflash/test-harness/serial-markers.ts"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "full-ai-cluster/tools/zflash.ts"
+      - "full-ai-cluster/tools/zflash-lib.ts"
+      - "full-ai-cluster/tools/zflash-file-backed.ts"
+      - "docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md"
+      - ".github/workflows/zflash-qemu-test.yml"
+      - "package.json"
+      - "bun.lock"
   workflow_dispatch:
 
 permissions:
@@ -75,18 +75,18 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Test zflash QEMU harness invariants
-        run: bun test tools/zflash/test-harness/
+        run: bun test src/Core.TypeScript/zflash/test-harness/
 
       - name: Validate zflash QEMU dry-run plan
-        run: bun tools/zflash/test-harness/run.ts --dry-run
+        run: bun src/Core.TypeScript/zflash/test-harness/run.ts --dry-run
 
       - name: Validate zflash file-backed boot-image prep (unit-level)
-        run: bun test tools/zflash/test-harness/prepare-boot-image.test.ts
+        run: bun test src/Core.TypeScript/zflash/test-harness/prepare-boot-image.test.ts
 
       - name: Validate state-retention runtime fails closed by default
         run: |
           set +e
-          bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention zflash-qemu-retention-placeholder.iso > retention-runtime.json
+          bun src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-with-retention zflash-qemu-retention-placeholder.iso > retention-runtime.json
           exit_code="$?"
           set -e
           cat retention-runtime.json
@@ -102,7 +102,7 @@ jobs:
       - name: Validate path-fork runtime fails closed by default
         run: |
           set +e
-          bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch zflash-qemu-path-fork-placeholder.iso > path-fork-runtime.json
+          bun src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-from-scratch zflash-qemu-path-fork-placeholder.iso > path-fork-runtime.json
           exit_code="$?"
           set -e
           cat path-fork-runtime.json

@@ -35,9 +35,9 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - 'full-ai-cluster/flake.nix'
-      - 'full-ai-cluster/flake.lock'
-      - 'full-ai-cluster/usb-nixos-installer/**'
+      - "full-ai-cluster/flake.nix"
+      - "full-ai-cluster/flake.lock"
+      - "full-ai-cluster/usb-nixos-installer/**"
       # Broadened 2026-05-26: was nixos/modules/disko-shapes/** only;
       # empirically missed rebuilds when iter-5.2 (#5103) + iter-5.2.2
       # (#5113) added new NixOS modules (injected-hostname.nix +
@@ -45,32 +45,32 @@ on:
       # older CI ISO that didn't have iter-5.2 substrate because the
       # filter missed the module changes. Broaden to all nixos/** +
       # tools/** under full-ai-cluster + the source-substrate audit tool.
-      - 'full-ai-cluster/nixos/**'
-      - 'full-ai-cluster/tools/**'
-      - 'tools/ci/audit-installer-substrate.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/test-iter-54-install-flow.test.ts'
-      - 'tools/zflash/test-harness/**'
-      - 'tools/installer/zeta-creds-restore.ts'
-      - '.github/workflows/build-ai-cluster-iso.yml'
+      - "full-ai-cluster/nixos/**"
+      - "full-ai-cluster/tools/**"
+      - "tools/ci/audit-installer-substrate.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/test-iter-54-install-flow.test.ts"
+      - "src/Core.TypeScript/zflash/test-harness/**"
+      - "tools/installer/zeta-creds-restore.ts"
+      - ".github/workflows/build-ai-cluster-iso.yml"
   push:
     branches: [main]
     paths:
-      - 'full-ai-cluster/flake.nix'
-      - 'full-ai-cluster/flake.lock'
-      - 'full-ai-cluster/usb-nixos-installer/**'
-      - 'full-ai-cluster/nixos/**'
-      - 'full-ai-cluster/tools/**'
-      - 'tools/ci/audit-installer-substrate.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/test-iter-54-install-flow.test.ts'
-      - 'tools/zflash/test-harness/**'
-      - 'tools/installer/zeta-creds-restore.ts'
-      - '.github/workflows/build-ai-cluster-iso.yml'
+      - "full-ai-cluster/flake.nix"
+      - "full-ai-cluster/flake.lock"
+      - "full-ai-cluster/usb-nixos-installer/**"
+      - "full-ai-cluster/nixos/**"
+      - "full-ai-cluster/tools/**"
+      - "tools/ci/audit-installer-substrate.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/test-iter-54-install-flow.test.ts"
+      - "src/Core.TypeScript/zflash/test-harness/**"
+      - "tools/installer/zeta-creds-restore.ts"
+      - ".github/workflows/build-ai-cluster-iso.yml"
   workflow_dispatch:
 
 permissions:
@@ -262,7 +262,7 @@ jobs:
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "B-0891 initial-format ISO: $iso_abs"
-          bun ../tools/zflash/test-harness/run.ts --scenario initial-format "$iso_abs"
+          bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario initial-format "$iso_abs"
 
       # QEMU full-install test (cascade #6 Slice 1 — B-0831 starter):
       # Extends boot-test by attaching virtual hard disk + NAT internet,
@@ -295,7 +295,7 @@ jobs:
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "B-0891 boot-cluster-up ISO: $iso_abs"
           echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
-          bun ../tools/zflash/test-harness/run.ts --scenario boot-cluster-up "$iso_abs"
+          bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario boot-cluster-up "$iso_abs"
 
       - name: B-0891 scenario 3 — reformat with retention (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
@@ -316,7 +316,7 @@ jobs:
           echo "B-0891 retention ISO: $iso_abs"
           echo "Retention run dir: $ZFLASH_QEMU_RETENTION_RUN_DIR"
           mkdir -p "$ZFLASH_QEMU_RETENTION_RUN_DIR"
-          bun ../tools/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
+          bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-with-retention "$iso_abs"
 
       - name: B-0891 scenario 4 — path-fork migrate vs fresh (workflow_dispatch only)
         if: github.event_name == 'workflow_dispatch'
@@ -338,7 +338,7 @@ jobs:
           echo "B-0891 path-fork ISO: $iso_abs"
           echo "Path-fork run dir: $ZFLASH_QEMU_PATH_FORK_RUN_DIR"
           mkdir -p "$ZFLASH_QEMU_PATH_FORK_RUN_DIR"
-          bun ../tools/zflash/test-harness/run.ts --scenario reformat-from-scratch "$iso_abs"
+          bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario reformat-from-scratch "$iso_abs"
 
       - name: Upload B-0891 retention serial logs
         if: always() && github.event_name == 'workflow_dispatch'
@@ -494,7 +494,7 @@ jobs:
           path: ${{ steps.iso.outputs.path }}
           if-no-files-found: error
           retention-days: 90
-          compression-level: 0   # ISO is already compressed; re-zipping wastes time
+          compression-level: 0 # ISO is already compressed; re-zipping wastes time
 
       - name: Upload cosign bundle as workflow artifact
         # B-0853.1 sibling upload — bundle alongside the ISO for consumers.

@@ -17,10 +17,7 @@ export const B0891_FRESH_USB_SERIAL_MARKER =
   "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal";
 
 /** Post-install first-boot cred restore idempotency markers (installed OS path). */
-export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = [
-  "zeta-creds-restore:",
-  "already-present",
-];
+export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
 
 /** Initial nixos-install completion boundary inside the installer environment. */
 export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = ["[iter-5.1]"];

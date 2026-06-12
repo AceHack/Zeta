@@ -29,16 +29,23 @@ import {
   planFileBackedZflashImage,
   planFileBackedZflashImageExecution,
   VALID_HOSTNAME_REGEX,
+  ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
 } from "./zflash-lib";
+
+describe("ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH", () => {
+  test("points at the source-owned zflash QEMU public key", () => {
+    expect(ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH).toBe(
+      "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub",
+    );
+  });
+});
 
 describe("VALID_HOSTNAME_REGEX / isValidHostname", () => {
   test("exports the regex directly for cross-substrate sync verification", () => {
     // The bash equivalent in zeta-install.sh greps with the regex pattern
     // `^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$`. Pin the JS source
     // shape so cross-substrate drift surfaces here.
-    expect(VALID_HOSTNAME_REGEX.source).toBe(
-      "^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$",
-    );
+    expect(VALID_HOSTNAME_REGEX.source).toBe("^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$");
   });
 
   test("accepts simple lowercase name", () => {
@@ -337,15 +344,7 @@ describe("planFileBackedZflashImage", () => {
     if (!result.ok) throw new Error(result.error);
     expect(result.value.imageCommand).toEqual({
       command: "qemu-img",
-      args: [
-        "convert",
-        "-f",
-        "raw",
-        "-O",
-        "raw",
-        "artifacts/zeta-installer.iso",
-        "artifacts/zflash-baked.img",
-      ],
+      args: ["convert", "-f", "raw", "-O", "raw", "artifacts/zeta-installer.iso", "artifacts/zflash-baked.img"],
     });
     expect(result.value.espOffsetBytes).toBe(1_048_576);
     expect(result.value.espWrites).toEqual([
@@ -485,13 +484,7 @@ describe("planFileBackedZflashImageExecution", () => {
       },
       {
         command: "mcopy",
-        args: [
-          "-o",
-          "-i",
-          "artifacts/zflash-baked.img@@1048576",
-          "artifacts/zeta-creds.enc",
-          "::/zeta-creds.enc",
-        ],
+        args: ["-o", "-i", "artifacts/zflash-baked.img@@1048576", "artifacts/zeta-creds.enc", "::/zeta-creds.enc"],
       },
     ]);
     const [pubkeyCommand, hostnameCommand, credsCommand] = result.value.espWriteCommands;
@@ -719,9 +712,10 @@ describe("executeFileBackedZflashImageExecutionPlan", () => {
       writeFile: () => {
         throw new Error("unexpected inline write");
       },
-      runCommand: (command) => command.command === "qemu-img"
-        ? { exitCode: 0 }
-        : { exitCode: 1, stderr: "No such file or directory", stdout: "copy attempt" },
+      runCommand: (command) =>
+        command.command === "qemu-img"
+          ? { exitCode: 0 }
+          : { exitCode: 1, stderr: "No such file or directory", stdout: "copy attempt" },
     });
 
     expect(result).toEqual({
@@ -741,9 +735,7 @@ describe("executeFileBackedZflashImageExecutionPlan", () => {
 describe("parseOutputFileMarker", () => {
   test("matches standard peer-call output-file marker", () => {
     const line = "OUTPUT-FILE: /tmp/peer-call-output/2026-05-26-grok-build-a3f9c2.md";
-    expect(parseOutputFileMarker(line)).toBe(
-      "/tmp/peer-call-output/2026-05-26-grok-build-a3f9c2.md",
-    );
+    expect(parseOutputFileMarker(line)).toBe("/tmp/peer-call-output/2026-05-26-grok-build-a3f9c2.md");
   });
 
   test("returns null for non-matching line", () => {

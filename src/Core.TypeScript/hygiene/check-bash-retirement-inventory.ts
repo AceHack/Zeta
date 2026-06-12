@@ -8,9 +8,9 @@
 // to a low-level installer/dev-cluster surface that is still shell-native.
 //
 // Usage:
-//   bun tools/hygiene/check-bash-retirement-inventory.ts
-//   bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
-//   bun tools/hygiene/check-bash-retirement-inventory.ts --json
+//   bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts
+//   bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce
+//   bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --json
 
 import { spawnSync } from "node:child_process";
 import { closeSync, existsSync, openSync, readSync } from "node:fs";
@@ -142,9 +142,9 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/common/agent-clis.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
   "tools/setup/common/dotnet-tools.sh": "setup/bootstrap",
-  "tools/setup/common/host-tier.sh": "setup/bootstrap",
   "tools/setup/common/dotnet-workloads.sh": "setup/bootstrap",
   "tools/setup/common/elan.sh": "setup/bootstrap",
+  "tools/setup/common/host-tier.sh": "setup/bootstrap",
   "tools/setup/common/local-llm.sh": "setup/bootstrap",
   "tools/setup/common/mise.sh": "setup/bootstrap",
   "tools/setup/common/one-liner-tools.sh": "setup/bootstrap",
@@ -532,9 +532,9 @@ export function renderReport(report: InventoryReport): string {
 function usage(): string {
   return [
     "Usage:",
-    "  bun tools/hygiene/check-bash-retirement-inventory.ts",
-    "  bun tools/hygiene/check-bash-retirement-inventory.ts --enforce",
-    "  bun tools/hygiene/check-bash-retirement-inventory.ts --json",
+    "  bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts",
+    "  bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
+    "  bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --json",
     "",
     `Checks that non-Lean tracked shell-family files match ${RETAINED_SHELL_SCOPE}.`,
   ].join("\n");

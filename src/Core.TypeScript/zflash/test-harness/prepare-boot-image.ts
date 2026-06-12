@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/zflash/test-harness/prepare-boot-image.ts
+ * src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts
  *
  * B-0891 — produce a zflash-prepared raw boot image for QEMU scenarios 3–4.
  *
@@ -8,7 +8,7 @@
  * credentials so CI can set ZFLASH_QEMU_*_BOOT_IMAGE without physical USB.
  *
  * Usage:
- *   bun tools/zflash/test-harness/prepare-boot-image.ts \
+ *   bun src/Core.TypeScript/zflash/test-harness/prepare-boot-image.ts \
  *     --iso <installer.iso> \
  *     --output <zflash-boot.img> \
  *     [--with-credential-blob] \
@@ -26,9 +26,9 @@ import { fileURLToPath } from "node:url";
 import {
   detectIsohybridEspOffsetBytes,
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
-} from "../../../full-ai-cluster/tools/zflash-lib";
-import { runFileBackedZflashCli } from "../../../full-ai-cluster/tools/zflash-file-backed";
-import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
+} from "../../../../full-ai-cluster/tools/zflash-lib";
+import { runFileBackedZflashCli } from "../../../../full-ai-cluster/tools/zflash-file-backed";
+import { buildBlob, composeBundle } from "../../../../tools/installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
 export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
@@ -36,8 +36,8 @@ export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
 export const DEFAULT_ESP_OFFSET_BYTES = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
 export const DEFAULT_QEMU_HOSTNAME = "node-qemu-test";
 
-const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
-const TEST_INFRA_PUBKEY = join(REPO_ROOT, "tools/zflash/test-harness/keys/zeta-test-infra.pub");
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
+const TEST_INFRA_PUBKEY = join(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
 
 export interface PrepareBootImageInput {
   readonly isoPath: string;
@@ -116,17 +116,15 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     writeTestCredentialBlob(credentialBlobPath);
   }
 
-  const result = runFileBackedZflashCli(
-    {
-      isoPath: absIso,
-      outputImagePath: resolve(input.outputImagePath),
-      espOffsetBytes,
-      pubkeyPath: input.pubkeyPath,
-      testMode: input.testMode,
-      hostname: input.hostname,
-      ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
-    },
-  );
+  const result = runFileBackedZflashCli({
+    isoPath: absIso,
+    outputImagePath: resolve(input.outputImagePath),
+    espOffsetBytes,
+    pubkeyPath: input.pubkeyPath,
+    testMode: input.testMode,
+    hostname: input.hostname,
+    ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
+  });
 
   if (!result.ok) {
     return { error: result.error };
@@ -135,9 +133,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
   return {
     outputImagePath: resolve(input.outputImagePath),
     ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
-    bootImageEnv: input.withCredentialBlob
-      ? "ZFLASH_QEMU_RETENTION_BOOT_IMAGE"
-      : "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE",
+    bootImageEnv: input.withCredentialBlob ? "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" : "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE",
   };
 }
 

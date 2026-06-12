@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 /**
- * tools/zflash/test-harness/run.ts
+ * src/Core.TypeScript/zflash/test-harness/run.ts
  *
  * B-0891 — zflash 5-scenario test-harness CLI dispatcher (PoC scaffold)
  *
  * Usage:
- *   bun tools/zflash/test-harness/run.ts --list
- *   bun tools/zflash/test-harness/run.ts --dry-run [--scenario <id>]
- *   bun tools/zflash/test-harness/run.ts --scenario initial-format <iso-path>
- *   bun tools/zflash/test-harness/run.ts --all <iso-path>
+ *   bun src/Core.TypeScript/zflash/test-harness/run.ts --list
+ *   bun src/Core.TypeScript/zflash/test-harness/run.ts --dry-run [--scenario <id>]
+ *   bun src/Core.TypeScript/zflash/test-harness/run.ts --scenario initial-format <iso-path>
+ *   bun src/Core.TypeScript/zflash/test-harness/run.ts --all <iso-path>
  *
  * Modes:
  *   --list      Print scenario matrix as structured table; exit 0
@@ -110,7 +110,7 @@ export interface PathForkRuntimeOptions {
   readonly kvmAvailable?: boolean;
 }
 
-const REPO_ROOT = resolve(import.meta.dir, "../../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../../..");
 const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
 const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
 const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
@@ -171,9 +171,7 @@ function emitListing(): void {
         implDesignProgress: computeImplDesignProgress(),
         scenarios: SCENARIOS.map((s) => {
           const implDesign =
-            s.id === "reformat-with-retention" ||
-            s.id === "reformat-from-scratch" ||
-            s.id === "cluster-joining"
+            s.id === "reformat-with-retention" || s.id === "reformat-from-scratch" || s.id === "cluster-joining"
               ? SCENARIO_IMPL_DESIGN[s.id]
               : undefined;
           return {
@@ -199,9 +197,7 @@ function emitDryRun(scenarioId?: ScenarioId): number {
     console.error(`scenarios.ts invariant violated: ${(e as Error).message}`);
     return 2;
   }
-  const targets = scenarioId
-    ? SCENARIOS.filter((s) => s.id === scenarioId)
-    : SCENARIOS;
+  const targets = scenarioId ? SCENARIOS.filter((s) => s.id === scenarioId) : SCENARIOS;
   if (targets.length === 0) {
     console.error(`scenario not found: ${scenarioId}`);
     return 2;
@@ -278,7 +274,7 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
     testMode: true,
     hostname: "node-qemu-test",
     espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
-    pubkeyPath: resolve(REPO_ROOT, "tools/zflash/test-harness/keys/zeta-test-infra.pub"),
+    pubkeyPath: resolveTestInfraPubkeyPath(),
   });
   steps.push("zflash-file-backed --test");
   if ("error" in prepared) {
@@ -452,7 +448,10 @@ function preparePathForkRunDirectory(option: string | undefined): { ok: string }
   }
 }
 
-function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
+function retentionArtifactPaths(
+  absIsoPath: string,
+  runDirectory: string,
+): {
   readonly diskPath: string;
   readonly serialLogPath: string;
 } {
@@ -463,7 +462,10 @@ function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
   };
 }
 
-function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
+function pathForkArtifactPaths(
+  absIsoPath: string,
+  runDirectory: string,
+): {
   readonly startingDiskPath: string;
   readonly baselineSerialLogPath: string;
   readonly migrateSerialLogPath: string;
@@ -479,7 +481,7 @@ function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
 }
 
 function resolveTestInfraPubkeyPath(): string {
-  return resolve(REPO_ROOT, "tools/zflash/test-harness/keys/zeta-test-infra.pub");
+  return resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
 }
 
 function ensureZflashBootImage(
@@ -502,10 +504,7 @@ function ensureZflashBootImage(
   return { ok: prepared.outputImagePath };
 }
 
-export function runRetentionRuntime(
-  isoPath: string,
-  options: RetentionRuntimeOptions = {},
-): ScenarioResult {
+export function runRetentionRuntime(isoPath: string, options: RetentionRuntimeOptions = {}): ScenarioResult {
   const absIsoPath = resolve(isoPath);
   const runDirectory = prepareRetentionRunDirectory(options.runDirectory);
   if ("error" in runDirectory) {
@@ -566,9 +565,10 @@ export function runRetentionRuntime(
     };
   }
 
-  const executorOptions = options.timeoutMs === undefined
-    ? { cwd: options.cwd ?? REPO_ROOT }
-    : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  const executorOptions =
+    options.timeoutMs === undefined
+      ? { cwd: options.cwd ?? REPO_ROOT }
+      : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
   const executor = options.executor ?? createSpawnSyncQcow2RetentionExecutor(executorOptions);
   const executed = executeQcow2SnapshotRetentionPlan(planned.ok, executor);
 
@@ -591,10 +591,7 @@ export function runRetentionRuntime(
   };
 }
 
-export function runPathForkRuntime(
-  isoPath: string,
-  options: PathForkRuntimeOptions = {},
-): ScenarioResult {
+export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOptions = {}): ScenarioResult {
   const absIsoPath = resolve(isoPath);
   const runDirectory = preparePathForkRunDirectory(options.runDirectory);
   if ("error" in runDirectory) {
@@ -647,9 +644,10 @@ export function runPathForkRuntime(
   }
 
   const missingRequirements = planned.ok.forks.flatMap((fork) => fork.missingRuntimeRequirements);
-  const requirementSuffix = missingRequirements.length === 0
-    ? ""
-    : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
+  const requirementSuffix =
+    missingRequirements.length === 0
+      ? ""
+      : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
 
   if (options.execute !== true) {
     return {
@@ -660,24 +658,26 @@ export function runPathForkRuntime(
     };
   }
 
-  const executorOptions = options.timeoutMs === undefined
-    ? { cwd: options.cwd ?? REPO_ROOT }
-    : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  const executorOptions =
+    options.timeoutMs === undefined
+      ? { cwd: options.cwd ?? REPO_ROOT }
+      : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
   const executor = options.executor ?? createSpawnSyncPathForkExecutor(executorOptions);
-  const bootstrapPlan = options.bootstrap === true
-    ? (() => {
-        const plannedBootstrap = planPathForkBaselineBootstrap({
-          isoPath: absIsoPath,
-          startingDiskPath: artifacts.startingDiskPath,
-          baselineSerialLogPath: artifacts.baselineSerialLogPath,
-          kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
-        });
-        if ("error" in plannedBootstrap) {
-          return { error: plannedBootstrap.error };
-        }
-        return { ok: plannedBootstrap };
-      })()
-    : undefined;
+  const bootstrapPlan =
+    options.bootstrap === true
+      ? (() => {
+          const plannedBootstrap = planPathForkBaselineBootstrap({
+            isoPath: absIsoPath,
+            startingDiskPath: artifacts.startingDiskPath,
+            baselineSerialLogPath: artifacts.baselineSerialLogPath,
+            kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
+          });
+          if ("error" in plannedBootstrap) {
+            return { error: plannedBootstrap.error };
+          }
+          return { ok: plannedBootstrap };
+        })()
+      : undefined;
 
   if (bootstrapPlan !== undefined && "error" in bootstrapPlan) {
     return {
@@ -728,23 +728,25 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
     case "scaffolded":
       if (scenario.id === "reformat-with-retention") {
         const timeoutMs = retentionTimeoutMsFromEnv();
-        const options = timeoutMs === undefined
-          ? { execute: retentionExecutionEnabledFromEnv() }
-          : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
+        const options =
+          timeoutMs === undefined
+            ? { execute: retentionExecutionEnabledFromEnv() }
+            : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
         return runRetentionRuntime(isoPath, options);
       }
       if (scenario.id === "reformat-from-scratch") {
         const timeoutMs = pathForkTimeoutMsFromEnv();
-        const pathForkOptions = timeoutMs === undefined
-          ? {
-              execute: pathForkExecutionEnabledFromEnv(),
-              bootstrap: pathForkBootstrapEnabledFromEnv(),
-            }
-          : {
-              execute: pathForkExecutionEnabledFromEnv(),
-              bootstrap: pathForkBootstrapEnabledFromEnv(),
-              timeoutMs,
-            };
+        const pathForkOptions =
+          timeoutMs === undefined
+            ? {
+                execute: pathForkExecutionEnabledFromEnv(),
+                bootstrap: pathForkBootstrapEnabledFromEnv(),
+              }
+            : {
+                execute: pathForkExecutionEnabledFromEnv(),
+                bootstrap: pathForkBootstrapEnabledFromEnv(),
+                timeoutMs,
+              };
         return runPathForkRuntime(isoPath, pathForkOptions);
       }
       if (scenario.id === "cluster-joining") {

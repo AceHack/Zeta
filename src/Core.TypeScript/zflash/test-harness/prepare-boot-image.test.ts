@@ -2,10 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  DEFAULT_QEMU_USB_UUID,
-  writeTestCredentialBlob,
-} from "./prepare-boot-image";
+import { DEFAULT_QEMU_USB_UUID, writeTestCredentialBlob } from "./prepare-boot-image";
 import { planQcow2SnapshotRetention } from "./qemu-state";
 
 describe("prepare-boot-image", () => {

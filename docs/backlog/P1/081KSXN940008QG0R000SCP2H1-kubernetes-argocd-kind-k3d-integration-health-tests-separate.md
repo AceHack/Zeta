@@ -90,38 +90,37 @@ Preferred starting substrate:
 
 The harness should wrap existing cluster definitions instead of creating a
 parallel shell-only path. New orchestration should live in TypeScript under
-`tools/cluster/` or `tools/ci/`, with clear structured output and bounded
+`src/Core.TypeScript/cluster/`, with clear structured output and bounded
 timeouts.
 
 ## Acceptance
 
-- [x] A TypeScript integration entrypoint exists for local cluster health, for
-  example `tools/cluster/argocd-health-test.ts` or
-  `tools/ci/k8s-argocd-health-test.ts`.
+- [x] A TypeScript integration entrypoint exists for local cluster health at
+      `src/Core.TypeScript/cluster/argocd-health-test.ts`.
 - [x] The harness can create or select an ephemeral k3d/kind cluster and emits
-  Result-shaped structured failures for missing tools, Docker unavailability,
-  cluster creation failure, or timeout.
+      Result-shaped structured failures for missing tools, Docker unavailability,
+      cluster creation failure, or timeout.
 - [x] The harness applies or reuses the Zeta bootstrap path for Cilium, ArgoCD,
-  and the root App-of-Apps without duplicating the desired-state manifests.
+      and the root App-of-Apps without duplicating the desired-state manifests.
 - [x] The harness waits for the `argocd` namespace, ArgoCD controller/server
-  readiness, Application CRD establishment, and root Application creation.
+      readiness, Application CRD establishment, and root Application creation.
 - [x] The harness asserts expected ArgoCD Application state and reports exact
-  failing Applications/resources rather than a single opaque timeout.
+      failing Applications/resources rather than a single opaque timeout.
 - [ ] A safe drift-repair check exists: mutate a non-destructive test resource
-  or fixture-owned object, then assert ArgoCD self-heal/prune reconverges it.
+      or fixture-owned object, then assert ArgoCD self-heal/prune reconverges it.
 - [x] CI coverage is added on an appropriate cadence or path filter, likely for
-  changes under `full-ai-cluster/k8s/**`, `full-ai-cluster/dev-cluster/**`, and
-  the new harness path. It may be separate from default PR checks if runtime is
-  too expensive.
+      changes under `full-ai-cluster/k8s/**`, `full-ai-cluster/dev-cluster/**`, and
+      the new harness path. It may be separate from default PR checks if runtime is
+      too expensive.
 - [x] The supported architecture story is explicit: x86_64 and ARM64/aarch64
-  are both assumed target hardware classes; unsupported runner combinations
-  fail with a named dependency, not a green skip.
+      are both assumed target hardware classes; unsupported runner combinations
+      fail with a named dependency, not a green skip.
 
 ## Implementation slice 2026-06-01
 
-`tools/cluster/argocd-health-test.ts` is the first executable slice. It has a
-safe dry-run mode, a preflight mode that names missing dependencies, and live
-`--run` modes for:
+`src/Core.TypeScript/cluster/argocd-health-test.ts` is the first executable
+slice. It has a safe dry-run mode, a preflight mode that names missing
+dependencies, and live `--run` modes for:
 
 - `--provider kind --scope smoke --runtime docker`, the conservative outside-ISO
   CI lane.
@@ -181,7 +180,7 @@ Local outside-ISO evidence on Aaron's macOS host:
   Docker Desktop sqlite/kine slow-read path, and `up.sh` trims Cilium's
   single-node values when `agents: 0`.
 - With that pin and embedded-etcd change, `k3d cluster create --config
-  full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --wait=false` succeeds
+full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --wait=false` succeeds
   and `kubectl get --raw=/readyz` returns `ok` before CNI installation. That
   proves the original pre-kubeconfig failure is past the K3S/kine substrate
   layer.

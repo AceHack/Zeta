@@ -41,13 +41,13 @@ function firstTwoExpectedRetained(): readonly [string, string, readonly string[]
 
 describe("package.json wiring", () => {
   test("keeps the package wiring pointed at the enforcing inventory guard", () => {
-    const packageJsonPath = resolve(import.meta.dir, "../..", "package.json");
+    const packageJsonPath = resolve(import.meta.dir, "../../..", "package.json");
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as {
       readonly scripts?: Readonly<Record<string, string>>;
     };
 
     expect(packageJson.scripts?.["hygiene:check-bash-retirement-inventory"]).toBe(
-      "bun ./tools/hygiene/check-bash-retirement-inventory.ts --enforce",
+      "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
     );
   });
 });
@@ -217,7 +217,10 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "e-uppercase.COMMAND"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
-      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-assignment"), "#!/usr/bin/env -S NAME=value bash -eu\n");
+      writeFileSync(
+        join(repo, "scripts", "extensionless-bash-env-s-assignment"),
+        "#!/usr/bin/env -S NAME=value bash -eu\n",
+      );
       writeFileSync(
         join(repo, "scripts", "extensionless-bash-env-s-quoted-assignment"),
         "#!/usr/bin/env -S 'NAME=two words' bash -eu\n",
@@ -237,7 +240,10 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
       writeFileSync(join(repo, "scripts", "extensionless-node-with-bash-arg"), "#!/usr/bin/env node --loader bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-node-with-sh-arg"), "#!/usr/bin/env node sh\n");
-      writeFileSync(join(repo, "scripts", "extensionless-node-env-s-bash-arg"), "#!/usr/bin/env -S node --loader bash\n");
+      writeFileSync(
+        join(repo, "scripts", "extensionless-node-env-s-bash-arg"),
+        "#!/usr/bin/env -S node --loader bash\n",
+      );
       writeFileSync(join(repo, "scripts", "dotted-shell-entry.env"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
@@ -245,32 +251,34 @@ describe("buildInventoryReport", () => {
       runGit(["add", "."], repo);
       runGit(["update-index", "--chmod=+x", "scripts/dotted-shell-entry.env"], repo);
 
-      expect(trackedNonLeanShellFilesFromGit(repo)).toEqual([
-        "scripts/a.sh",
-        "scripts/a-uppercase.SH",
-        "scripts/b.bash",
-        "scripts/b-uppercase.BASH",
-        "scripts/c.zsh",
-        "scripts/c-uppercase.ZSH",
-        "scripts/d.ksh",
-        "scripts/d-uppercase.KSH",
-        "scripts/dotted-shell-entry.env",
-        "scripts/e.command",
-        "scripts/e-uppercase.COMMAND",
-        "scripts/extensionless-bash",
-        "scripts/extensionless-bash-env-argv0",
-        "scripts/extensionless-bash-env-chdir",
-        "scripts/extensionless-bash-env-path",
-        "scripts/extensionless-bash-env-s",
-        "scripts/extensionless-bash-env-s-assignment",
-        "scripts/extensionless-bash-env-s-quoted-assignment",
-        "scripts/extensionless-bash-env-s-quoted",
-        "scripts/extensionless-dash",
-        "scripts/extensionless-sh",
-        "scripts/extensionless-zsh-env-split-string-quoted",
-        "scripts/extensionless-zsh-env-unset",
-        "scripts/extensionless-zsh-env-unset-long",
-      ].sort((a, b) => a.localeCompare(b)));
+      expect(trackedNonLeanShellFilesFromGit(repo)).toEqual(
+        [
+          "scripts/a.sh",
+          "scripts/a-uppercase.SH",
+          "scripts/b.bash",
+          "scripts/b-uppercase.BASH",
+          "scripts/c.zsh",
+          "scripts/c-uppercase.ZSH",
+          "scripts/d.ksh",
+          "scripts/d-uppercase.KSH",
+          "scripts/dotted-shell-entry.env",
+          "scripts/e.command",
+          "scripts/e-uppercase.COMMAND",
+          "scripts/extensionless-bash",
+          "scripts/extensionless-bash-env-argv0",
+          "scripts/extensionless-bash-env-chdir",
+          "scripts/extensionless-bash-env-path",
+          "scripts/extensionless-bash-env-s",
+          "scripts/extensionless-bash-env-s-assignment",
+          "scripts/extensionless-bash-env-s-quoted-assignment",
+          "scripts/extensionless-bash-env-s-quoted",
+          "scripts/extensionless-dash",
+          "scripts/extensionless-sh",
+          "scripts/extensionless-zsh-env-split-string-quoted",
+          "scripts/extensionless-zsh-env-unset",
+          "scripts/extensionless-zsh-env-unset-long",
+        ].sort((a, b) => a.localeCompare(b)),
+      );
     } finally {
       rmSync(repo, { recursive: true, force: true });
     }
@@ -284,8 +292,7 @@ describe("renderReport", () => {
     expect(renderReport(report)).toContain(`OK: retained non-Lean shell surface matches ${RETAINED_SHELL_SCOPE}.`);
     expect(renderReport(report)).toContain("## Retained shell categories");
     const bootstrapCount =
-      report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files
-        .length ?? 0;
+      report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
     expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- host-service wrappers: 2");
   });

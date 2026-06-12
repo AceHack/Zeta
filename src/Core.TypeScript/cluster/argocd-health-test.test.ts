@@ -37,38 +37,41 @@ const SMOKE_APPLICATION_LIST = JSON.stringify({
   ],
 });
 
-async function withFakeClusterCli(mode: "invalid-list-json" | "drift-read-fails", action: () => Promise<void>): Promise<void> {
+async function withFakeClusterCli(
+  mode: "invalid-list-json" | "drift-read-fails",
+  action: () => Promise<void>,
+): Promise<void> {
   const cliDir = mkdtempSync(join(tmpdir(), "zeta-argocd-health-cli-"));
   const previousPath = process.env.PATH;
   const previousMode = process.env.ZETA_FAKE_KUBECTL_MODE;
   const script = [
     "#!/usr/bin/env bash",
     "set -eu",
-    "tool=$(basename \"$0\")",
-    "if [ \"$tool\" = docker ]; then exit 0; fi",
-    "if [ \"$tool\" = helm ]; then exit 0; fi",
-    "if [ \"$tool\" = kind ]; then exit 0; fi",
-    "if [ \"$tool\" != kubectl ]; then exit 127; fi",
+    'tool=$(basename "$0")',
+    'if [ "$tool" = docker ]; then exit 0; fi',
+    'if [ "$tool" = helm ]; then exit 0; fi',
+    'if [ "$tool" = kind ]; then exit 0; fi',
+    'if [ "$tool" != kubectl ]; then exit 127; fi',
     "mode=${ZETA_FAKE_KUBECTL_MODE:-healthy}",
     "if [ \"${1:-}\" = version ]; then echo 'clientVersion: {}'; exit 0; fi",
-    "if [ \"${1:-}\" = config ] && [ \"${2:-}\" = use-context ]; then exit 0; fi",
-    "if [ \"${1:-}\" = get ] && [ \"${2:-}\" = namespace ]; then exit 0; fi",
-    "if [ \"${1:-}\" = wait ]; then exit 0; fi",
-    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = rollout ]; then exit 0; fi",
-    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = get ] && [ \"${4:-}\" = application ] && [ \"${5:-}\" = zeta-root-dev ]; then exit 0; fi",
-    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = get ] && [ \"${4:-}\" = applications.argoproj.io ]; then",
+    'if [ "${1:-}" = config ] && [ "${2:-}" = use-context ]; then exit 0; fi',
+    'if [ "${1:-}" = get ] && [ "${2:-}" = namespace ]; then exit 0; fi',
+    'if [ "${1:-}" = wait ]; then exit 0; fi',
+    'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = rollout ]; then exit 0; fi',
+    'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = get ] && [ "${4:-}" = application ] && [ "${5:-}" = zeta-root-dev ]; then exit 0; fi',
+    'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = get ] && [ "${4:-}" = applications.argoproj.io ]; then',
     "  if [ \"$mode\" = invalid-list-json ]; then printf '{not json'; exit 0; fi",
     "  cat <<'JSON'",
     SMOKE_APPLICATION_LIST,
     "JSON",
     "  exit 0",
     "fi",
-    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = patch ] && [ \"${4:-}\" = application ]; then exit 0; fi",
-    "if [ \"${1:-}\" = -n ] && [ \"${2:-}\" = argocd ] && [ \"${3:-}\" = get ] && [ \"${4:-}\" = application ] && [ \"${5:-}\" = argocd ]; then",
+    'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = patch ] && [ "${4:-}" = application ]; then exit 0; fi',
+    'if [ "${1:-}" = -n ] && [ "${2:-}" = argocd ] && [ "${3:-}" = get ] && [ "${4:-}" = application ] && [ "${5:-}" = argocd ]; then',
     "  echo 'simulated API read failure' >&2",
     "  exit 7",
     "fi",
-    "echo \"unexpected kubectl invocation: $*\" >&2",
+    'echo "unexpected kubectl invocation: $*" >&2',
     "exit 66",
     "",
   ].join("\n");
@@ -111,18 +114,21 @@ describe("B-0967 argocd-health-test argument parsing", () => {
   });
 
   test("accepts explicit live k3d mode with bounded polling", () => {
-    const parsed = parseArgs([
-      "--run",
-      "--provider",
-      "k3d",
-      "--git-ref",
-      "claim/example-2026-06-01",
-      "--timeout-sec",
-      "60",
-      "--poll-sec",
-      "5",
-      "--drift-check",
-    ], {});
+    const parsed = parseArgs(
+      [
+        "--run",
+        "--provider",
+        "k3d",
+        "--git-ref",
+        "claim/example-2026-06-01",
+        "--timeout-sec",
+        "60",
+        "--poll-sec",
+        "5",
+        "--drift-check",
+      ],
+      {},
+    );
     expect("kind" in parsed).toBe(false);
     if ("kind" in parsed) throw new Error(parsed.message);
     expect(parsed.mode).toBe("run");
@@ -167,13 +173,10 @@ describe("B-0967 argocd-health-test argument parsing", () => {
   });
 
   test("rejects mismatched provider and config flavors before spawning CLIs", () => {
-    const parsed = parseArgs([
-      "--run",
-      "--provider",
-      "kind",
-      "--config",
-      "full-ai-cluster/dev-cluster/k3d-config.yaml",
-    ], {});
+    const parsed = parseArgs(
+      ["--run", "--provider", "kind", "--config", "full-ai-cluster/dev-cluster/k3d-config.yaml"],
+      {},
+    );
     expect("kind" in parsed).toBe(true);
     if (!("kind" in parsed)) throw new Error("expected usage error");
     expect(parsed.message).toContain("kind provider requires a kind config");
@@ -189,7 +192,9 @@ describe("B-0967 argocd-health-test argument parsing", () => {
 
 describe("B-0967 argocd-health-test manifest parsing", () => {
   test("extracts the k3d cluster name from metadata", () => {
-    expect(parseK3dClusterName("apiVersion: k3d.io/v1alpha5\nkind: Simple\nmetadata:\n  name: zeta-ci\n")).toBe("zeta-ci");
+    expect(parseK3dClusterName("apiVersion: k3d.io/v1alpha5\nkind: Simple\nmetadata:\n  name: zeta-ci\n")).toBe(
+      "zeta-ci",
+    );
   });
 
   test("extracts ArgoCD Application metadata.name", () => {
@@ -229,21 +234,38 @@ describe("B-0967 argocd-health-test manifest parsing", () => {
     ]);
     expect(verdicts.every((verdict) => verdict.ok)).toBe(true);
   });
+
+  test("smoke scope tolerates cert-manager progressing while sync settles", () => {
+    const verdicts = classifySmokeApplications([
+      { name: "zeta-root-dev", syncStatus: "OutOfSync", healthStatus: "Healthy", message: "" },
+      { name: "argocd", syncStatus: "Unknown", healthStatus: "Healthy", message: "" },
+      { name: "cert-manager", syncStatus: "Unknown", healthStatus: "Progressing", message: "" },
+      ...Array.from({ length: 20 }, (_value, index) => ({
+        name: `child-${String(index)}`,
+        syncStatus: "OutOfSync",
+        healthStatus: "Missing",
+        message: "",
+      })),
+    ]);
+    expect(verdicts.every((verdict) => verdict.ok)).toBe(true);
+  });
 });
 
 describe("B-0967 argocd-health-test Application verdicts", () => {
   test("parses kubectl Application JSON into compact snapshots", () => {
-    const snapshots = parseApplicationList(JSON.stringify({
-      items: [
-        {
-          metadata: { name: "argocd" },
-          status: {
-            sync: { status: "Synced" },
-            health: { status: "Healthy", message: "" },
+    const snapshots = parseApplicationList(
+      JSON.stringify({
+        items: [
+          {
+            metadata: { name: "argocd" },
+            status: {
+              sync: { status: "Synced" },
+              health: { status: "Healthy", message: "" },
+            },
           },
-        },
-      ],
-    }));
+        ],
+      }),
+    );
     expect(snapshots).toEqual([
       {
         name: "argocd",
@@ -328,7 +350,10 @@ describe("B-0967 argocd-health-test planning", () => {
     try {
       const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/broken");
       mkdirSync(appDir, { recursive: true });
-      writeFileSync(join(appDir, "Application.yaml"), "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\nspec: {}\n");
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\nspec: {}\n",
+      );
 
       const parsed = parseArgs(["--dry-run", "--provider", "kind"], {});
       if ("kind" in parsed) throw new Error(parsed.message);
@@ -359,16 +384,10 @@ describe("B-0967 argocd-health-test preflight failures", () => {
 describe("B-0967 argocd-health-test live failure shaping", () => {
   test("returns a structured failure when kubectl emits malformed Application list JSON", async () => {
     await withFakeClusterCli("invalid-list-json", async () => {
-      const parsed = parseArgs([
-        "--run",
-        "--provider",
-        "kind",
-        "--existing",
-        "--timeout-sec",
-        "1",
-        "--poll-sec",
-        "1",
-      ], {});
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--existing", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
       if ("kind" in parsed) throw new Error(parsed.message);
 
       const result = await runHarness(parsed);
@@ -381,17 +400,10 @@ describe("B-0967 argocd-health-test live failure shaping", () => {
 
   test("does not treat drift-check kubectl read failures as repaired drift", async () => {
     await withFakeClusterCli("drift-read-fails", async () => {
-      const parsed = parseArgs([
-        "--run",
-        "--provider",
-        "kind",
-        "--existing",
-        "--drift-check",
-        "--timeout-sec",
-        "1",
-        "--poll-sec",
-        "1",
-      ], {});
+      const parsed = parseArgs(
+        ["--run", "--provider", "kind", "--existing", "--drift-check", "--timeout-sec", "1", "--poll-sec", "1"],
+        {},
+      );
       if ("kind" in parsed) throw new Error(parsed.message);
 
       const result = await runHarness(parsed);

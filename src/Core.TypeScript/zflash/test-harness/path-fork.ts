@@ -8,14 +8,8 @@
  * executor and identity comparison proof consume the plan.
  */
 
-import {
-  DEFAULT_PATH_FORK,
-  type PathForkVariant,
-} from "./extensions";
-import {
-  B0891_FRESH_USB_SERIAL_MARKER,
-  B0891_RETENTION_USB_SERIAL_MARKERS,
-} from "./serial-markers";
+import { DEFAULT_PATH_FORK, type PathForkVariant } from "./extensions";
+import { B0891_FRESH_USB_SERIAL_MARKER, B0891_RETENTION_USB_SERIAL_MARKERS } from "./serial-markers";
 import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
@@ -67,16 +61,13 @@ export interface PathForkRuntimePlan {
   readonly forks: readonly PathForkRuntimeForkPlan[];
 }
 
-export type PathForkRuntimeFeedback =
-  | {
-      readonly kind: "invalid-input";
-      readonly field: keyof PathForkRuntimeInput;
-      readonly reason: string;
-    };
+export type PathForkRuntimeFeedback = {
+  readonly kind: "invalid-input";
+  readonly field: keyof PathForkRuntimeInput;
+  readonly reason: string;
+};
 
-export type PathForkRuntimeResult =
-  | { readonly ok: PathForkRuntimePlan }
-  | { readonly error: PathForkRuntimeFeedback };
+export type PathForkRuntimeResult = { readonly ok: PathForkRuntimePlan } | { readonly error: PathForkRuntimeFeedback };
 
 export interface PathForkSerialMarkerAssertion {
   readonly forkId: PathForkId;
@@ -160,27 +151,18 @@ interface NormalizedPathForkRuntimeInput {
 
 /** Fork boots prove the operator path choice only — B-0891 early markers, not a second full install. */
 function forkSuccessMarkers(forkId: PathForkId): readonly string[] {
-  return forkId === "migrate-existing-creds"
-    ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS
-    : FRESH_CLUSTER_SERIAL_MARKERS;
+  return forkId === "migrate-existing-creds" ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS : FRESH_CLUSTER_SERIAL_MARKERS;
 }
 
 function forbiddenMarkers(forkId: PathForkId): readonly string[] {
-  return forkId === "migrate-existing-creds"
-    ? FRESH_CLUSTER_SERIAL_MARKERS
-    : MIGRATE_EXISTING_CREDS_SERIAL_MARKERS;
+  return forkId === "migrate-existing-creds" ? FRESH_CLUSTER_SERIAL_MARKERS : MIGRATE_EXISTING_CREDS_SERIAL_MARKERS;
 }
 
 function serialLogPathForFork(input: NormalizedPathForkRuntimeInput, forkId: PathForkId): string {
-  return forkId === "migrate-existing-creds"
-    ? input.migrateSerialLogPath
-    : input.freshSerialLogPath;
+  return forkId === "migrate-existing-creds" ? input.migrateSerialLogPath : input.freshSerialLogPath;
 }
 
-function bootCommandForFork(
-  input: NormalizedPathForkRuntimeInput,
-  forkId: PathForkId,
-): QemuCommand | undefined {
+function bootCommandForFork(input: NormalizedPathForkRuntimeInput, forkId: PathForkId): QemuCommand | undefined {
   const serialLogPath = serialLogPathForFork(input, forkId);
   if (forkId === "migrate-existing-creds") {
     const bootImagePath = input.bootImagePath;
@@ -233,9 +215,7 @@ function forkPlan(input: NormalizedPathForkRuntimeInput, fork: PathForkVariant):
       bin: "qemu-img",
       args: ["snapshot", "-a", input.snapshotName, input.startingDiskPath],
     },
-    ...(qemuBootCommand === undefined
-      ? {}
-      : { qemuBootCommand }),
+    ...(qemuBootCommand === undefined ? {} : { qemuBootCommand }),
     stopCondition: {
       serialLogPath,
       successMarkers: forkRequiredMarkers,
@@ -409,9 +389,7 @@ export function planPathForkBaselineBootstrap(
   return planned.ok;
 }
 
-function bootstrapExecutionSteps(
-  bootstrapPlan: Qcow2SnapshotRetentionPlan,
-): readonly {
+function bootstrapExecutionSteps(bootstrapPlan: Qcow2SnapshotRetentionPlan): readonly {
   readonly step: PathForkExecutionStep;
   readonly command: QemuCommand;
   readonly stopCondition?: QemuSerialStopCondition;

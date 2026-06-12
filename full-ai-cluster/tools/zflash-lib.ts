@@ -31,7 +31,7 @@ export const VALID_HOSTNAME_REGEX = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])
  * and is injected only when `--test` is passed.
  */
 export const ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH =
-  "tools/zflash/test-harness/keys/zeta-test-infra.pub";
+  "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub";
 
 /**
  * Structural validator for a single OpenSSH authorized_keys line.
@@ -279,9 +279,7 @@ export function detectIsohybridEspOffsetBytes(isoHead: Buffer): number {
  * proof needs a raw image artifact instead. This pure planner captures the
  * safe target shape and ESP-write intents before any executor exists.
  */
-export function planFileBackedZflashImage(
-  input: FileBackedZflashImagePlanInput,
-): FileBackedZflashImagePlanResult {
+export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput): FileBackedZflashImagePlanResult {
   const isoPath = input.isoPath.trim();
   const outputImagePath = input.outputImagePath.trim();
   if (isoPath.length === 0) {
@@ -402,9 +400,7 @@ export function planFileBackedZflashImageExecution(
   const mtoolsImageSpecifier = `${plan.outputImagePath}@@${plan.espOffsetBytes}`;
   const inlineFiles: FileBackedInlineFile[] = [];
   const espWriteCommands: CommandPlan[] = [];
-  const steps: FileBackedZflashImageExecutionStep[] = [
-    { kind: "command", command: plan.imageCommand },
-  ];
+  const steps: FileBackedZflashImageExecutionStep[] = [{ kind: "command", command: plan.imageCommand }];
 
   for (const write of plan.espWrites) {
     const sourcePath = write.sourcePath?.trim();
@@ -558,9 +554,7 @@ function defaultGetRandomBytes(n: number): Uint8Array {
   // since this repo's TS config uses `lib: ["esnext"]` (no DOM).
   const cryptoApi = (globalThis as { crypto?: { getRandomValues?(b: Uint8Array): Uint8Array } }).crypto;
   if (!cryptoApi?.getRandomValues) {
-    throw new Error(
-      "globalThis.crypto.getRandomValues unavailable — running in a non-Web-Crypto environment?",
-    );
+    throw new Error("globalThis.crypto.getRandomValues unavailable — running in a non-Web-Crypto environment?");
   }
   const buf = new Uint8Array(n);
   cryptoApi.getRandomValues(buf);

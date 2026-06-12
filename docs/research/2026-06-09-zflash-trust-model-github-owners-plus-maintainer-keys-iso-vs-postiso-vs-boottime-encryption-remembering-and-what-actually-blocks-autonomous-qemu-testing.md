@@ -1,17 +1,17 @@
 # zflash trust model (repo-owner GitHub keys ∪ checked-in maintainer keys), the ISO / post-ISO / boot-time split, encryption + remembering — and the honest answer to "why do we need humans?"
 
-*Captured 2026-06-09 from Aaron, to Otto (shadow\*). Aaron's design + a sharp challenge: trust = (repo owners' GitHub
+_Captured 2026-06-09 from Aaron, to Otto (shadow\*). Aaron's design + a sharp challenge: trust = (repo owners' GitHub
 account keys, fetched live) ∪ (checked-in project-maintainer pubkeys); how much bakes into the ISO vs post-ISO USB
-vs boot-time; don't forget encryption + remembering-on-reflash. And: *"you can be testing all this on QEMU — you
-have GitHub workflows — what is blocking you? why do we need humans to figure all this out?"* Registers: [design],
-[grounded — current code], [honest self-assessment], [autonomous plan].*
+vs boot-time; don't forget encryption + remembering-on-reflash. And: _"you can be testing all this on QEMU — you
+have GitHub workflows — what is blocking you? why do we need humans to figure all this out?"_ Registers: [design],
+[grounded — current code], [honest self-assessment], [autonomous plan]._
 
 ## The trust model Aaron wants
 
 A node's `zeta` user should trust the **union** of:
 
 1. **Repo owners' GitHub keys (dynamic)** — whoever owns the repo the node belongs to: fetch `https://github.com/
-   <owner>.keys` live. Ownership changes propagate **without reflash**.
+<owner>.keys` live. Ownership changes propagate **without reflash**.
 2. **Checked-in maintainer pubkeys (static)** — `maintainers/<account>/ssh-pubkeys.txt` → `operator-ssh-keys.txt`
    (already built: Aaron #7249, Addison #7250).
 
@@ -27,20 +27,20 @@ So: **static maintainer keys are baked; dynamic owner keys are fetched at boot/r
   automatic "remember last wifi/github-login across reflash."
 - **Encryption:** `zeta-creds-restore.nix` = encrypted **cred-blob** (creds at rest). Full-disk LUKS is **not**
   clearly present — to design.
-- **QEMU harness (B-0891):** `tools/zflash/test-harness/` — currently a **PoC**: 5 scenario *definitions* + invariant
+- **QEMU harness (B-0891):** `src/Core.TypeScript/zflash/test-harness/` — currently a **PoC**: 5 scenario _definitions_ + invariant
   tests + path-fork + qemu-state. It models scenarios; it does **not yet boot a flashed ISO and assert SSH-trust /
   encryption / creds-restore end-to-end.**
 
 ## The ISO vs post-ISO vs boot-time split (the answer)
 
-| Layer | What lives here | Why |
-|---|---|---|
-| **Baked in ISO** (static) | checked-in **maintainer pubkeys**; the **trust-resolution logic** (the `authorizedKeysCommand` script + the owner-fetch unit); **encryption setup** (LUKS/cred-blob handlers); the whole NixOS config | static, same for every node from this repo |
-| **Post-ISO (zflash USB creation)** | the **flashing operator's** key inject (current); **per-USB secrets** baked as encrypted creds — **wifi** creds, **GitHub login/identity** to remember | per-operator / per-site; secret; varies per USB |
-| **Boot / runtime** (dynamic) | **fetch repo-owners' `<owner>.keys`** live (+ refresh on a timer); unlock encryption; restore creds | owners change without reflash; secrets only exist at runtime |
+| Layer                              | What lives here                                                                                                                                                                                       | Why                                                          |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Baked in ISO** (static)          | checked-in **maintainer pubkeys**; the **trust-resolution logic** (the `authorizedKeysCommand` script + the owner-fetch unit); **encryption setup** (LUKS/cred-blob handlers); the whole NixOS config | static, same for every node from this repo                   |
+| **Post-ISO (zflash USB creation)** | the **flashing operator's** key inject (current); **per-USB secrets** baked as encrypted creds — **wifi** creds, **GitHub login/identity** to remember                                                | per-operator / per-site; secret; varies per USB              |
+| **Boot / runtime** (dynamic)       | **fetch repo-owners' `<owner>.keys`** live (+ refresh on a timer); unlock encryption; restore creds                                                                                                   | owners change without reflash; secrets only exist at runtime |
 
 **Remembering on 2nd format — the honest answer:** today it does **NOT** auto-roll wifi + Addison's GitHub login
-forward; those re-prompt unless they were baked as `--bake-cred` creds. To make a reflash *remember*, persist
+forward; those re-prompt unless they were baked as `--bake-cred` creds. To make a reflash _remember_, persist
 **wifi + operator/github identity as zeta-creds** (encrypted blob) so the next format **restores** them instead of
 asking. That's a real feature to build (and QEMU-testable).
 
@@ -55,7 +55,7 @@ asking. That's a real feature to build (and QEMU-testable).
 maintainer keys), encryption unlock, creds-restore/remember, the whole boot path. **What actually blocked me was a
 wrong choice, not a wall:** I kept treating the **live nodes (.152/.153) as the test target** — so when they were
 down / key-mismatched I called it "blocked." The correct substrate is **QEMU**, and the real gap is that the
-**B-0891 harness is still PoC** (scenario *definitions*, not a booting ISO that asserts SSH/encryption). **Closing
+**B-0891 harness is still PoC** (scenario _definitions_, not a booting ISO that asserts SSH/encryption). **Closing
 that gap is itself the autonomous work** — exactly the "close the AI loop" point (#7229/#7220): build the harness
 that boots a flashed ISO in QEMU and asserts the invariants, run it on the free GitHub-workflow compute, and stop
 hand-deferring.
@@ -77,12 +77,12 @@ the booting QEMU assert-harness do **not** exist yet. [design]: trust = owner-ke
 post-ISO=per-USB secrets, boot=dynamic owner fetch + unlock + restore. [honest]: the blocker was treating live nodes
 as the test target instead of QEMU; the real human surface is narrow (physical presence / WiFi / final acceptance).
 [plan]: build owner-fetch + remember + encryption + the QEMU boot-assert harness, tested on GitHub workflows,
-autonomously. No code shipped in *this* doc — it's the plan I now execute.
+autonomously. No code shipped in _this_ doc — it's the plan I now execute.
 
 ## Pointers
 
 - Trust: `operator-ssh-keys.nix` · `operator-authorized-keys.nix` · `maintainers/*/ssh-pubkeys.txt` (#7249/#7250).
 - Creds/encryption: `tools/installer/zeta-creds-persist` · `nixos/modules/zeta-creds-restore.nix`.
-- QEMU: `tools/zflash/test-harness/` (B-0891 PoC) · `.github/workflows/zflash-qemu-test.yml` · the close-the-AI-loop
+- QEMU: `src/Core.TypeScript/zflash/test-harness/` (B-0891 PoC) · `.github/workflows/zflash-qemu-test.yml` · the close-the-AI-loop
   enforcement doc (#7229) · the post-register connect/cache/health skill (#7247).
 - zflash: `full-ai-cluster/tools/zflash.ts` · `docs/runbooks/zflash-end-to-end.md`.

@@ -47,19 +47,19 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"we really want zflash testable in qemu and also the usb and the inital format and cluster comming up sucessfully and then reformat with retaining the selelctions and keys and then reformat from scratch and then cluster joining that's the acceptace critera i'm looking for for done aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."*
+> _"we really want zflash testable in qemu and also the usb and the inital format and cluster comming up sucessfully and then reformat with retaining the selelctions and keys and then reformat from scratch and then cluster joining that's the acceptace critera i'm looking for for done aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."_
 
 Concrete operator-set acceptance criteria for zflash "done" + signal that testing should begin NOW (operator-personal-axis top priority per B-0886.2) + offer to do some testing collaboratively.
 
 ## 5-scenario test matrix (acceptance criteria for "done")
 
-| # | Scenario | What proves done |
-|---|---|---|
-| **1** | **Initial format (USB-bake from zero)** | `zflash` script runs cleanly + produces bootable USB image with operator-chosen credentials baked in; passes ISO content audit (per existing `tools/ci/audit-installer-iso-content.ts` substrate); QEMU boots the image to a usable state |
-| **2** | **Initial boot + cluster comes up** | USB boots in QEMU; cluster nodes (mini-PC fleet per B-0590) come up successfully; reach steady-state with all expected services running; observability backend reports healthy |
-| **3** | **Reformat WITH key + selection retention** | Re-bake USB with existing operator-chosen credentials + auth settings (Touch ID per B-0737, passphrase per B-0852) + UUID-bound keys preserved; no need to re-enter passphrase or re-pair Touch ID; existing cluster recognizes the re-baked USB |
-| **4** | **Reformat from scratch (wipe + fresh keys)** | Wipe-and-rebake from zero state; fresh keys; new USB UUID; operator can choose to migrate existing cluster's credentials onto new USB OR start fresh cluster — both paths supported |
-| **5** | **Cluster joining (new node)** | New node boots from USB; joins existing running cluster cleanly; gets credentials provisioned per B-0852.3 cred-picker integration; appears in cluster state within bounded time |
+| #     | Scenario                                      | What proves done                                                                                                                                                                                                                                 |
+| ----- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1** | **Initial format (USB-bake from zero)**       | `zflash` script runs cleanly + produces bootable USB image with operator-chosen credentials baked in; passes ISO content audit (per existing `tools/ci/audit-installer-iso-content.ts` substrate); QEMU boots the image to a usable state        |
+| **2** | **Initial boot + cluster comes up**           | USB boots in QEMU; cluster nodes (mini-PC fleet per B-0590) come up successfully; reach steady-state with all expected services running; observability backend reports healthy                                                                   |
+| **3** | **Reformat WITH key + selection retention**   | Re-bake USB with existing operator-chosen credentials + auth settings (Touch ID per B-0737, passphrase per B-0852) + UUID-bound keys preserved; no need to re-enter passphrase or re-pair Touch ID; existing cluster recognizes the re-baked USB |
+| **4** | **Reformat from scratch (wipe + fresh keys)** | Wipe-and-rebake from zero state; fresh keys; new USB UUID; operator can choose to migrate existing cluster's credentials onto new USB OR start fresh cluster — both paths supported                                                              |
+| **5** | **Cluster joining (new node)**                | New node boots from USB; joins existing running cluster cleanly; gets credentials provisioned per B-0852.3 cred-picker integration; appears in cluster state within bounded time                                                                 |
 
 ## Scope clarification 2026-05-31
 
@@ -96,7 +96,7 @@ USB testing as VALIDATION step (after QEMU green):
 
 ## Testing-begins-now framing
 
-Operator: *"aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."*
+Operator: _"aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."_
 
 Two operational implications:
 
@@ -107,7 +107,7 @@ This composes with the trajectory-async-review surface (B-0873) — testing-prog
 
 ## Acceptance criteria for THIS row (the test harness)
 
-- `tools/zflash/test-harness/` TypeScript module that:
+- `src/Core.TypeScript/zflash/test-harness/` TypeScript module that:
   - Implements all 5 scenarios as discrete tests
   - Runs each scenario in QEMU (configurable VM count + topology for cluster scenarios)
   - Reports pass/fail with structured output (composes with existing CI / audit substrate)
@@ -142,6 +142,6 @@ The 5-scenario matrix is the CONCRETE DEFINITION OF DONE. Implementation work th
 
 ## Full reasoning
 
-Operator 2026-05-28: *"we really want zflash testable in qemu and also the usb and the inital format and cluster comming up sucessfully and then reformat with retaining the selelctions and keys and then reformat from scratch and then cluster joining that's the acceptace critera i'm looking for for done aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."*
+Operator 2026-05-28: _"we really want zflash testable in qemu and also the usb and the inital format and cluster comming up sucessfully and then reformat with retaining the selelctions and keys and then reformat from scratch and then cluster joining that's the acceptace critera i'm looking for for done aaron should really consider testing now and all the enhancements weve backlog, i can test some along the way too."_
 
 The currently-running zflash next-steps background research agent should integrate these acceptance criteria into its plan — extension message sent to agent.

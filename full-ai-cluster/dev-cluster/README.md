@@ -108,8 +108,8 @@ Pattern: per-PR dev clusters for parallel dev-testing.
 B-0967 wires a TypeScript-first harness around this same substrate:
 
 ```bash
-bun tools/cluster/argocd-health-test.ts --dry-run
-bun tools/cluster/argocd-health-test.ts \
+bun src/Core.TypeScript/cluster/argocd-health-test.ts --dry-run
+bun src/Core.TypeScript/cluster/argocd-health-test.ts \
   --run \
   --provider kind \
   --scope smoke \
@@ -118,7 +118,7 @@ bun tools/cluster/argocd-health-test.ts \
   --cluster-name zeta-ci \
   --git-ref main
 
-ZETA_CONTAINER_RUNTIME=podman bun tools/cluster/argocd-health-test.ts \
+ZETA_CONTAINER_RUNTIME=podman bun src/Core.TypeScript/cluster/argocd-health-test.ts \
   --run \
   --provider kind \
   --scope smoke \
@@ -126,7 +126,7 @@ ZETA_CONTAINER_RUNTIME=podman bun tools/cluster/argocd-health-test.ts \
   --cluster-name zeta-ci-podman \
   --git-ref main
 
-bun tools/cluster/argocd-health-test.ts \
+bun src/Core.TypeScript/cluster/argocd-health-test.ts \
   --run \
   --provider k3d \
   --scope full \
@@ -208,7 +208,7 @@ spec:
       source:
         path: full-ai-cluster/k8s/applications
       destination:
-        server: '{{server}}'
+        server: "{{server}}"
         # ...
 ```
 
