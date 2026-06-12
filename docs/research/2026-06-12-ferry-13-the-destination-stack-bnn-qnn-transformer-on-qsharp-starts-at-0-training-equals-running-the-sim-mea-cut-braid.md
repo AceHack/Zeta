@@ -189,6 +189,13 @@ measure of distinction); Maxwell's demon / Landauer (ferry 8 — distinction has
 price, so identity is not free); the every-bug-has-economic-value ledger (entropy reduction is
 the earned, banked act).
 
+**Confirmed by Aaron, same day, replying to the no-ambient-selfhood reading (verbatim):** *"yes
+exactly this is what falls out"* — noting the verb: the identity principle **falls out** of the
+noninterference discipline; it is derived, not designed. §13 was adopted as an engineering
+constraint (metered channels for DST and entropy budgets) and identity-as-captured-entropy is a
+*consequence*, the same way the soft-max width law fell out of the fusion algebra. Theorems you
+didn't aim at are the strongest evidence the axioms are right.
+
 ## Pointers
 
 - Welch Labs MLA + GGUF + active-inference transcripts (2026-06-12, ip-questionable — the three
