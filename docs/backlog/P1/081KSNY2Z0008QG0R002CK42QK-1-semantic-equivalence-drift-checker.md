@@ -2,10 +2,12 @@
 id: B-0170.1
 zetaid: 081KSNY2Z0008QG0R002CK42QK
 priority: P1
-status: open
+status: closed
+closed: 2026-06-12
+closed_by: "tools/substrate-claim-checker/check-semantic-equivalence.ts"
 title: "Substrate-claim-checker - semantic-equivalence-drift checker"
 created: 2026-05-28
-last_updated: 2026-05-28
+last_updated: 2026-06-12
 parent: B-0170
 depends_on: []
 classification: buildable-now

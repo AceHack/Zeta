@@ -48,7 +48,7 @@ Per the verify-then-claim catalogue:
 |---|---|---|
 | Count drift | ✓ shipped | "N rows / instances / items" vs actual count |
 | Existence drift | ✓ shipped | "file/dir/tool exists" claim vs `ls` / `test -e` |
-| Semantic-equivalence drift | v0.9 | command substitution equivalence claims |
+| Semantic-equivalence drift | ✓ shipped (v0.9.2) | command substitution equivalence claims |
 | Empirical-output drift | v0.9 | "command returns X" vs actual output |
 | Convention drift | v0.9 | recommended pattern matches canonical convention |
 | Path-form drift | ✓ shipped | fully-qualified vs bare paths consistent across document |
