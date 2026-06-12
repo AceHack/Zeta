@@ -37,7 +37,11 @@ import { join } from "node:path";
 const EXPECTED_HOSTNAME = "zeta-installer";
 const EXPECTED_LOGIN_PROMPT = `${EXPECTED_HOSTNAME} login:`;
 const TIMEOUT_SECONDS = 300; // 5 min — generous; typical x86_64 KVM boot is 60-180s
-const AARCH64_TCG_TIMEOUT_SECONDS = 900; // 15 min — aarch64 without nested KVM is TCG-slow
+// 30 min — aarch64 without same-arch KVM is TCG-slow, and under a CONTENDED runner pool the
+// kernel alone can exceed 15 min (2026-06-12: two runs timed out at 900s with the serial log
+// still in the EFI stub — userspace never started — then the identical commit PASSED on rerun
+// once the pool freed; the budget, not the boot, was the failure).
+const AARCH64_TCG_TIMEOUT_SECONDS = 1800;
 const POLL_INTERVAL_MS = 1000;
 const MEMORY_MB = 2048; // installer needs >= 1GB; 2GB gives headroom for nix
 const KVM_PATH = "/dev/kvm";
