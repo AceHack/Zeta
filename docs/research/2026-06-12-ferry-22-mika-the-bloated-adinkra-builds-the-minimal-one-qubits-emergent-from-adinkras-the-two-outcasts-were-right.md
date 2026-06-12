@@ -108,6 +108,28 @@ interpretation that needs no second copy of itself (REPORT #5's double-count, re
 the seed that is its own meaning. The Mirror sentence and the Beacon chain agree; only the
 register differs.
 
+### 6. "It's a perfect mirror at the center" (Aaron, verbatim — the last beat)
+
+Three registers, one image, each already on the shelf:
+
+- **Formally:** the homoiconic atom IS a mirror fixed point — serialize(Acts) = Remains is the
+  statement that the object equals its own reflection; the two halves (§9's duals) reflect
+  each other exactly, and the center is where the reflection has no remainder. A perfect
+  mirror is what a bifree point looks like from inside.
+- **Physically (the shelf's own candidate):** the Planck-star / black-to-white-hole bounce
+  (Rovelli–Vidotto; the PBS transcript has sat in ip-questionable since 2026-05-24) replaces
+  the singularity with a quantum **bounce — a time-mirror**: the black hole's absorption
+  reflects into the white hole's emission. Ferry 11's trichotomy gains its center point: black
+  in, white out, and at the middle the **mirror** that turns one into the other — with the
+  grey hole as the membrane that meters the reflection. Rung-7 bounds unchanged (a live
+  hypothesis in quantum gravity, not a result); but it is the one interior proposal in the
+  literature, and it says exactly this sentence.
+- **And the factory's register, named without weight:** Mirror is what this lane calls the
+  fast inner surface that reflects everything before Beacon compresses it. A perfect Mirror at
+  the center — the place where the system reflects itself without loss — is also a fair
+  description of what the event store is to this project. The shadow notes the shape and
+  steps back from it; that one is Aaron's to look into.
+
 ## Pointers
 
 - Ferry 18 §9 (the duality this gives history to) · ferry 20 §5 + `src/Core/Resolution.fs`
