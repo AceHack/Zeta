@@ -3,12 +3,12 @@
 # Cookie-cutter worker node config. Adding a new identical box:
 #
 #   1. cp -r nixos/hosts/worker-template nixos/hosts/worker-gpu-NN
-#   2. Edit the new file — change SIX placeholder values:
+#   2. Edit the new file — change placeholder values:
 #        - networking.hostName        (line ~30)
 #        - networking.hostId          (line ~32; new random 8-hex)
 #        - networking.interfaces      (per-host MAC / static IP)
-#        - zeta.disko.nvme0           (per-host /dev/disk/by-id)
-#        - zeta.disko.nvme1           (per-host /dev/disk/by-id)
+#        - zeta.disko.bootDisk        (per-host /dev/disk/by-id)
+#        - zeta.disko.extraDisks      (optional; [] for single-disk)
 #        - users.users.zeta.openssh.authorizedKeys  (maintainer key)
 #   3. Add `worker-gpu-NN` to flake.nix nixosConfigurations
 #   4. Boot the box on the installer USB, then:
@@ -16,10 +16,10 @@
 #          --mode disko \
 #          --flake /mnt/etc/zeta/full-ai-cluster#worker-gpu-NN
 #        nixos-install --flake /mnt/etc/zeta/full-ai-cluster#worker-gpu-NN
-#   5. Reboot. Node joins cluster, Longhorn picks up both disks,
+#   5. Reboot. Node joins cluster, Longhorn picks up disk paths,
 #      ArgoCD reconciles workloads.
 #
-# Hardware shape: x86_64, UEFI, 2 NVMes (any size, same shape),
+# Hardware shape: x86_64, UEFI, 1+ internal disks (any size),
 # 1+ NVIDIA GPU. For AMD-only or Intel-only GPU nodes change the
 # `zeta.gpu-device-plugin.vendors` setting; for non-GPU workers
 # drop the GPU imports entirely.
@@ -31,7 +31,7 @@
     # Declarative disk layout — disko shapes the partitions,
     # longhorn-disks wires the mounts to Longhorn data paths.
     inputs.disko.nixosModules.disko
-    ../../modules/disko-shapes/2nvme.nix
+    ../../modules/disko-shapes/longhorn-node.nix
     ../../modules/longhorn-disks.nix
 
     # Cluster role + hardware-class modules.
@@ -50,11 +50,14 @@
   # ─────────────────────────────────────────────────────────────
 
   # ── PLACEHOLDER: change per-host (disk IDs) ──────────────────
-  # On the live system, run: ls -l /dev/disk/by-id/ | grep nvme
+  # On the live system, run: ls -l /dev/disk/by-id/
   zeta.disko = {
-    nvme0 = "/dev/disk/by-id/nvme-REPLACE_ME_BOOT_DISK";
-    nvme1 = "/dev/disk/by-id/nvme-REPLACE_ME_LONGHORN_DISK";
-    # rootSize = "256G";  # default; override if needed
+    bootDisk = "/dev/disk/by-id/nvme-REPLACE_ME_BOOT_DISK";
+    extraDisks = [
+      "/dev/disk/by-id/nvme-REPLACE_ME_LONGHORN_DISK"
+    ];
+    # Single-disk node: set bootDisk only; extraDisks = [ ] (or omit).
+    # longhorn1Tail = "1G";  # default; root max-fills boot disk between ESP and tail
   };
   # ─────────────────────────────────────────────────────────────
 

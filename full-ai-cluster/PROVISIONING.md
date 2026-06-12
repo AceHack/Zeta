@@ -1,8 +1,8 @@
 # Provisioning a new node — cookie-cutter workflow
 
 End-to-end: physical box arrives → boots into running cluster
-member with replicated Longhorn capacity. Six values to change
-per box, no hand-partitioning, no shell scripts.
+member with replicated Longhorn capacity. A handful of values to
+change per box, no hand-partitioning, no shell scripts.
 
 ## What you need
 
@@ -19,17 +19,17 @@ cp -r full-ai-cluster/nixos/hosts/worker-template \
       full-ai-cluster/nixos/hosts/$HOST
 ```
 
-## Step 2: change the six placeholder values
+## Step 2: change the placeholder values
 
 Open `full-ai-cluster/nixos/hosts/$HOST/default.nix` and edit
-each of the six clearly-marked PLACEHOLDER blocks:
+each clearly-marked PLACEHOLDER block:
 
 | What | Where to get it |
 |------|-----------------|
 | `networking.hostName` | the name you chose above (`worker-gpu-03`) |
 | `networking.hostId` | `head -c4 /dev/urandom \| od -A n -t x4 \| tr -d ' '` |
-| `zeta.disko.nvme0` | On the live system: `ls -l /dev/disk/by-id/ \| grep nvme \| awk '{print $9, $11}'` — pick the disk you want to BE the boot disk (gets OS + first Longhorn data path) |
-| `zeta.disko.nvme1` | Same listing, the other NVMe (becomes pure Longhorn data) |
+| `zeta.disko.bootDisk` | On the live system: `ls -l /dev/disk/by-id/` — pick the boot disk (ESP + max root + longhorn1 tail) |
+| `zeta.disko.extraDisks` | Optional. Each additional disk becomes longhorn2..N. Use `[ ]` for single-disk nodes. |
 | Network config | Static IP block if you don't use DHCP |
 | `users.users.zeta.openssh.authorizedKeys` | Maintainer key |
 
@@ -311,29 +311,24 @@ Replace the dead drive, then either:
 - **Hot path** (drive replaced with identical model + position):
   reboot, disko recreates the partition table on the fresh drive,
   Longhorn re-registers the data path, replicas rebuild from peers.
-- **Slow path** (drive serial changed): update the `zeta.disko.nvme0`
-  or `nvme1` by-id symlink in `nixos/hosts/<host>/default.nix`,
+- **Slow path** (drive serial changed): update the `zeta.disko.bootDisk`
+  or an entry in `extraDisks` in `nixos/hosts/<host>/default.nix`,
   `nixos-rebuild switch --flake .#<host> --target-host <host>` from
   any admin machine, then rebuild as above.
 
-OS itself: the `/` partition lives on `nvme0` only, so a `nvme1`
-failure leaves the node fully bootable + Longhorn capacity
-degrades by half until repair. An `nvme0` failure takes the OS
-down — reinstall via Step 5 onto the replacement disk; Longhorn
-data on `nvme1` is re-imported when the rebuilt node rejoins.
+OS itself: the `/` partition lives on the boot disk only, so an extra
+data-disk failure leaves the node fully bootable + Longhorn capacity
+degrades until repair. A boot-disk failure takes the OS down —
+reinstall via Step 5 onto the replacement disk; Longhorn data on
+extra disks is re-imported when the rebuilt node rejoins.
 
-## Multi-shape support
+## Disk shapes
 
-`disko-shapes/2nvme.nix` is the shape for the current hardware.
-Adding a new hardware class (e.g. 4 NVMes, or NVMe + SATA SSD mix)
-means:
+`disko-shapes/longhorn-node.nix` is the single cookie-cutter shape:
+1-disk (`extraDisks = [ ]`) through N-disk (`extraDisks = [ ... ]`).
+Root max-fills the boot disk; no per-hardware-class shape file needed
+for the common NVMe count cases. `2nvme.nix` remains as a backward-
+compat import of the same module.
 
-1. Author `disko-shapes/<new-shape>.nix` matching the
-   `zeta.disko` options pattern
-2. Author a new host template under `hosts/<new-class>-template/`
-   that imports it
-3. Cookie-cutter from THAT template for boxes of the new class
-
-The Longhorn module (`modules/longhorn-disks.nix`) is shape-
-agnostic — it takes a list of mount paths and wires them, no
-matter how many disks contributed those mounts.
+Hardware that needs a genuinely different topology (e.g. Jetson eMMC +
+SD + NVMe) can still add a sibling under `disko-shapes/` later.

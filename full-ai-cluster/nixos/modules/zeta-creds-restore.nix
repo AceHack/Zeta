@@ -79,7 +79,7 @@ in
         Contract: the file is the encrypted cred-blob produced by
         the installer's Step 6.95-picker and consumed by this
         service at boot. Default reflects the installed-system ESP
-        mount path established by `disko-shapes/2nvme.nix`
+        mount path established by `disko-shapes/longhorn-node.nix`
         (`mountpoint = "/boot"`). If a host config uses a
         non-default ESP mount, override `blobPath` to match.
 

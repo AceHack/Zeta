@@ -12,8 +12,8 @@
 #   4. Confirm full wipe (typed confirmation required; bypass via
 #      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot flow)
 #   5. Wipe + partition:
-#        BOOT disk: ESP 1G + root up to ${ROOT_SIZE:-256G} + longhorn1 (rest);
-#        root is clamped to disk capacity only at install-time partition (Step 4)
+#        BOOT disk: ESP 1G + root (max — fills disk) + longhorn1 (1G tail);
+#        no fixed root cap; layout is chosen at install-time partition (Step 4)
 #        DATA disks: each becomes a single longhorn{2..N} whole-disk
 #   6. Format (FAT32 ESP + ext4 root + ext4 longhorn{1..N})
 #   7. Mount per the standard /mnt/var/lib/longhorn-disk{1..N} layout
@@ -51,9 +51,33 @@ echo
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 HOST="${1:-}"
 STORAGE_BACKEND="${STORAGE_BACKEND:-longhorn}"
-ROOT_SIZE="${ROOT_SIZE:-256G}"
+# Minimum longhorn1 slice at the disk tail (root takes everything between ESP and this).
+LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
 
 bail() { echo "ERROR: $*" >&2; exit 1; }
+
+# sgdisk size specs (1G, 512M, …) → bytes for pre-wipe capacity checks.
+size_spec_to_bytes() {
+  local spec="$1"
+  local num="${spec%[KkMmGgTt]}"
+  local unit="${spec:${#num}}"
+  [[ "$num" =~ ^[0-9]+$ ]] || bail "invalid LONGHORN1_TAIL size spec: $spec"
+  case "${unit^^}" in
+    K) echo $((num * 1024)) ;;
+    M) echo $((num * 1024 * 1024)) ;;
+    G) echo $((num * 1024 * 1024 * 1024)) ;;
+    T) echo $((num * 1024 * 1024 * 1024 * 1024)) ;;
+    *) bail "invalid LONGHORN1_TAIL unit in spec: $spec (use K/M/G/T suffix)" ;;
+  esac
+}
+
+LONGHORN1_TAIL_BYTES="$(size_spec_to_bytes "$LONGHORN1_TAIL")"
+if (( LONGHORN1_TAIL_BYTES < 1024 * 1024 * 1024 )); then
+  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too small (need >= 1G for longhorn1 tail)"
+fi
+if (( LONGHORN1_TAIL_BYTES > 1024 * 1024 * 1024 * 1024 )); then
+  bail "LONGHORN1_TAIL=$LONGHORN1_TAIL too large (max 1T tail slice)"
+fi
 
 # /dev/nvme0n1 → /dev/nvme0n1p1; /dev/sda → /dev/sda1.
 # NVMe + mmcblk + loop + md devices use the 'p' partition suffix;
@@ -79,47 +103,17 @@ disk_class() {
   fi
 }
 
-# sgdisk size specs (256G, 512M, …) → bytes for capacity checks.
-size_spec_to_bytes() {
-  local spec="$1"
-  local num="${spec%[KkMmGgTt]}"
-  local unit="${spec:${#num}}"
-  [[ "$num" =~ ^[0-9]+$ ]] || bail "invalid size spec: $spec"
-  case "${unit^^}" in
-    K) echo $((num * 1024)) ;;
-    M) echo $((num * 1024 * 1024)) ;;
-    G) echo $((num * 1024 * 1024 * 1024)) ;;
-    T) echo $((num * 1024 * 1024 * 1024 * 1024)) ;;
-    *) bail "invalid size unit in spec: $spec" ;;
-  esac
-}
-
-# Round down to whole gibibytes for sgdisk (+NG syntax).
-bytes_to_gib_spec() {
-  local bytes="$1"
-  local gib=$((bytes / 1024 / 1024 / 1024))
-  [[ "$gib" -ge 1 ]] || bail "computed root size under 1G (${bytes} bytes)"
-  echo "${gib}G"
-}
-
-# Prefer ROOT_SIZE (default 256G); shrink only at install-time partition if disk is smaller.
-clamp_root_size_for_boot_disk() {
-  local disk="$1" requested="$2"
-  local disk_bytes requested_bytes esp_bytes min_longhorn_bytes min_root_bytes max_root_bytes
+# Pre-wipe sanity check: ESP 1G + root (>=4G) + configured longhorn1 tail.
+assert_boot_disk_large_enough() {
+  local disk="$1"
+  local disk_bytes esp_bytes min_root_bytes min_total_bytes
   disk_bytes=$(blockdev --getsize64 "$disk")
-  requested_bytes=$(size_spec_to_bytes "$requested")
   esp_bytes=$((1024 * 1024 * 1024))
-  min_longhorn_bytes=$((1024 * 1024 * 1024))
   min_root_bytes=$((4 * 1024 * 1024 * 1024))
-  max_root_bytes=$((disk_bytes - esp_bytes - min_longhorn_bytes))
-  if (( max_root_bytes < min_root_bytes )); then
-    bail "BOOT disk $disk too small for ESP 1G + root + longhorn1 (need >= ~6G, have $(lsblk -d -n -o SIZE "$disk"))"
+  min_total_bytes=$((esp_bytes + min_root_bytes + LONGHORN1_TAIL_BYTES))
+  if (( disk_bytes < min_total_bytes )); then
+    bail "BOOT disk $disk too small for ESP 1G + root + longhorn1 ${LONGHORN1_TAIL} (need >= $(( (min_total_bytes + 1024*1024*1024 - 1) / (1024*1024*1024) ))G, have $(lsblk -d -n -o SIZE "$disk"))"
   fi
-  if (( requested_bytes <= max_root_bytes )); then
-    echo "$requested"
-    return
-  fi
-  bytes_to_gib_spec "$max_root_bytes"
 }
 
 # ── Step 1: enumerate internal disks ──────────────────────────────
@@ -178,7 +172,7 @@ done
 
 echo
 echo "About to FULL-WIPE the following disks:"
-echo "  BOOT: $BOOT_DISK   (ESP 1G + root $ROOT_SIZE + longhorn1 rest)"
+echo "  BOOT: $BOOT_DISK   (ESP 1G + root max + longhorn1 ${LONGHORN1_TAIL} tail)"
 if [[ ${#DATA_DISKS[@]} -eq 0 ]]; then
   echo "  DATA: (none — single-disk install; only longhorn1 on boot disk)"
 else
@@ -207,6 +201,9 @@ else
   [[ "$confirm" == "WIPE" ]] || bail "aborted"
 fi
 
+# Validate BOOT disk fits the layout before any destructive work.
+assert_boot_disk_large_enough "$BOOT_DISK"
+
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
   echo "Wiping $d ..."
@@ -215,15 +212,12 @@ for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
 done
 
 # ── Step 4: partition ─────────────────────────────────────────────
-# Install-time only: try the requested ROOT_SIZE; shrink if BOOT disk is smaller.
-ROOT_PARTITION_SIZE="$(clamp_root_size_for_boot_disk "$BOOT_DISK" "$ROOT_SIZE")"
-if [[ "$ROOT_PARTITION_SIZE" != "$ROOT_SIZE" ]]; then
-  echo "[zeta-install] install-time partition: requested root ${ROOT_SIZE}, using ${ROOT_PARTITION_SIZE} on ${BOOT_DISK} ($(lsblk -d -n -o SIZE "$BOOT_DISK") available)"
-fi
-echo "Partitioning $BOOT_DISK (ESP 1G + root ${ROOT_PARTITION_SIZE} + longhorn1 rest) ..."
-sudo sgdisk -n "1:0:+1G"           -t 1:ef00 -c 1:ESP        "$BOOT_DISK"
-sudo sgdisk -n "2:0:+${ROOT_PARTITION_SIZE}" -t 2:8300 -c 2:root       "$BOOT_DISK"
-sudo sgdisk -n "3:0:0"             -t 3:8300 -c 3:longhorn1  "$BOOT_DISK"
+# Install-time only: root fills the BOOT disk (no fixed size cap). sgdisk end
+# code -${LONGHORN1_TAIL} reserves the longhorn1 tail; partition 3 takes it.
+echo "Partitioning $BOOT_DISK (ESP 1G + root max + longhorn1 ${LONGHORN1_TAIL} tail) ..."
+sudo sgdisk -n "1:0:+1G"                    -t 1:ef00 -c 1:ESP        "$BOOT_DISK"
+sudo sgdisk -n "2:0:-${LONGHORN1_TAIL}"     -t 2:8300 -c 2:root       "$BOOT_DISK"
+sudo sgdisk -n "3:0:0"                      -t 3:8300 -c 3:longhorn1  "$BOOT_DISK"
 
 i=2
 for d in "${DATA_DISKS[@]}"; do

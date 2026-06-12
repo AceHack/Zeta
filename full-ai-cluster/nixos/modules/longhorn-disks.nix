@@ -4,7 +4,7 @@
 # Longhorn node-level data-path catalog.
 #
 # Usage in a per-host config (already auto-wired by the
-# disko-shapes/2nvme.nix shape):
+# disko-shapes/longhorn-node.nix shape):
 #
 #     zeta.longhorn.dataDisks = [
 #       "/var/lib/longhorn-disk1"

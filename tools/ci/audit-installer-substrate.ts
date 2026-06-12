@@ -98,8 +98,10 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "/dev/urandom", // install-time hostname generator
       // ── iter-5.4 sentinels (PR #5364 + #5352 + #5354 substrate) ──
       "Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy", // iter-5.4.0 anchor
-      "clamp_root_size_for_boot_disk", // B-0891 install-time small-disk clamp
-      "install-time partition: requested root", // only at Step 4 on live disk
+      "assert_boot_disk_large_enough", // B-0891 install-time BOOT disk floor check
+      "LONGHORN1_TAIL_BYTES", // parse tail before wipe (Codex review on #7887)
+      "2:0:-${LONGHORN1_TAIL}", // root max-fill geometry (no fixed ROOT_SIZE cap)
+      "root max", // operator-visible layout: always fill BOOT disk
       "Step 6.9: iter-5.4.1 self-registration commit+push", // iter-5.4.1 self-reg anchor
       "gh auth login", // device-flow auth invocation
       "gh auth setup-git", // B-0835 Bug 2a fix — wires git credential helper to gh token
