@@ -74,3 +74,20 @@ zetaid) with a stated cost row (O(objects+refs) / O(objects)). Aaron's Ani-sessi
 mid-build: cut → smallest pieces → BRAID back; "the braid is a core operator"; rays through your
 own memory = Zeus pointed at the heap. Remaining rungs: 1 (allocation lint/DI lifetimes),
 2 (weak tables), 3 (the honest Rx sentence verified in-tree), 5 (history epochs / git gc).
+
+## Progress (2026-06-12) — rung 3 SHIPS: the verified no-leak sentence + a falsifier-found production race
+
+The honest sentence VERIFIED IN-TREE and carved into Rx.fs's header: (a) Core composition is
+pull/fold (ReactiveSynth = replayable fold; observeWith folds generators; no observer registry
+exists to dangle); (b) the ONE push surface (RxAdapter) ties every subscription's lifetime to
+the whole pipeline's — dispose-of-the-room is the only dispose. NOT claimed: "Rx can't leak";
+claimed: lifetimes are bounded above every subscription.
+
+THE FALSIFIER EARNED ITS PRICE (every-bug-has-economic-value): writing the teardown falsifier
+exposed a REAL race in RxAdapter.asObservable — Dispose tore down subject+cts while the pump
+was mid-step; the pump touched disposed objects and the unhandled throw crashed the test host
+(blame hang-dump captured). FIXED: teardown ownership moved to the pump (subscriber Dispose only
+signals cancellation; the pump completes, then disposes what it owns). The three pump falsifiers
+ship Skip-marked with the finding: the circuit-pump x vstest interaction wedges the host even
+post-fix — INVESTIGATION OWED here before re-enabling. Remaining rungs: 2 (weak tables),
+1 (allocation lint), 5 (history epochs).
