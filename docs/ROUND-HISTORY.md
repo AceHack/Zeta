@@ -12,6 +12,7 @@ New rounds are appended at the top.
 Newest first. Anchor links work in markdown renderers that
 slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 
+- [Round 46 — Helm dependency-graph and variable-passing subcommand (B-0821)](#round-46--helm-dependency-graph-and-variable-passing-subcommand-b-0821)
 - [Round 45 — QG isomorphism proof strategy foundation + Universal Infinite Poker Game cosmology formalization](#round-45--qg-isomorphism-proof-strategy-foundation--universal-infinite-poker-game-cosmology-formalization)
 - [Round 44 — in-flight](#round-44--in-flight)
 - [Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry](#round-43--invariant-substrates-program--empirical-bp-03-harness-evidence--agent-cadence-telemetry)
@@ -42,13 +43,26 @@ slugify `## Round N — <title>` to `#round-n-<title-slug>`.
 - [Round 17 — storage specialist, BloomFilter, durability skeleton](#round-17--storage-specialist-bloomfilter-durability-skeleton)
 - [Round 16 — SDL / threat model / she-her storage specialist](#round-16--sdl--threat-model--she-her-storage-specialist)
 
-Round 45 is the most recent landed round; Round 44 remains
+Round 46 is the most recent landed round; Round 45 is also landed; Round 44 remains
 in-flight per its own label (synthesis row lands at round-close
 per the file convention; no partial synthesis). When this file
 hits 5000 lines, split the pre-
 round-N portion into `docs/_archive/ROUND-HISTORY-pre-N.md`
 and leave this file as a rolling window of the most recent
 ~20 rounds; no ADR is needed for a mechanical archive move.
+
+---
+
+## Round 46 — Helm dependency-graph and variable-passing subcommand (B-0821)
+
+Anchor: Round 46 is the round where the portable, engine-agnostic Helm dependency graph validation and resolution features are integrated as a first-class feature under `ace deps`. This CLI subcommand provides validation and generation of Flux HelmRelease and ArgoCD Application manifests, calculating topological orders, sync waves, and implicit value-passing dependencies.
+
+### Arc 1 — Subcommand execution wiring and verification (B-0821)
+
+The CLI subcommands (`ace deps validate` and `ace deps resolve`) are wired into the main entrypoint `src/Core.TypeScript/ace/ace.ts` and evaluated against all verification gates.
+- Staged and fast-forward merged the implementation and test suites from branch `riven/b0821-deps-engine` to the `main` branch.
+- Verified TypeScript test suite (`deps.test.ts` and `ace.test.ts`) resulting in all 153 tests passing.
+- Verified `.NET` test suite and Release builds resulting in a warning-free compile and 3,362 passing tests.
 
 ---
 
