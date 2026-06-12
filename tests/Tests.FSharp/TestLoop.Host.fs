@@ -118,3 +118,67 @@ let ``THE BOUNDARY CATCHES THROWS: an exception in Mea becomes a named-phase Fai
     Assert.False v.Passed
     Assert.Contains("Mea threw", v.Failure |> Option.defaultValue "")
     Assert.Contains("seed 0x4", v.Replay)
+
+// ── B-1035 FINAL SLICES: the golden lock + the light, boundary-blessed; the chip9-board host ──
+[<Fact>]
+let ``THE GOLDEN LOCK IS BOUNDARY-BLESSED: cutGolden locks byte-for-byte and names the first diverging row honestly`` () =
+    let cut = TestLoop.cutGolden [ "row-a"; "row-b" ] id
+    Assert.Equal(Ok(), cut [ "row-a"; "row-b" ])
+    match cut [ "row-a"; "row-X" ] with
+    | Ok() -> failwith "divergence must refuse"
+    | Error e ->
+        Assert.Contains("row 1 diverged", e)
+        Assert.Contains("row-X", e)
+    match cut [ "row-a" ] with
+    | Ok() -> failwith "row-count divergence must refuse"
+    | Error e -> Assert.Contains("row count diverged", e)
+
+[<Fact>]
+let ``THE LIGHT: one glance — LOCKED on a deterministic pass, FAILED on a cut, and AMBIENT OUTRANKS EVERYTHING`` () =
+    let locked = TestLoop.run (TestLoop.make "locked" 4UL (fun _ -> 1) (fun w -> w + 1) (fun _ -> Ok()))
+    Assert.StartsWith("[REC ●] LOCKED", TestLoop.light locked)
+    let failed = TestLoop.run (TestLoop.make "failed" 4UL (fun _ -> 1) (fun w -> w) (fun _ -> Error "the cut says no"))
+    Assert.StartsWith("[off ○] FAILED", TestLoop.light failed)
+    let ambient =
+        TestLoop.run (
+            TestLoop.make "ambient" 4UL
+                (fun _ -> ())
+                (fun () -> System.Guid.NewGuid().ToString()) // SEAL-WAIVER: falsifier — the light must show AMBIENT
+                (fun _ -> Ok()))
+    Assert.StartsWith("[!! ●] AMBIENT", TestLoop.light ambient)
+
+[<Fact>]
+let ``THE CHIP9-BOARD HOST: the four-oracle treaty golden replays through the framework — rooms inherit the lock`` () =
+    // the REAL treaty golden (rom + plane + 32 rows) read HOST-SIDE; the loop itself runs sealed
+    let repoRoot =
+        let mutable dir = System.IO.DirectoryInfo(System.AppContext.BaseDirectory)
+        while not (isNull dir) && not (System.IO.File.Exists(System.IO.Path.Combine(dir.FullName, "Zeta.sln"))) do
+            dir <- dir.Parent
+        dir.FullName
+    let lines =
+        System.IO.File.ReadAllLines(System.IO.Path.Combine(repoRoot, "src", "Core.TypeScript", "chip9", "golden-vectors.lines"))
+        |> Array.filter (fun l -> not (l.StartsWith "#") && l.Length > 0)
+        |> Array.toList
+    let romHex = (List.item 0 lines).Split('\t').[1]
+    let rom = [| for i in 0 .. romHex.Length / 2 - 1 -> System.Convert.ToByte(romHex.Substring(i * 2, 2), 16) |]
+    let goldenGrid = List.item 1 lines :: (lines |> List.skip 2 |> List.truncate Chip8.DisplayH)
+    // board render adds fault+pc lines after the grid; the treaty grid is the locked prefix
+    let cut = TestLoop.cutGolden goldenGrid (fun (rows: string list) -> rows |> List.truncate (1 + Chip8.DisplayH))
+    let verdict =
+        TestLoop.run (Chip9Board.loop "chip9 treaty via the board host" 7UL rom [ for k in 0..7 -> 0x300 + k, 0xFFuy ] 30 cut)
+    Assert.True(verdict.Passed, TestLoop.light verdict)
+    Assert.True(verdict.Deterministic)
+    Assert.StartsWith("[REC ●] LOCKED", TestLoop.light verdict)
+
+[<Fact>]
+let ``THE BOARD HOST CARRIES THE FAULT REGISTER: the overflow treaty vector replays as a sealed loop`` () =
+    let overflowRom = [| for k in 0..16 do
+                           let op = 0x2202 + 2 * k
+                           yield byte (op >>> 8)
+                           yield byte (op &&& 0xFF) |]
+    let cut (rows: string list) =
+        let has (s: string) = rows |> List.exists (fun r -> r = s)
+        if has "fault\tstack overflow: CALL (2NNN) at depth 16 refused" && has "pc\t0222" then Ok()
+        else Error(sprintf "fault/pc lines wrong: %A" (rows |> List.skip (1 + Chip8.DisplayH)))
+    let verdict = TestLoop.run (Chip9Board.loop "overflow fault via the board host" 7UL overflowRom [] 17 cut)
+    Assert.True(verdict.Passed, TestLoop.light verdict)

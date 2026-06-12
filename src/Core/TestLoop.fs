@@ -90,6 +90,33 @@ module TestLoop =
                   Replay = replay
                   Deterministic = deterministic }
 
+    /// THE GOLDEN LOCK, boundary-blessed (B-1035 final slice): a canned Cut that byte-locks a
+    /// rendering against golden rows — rooms inherit the treaty discipline the cartridges have.
+    /// Honest on divergence: the FIRST diverging row is named with both byte sequences' heads.
+    let cutGolden (golden: string list) (render: 'm -> string list) : 'm -> Result<unit, string> =
+        fun mea ->
+            let actual = render mea
+            if List.length actual <> List.length golden then
+                Error(sprintf "GOLDEN LOCK: row count diverged — golden %d rows, actual %d" (List.length golden) (List.length actual))
+            else
+                match List.zip golden actual |> List.tryFindIndex (fun (g, a) -> g <> a) with
+                | None -> Ok()
+                | Some i ->
+                    let g, a = List.item i golden, List.item i actual
+                    Error(sprintf "GOLDEN LOCK: row %d diverged — golden '%s' vs actual '%s'" i (g.Substring(0, min 48 g.Length)) (a.Substring(0, min 48 a.Length)))
+
+    /// THE LIGHT (universal/port Light, B-1035 final slice): the verdict's truth in one glance.
+    /// [REC ●] = something real was verified AND it replayed byte-equal; [off ○] = the cut
+    /// failed (rehearsal until fixed); [!! ●] = AMBIENT — the loop passed or failed but did NOT
+    /// replay byte-equal, which outranks everything (a nondeterministic pass proves nothing).
+    let light (v: Verdict) : string =
+        if not v.Deterministic then
+            sprintf "[!! ●] AMBIENT %s — Sim+Mea did not replay byte-equal (%s)" v.Name v.Replay
+        elif v.Passed then
+            sprintf "[REC ●] LOCKED %s (%s)" v.Name v.Replay
+        else
+            sprintf "[off ○] FAILED %s — %s (%s)" v.Name (v.Failure |> Option.defaultValue "?") v.Replay
+
     /// Inline constructor — most loops are three lambdas and a seed (keep migration cheap).
     let make (name: string) (seed: uint64) (sim: uint64 -> 'w) (mea: 'w -> 'm) (cut: 'm -> Result<unit, string>) : ITestLoop<'w, 'm> =
         { new ITestLoop<'w, 'm> with
