@@ -98,6 +98,43 @@ module Braid =
     /// underlying permutation's sign character. A projection (order forgotten, parity kept).
     let writheParity (b: int list) : int = List.length b % 2
 
+    /// The writhe: the exponent sum of the braid word (+1 per positive crossing, −1 per negative).
+    /// The unique homomorphism Bₙ → ℤ; `writheParity` is this, mod 2. Ferry-12 density axis, ℤ side.
+    let writhe (b: int list) : int =
+        b |> List.sumBy (fun c -> if c > 0 then 1 else -1)
+
+    /// Per-pair crossing load: how many crossings (either sign) act on each adjacent strand-pair
+    /// (generator index i = the pair (i, i+1), 0-based). The ferry-12 dense-vs-sparse measure:
+    /// dense braiding = high load concentrated on pairs; sparse = load near zero. Sums to word length.
+    let pairLoad (n: int) (b: int list) : Map<int, int> =
+        let counts =
+            b |> List.countBy (fun c -> abs c - 1) |> Map.ofList
+        [ 0 .. n - 2 ] |> List.map (fun i -> i, defaultArg (counts.TryFind i) 0) |> Map.ofList
+
+    /// The underlying permutation (position → strand id): forget over/under, keep WHERE strands end.
+    /// This is the quotient Bₙ ↠ Sₙ that `writheParity` factors through — the order-forgetting map
+    /// whose kernel (the pure braid group) is exactly what the braid remembers beyond shuffling.
+    let permutation (n: int) (b: int list) : int list =
+        let arr = Array.init n id
+        for c in b do
+            let i = abs c - 1
+            if i + 1 < n then
+                let t = arr.[i]
+                arr.[i] <- arr.[i + 1]
+                arr.[i + 1] <- t
+        List.ofArray arr
+
+    /// The sign of a permutation via inversion count — independent of how the permutation was made,
+    /// so it can CHECK (not assume) that writheParity equals the sign character (the commuting square
+    /// from math REPORT #3 §2: χ = sign ∘ (Bₙ ↠ Sₙ)).
+    let permutationSign (p: int list) : int =
+        let a = List.toArray p
+        let mutable inv = 0
+        for i in 0 .. a.Length - 2 do
+            for j in i + 1 .. a.Length - 1 do
+                if a.[i] > a.[j] then inv <- inv + 1
+        inv % 2
+
     /// DELETE one strand from a braid word (n strands, 0-based strand index by STARTING position):
     /// the surviving (n−1)-braid. Position-tracked: a crossing involving the deleted strand's
     /// current position vanishes from the word (the survivor passes straight) but still swaps the

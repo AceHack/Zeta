@@ -49,3 +49,44 @@ let ``property: every braid word composed with its inverse is the identity (rand
 [<Property(Arbitrary = [| typeof<BraidArbs> |])>]
 let ``property: the Artin relation holds INSIDE any context — u·(s1 s2 s1)·v = u·(s2 s1 s2)·v`` (u: int list) (v: int list) =
     Braid.equal N (u @ [ 1; 2; 1 ] @ v) (u @ [ 2; 1; 2 ] @ v)
+
+// ── Math REPORT #3 Round-1 kernel laws + ferry-12 density measures (2026-06-12) ──────────────────
+
+[<Property(Arbitrary = [| typeof<BraidArbs> |])>]
+let ``REPRESENTATION LAW: act of a concatenation = composition of the actions (the functor law)`` (b1: int list) (b2: int list) =
+    [ 0 .. N - 1 ]
+    |> List.forall (fun i -> Braid.act (b1 @ b2) (Braid.gen i) = Braid.act b2 (Braid.act b1 (Braid.gen i)))
+
+[<Property(Arbitrary = [| typeof<BraidArbs> |])>]
+let ``THE COMMUTING SQUARE: writheParity = sign ∘ permutation — the χ : Bₙ → ℤ/2 character factors through Sₙ`` (b: int list) =
+    Braid.writheParity b = Braid.permutationSign (Braid.permutation N b)
+
+[<Property(Arbitrary = [| typeof<BraidArbs> |])>]
+let ``writheParity is a homomorphism: parity of a concatenation = sum of parities mod 2`` (b1: int list) (b2: int list) =
+    Braid.writheParity (b1 @ b2) = (Braid.writheParity b1 + Braid.writheParity b2) % 2
+
+[<Property(Arbitrary = [| typeof<BraidArbs> |])>]
+let ``writhe is a homomorphism to ℤ and writhe ≡ length mod 2`` (b1: int list) (b2: int list) =
+    Braid.writhe (b1 @ b2) = Braid.writhe b1 + Braid.writhe b2
+    && (abs (Braid.writhe b1) % 2 = List.length b1 % 2)
+
+[<Property(Arbitrary = [| typeof<BraidArbs> |])>]
+let ``DENSITY: pairLoad sums to word length and covers exactly the adjacent pairs`` (b: int list) =
+    let load = Braid.pairLoad N b
+    (load |> Map.toList |> List.sumBy snd) = List.length b
+    && (load |> Map.toList |> List.map fst) = [ 0 .. N - 2 ]
+
+[<Fact>]
+let ``DENSITY: dense vs sparse braiding are distinguishable by pairLoad (ferry 12's axis, measured)`` () =
+    // dense: all load on one pair, repeatedly (σ₁⁶ — six crossings, one pair)
+    let dense = Braid.pairLoad N [ 1; 1; 1; 1; 1; 1 ]
+    // sparse: the same six crossings spread across three far pairs
+    let sparse = Braid.pairLoad N [ 1; 3; 1; 3; 1; 3 ]
+    Assert.Equal(6, dense.[0])
+    Assert.Equal(3, sparse.[0])
+    Assert.Equal(3, sparse.[2])
+
+[<Fact>]
+let ``the permutation is the order-forgetting quotient: σ₁² has trivial permutation but is NOT the identity braid`` () =
+    Assert.Equal<int list>([ 0 .. N - 1 ], Braid.permutation N [ 1; 1 ])
+    Assert.False(Braid.isIdentity N [ 1; 1 ]) // the kernel (pure braid group) is the memory
