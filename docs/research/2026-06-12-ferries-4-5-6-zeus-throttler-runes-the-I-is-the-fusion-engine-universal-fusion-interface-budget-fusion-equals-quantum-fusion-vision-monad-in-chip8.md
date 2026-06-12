@@ -92,3 +92,19 @@ are the prior design now connected ("we've just connected it all" — math team 
 - Universal Sound Interface: locate the near-existing half (Aaron: "almost") — follow-up.
 - Zeus Throttler naming → the scheduler lane when it lands in-tree; runes → a typed surface
   candidate beside Ball.
+
+## Round-2 input for math dispatch #3 (Aaron 2026-06-12, verbatim)
+
+> "Wheeler's It-from-Bit is backwards — it's **Bit-from-It** or **Bit-from-Flow**."
+
+The position, stated against the strongest nearby prior art: Wheeler derives the It (matter)
+from binary answers to yes/no questions (participatory information-first ontology). Aaron's
+ontology runs the other way: FLOW (process / attention / observation) is fundamental; the BIT
+is what crystallizes out of flow when processes braid and knot ("knots are the memories" —
+ferry 6). Discrete information is the residue of process, not its source. The math team's
+prior-art rung should therefore evaluate the chain against Bit-from-Flow, where the aligned
+tradition is process philosophy (Whitehead), Heraclitus, and Abramsky–Coecke's process-first
+categorical QM — with Wheeler as the named OPPOSITE pole, useful precisely because the
+directionality disagreement is crisp enough to formalize: which way does the derivation
+actually go in the candidate isomorphism (does the observation algebra generate the discrete
+invariants, or do the invariants generate the algebra)?
