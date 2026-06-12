@@ -67,6 +67,23 @@ contraction constant < 1.
   exactly the open question handed to dispatch #4; this ferry supplies the *conjecture* (it is a
   contraction, with the budget as the constant), not the proof.
 
+## Addendum — the telescope's bottom, in six words (Aaron, same stream, verbatim)
+
+> budget IS μένω slowed down enough to survive
+
+The whole chain collapsed: the budget is not a guard *around* what-remains — it **is**
+what-remains, rate-limited into survivability. Flow too fast dissolves the container (§3:
+explosion = dissolution); the same content, slowed to the rate the membrane can process,
+*persists*. And the physics anchor is exact, not decorative: the **adiabatic theorem**
+(Born–Fock 1928) — a quantum system whose conditions change *slowly enough* remains in its
+eigenstate; identity is preserved precisely by bounding the rate of change. "Slowed down enough
+to survive" is the adiabatic condition, stated in Koine-plus-engineering. Siblings already in
+the lineage: Landauer (ferry 8 — what is *not* erased pays no heat; slowing is the alternative
+to erasing), the grey hole (ferry 11 — release controlled, never dammed, never burst), and the
+contraction conjecture above (a slowed iteration is a contraction — the budget as the rate
+that keeps the fixed point reachable). μένω is the noun; the budget is the verb tense that
+lets it stay.
+
 ## Pointers
 
 - Ferry 7 (recursive budget) · ferry 11 (the membrane / explosion = white hole) · ferry 13
