@@ -162,6 +162,7 @@
     <Compile Include="TimeGen.Tests.fs" />
     <Compile Include="Braid.Tests.fs" />
     <Compile Include="Braid.GoldenVectors.Tests.fs" />
+    <Compile Include="E8Lattice.Tests.fs" />
     <Compile Include="VisionAttention.Tests.fs" />
     <Compile Include="MillBraid.Tests.fs" />
     <Compile Include="MediaLines.Tests.fs" />
