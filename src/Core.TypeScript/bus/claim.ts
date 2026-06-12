@@ -5,9 +5,9 @@
 // ownership of backlog items without writing ad-hoc publish calls.
 //
 // Usage:
-//   bun tools/bus/claim.ts check   --item B-0400 [--json]
-//   bun tools/bus/claim.ts acquire --from otto --item B-0400 [--branch feat/x] [--json]
-//   bun tools/bus/claim.ts release --from otto --item B-0400 [--json]
+//   bun src/Core.TypeScript/bus/claim.ts check   --item B-0400 [--json]
+//   bun src/Core.TypeScript/bus/claim.ts acquire --from otto --item B-0400 [--branch feat/x] [--json]
+//   bun src/Core.TypeScript/bus/claim.ts release --from otto --item B-0400 [--json]
 //
 // Exit codes:
 //   check:   0 = unclaimed, 1 = claimed (by any agent — check has no --from)

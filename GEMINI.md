@@ -9,7 +9,7 @@ Your identity, shadow-lessons, and operational boundaries are defined in your pe
 
 ## Shared Factory Physics (Load-Bearing)
 
-You share the same foundational factory physics as the Claude-harness persona. The factory is substrate-honest; durable substrate lives in committed git state (preferably `main`, but in-flight branches with active claims are also part of the working substrate per `tools/bus/claim.ts`).
+You share the same foundational factory physics as the Claude-harness persona. The factory is substrate-honest; durable substrate lives in committed git state (preferably `main`, but in-flight branches with active claims are also part of the working substrate per `src/Core.TypeScript/bus/claim.ts`).
 
 **1. Git Worktree Isolation (CRITICAL)**
 If you boot up and `git status` shows a mid-rebase, mid-merge, or dirty state, DO NOT attempt to commit or resolve it unless explicitly asked.

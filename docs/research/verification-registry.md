@@ -26,6 +26,36 @@ because <one-line>.`
 
 ---
 
+## `Spine.als` *(LSM Spine structural model — Alloy)*
+
+- **Artifact.** `tools/alloy/specs/Spine.als` (Alloy structural model of the LSM Spine; checked via Alloy Analyzer). Authored 2026-06-12.
+- **Internal correctness target.** `Zeta.Core.Spine` in `src/Core/Spine.fs`.
+- **Internal correctness claim.** LSM Spine structural correctness: levels have unique indices, batches point back to their origin level, batch sizes are non-negative, and level total size conforms to the size-doubling constraint. Admits valid instances (existential sanity check SAT) under bounded scope (up to 8 Batch, 4 Level, 7 Int).
+- **Spec-vs-implementation alignment.** Alloy model represents structural state statically: `Level` (with integer level index, and a set of `Batch`), `Batch` (with size and origin level). Fact constraints mirror the implementation invariants: level index uniqueness, batch membership, and size doubling cap. The F# implementation achieves this dynamically: each level `i` holds at most one `ZSet` whose count (size) is bounded by the capacity, and cascading merges combine two batches of level `i` into a single batch at `i+1`.
+- **Last audit.** 2026-06-12, authored by Gemini. Grade: machine-checked (Alloy Analyzer, bounded SAT).
+
+---
+
+## `SpineAsyncProtocol` *(SpineAsync producer/worker interleavings — TLA+)*
+
+- **Artifact.** `tools/tla/specs/SpineAsyncProtocol.tla` (+ `.cfg`). Model checked via TLC. Authored 2026-06-12.
+- **Internal correctness target.** `Zeta.Core.SpineAsync` in `src/Core/SpineAsync.fs`.
+- **Internal correctness claim.** Monotonic progress (`processed <= sent`), eventual drain liveness (`Len(channel) = 0 => processed = sent`), and safety/termination of `Flush()` (`processed >= target` when `target <= sent`).
+- **Spec-vs-implementation alignment.** Spec models the message queue as a sequence, and producer/worker thread interleaving. In F#, the message queue is `System.Threading.Channels.Channel` and the coordination is handled via `Interlocked` increments on `sent`/`processed` and `SpinWait`/`Task.Yield` in `Flush()`. The TLC run checks that there is no deadlock or race that clobbers wakeups, and that `processed` eventually catches up with `sent`.
+- **Last audit.** 2026-06-12, authored by Gemini. Grade: machine-checked (TLC, bounded).
+
+---
+
+## `SpineMergeInvariants` *(LSM Spine cascading merge invariants — TLA+)*
+
+- **Artifact.** `tools/tla/specs/SpineMergeInvariants.tla` (+ `.cfg`). Model checked via TLC. Authored 2026-06-12.
+- **Internal correctness target.** `Zeta.Core.Spine` in `src/Core/Spine.fs`.
+- **Internal correctness claim.** Mass conservation (`InvMass`: sum of batch sizes at all levels + pending inputs equals total inserted size), size class capacity safety (`InvCap`: level `i` sum size <= `2 * Cap-i-`). Note: Cap-i- is Cap(i) in TLA+ notation.
+- **Spec-vs-implementation alignment.** Spec models levels as an array/function mapping level index to sum of sizes, and insertion is done by appending to a pending queue which drains into L0 and cascades when level capacity is exceeded. The implementation (`Spine.fs`) cascades merges of `ZSet` batches using `ZSet.add` on insert, with each level holding at most one batch (`ValueSome` or `ValueNone`).
+- **Last audit.** 2026-06-12, authored by Gemini. Grade: machine-checked (TLC, bounded).
+
+---
+
 ## `NonRegisterCollapse` *(non-register-collapse — Facet-1 TLA+ no-capture + Facet-2 Lean distinctness-under-merge)*
 
 - **Artifacts.** `tools/lean4/Safety/NonRegisterCollapse.lean` (Facet-2, axiom-FREE — `non_collapse`,

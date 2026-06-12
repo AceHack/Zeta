@@ -25,7 +25,7 @@
 //
 // Composes with:
 //   - state-machine.ts (agent-loop) — agent-decisions level
-//   - tools/bus/claim.ts (existing) — claim acquisition substrate
+//   - src/Core.TypeScript/bus/claim.ts (existing) — claim acquisition substrate
 //   - tools/github/poll-pr-gate.ts (existing) — PR state inspection
 //   - B-0867 + B-0867.5 (workflow engine v1 substrate)
 //   - .claude/rules/claim-acquire-before-worktree-work.md (claim discipline)

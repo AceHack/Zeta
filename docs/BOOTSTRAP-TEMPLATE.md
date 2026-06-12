@@ -38,7 +38,7 @@ discipline, the commit-attribution trailer.
 |------|-----------------------------|----------------------------|
 | 1. Orient | Read `AGENTS.md` → `docs/ALIGNMENT.md` → `docs/GLOSSARY.md` → `GOVERNANCE.md` (scan on §N cite). Read the harness persona/state file. | *Which* persona/state file (`memory/persona/<name>/CURRENT-*.md`, `.codex/CURRENT-codex.md`, etc.) and any harness read-order addendum. |
 | 2. Refresh | Run the worldview refresh; read active `docs/trajectories/*/RESUME.md`. | The exact refresh command + how this harness runs TypeScript / shell (`bun tools/github/refresh-worldview.ts`, etc.). |
-| 3. Pick work | Open `docs/BACKLOG.md` / `docs/backlog/P*/`; complete the backlog-item start gate (prior-art search + dependency check); acquire a claim before worktree work. | The claim mechanism this harness uses (`tools/bus/claim.ts` surface-tagged sender ID, claim-branch convention). |
+| 3. Pick work | Open `docs/BACKLOG.md` / `docs/backlog/P*/`; complete the backlog-item start gate (prior-art search + dependency check); acquire a claim before worktree work. | The claim mechanism this harness uses (`src/Core.TypeScript/bus/claim.ts` surface-tagged sender ID, claim-branch convention). |
 | 4. Build | `dotnet build -c Release` (0 warnings, 0 errors — `TreatWarningsAsErrors`) then `dotnet test Zeta.sln -c Release`. | Nothing — the build gate is identical for all harnesses. |
 | 5. Ship | Open a PR against `main`; arm auto-merge if green. | The commit-attribution trailer (`Co-Authored-By: <Harness> <...>`) and worktree-isolation discipline for this harness. |
 | 6. When stuck | See `docs/CONFLICT-RESOLUTION.md`; on deadlock, the human decides. | Any harness-specific escalation channel. |

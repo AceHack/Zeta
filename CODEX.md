@@ -35,7 +35,7 @@ search + dependency check). Claim before worktree work with the
 Codex-tagged sender ID:
 
 ```bash
-bun tools/bus/claim.ts acquire --from vera-codex --item <B-NNNN>
+bun src/Core.TypeScript/bus/claim.ts acquire --from vera-codex --item <B-NNNN>
 ```
 
 Codex sessions additionally follow the claim-branch + heartbeat
