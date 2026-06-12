@@ -435,7 +435,7 @@ It's simply a way to select better scales.
 
 There's one more aspect that I wanted to touch on.
 
-### Mixed precision (_S, _M, _L, _XL)
+### Mixed precision (\_S, \_M, \_L, \_XL)
 
 Some of the K-quants variants have a size modifier, be it S for small, M for medium, L for large, and so on.
 
