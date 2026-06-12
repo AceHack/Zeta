@@ -129,3 +129,16 @@ shared discipline: acquire/observe/durationOf/flags), `pro.ts` (trace lane, dotn
 tools/perf/pro.ts (PR #7855) closed unmerged in favor of this. Live smoke re-verified from the
 src path (2.0MB .nettrace). tools/profile.ts noted as the older installer/launcher predecessor —
 the manifest owns install now; these lanes own launch.
+
+## Progress 8 (2026-06-12) — THE HEXAGONAL BENCH PORT (Aaron: "benchmark hexagonally on our interfaces and attributes and such so we depend on ours")
+
+`src/Core/BenPort.fs`: `[<ZetaBen(artifact, op)>]` (every case names its ComplexityRegistry
+prediction), `IBenCase` (Sizes ladder + Run — pure shape, no engine types), `IBenMeter` (the
+engine-shaped hole: Name + Deterministic + Measure), `samples` (case × meter → grader-ready),
+`allocMeter` (the exact meter as port citizen), `discover` (attribute scan, honest-partial:
+cases AND named errors, the IbltReconcile Partial blade). BenchmarkDotNet 0.15.8 lands TESTS-SIDE
+ONLY (same placement as Infer.NET); its child-process methodology is glass-side by design; the
+in-process Dry adapter is wired but Skip-marked (heavyweight for the suite — manual lane). Live
+proof: the alloc meter drove a discovered iblt-build case across a 16× ladder and Ben.infer named
+Linear. B-1039's named slices are now all landed or consciously closed (wall-in-room cancelled by
+the glass-side ruling).

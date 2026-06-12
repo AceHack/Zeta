@@ -184,6 +184,7 @@
     <Compile Include="IbltReconcile.Tests.fs" />
     <Compile Include="TestLoop.Host.fs" />
     <Compile Include="Ben.Tests.fs" />
+    <Compile Include="BenPort.Tests.fs" />
     <Compile Include="WaveSim.Tests.fs" />
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />
@@ -457,6 +458,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="FSharp.Core" />
     <PackageReference Include="System.IO.Hashing" />
     <PackageReference Include="Google.Protobuf" />

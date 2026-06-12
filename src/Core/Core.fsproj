@@ -228,6 +228,7 @@
     <Compile Include="Chip9Phys.fs" />
     <Compile Include="TestLoop.fs" />
     <Compile Include="Ben.fs" />
+    <Compile Include="BenPort.fs" />
     <Compile Include="WSet.fs" />
     <Compile Include="IbltReconcile.fs" />
     <Compile Include="InferenceLadder.fs" />
