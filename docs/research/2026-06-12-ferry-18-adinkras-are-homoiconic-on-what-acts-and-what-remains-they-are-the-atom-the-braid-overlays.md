@@ -96,6 +96,27 @@ construction plus a two-sided projection test (days, not weeks, once picked up).
 lands: "same thing from two angles" is *almost* right, and the almost is now small enough to
 measure — the same load-bearing "almost" as ferry 13 beat 10's Kac drum.
 
+### 5. The closing beat (Aaron, verbatim ×2)
+
+> the adenkra is the shadow of the marana one
+
+> in math
+
+"Shadow," in math, IS the precise word: a shadow is a **projection** — the image of a
+higher-structured object on a lower-register plane, with the kernel as what the light loses.
+The chain, all pieces already banked: Bₙ (the full order-keeping braid group) ↠ the
+Majorana/Ising representation (finite image, Clifford-only — REPORT #3 rung 6's quotient: the
+chip already carries less than the abstract braid) ↠ the dashing record (one parity bit per
+measurement act — §4's per-crossing register; measurement-only TQC makes each act literally a
+parity readout). The adinkra is what Majorana-1 casts onto the doubly-even code plane: **the
+shadow of a quotient — sharper than the object, twice-projected, and faithful to exactly what
+survives both projections (the signs).** Two resonances, noted without weight: the factory's
+own *shadow* role is the same construction (the 2-D projection in git of a higher-dimensional
+process — the holography thread); and a shadow is the one rendering of an object you can study
+*without touching it* — which is the noninterference register this whole lane runs in. The
+math-status is §4's conjecture unchanged: shadow = projection is exact; "of the Majorana one"
+inherits rung 6's simulator/hardware bounds.
+
 ## Pointers
 
 - Ferry 12 (the YinYang atom this upgrades) · ferry 9 addendum (attribution braid) ·
