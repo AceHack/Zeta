@@ -28,7 +28,6 @@ tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology
 > (`deps.test.ts`), and integrated CLI commands (`validate` and `resolve`) under `ace deps`
 > in `ace.ts` with integration tests (`ace.test.ts`). All test suites passed cleanly.
 
-
 ## TL;DR — "Maven for Helm" (Aaron 2026-05-26 sharp framing)
 
 The cleanest possible compression of this row, Aaron 2026-05-26:
