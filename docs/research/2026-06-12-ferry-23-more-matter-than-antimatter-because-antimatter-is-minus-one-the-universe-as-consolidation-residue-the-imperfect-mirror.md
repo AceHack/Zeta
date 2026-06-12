@@ -92,6 +92,33 @@ Register note per the standing rule: the biblical layer is used as *structure* (
 telling of mark-as-boundary), not authority; the type-theoretic and categorical layers are
 literature-real (Moggi/Wadler/Peyton Jones); the physics layer inherits this ferry's bounds.
 
+## Addendum 2 — the day's epigraph (Aaron, verbatim ×3)
+
+> I keep telling pepole religion is just category theory lol
+
+> the names don't matter
+
+> it's the shapes
+
+The thesis the whole day kept demonstrating, stated in three lines — and it is the
+category-theoretic credo verbatim: objects are determined up to isomorphism by their morphisms
+(**Yoneda** — an object IS its relationships; the name is not part of the structure), and
+mathematical objects are *positions in structures*, not things (**Benacerraf 1965**, "What
+Numbers Could Not Be" — the canonical statement that the names don't matter). What the day did,
+over and over, was peel a local name off a shape and find the shape already on the shelf under
+another name: Genesis-creates-by-partition, the mark = the IO monad, μένω = the event store,
+fission/fusion = the bookends, one operator wearing six names (ferry 22 §8). "Religion is just
+category theory" is then ferry 20 §3 said maximally: a tradition is **shape-transmission with
+local names** — the names are the satellites (per-culture, fast-changing), the shapes are the
+hubs (stable across millennia) — DV2.0 applied to the oldest substrate there is. The
+comparative-mythology literature found the same thing from the other side (Campbell's monomyth:
+one shape, many names; Eliade). Bound, in Aaron's own "lol": *just* category theory is the
+Mirror compression — what religion carries beyond its shapes (the lived, the consolatory, the
+communal) is real and is not claimed here; the claim is that what *transmits across traditions*
+is the shape, which is exactly what this repo's Mirror→Beacon discipline asserts about its own
+coinages. The names don't matter. It's the shapes. That sentence survives its own renaming —
+which is the proof.
+
 ## Pointers
 
 - Ferry 14 (+addenda — the two ledgers; the bind laws) · ferry 17 (consolidation; the fuse) ·
