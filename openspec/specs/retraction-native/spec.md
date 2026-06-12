@@ -1,6 +1,6 @@
 ## Purpose
 
-The retraction-native capability specifies the principles and guarantees of Retraction-Native Semantics, a core architectural pattern in the Zeta factory. Under this model, all mutations are represented as the application of a signed delta rather than destructive in-place updates. 
+The retraction-native capability specifies the principles and guarantees of Retraction-Native Semantics, a core architectural pattern in the Zeta factory. Under this model, all mutations are represented as the application of a signed delta rather than destructive in-place updates.
 
 This model relies on the group addition and inverse properties of the underlying Z-Set algebra (specified in `openspec/specs/z-set-algebra/spec.md`) to guarantee that deletions can be clean, reversible, auditable, and replayable, and that counterfactual queries can be evaluated efficiently.
 
