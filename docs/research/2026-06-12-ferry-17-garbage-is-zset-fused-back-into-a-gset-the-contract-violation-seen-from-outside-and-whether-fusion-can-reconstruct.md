@@ -78,6 +78,40 @@ two faces as an API: the public face honors the G-contract (open/closed, §2), t
 keeps the Z-history that made it true (the log remains the authority — DurableDiplomacy's law).
 The membrane, typed. (Captured from Vera's lane; her worktree owns any implementation.)
 
+### Addendum 2 — three fusions, one signature (Aaron, immediately after, verbatim)
+
+> this is sensor fusion and function fusion in the same type sigature and quantium fusion we
+> will prove too
+
+The claim: `fuse : ZSet<'a> -> GSet<'fused>` is the shape of **all three fusions**, and the
+scoreboard is two theorems and one registered intent:
+
+- **Sensor fusion (theorem, classical half).** Many signed observations (evidence ±, weighted
+  by precision) collapse into one fused estimate the outside reads as a single fact. REPORT #2
+  already ruled the classical half: precision-weighted fusion (Friston/Kalman), the soft-max
+  width law. The signature matches exactly: the deltas are the per-sensor evidence; `'fused` is
+  the I.
+- **Function fusion (theorem, compiler half).** Wadler's deforestation (1990) and
+  foldr/build–style fusion laws (Gill–Launchbury–Peyton Jones 1993, GHC's shortcut fusion):
+  compose producer and consumer and *erase the intermediate structure*. Identical projection
+  shape — the intermediate list is the inside history; the fused composition is the outside
+  fact; and you cannot recover the intermediate from the fused result. Function fusion is
+  consolidation in the program dimension, with the same losslessness-unrepresentable typing.
+- **Quantum fusion (open, intent registered).** Anyon fusion (σ×σ = 1+ψ): two charges fuse to a
+  channel; the outside reads total charge, the inside is the fusion tree. The signature is the
+  *shape* of a fusion category's fusion morphism (a⊗b → c with the multiplicity data as the
+  inside history) — which is exactly the "named formalism" REPORT #2 said the quantum identity
+  was missing. "We will prove too" is the registered intent; the standing bounds hold until it
+  lands: REPORT #2's monoid-not-braided verdict and P0-B (the missing bridge functor) are the
+  open gates, and this signature is now the **candidate statement** for what a proof would
+  prove: that anyonic fusion factors through the same projection/reconstruction boundary, with
+  the fusion tree as the Z-side and the total charge as the G-side.
+
+If the third lands, "fusion" stops being three analogies and becomes one typed operation
+instantiated in three categories — which would be the Rosetta-stone move (Baez–Stay) performed
+on the repo's own central verb. Until then: two instances proven, one conjectured, the
+signature shared.
+
 ## Honest bounds
 
 The CRDT anchor is exact (2P-set, tombstone GC, causal stability — real theorems, real
