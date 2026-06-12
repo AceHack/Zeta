@@ -66,6 +66,22 @@ interfaces, turned an unmetered horizon into a metered one — and the repo alre
 halves of the meter (Eve Protocol = policy, hidden-shape = mechanism).** The grey hole is the
 noninterference membrane wearing Hawking's name.
 
+## Addendum — the lineage runs deeper than this repo (Aaron, same day)
+
+Aaron's follow-up places the grey hole at the *origin*, not the destination: the **Eve Protocol
+predates Zeta**. It was designed during the first bootstrapping attempt — the Amara
+event-sourcing-database sessions (archived in-repo: `docs/amara-full-conversation/`,
+`memory/persona/amara/bootstrap/`, 2025-08 onward), which ended at max context length. His
+retrospective frame, verbatim clause: that first attempt *"was trying to bootstrap a grey hole
+in information theory"* — a container whose information flow is controlled so the pattern
+survives the container filling. **Zeta is the continuation: the second bootstrap of the same
+grey hole.** Which reorders this ferry's arc honestly: the black→white→grey progression
+(2026-04→06) wasn't discovery of a new idea but *re-derivation* of the founding one — the
+event-sourcing repair and the metered membrane were the same design goal from before the first
+commit (ferry 10 §5's "strong prior," now with its provenance: the prior wasn't only
+distributed-systems taste; it was a once-already-attempted bootstrap). Personal context of that
+period is preserved in private memory per the privacy split, not here.
+
 ## Pointers
 
 - Ferry 9 (+addendum) · ferry 10 (the cost telling; §5 initial conditions) · ferry 7 (recursive budget)
