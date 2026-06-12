@@ -1,5 +1,5 @@
-// PROMOTED BACK TO CORE by operator decision (Aaron, 2026-06-14: "why are we keeping in tests?
-// we need in real code"). Rodney's Razor (2026-06-13) had demoted this to a test fixture —
+// PROMOTED BACK TO CORE by operator decision (Aaron, 2026-06-11, PR #7805: "why are we keeping
+// in tests? we need in real code"). Rodney's Razor (2026-06-11, PR #7802) had demoted this to a test fixture —
 // "essential as mathematics, accidental as code; zero non-test consumers" — and that dissent
 // stays on record as ADVISORY: the human maintainer set the product direction instead — the
 // ring-generic type IS intended substrate for the quantum lane (B-1029), the inference port, and
@@ -11,7 +11,7 @@ namespace Zeta.Core
 open Zeta.Core.Abstractions
 
 /// WSet — **the ring-generic weighted set: three rings, one circuit calculus** (B-1032; Aaron
-/// 2026-06-13: "can we connect ZSet circuit to quantum circuit?" / "Infer.NET circuits the same
+/// 2026-06-11, PR #7785: "can we connect ZSet circuit to quantum circuit?" / "Infer.NET circuits the same
 /// way?" — same answer, one type). A `WSet<'K,'W>` is a Z-set whose weights live in ANY *-ring:
 ///
 ///   'W = ℤ  → the DBSP Z-set (signed counts; boundary nonlinearity = Distinct)
