@@ -2,9 +2,14 @@ namespace Zeta.Core
 
 /// Ben — **the ben verb, slice 1: exact meters + the prediction grader** (B-1039; Aaron: "make
 /// ben(chmark) as easy as measure… see how good our PREDICTION is"). This slice carries only
-/// what is EXACT and DST-clean — no wall clock, no GC counters (those are the dotnet-room slice,
-/// behind the boundary with the red light). The chip8 emu is the easy case on purpose: tick
-/// counts and Frame-map sizes are deterministic, replayable, byte-stable.
+/// what is EXACT and DST-clean — no wall clock, no GC counters. THE GLASS-SIDE RULING (Aaron
+/// 2026-06-11, verbatim: "glass-side only no wall clock in the room"): wall-clock time NEVER
+/// enters the sealed room — statistical timing lives entirely in the out-of-process lanes
+/// (BenchmarkDotNet senior adapter; EventPipe/dotnet-trace attach through the glass), and the
+/// double-run boundary mechanically refuses any smuggled clock (see the falsifier in
+/// TestLoop.Host.fs). In-room meters are the exact pair only: ticks + allocBytes. The chip8 emu
+/// is the easy case on purpose: tick counts and Frame-map sizes are deterministic, replayable,
+/// byte-stable.
 ///
 /// THE GRADER closes the loop the ComplexityRegistry opened: every declared O(…) row is a
 /// PREDICTION; feed `infer` cost samples at doubling sizes (n, 2n, 4n, …) and it names the

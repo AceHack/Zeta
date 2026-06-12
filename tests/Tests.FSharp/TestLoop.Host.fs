@@ -93,6 +93,20 @@ let ``THE BOUNDARY REJECTS: an ambient-entropy loop fails the double-run check e
     Assert.Contains("ambient entropy", v.Failure |> Option.defaultValue "")
 
 [<Fact>]
+let ``THE GLASS-SIDE RULING IS MECHANICAL: a loop that smuggles the wall clock into Mea fails the double-run check — no wall clock in the room`` () =
+    // Aaron 2026-06-11: "glass-side only no wall clock in the room." Not a convention — the
+    // boundary itself refuses the clock: two runs from one seed read two different timestamps.
+    let v =
+        TestLoop.run (
+            TestLoop.make "clock smuggler" 4UL
+                (fun _ -> ())
+                (fun () -> System.Diagnostics.Stopwatch.GetTimestamp())
+                (fun _ -> Ok()))
+    Assert.False v.Passed
+    Assert.False v.Deterministic
+    Assert.Contains("ambient entropy", v.Failure |> Option.defaultValue "")
+
+[<Fact>]
 let ``THE BOUNDARY CATCHES THROWS: an exception in Mea becomes a named-phase Failure value, never an escaped throw`` () =
     let v =
         TestLoop.run (

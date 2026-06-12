@@ -107,3 +107,15 @@ ShapeAcceptance.Tests gates every cartridge the moment it lands (same blade as T
 carry the first three lines. Runtime grading (Confirmed/Tighter/Violated) stays Ben.grade's lane;
 remaining: dotnet wall/alloc-statistical meters behind the boundary + red light; the BenchmarkDotNet
 senior adapter; the pro verb's out-of-process EventPipe lane (Progress 3).
+
+## Progress 5 (2026-06-11) — THE GLASS-SIDE RULING (Aaron, verbatim: "glass-side only no wall clock in the room")
+
+The open design call from Progress 2/3 is decided: wall-clock time NEVER enters the sealed room.
+The "dotnet wall meter behind the boundary + red light" slice is CANCELLED — there is no in-room
+wall meter at any rung. In-room stays the exact pair (chip8Ticks + allocBytes, both replay-equal);
+ALL statistical timing is glass-side: the BenchmarkDotNet senior adapter (its own process, its own
+methodology) and the EventPipe/dotnet-trace attach lane (out-of-process by design). The ruling is
+mechanically enforced, not conventional: the double-run boundary refuses a smuggled clock (two
+runs, one seed, two timestamps — falsifier added to TestLoop.Host.fs alongside the entropy
+smuggler). Noninterference (#13) closes flush: the room's only doors stay Reticulum + the injected
+Source; time is an observable THROUGH the glass, never an input inside it.
