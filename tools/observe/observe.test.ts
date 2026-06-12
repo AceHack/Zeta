@@ -332,15 +332,16 @@ describe("the loop — choose → simulate → repeat (mock backend = CI shield)
 
 describe("the loop — real local LLM (ollama) when reachable; the mock loop above is the shield", () => {
   it("a real local model drives a VALID loop (skips when ollama down — mock loop covers the logic)", async () => {
-    const backend = ollamaBackend();
+    const probe = ollamaBackend({ timeoutMs: 500 });
     let up = false;
     try {
-      await backend.complete("ok", { maxTokens: 1 });
+      await probe.complete("ok", { maxTokens: 1 });
       up = true;
     } catch {
       up = false;
     }
-    if (!up) return; // ollama not installed → the mock-driven loop above is the coverage (the shield asserts deterministically)
+    if (!up) return;
+    const backend = ollamaBackend();
     const valid = new Set<NextAction["kind"]>([
       "preserve_ferry",
       "respond_to_operator",

@@ -1,6 +1,6 @@
 ---
 name: home-crypto-mining
-description: Home crypto-mining fleet management — blueprints for managing a fleet of AI agents + mining equipment (rigs/ASICs/GPUs, power, thermals), tracking inventory in the /inventory website, and selling fleet-management-as-a-service to other home miners. "Close over the fleet" like we close over the host→compiler→OS. NO secrets/keys (those route to security); financial/regulatory routes to human review.
+description: Manage AI agents and mining equipment (rigs/ASICs/GPUs), track inventory, and sell fleet management. No secrets/keys; financial routes to review.
 ---
 
 # home-crypto-mining

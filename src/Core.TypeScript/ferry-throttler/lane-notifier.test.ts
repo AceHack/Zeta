@@ -17,17 +17,29 @@ function track(p: Promise<void>): {
   reason: unknown;
   promise: Promise<void>;
 } {
-  const state = { resolved: false, rejected: false, reason: undefined as unknown };
+  const state = {
+    resolved: false,
+    rejected: false,
+    reason: undefined as unknown,
+    promise: null as unknown as Promise<void>,
+  };
   state.promise = p.then(
-    () => { state.resolved = true; },
-    (err: unknown) => { state.rejected = true; state.reason = err; },
+    () => {
+      state.resolved = true;
+    },
+    (err: unknown) => {
+      state.rejected = true;
+      state.reason = err;
+    },
   );
-  return state as typeof state & { promise: Promise<void> };
+  return state;
 }
 
 /** Flush microtask queue so promises settle. */
 async function flush(): Promise<void> {
-  await new Promise<void>((r) => { setTimeout(r, 0); });
+  await new Promise<void>((r) => {
+    setTimeout(r, 0);
+  });
 }
 
 // ─── Tests ──────────────────────────────────────────────────────────────────

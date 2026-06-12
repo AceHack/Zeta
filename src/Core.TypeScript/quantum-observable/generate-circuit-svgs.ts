@@ -7,8 +7,21 @@ const currentDir = import.meta.dir;
 const repoRoot = join(currentDir, "..", "..", "..");
 const goldenDir = join(repoRoot, "db", "shapes", "golden");
 
+interface QuantumCircuitWithSvg {
+  exportSVG(asString: boolean): string;
+}
+
 function writeSvg(filename: string, circuit: QuantumCircuit): void {
-  const svg = (circuit as any).exportSVG(false) as string;
+  let svg = (circuit as unknown as QuantumCircuitWithSvg).exportSVG(false);
+  // Post-process the SVG to make data-id deterministic
+  const idMap = new Map<string, string>();
+  let idCounter = 0;
+  svg = svg.replace(/data-id="([^"]+)"/g, (_match: string, id: string) => {
+    if (!idMap.has(id)) {
+      idMap.set(id, `gate-${String(idCounter++)}`);
+    }
+    return `data-id="${idMap.get(id) ?? ""}"`;
+  });
   const path = join(goldenDir, filename);
   writeFileSync(path, svg, "utf-8");
   console.log(`Generated SVG golden: ${filename}`);

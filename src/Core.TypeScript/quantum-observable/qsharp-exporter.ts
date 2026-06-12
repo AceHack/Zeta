@@ -16,11 +16,11 @@ export function exportZSetToQSharpSandbox(zset: ZSet<string>): string {
   qs += `    open Microsoft.Quantum.Canon;\n\n`;
   qs += `    /// Represents the Z-set superposition state:\n`;
   for (const entry of zset) {
-    qs += `    ///   Basis: ${entry.e} | Weight: ${entry.w}\n`;
+    qs += `    ///   Basis: ${entry.e} | Weight: ${String(entry.w)}\n`;
   }
   qs += `    operation PrepareZSetState(qs : Qubit[]) : Unit {\n`;
   qs += `        // Experimental state preparation sandbox for specified weights.\n`;
-  qs += `        Message("Preparing Z-set state with ${zset.length} elements...");\n`;
+  qs += `        Message("Preparing Z-set state with ${String(zset.length)} elements...");\n`;
   qs += `    }\n`;
   qs += `}\n`;
   return qs;

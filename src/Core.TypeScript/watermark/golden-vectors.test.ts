@@ -1,13 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-  observe,
-  isLate,
-  combine,
-  type Strategy,
-  Watermark,
-  Timestamped,
-  WatermarkTracker
-} from "./watermark";
+import { observe, isLate, combine, type Strategy, Watermark, Timestamped, WatermarkTracker } from "./watermark";
 import vectors from "./golden-vectors.json";
 
 // Replays the shared golden seed through the TS oracle; the C#/F#/Rust oracles replay the same file.
@@ -60,7 +52,7 @@ describe("WatermarkTracker stateful verification", () => {
     const wm = new Watermark(123, 2);
     expect(wm.EventTime).toBe(123);
     expect(wm.Source).toBe(2);
-    expect(Watermark.MinValue.EventTime).toBe(-9223372036854775808);
+    expect(Watermark.MinValue.EventTime).toBe(Number.MIN_SAFE_INTEGER);
   });
 
   test("Timestamped holds value and eventTime", () => {
@@ -69,4 +61,3 @@ describe("WatermarkTracker stateful verification", () => {
     expect(ts.EventTime).toBe(456);
   });
 });
-

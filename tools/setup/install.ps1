@@ -212,7 +212,7 @@ Write-Host "mise: $(Get-ToolVersion { mise --version })"
 Push-Location $RepoRoot
 try {
   Invoke-Tool { mise trust } 'mise trust'
-  # HOST TIERS (workitem 081KTWQZY7F): Windows boxes are dev machines — full tier unless
+  # HOST TIERS (workitem 081KTWQZY7F): Windows boxes are dev machines -- full tier unless
   # explicitly declared otherwise; full merges .mise.full.toml (the k8s set) via MISE_ENV.
   if (-not $env:ZETA_HOST_TIER -or $env:ZETA_HOST_TIER -eq 'full') {
     $env:MISE_ENV = 'full'

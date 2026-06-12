@@ -976,7 +976,7 @@ are closed (status: closed/done in frontmatter)._
 - [ ] **[B-1027](backlog/P2/081KTSZN10008QG0R001BW91GT.md)** Craft-verb precision (bob/weave/tie/twist/braid) + the textile frame (warp/weft/loom/selvage) — ratify the registry, test the braid relations
 - [ ] **[B-1035](backlog/P2/081KTSZN10008QG0R002J0GE0Z.md)** The sim·mea·cut test framework — our own hexagonal test interfaces; xUnit demoted to host adapter; before/after boundary enforced ONCE (rooms inherit)
 - [ ] **[B-1024](backlog/P2/081KTSZN10008QG0R00349SM6P.md)** Speak-to-the-TV + own microkernel/ISO boot, QEMU-tested, Raspberry Pi self-contained, hardware capability matrix with visible friction/heat
-- [ ] **[B-1029](backlog/P2/081KTWJ1R0008QG0R001ZBWKTR.md)** The TS quantum lane — quantum-circuit as second oracle (Q# export, the three Vera jobs) + Quirk as the craft-school toy layer
+- [x] **[B-1029](backlog/P2/081KTWJ1R0008QG0R001ZBWKTR.md)** The TS quantum lane — quantum-circuit as second oracle (Q# export, the three Vera jobs) + Quirk as the craft-school toy layer
 - [x] **[B-1033](backlog/P2/081KTZ4EF0008QG0R000WJGSWX.md)** Hexagonal inference port — own the interface; Zeta.Bayesian + Infer.NET as the two adapters (theirs tests ours); plugin-system convergence audit
 - [x] **[B-1032](backlog/P2/081KTZ4EF0008QG0R001R3XPYV.md)** WSet<'K,'W> — the ring-generic circuit; three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0), GDL-anchored
 - [x] **[B-1031](backlog/P2/081KTZ4EF0008QG0R002WVTMMJ.md)** DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change

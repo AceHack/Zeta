@@ -96,7 +96,6 @@ export interface QuantumObservableTranscript {
   };
   readonly batches: readonly QuantumObservableBatch[];
 }
-
 function compareStrings(a: string, b: string): number {
   if (a < b) return -1;
   if (a > b) return 1;
@@ -107,7 +106,9 @@ function compareNumbers(a?: number, b?: number): number {
   if (a === undefined && b === undefined) return 0;
   if (a === undefined) return -1;
   if (b === undefined) return 1;
-  return a < b ? -1 : a > b ? 1 : 0;
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
 }
 
 function tagOrder(type: QuantumObservableRow["type"]): number {
@@ -127,6 +128,106 @@ function tagOrder(type: QuantumObservableRow["type"]): number {
   }
 }
 
+function compareSingleQubit(va: SingleQubitMeasurement, vb: SingleQubitMeasurement): number {
+  let cmp = compareStrings(va.Operation, vb.Operation);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.ThetaRadians, vb.ThetaRadians);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Probabilities.Zero, vb.Probabilities.Zero);
+  if (cmp !== 0) return cmp;
+  return compareNumbers(va.Probabilities.One, vb.Probabilities.One);
+}
+
+function compareCanonicalChsh(va: CanonicalChsh, vb: CanonicalChsh): number {
+  let cmp = compareNumbers(va.Angles.A, vb.Angles.A);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Angles.APrime, vb.Angles.APrime);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Angles.B, vb.Angles.B);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Angles.BPrime, vb.Angles.BPrime);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Correlators.EAB, vb.Correlators.EAB);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Correlators.EABPrime, vb.Correlators.EABPrime);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Correlators.EAPrimeB, vb.Correlators.EAPrimeB);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Correlators.EAPrimeBPrime, vb.Correlators.EAPrimeBPrime);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.S, vb.S);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Tsirelson, vb.Tsirelson);
+  if (cmp !== 0) return cmp;
+  return compareNumbers(va.ClassicalBound, vb.ClassicalBound);
+}
+
+function compareSingletChsh(va: SingletChsh, vb: SingletChsh): number {
+  let cmp = compareNumbers(va.S, vb.S);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Analytic, vb.Analytic);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.ClassicalBound, vb.ClassicalBound);
+  if (cmp !== 0) return cmp;
+  const lenA = va.Corners.length;
+  const lenB = vb.Corners.length;
+  if (lenA !== lenB) return lenA - lenB;
+  for (let i = 0; i < lenA; i++) {
+    const ca = va.Corners[i];
+    const cb = vb.Corners[i];
+    if (ca === undefined || cb === undefined) {
+      throw new Error("Out of bounds index in corners comparison");
+    }
+    const cmpC = compareBellCorner(ca, cb);
+    if (cmpC !== 0) return cmpC;
+  }
+  return 0;
+}
+
+function compareBellCorner(va: BellCorner, vb: BellCorner): number {
+  let cmp = compareStrings(va.Id, vb.Id);
+  if (cmp !== 0) return cmp;
+  cmp = compareStrings(va.Operation, vb.Operation);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.A, vb.A);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.B, vb.B);
+  if (cmp !== 0) return cmp;
+  cmp = va.Coefficient - vb.Coefficient;
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.SameOutcomeProbability, vb.SameOutcomeProbability);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.OppositeOutcomeProbability, vb.OppositeOutcomeProbability);
+  if (cmp !== 0) return cmp;
+  return compareNumbers(va.Correlator, vb.Correlator);
+}
+
+function compareBellCoincidence(va: BellCoincidence, vb: BellCoincidence): number {
+  let cmp = compareStrings(va.State, vb.State);
+  if (cmp !== 0) return cmp;
+  cmp = compareStrings(va.Operation, vb.Operation);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.A, vb.A);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.B, vb.B);
+  if (cmp !== 0) return cmp;
+  cmp = compareStrings(va.Event, vb.Event);
+  if (cmp !== 0) return cmp;
+  return compareNumbers(va.Probability, vb.Probability);
+}
+
+function compareInterferenceVisibility(va: InterferenceVisibility, vb: InterferenceVisibility): number {
+  let cmp = compareStrings(va.Operation, vb.Operation);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.PhaseRadians, vb.PhaseRadians);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Probabilities.Zero, vb.Probabilities.Zero);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Probabilities.One, vb.Probabilities.One);
+  if (cmp !== 0) return cmp;
+  return compareNumbers(va.Visibility, vb.Visibility);
+}
+
 export function compareQuantumObservableRow(a: QuantumObservableRow, b: QuantumObservableRow): number {
   if (a.type !== b.type) {
     return tagOrder(a.type) - tagOrder(b.type);
@@ -140,120 +241,17 @@ export function compareQuantumObservableRow(a: QuantumObservableRow, b: QuantumO
 
   // Compare other fields depending on tag
   switch (a.type) {
-    case "SingleQubit": {
-      const va = a.value;
-      const vb = b.value as SingleQubitMeasurement;
-      let cmp = compareStrings(va.Operation, vb.Operation);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.ThetaRadians, vb.ThetaRadians);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Probabilities.Zero, vb.Probabilities.Zero);
-      if (cmp !== 0) return cmp;
-      return compareNumbers(va.Probabilities.One, vb.Probabilities.One);
-    }
-    case "CanonicalChsh": {
-      const va = a.value;
-      const vb = b.value as CanonicalChsh;
-      let cmp = compareNumbers(va.Angles.A, vb.Angles.A);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Angles.APrime, vb.Angles.APrime);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Angles.B, vb.Angles.B);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Angles.BPrime, vb.Angles.BPrime);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Correlators.EAB, vb.Correlators.EAB);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Correlators.EABPrime, vb.Correlators.EABPrime);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Correlators.EAPrimeB, vb.Correlators.EAPrimeB);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Correlators.EAPrimeBPrime, vb.Correlators.EAPrimeBPrime);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.S, vb.S);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Tsirelson, vb.Tsirelson);
-      if (cmp !== 0) return cmp;
-      return compareNumbers(va.ClassicalBound, vb.ClassicalBound);
-    }
-    case "SingletChsh": {
-      const va = a.value;
-      const vb = b.value as SingletChsh;
-      let cmp = compareNumbers(va.S, vb.S);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Analytic, vb.Analytic);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.ClassicalBound, vb.ClassicalBound);
-      if (cmp !== 0) return cmp;
-      const lenA = va.Corners.length;
-      const lenB = vb.Corners.length;
-      if (lenA !== lenB) return lenA - lenB;
-      for (let i = 0; i < lenA; i++) {
-        const ca = va.Corners[i]!;
-        const cb = vb.Corners[i]!;
-        let cmpC = compareStrings(ca.Id, cb.Id);
-        if (cmpC !== 0) return cmpC;
-        cmpC = compareStrings(ca.Operation, cb.Operation);
-        if (cmpC !== 0) return cmpC;
-        cmpC = compareNumbers(ca.A, cb.A);
-        if (cmpC !== 0) return cmpC;
-        cmpC = compareNumbers(ca.B, cb.B);
-        if (cmpC !== 0) return cmpC;
-        cmpC = ca.Coefficient - cb.Coefficient;
-        if (cmpC !== 0) return cmpC;
-        cmpC = compareNumbers(ca.SameOutcomeProbability, cb.SameOutcomeProbability);
-        if (cmpC !== 0) return cmpC;
-        cmpC = compareNumbers(ca.OppositeOutcomeProbability, cb.OppositeOutcomeProbability);
-        if (cmpC !== 0) return cmpC;
-        cmpC = compareNumbers(ca.Correlator, cb.Correlator);
-        if (cmpC !== 0) return cmpC;
-      }
-      return 0;
-    }
-    case "BellCorner": {
-      const va = a.value;
-      const vb = b.value as BellCorner;
-      let cmp = compareStrings(va.Operation, vb.Operation);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.A, vb.A);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.B, vb.B);
-      if (cmp !== 0) return cmp;
-      cmp = va.Coefficient - vb.Coefficient;
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.SameOutcomeProbability, vb.SameOutcomeProbability);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.OppositeOutcomeProbability, vb.OppositeOutcomeProbability);
-      if (cmp !== 0) return cmp;
-      return compareNumbers(va.Correlator, vb.Correlator);
-    }
-    case "BellCoincidence": {
-      const va = a.value;
-      const vb = b.value as BellCoincidence;
-      let cmp = compareStrings(va.State, vb.State);
-      if (cmp !== 0) return cmp;
-      cmp = compareStrings(va.Operation, vb.Operation);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.A, vb.A);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.B, vb.B);
-      if (cmp !== 0) return cmp;
-      cmp = compareStrings(va.Event, vb.Event);
-      if (cmp !== 0) return cmp;
-      return compareNumbers(va.Probability, vb.Probability);
-    }
-    case "InterferenceVisibility": {
-      const va = a.value;
-      const vb = b.value as InterferenceVisibility;
-      let cmp = compareStrings(va.Operation, vb.Operation);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.PhaseRadians, vb.PhaseRadians);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Probabilities.Zero, vb.Probabilities.Zero);
-      if (cmp !== 0) return cmp;
-      cmp = compareNumbers(va.Probabilities.One, vb.Probabilities.One);
-      if (cmp !== 0) return cmp;
-      return compareNumbers(va.Visibility, vb.Visibility);
-    }
+    case "SingleQubit":
+      return compareSingleQubit(a.value, b.value as SingleQubitMeasurement);
+    case "CanonicalChsh":
+      return compareCanonicalChsh(a.value, b.value as CanonicalChsh);
+    case "SingletChsh":
+      return compareSingletChsh(a.value, b.value as SingletChsh);
+    case "BellCorner":
+      return compareBellCorner(a.value, b.value as BellCorner);
+    case "BellCoincidence":
+      return compareBellCoincidence(a.value, b.value as BellCoincidence);
+    case "InterferenceVisibility":
+      return compareInterferenceVisibility(a.value, b.value as InterferenceVisibility);
   }
 }

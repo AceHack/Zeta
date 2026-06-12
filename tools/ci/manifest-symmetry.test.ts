@@ -29,9 +29,7 @@ function expectMiseTool(name: string, version: string): void {
   // the host-tier split (workitem 081KTWQZY7F): full-tier pins live in .mise.full.toml,
   // merged via MISE_ENV=full — symmetry holds across the PAIR, not one file.
   const raw =
-    readFileSync(join(repoRoot, ".mise.toml"), "utf8") +
-    "\n" +
-    readFileSync(join(repoRoot, ".mise.full.toml"), "utf8");
+    readFileSync(join(repoRoot, ".mise.toml"), "utf8") + "\n" + readFileSync(join(repoRoot, ".mise.full.toml"), "utf8");
   expect(raw).toMatch(miseToolPattern(name, version));
 }
 
@@ -62,10 +60,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   libssl3t64: "Linux OpenSSL runtime lib; Windows uses Schannel / native TLS",
   "libgssapi-krb5-2": "Linux Kerberos/GSSAPI runtime lib; Windows uses SSPI natively",
   tzdata: "Linux timezone database; Windows ships its own timezone data",
-  "qemu-system-x86":
-    "covered on Windows by the qemu manifest line; apt splits qemu-system-* from qemu-utils",
-  "qemu-utils":
-    "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
+  "qemu-system-x86": "covered on Windows by the qemu manifest line; apt splits qemu-system-* from qemu-utils",
+  "qemu-utils": "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
   mtools:
     "file-backed zflash ESP-image writer for Unix/NixOS QEMU proof; no scoop/winget/choco package source is declared yet, so Windows keeps QEMU-only coverage until a Windows package source is selected",
   // Rootless-podman helpers (added to apt with podman; B-0964 §2). Linux-only: on
@@ -81,6 +77,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
     "headscale SERVER-side CLI — mesh coordination ops run on Linux/macOS hosts; Windows dev boxes join the mesh as tailscale clients (manifests/windows tailscale line).",
   "r-base":
     "R statistical runtime (charting/grammar-of-graphics lens-finder); covered on Windows by the `r` manifest line (scoop r / winget RProject.R / choco R.Project). apt names the package r-base; brew + scoop name it r.",
+  tailscale:
+    "mesh VPN client; on Windows, Tailscale installs natively via MSI/installer or winget (Tailscale.Tailscale).",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
@@ -158,37 +156,15 @@ test("local-llm install defaults to skip outside interactive/full install contex
 });
 
 test("NixOS and USB installer surfaces delegate agent/runtime drift to install graph", () => {
-  const commonNix = readFileSync(
-    join(repoRoot, "full-ai-cluster", "nixos", "modules", "common.nix"),
-    "utf8",
-  );
-  const aiAgentNix = readFileSync(
-    join(repoRoot, "full-ai-cluster", "nixos", "modules", "zeta-ai-agent.nix"),
-    "utf8",
-  );
+  const commonNix = readFileSync(join(repoRoot, "full-ai-cluster", "nixos", "modules", "common.nix"), "utf8");
+  const aiAgentNix = readFileSync(join(repoRoot, "full-ai-cluster", "nixos", "modules", "zeta-ai-agent.nix"), "utf8");
   const installerNix = readFileSync(
-    join(
-      repoRoot,
-      "full-ai-cluster",
-      "usb-nixos-installer",
-      "nixos",
-      "installer",
-      "configuration.nix",
-    ),
+    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "nixos", "installer", "configuration.nix"),
     "utf8",
   );
-  const zetaInstall = readFileSync(
-    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"),
-    "utf8",
-  );
-  const fullClusterFlake = readFileSync(
-    join(repoRoot, "full-ai-cluster", "flake.nix"),
-    "utf8",
-  );
-  const usbInstallerFlake = readFileSync(
-    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"),
-    "utf8",
-  );
+  const zetaInstall = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"), "utf8");
+  const fullClusterFlake = readFileSync(join(repoRoot, "full-ai-cluster", "flake.nix"), "utf8");
+  const usbInstallerFlake = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"), "utf8");
 
   // Installed NixOS gets declarative system packages from Nix, but runtime/agent CLI drift
   // comes from the same install.sh manifest graph as dev machines and CI.

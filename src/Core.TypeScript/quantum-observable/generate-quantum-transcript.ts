@@ -77,7 +77,11 @@ batch0Deltas.push({ row: singletRow, weight: 1 });
 
 // 4. Singlet Corners (individually)
 for (const corner of corners) {
-  const c = oracle.runSingletChsh("BellSinglet CHSH corners", [corner]).Corners[0]!;
+  const cornersResult = oracle.runSingletChsh("BellSinglet CHSH corners", [corner]).Corners;
+  const c = cornersResult[0];
+  if (c === undefined) {
+    throw new Error("Expected at least one corner in BellSinglet result");
+  }
   const row: QuantumObservableRow = {
     type: "BellCorner",
     value: c,
