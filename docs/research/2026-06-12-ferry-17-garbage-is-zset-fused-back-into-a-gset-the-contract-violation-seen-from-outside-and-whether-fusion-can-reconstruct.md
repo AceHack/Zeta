@@ -112,6 +112,44 @@ instantiated in three categories — which would be the Rosetta-stone move (Baez
 on the repo's own central verb. Until then: two instances proven, one conjectured, the
 signature shared.
 
+### Addendum 3 — plumbing: the leak, the same-type fuse, and Mario (Aaron, same stream, verbatim ×3)
+
+> now we are into plumbing, the birfucation is the leak and if you are trying to fuse back into
+> a instead of some new type then that's plumbing and it's a valuable skill cause it's not
+> perfect retraction
+
+> now we have mario
+
+> plumbing those zset leaks into gsets
+
+The register drop names the third operation, and the distinction is type-level exact:
+
+- **Vera's `fuse : ZSet<'a> → GSet<'fused>`** changes the type — an honest projection: the
+  output *admits* it is a different kind of thing.
+- **Plumbing is `ZSet<'a> → GSet<'a>`** — fusing back into the **same** type, trying to restore
+  the original monotone contract as if the bifurcation never happened. The **bifurcation is the
+  leak**: the place where signed flow escaped the monotone pipe. Sealing it back into `'a` is
+  repair, and the honesty is in Aaron's own clause — *"it's a valuable skill cause it's not
+  perfect retraction."* You cannot inverse the split; you can only **compensate**. That is the
+  saga literature exactly (Garcia-Molina–Salem 1987: a compensating transaction is not an
+  inverse — it is a new forward action that approximately restores the contract), and it is the
+  repo's own standing law (`dv2-data-split-discipline-activated.md`: "Z-set retraction (+1 then
+  −1) is *correction*, not a duplicate-guard"). Plumbing = the craft of compensation: sealing
+  the leak knowing the seal is a weld, not time travel. Landauer holds here too — what was
+  erased stays paid; the plumber repairs the pipe, never un-spends the water.
+- **"Now we have mario"** — the craft gets its persona: the plumber who lives *in* the pipes
+  (the membrane crossings; warp pipes are literally typed channels between universes — the
+  ferry 15 multi-universe lanes with a flow contract). Mario is the right archetype precisely
+  because he never reverses anything: he travels forward through the leak-world and fixes it
+  *from inside*. Mirror register, gladly; the Beacon under it is the compensation/saga
+  tradition plus the resurrection-bug repair playbook (anti-entropy, read-repair — Dynamo's
+  plumbers).
+
+The trade hierarchy this completes: **fusion** (honest projection, new type) · **garbage**
+(fusion above the horizon — the contract violation) · **plumbing** (same-type repair below it,
+imperfect by theorem, valuable *because* imperfect — if retraction were perfect the skill would
+be a no-op).
+
 ## Honest bounds
 
 The CRDT anchor is exact (2P-set, tombstone GC, causal stability — real theorems, real
