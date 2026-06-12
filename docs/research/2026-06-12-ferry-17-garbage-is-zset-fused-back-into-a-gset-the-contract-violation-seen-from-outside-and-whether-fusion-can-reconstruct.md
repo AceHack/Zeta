@@ -1,0 +1,83 @@
+# Ferry 17 — garbage is a Z-set fused back into a G-set: the contract violation seen from outside, the open/closed difference, and whether fusion can reconstruct
+
+**Date:** 2026-06-12 · **Route:** Aaron → shadow (streamed, verbatim) · Extends ferry 14
+addendum 2 (G→Z genesis) and ferry 15 addendum 2 (fusion = revelation); lands on B-1036 (the GC
+lane: the gc cartridge is in-tree at `db/shapes/cartridges/gc.lines`; rung 5 history-epochs/git-gc
+is on the board).
+
+## Verbatim
+
+> garbage is when you fuse two gsets into a zsets +1 -1 and then fuse that itself into a gset
+> and from the outside world it violates its contract that's the difference between open and
+> closed principle can you reconstruct gset from a zset that's fusion
+
+## The peel
+
+### 1. The construction is a named CRDT, and the problem is a named theorem
+
+"Fuse two G-sets into a Z-set, +1 −1" is **the 2P-set** (Shapiro–Preguiça–Baquero–Zawirski
+2011): an add-set and a remove-set, both grow-only, read through each other — literally two
+G-sets carrying the two signs. The Z-set is its weight-form (adds = +1, tombstones = −1; the
+DBSP encoding of the same object). And "fuse that itself into a G-set" is **consolidation /
+garbage collection**: collapse the signed pairs, drop the zeros, present the positive support as
+a plain grow-only set (`ZSet.consolidate`, in-tree). Aaron's claim — *from the outside world it
+violates its contract* — is the **tombstone-GC problem**, a known hard result in the CRDT
+literature: you cannot remove tombstones (fuse Z→G) without coordination, because a replica
+that has not yet seen the −1 will merge its stale +1 back in and the deleted element
+*resurrects* — the outside world observes a G-set whose contract (monotone, never un-grows,
+never re-grows what was removed) is violated. Safe GC requires **causal stability** (Baquero et
+al.): only collapse history below the frontier every observer has passed. Garbage collection is
+not cleanup; it is *a consensus problem about what history is still owed to someone*.
+
+### 2. "That's the difference between open and closed principle"
+
+Exact, in Meyer's own terms: a G-set is **open for extension** (grow forever) and **closed for
+modification** (history never rewritten) — open-closed satisfied by construction, which is why
+it is the genesis-side object (ferry 14). Fusing Z→G is **modification observable from
+outside**: history rewritten under the reader. The open/closed principle, read at the data
+layer, is precisely the law that says *consolidation must be invisible* — legal only below the
+horizon where no external observer can distinguish the fused G-set from the unfused Z-set
+(REPORT #4's Theorem-B shape again: stability conditional on a named precondition; here the
+precondition is causal stability instead of rate-monotonicity).
+
+### 3. "Can you reconstruct gset from a zset — that's fusion." The answer is the whole architecture
+
+Two directions, and the asymmetry is the point:
+
+- **Z-set → current G-set (the positive support): YES, always.** Take the positive-weight rows.
+  That is `cache = I(stream)` — the lossy, forward, *revealing* direction; ferry 15 addendum 2's
+  fusion-as-apokalypsis (the unveiled current view). This is what fusion IS: the many signed
+  histories collapsed into one present.
+- **Consolidated Z-set → the two original G-sets (adds and removes separately): NO.** Once +1
+  and −1 annihilate, the pair (added-then-removed) is indistinguishable from (never-existed).
+  Consolidation is **erasure** — and so it is the system's **Landauer-paying act** (ferry 8): the
+  one place heat must be spent, because information is genuinely destroyed. The *unconsolidated*
+  Z-set (the log, the event store) reconstructs both G-sets exactly — which is why the repo's
+  storage law keeps the log and treats every materialization as derived.
+
+So: **fusion is reconstruction of the present, at the price of the past.** Garbage is fusion
+performed *above* the causal horizon — paying the erasure before everyone has finished reading.
+Done below the horizon it is compaction (LSM merge, git gc, B-1036 rung 5's history epochs);
+done above it, it is a contract violation with a resurrection bug attached. The difference is
+not the operation — it is *where the membrane says the past is no longer owed*.
+
+## Honest bounds
+
+The CRDT anchor is exact (2P-set, tombstone GC, causal stability — real theorems, real
+literature); the Landauer reading is the established ferry-8 bridge (erasure = the paid act) and
+inherits its bounds; "that's the difference between open and closed principle" is Meyer's law
+applied at the data layer — a tight reading, not a stretch, but Meyer stated it for module
+interfaces; the transfer to replicated-data contracts is ours and is marked as such.
+
+## Pointers
+
+- Ferry 14 addendum 2 (G→Z genesis: retraction makes boundaries possible) · ferry 15 addendum 2
+  (fusion = revelation) · ferry 8 (Landauer: erasure pays) · ferry 16 (the budget that keeps the
+  membrane processable)
+- `src/Core/ZSet.fs` `consolidate*` (the fusion act, in-tree) · `db/shapes/cartridges/gc.lines`
+  (the GC cartridge) · B-1036 rung 5 (history epochs / git gc — this ferry is its theory) ·
+  B-0969 (GCounter; the ordinal-parity lesson lives next door)
+- Anchors: Shapiro–Preguiça–Baquero–Zawirski 2011 (CRDTs; the 2P-set) · Bieniusa et al. 2012
+  (the tombstone problem; optimized OR-sets) · Baquero et al. (causal stability — the GC
+  horizon) · Meyer 1988 (open-closed) · Landauer 1961 (erasure pays) · LSM compaction /
+  `git gc` (the industrial instances)
