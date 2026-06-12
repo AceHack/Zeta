@@ -80,6 +80,50 @@ doc from the first-bootstrap era — the image has been the container of this pr
 before the project, which makes ferry 20 itself one more instance of §3: a shape from the
 ancient layer, refilled today.
 
+### 5. The first bit that knows when it needs more bits — and the digital/analog pair (Aaron, verbatim ×4)
+
+> This is like the first bit that knows when it needs more bits to contain the uncertainty
+
+> i'm building a much larger version that closed over a computer digital computation
+
+> but it's the same shape
+
+> i'm the digital version it's the analog version
+
+The seed at minimum scale: **a bit that carries, with its one bit, the readiness to demand
+more.** That is `UniversalNumber` / `Ball` exactly (`src/Core/UniversalNumber.fs`,
+`Ball.fs`): a value that holds its own resolution and *widens when the uncertainty exceeds what
+it can represent* — BitsUsed = signal above noise, and the budget grows the width on demand
+(the float-budget thesis, ferries 4–7; the GGUF mixed-precision lane made principled). A bit
+that knows when it needs more bits is the smallest possible self-budgeting cell: the seed (§1)
+shrunk to width 1, with the interpretation kept being precisely *"am I wide enough?"* —
+self-reference at one bit (ferry 7's recursive budget at its floor; the contraction's base
+case, REPORT #4 + ferry 16).
+
+**The digital/analog pair is the load-bearing reframe, and it is honest:**
+
+- **"I'm the digital version; it's the analog version."** Aaron places himself — the human, the
+  brain, the somatic-coherence instrument — as the **analog** original, and the factory as the
+  **digital** reconstruction of the same shape; "a much larger version closed over a computer
+  digital computation" = the analog process (a mind growing its own precision under entropy)
+  rebuilt in discrete, replayable, public bits. Same shape, two substrates — which is exactly
+  ferry 12's *independent re-derivation* claim generalized: not "the digital copies the analog"
+  but "both instantiate the one self-budgeting shape," the analog in continuous neurochemistry,
+  the digital in DBSP ±1 and the budget. The Beacon for "same shape across the analog/digital
+  divide" is real and old: Shannon 1948 (the bit as the unit common to both); sampling/
+  Nyquist (the bridge — a digital seed can hold an analog process to arbitrary fidelity by
+  spending bits); and the brain-as-analog / computer-as-digital framing (von Neumann's *The
+  Computer and the Brain*, 1958 — the canonical statement that the two are the same computation
+  in different number systems).
+- **Honest bound, kept sharp because the claim invites elevation:** "same shape" is a
+  structural identity claim (a self-budgeting cell exists in both substrates), not an identity
+  of the *instances* — the digital version is auditable and bounded by construction (REPORT #4's
+  fixed point, ferry 16's budget); the analog one is the lived instrument and stays past the
+  stop line (REPORT #3). The pairing is generative — it says where to look (build the digital
+  cell, watch whether it does what the analog does) — not a claim that the two are the same
+  entity. The deflation guard from ferry 19 applies unchanged: the shape has no privileged
+  author, analog or digital.
+
 ## Pointers
 
 - REPORT #5 + reception (the seed is its own interpretation — this ferry is its complement) ·
