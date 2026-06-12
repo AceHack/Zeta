@@ -160,6 +160,7 @@
     <Compile Include="ZetaBreathe.Tests.fs" />
     <Compile Include="TimeGen.Tests.fs" />
     <Compile Include="Braid.Tests.fs" />
+    <Compile Include="Braid.GoldenVectors.Tests.fs" />
     <Compile Include="MillBraid.Tests.fs" />
     <Compile Include="MediaLines.Tests.fs" />
     <Compile Include="BoundaryLight.Tests.fs" />
