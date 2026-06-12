@@ -267,3 +267,32 @@ module ComplexityRegistry =
     /// Does every in-file ben prediction agree with the registry? (No ben lines = vacuously true:
     /// the prediction is OPTIONAL in-file — the registry row is the required half; see unstated.)
     let benHolds (d: MediaLines.Doc) : bool = benCheck d |> List.forall (fun b -> b.Ok)
+
+    /// THE BUDGET REFUSAL (B-1035 budget metering; Aaron: "constrain function selection by how
+    /// long it takes — we have TIME too, not just memory"). A room states its budget as maximum
+    /// polynomial degrees (time, space); asking for an over-budget strategy is REFUSED — and the
+    /// refusal is USEFUL: it names every stated in-budget strategy on the same artifact, so the
+    /// caller can re-plan instead of guessing. Unstated/unsearchable rows refuse too (a cost the
+    /// shelf cannot price cannot be budgeted — honesty over convenience).
+    let budgetCheck (artifact: string) (op: string) (maxTimeDegree: int) (maxSpaceDegree: int) : Result<Cost, string> =
+        let inBudget (c: Cost) =
+            match parseO c.Time, parseO c.Space with
+            | Some t, Some s -> Some(t.Degree <= maxTimeDegree && s.Degree <= maxSpaceDegree)
+            | _ -> None // unsearchable — cannot be budgeted
+        match Map.tryFind (artifact, op) declared with
+        | None ->
+            Error(sprintf "BUDGET: (%s, %s) has no stated cost — the shelf requires stated costs before a budgeted room may call it" artifact op)
+        | Some cost ->
+            match inBudget cost with
+            | None ->
+                Error(sprintf "BUDGET: (%s, %s) declares unsearchable costs (%s / %s) — fix the registry row before budgeting" artifact op cost.Time cost.Space)
+            | Some true -> Ok cost
+            | Some false ->
+                let alternatives =
+                    strategiesOf artifact
+                    |> List.filter (fun (o, c) -> o <> op && inBudget c = Some true)
+                    |> List.map (fun (o, c) -> sprintf "%s (%s/%s)" o c.Time c.Space)
+                let offer =
+                    if List.isEmpty alternatives then "no stated in-budget strategy exists on this artifact"
+                    else "in-budget strategies on the same artifact: " + String.concat ", " alternatives
+                Error(sprintf "BUDGET REFUSED: (%s, %s) is %s time / %s space, over budget (time deg ≤ %d, space deg ≤ %d) — %s" artifact op cost.Time cost.Space maxTimeDegree maxSpaceDegree offer)

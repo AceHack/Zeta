@@ -1,5 +1,9 @@
 module Zeta.Tests.TestLoopHostTests
 
+// SEALED-ROOM — B-1035 Reticulum-only clause: the loops in this file run sealed (no filesystem,
+// process, network, clock, or ambient entropy). Enforced by tools/hygiene/audit-sealed-rooms.ts
+// in the gate; deliberate violations in falsifiers carry a SEAL-WAIVER line.
+
 // THE XUNIT HOST ADAPTER + the first three migrated loops (B-1035 slice 1). xUnit is demoted to
 // host: one thin shim runs any ITestLoop; CI/IDE tooling unchanged. All three exemplars are
 // SEALED (no disk, no git, no tools — modeling the Reticulum-only clause before Reticulum):
@@ -86,7 +90,7 @@ let ``THE BOUNDARY REJECTS: an ambient-entropy loop fails the double-run check e
         TestLoop.run (
             TestLoop.make "entropy smuggler" 4UL
                 (fun _ -> ())
-                (fun () -> System.Guid.NewGuid().ToString()) // ambient — exactly what the boundary exists to catch
+                (fun () -> System.Guid.NewGuid().ToString()) // SEAL-WAIVER: falsifier — proves the boundary rejects ambient entropy
                 (fun _ -> Ok()))
     Assert.False v.Passed
     Assert.False v.Deterministic
@@ -100,7 +104,7 @@ let ``THE GLASS-SIDE RULING IS MECHANICAL: a loop that smuggles the wall clock i
         TestLoop.run (
             TestLoop.make "clock smuggler" 4UL
                 (fun _ -> ())
-                (fun () -> System.Diagnostics.Stopwatch.GetTimestamp())
+                (fun () -> System.Diagnostics.Stopwatch.GetTimestamp()) // SEAL-WAIVER: falsifier — proves the glass-side ruling is mechanical
                 (fun _ -> Ok()))
     Assert.False v.Passed
     Assert.False v.Deterministic

@@ -941,6 +941,11 @@ jobs:
       - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
         run: bun tools/hygiene/audit-dangling-symlinks.ts
 
+      # B-1035 Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
+      # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
+      - name: Run audit-sealed-rooms (B-1035 Reticulum-only lint half)
+        run: bun tools/hygiene/audit-sealed-rooms.ts
+
   lint-backlog-parent-child-status:
     # Fail if any backlog row declares `status: closed` (or equivalent —
     # landed/superseded/merged/done/superseded-by-*) while a declared

@@ -19,8 +19,12 @@ namespace Zeta.Core
 ///      failure, not a review convention (the determinism lint's runtime twin).
 ///   3. Result-over-exception at the rim: any throw in Sim/Mea/Cut becomes a Failure verdict
 ///      with the phase named.
-/// Later slices (per the B-1035 row, not here): Reticulum-only syscall sealing, golden-lock and
-/// red-light integration, budget metering, the chip9-board host.
+/// Enforcement slices landed 2026-06-12: Reticulum-only = the SEALED-ROOM marker + the gate
+/// audit (tools/hygiene/audit-sealed-rooms.ts — .NET has no reliable in-proc syscall hook, so
+/// the seal is self-declared and mechanically swept; the double-run check owns the entropy
+/// half) + budget metering = ComplexityRegistry.budgetCheck (over-budget calls are REFUSED and
+/// the refusal names in-budget strategies). Still later: golden-lock/red-light integration,
+/// the chip9-board host.
 ///
 /// F# cannot DEFINE default interface members, so per house idiom the "default impls" the
 /// quartet names live as THIS module's functions over the interface — same weight-free shape.

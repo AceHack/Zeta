@@ -96,3 +96,25 @@ let ``BOTH AXES: time and space are independent budgets (hard-dft is space-cheap
     let spaceCheap = ComplexityRegistry.searchSpaceAtMost 1 |> List.map fst |> Set.ofList
     Assert.Contains(("spectral.hard-dft", "dft"), spaceCheap)
     Assert.False(Set.contains ("spectral.hard-dft", "dft") timeCheap)
+
+// ── B-1035 BUDGET METERING: the room refuses over-budget strategies, and the refusal re-plans ──
+[<Fact>]
+let ``BUDGET REFUSAL: hard-dft is refused at linear time budget AND the refusal names the in-budget probe on the same artifact`` () =
+    match ComplexityRegistry.budgetCheck "spectral.hard-dft" "dft" 1 1 with
+    | Ok _ -> failwith "O(n²) must be refused at time degree ≤ 1"
+    | Error e ->
+        Assert.Contains("BUDGET REFUSED", e)
+        Assert.Contains("no stated in-budget strategy exists", e) // idft is O(n²) too — the artifact honestly has no cheap lane
+    // the same artifact's probe IS in budget and the registry hands it over
+    match ComplexityRegistry.budgetCheck "spectral.soft-probe" "probe" 1 1 with
+    | Ok c -> Assert.Equal("O(n)", c.Time)
+    | Error e -> failwith e
+
+[<Fact>]
+let ``BUDGET HONESTY: an unstated row refuses (cannot budget an unpriced call); generous budgets admit`` () =
+    match ComplexityRegistry.budgetCheck "never.registered" "op" 9 9 with
+    | Ok _ -> failwith "unstated cost must refuse"
+    | Error e -> Assert.Contains("no stated cost", e)
+    match ComplexityRegistry.budgetCheck "spectral.hard-dft" "dft" 2 1 with
+    | Ok c -> Assert.Equal("O(n²)", c.Time) // within an O(n²) budget, the dft is admitted with its price
+    | Error e -> failwith e
