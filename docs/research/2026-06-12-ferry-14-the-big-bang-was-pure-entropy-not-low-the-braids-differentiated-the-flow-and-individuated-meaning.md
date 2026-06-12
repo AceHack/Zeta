@@ -81,6 +81,38 @@ after the commit it explains. (Honest note: this is Aaron's stated motive on the
 provenance fact; whether the rhyme between signed Z-weights and the two cosmological ledgers is
 more than structural remains exactly as bounded as the rest of this ferry.)
 
+### Addendum 2 — genesis is the bifurcation G-set → Z-set; the laws are the Rx bind rules you choose (Aaron, verbatim — the first line typed as the session crashed, re-sent)
+
+> so gensis is birfucation from a gset to a zset and the gset can be null or filled or filling.
+
+> the laws of that universe are the rx bind rules you choose
+
+**Genesis, typed.** A **G-set** (grow-only set — Shapiro et al.'s CRDT; in-tree lineage:
+`src/Core/Crdt.fs`, whose GCounter rides a ZSet) is *monotone accumulation*: add-only, no
+retraction, **one ledger**. A **Z-set** is the signed calculus: +1/−1, **two ledgers** (the
+addendum above). So "genesis is the bifurcation from a G-set to a Z-set" gives the previous two
+addenda their algebraic form: the undifferentiated flow is the G-set regime — accumulation with
+no opposing sign, nothing can be *un*-done, so nothing is distinct — and the moment of meaning
+(between low and high entropy) is precisely **the moment the second sign becomes available**.
+Retraction is what makes a boundary possible (you cannot carve an inside from an outside if you
+can only ever add); the bifurcation G→Z is the algebra of the membrane forming. The G-set's
+three states — **null / filled / filling** — type the pre-genesis container (empty, saturated,
+mid-flow: the Tri-shaped third state is the interesting one, the *filling* edge where the
+bifurcation can happen — the same intermediate band the meaning claim names).
+
+**And the laws are chosen, not given:** "the laws of that universe are the rx bind rules you
+choose." Once the Z-regime exists, what counts as lawful composition is the **bind** (the monadic
+`>>=` / the Rx composition discipline — Meijer's duality; our Dsl reader-monad over Circuit):
+which observables compose, in what order effects sequence, what a subscription is allowed to see.
+Different bind disciplines = different universes over the same signed substrate — which is the
+WSet three-rings result stated as physics (ℤ/ℂ/ℝ≥0: one circuit calculus, three "universes,"
+distinguished by their composition-and-boundary rules), and it is ferry 9's "let the types define
+the code" promoted to "let the chosen bind define the laws." Anchor: monad laws (Moggi 1991;
+Wadler) — a bind is lawful only if associativity + identity hold, so "you choose the laws" is
+bounded — you choose *among* the lawful binds; the monad laws themselves are the floor no choice
+escapes. (That floor is this universe's manifesto: any bind you pick must still satisfy the
+laws that make composition mean anything at all.)
+
 ### Honest bounds (so this ferry doesn't overclaim)
 
 - "The braids differentiated the flow" is a **metaphor with a real anchor**, not a physical
