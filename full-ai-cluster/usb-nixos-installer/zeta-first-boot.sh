@@ -53,6 +53,8 @@ ROLE_PROMPT_SECS="${ROLE_PROMPT_SECS:-10}"
 # the ROLE_PROMPT_SECS env-override pattern so the timeout is tunable
 # without source edits.
 NMTUI_RETRY_PROMPT_SECS="${NMTUI_RETRY_PROMPT_SECS:-10}"
+# B-0891: QEMU/ethernet-only hosts have no wl* iface — nmtui cannot help on serial.
+NO_WIFI_EXTRA_WAIT_SECS="${NO_WIFI_EXTRA_WAIT_SECS:-90}"
 
 # ── Role pick: 10-sec single-keystroke prompt ─────────────────────────
 # Defaults to whatever the ISO's /etc/zeta-firstboot.conf shipped with
@@ -94,9 +96,21 @@ drop_to_shell() {
 }
 
 has_internet() {
-  # Use 2-second timeout per ping; rely on DNS to also be working since
-  # nixos-install needs it later anyway.
+  # IP first (QEMU NAT often has DNS lag); github.com proves DNS for nixos-install.
+  ping -c 1 -W 2 -q 1.1.1.1 >/dev/null 2>&1 && return 0
   ping -c 1 -W 2 -q github.com >/dev/null 2>&1
+}
+
+has_wifi_hardware() {
+  local _iface _name
+  for _iface in /sys/class/net/*; do
+    _name=$(basename "$_iface")
+    [[ "$_name" == lo ]] && continue
+    if [[ -d "$_iface/wireless" ]] || [[ "$_name" == wl* ]]; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 # ANSI 'reset terminal' escape — no external `clear` dependency,
@@ -128,6 +142,24 @@ done
 if has_internet; then
   echo "  ethernet ok (DHCP)"
 else
+  if ! has_wifi_hardware; then
+    echo
+    echo "[2/3] No wifi hardware — waiting up to ${NO_WIFI_EXTRA_WAIT_SECS}s for ethernet (B-0891 headless/QEMU)."
+    WAITED=0
+    while ! has_internet; do
+      if [[ "$WAITED" -ge "$NO_WIFI_EXTRA_WAIT_SECS" ]]; then
+        break
+      fi
+      sleep 5
+      WAITED=$((WAITED + 5))
+      echo "  ... ${WAITED}s"
+    done
+    if has_internet; then
+      echo "  ethernet ok (after extra wait)"
+    else
+      echo "[zeta-first-boot] Still offline; proceeding to zeta-install (will fail loudly if unreachable)."
+    fi
+  else
   echo
   echo "[2/3] No ethernet internet detected. Launching wifi setup (nmtui)."
   echo "      After connecting, quit nmtui to continue install."
@@ -191,6 +223,7 @@ else
         ;;
     esac
   done
+  fi
 fi
 
 echo

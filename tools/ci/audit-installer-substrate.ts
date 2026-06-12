@@ -129,6 +129,8 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "zeta-install", // calls into zeta-install.sh after network up
       "/dev/ttyS0", // B-0891 serial mirror target (x86 QEMU / CI)
       "tee -a", // preserves tty1 + mirrors to serial UART
+      "has_wifi_hardware", // B-0891 skip nmtui on ethernet-only/QEMU
+      "1.1.1.1", // IP-first internet probe (DNS lag on NAT)
     ],
     rationale: "first-boot script must include eth-wait + nmtui + zeta-install call",
   },
