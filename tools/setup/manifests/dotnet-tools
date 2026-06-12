@@ -2,8 +2,12 @@
 # Format: <tool-id> [<version>]    (version optional; comments start with `#`)
 #
 # Pin only when we have a reason to pin; unpinned tools track latest.
+#
+# `tier=<slim|standard|full>` declares an entry's host requirement (untagged = slim = required
+# everywhere). Hosts declare ZETA_HOST_TIER (default full; the low-memory CI lane declares slim).
+# Workitem 081KTWQZY7F08QG0R0034KN17T — the cap/support pattern applied to setup.
 
-dotnet-stryker
+dotnet-stryker tier=standard
 # F# analyzers pack — G-Research rules + FSharp.Analyzers.Build
 # MSBuild integration. README.md references `dotnet tool install
 # --global fsharp-analyzers` directly; this manifest makes that
@@ -11,15 +15,15 @@ dotnet-stryker
 # `dotnet msbuild /t:AnalyzeFSharpProject` works for every
 # contributor without a separate install step. Bodhi round-34
 # DX audit flagged the tooling-gap.
-fsharp-analyzers
+fsharp-analyzers tier=standard
 # The cross-platform diagnostics suite (Aaron 2026-06-11: "the dotnet CLI perf commands are
 # cross-platform and pretty good — we should use those; it's dotnet tools you install").
 # EventPipe-based, works on macOS/Linux/Windows — the statistical/offline lane beside Ben's
 # deterministic meters (B-1039/B-1040): trace = CPU/event capture (opens in PerfView or
 # SpeedScope), counters = live metrics, gcdump = heap snapshots, dump = post-mortem,
 # stack = quick stack prints.
-dotnet-trace
-dotnet-counters
-dotnet-gcdump
-dotnet-dump
-dotnet-stack
+dotnet-trace tier=standard
+dotnet-counters tier=standard
+dotnet-gcdump tier=standard
+dotnet-dump tier=standard
+dotnet-stack tier=standard
