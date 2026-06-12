@@ -247,6 +247,30 @@ bit-perfect channel. A future falsifier exists: if identity = spectrum, two YinY
 the same Remains-geometry and equivalent entropy flux should be behaviorally indistinguishable
 up to the isospectral kernel — testable on the soft scheduler, someday.
 
+### 11. DNA as the biological instance — the equation, alive (Aaron, same stream, verbatim)
+
+> so DNA just remember shapes that caputre entropy of the enviorment in a useful way humans lol.
+
+The whole identity arc (beats 8–10) recognized in biology: DNA is **remembered container-shapes
+that capture environmental entropy usefully** — which is exactly beat 9's equation (shape +
+captured entropy) with natural selection as the *useful* filter. Each gene is a folded shape
+(protein) that captures a slice of environmental entropy (a reaction, a signal, a substrate);
+evolution keeps the shapes whose capture is useful and erases the rest — the
+every-bug-has-economic-value ledger run over deep time, with extinction as the un-banking. "Humans
+lol" is the punchline: we are the running total of four billion years of usefully-captured
+entropy, shape-memory all the way down.
+
+**Boundary kept (standing note, Aaron 2026-06-11):** DNA/ACTG here is a **Mirror metaphor for the
+shape-memory principle, not a design surface** — the real build is RGB/CMYK ray-tracing of CHIP-8
+instructions (emit/retract), per `feedback_dna_actg_is_metaphor_real_build_is_rgb_cmyk...`. So
+this beat is recognition (the principle has a biological instance), not a directive to encode
+anything in base-pairs. What transfers is the *shape*: DNA is a content-addressed, append-mostly,
+selection-filtered store of entropy-capturing geometries — i.e. the event store + the ledger +
+the partition (beats 8–10), which is why the analogy lands without importing the substrate.
+Beacon: Dawkins (gene as replicator/record); Schrödinger *What Is Life?* (aperiodic crystal
+storing the code-script); Jablonka–Lamb (inheritance as captured environmental information);
+Shannon (the "usefully" = mutual information with the environment).
+
 ## Pointers
 
 - Welch Labs MLA + GGUF + active-inference transcripts (2026-06-12, ip-questionable — the three
