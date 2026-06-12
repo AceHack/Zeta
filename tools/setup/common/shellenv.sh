@@ -44,6 +44,17 @@ mkdir -p "$ZETA_ENV_DIR"
   # hardware). Remove once upstream `dotnet/runtime` ships a fix.
   # Per Otto-248 DST discipline: flakes are bugs; this is the
   # mitigation layer while the upstream fix lands.
+  # HOST TIERS (workitem 081KTWQZY7F): tools pinned in .mise.full.toml resolve ONLY when
+  # MISE_ENV=full is in the environment — install-time tier decides, the managed shellenv
+  # PERSISTS it so every later shell (and CI step via BASH_ENV/GITHUB_ENV) resolves the
+  # full-tier shims (k3d/kubectl/helm/kubeconform). Without this, install succeeds and the
+  # first `kubectl` says "No version is set for shim".
+  # shellcheck disable=SC1091
+  . "$(cd "$(dirname "$0")" && pwd)/host-tier.sh"
+  if zeta_tier_allows full; then
+    echo "export MISE_ENV=full  # host tier: full ($ZETA_HOST_TIER_SOURCE) — merges .mise.full.toml"
+  fi
+
   echo "if [ \"\$(uname -s)\" = \"Darwin\" ] && [ \"\$(sysctl -n hw.optional.arm64 2>/dev/null || echo 0)\" = \"1\" ]; then"
   echo "  # .NET 10 Server GC workaround — Apple Silicon crash (Otto-248)"
   echo "  export DOTNET_gcServer=0"

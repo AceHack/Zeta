@@ -491,6 +491,12 @@ jobs:
     # §24): yamllint (pipx→uv) + kubeconform (ubi:) pinned in .mise.toml, so dev
     # laptops + CI + devcontainers + install.ps1 all get the same versions.
     name: lint (yaml/k8s)
+    # kubeconform's pin lives in .mise.full.toml — BOTH install and the run steps need the
+    # full-tier env, so it sits at JOB level (the step-level env broke the shim resolve:
+    # "No version is set for shim: kubeconform"). Workitem 081KTWQZY7F.
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
     timeout-minutes: 10
     runs-on: ubuntu-24.04
     continue-on-error: true # ADVISORY — remove once clean for a few rounds (then required)
@@ -500,9 +506,6 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        env:
-          # kubeconform lives in .mise.full.toml — declare full explicitly (workitem 081KTWQZY7F)
-          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: yamllint (k8s manifests)
