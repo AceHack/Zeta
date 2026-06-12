@@ -94,3 +94,16 @@ Beacon: MUMPS/M (Octo Barnett & Neil Pappalardo, Massachusetts General Hospital,
 X11.1-1977) — the memory-mapped hierarchical-global lineage; .NET EventPipe (out-of-process
 tracing, the diagnostics-IPC design) — observation that never enters the observed process's
 code path.
+
+## Progress 4 (2026-06-11) — the cartridge `ben` line + gate refusal SHIP
+
+A room now states its own cost prediction in-file: `ben	draw	shape.dynamicvalue	O(children)`
+(kind=ben, name=operation, fields=[artifact; predicted time O]). `ComplexityRegistry.benCheck`
+cross-checks the in-file claim against the registry — an unparseable O, a missing registry row, or
+a prediction that DISAGREES with the registry's declared time all REFUSE; the shelf sweep in
+ShapeAcceptance.Tests gates every cartridge the moment it lands (same blade as THE GOLDEN LOCK).
+`ben` joined MediaLines knownKinds (the near-miss lint had rightly flagged it as one letter from
+`gen`) + a structural lint (artifact + predicted O required). softvalue/dynamicvalue/triboolean
+carry the first three lines. Runtime grading (Confirmed/Tighter/Violated) stays Ben.grade's lane;
+remaining: dotnet wall/alloc-statistical meters behind the boundary + red light; the BenchmarkDotNet
+senior adapter; the pro verb's out-of-process EventPipe lane (Progress 3).

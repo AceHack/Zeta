@@ -29,6 +29,7 @@ prereq	the-zero-case	rung 1 first: see what mono CANNOT say before admiring what
 edge	projection-of	shape-adinkra	both draw a register the base display cannot carry (signs there, confidence here) — capability upgrades as visible channels
 issue	in-svg-labels	otto	open	Iris+Rune review 2026-06-11: rung labels ("value"/"+ coarse"/"+ fine") and per-stroke <title> tooltips need a deliberate STRICT-DIALECT extension (fromSvg refuses foreign elements today) — extend emitter+parser together or not at all
 anim	draw	ladder
+ben	draw	shape.softvalue	O(rungs·bar)
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	aaron	meaning	ratified	"I saw both — nice, they look good to me" — render-loop ratification of the ladder (value bars equal, coarse visibly shorter than fine, dashed tails read), 2026-06-11
 treaty	fsharp	bytes	ratified	both in-file bar laws are exact integer identities; quantize + colorize run live in the gate — tests green

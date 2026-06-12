@@ -103,7 +103,7 @@ module MediaLines =
     let knownKinds: Set<string> =
         Set.ofList
             [ "meta"; "frame"; "sprite"; "anim"; "rom"; "glyph"; "palette"; "gen"; "sim"; "mea"; "cut"
-              "io"; "button"; "constant"; "dimension"; "treaty"; "law"; "prereq"; "edge"; "issue" ]
+              "io"; "button"; "constant"; "dimension"; "treaty"; "law"; "prereq"; "edge"; "issue"; "ben" ]
 
     /// The entries a reader carries without understanding — future media types in transit.
     let carried (d: Doc) : Entry list =
@@ -224,6 +224,8 @@ module MediaLines =
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a treaty line must declare register (bytes|meaning) and verdict" } ]
                 | "law" when List.length e.Fields < 1 ->
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a law must carry its equation (the file states its own check)" } ]
+                | "ben" when List.length e.Fields < 2 ->
+                    [ { Kind = e.Kind; Name = e.Name; Problem = "a ben line must declare artifact and predicted O (the room states its own cost)" } ]
                 | "prereq" when List.length e.Fields < 1 ->
                     [ { Kind = e.Kind; Name = e.Name; Problem = "a prereq must point somewhere (what to learn first, and where)" } ]
                 | "edge" when List.length e.Fields < 2 ->

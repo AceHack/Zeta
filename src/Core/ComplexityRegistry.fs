@@ -205,3 +205,65 @@ module ComplexityRegistry =
         Map.ofList
             [ "saves", [ "save-state recordings (the campaign notebook)" ]
               "rooms.persona", [ "identity (the persona's own; clause 2 — theirs)" ] ]
+
+    /// THE BEN LINE (B-1039: the prediction lives WITH the room). A cartridge declares its own
+    /// cost prediction in-file:
+    ///
+    ///     ben	draw	shape.dynamicvalue	O(children)
+    ///
+    /// (kind=ben, name=the operation, fields=[artifact; predicted time O]). benCheck cross-checks
+    /// the in-file claim against THIS registry: an unparseable O, a row the registry does not
+    /// carry, or a shape that disagrees with the registry's declared time all REFUSE — and the
+    /// shelf sweep in ShapeAcceptance.Tests enforces it for every cartridge the moment it lands
+    /// (same blade as THE GOLDEN LOCK: an in-file claim is checked in CI, never taken on faith).
+    /// Runtime grading of the prediction (Confirmed/Tighter/Violated) stays Ben.grade's lane.
+    type BenVerdict =
+        { Op: string
+          Artifact: string
+          Ok: bool
+          Evidence: string }
+
+    let benCheck (d: MediaLines.Doc) : BenVerdict list =
+        MediaLines.ofKind "ben" d
+        |> List.map (fun e ->
+            match e.Fields with
+            | artifact :: predicted :: _ ->
+                match parseO predicted with
+                | None ->
+                    { Op = e.Name
+                      Artifact = artifact
+                      Ok = false
+                      Evidence = sprintf "unparseable prediction '%s' — refusal, never a guess" predicted }
+                | Some shape ->
+                    match Map.tryFind (artifact, e.Name) declared with
+                    | None ->
+                        { Op = e.Name
+                          Artifact = artifact
+                          Ok = false
+                          Evidence = "no registry row — a prediction must point at a stated shelf cost (add the row or fix the name)" }
+                    | Some cost ->
+                        match parseO cost.Time with
+                        | Some reg when reg = shape ->
+                            { Op = e.Name
+                              Artifact = artifact
+                              Ok = true
+                              Evidence = sprintf "prediction %s agrees with the registry's %s (degree %d, logs %d)" predicted cost.Time shape.Degree shape.Logs }
+                        | Some _ ->
+                            { Op = e.Name
+                              Artifact = artifact
+                              Ok = false
+                              Evidence = sprintf "prediction %s DISAGREES with the registry's %s — one of them is lying; reconcile before the gate opens" predicted cost.Time }
+                        | None ->
+                            { Op = e.Name
+                              Artifact = artifact
+                              Ok = false
+                              Evidence = sprintf "the registry's own '%s' is unsearchable — fix the registry row first" cost.Time }
+            | _ ->
+                { Op = e.Name
+                  Artifact = "?"
+                  Ok = false
+                  Evidence = "a ben line must carry artifact and predicted O" })
+
+    /// Does every in-file ben prediction agree with the registry? (No ben lines = vacuously true:
+    /// the prediction is OPTIONAL in-file — the registry row is the required half; see unstated.)
+    let benHolds (d: MediaLines.Doc) : bool = benCheck d |> List.forall (fun b -> b.Ok)

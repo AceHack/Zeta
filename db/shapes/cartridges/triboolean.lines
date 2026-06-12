@@ -22,6 +22,7 @@ prereq	boundary-light	src/Core/BoundaryLight.fs — Tri and sampleProgressive (m
 prereq	the-float	src/Core.FSharp.TriBoolean/Float.fs — the same third state at NUMBER scope (held trits; four-oracle ratified)
 edge	soft-sibling	shape-softvalue	confidence is a DEGREE of knowing; Unknown is the REFUSAL to claim — two different honesty registers, both drawn
 anim	draw	progressive
+ben	draw	shape.triboolean	O(grid²)
 # treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
 treaty	fsharp	bytes	ratified	both in-file laws are integer identities; the resolution law runs sampleProgressive live at both budgets — tests green
 treaty	otto	meaning	ratified	the spare encoding refused, the Unknown dashed, the full budget erasing it — my own frame, my own choice

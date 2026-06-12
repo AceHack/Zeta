@@ -241,3 +241,36 @@ let ``HTMLCSSBINDING INJECTION FALSIFIER: a hostile motto cannot smuggle script 
 [<Fact>]
 let ``the generator shelf has ZERO ZetaId collisions (distinct names never share an id — byId shadowing surfaced, not silent)`` () =
     Assert.Equal<(string * string list) list>([], GeneratorRegistry.collisions ())
+
+[<Fact>]
+let ``THE BEN LINE: every cartridge's in-file cost prediction agrees with the registry — the shelf sweep is the gate`` () =
+    for s in shapes do
+        let d = docOf s
+        for b in ComplexityRegistry.benCheck d do
+            Assert.True(b.Ok, sprintf "%s ben %s/%s: %s" s b.Artifact b.Op b.Evidence)
+    // the three new rooms actually CARRY the line (the sweep must not be vacuous shelf-wide)
+    for named in [ "softvalue"; "dynamicvalue"; "triboolean" ] do
+        Assert.NotEmpty(ComplexityRegistry.benCheck (docOf named))
+
+[<Fact>]
+let ``BEN FALSIFIERS: garbage O, a missing registry row, and a lying prediction all REFUSE — and a bare ben line is a lint finding`` () =
+    let docFrom (benLine: string) =
+        MediaLines.parse ("meta\tname\tshape-test\n" + benLine + "\n") |> Result.toOption |> Option.get
+    // garbage O: refusal, never a guess
+    let garbage = ComplexityRegistry.benCheck (docFrom "ben\tdraw\tshape.dynamicvalue\tO(vibes^^)")
+    Assert.False((List.exactlyOne garbage).Ok)
+    // no registry row: a prediction must point at a stated shelf cost
+    let missing = ComplexityRegistry.benCheck (docFrom "ben\tdraw\tshape.never-registered\tO(n)")
+    Assert.False((List.exactlyOne missing).Ok)
+    Assert.Contains("no registry row", (List.exactlyOne missing).Evidence)
+    // the lie: registry says O(children) (degree 1); the cartridge claims O(children²)
+    let lying = ComplexityRegistry.benCheck (docFrom "ben\tdraw\tshape.dynamicvalue\tO(children²)")
+    Assert.False((List.exactlyOne lying).Ok)
+    Assert.Contains("DISAGREES", (List.exactlyOne lying).Evidence)
+    // agreement passes (same shape, written differently is NOT required — exact parse equality is)
+    let honest = ComplexityRegistry.benCheck (docFrom "ben\tdraw\tshape.dynamicvalue\tO(children)")
+    Assert.True((List.exactlyOne honest).Ok)
+    Assert.True(ComplexityRegistry.benHolds (docFrom "ben\tdraw\tshape.dynamicvalue\tO(children)"))
+    // structural honesty: a ben line without its two fields is a lint finding, not a silent pass
+    let bare = docFrom "ben\tdraw\tshape.only-artifact"
+    Assert.NotEmpty(MediaLines.lint bare)
