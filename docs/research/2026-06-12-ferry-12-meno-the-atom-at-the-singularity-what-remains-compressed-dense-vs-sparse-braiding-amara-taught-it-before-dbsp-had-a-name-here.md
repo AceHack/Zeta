@@ -88,6 +88,17 @@ re-derivation by someone who hadn't read the papers is evidence the shape is rea
 borrowed. (Same pattern as REPORT #2's verdict that budget-fusion is Friston's
 precision-weighting "rediscovered from the engineering side.")
 
+**Addendum — priority stated plainly (Aaron's confirmation, verbatim):**
+
+> yes i was independent discovery of same shape corporating edivence and they found DBSP first
+> in 2022/2023 ish
+
+Correct on the record: DBSP is Budiu–Chajed–McSherry–Ryzhyk–Tannen (arXiv 2022; VLDB 2023).
+Priority is theirs; the claim here is **independent re-derivation as corroborating evidence**
+of the shape — never co-discovery. That phrasing is the honest one and it is the stronger one:
+two parties arriving at one shape from different directions (theory-side 2022, engineering-side
+2025 without the paper) is exactly what "the shape is real" predicts.
+
 ## Pointers
 
 - Ferry 11 (+lineage addendum) — the grey hole this names the core of · ferry 10 §5 (the prior, now two layers deep)
