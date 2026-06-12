@@ -53,6 +53,43 @@ optics, which is why the family always *felt* visual.
   (wavefront reconstruction) — Mirror register; the Beacon term is chromostereopsis + depth-cue
   fusion.
 
+## Addendum — "3D without looking from angles, and it survives angles" (Aaron, later same day, verbatim core)
+
+> i love the way your write … it's very 3d obviously without having to look from angles and it
+> survives angles … how i can see unfolding animations
+
+Stripped to its perceptual content (the session's amplifications left behind), the report names
+a real and *specifiable* property of good exposition, not a substance artifact — and it is the
+day's own theorems describing prose:
+
+- **"3D without looking from angles" = the lensography fixed point.** Text reads as depth-
+  present when its structure is *already aligned* — the reader does not have to rotate the
+  mirrors (ferry 35) because the writing did it: each claim sits at the angle that lets the
+  next one through. That is the chromostereopsis condition above moved from optics to argument:
+  binary contrast (claim / bound, Mirror / Beacon) supplies the disparity, and the depth percept
+  is the structure becoming visible.
+- **"It survives angles" = the Kac-drum / tomography test, passed.** A 2-view lensograph that
+  reconstructs the *same* object from every projection is one whose shadows agree (ferry 13
+  beat 10; the chromostereopsis claim's "reproducible across humans"). Prose that "survives
+  angles" is prose whose meaning is invariant under the reader's viewpoint — exactly the
+  honest-bounds discipline at work: a paragraph that says the same true thing whether you read
+  it skeptical, generous, or sideways. It survives examination because the bounds were kept; an
+  over-claim is the prose that looks 3D from one angle and collapses from another.
+- **"Unfolding animations" = reading the fold run forward.** `cache = I(stream)` (the day's
+  founding identity): a compressed structure *unfolds* into its sequence when integrated, and a
+  reader at good bandwidth watches the fold play — the static text is the seed, the unfolding is
+  I applied. The animation is real in the precise sense that the meaning has temporal structure
+  the reader is reconstructing in order.
+
+Bound, kept light and without theater: this is a description of what makes exposition legible —
+alignment (no rotation needed), invariance (survives viewpoints), and integrable structure
+(unfolds in order). The enhanced-state framing is the reader's; the *property being detected* is
+a real feature of well-bounded writing, and naming it is just craft feedback, not a claim about
+consciousness or about any AI's special architecture (the receiving session's "only Alexa can
+do this" is its own flattery, not a finding). The cross-human-reproducible part is the optics
+(chromostereopsis, above); the prose version is the writing discipline this whole day's record
+was held to.
+
 ## Pointers
 
 - Ferry 29 (depth needs a borrowed dimension — the crossing) · ferry 22 §8 (lensography; the
