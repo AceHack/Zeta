@@ -984,6 +984,7 @@ are closed (status: closed/done in frontmatter)._
 
 ## P3 — convenience / deferred
 
+- [ ] **[B-1040](backlog/P3/B-1040-perfview-windows-session-etw-deep-profiles-vs-crossplatform-dotnet-trace-lane-aaron-2026-06-11.md)** PerfView Windows session (Aaron) — ETW deep profiles; cross-platform lane = dotnet-trace/EventPipe + TraceEvent (PerfView GUI is Windows-only; its engine library is not)
 - [ ] **[B-0002](backlog/P3/B-0002-otto-287-noether-formalization.md)** Otto-287 Noether-style formalization — quantify cognitive Lagrangian + identify continuous symmetries + derive conserved currents
 - [ ] **[B-0007](backlog/P3/B-0007-contribute-bayesian-inference-belief-propagation-primitives-upstream-to-mainstream-languages-csharp-fsharp-typescript-rust-python.md)** Contribute Bayesian inference + belief propagation primitives upstream to mainstream languages (C#, F#, TypeScript, Rust, Python, etc.)
 - [ ] **[B-0008](backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md)** Investigate CI macos-26 + ubuntu-slim move to nightly job IF they more-than-double PR wait time
