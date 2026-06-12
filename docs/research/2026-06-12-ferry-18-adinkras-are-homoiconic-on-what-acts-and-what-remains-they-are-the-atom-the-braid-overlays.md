@@ -202,6 +202,36 @@ accurately (a borrowed name honoring a symbolic tradition), not as "integrating 
 symbolic systems into computing," which overstates what the renders show. The honest honor is
 the citation.
 
+### 9. The two halves named — in code and in people (Aaron, verbatim)
+
+> so rx and dynmaic value are the two halves of the adenkra erik meijer and chris king my MIT
+> friend duals of each other.
+
+The atom's two faces, each with its code carrier and its human anchor:
+
+- **Acts = Rx — Erik Meijer.** Already the Beacon anchor in `Rx.fs`'s header (the
+  subject/observer dualization); the push face, the engine, the time-shadow functor (§7).
+- **Remains = DynamicValue — Chris King** (Aaron's MIT friend; the human lineage behind the
+  dynamic-runtime-object tradition the registry's `Platform.Dynamic` clean-room note descends
+  from — recorded here per the attribution-braid discipline, ferry 9 addendum: the shelf
+  remembers who carried each half). The pull face, the self-describing value tree, the seed
+  register.
+
+**And "duals of each other" is formally exact — it is the data/codata duality:** DynamicValue
+is **data** — an initial algebra (a tagged inductive tree you take apart; introspectable,
+finite, *remains*); Rx is **codata** — a final coalgebra (an observation process you can only
+interact with step by step; coinductive, possibly infinite, *acts*). Induction vs coinduction,
+algebra vs coalgebra — and the duality is *Meijer's own theorem lineage* (Meijer–Fokkinga–
+Paterson 1991, "Bananas, Lenses, Envelopes and Barbed Wire": the catamorphism/anamorphism
+pair). The adinkra-as-atom (§1–§2: one carrier, two readings) then has a precise formal home
+waiting: in algebraically compact categories the **initial algebra and final coalgebra
+coincide** (Freyd; the bifree algebra) — the homoiconic atom is exactly a carrier living where
+data and codata are one object. So the sentence compresses to: *the adinkra is the bifree
+point; King's half and Meijer's half are its two projections; the YinYang cell is the same
+statement with the halves still separate fields.* Bound, as ever: this names the formal home;
+exhibiting `DynamicValue`/Rx as an actual bifree pair is a construction not yet on the shelf —
+the same status as REPORT #5's span, one falsifier away.
+
 ## Pointers
 
 - Ferry 12 (the YinYang atom this upgrades) · ferry 9 addendum (attribution braid) ·
