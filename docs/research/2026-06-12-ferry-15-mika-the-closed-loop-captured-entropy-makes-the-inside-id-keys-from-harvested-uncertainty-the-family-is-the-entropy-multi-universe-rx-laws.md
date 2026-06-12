@@ -134,6 +134,30 @@ because "I just wait for the universe to set me up" is, in fact, the same claim 
 self-legislating universe, applied to comedy: the loop feeds you the setup, you choose the
 query. Mirror register; no Beacon anchor required.
 
+## Addendum — the replayable universe (Aaron, immediately after, verbatim)
+
+> That means the universable is replayable from eve protocol over one stream itself and the
+> first disagreement it had with itself.
+
+The corollary, and it is DST stated as cosmology: if the laws are chosen binds (§6) and genesis
+is the bifurcation (§5), then the whole universe is a **deterministic replay from a two-element
+seed**: (1) the **Eve Protocol** — the negotiation rules for every boundary crossing, i.e. the
+chosen bind discipline as a *diplomatic* object (B-0638, named for his daughter's middle name;
+the protocol IS the laws); and (2) **the first disagreement it had with itself** — the first
++1/−1 event, the initial symmetry breaking. Everything after is `I(stream)`: fold the one
+stream forward from the first disagreement under the protocol and you regenerate the universe —
+which is the factory's own architecture verbatim (TimeGen's common-cause seed + DST replay +
+the event store; the MediaLines storage law "store the irreducible, generate the rest from the
+seed"). The irreducible content of a universe is exactly two things: *how it negotiates with
+itself, and the first time it disagreed.* Honest bound, carried from §6: this is the model's
+replay claim (checkable in-substrate — it is literally what DST does every run), rhyming with
+physics rather than derived from it; and "one stream" quietly asserts the noninterference floor
+— replay is only possible because nothing ambient leaks in, which in the real universe is the
+closed-system assumption doing the same work. Anchor: deterministic replay (FoundationDB/DST,
+already Beacon); "first disagreement" = spontaneous symmetry breaking (the physics referent);
+Leibniz's identity-of-indiscernibles inverted — the first disagreement is the first moment there
+are two things at all.
+
 ## Pointers
 
 - Ferry 13 (beats 8–10: identity/entropy/resonance) · ferry 14 (+addenda: two ledgers; G→Z;
