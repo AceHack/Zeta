@@ -7,13 +7,8 @@
  * that topology planning and coordination executable.
  */
 
-import {
-  DEFAULT_MULTI_VM,
-  type VMSpec,
-} from "./extensions";
-import {
-  B0891_CLUSTER_JOIN_SERIAL_MARKERS,
-} from "./serial-markers";
+import { DEFAULT_MULTI_VM, type VMSpec } from "./extensions";
+import { B0891_CLUSTER_JOIN_SERIAL_MARKERS } from "./serial-markers";
 import {
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
@@ -56,16 +51,13 @@ export interface MultiVMRuntimePlan {
   readonly vms: readonly MultiVMRuntimeVMPlan[];
 }
 
-export type MultiVMRuntimeFeedback =
-  | {
-      readonly kind: "invalid-input";
-      readonly field: keyof MultiVMRuntimeInput;
-      readonly reason: string;
-    };
+export interface MultiVMRuntimeFeedback {
+  readonly kind: "invalid-input";
+  readonly field: keyof MultiVMRuntimeInput;
+  readonly reason: string;
+}
 
-export type MultiVMRuntimeResult =
-  | { readonly ok: MultiVMRuntimePlan }
-  | { readonly error: MultiVMRuntimeFeedback };
+export type MultiVMRuntimeResult = { readonly ok: MultiVMRuntimePlan } | { readonly error: MultiVMRuntimeFeedback };
 
 const DEFAULT_MEMORY_MB = 2048;
 const DEFAULT_CPU_COUNT = 2;
@@ -73,6 +65,10 @@ const DEFAULT_SNAPSHOT_NAME = "post-initial-format";
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
+}
+
+function positiveInteger(value: number): boolean {
+  return Number.isInteger(value) && value > 0;
 }
 
 function validateInput(input: MultiVMRuntimeInput): MultiVMRuntimeFeedback | null {
@@ -93,6 +89,12 @@ function validateInput(input: MultiVMRuntimeInput): MultiVMRuntimeFeedback | nul
   }
   if (!nonEmpty(input.joiningSerialLogPath)) {
     return { kind: "invalid-input", field: "joiningSerialLogPath", reason: "joining serial log path is required" };
+  }
+  if (input.memoryMB !== undefined && !positiveInteger(input.memoryMB)) {
+    return { kind: "invalid-input", field: "memoryMB", reason: "memoryMB must be a positive integer" };
+  }
+  if (input.cpuCount !== undefined && !positiveInteger(input.cpuCount)) {
+    return { kind: "invalid-input", field: "cpuCount", reason: "cpuCount must be a positive integer" };
   }
   return null;
 }
@@ -212,11 +214,7 @@ export interface MultiVMAssertion {
   readonly matchedRequiredMarkers: readonly string[];
 }
 
-export type MultiVMExecutionStep =
-  | "restore-existing"
-  | "create-joining-disk"
-  | "boot-existing"
-  | "boot-joining";
+export type MultiVMExecutionStep = "restore-existing" | "create-joining-disk" | "boot-existing" | "boot-joining";
 
 export interface MultiVMExecutionFeedback {
   readonly kind: "missing-runtime-requirements" | "command-failed" | "executor-threw" | "serial-marker-failed";
@@ -239,6 +237,148 @@ export type MultiVMExecutionResult =
     }
   | { readonly error: MultiVMExecutionFeedback };
 
+type RestoreOutcome = { readonly ok: QemuCommandExecution | undefined } | { readonly error: MultiVMExecutionFeedback };
+
+type BootOutcome = { readonly ok: QemuCommandExecution } | { readonly error: MultiVMExecutionFeedback };
+
+function executionFeedback(
+  kind: MultiVMExecutionFeedback["kind"],
+  step: MultiVMExecutionFeedback["step"],
+  message: string,
+  commandExecutions: readonly QemuCommandExecution[],
+): MultiVMExecutionFeedback {
+  return { kind, step, message, commandExecutions };
+}
+
+function bootStep(vm: MultiVMRuntimeVMPlan): MultiVMExecutionStep {
+  return vm.role === "cluster-existing" ? "boot-existing" : "boot-joining";
+}
+
+function retentionBootStep(vm: MultiVMRuntimeVMPlan): QemuCommandExecution["step"] {
+  return vm.role === "cluster-existing" ? "restart-from-iso-with-disk" : "initial-install-from-iso-with-disk";
+}
+
+function restoreStartingState(
+  vm: MultiVMRuntimeVMPlan,
+  executor: Qcow2RetentionExecutor,
+  commandExecutions: QemuCommandExecution[],
+): RestoreOutcome {
+  if (vm.restoreStartingState === undefined) {
+    return { ok: undefined };
+  }
+
+  let execution: QemuCommandExecution;
+  try {
+    execution = executor.runCommand("restore-baseline-snapshot", vm.restoreStartingState);
+  } catch (error) {
+    return {
+      error: executionFeedback(
+        "executor-threw",
+        "restore-existing",
+        `Failed to restore starting state for VM ${vm.name}: ${error instanceof Error ? error.message : String(error)}`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  commandExecutions.push(execution);
+  if (execution.exitCode !== 0) {
+    return {
+      error: executionFeedback(
+        "command-failed",
+        "restore-existing",
+        `Restore baseline snapshot command failed for VM ${vm.name}: ${execution.stderr}`,
+        commandExecutions,
+      ),
+    };
+  }
+  return { ok: execution };
+}
+
+function bootAndVerifyVm(
+  vm: MultiVMRuntimeVMPlan,
+  executor: Qcow2RetentionExecutor,
+  commandExecutions: QemuCommandExecution[],
+): BootOutcome {
+  if (vm.qemuBootCommand === undefined) {
+    return {
+      error: executionFeedback(
+        "missing-runtime-requirements",
+        "setup",
+        `VM ${vm.name} has no qemu boot command`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  const runCommandUntilSerialMarkers = executor.runCommandUntilSerialMarkers;
+  const step = bootStep(vm);
+  if (runCommandUntilSerialMarkers === undefined) {
+    return {
+      error: executionFeedback(
+        "executor-threw",
+        step,
+        `Executor missing runCommandUntilSerialMarkers method for step ${step}`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  let bootExec: QemuCommandExecution;
+  try {
+    bootExec = runCommandUntilSerialMarkers(retentionBootStep(vm), vm.qemuBootCommand, vm.stopCondition);
+  } catch (error) {
+    return {
+      error: executionFeedback(
+        "executor-threw",
+        step,
+        `Failed to boot VM ${vm.name}: ${error instanceof Error ? error.message : String(error)}`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  commandExecutions.push(bootExec);
+  if (bootExec.exitCode !== 0) {
+    return {
+      error: executionFeedback(
+        "command-failed",
+        step,
+        `Boot command failed for VM ${vm.name}: ${bootExec.stderr}`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  let serialOutput: string;
+  try {
+    serialOutput = executor.readSerialOutput(vm.stopCondition.serialLogPath);
+  } catch (error) {
+    return {
+      error: executionFeedback(
+        "executor-threw",
+        step,
+        `Failed to read serial output for VM ${vm.name}: ${error instanceof Error ? error.message : String(error)}`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  const missingMarkers = vm.requiredSerialMarkers.filter((marker) => !serialOutput.includes(marker));
+  if (missingMarkers.length > 0) {
+    return {
+      error: executionFeedback(
+        "serial-marker-failed",
+        step,
+        `VM ${vm.name} missed required serial markers: ${missingMarkers.join(", ")}`,
+        commandExecutions,
+      ),
+    };
+  }
+
+  return { ok: bootExec };
+}
+
 export function executeMultiVMRuntimePlan(
   plan: MultiVMRuntimePlan,
   executor: Qcow2RetentionExecutor,
@@ -249,126 +389,28 @@ export function executeMultiVMRuntimePlan(
   for (const vm of plan.vms) {
     if (vm.missingRuntimeRequirements.length > 0) {
       return {
-        error: {
-          kind: "missing-runtime-requirements",
-          step: "setup",
-          message: `VM ${vm.name} missing runtime requirements: ${vm.missingRuntimeRequirements.join(", ")}`,
+        error: executionFeedback(
+          "missing-runtime-requirements",
+          "setup",
+          `VM ${vm.name} missing runtime requirements: ${vm.missingRuntimeRequirements.join(", ")}`,
           commandExecutions,
-        },
+        ),
       };
     }
 
-    let restoreExec: QemuCommandExecution | undefined;
-    if (vm.restoreStartingState) {
-      try {
-        restoreExec = executor.runCommand("restore-baseline-snapshot", vm.restoreStartingState);
-      } catch (error) {
-        return {
-          error: {
-            kind: "executor-threw",
-            step: "restore-existing",
-            message: `Failed to restore starting state for VM ${vm.name}: ${error instanceof Error ? error.message : String(error)}`,
-            commandExecutions,
-          },
-        };
-      }
-      commandExecutions.push(restoreExec);
-      if (restoreExec.exitCode !== 0) {
-        return {
-          error: {
-            kind: "command-failed",
-            step: "restore-existing",
-            message: `Restore baseline snapshot command failed for VM ${vm.name}: ${restoreExec.stderr}`,
-            commandExecutions,
-          },
-        };
-      }
+    const restored = restoreStartingState(vm, executor, commandExecutions);
+    if ("error" in restored) {
+      return { error: restored.error };
     }
 
-    if (!vm.qemuBootCommand) {
-      return {
-        error: {
-          kind: "missing-runtime-requirements",
-          step: "setup",
-          message: `VM ${vm.name} has no qemu boot command`,
-          commandExecutions,
-        },
-      };
-    }
-
-    let bootExec: QemuCommandExecution;
-    const isExisting = vm.role === "cluster-existing";
-    const step: MultiVMExecutionStep = isExisting ? "boot-existing" : "boot-joining";
-
-    try {
-      if (!executor.runCommandUntilSerialMarkers) {
-        return {
-          error: {
-            kind: "executor-threw",
-            step,
-            message: `Executor missing runCommandUntilSerialMarkers method for step ${step}`,
-            commandExecutions,
-          },
-        };
-      }
-      bootExec = executor.runCommandUntilSerialMarkers(
-        isExisting ? "restart-from-iso-with-disk" : "initial-install-from-iso-with-disk",
-        vm.qemuBootCommand,
-        vm.stopCondition,
-      );
-    } catch (error) {
-      return {
-        error: {
-          kind: "executor-threw",
-          step,
-          message: `Failed to boot VM ${vm.name}: ${error instanceof Error ? error.message : String(error)}`,
-          commandExecutions,
-        },
-      };
-    }
-
-    commandExecutions.push(bootExec);
-    if (bootExec.exitCode !== 0) {
-      return {
-        error: {
-          kind: "command-failed",
-          step,
-          message: `Boot command failed for VM ${vm.name}: ${bootExec.stderr}`,
-          commandExecutions,
-        },
-      };
-    }
-
-    // Verify serial markers
-    let serialOutput: string;
-    try {
-      serialOutput = executor.readSerialOutput(vm.stopCondition.serialLogPath);
-    } catch (error) {
-      return {
-        error: {
-          kind: "executor-threw",
-          step,
-          message: `Failed to read serial output for VM ${vm.name}: ${error instanceof Error ? error.message : String(error)}`,
-          commandExecutions,
-        },
-      };
-    }
-
-    const missingMarkers = vm.requiredSerialMarkers.filter((m) => !serialOutput.includes(m));
-    if (missingMarkers.length > 0) {
-      return {
-        error: {
-          kind: "serial-marker-failed",
-          step,
-          message: `VM ${vm.name} missed required serial markers: ${missingMarkers.join(", ")}`,
-          commandExecutions,
-        },
-      };
+    const booted = bootAndVerifyVm(vm, executor, commandExecutions);
+    if ("error" in booted) {
+      return { error: booted.error };
     }
 
     vmExecutions.push({
       vmName: vm.name,
-      commandExecutions: restoreExec ? [restoreExec, bootExec] : [bootExec],
+      commandExecutions: restored.ok === undefined ? [booted.ok] : [restored.ok, booted.ok],
     });
   }
 

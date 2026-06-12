@@ -13,6 +13,16 @@ import { AGENT_BUS_ROOT } from "./types";
 import { coauthorFor } from "../../../tools/observe/event-sink-folder";
 import type { SenderAgentId } from "../bus/types";
 
+function gitText(args: readonly string[]): string {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- agent-bus cleanup intentionally uses the active repo Git binary; args are structured and never shell-expanded.
+  return execFileSync("git", [...args], { encoding: "utf-8" }).trim();
+}
+
+function gitInherit(args: readonly string[]): void {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- agent-bus cleanup intentionally uses the active repo Git binary; args are structured and never shell-expanded.
+  execFileSync("git", [...args], { stdio: "inherit" });
+}
+
 function walkJson(dir: string): string[] {
   if (!existsSync(dir)) return [];
   const out: string[] = [];
@@ -24,24 +34,29 @@ function walkJson(dir: string): string[] {
   return out;
 }
 
+function expiresAtValue(content: unknown): string | null {
+  if (typeof content !== "object" || content === null || !("expiresAt" in content)) {
+    return null;
+  }
+  const expiresAt = (content as { readonly expiresAt: unknown }).expiresAt;
+  return typeof expiresAt === "string" ? expiresAt : null;
+}
+
 function gitPushCleanup(paths: string[]): void {
-  const opts = { stdio: "inherit" as const };
-  const branch = execFileSync("git", ["rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf-8" }).trim();
+  const branch = gitText(["rev-parse", "--abbrev-ref", "HEAD"]);
   if (branch !== "main") {
     throw new Error(`agent-bus clean must run on a main checkout (on '${branch}'); use a bus worktree on main`);
   }
 
-  execFileSync("git", ["fetch", "origin", "main"], opts);
-  const ahead = execFileSync("git", ["rev-list", "--count", "origin/main..HEAD"], { encoding: "utf-8" }).trim();
+  gitInherit(["fetch", "origin", "main"]);
+  const ahead = gitText(["rev-list", "--count", "origin/main..HEAD"]);
   if (ahead !== "0") {
-    throw new Error(
-      `agent-bus clean: local main is ${ahead} commit(s) ahead of origin/main; reconcile before cleanup`,
-    );
+    throw new Error(`agent-bus clean: local main is ${ahead} commit(s) ahead of origin/main; reconcile before cleanup`);
   }
 
   const gitPaths = paths.map((p) => p.replaceAll("\\", "/"));
   for (const p of gitPaths) {
-    execFileSync("git", ["rm", "-f", p], opts);
+    gitInherit(["rm", "-f", p]);
   }
 
   const from = (process.env.ZETA_SENDER_ID ?? "lior-antigravity") as SenderAgentId;
@@ -53,26 +68,26 @@ function gitPushCleanup(paths: string[]): void {
     coauthorFor(from),
   ].join("\n");
 
-  execFileSync("git", ["commit", "--no-verify", "-q", "-m", commitMsg, "--", ...gitPaths], opts);
+  gitInherit(["commit", "--no-verify", "-q", "-m", commitMsg, "--", ...gitPaths]);
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      execFileSync("git", ["push", "origin", "HEAD:main"], opts);
+      gitInherit(["push", "origin", "HEAD:main"]);
       return;
     } catch {
       try {
-        execFileSync("git", ["pull", "--rebase", "origin", "main"], opts);
+        gitInherit(["pull", "--rebase", "origin", "main"]);
       } catch {
         try {
-          execFileSync("git", ["rebase", "--abort"], opts);
-        } catch {}
-        throw new Error(
-          "agent-bus clean: rebase conflict during cleanup push. Re-run cleanup.",
-        );
+          gitInherit(["rebase", "--abort"]);
+        } catch {
+          // No active rebase to abort.
+        }
+        throw new Error("agent-bus clean: rebase conflict during cleanup push. Re-run cleanup.");
       }
     }
   }
-  execFileSync("git", ["push", "origin", "HEAD:main"], opts);
+  gitInherit(["push", "origin", "HEAD:main"]);
 }
 
 export function cleanExpired(
@@ -87,13 +102,9 @@ export function cleanExpired(
   for (const file of files) {
     try {
       const raw = readFileSync(file, "utf-8");
-      const content = JSON.parse(raw) as Record<string, unknown>;
-      if (
-        content &&
-        typeof content === "object" &&
-        typeof content.expiresAt === "string" &&
-        new Date(content.expiresAt) < now
-      ) {
+      const content = JSON.parse(raw) as unknown;
+      const expiresAt = expiresAtValue(content);
+      if (expiresAt !== null && new Date(expiresAt) < now) {
         rmSync(file, { force: true });
         deleted.push(file);
       }
