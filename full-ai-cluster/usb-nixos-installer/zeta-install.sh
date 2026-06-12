@@ -12,7 +12,8 @@
 #   4. Confirm full wipe (typed confirmation required; bypass via
 #      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot flow)
 #   5. Wipe + partition:
-#        BOOT disk: ESP 1G + root ${ROOT_SIZE:-256G} (clamped to disk) + longhorn1 (rest)
+#        BOOT disk: ESP 1G + root up to ${ROOT_SIZE:-256G} + longhorn1 (rest);
+#        root is clamped to disk capacity only at install-time partition (Step 4)
 #        DATA disks: each becomes a single longhorn{2..N} whole-disk
 #   6. Format (FAT32 ESP + ext4 root + ext4 longhorn{1..N})
 #   7. Mount per the standard /mnt/var/lib/longhorn-disk{1..N} layout
@@ -101,7 +102,7 @@ bytes_to_gib_spec() {
   echo "${gib}G"
 }
 
-# Prefer ROOT_SIZE (default 256G) but shrink on small BOOT disks (QEMU CI, tiny VMs).
+# Prefer ROOT_SIZE (default 256G); shrink only at install-time partition if disk is smaller.
 clamp_root_size_for_boot_disk() {
   local disk="$1" requested="$2"
   local disk_bytes requested_bytes esp_bytes min_longhorn_bytes min_root_bytes max_root_bytes
@@ -169,12 +170,6 @@ BOOT_OK=0
 for d in "${SORTED[@]}"; do [[ "$d" == "$BOOT_DISK" ]] && BOOT_OK=1; done
 [[ "$BOOT_OK" -eq 1 ]] || bail "BOOT_DISK $BOOT_DISK not in internal-disk set: ${SORTED[*]}"
 
-REQUESTED_ROOT_SIZE="$ROOT_SIZE"
-ROOT_SIZE="$(clamp_root_size_for_boot_disk "$BOOT_DISK" "$ROOT_SIZE")"
-if [[ "$ROOT_SIZE" != "$REQUESTED_ROOT_SIZE" ]]; then
-  echo "[zeta-install] ROOT_SIZE clamped from ${REQUESTED_ROOT_SIZE} to ${ROOT_SIZE} (BOOT disk $(lsblk -d -n -o SIZE "$BOOT_DISK") capacity)"
-fi
-
 # DATA_DISKS = everything except BOOT_DISK, preserving sort order.
 DATA_DISKS=()
 for d in "${SORTED[@]}"; do
@@ -220,9 +215,14 @@ for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
 done
 
 # ── Step 4: partition ─────────────────────────────────────────────
-echo "Partitioning $BOOT_DISK (ESP 1G + root $ROOT_SIZE + longhorn1 rest) ..."
+# Install-time only: try the requested ROOT_SIZE; shrink if BOOT disk is smaller.
+ROOT_PARTITION_SIZE="$(clamp_root_size_for_boot_disk "$BOOT_DISK" "$ROOT_SIZE")"
+if [[ "$ROOT_PARTITION_SIZE" != "$ROOT_SIZE" ]]; then
+  echo "[zeta-install] install-time partition: requested root ${ROOT_SIZE}, using ${ROOT_PARTITION_SIZE} on ${BOOT_DISK} ($(lsblk -d -n -o SIZE "$BOOT_DISK") available)"
+fi
+echo "Partitioning $BOOT_DISK (ESP 1G + root ${ROOT_PARTITION_SIZE} + longhorn1 rest) ..."
 sudo sgdisk -n "1:0:+1G"           -t 1:ef00 -c 1:ESP        "$BOOT_DISK"
-sudo sgdisk -n "2:0:+${ROOT_SIZE}" -t 2:8300 -c 2:root       "$BOOT_DISK"
+sudo sgdisk -n "2:0:+${ROOT_PARTITION_SIZE}" -t 2:8300 -c 2:root       "$BOOT_DISK"
 sudo sgdisk -n "3:0:0"             -t 3:8300 -c 3:longhorn1  "$BOOT_DISK"
 
 i=2
