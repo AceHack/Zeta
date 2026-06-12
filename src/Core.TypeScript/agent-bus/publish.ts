@@ -19,7 +19,7 @@ import {
   isCanonicalBusId,
   type AgentBusEnvelope,
 } from "./types";
-import { SENDER_IDS, AGENT_IDS, TTL_MS, type AgentId, type SenderAgentId, type BusMessage } from "../bus/types";
+import { SENDER_IDS, AGENT_IDS, TTL_MS, type AgentId, type SenderAgentId, type BusMessage } from "../../../tools/bus/types";
 
 export { makeEnvelope };
 

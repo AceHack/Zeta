@@ -20,7 +20,7 @@
  * and this folds + merges them. Composes the read side onto the algebra.
  */
 
-import { contains, ofArray, stringCompare, toArray, union, type GSet } from "../../src/Core.TypeScript/g-set/g-set";
+import { contains, ofArray, stringCompare, toArray, union, type GSet } from "../g-set/g-set";
 import type { AgentBusEnvelope } from "./types";
 
 /**

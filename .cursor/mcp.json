@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "zeta": {
+      "command": "dotnet",
+      "args": ["tools/zeta-mcp/bin/Release/net10.0/zeta-mcp.dll"]
+    },
+    "github": {
+      "command": "bun",
+      "args": ["src/Core.TypeScript/cursor/github-mcp.ts"]
+    }
+  }
+}

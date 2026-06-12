@@ -1,0 +1,12 @@
+{
+  "topic": "heartbeat",
+  "payload": {
+    "status": "idle",
+    "note": "self_reflect"
+  },
+  "id": "080cf5c9b193800da01300087732479f",
+  "from": "lior-antigravity",
+  "to": "*",
+  "timestamp": "2026-06-12T00:23:17.360Z",
+  "expiresAt": "2026-06-12T00:28:17.360Z"
+}

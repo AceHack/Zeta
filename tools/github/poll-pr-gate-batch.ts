@@ -58,6 +58,10 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { allActiveClaims } from "../bus/claim.ts";
 import type { ClaimRecord } from "../bus/claim.ts";
+import { PriorityFerryThrottlerWithResult } from "../../src/Core.TypeScript/ferry-throttler/priority-ferry-throttler-with-result.ts";
+import type { PriorityFerryThrottlerConfig } from "../../src/Core.TypeScript/ferry-throttler/priority-config.ts";
+import type { ProcessBatchWithResult } from "../../src/Core.TypeScript/ferry-throttler/ferry-throttler.ts";
+import { readPRState } from "../observe/world-infra.ts";
 
 export interface CheckCounts {
   ok: number;
@@ -332,50 +336,59 @@ export async function pollAllBounded(
   repo: string,
   concurrency: number,
   pollFn: PollFn = pollOne,
+  urgentPrs?: ReadonlySet<number>,
 ): Promise<PollOutcome[]> {
-  // Bounded concurrency to avoid hammering GitHub's rate limit. Each
-  // poll fans out to 2-3 gh calls internally; cap parallel polls so
-  // total in-flight gh calls stay well below the 5000/hr limit even
-  // on a packed queue. Order in `outcomes` matches input order.
-  // `pollFn` is injectable for DST: tests pass a synchronous pure
-  // function returning a fixed PollOutcome so orchestration runs
-  // deterministically without spawning gh.
-  const outcomes: PollOutcome[] = new Array(prs.length);
-  let cursor = 0;
-  const workers: Promise<void>[] = [];
-  const workerCount = Math.min(concurrency, prs.length);
-  for (let w = 0; w < workerCount; w++) {
-    workers.push(
-      (async () => {
-        while (true) {
-          const idx = cursor++;
-          if (idx >= prs.length) return;
-          const pr = prs[idx];
-          if (pr === undefined) continue;
-          // Wrap pollFn in try/catch so a throw or rejected promise
-          // from a single PR doesn't abort the whole batch
-          // (Copilot P0 review on PR #1153 2026-05-01). Convert any
-          // rejection into a PollOutcome.error entry; Promise.all
-          // on the workers always resolves.
-          try {
-            outcomes[idx] = await pollFn(pr, owner, repo);
-          } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            outcomes[idx] = {
-              number: pr,
-              error: {
-                number: pr,
-                exitCode: -1,
-                stderr: `pollFn rejected: ${msg}`,
-              },
-            };
-          }
-        }
-      })(),
-    );
-  }
-  await Promise.all(workers);
-  return outcomes;
+  // PriorityFerryThrottlerWithResult replaces the manual worker-pool pattern.
+  // Each PR is one item; maxBatchSize=1 because each poll is independent
+  // (the child process fans out to 2-3 gh calls internally). Priority 0 =
+  // urgent/actionable PRs, priority 1 = background.
+  //
+  // When `urgentPrs` is provided (a set of PR numbers known to be actionable
+  // from prior state — DIRTY gate, failing checks, unresolved threads), those
+  // PRs enter the high-priority lane and drain first under strict scheduling.
+  if (prs.length === 0) return [];
+
+  const config: PriorityFerryThrottlerConfig = {
+    maxDegreeOfParallelism: Math.min(concurrency, prs.length),
+    defaultMaxBatchSize: 1,
+    defaultMaxBatchBytes: undefined,
+    lanes: [
+      { priority: 0 },  // urgent (actionable PRs)
+      { priority: 1 },  // background (all others)
+    ],
+    defaultPriority: 1,
+    drainingPolicy: { kind: "strict" },
+  };
+
+  const processBatch: ProcessBatchWithResult<number, PollOutcome> = async (boat) => {
+    // Each boat has exactly 1 item (maxBatchSize=1), so we poll that one PR.
+    const results: PollOutcome[] = [];
+    for (const prNumber of boat) {
+      try {
+        results.push(await pollFn(prNumber, owner, repo));
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        results.push({
+          number: prNumber,
+          error: { number: prNumber, exitCode: -1, stderr: `pollFn rejected: ${msg}` },
+        });
+      }
+    }
+    return results;
+  };
+
+  const throttler = new PriorityFerryThrottlerWithResult<number, PollOutcome>(config, processBatch);
+
+  // Submit all PRs with priority classification. Urgent PRs (known actionable
+  // from prior state) enter lane 0; others enter lane 1 (background).
+  const resultPromises: Promise<PollOutcome>[] = prs.map((pr) => {
+    const priority = urgentPrs?.has(pr) ? 0 : 1;
+    return throttler.process(pr, priority);
+  });
+
+  // Signal completion and wait for all ferries to drain
+  await throttler.complete();
+  return Promise.all(resultPromises);
 }
 
 export function summarize(reports: GateReport[]): BatchSummary {
@@ -426,7 +439,25 @@ export async function main(
     process.stdout.write(`${JSON.stringify(empty, null, 2)}\n`);
     return 0;
   }
-  const outcomes = await pollAllBounded(prs, args.owner, args.repo, args.concurrency, pollFn);
+  // Classify urgent PRs from prior state: any PR that is NOT CLEAN is
+  // potentially actionable and should be polled first (strict priority lane 0).
+  // PRs known to be CLEAN from the last world-infra snapshot are background.
+  // This is the observe loop's priority wiring: urgent PRs drain before
+  // background PRs, so actionable signals surface with minimal latency.
+  let urgentPrs: Set<number> | undefined;
+  try {
+    const prState = readPRState();
+    const cleanNumbers = new Set(prState.clean.map((p) => p.number));
+    // Any PR in our poll list that is NOT in the clean set is urgent.
+    const urgent = prs.filter((n) => !cleanNumbers.has(n));
+    if (urgent.length > 0 && urgent.length < prs.length) {
+      urgentPrs = new Set(urgent);
+    }
+  } catch {
+    // readPRState() depends on `gh` being available; if it fails, all PRs
+    // get background priority (no classification — graceful degradation).
+  }
+  const outcomes = await pollAllBounded(prs, args.owner, args.repo, args.concurrency, pollFn, urgentPrs);
   const reports: GateReport[] = [];
   const errors: PollError[] = [];
   for (const o of outcomes) {

@@ -45,6 +45,7 @@
 import { appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "util";
+import { FerryThrottler } from "../../src/Core.TypeScript/ferry-throttler/ferry-throttler.ts";
 
 export interface ShadowConfig {
   delayMs: number;
@@ -587,17 +588,17 @@ async function runInner(
   config: ShadowConfig,
   detectFn: DetectFn,
   acceptFn: AcceptFn,
+  eventSink?: FerryThrottler<ShadowEvent>,
 ): Promise<void> {
-  log(
-    {
-      timestamp: new Date().toISOString(),
-      type: "started",
-      content: `Shadow observer started (delay=${config.delayMs}ms, dry-run=${config.dryRun}, once=${config.once})`,
-      delayMs: config.delayMs,
-      dryRun: config.dryRun,
-    },
-    config.logFile,
-  );
+  const startEvent: ShadowEvent = {
+    timestamp: new Date().toISOString(),
+    type: "started",
+    content: `Shadow observer started (delay=${config.delayMs}ms, dry-run=${config.dryRun}, once=${config.once})`,
+    delayMs: config.delayMs,
+    dryRun: config.dryRun,
+  };
+  log(startEvent, config.logFile);
+  if (eventSink) eventSink.tryEnqueue(startEvent);
 
   if (config.once) {
     await runOneCycle(config, detectFn, acceptFn);
@@ -618,8 +619,22 @@ export async function run(
     : detectGreyText,
   acceptFn: AcceptFn = acceptGreyText,
 ): Promise<void> {
+  // The event sink throttler — downstream consumers (bus, observe loop) can
+  // subscribe to shadow observer events with backpressure. When this becomes a
+  // room in the multi-room architecture, the throttler is the outbound channel.
+  // DoP=1 keeps the sequential cycle semantics; the throttler adds backpressure
+  // + priority-readiness for when multiple rooms share rate-limited resources.
+  const eventSink = new FerryThrottler<ShadowEvent>(
+    { maxDegreeOfParallelism: 1, maxBatchSize: 64, maxQueueSize: 256 },
+    async (_boat) => {
+      // Default sink: no-op (events are logged by `log()` already).
+      // The room adapter will replace this with bus.publish or similar.
+    },
+  );
+
   if (config.loopMs === undefined) {
-    await runInner(config, detectFn, acceptFn);
+    await runInner(config, detectFn, acceptFn, eventSink);
+    await eventSink.complete();
     return;
   }
 
@@ -628,11 +643,11 @@ export async function run(
   // supervisors can distinguish interruption from clean completion.  Registering
   // direct-exit listeners is required because Node/Bun removes its default
   // exit behaviour once any listener is attached.
-  process.on("SIGINT",  () => { process.exit(130); });
-  process.on("SIGTERM", () => { process.exit(143); });
+  process.on("SIGINT",  () => { eventSink.dispose(); process.exit(130); });
+  process.on("SIGTERM", () => { eventSink.dispose(); process.exit(143); });
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    await runInner(config, detectFn, acceptFn);
+    await runInner(config, detectFn, acceptFn, eventSink);
     await Bun.sleep(config.loopMs);
   }
 }

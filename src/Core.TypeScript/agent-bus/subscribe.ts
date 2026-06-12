@@ -12,7 +12,7 @@ import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT, isCanonicalTimestamp, isCanonicalBusId, type AgentBusEnvelope } from "./types";
-import type { AgentId } from "../bus/types";
+import type { AgentId } from "../../../tools/bus/types";
 
 /**
  * Compound cursor `<timestamp>|<id>` — the read position. timestamp alone drops a

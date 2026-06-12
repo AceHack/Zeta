@@ -19,8 +19,8 @@
  * publish.ts / subscribe.ts so tests + importers never touch git or the real folder.
  */
 import { join } from "node:path";
-import { TTL_MS, type AgentId, type SenderAgentId, type BusMessage, type MessageEnvelope } from "../bus/types";
-import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../../src/Core.TypeScript/zeta-id/zeta-id";
+import { TTL_MS, type AgentId, type SenderAgentId, type BusMessage, type MessageEnvelope } from "../../../tools/bus/types";
+import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
 import {
   Category,
   IdVersion,
@@ -30,7 +30,7 @@ import {
   LocationHint,
   type ZetaObservation,
   type Milliseconds,
-} from "../../src/Core.TypeScript/zeta-id/types";
+} from "../zeta-id/types";
 
 /** Repo-relative root for the bus folder; override with `ZETA_AGENT_BUS_DIR` (tests). */
 export const AGENT_BUS_ROOT: string = process.env.ZETA_AGENT_BUS_DIR ?? "docs/agent-bus";

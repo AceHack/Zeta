@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, it } from "bun:test";
-import { ofArray, stringCompare, toArray } from "../../src/Core.TypeScript/g-set/g-set";
+import { ofArray, stringCompare, toArray } from "../g-set/g-set";
 import type { AgentBusEnvelope } from "./types";
 import { busIdSet, envelopesIn, mergeViews, unseen } from "./g-set-view";
 
