@@ -7,14 +7,15 @@
 // NEW work-items must be minted as conflict-free ZetaIds via `tools/backlog/new-workitem.ts` (→
 // `workitems/<zetaid>-<desc>.md`), NOT added as new `docs/backlog/P*/B-NNNN-*.md` files.
 //
-// This lint fails if any `docs/backlog/P*/B-*.md` carries a frontmatter `id:` that is NOT in the frozen
-// snapshot (`frozen-bnnnn-ids.json`). Removing/closing a grandfathered row is fine (no new id); only
-// ADDING a new B-NNNN id fails. That's the mechanical "remember to stop" — an agent reaching for the old
-// habit gets a red gate pointing at new-workitem.ts.
-//
-// Bump procedure (rare, deliberate): if a legacy B-NNNN row genuinely must be added/renumbered,
-// update frozen-bnnnn-ids.json in the same commit — making the exception explicit + reviewable.
-// Do not use that path for normal work; ZetaIds/workitems are the backlog/workitem substrate.
+// THE WALL (Aaron 2026-06-11, "I had someone rename all these to the zetaids so the AIs would stop
+// creating more — we said stop a long time ago"): the 2026-06-11 rename sweep (#7840-#7843 + the
+// workitems migration) drove the B-named file set to ZERO, and the original toll-booth design had
+// demonstrably failed — the "rare, deliberate" bump procedure was used ROUTINELY (five consecutive
+// "grandfather B-10XX" commits; B-1036..B-1040 minted after the stop was called). So the check is
+// now a wall: ANY file named `B-<digits>*` under docs/backlog/ or workitems/ FAILS, regardless of
+// frontmatter — post-sweep, a B-named file is by definition new. There is no bump procedure.
+// frozen-bnnnn-ids.json stays as the historical record of the closed series (and so legacy `id:`
+// references in old rows remain resolvable), but it no longer grants passage.
 //
 // Exit: 0 = no new B-NNNN ids · 1 = new B-NNNN id(s) found.
 
@@ -28,14 +29,6 @@ function repoRoot(): string {
   return r.status === 0 ? r.stdout.trim() : process.cwd();
 }
 
-function frontmatterId(content: string): string | null {
-  if (!content.startsWith("---")) return null;
-  const end = content.indexOf("\n---", 3);
-  const block = end > 0 ? content.slice(0, end) : content;
-  const m = block.match(/^id:\s*(.*)$/m);
-  return m ? m[1]!.trim().replace(/^["']|["']$/g, "") : null;
-}
-
 function main(): number {
   const root = repoRoot();
   const frozenPath = join(root, "tools", "backlog", "frozen-bnnnn-ids.json");
@@ -46,8 +39,11 @@ function main(): number {
   const frozen = new Set<string>(JSON.parse(readFileSync(frozenPath, "utf8")) as string[]);
 
   const offenders: string[] = [];
-  for (const tier of ["P0", "P1", "P2", "P3"]) {
-    const dir = join(root, "docs", "backlog", tier);
+  const dirs = [
+    ...["P0", "P1", "P2", "P3"].map((tier) => join(root, "docs", "backlog", tier)),
+    join(root, "workitems"),
+  ];
+  for (const dir of dirs) {
     let entries: readonly import("node:fs").Dirent[];
     try {
       entries = readdirSync(dir, { withFileTypes: true });
@@ -55,25 +51,26 @@ function main(): number {
       continue;
     }
     for (const e of entries) {
-      if (!e.isFile() || !e.name.startsWith("B-") || !e.name.endsWith(".md")) continue;
-      const id = frontmatterId(readFileSync(join(dir, e.name), "utf8"));
-      if (id && !frozen.has(id)) offenders.push(`${tier}/${e.name} (id ${id})`);
+      // THE WALL: a B-named FILE fails outright — the series is closed and the sweep already
+      // renamed every legacy row, so there is nothing left to grandfather. Frontmatter is not
+      // consulted (the old id-only check let id-less B-files through silently).
+      if (e.isFile() && /^B-\d/.test(e.name)) offenders.push(join(dir, e.name).slice(root.length + 1));
     }
   }
 
   if (offenders.length === 0) {
     process.stdout.write(
-      `ok: legacy docs/backlog/ frozen — no new B-NNNN ids beyond the ${frozen.size} grandfathered rows\n`,
+      `ok: the B-NNNN series is closed — 0 B-named files under docs/backlog/ + workitems/ (${frozen.size} legacy ids live on as zetaid-named rows)\n`,
     );
     return 0;
   }
-  process.stderr.write(`FAIL: ${offenders.length} NEW B-NNNN row(s) — docs/backlog/ is FROZEN.\n`);
+  process.stderr.write(`FAIL: ${offenders.length} B-named file(s) — THE B-NNNN SERIES IS CLOSED (2026-06-11 sweep).\n`);
   for (const o of offenders) process.stderr.write(`  - ${o}\n`);
   process.stderr.write(
     "\nNew work-items must be minted as conflict-free ZetaIds:\n" +
       '  bun tools/backlog/new-workitem.ts --type task|bug --title "..."\n' +
-      "(→ workitems/<zetaid>-<desc>.md; no cross-agent id consensus — B-0956). If a legacy B-NNNN row\n" +
-      "genuinely must be added, update tools/backlog/frozen-bnnnn-ids.json in the same commit.\n",
+      "(→ workitems/<zetaid>-<desc>.md; no cross-agent id consensus — B-0956).\n" +
+      "There is no grandfather/bump path: rename the file to its zetaid form instead.\n",
   );
   return 1;
 }
