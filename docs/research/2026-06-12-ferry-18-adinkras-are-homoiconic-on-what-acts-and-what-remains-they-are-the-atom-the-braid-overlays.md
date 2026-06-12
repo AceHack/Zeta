@@ -147,6 +147,27 @@ the §4 conjecture *upgraded in shape* (from one projection to an adjoint pair o
 family) and unchanged in standing — named, falsifiable by construction, not yet on the shelf.
 The supersession is itself ferried per the record discipline: the "nope" is part of the math.
 
+### 7. Post-REPORT-#5: the braid as the temporal shadow of the adinkra's two halves (Aaron, verbatim)
+
+> So the RX / Marana braid is the shadow of the two halves of the adenkra the remains and acts
+
+§5 ran the shadow one way (adinkra = shadow of Majorana-1); REPORT #5 replaced the geometry
+with a **restricted span**; this beat runs the shadow the *other* way through that span, and
+under the span it is well-formed: the adinkra is the **atemporal** object — both halves at once,
+remains (the graph) and acts (the dashing) co-present with no order (§1's homoiconicity) — and
+the braid word is what that pair casts **onto the time axis**: an Eulerian serialization walks
+the dashed graph one edge at a time, and the σ-substitution leg of REPORT #5's span renders the
+walk as crossings. The shadow *adds* order (a serialization is a choice) and *loses* the
+constraint context (the faces — codimension 17 of them). So: **adinkra = the two-faced object
+in space; braid = its shadow in time** — which is also why the braid is the memory register
+(REPORT #3 rung 2: order IS what it keeps) and the adinkra is the seed register (ferry 20: shape
+without history). Bounds inherited from REPORT #5 unchanged: defined only on the restricted
+class (Eulerian serializations of valid dashings); "shadow" = one leg of the span, not an
+inverse pair; H₁(Bₙ) = ℤ still forbids reading the sign record back off the braid. The Rx
+reading composes: a subscription serializes an atemporal definition into a temporal event
+stream — Rx is the time-shadow functor of this lane, which is what "RX/Majorana braid" quietly
+asserts and the span now licenses.
+
 ## Pointers
 
 - Ferry 12 (the YinYang atom this upgrades) · ferry 9 addendum (attribution braid) ·
