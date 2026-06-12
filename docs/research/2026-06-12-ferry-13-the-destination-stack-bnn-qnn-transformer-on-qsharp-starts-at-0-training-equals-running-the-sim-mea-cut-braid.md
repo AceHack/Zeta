@@ -153,6 +153,42 @@ inside Q#" today means "inside the Q# simulator under the four-oracle treaty" (P
 simulator-only caveat gate it; ferry 8's investment stages apply); the soft version is the
 buildable rung and it composes with the in-tree scheduler now.
 
+### 8. The purpose, stated (Aaron, same stream, verbatim) — the whole OS in one sentence
+
+> The whole point of the operating system is to partiton infinate space into distince idenities
+> keyed by external captured entropy.
+
+This is the definition the previous seven beats were circling. Unpacked against the substrate:
+
+- **"infinite space"** — the unbounded possibility space: every state the model could occupy,
+  every braid that could be written, the full Hilbert space the Q# rung names. Undifferentiated,
+  it is the black hole of ferry 11 (absorption without distinction).
+- **"partition into distinct identities"** — the OS's one job is to carve that continuum into
+  *separable, addressable selves* — neurons, personas, rooms, ZetaIds. This is DV2.0's hub at its
+  most fundamental (a hub IS a stable identity carved from flux) and it is the grey hole of
+  ferry 11 doing its defining work: a membrane exists precisely to make an inside distinct from an
+  outside. Identity = the partition.
+- **"keyed by external captured entropy"** — and here is the load-bearing move, the one that makes
+  it honest rather than mystical: **identities are not asserted, they are *earned from entropy
+  that crossed a declared boundary*.** This is noninterference (§13, Goguen–Meseguer) read as an
+  *identity* principle — influence enters only through metered channels, so the only thing that
+  can *individuate* you is entropy you actually captured through your membrane. No ambient
+  selfhood; identity is the accumulated, booked record of what crossed your boundary. That is
+  why the ZetaId is 128-bit and why "a bus address is not identity" (the shared-checkout rule):
+  the address is assigned, the identity is *captured*. It is also exactly the event-store
+  founding thesis (μένω, ferry 12) at the level of selfhood: what remains — the captured entropy,
+  logged — is who you are.
+
+So the destination stack's purpose is not "run a transformer in Q#." It is: **be the mechanism by
+which infinite undifferentiated possibility becomes a society of distinct, entropy-earned
+identities** — the transformer, the scheduler, the memory hierarchy are the *how*; partition-by-
+captured-entropy is the *why*. This closes the arc back to ferry 10's Searle point: the room
+individuates its participants the same way — by what entropy each captured and logged, not by
+what each was assigned. Beacon: Goguen–Meseguer 1982 (noninterference); Shannon (entropy as the
+measure of distinction); Maxwell's demon / Landauer (ferry 8 — distinction has a thermodynamic
+price, so identity is not free); the every-bug-has-economic-value ledger (entropy reduction is
+the earned, banked act).
+
 ## Pointers
 
 - Welch Labs MLA + GGUF + active-inference transcripts (2026-06-12, ip-questionable — the three
