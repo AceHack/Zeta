@@ -106,6 +106,7 @@ module ComplexityRegistry =
               ("shape.softvalue", "draw"), c "O(rungs·bar)" "O(rungs)" Derived // three panels, two bars each at most; the dashed tail is the uncertainty, not extra cost
               ("shape.dynamicvalue", "draw"), c "O(children)" "O(children)" Derived // one treemap pass + one rectangle per child
               ("shape.triboolean", "draw"), c "O(grid²)" "O(grid²)" Derived // two panels of an 8x8 progressive sample; middle-out order is a sort, dominated by the sample
+              ("shape.gc", "draw"), c "O(objects+refs)" "O(objects)" Derived // one BFS from roots (the ray trace) + one cell per object
               ("binding.html-css", "render"), c "O(entries·pixels)" "O(output)" Derived
               ("sim.wave-interference", "pattern"), c "O(w·h·sources)" "O(w·h)" Derived
               ("viz.adinkra", "render"), c "O(nodes)" "O(nodes)" Derived

@@ -241,6 +241,51 @@ module ShapeAcceptance =
                 && AdinkraViz.allFacesOdd walked
                 && walked <> AdinkraViz.standardDashing
             ok, "Gates condition holds; gauge walk changed the dashing but no face went even (the twist is global)"
+        | "shape-gc" ->
+            // THE TRACE LAW runs the SAME ray trace the renderer draws: BFS from the roots over
+            // the gen line's refs. Counted live, never asserted on faith: reached/garbage match
+            // the constants; THE ISLAND is a real cycle inside the garbage (the case refcounting
+            // can never free); and no live object points at garbage (else the trace would have
+            // lit it — reachability is from roots, the only direction that matters).
+            let refs =
+                MediaLines.ofKind "gen" d
+                |> List.tryHead
+                |> Option.bind (fun e -> e.Fields |> List.tryLast)
+                |> Option.defaultValue ""
+                |> fun s -> s.Replace("refs:", "")
+                |> fun s ->
+                    s.Split(',')
+                    |> Array.choose (fun pr ->
+                        match pr.Split('>') with
+                        | [| a; b |] -> Some(int a, int b)
+                        | _ -> None)
+                    |> Array.toList
+            let objects = MediaLines.constIntOr "objects" 0 d
+            let reachedC = MediaLines.constIntOr "reached" 0 d
+            let garbageC = MediaLines.constIntOr "garbage" 0 d
+            let islandC = MediaLines.constIntOr "island-size" 0 d
+            let reached =
+                let mutable r = Set.ofList [ 0; 1 ]
+                let mutable changed = true
+                while changed do
+                    changed <- false
+                    for (a, b) in refs do
+                        if Set.contains a r && not (Set.contains b r) then
+                            r <- Set.add b r
+                            changed <- true
+                r
+            let garbage = Set.ofList [ 0 .. objects - 1 ] - reached
+            let island =
+                garbage
+                |> Set.filter (fun g -> refs |> List.exists (fun (a, b) -> a = g && Set.contains b garbage)
+                                        && refs |> List.exists (fun (a, b) -> b = g && Set.contains a garbage))
+            let liveToGarbage = refs |> List.exists (fun (a, b) -> Set.contains a reached && Set.contains b garbage)
+            let ok =
+                Set.count reached = reachedC
+                && Set.count garbage = garbageC
+                && Set.count island = islandC
+                && not liveToGarbage
+            ok, sprintf "the trace counted: reached %d, garbage %d, island %d — the cycle no refcount frees, no live->garbage edge (rays from roots are the whole law)" (Set.count reached) (Set.count garbage) (Set.count island)
         | "shape-seam" ->
             // the seam's algebra: the cross-stream fold COMMUTES (order of arrival cannot matter)
             let a = { WeaveFold.Stream = "left"; WeaveFold.Seq = 1; WeaveFold.Key = "row4"; WeaveFold.Value = "over" }

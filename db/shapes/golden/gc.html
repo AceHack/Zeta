@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>shape-gc</title>
+  <style>
+    :root {
+      --c0: #000000;
+      --c1: #d62828;
+      --c2: #2a9d2a;
+      --c3: #d6c828;
+      --c4: #2828d6;
+      --c5: #d628d6;
+      --c6: #28c8d6;
+      --c7: #f0f0f0;
+    }
+    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
+    svg { width: min(96vw, 960px); image-rendering: pixelated; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { to { opacity: 1; } }
+    polyline:hover { stroke-width: 7; filter: brightness(1.6); }
+    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }
+    #ref-0-2 { stroke-dasharray: 12; stroke-dashoffset: 12; animation: draw 600ms linear 0ms forwards; }
+    #ref-2-4 { stroke-dasharray: 12; stroke-dashoffset: 12; animation: draw 600ms linear 180ms forwards; }
+    #ref-4-6 { stroke-dasharray: 20; stroke-dashoffset: 20; animation: draw 600ms linear 360ms forwards; }
+    #ref-1-3 { stroke-dasharray: 12; stroke-dashoffset: 12; animation: draw 600ms linear 540ms forwards; }
+    #ref-3-5 { stroke-dasharray: 12; stroke-dashoffset: 12; animation: draw 600ms linear 720ms forwards; }
+    #ref-5-6 { stroke-dasharray: 20; stroke-dashoffset: 20; animation: draw 600ms linear 900ms forwards; }
+    #ref-6-7 { stroke-dasharray: 12; stroke-dashoffset: 12; animation: draw 600ms linear 1080ms forwards; }
+    #ref-8-9 { stroke-dasharray: 8; stroke-dashoffset: 8; animation: draw 600ms linear 1260ms forwards; }
+    #ref-9-8 { stroke-dasharray: 8; stroke-dashoffset: 8; animation: draw 600ms linear 1440ms forwards; }
+    #ref-10-11 { stroke-dasharray: 8; stroke-dashoffset: 8; animation: draw 600ms linear 1620ms forwards; }
+    #ref-10-4 { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw 600ms linear 1800ms forwards; }
+    #live-0 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 1980ms forwards; }
+    #live-1 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 2160ms forwards; }
+    #live-2 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 2340ms forwards; }
+    #live-3 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 2520ms forwards; }
+    #live-4 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 2700ms forwards; }
+    #live-5 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 2880ms forwards; }
+    #live-6 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 3060ms forwards; }
+    #live-7 { stroke-dasharray: 16; stroke-dashoffset: 16; animation: draw 600ms linear 3240ms forwards; }
+    #garbage-8 { opacity: 0; animation: appear 400ms linear 3420ms forwards; }
+    #garbage-9 { opacity: 0; animation: appear 400ms linear 3600ms forwards; }
+    #garbage-10 { opacity: 0; animation: appear 400ms linear 3780ms forwards; }
+    #garbage-11 { opacity: 0; animation: appear 400ms linear 3960ms forwards; }
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" data-cartridge="shape-gc">
+  <polyline id="ref-0-2" fill="none" stroke="#2828d6" stroke-width="4" points="6,8 18,8" />
+  <polyline id="ref-2-4" fill="none" stroke="#2828d6" stroke-width="4" points="18,8 30,8" />
+  <polyline id="ref-4-6" fill="none" stroke="#2828d6" stroke-width="4" points="30,8 42,16" />
+  <polyline id="ref-1-3" fill="none" stroke="#2828d6" stroke-width="4" points="6,24 18,24" />
+  <polyline id="ref-3-5" fill="none" stroke="#2828d6" stroke-width="4" points="18,24 30,24" />
+  <polyline id="ref-5-6" fill="none" stroke="#2828d6" stroke-width="4" points="30,24 42,16" />
+  <polyline id="ref-6-7" fill="none" stroke="#2828d6" stroke-width="4" points="42,16 54,16" />
+  <polyline id="ref-8-9" fill="none" stroke="#2828d6" stroke-width="4" points="50,4 58,4" />
+  <polyline id="ref-9-8" fill="none" stroke="#2828d6" stroke-width="4" points="58,4 50,4" />
+  <polyline id="ref-10-11" fill="none" stroke="#2828d6" stroke-width="4" points="50,28 58,28" />
+  <polyline id="ref-10-4" fill="none" stroke="#2828d6" stroke-width="4" points="50,28 30,8" />
+  <polyline id="live-0" fill="none" stroke="#2a9d2a" stroke-width="4" points="4,6 8,6 8,10 4,10 4,6" />
+  <polyline id="live-1" fill="none" stroke="#2a9d2a" stroke-width="4" points="4,22 8,22 8,26 4,26 4,22" />
+  <polyline id="live-2" fill="none" stroke="#2a9d2a" stroke-width="4" points="16,6 20,6 20,10 16,10 16,6" />
+  <polyline id="live-3" fill="none" stroke="#2a9d2a" stroke-width="4" points="16,22 20,22 20,26 16,26 16,22" />
+  <polyline id="live-4" fill="none" stroke="#2a9d2a" stroke-width="4" points="28,6 32,6 32,10 28,10 28,6" />
+  <polyline id="live-5" fill="none" stroke="#2a9d2a" stroke-width="4" points="28,22 32,22 32,26 28,26 28,22" />
+  <polyline id="live-6" fill="none" stroke="#2a9d2a" stroke-width="4" points="40,14 44,14 44,18 40,18 40,14" />
+  <polyline id="live-7" fill="none" stroke="#2a9d2a" stroke-width="4" points="52,14 56,14 56,18 52,18 52,14" />
+  <polyline id="garbage-8" fill="none" stroke="#d62828" stroke-width="4" stroke-dasharray="8 6" points="48,2 52,2 52,6 48,6 48,2" />
+  <polyline id="garbage-9" fill="none" stroke="#d62828" stroke-width="4" stroke-dasharray="8 6" points="56,2 60,2 60,6 56,6 56,2" />
+  <polyline id="garbage-10" fill="none" stroke="#d62828" stroke-width="4" stroke-dasharray="8 6" points="48,26 52,26 52,30 48,30 48,26" />
+  <polyline id="garbage-11" fill="none" stroke="#d62828" stroke-width="4" stroke-dasharray="8 6" points="56,26 60,26 60,30 56,30 56,26" />
+</svg>
+</body>
+</html>

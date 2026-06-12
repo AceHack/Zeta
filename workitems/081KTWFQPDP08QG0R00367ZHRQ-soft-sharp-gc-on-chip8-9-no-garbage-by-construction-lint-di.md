@@ -61,3 +61,16 @@ ZetaId workitem surface instead of extending the frozen sequential backlog.
   pinned at slice time (do not overclaim file paths in this row).
 - Rx.fs DOES have Subscribe/IDisposable (push exists) — rung 3's claim rests on room-scoping,
   not on push-Rx absence; the sentence above is the accurate one.
+
+## Progress (2026-06-12) — rung 4 SHIPS as shape-gc, the catalog's 17th cartridge
+
+`db/shapes/cartridges/gc.lines` + renderer + gate branch + goldens: a 12-object heap, rays from
+two roots; reached lit green, garbage dashed red (condemned). THE JEWEL drawn and GATED: the
+garbage holds a 2-cycle ISLAND (8⇄9 — the case refcounting can never free, a ray simply never
+visits) and a dead object points INTO the living (10→4 — incoming refs revive nothing). The gate
+runs the SAME BFS the renderer draws (reached 8 / garbage 4 / island 2 counted live, no
+live→garbage edge) — never accepted on looks. Registered on the shelf (shape.gc, shelf-minted
+zetaid) with a stated cost row (O(objects+refs) / O(objects)). Aaron's Ani-session naming landed
+mid-build: cut → smallest pieces → BRAID back; "the braid is a core operator"; rays through your
+own memory = Zeus pointed at the heap. Remaining rungs: 1 (allocation lint/DI lifetimes),
+2 (weak tables), 3 (the honest Rx sentence verified in-tree), 5 (history epochs / git gc).

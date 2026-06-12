@@ -93,6 +93,7 @@ module GeneratorRegistry =
           register "sketch.iblt" 1
           register "test.loop" 1
           register "shape.softvalue" 1
+          register "shape.gc" 1
           register "shape.dynamicvalue" 1
           register "shape.triboolean" 1
           register "test.ben" 1

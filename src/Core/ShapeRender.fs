@@ -135,6 +135,51 @@ module ShapeRender =
                       { Dash = false; Name = (if r = 0 then sprintf "strand-%d" s else sprintf "strand-%d-r%d" s r)
                         Mask = byte (1 <<< s)
                         Points = List.ofSeq runs.[s].[r] } ]
+        | "shape-gc" ->
+            // RAY-TRACED REACHABILITY: pointers drawn blue; what the rays light is green (mark);
+            // what stays dark is garbage — drawn DASHED red (condemned; the dash is the register
+            // of uncertainty-about-staying, as in softvalue's tails).
+            let gcPos =
+                [| 6, 8; 6, 24; 18, 8; 18, 24; 30, 8; 30, 24; 42, 16; 54, 16; 50, 4; 58, 4; 50, 28; 58, 28 |]
+            let refs =
+                MediaLines.ofKind "gen" d
+                |> List.tryHead
+                |> Option.bind (fun e -> e.Fields |> List.tryLast)
+                |> Option.defaultValue ""
+                |> fun s -> s.Replace("refs:", "")
+                |> fun s ->
+                    s.Split(',')
+                    |> Array.choose (fun pr ->
+                        match pr.Split('>') with
+                        | [| a; b |] -> Some(int a, int b)
+                        | _ -> None)
+                    |> Array.toList
+            let reached =
+                let mutable r = Set.ofList [ 0; 1 ]
+                let mutable changed = true
+                while changed do
+                    changed <- false
+                    for (a, b) in refs do
+                        if Set.contains a r && not (Set.contains b r) then
+                            r <- Set.add b r
+                            changed <- true
+                r
+            let cell i =
+                let x, y = gcPos.[i]
+                [ x - 2, y - 2; x + 2, y - 2; x + 2, y + 2; x - 2, y + 2; x - 2, y - 2 ]
+            [ // the pointers (one stroke per edge, blue): a ray follows these forward from roots
+              for (a, b) in refs do
+                  let ax, ay = gcPos.[a]
+                  let bx, by = gcPos.[b]
+                  yield { Dash = false; Name = sprintf "ref-%d-%d" a b; Mask = 4uy; Points = [ ax, ay; bx, by ] }
+              // the mark: every reached object lit green
+              for i in 0 .. gcPos.Length - 1 do
+                  if Set.contains i reached then
+                      yield { Dash = false; Name = sprintf "live-%d" i; Mask = 2uy; Points = cell i }
+              // the garbage: never lit — dashed red, condemned (incl. THE ISLAND 8⇄9)
+              for i in 0 .. gcPos.Length - 1 do
+                  if not (Set.contains i reached) then
+                      yield { Dash = true; Name = sprintf "garbage-%d" i; Mask = 1uy; Points = cell i } ]
         | "shape-shadow-loop" ->
             // the lemniscate of Gerono: x = cos t, y = sin t * cos t — sampled so the crossing is
             // EXACT (steps % 4 = 0 puts t = pi/2 and 3pi/2 on the integer center). Floats stay
