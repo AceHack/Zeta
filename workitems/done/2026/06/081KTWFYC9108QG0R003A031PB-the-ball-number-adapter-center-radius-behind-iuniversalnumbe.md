@@ -1,7 +1,7 @@
 ---
 id: 081KTWFYC9108QG0R003A031PB
 type: task
-state: backlog
+state: done
 priority: P2
 slug: the-ball-number-adapter-center-radius-behind-iuniversalnumbe
 title: "The ball-number adapter — center±radius behind IUniversalNumber; lossy ops WIDEN (never silently round); ball comparisons return Tri"
@@ -33,3 +33,15 @@ rounded UP only (widening is the only permitted loss); (4) compare a b → Tri: 
 are disjoint, **N on overlap** (the TriBoolean tie — predicates refuse to lie); (5) differential
 oracle: MPFR/BigDecimal per the port's own plan. Beacon: Moore 1966; Arb (Johansson 2017);
 Gustafson unums/valids. Distinct from SoftValue (bound vs belief — both registers stay).
+
+## DONE (2026-06-12) — Ball.fs ships in Core.FSharp.TriBoolean (Aaron: "i trust your judgement and love universal number")
+
+All five designed laws landed with falsifiers + FsCheck properties (200 cases each):
+(1) exact ⇔ radius 0; negative radius REFUSED never absorbed. (2) Moore add/mul exact at the
+bigint carrier; CONTAINMENT property — points inside the inputs land inside the output, add and
+mul. (3) `shed` = the lossy exemplar: center floors to the coarser grid, radius grows by EXACTLY
+the distance moved (property: accounted loss + containment). (4) `lt`/`eq` return Tri — disjoint
+decides, overlap and touching HOLD (Tri.N). Port adapter `Ball.universal`: IsExact honest;
+BitsUsed = THE SIGNAL ABOVE THE NOISE (bitlen center − bitlen radius; exact ⇒ every bit; noise
+taller than signal ⇒ 0). TriBoolean project gains its Zeta.Core reference (no cycle). Remaining
+(port-wide, not this item): the MPFR/BigDecimal differential oracle.

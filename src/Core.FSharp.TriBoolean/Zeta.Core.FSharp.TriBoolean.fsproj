@@ -15,6 +15,10 @@
     <Compile Include="Predicate3.fs" />
     <!-- Tri-boolean float (B-0944 slice 5 pt2): biased-exponent decoder, built from the Tri cell. -->
     <Compile Include="Float.fs" />
+    <Compile Include="Ball.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.fsproj" />
+  </ItemGroup>
 </Project>
