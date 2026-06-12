@@ -485,9 +485,9 @@ export type OutputEngine = "flux" | "argocd" | "both";
 export function emitEngineConfigs(opts: {
   graphPath: string;
   outDir: string;
-  chartsDir?: string;
-  namespace?: string;
-  outputEngine?: OutputEngine;
+  chartsDir?: string | undefined;
+  namespace?: string | undefined;
+  outputEngine?: OutputEngine | undefined;
 }): string[] {
   const graph = loadDependencyGraphFromFile(opts.graphPath);
   const resolved = resolveGraph(graph, opts.chartsDir);

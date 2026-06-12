@@ -29,8 +29,8 @@ import {
 interface Args {
   graphPath: string;
   outDir: string;
-  chartsDir?: string;
-  namespace?: string;
+  chartsDir?: string | undefined;
+  namespace?: string | undefined;
   engine: OutputEngine;
   validateOnly: boolean;
 }
