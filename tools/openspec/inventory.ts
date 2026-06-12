@@ -90,6 +90,7 @@ const CAPABILITY_MODULE_MAP: Record<string, string[]> = {
   "circuit-recursion": ["Circuit.fs", "NestedCircuit.fs"],
   "lsm-spine-family": ["Spine.fs", "SpineAsync.fs", "DiskSpine.fs", "BalancedSpine.fs", "SpineSelector.fs"],
   "repo-automation": [],
+  "retraction-native": ["Graph.fs"],
 };
 
 // Some OpenSpec capabilities are backed by repo artifacts outside src/Core/.
@@ -123,6 +124,10 @@ const CAPABILITY_ARTIFACT_MAP: Record<string, string[]> = {
     "tools/hygiene/check-tick-history-order.test.ts",
     "tools/hygiene/check-tick-history-shard-schema.ts",
     "tools/hygiene/check-tick-history-shard-schema.test.ts",
+  ],
+  "retraction-native": [
+    "tests/Tests.FSharp/Algebra/Graph.Tests.fs",
+    "docs/DECISIONS/2026-04-24-graph-substrate-zset-backed-retraction-native.md",
   ],
 };
 

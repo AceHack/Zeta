@@ -2,10 +2,12 @@
 id: B-0171.3
 zetaid: 081KSNY2Z0008QG0R0016VFTRX
 priority: P1
-status: open
+status: closed
+closed: 2026-06-12
+closed_by: "openspec/specs/retraction-native/spec.md"
 title: "OpenSpec catch-up - author Retraction-Native Semantics spec"
 created: 2026-05-28
-last_updated: 2026-05-31
+last_updated: 2026-06-12
 parent: B-0171
 depends_on: [B-0171.1]
 classification: buildable-now
