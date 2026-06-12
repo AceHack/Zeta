@@ -109,3 +109,23 @@ module CapabilityLedger =
           for KeyValue(cap, _) in ledger.Caps do
               if not (supportRaw |> List.exists (fun e -> e.Name = cap)) then
                   yield sprintf "cap '%s' has zero support rows — place it (absent is a valid placement)" cap ]
+
+    /// THE LADDER WIRING (the README's named next, rung 2): partition a host's candidate
+    /// factories by what the LEDGER says this system actually holds. Live placements feed the
+    /// ladder's `hostLive` slot; Injected placements feed `granted`; Mock/Absent/unplaced are
+    /// DROPPED — so a downstream `resolve` falls to its honest Mock rung instead of binding a
+    /// capability the ledger never placed. Generic over the factory type: the same wiring serves
+    /// the inference port today and every port after it (data decides, code obeys).
+    let partition
+        (ledger: Ledger)
+        (system: string)
+        (factories: Map<string, 'T>)
+        : Map<string, 'T> * Map<string, 'T> =
+        factories
+        |> Map.fold
+            (fun (live, granted) name factory ->
+                match resolve name system ledger with
+                | Ok s when s.Status = Live -> Map.add name factory live, granted
+                | Ok s when s.Status = Injected -> live, Map.add name factory granted
+                | _ -> live, granted)
+            (Map.empty, Map.empty)

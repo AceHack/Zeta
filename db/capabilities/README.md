@@ -10,5 +10,8 @@ MediaLines (our own dogfood): `cap` rows declare, `support` rows place. Per-emu 
 `db/emus/<machine>/capabilities.lines` (the chip8 one is first). The promised lint + resolver landed 2026-06-12: `Zeta.Core.CapabilityLedger` (parse / `resolve`
 with re-planning refusals / `systemsAtLeast` / `lint`) — pure over MediaLines, no IO in the
 module; CI sweeps BOTH real ledgers through the lint via tests/Tests.FSharp/CapabilityLedger
-.Tests.fs (dangling support rows, alien statuses, and dark caps all fail the gate). Next: feed
-`systemsAtLeast` into the inference/host ladders as the hostLive/granted input.
+.Tests.fs (dangling support rows, alien statuses, and dark caps all fail the gate). Rung 2 landed
+2026-06-12: `CapabilityLedger.partition` — generic over the factory type — splits a host's
+candidates by the ledger's word (Live → hostLive, Injected → granted, everything else dropped to
+the honest Mock rung); the inference ladder consumes it end-to-end in CI (data decides, code
+obeys). Next: the setup-side tier vocabulary folding into this same cap/support shape.

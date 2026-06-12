@@ -68,3 +68,47 @@ let ``LINT FALSIFIERS: dangling support, alien status, and a dark cap are each n
     Assert.Contains(findings, fun f -> f.Contains "undeclared cap 'x.ghost'")
     Assert.Contains(findings, fun f -> f.Contains "unknown status 'shiny'")
     Assert.Contains(findings, fun f -> f.Contains "cap 'x.dark' has zero support rows")
+
+// ── RUNG 2: the ledger DRIVES the inference ladder (data decides, code obeys) ──
+open Zeta.Core.Abstractions
+
+let private fakeEngine (name: string) : unit -> IInferenceEngine =
+    fun () ->
+        { new IInferenceEngine with
+            member _.Name = name
+            member _.RunGaussian(model, _, _) =
+                InferenceResult(true, 1, [| for v in 0 .. model.VariableCount - 1 -> GaussianMarginal(v, 0.0, 1.0) |]) }
+
+let private candidates =
+    Map.ofList
+        [ "engine.zeta-bayesian", fakeEngine "zeta-bayesian"
+          "engine.infer-net", fakeEngine "infer-net"
+          "engine.never-registered", fakeEngine "ghost" ]
+
+[<Fact>]
+let ``RUNG 2 — partition by the REAL ledger: Live feeds hostLive, Injected feeds granted, unknown is dropped to the Mock rung`` () =
+    let ledger = CapabilityLedger.ofDoc (generic ())
+    let hostLive, granted = CapabilityLedger.partition ledger "dotnet" candidates
+    Assert.True(Map.containsKey "engine.zeta-bayesian" hostLive) // ledger: live
+    Assert.True(Map.containsKey "engine.infer-net" granted) // ledger: injected BY DESIGN
+    Assert.False(Map.containsKey "engine.never-registered" hostLive)
+    Assert.False(Map.containsKey "engine.never-registered" granted)
+    // end-to-end through the ladder: the ledger's word becomes the binding's light
+    match InferenceLadder.resolve hostLive granted "engine.zeta-bayesian" with
+    | InferenceLadder.EngineBinding.Live _ -> ()
+    | b -> failwith (InferenceLadder.light b)
+    match InferenceLadder.resolve hostLive granted "engine.infer-net" with
+    | InferenceLadder.EngineBinding.Injected _ -> ()
+    | b -> failwith (InferenceLadder.light b)
+    match InferenceLadder.resolve hostLive granted "engine.never-registered" with
+    | InferenceLadder.EngineBinding.Mock _ -> () // honest rehearsal, never a masquerade
+    | b -> failwith (InferenceLadder.light b)
+
+[<Fact>]
+let ``RUNG 2 — an unplaced SYSTEM binds nothing: every request falls to the honest Mock rung`` () =
+    let ledger = CapabilityLedger.ofDoc (generic ())
+    let hostLive, granted = CapabilityLedger.partition ledger "cobol" candidates
+    Assert.True(Map.isEmpty hostLive && Map.isEmpty granted)
+    match InferenceLadder.resolve hostLive granted "engine.zeta-bayesian" with
+    | InferenceLadder.EngineBinding.Mock(_, e) -> Assert.Equal("mock-flat", e.Name)
+    | b -> failwith (InferenceLadder.light b)
