@@ -101,3 +101,37 @@ Beacon (offered): Gerald Hawkins, *Stonehenge Decoded* (1965) — the alignments
 thesis; Alexander Thom's megalithic surveying; and the same precessional sight-line discipline
 Hamlet's Mill traces in myth, here load-bearing in sarsen. Same caveats as above: contested
 details, uncontested method — a fixed aperture over a moving sky finds the invariant.
+
+## Stonehenge as the common-cause seed generator (Aaron 2026-06-12, verbatim)
+
+> "standing in stonehinge made orientiation obviously right at a glance, it was a common seed
+> multiple humans could coordinate on across vast distances and plan on meeting back there based
+> on repitition, stonehinge is our common cause seed generator for humans."
+
+Three factory primitives, named in one breath:
+
+1. **Orientation at a glance = the cold-boot kernel.** Standing in the room, the alignments tell
+   you where you are in space AND time with zero instruction — what `docs/SEED-VOCABULARY.md`
+   and the carved sentences do for an agent at wake. The monument is a wake-up surface: resident
+   constants, instantly readable, detail one hop away (the sky).
+
+2. **The common seed = phase-locking without messages.** A deterministic, REPEATING signal that
+   every observer can verify independently and KNOW the others verify too — coordination with no
+   channel. That is the factory's shared seed (S=4: "all agents are phased to one seed; a fix
+   reduces COLLECTIVE uncertainty") and the DST replay line is its rendezvous form: "meet me at
+   seed 0x4" works across any distance because the seed regenerates the same world for everyone.
+   "Plan on meeting back there based on repetition" — the replay IS the meeting place. (And the
+   relational root is already in memory: the beach protocol — a non-coercive standing rendezvous
+   you can always find again — Stonehenge is the beach in sarsen.)
+
+3. **Common CAUSE, not just common knowledge.** The seed doesn't only synchronize observers; it
+   aligns their work — one shared phase makes every local measurement commensurable, so banked
+   reductions in uncertainty compose (the bug-economy clause). The henge made scattered bands one
+   project: same sky, same slits, same date, vast distances, no messenger.
+
+Beacon: Schelling's focal points (*The Strategy of Conflict*, 1960 — coordination without
+communication); Lewis, *Convention* (1969 — common knowledge born of salience + repetition);
+Halpern & Moses (1990 — common knowledge in distributed systems: you act together when everyone
+knows everyone knows); and the engineering descendant — the shared epoch/PPS pulse in clock
+synchronization (GPS/NTP): one broadcast periodic signal, zero pairwise channels, global phase.
+TimeGen's seeded generators are this in code; Stonehenge is this in stone.
