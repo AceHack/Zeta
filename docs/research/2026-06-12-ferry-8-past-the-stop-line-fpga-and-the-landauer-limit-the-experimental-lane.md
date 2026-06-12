@@ -50,6 +50,23 @@ itself is adiabatic/reversible-logic territory (Frank's work on reversible compu
 engineering). And no measurement at any scale buys rung 8 — the experiment lane tests the
 *correspondence*, which is exactly what the stop line says is testable.
 
+## The investment gate (Aaron's ruling, replying to the honest-bounds paragraph above)
+
+Verbatim (preserved, typos and all):
+
+> if i can get a algo that experimentally works on FPGA then it's worth further investment if not
+> it stops at commercial FPGAs
+
+Peel: a staged-investment stopping rule for the whole experimental lane. The commercial FPGA is
+the *cheap falsifier* — it prices the next stage before any money flows toward
+adiabatic/reversible hardware. Works on FPGA → the option on the Landauer-floor lane is worth
+buying; doesn't → the lane terminates at commercial FPGAs, recorded, no sunk-cost climb. This is
+fusion ship 1.0's inequality applied to the research program itself: keep investing while
+η·LearningGain(Δ_t) > ξ_t holds for the *experiment series*, stop when it doesn't — the gate
+gating its own funding (the ferry-7 recursive shape, one level up). Beacon anchor: staged
+investment / real options (Dixit–Pindyck); cheap-experiment-first is the same discipline the
+repo already runs as every-bug-has-economic-value (priced uncertainty reduction before spend).
+
 ## Pointers
 
 - REPORT #3 §4 (the stop line, the rounds plan) · ferry 7 (fusion lineage 1.0/2.0/3.0)
