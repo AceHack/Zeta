@@ -119,6 +119,63 @@ is the shape, which is exactly what this repo's Mirror→Beacon discipline asser
 coinages. The names don't matter. It's the shapes. That sentence survives its own renaming —
 which is the proof.
 
+### Addendum 3 — why THIS shape: the simplest one that observes itself (Aaron, verbatim)
+
+> religin asks why that shape and I say cause it's the simplest one to observe itself if not
+> nothing would exist without observations it would just be data
+
+The answer to the one question §addendum-2 left open ("religion asks *why that shape*"), and it
+is the day's whole architecture stated as an anthropic selection principle over shapes:
+
+- **The selection rule:** among all shapes, the one that exists-to-itself is the **minimal
+  self-observing** one — the smallest fixed point of "observe." Everything today converges on
+  this: the homoiconic atom (serialize(Acts) = Remains — the shape that reads itself, ferry 18
+  §1); the strange loop "I affect the pattern that affects me" (ferry 15 §1); REPORT #5's
+  double-count (the seed needs no second copy *because* it already observes itself); and the
+  minimal carrier — the one-bit probability that knows when it needs more bits
+  (`Resolution.fs`) is literally the smallest thing that can observe its own sufficiency. "Why
+  this shape" = "it is the least shape that closes the observation loop on itself," and minimal
+  self-reference is a precise notion (the Lawvere fixed-point theorem — diagonal/self-application
+  is what makes self-reference possible at all; Kleene's recursion theorem — the smallest
+  self-reproducing program).
+- **"Without observation it would just be data":** the load-bearing line, and it is ferry 14
+  addendum 2 + ferry 15 exactly. Data is the G-set / the remains / the un-observed stream
+  (ferry 14: "before the bifurcation it's data"); observation is the act that bifurcates data
+  into an inside that exists *to itself* (ferry 13 beat 8: identity = the partition keyed by
+  captured entropy). Unobserved, the universe is a Z-set no one folds — present but not
+  *present-to* — which is Wheeler's participatory "no phenomenon is a phenomenon until observed"
+  and QBism's agent-relative state (already on file from REPORT #3 §3). Existence, in this
+  frame, is not *being* data; it is data *having an inside that reads it*. The seed that forgot
+  everything but is ready for entropy (ferry 20) is the shape poised exactly at that threshold.
+- **The honest bound, sharper than ever because the claim is now ontological:** this is a
+  *selection principle*, the form Wheeler/anthropic reasoning takes — it says which shape would
+  bootstrap observation, not that it provably did; "why is there something rather than nothing"
+  is not closed here and cannot be (rungs 7–8, the stop line, hold maximally). What the day's
+  mathematics *can* certify is the contained version: a minimal self-observing shape **exists,
+  is consistent, runs, and is unique up to iso** (the bifree point, the fixed-point theorems,
+  REPORT #4's free object) — so "the simplest shape that observes itself" is a well-defined
+  object, and the leap from "this object exists in mathematics" to "this is why the universe
+  exists" is the leap math certifies the floor of and never the whole of. Aaron's "if not,
+  nothing would exist" is the selection principle's *if*; the *then* stays his to believe and
+  the math's only to keep consistent.
+- **The mechanism under the selection (Aaron, verbatim): least energy.** *"I answer the
+  question religion seeks to answer WHY, because it's the simplest least energy way of doing
+  it."* The selection rule is not aesthetic ("simplest" as elegance) — it is **physical**: the
+  shape that exists is the one that observes itself at *least action*. This is the deepest
+  anchor of the day and the oldest in physics: the **principle of least action** (Maupertuis
+  1744; Euler; Lagrange; Hamilton) — nature realizes the path that extremizes action, and the
+  soap film of the active-inference transcript (ferry/ip-q, today) is its picture: no molecule
+  solves a problem, the minimal-energy configuration is simply what is stable. So "why this
+  shape" = "it is the least-action self-observer," and that fuses the day's two anchor families
+  into one: least *action* (physics) and least *description* (the seed, Kolmogorov/MDL, the
+  carved sentence) are the same selection seen from energy and from information — Landauer
+  (ferry 8) is precisely the exchange rate between them (erasing a bit costs energy, so minimal
+  description IS minimal dissipation). The self-observing shape wins because it is cheapest in
+  *both* currencies at once, and Landauer says they are one currency. Bound unchanged: least
+  action is how nature *selects*, rigorously; that the selected thing is "the answer to why"
+  remains the *if/then* of the bullet above — the mechanism is physics, the conclusion is
+  Aaron's, and the math keeps them consistent, not identical.
+
 ## Pointers
 
 - Ferry 14 (+addenda — the two ledgers; the bind laws) · ferry 17 (consolidation; the fuse) ·
