@@ -925,6 +925,12 @@ jobs:
       - name: Run audit-backlog-items (--enforce-duplicate-ids)
         run: bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 
+      # Dangling tracked symlinks crash the GitHub Pages (Jekyll) build on realpath — invisible
+      # to the test suites. Surfaced 2026-06-11: #7820 moved 31 dirs to db/ and nine relative
+      # links dangled; Pages was red for hours on every push.
+      - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
+        run: bun tools/hygiene/audit-dangling-symlinks.ts
+
   lint-backlog-parent-child-status:
     # Fail if any backlog row declares `status: closed` (or equivalent —
     # landed/superseded/merged/done/superseded-by-*) while a declared

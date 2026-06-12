@@ -1,1 +1,1 @@
-../universal/gamepad.md
+../../universal/gamepad.md

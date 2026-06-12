@@ -1,1 +1,1 @@
-../shapes/b.md
+../db/shapes/b.md
