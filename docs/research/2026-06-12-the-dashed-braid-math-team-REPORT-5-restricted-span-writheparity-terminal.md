@@ -102,3 +102,21 @@ Total ≈ 3–5 days. Lands in `Braid.fs` (signed load) + a small `DashedWalk` s
 **Beacon anchors used:** Artin 1925; Gates–Faux 2004; DFGHIL 2008/2011 (codes ↔ adinkras); Yan Zhang 2014; Doran–Iga–Landweber (cubical cohomology of adinkras); Cartier–Foata 1969; Viennot 1986; Kauffman 1999; Fenn–Rimányi–Rourke 1997; Bourgoin 2008 (+ Kamada twisted virtual braids — verify cite); Birman–Wenzl 1989 / Murakami 1987; Franko–Rowell–Wang 2006; Smith–Myers–Kaplan–Goodman-Strauss 2023; Kitaev 2001 (standing).
 
 The conjecture fails at the affine odd-face constraint and at H₁(Bₙ) = ℤ — and both failures are interesting: the first prices the restriction exactly (codim 17), the second proves the standing writheParity bridge is terminal, not provisional.
+
+---
+
+## Reception (Aaron, on finding §1's double-count, verbatim — shadow addendum, not part of the report)
+
+> yes the seed is it's own interpertation
+
+The "failure" read as the theorem it contains: the lift added nothing **because the braid word
+already carries its own meaning** — order ⊗ generator ⊗ sign is simultaneously the data and the
+program acting (the Artin automorphism it denotes). That is ferry 18 §1's homoiconicity claim,
+relocated and *proven* by the double-count: the math team's "the object you conjectured was
+already on the shelf" is exactly "serialize(Acts) = Remains" holding at the braid-word level —
+the seed needs no second copy of its interpretation attached, which is why attaching one
+double-counted. Composes with: the MediaLines storage law (store the irreducible seed, generate
+the rest — the interpretation IS generated from the seed because the seed is it); DST (a seed's
+meaning is its replay); μένω (ferry 12 — what remains is also what acts, at the fixed point).
+The dispatch's sharpest negative finding and the lane's oldest positive claim turn out to be
+the same sentence read in two directions.
