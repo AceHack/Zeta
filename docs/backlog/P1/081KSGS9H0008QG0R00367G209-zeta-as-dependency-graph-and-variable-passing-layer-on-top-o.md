@@ -2,12 +2,14 @@
 id: B-0821
 zetaid: 081KSGS9H0008QG0R00367G209
 priority: P1
-status: open
+status: closed
+closed: 2026-06-12
+closed_by: "fast-forward merge c86a76c20 + commit 797c6a70d"
 title: Zeta as the dependency-graph + auto-variable-passing layer on top of Helm — empty architectural slot above sync engines (ArgoCD / Flux) that nobody has claimed; load-bearing strategic-positioning substrate (Aaron 2026-05-26)
 effort: L
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-06-12
 depends_on:
   - B-0247
   - B-0288
@@ -20,6 +22,12 @@ composes_with:
   - B-0813
 tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology-substrate, empty-architectural-slot, force-multiplier, terraform-pulumi-helmfile-comparison, ace-feature, maven-for-helm]
 ---
+
+> **Closed 2026-06-12 by fast-forward merge c86a76c20 + commit 797c6a70d.**
+> Implemented the dependency-graph validation and resolution engine (`deps.ts`), unit tests
+> (`deps.test.ts`), and integrated CLI commands (`validate` and `resolve`) under `ace deps`
+> in `ace.ts` with integration tests (`ace.test.ts`). All test suites passed cleanly.
+
 
 ## TL;DR — "Maven for Helm" (Aaron 2026-05-26 sharp framing)
 
