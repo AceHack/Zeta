@@ -1,5 +1,6 @@
 ---
 id: B-1030
+zetaid: 081KTWJ1R0008QG0R000JJDPFZ
 title: Evaluate @microsoft/quantum-viz.js for circuit-diagram rendering in our TS apps
 priority: P3
 status: open

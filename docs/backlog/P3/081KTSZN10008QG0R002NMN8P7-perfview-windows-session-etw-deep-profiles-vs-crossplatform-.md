@@ -1,5 +1,6 @@
 ---
 id: B-1040
+zetaid: 081KTSZN10008QG0R002NMN8P7
 title: PerfView session on Windows (Aaron) — ETW deep profiles for the dotnet rooms; cross-platform lane = dotnet-trace/EventPipe + TraceEvent
 priority: P3
 status: open
