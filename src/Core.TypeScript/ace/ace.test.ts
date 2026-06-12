@@ -1997,3 +1997,100 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     expect(code).toBe(1);
   });
 });
+
+describe("ace deps subcommand (B-0821)", () => {
+  test("validate with valid graph exits 0", async () => {
+    const graphYaml = `
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: AppDependencyGraph
+metadata:
+  name: my-app
+spec:
+  dependsOn:
+    - chart: postgres
+    - chart: redis
+`;
+    const graphPath = join(tempHome, "deps-valid.yaml");
+    writeFileSync(graphPath, graphYaml);
+    const code = await main(["deps", "validate", "--graph", graphPath]);
+    expect(code).toBe(0);
+  });
+
+  test("validate with cyclic graph exits 1", async () => {
+    const graphYaml = `
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: AppDependencyGraph
+metadata:
+  name: my-app
+spec:
+  dependsOn:
+    - chart: chart-a
+      dependsOn: [chart-b]
+    - chart: chart-b
+      dependsOn: [chart-a]
+`;
+    const graphPath = join(tempHome, "deps-cyclic.yaml");
+    writeFileSync(graphPath, graphYaml);
+    const code = await main(["deps", "validate", "--graph", graphPath]);
+    expect(code).toBe(1);
+  });
+
+  test("resolve generates Flux and ArgoCD manifests in outDir", async () => {
+    const graphYaml = `
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: AppDependencyGraph
+metadata:
+  name: my-app
+spec:
+  dependsOn:
+    - chart: postgres
+      version: 15.2.0
+`;
+    const graphPath = join(tempHome, "deps-resolve.yaml");
+    writeFileSync(graphPath, graphYaml);
+    const outDir = join(tempHome, "manifests-out");
+
+    const code = await main([
+      "deps",
+      "resolve",
+      "--graph",
+      graphPath,
+      "--out-dir",
+      outDir,
+    ]);
+    expect(code).toBe(0);
+
+    expect(existsSync(join(outDir, "postgres-helmrelease.yaml"))).toBe(true);
+    expect(existsSync(join(outDir, "postgres-application.yaml"))).toBe(true);
+  });
+
+  test("resolve generates only Flux when outputEngine is flux", async () => {
+    const graphYaml = `
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: AppDependencyGraph
+metadata:
+  name: my-app
+spec:
+  dependsOn:
+    - chart: postgres
+`;
+    const graphPath = join(tempHome, "deps-resolve-flux.yaml");
+    writeFileSync(graphPath, graphYaml);
+    const outDir = join(tempHome, "manifests-flux-out");
+
+    const code = await main([
+      "deps",
+      "resolve",
+      "--graph",
+      graphPath,
+      "--out-dir",
+      outDir,
+      "--output-engine",
+      "flux",
+    ]);
+    expect(code).toBe(0);
+
+    expect(existsSync(join(outDir, "postgres-helmrelease.yaml"))).toBe(true);
+    expect(existsSync(join(outDir, "postgres-application.yaml"))).toBe(false);
+  });
+});

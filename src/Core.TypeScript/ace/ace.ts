@@ -12,10 +12,12 @@
 //   bun src/Core.TypeScript/ace/ace.ts trust list
 //   bun src/Core.TypeScript/ace/ace.ts registry add <name> <version> <url> [--hash <h>]
 //   bun src/Core.TypeScript/ace/ace.ts registry list
+//   bun src/Core.TypeScript/ace/ace.ts deps validate --graph <path>
+//   bun src/Core.TypeScript/ace/ace.ts deps resolve --graph <path> [--out-dir <dir>] [--output-engine flux|argocd|both] [--charts-dir <dir>] [--namespace <ns>]
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { chmodSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
@@ -46,6 +48,14 @@ import { buildIndexDoc, nextSequence } from "./registry-publish.ts";
 import { loadRegistries, parseIndex } from "./registry-remote.ts";
 import type { IndexDoc } from "./registry-remote.ts";
 import { resolve as toAbsolutePath, join } from "node:path";
+import {
+  parseYaml,
+  stringifyYaml,
+  resolveGraph,
+  generateFlux,
+  generateArgoCD,
+  type AppDependencyGraphSpec,
+} from "./deps";
 
 interface ListArgs {
   readonly command: "list";
@@ -123,7 +133,17 @@ interface RegistryArgs {
   readonly revReason?: string;
 }
 
-type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
+interface DepsArgs {
+  readonly command: "deps";
+  readonly sub: "validate" | "resolve";
+  readonly graphPath: string;
+  readonly outDir?: string;
+  readonly outputEngine: "flux" | "argocd" | "both";
+  readonly chartsDir?: string;
+  readonly namespace: string;
+}
+
+type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs | DepsArgs;
 
 interface ArgError {
   readonly error: string;
@@ -406,6 +426,59 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { command: "list", storePath, json };
   }
 
+  if (command === "deps") {
+    const sub = argv[1];
+    if (sub !== "validate" && sub !== "resolve") {
+      return { error: "deps requires subcommand: validate | resolve" };
+    }
+
+    let graphPath: string | undefined;
+    let outDir: string | undefined;
+    let outputEngine: DepsArgs["outputEngine"] = "both";
+    let chartsDir: string | undefined;
+    let namespace = "default";
+
+    for (let i = 2; i < argv.length; i++) {
+      const arg = argv[i];
+      if (arg === "--graph" || arg === "-g") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--graph requires a path argument" };
+        graphPath = next;
+        i++;
+      } else if (arg === "--out-dir" || arg === "-o") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--out-dir requires a path argument" };
+        outDir = next;
+        i++;
+      } else if (arg === "--output-engine") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--output-engine requires flux | argocd | both" };
+        if (next !== "flux" && next !== "argocd" && next !== "both") {
+          return { error: `--output-engine must be flux, argocd, or both (got ${next})` };
+        }
+        outputEngine = next;
+        i++;
+      } else if (arg === "--charts-dir") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--charts-dir requires a path argument" };
+        chartsDir = next;
+        i++;
+      } else if (arg === "--namespace" || arg === "-n") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--namespace requires a name argument" };
+        namespace = next;
+        i++;
+      } else {
+        return { error: `Unknown option for deps ${sub}: ${arg}` };
+      }
+    }
+
+    if (!graphPath) return { error: "deps requires --graph <path>" };
+    if (sub === "resolve" && !outDir) return { error: "deps resolve requires --out-dir <dir>" };
+
+    return { command: "deps", sub, graphPath, outDir, outputEngine, chartsDir, namespace };
+  }
+
   const known = ["remove", "inspect"];
   if (known.includes(command)) {
     return { error: `'${command}' is not yet implemented` };
@@ -442,12 +515,39 @@ Usage:
   ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
   ace registry remote list                       List configured remote registries
   ace registry remote rm <url>                   Remove a configured remote registry
+  ace deps validate --graph <path> [--charts-dir <dir>]  Validate an AppDependencyGraph (cycle + contract checks)
+  ace deps resolve --graph <path> --out-dir <dir> [--output-engine flux|argocd|both] [--charts-dir <dir>] [--namespace <ns>]
+                                                   Resolve graph and write Flux/ArgoCD manifests
   ace help                                       Show this help
 
 Future commands (not yet implemented):
   ace remove <hash>                              Uninstall a DLC
   ace inspect <hash>                             Show manifest without installing`;
   console.log(text);
+}
+
+function loadDependencyGraph(graphPath: string): AppDependencyGraphSpec {
+  const abs = toAbsolutePath(graphPath);
+  if (!existsSync(abs)) throw new Error(`graph file not found: ${graphPath}`);
+  const doc = parseYaml(readFileSync(abs, "utf8"));
+  if (typeof doc !== "object" || doc === null) throw new Error("graph must be a YAML mapping");
+  const g = doc as Record<string, unknown>;
+  if (g.kind !== "AppDependencyGraph") throw new Error(`expected kind AppDependencyGraph (got ${String(g.kind)})`);
+  if (typeof g.apiVersion !== "string") throw new Error("graph missing apiVersion");
+  if (typeof g.metadata !== "object" || g.metadata === null) throw new Error("graph missing metadata");
+  const meta = g.metadata as Record<string, unknown>;
+  if (typeof meta.name !== "string") throw new Error("graph metadata.name must be a string");
+  if (typeof g.spec !== "object" || g.spec === null) throw new Error("graph missing spec");
+  const spec = g.spec as Record<string, unknown>;
+  if (!Array.isArray(spec.dependsOn)) throw new Error("graph spec.dependsOn must be an array");
+  return doc as AppDependencyGraphSpec;
+}
+
+function writeManifestDir(outDir: string, files: Record<string, unknown>): void {
+  mkdirSync(outDir, { recursive: true });
+  for (const [filename, manifest] of Object.entries(files)) {
+    writeFileSync(join(outDir, filename), stringifyYaml(manifest));
+  }
 }
 
 /** SLICE 7 lockfile re-check: best-effort load the registry marks and refuse any pinned
@@ -1145,6 +1245,30 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (!found) { console.error(`ace: no installed package with hash ${parsed.hash}`); return 1; }
     console.log(`ace: ${found.manifest.name}@${found.manifest.version} present (manifest hash ${found.manifest.content_hash})`);
     return 0;
+  }
+
+  if (parsed.command === "deps") {
+    try {
+      const graph = loadDependencyGraph(parsed.graphPath);
+      const resolved = resolveGraph(graph, parsed.chartsDir);
+      if (parsed.sub === "validate") {
+        console.log(`ace: dependency graph '${graph.metadata.name}' is valid (${resolved.order.length} charts)`);
+        return 0;
+      }
+
+      const outDir = parsed.outDir!;
+      if (parsed.outputEngine === "flux" || parsed.outputEngine === "both") {
+        writeManifestDir(outDir, generateFlux(resolved, parsed.namespace));
+      }
+      if (parsed.outputEngine === "argocd" || parsed.outputEngine === "both") {
+        writeManifestDir(outDir, generateArgoCD(resolved, parsed.namespace));
+      }
+      console.log(`ace: wrote manifests for '${graph.metadata.name}' to ${outDir}`);
+      return 0;
+    } catch (e) {
+      console.error(`ace: deps ${parsed.sub} failed: ${(e as Error).message}`);
+      return 1;
+    }
   }
 
   return 1;
