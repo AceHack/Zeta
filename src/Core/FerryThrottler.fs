@@ -100,7 +100,15 @@ module FerryThrottlerConfig =
 type FerryThrottler<'TItem>
     (config: FerryThrottlerConfig,
      processBatch: ReadOnlyMemory<'TItem> -> CancellationToken -> Task,
-     ?itemSizeBytes: 'TItem -> int) =
+     ?itemSizeBytes: 'TItem -> int,
+     // DST seam (Option B): when true, NO background ferries are started — the
+     // caller drives processing synchronously via `PumpToIdleAsync` on its own
+     // thread (deterministic, replayable, zero wall-clock). Intended for the
+     // DoP=1 simulation / seed / test path. Default false = production background
+     // ferries. Future enhancement (tracked separately): a SynchronizationContext
+     // / Arrow thread-context capture so the BACKGROUND ferries are themselves
+     // replayable — then manual mode is no longer the only deterministic option.
+     ?manual: bool) =
 
     do
         if config.MaxDegreeOfParallelism < 1 then
@@ -143,53 +151,60 @@ type FerryThrottler<'TItem>
     /// self-clocking lives in `WaitToReadAsync` completing as soon as ≥1 item is
     /// available and the inner `TryRead` loop stopping the moment the queue drains.
     let byteBudget = config.MaxBatchBytes
+    let isManual = defaultArg manual false
+
+    // Build ONE boat from what is queued right now (plus a carried-over `pending`
+    // item that was deferred to keep within the byte budget). No waiting for new
+    // work, no awaiting — pure synchronous draining; returns the boat length and
+    // updates `pending`. This is the SINGLE source of boat-building truth: both
+    // the background ferry and the deterministic `PumpToIdleAsync` call it, so the
+    // DST path builds boats byte-for-byte identically to production.
+    let fillBoat (reader: ChannelReader<'TItem>) (buffer: 'TItem array) (pending: 'TItem voption ref) : int =
+        let mutable n = 0
+        let mutable bytes = 0
+        match pending.Value with
+        | ValueSome it ->
+            buffer.[0] <- it
+            n <- 1
+            bytes <- sizeOf it
+            pending.Value <- ValueNone
+        | ValueNone -> ()
+        let mutable draining = true
+        while draining && n < config.MaxBatchSize do
+            match reader.TryRead() with
+            | true, item ->
+                let sz = sizeOf item
+                match byteBudget with
+                | Some cap when n > 0 && bytes + sz > cap ->
+                    // Adding this would overshoot — defer it, close the boat.
+                    pending.Value <- ValueSome item
+                    draining <- false
+                | _ ->
+                    buffer.[n] <- item
+                    n <- n + 1
+                    bytes <- bytes + sz
+            | _ -> draining <- false
+        n
 
     let runFerry () : Task =
         backgroundTask {
             let reader = inbox.Reader
             let buffer = Array.zeroCreate<'TItem> config.MaxBatchSize
             let ct = cts.Token
-            // One-item pushback: an item read but deferred to the NEXT boat because
-            // it would have pushed the current boat over its byte budget. Keeps the
-            // budget strict without needing a peek the channel doesn't offer.
-            let mutable pending: 'TItem voption = ValueNone
+            // One-item pushback (see fillBoat): a byte-budget-deferred item carried
+            // to the NEXT boat, without a peek the channel doesn't offer.
+            let pending: 'TItem voption ref = ref ValueNone
             try
                 let mutable running = true
                 while running do
                     // Only wait for new work when nothing is already deferred.
-                    let mutable haveWork = pending.IsSome
+                    let mutable haveWork = pending.Value.IsSome
                     if not haveWork then
                         let! more = reader.WaitToReadAsync ct
                         haveWork <- more
                         if not more then running <- false
                     if haveWork then
-                        // Build one boat from what's queued right now (plus any
-                        // deferred item). Closes on item count OR byte budget —
-                        // never on a timer.
-                        let mutable n = 0
-                        let mutable bytes = 0
-                        match pending with
-                        | ValueSome it ->
-                            buffer.[0] <- it
-                            n <- 1
-                            bytes <- sizeOf it
-                            pending <- ValueNone
-                        | ValueNone -> ()
-                        let mutable draining = true
-                        while draining && n < config.MaxBatchSize do
-                            match reader.TryRead() with
-                            | true, item ->
-                                let sz = sizeOf item
-                                match byteBudget with
-                                | Some cap when n > 0 && bytes + sz > cap ->
-                                    // Adding this would overshoot — defer it, close the boat.
-                                    pending <- ValueSome item
-                                    draining <- false
-                                | _ ->
-                                    buffer.[n] <- item
-                                    n <- n + 1
-                                    bytes <- bytes + sz
-                            | _ -> draining <- false
+                        let n = fillBoat reader buffer pending
                         if n > 0 then
                             do! processBatch (ReadOnlyMemory(buffer, 0, n)) ct
                             // Clear references so a large boat doesn't pin items.
@@ -197,8 +212,10 @@ type FerryThrottler<'TItem>
             with :? OperationCanceledException -> ()
         }
 
+    // Production: start `ferries` background ferries now. Manual/DST mode: start
+    // none — the caller drives via `PumpToIdleAsync`.
     let ferryTasks : Task array =
-        Array.init ferries (fun _ -> runFerry ())
+        if isManual then [||] else Array.init ferries (fun _ -> runFerry ())
 
     /// Enqueue one item. Returns a `ValueTask` that completes when the item is
     /// accepted into the queue — on a bounded throttler this cooperatively waits
@@ -211,6 +228,30 @@ type FerryThrottler<'TItem>
     /// Try to enqueue without waiting. Returns false if a bounded queue is full.
     member _.TryEnqueue(item: 'TItem) : bool =
         inbox.Writer.TryWrite item
+
+    /// **Deterministic drive (Option B / manual mode).** Synchronously drains the
+    /// queue — building boats with the SAME `fillBoat` the background ferry uses
+    /// and processing each on the CALLER'S thread — until the queue is idle. No
+    /// background ferry, no wall-clock: awaiting the returned Task on the caller's
+    /// own flow IS the whole schedule, so it is fully DST-replayable. Intended for
+    /// the DoP=1 simulation / test path (construct with `manual = true`); the
+    /// processor should complete synchronously there for true determinism.
+    member _.PumpToIdleAsync(?cancellationToken: CancellationToken) : Task =
+        task {
+            let ct = defaultArg cancellationToken CancellationToken.None
+            let reader = inbox.Reader
+            let buffer = Array.zeroCreate<'TItem> config.MaxBatchSize
+            let pending: 'TItem voption ref = ref ValueNone
+            let mutable go = true
+            while go do
+                ct.ThrowIfCancellationRequested()
+                let n = fillBoat reader buffer pending
+                if n > 0 then
+                    do! processBatch (ReadOnlyMemory(buffer, 0, n)) ct
+                    Array.Clear(buffer, 0, n)
+                else
+                    go <- false // queue drained and nothing deferred — idle
+        }
 
     /// Signal that no more items will be enqueued, then await every ferry
     /// draining the queue to completion. After this the throttler is finished.

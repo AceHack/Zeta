@@ -44,33 +44,29 @@ let ``DoP=1 processes every item exactly once, in order`` () =
 
 
 [<Fact>]
-let ``slow traffic ships boats of one — no artificial batching delay`` () =
-    // Enqueue-then-await each, so each item is fully processed before the next
-    // is offered. A self-clocked ferry must ship each immediately as a boat of 1
-    // rather than waiting to coalesce (the anti-Nagle property).
-    let processed = ConcurrentQueue<int>()
-    let boats = ConcurrentQueue<int>()
-    let gate = new SemaphoreSlim(0)
-    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
-        boats.Enqueue boat.Length
-        for i in 0 .. boat.Length - 1 do processed.Enqueue(boat.Span.[i])
-        gate.Release() |> ignore
-        Task.CompletedTask
-    use throttler = new FerryThrottler<int>(FerryThrottlerConfig.deterministic, processBatch)
-    for x in [ 10; 20; 30 ] do
-        throttler.EnqueueAsync(x).AsTask().Wait()
-        // Wait for THIS item's boat with no wall-clock bound: the ferry runs on
-        // a background task, so its scheduling latency is nondeterministic — a
-        // fixed timeout (the old 2 s) flaked on slow/loaded runners (windows-11-arm).
-        // Blocking until the gate releases removes the timing threshold entirely;
-        // a genuine hang is caught by the test-runner's overall timeout. (Full
-        // DST determinism — pumping the single ferry synchronously via an injected
-        // scheduler — is a FerryThrottler design change tracked for the async lane.)
-        gate.Wait()   // wait for this item's boat
-    throttler.CompleteAsync().Wait()
-    List.ofSeq processed |> should equal [ 10; 20; 30 ]
-    // Every boat carried exactly one passenger.
-    List.ofSeq boats |> List.forall (fun n -> n = 1) |> should equal true
+let ``slow traffic ships boats of one — no artificial batching delay`` () : Task =
+    // Fully DETERMINISTIC and async-all-the-way (no wall-clock, no background
+    // ferry, NO blocking .Wait/.Result): `manual = true` starts no ferry; we drive
+    // each item's boat with PumpToIdleAsync, `do!`-awaited. "Slow traffic" = enqueue
+    // ONE, then pump — so each must ship as a boat of 1 (the anti-Nagle property),
+    // replaying identically every run. (Replaces the SemaphoreSlim+timeout that
+    // flaked on windows-11-arm.)
+    task {
+        let processed = ConcurrentQueue<int>()
+        let boats = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
+            boats.Enqueue boat.Length
+            for i in 0 .. boat.Length - 1 do processed.Enqueue(boat.Span.[i])
+            Task.CompletedTask
+        use throttler = new FerryThrottler<int>(FerryThrottlerConfig.deterministic, processBatch, manual = true)
+        for x in [ 10; 20; 30 ] do
+            do! throttler.EnqueueAsync(x)
+            do! throttler.PumpToIdleAsync() // process exactly this item's boat, now
+        do! throttler.CompleteAsync()
+        List.ofSeq processed |> should equal [ 10; 20; 30 ]
+        // Every boat carried exactly one passenger.
+        List.ofSeq boats |> List.forall (fun n -> n = 1) |> should equal true
+    }
 
 
 [<Fact>]
