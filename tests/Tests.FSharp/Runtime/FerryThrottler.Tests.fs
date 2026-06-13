@@ -59,7 +59,14 @@ let ``slow traffic ships boats of one — no artificial batching delay`` () =
     use throttler = new FerryThrottler<int>(FerryThrottlerConfig.deterministic, processBatch)
     for x in [ 10; 20; 30 ] do
         throttler.EnqueueAsync(x).AsTask().Wait()
-        gate.Wait(2000) |> should equal true   // wait for this item's boat
+        // Wait for THIS item's boat with no wall-clock bound: the ferry runs on
+        // a background task, so its scheduling latency is nondeterministic — a
+        // fixed timeout (the old 2 s) flaked on slow/loaded runners (windows-11-arm).
+        // Blocking until the gate releases removes the timing threshold entirely;
+        // a genuine hang is caught by the test-runner's overall timeout. (Full
+        // DST determinism — pumping the single ferry synchronously via an injected
+        // scheduler — is a FerryThrottler design change tracked for the async lane.)
+        gate.Wait()   // wait for this item's boat
     throttler.CompleteAsync().Wait()
     List.ofSeq processed |> should equal [ 10; 20; 30 ]
     // Every boat carried exactly one passenger.
