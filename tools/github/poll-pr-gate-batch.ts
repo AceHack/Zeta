@@ -61,7 +61,7 @@ import type { ClaimRecord } from "../../src/Core.TypeScript/bus/claim.ts";
 import { PriorityFerryThrottlerWithResult } from "../../src/Core.TypeScript/ferry-throttler/priority-ferry-throttler-with-result.ts";
 import type { PriorityFerryThrottlerConfig } from "../../src/Core.TypeScript/ferry-throttler/priority-config.ts";
 import type { ProcessBatchWithResult } from "../../src/Core.TypeScript/ferry-throttler/ferry-throttler.ts";
-import { readPRState } from "../observe/world-infra.ts";
+import { readPRState } from "../../src/Core.TypeScript/observe/world-infra.ts";
 
 export interface CheckCounts {
   ok: number;

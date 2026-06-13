@@ -22,21 +22,21 @@ test("resolveTarget classifies external + anchor as resolved (not file breaks)",
 
 test("resolveTarget strips anchors before checking the file", () => {
   // this very test file exists; an anchor on it must still resolve
-  const r = resolveTarget("tools/observe/pointer-check.test.ts#foo", "x.md", ".");
+  const r = resolveTarget("src/Core.TypeScript/observe/pointer-check.test.ts#foo", "x.md", ".");
   expect(r.kind).toBe("file");
   expect(r.resolved).toBe(true);
 });
 
 test("checkFile counts pointers and flags the broken file targets", () => {
-  const text = "[real](tools/observe/pointer-check.ts) and [dead](tools/observe/does-not-exist-xyz.md) and [ext](https://x.com)";
+  const text = "[real](src/Core.TypeScript/observe/pointer-check.ts) and [dead](src/Core.TypeScript/observe/does-not-exist-xyz.md) and [ext](https://x.com)";
   const fp = checkFile("x.md", text, ".");
   expect(fp.total).toBe(3);
   expect(fp.checked).toBe(2); // external excluded
   expect(fp.broken.length).toBe(1);
-  expect(fp.broken[0]!.target).toBe("tools/observe/does-not-exist-xyz.md");
+  expect(fp.broken[0]!.target).toBe("src/Core.TypeScript/observe/does-not-exist-xyz.md");
 });
 
 test("a file with no broken pointers reports zero", () => {
-  const fp = checkFile("x.md", "[ok](tools/observe/pointer-check.ts)", ".");
+  const fp = checkFile("x.md", "[ok](src/Core.TypeScript/observe/pointer-check.ts)", ".");
   expect(fp.broken.length).toBe(0);
 });

@@ -33,7 +33,7 @@ import {
   type StandingQueryTriggerSource,
 } from "./factory-health-monitor";
 
-const HEALTH_CHECK_TIMEOUT_MS = 20_000;
+const HEALTH_CHECK_TIMEOUT_MS = 60_000;
 let cachedReport: ReturnType<typeof runHealthCheck> | undefined;
 
 function getReport(): ReturnType<typeof runHealthCheck> {

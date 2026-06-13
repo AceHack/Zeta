@@ -47,7 +47,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../../src/Core.TypeScript/zeta-id/zeta-id";
+import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../zeta-id/zeta-id";
 import {
   Category,
   IdVersion,
@@ -57,7 +57,7 @@ import {
   LocationHint,
   type ZetaObservation,
   type Milliseconds,
-} from "../../src/Core.TypeScript/zeta-id/types";
+} from "../zeta-id/types";
 import type { AppendOutcome, EventSink } from "./execute";
 import type { NextAction } from "./observe";
 

@@ -23,7 +23,7 @@
 
 import { buildMenu, observe, actionLabel, type NextAction, type World } from "./observe";
 import { GRAMMAR_16_V0, SLOT, type RenderedSlot } from "./grammar-16";
-import { T, F, N, type Tri } from "../../src/Core.TypeScript/tri-boolean/index";
+import { T, F, N, type Tri } from "../tri-boolean/index";
 
 /** A rendered slot that may open a sub-menu (Option A: slot 14 -> the free modes). */
 export interface RenderedMenuSlot extends RenderedSlot {

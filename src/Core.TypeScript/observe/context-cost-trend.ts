@@ -52,7 +52,7 @@ export function byHarness(records: readonly TrendRecord[]): Map<string, TrendRec
 }
 
 // ── CLI (I/O at the edge) ────────────────────────────────────────────────────
-const STORE = "tools/observe/context-cost-trend.jsonl";
+const STORE = "src/Core.TypeScript/observe/context-cost-trend.jsonl";
 
 function measureNow(): Array<{ harness: string; bytes: number }> {
   return MANIFESTS.map((m) => {
@@ -81,7 +81,7 @@ if (import.meta.main) {
   const args = new Set(Bun.argv.slice(2));
 
   if (args.has("--record")) {
-    const cal = JSON.parse(readFileSync("tools/observe/token-calibration.json", "utf8")) as { bytesPerToken: number };
+    const cal = JSON.parse(readFileSync("src/Core.TypeScript/observe/token-calibration.json", "utf8")) as { bytesPerToken: number };
     const ts = new Date().toISOString();
     const rows = measureNow().map(
       (m): TrendRecord => ({ ts, harness: m.harness, bytes: m.bytes, estTokens: Math.round(estimateTokens(m.bytes, cal.bytesPerToken)) }),

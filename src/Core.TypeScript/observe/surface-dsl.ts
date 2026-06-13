@@ -15,7 +15,7 @@
 // NCI: reads + compiles surfaces; removes nothing.
 import { Glob } from "bun";
 import { readFileSync } from "node:fs";
-import { measureText } from "../../src/Core.TypeScript/byte-cost/byte-cost";
+import { measureText } from "../byte-cost/byte-cost";
 
 /** One compiled surface: the machine-readable form of a carved-sentence rule. */
 export interface Directive {

@@ -38,7 +38,7 @@ import { describe, expect, it } from "bun:test";
 
 import { buildMenu, fold, observeWithLlm, type BacklogItem, type NextAction, type World } from "./observe";
 import { execute, type AppendOutcome, type EventSink } from "./execute";
-import type { ModelBackend } from "../accelerator/local-llm";
+import type { ModelBackend } from "../../../tools/accelerator/local-llm";
 
 // ─── fakes (the established patterns: observe.test.ts mock + execute.test.ts sink) ───
 

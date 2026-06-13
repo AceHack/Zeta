@@ -19,7 +19,7 @@
 // --kpi (DORA metric line). NCI: measures only.
 import { Glob } from "bun";
 import { readFileSync, existsSync } from "node:fs";
-import { measureText, sum, type ByteCost } from "../../src/Core.TypeScript/byte-cost/byte-cost";
+import { measureText, sum, type ByteCost } from "../byte-cost/byte-cost";
 
 export type SurfaceMode = "whole" | "description";
 
@@ -127,7 +127,7 @@ function measureAll(): HarnessCost[] {
 
 if (import.meta.main) {
   const args = new Set(Bun.argv.slice(2));
-  const baselinePath = "tools/observe/context-cost-baseline.json";
+  const baselinePath = "src/Core.TypeScript/observe/context-cost-baseline.json";
   const costs = measureAll();
 
   if (args.has("--write-baseline")) {

@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { parseSurface, compile, toChoosePrompt } from "./surface-dsl";
-import { measureText } from "../../src/Core.TypeScript/byte-cost/byte-cost";
+import { measureText } from "../byte-cost/byte-cost";
 
 // B-1016 refinement C — carved-sentence surfaces compile to a DSL; the model reads
 // only the compact carved sentences at the choose-point, deterministic legs read 0B.

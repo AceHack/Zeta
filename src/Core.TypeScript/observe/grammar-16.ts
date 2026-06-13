@@ -23,7 +23,7 @@
  *   - ./observe.ts (the sovereign NextAction algebra + buildMenu this grammar renders)
  */
 
-import type { Tri } from "../../src/Core.TypeScript/tri-boolean/index";
+import type { Tri } from "../tri-boolean/index";
 
 /** The four controller groups (4 x 4 = 16). */
 export type SlotGroup = "Navigate" | "Commit" | "Scope" | "Meta";

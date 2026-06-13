@@ -52,7 +52,7 @@
  * ZetaId, or task vs bug vs state — only the observe DU.
  */
 
-import { readBacklogItems, selectNextBacklogItem, type PickupSelection } from "../backlog/autonomous-pickup";
+import { readBacklogItems, selectNextBacklogItem, type PickupSelection } from "../../../tools/backlog/autonomous-pickup";
 import { type BacklogItem, type NextAction, renderAction } from "./observe";
 
 /** Backlog priority tiers (mirrors the non-exported union in autonomous-pickup). */

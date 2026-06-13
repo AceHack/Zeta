@@ -59,7 +59,7 @@ interface CalibrationFile extends Calibration {
 if (import.meta.main) {
   const { readFileSync } = await import("node:fs");
   const args = new Set(Bun.argv.slice(2));
-  const path = "tools/observe/token-calibration.json";
+  const path = "src/Core.TypeScript/observe/token-calibration.json";
   const cal = JSON.parse(readFileSync(path, "utf8")) as CalibrationFile;
 
   if (args.has("--fit")) {
@@ -81,7 +81,7 @@ if (import.meta.main) {
   }
 
   // Default: estimate tokens for the byte-cost baseline (the cold-boot surface).
-  const baseline = JSON.parse(readFileSync("tools/observe/context-cost-baseline.json", "utf8")) as {
+  const baseline = JSON.parse(readFileSync("src/Core.TypeScript/observe/context-cost-baseline.json", "utf8")) as {
     harnesses: Record<string, { total: number }>;
   };
   const flag = cal.calibrated ? "" : "  [UNCALIBRATED placeholder ratio — run --fit with real tokenizer samples]";

@@ -10,7 +10,7 @@ import { existsSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { AGENT_BUS_ROOT } from "./types";
-import { coauthorFor } from "../../../tools/observe/event-sink-folder";
+import { coauthorFor } from "../observe/event-sink-folder";
 import type { SenderAgentId } from "../bus/types";
 
 function gitText(args: readonly string[]): string {
