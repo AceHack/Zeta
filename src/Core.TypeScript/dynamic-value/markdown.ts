@@ -1,4 +1,4 @@
-import { Tagged } from "./cbor";
+import type { Tagged } from "./cbor";
 import { canonicalYaml, fromCanonicalYaml } from "./yaml";
 
 export type MarkdownParseResult = { ok: true; metadata: Tagged; body: string } | { ok: false; error: string };

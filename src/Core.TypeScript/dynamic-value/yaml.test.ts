@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { Tagged } from "./cbor";
+import type { Tagged } from "./cbor";
 import { canonicalYaml, fromCanonicalYaml } from "./yaml";
 import { parseMarkdown, serializeMarkdown } from "./markdown";
 

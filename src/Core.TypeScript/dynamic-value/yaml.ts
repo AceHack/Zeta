@@ -1,4 +1,4 @@
-import { Tagged } from "./cbor";
+import type { Tagged } from "./cbor";
 import { parse as parseYaml } from "../yaml/dom";
 import type { YamlValue } from "../yaml/dom";
 import { encode as encodeYaml } from "../yaml/encoder";
