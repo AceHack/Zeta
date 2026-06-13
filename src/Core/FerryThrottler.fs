@@ -474,3 +474,46 @@ type FerryThrottler<'TItem, 'TResult>
             cts.Cancel()
             try Task.WaitAll(ferryTasks, 500) |> ignore with _ -> ()
             cts.Dispose()
+
+
+/// **ContextualFerryThrottler** — explicit context threading, the Kleisli-Arrow
+/// shape. Each item carries the caller's context value, captured AT ENQUEUE and
+/// threaded — as DATA, never via an AsyncLocal hidden side channel — to the boat
+/// processor. It *composes* the single-arity `FerryThrottler` over
+/// `struct('TItem * 'Ctx)`, so all batching / DoP / manual-pump (DST) behaviour is
+/// inherited unchanged. Mirrors `ISR` / `Traced.withCtx`: context is a parameter,
+/// not ambient state (see `Tracing.fs` on why the explicit Arrow beats the
+/// AsyncLocal side channel for legibility + composition).
+///
+/// First increment of the async-context-threading work: the caller supplies the
+/// context explicitly (no ambient capture). Later increments may add a
+/// capture-at-the-boundary convenience and extend context to the result arity.
+[<Sealed>]
+type ContextualFerryThrottler<'TItem, 'Ctx>
+    (config: FerryThrottlerConfig,
+     processBatch: ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task,
+     ?itemSizeBytes: 'TItem -> int,
+     ?manual: bool) =
+
+    // Size the PAYLOAD, not the (payload, ctx) pair — the threaded context is
+    // metadata that rides along; it does not count against the byte budget.
+    let innerSizer =
+        itemSizeBytes |> Option.map (fun f -> fun (struct (item, _ctx): struct ('TItem * 'Ctx)) -> f item)
+
+    let inner =
+        new FerryThrottler<struct ('TItem * 'Ctx)>(
+            config, processBatch, ?itemSizeBytes = innerSizer, ?manual = manual)
+
+    /// Enqueue one item together with the context value to thread to its boat.
+    member _.EnqueueAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : ValueTask =
+        inner.EnqueueAsync(struct (item, context), ?cancellationToken = cancellationToken)
+
+    /// Deterministic manual drive (when constructed with `manual = true`).
+    member _.PumpToIdleAsync(?cancellationToken: CancellationToken) : Task =
+        inner.PumpToIdleAsync(?cancellationToken = cancellationToken)
+
+    /// Signal completion and await the queue draining.
+    member _.CompleteAsync() : Task = inner.CompleteAsync()
+
+    interface IDisposable with
+        member _.Dispose() = (inner :> IDisposable).Dispose()

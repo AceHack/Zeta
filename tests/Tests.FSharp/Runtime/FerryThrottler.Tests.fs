@@ -386,3 +386,23 @@ let ``result arity faults request when byte sizer throws`` () : Task =
         oks |> should equal [| 1; 3 |]
         List.ofSeq processed |> should equal [ 1; 3 ]
     }
+
+
+[<Fact>]
+let ``contextual throttler threads each item's context to its boat (explicit Arrow)`` () : Task =
+    // Explicit context-as-data (the Kleisli-Arrow shape): each item's context is
+    // supplied at enqueue and arrives WITH the item at the boat — no AsyncLocal.
+    // Deterministic via manual-pump.
+    task {
+        let seen = ConcurrentQueue<struct (int * string)>()
+        let processBatch (boat: ReadOnlyMemory<struct (int * string)>) (_ct: CancellationToken) : Task =
+            for i in 0 .. boat.Length - 1 do seen.Enqueue(boat.Span.[i])
+            Task.CompletedTask
+        use throttler =
+            new ContextualFerryThrottler<int, string>(FerryThrottlerConfig.deterministic, processBatch, manual = true)
+        do! throttler.EnqueueAsync(1, "ctx-a")
+        do! throttler.EnqueueAsync(2, "ctx-b")
+        do! throttler.PumpToIdleAsync()
+        do! throttler.CompleteAsync()
+        List.ofSeq seen |> should equal [ struct (1, "ctx-a"); struct (2, "ctx-b") ]
+    }
