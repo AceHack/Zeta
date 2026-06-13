@@ -2,7 +2,7 @@
 name: set
 defined-by: The axiom of extensionality (Zermelo–Fraenkel); Cantor's collection
 formalised: draft
-dependencies: [equality, implication]
+dependencies: [equality, implication, membership]
 ---
 
 # set
@@ -20,22 +20,22 @@ exactly when they have the same members — nothing else about them counts.
 
 ## Mathematical definition
 
-Take membership `∈` as primitive (`x ∈ A` means "`x` is in `A`"). The
-defining law is the **axiom of extensionality**:
+[`Membership`](membership.md) `∈` is the primitive (`x ∈ A` means "`x` is
+in `A`"). The defining law is the **axiom of extensionality**:
 
 ```
 A = B   ↔   ∀x. (x ∈ A  ↔  x ∈ B)
 ```
 
 Two sets are [`equal`](equality.md) iff they have exactly the same
-elements. The biconditionals are [`implication`](implication.md). This one
-axiom is what makes order and repetition invisible: `{1, 2}`, `{2, 1}`, and
-`{1, 1, 2}` all have the same members, so by extensionality they are the
-same set.
+[members](membership.md). The biconditionals are
+[`implication`](implication.md). This one axiom is what makes order and
+repetition invisible: `{1, 2}`, `{2, 1}`, and `{1, 1, 2}` all have the same
+members, so by extensionality they are the same set.
 
-(Membership `∈` is itself a primitive not yet given its own seed term —
-an honest dangling edge recorded in the prereq graph, to be backwards-
-chained when a downstream term needs it.)
+(Membership is more primitive than set — it is a seed root — so the edge
+runs `set → membership`, keeping the graph acyclic. This was the one honest
+dangling edge left at v1; landing [`membership`](membership.md) closes it.)
 
 ## Lean4 formalisation
 

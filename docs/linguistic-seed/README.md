@@ -128,30 +128,40 @@ what the factory currently needs**. Don't pre-populate
 memories / docs cite, backwards-chain to the axioms as
 surface-contact surfaces the gaps.
 
-## Initial term candidates (to land in v1)
+## Landed terms (the DAG is in `prereq-graph.json`)
 
-**v1 landed (6 terms; the DAG is in `prereq-graph.json`):**
+**v2 landed (9 terms; two roots; self-describing).** The seed now carries
+the vocabulary to describe its *own* structure (`axiom` + `definition`),
+with no dangling edges.
+
+Roots (axiomatic, `dependencies: []`):
 
 - **truth** (Tarski's predicate; metalanguage-scoped) — `terms/truth.md`
+- **membership** (the primitive `∈` "is one of"; second root) —
+  `terms/membership.md`
+
+Derived:
+
 - **implication** (material conditional; Meredith-derivable) —
   `terms/implication.md`, deps `[truth]`
 - **equality** (Leibniz indiscernibility; reflexive / symmetric /
   transitive) — `terms/equality.md`, deps `[implication]`
 - **set** (extensional; Zermelo-Fraenkel) — `terms/set.md`,
-  deps `[equality, implication]`
+  deps `[equality, implication, membership]`
 - **function** (set-theoretic: single-valued total relation) —
   `terms/function.md`, deps `[set, equality]`
 - **retraction** (Zeta-adjacent; Z-set negative-weight inverse;
   the formal twin of the five-year-old walk's "honest take-back") —
   `terms/retraction.md`, deps `[function]`
+- **axiom** (self-referential: a claim posited true without proof — what a
+  root *is*; Tarski-careful) — `terms/axiom.md`, deps `[truth]`
+- **definition** (self-referential: stipulative, eliminable + non-creative
+  introduction of a term — what every non-root file *is*) —
+  `terms/definition.md`, deps `[equality]`
 
 **Candidates next** (backwards-chained as downstream need surfaces):
-
-- **membership** (the `∈` primitive set.md currently leaves untermed —
-  the one honest dangling edge in the graph)
-- **axiom** (self-referential: a seed-term whose `defined-by: axiomatic`)
-- **definition** (self-referential: a seed-term that makes another precise)
-- **relation** / **order** / **number** (as Craft / soulfile need them)
+**relation** / **order** / **number** / **proof** / **negation** (as
+Craft / soulfile / prompt-injection-resistance consumers need them).
 
 Per the backwards-chain discipline, each new term may depend only on
 already-landed terms (no dangling references; `prereq-graph.json` enforces
