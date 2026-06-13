@@ -48,7 +48,9 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-const ROOT = resolve(import.meta.dir, "../..");
+// Repo root is THREE levels up from src/Core.TypeScript/ci/ (was ../.. when
+// this lived at tools/ci/; the #8048-era relocation added a directory level).
+const ROOT = resolve(import.meta.dir, "../../..");
 
 interface FileAssertion {
   readonly path: string;
