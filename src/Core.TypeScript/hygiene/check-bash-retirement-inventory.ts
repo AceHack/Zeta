@@ -73,7 +73,8 @@ export interface InventoryReport {
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const SHEBANG_READ_BYTES = 512;
 const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh", ".command"];
-export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
+export const RETAINED_SHELL_SCOPE =
+  "repo-wide setup/bootstrap/service-wrapper/lint-wrapper/installer/dev-cluster allowlist";
 export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
 const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
 const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);

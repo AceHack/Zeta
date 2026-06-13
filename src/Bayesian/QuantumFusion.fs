@@ -28,6 +28,10 @@ module QuantumFusion =
           BytesPerTick: int64
           ResolutionBits: int }
 
+    type OracleFeedback =
+        | EmptyOracleName
+        | OracleUnavailable of string
+
     type Feedback =
         | InvalidPrior of Beta
         | NegativeBaseSpaceBytes of int64
@@ -36,11 +40,26 @@ module QuantumFusion =
         | NegativeResolutionBits of int
         | ByteCostOverflow of string
         | VisionBudget of VisionAttention.Feedback
+        | QuantumOracle of OracleFeedback
 
     type Report =
         { Exterior: GSet<BoundaryFact>
           Posterior: Beta
           Prediction: Vision.PredictionReport<BoundaryFact> }
+
+    type IQuantumFusionOracle =
+        abstract Name: string
+        abstract Observe: unit -> Result<QuantumObservableDelta list, OracleFeedback>
+
+    let oracleFromDeltas (name: string) (deltas: QuantumObservableDelta seq) : IQuantumFusionOracle =
+        { new IQuantumFusionOracle with
+            member _.Name = name
+
+            member _.Observe() =
+                if String.IsNullOrWhiteSpace name then
+                    Error EmptyOracleName
+                else
+                    Ok(Seq.toList deltas) }
 
     let private utf8Bytes (s: string) : int64 =
         if isNull s then 0L else int64 (Encoding.UTF8.GetByteCount s)
@@ -59,6 +78,8 @@ module QuantumFusion =
             { Kind = "BellCoincidence"; Id = value.Id; Operation = value.Operation }
         | QuantumObservableRow.InterferenceVisibility value ->
             { Kind = "InterferenceVisibility"; Id = value.Id; Operation = value.Operation }
+        | QuantumObservableRow.FlowBitDistinction value ->
+            { Kind = "FlowBitDistinction"; Id = value.Id; Operation = value.Operation }
 
     /// Re-view a composed signed quantum Z-set as the outside monotone G-set.
     let exterior (rows: ZSet<QuantumObservableRow>) : GSet<BoundaryFact> =
@@ -153,4 +174,14 @@ module QuantumFusion =
                 { Exterior = exteriorFacts
                   Posterior = posterior
                   Prediction = report }
+        }
+
+    let fuseOracle
+        (budget: Budget)
+        (tank: SoftThrottle.Tank)
+        (oracle: IQuantumFusionOracle)
+        : Result<Report, Feedback> =
+        result {
+            let! deltas = oracle.Observe() |> Result.mapError QuantumOracle
+            return! fuseDeltas budget tank deltas
         }

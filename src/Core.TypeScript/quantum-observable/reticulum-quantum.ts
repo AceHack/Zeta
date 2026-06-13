@@ -5,6 +5,7 @@ import type {
   CanonicalChsh,
   ChshAngles,
   ChshCorrelators,
+  FlowBitDistinction,
   InterferenceVisibility,
   Probabilities,
   QuantumObservableDelta,
@@ -117,13 +118,21 @@ interface WireInterferenceVisibility {
   readonly visibility: number | null;
 }
 
+interface WireFlowBitDistinction {
+  readonly id: string;
+  readonly operation: string;
+  readonly externalBit: boolean;
+  readonly probabilities: WireProbabilities;
+}
+
 type WireQuantumObservableRow =
   | { readonly type: "SingleQubit"; readonly value: WireSingleQubitMeasurement }
   | { readonly type: "CanonicalChsh"; readonly value: WireCanonicalChsh }
   | { readonly type: "SingletChsh"; readonly value: WireSingletChsh }
   | { readonly type: "BellCorner"; readonly value: WireBellCorner }
   | { readonly type: "BellCoincidence"; readonly value: WireBellCoincidence }
-  | { readonly type: "InterferenceVisibility"; readonly value: WireInterferenceVisibility };
+  | { readonly type: "InterferenceVisibility"; readonly value: WireInterferenceVisibility }
+  | { readonly type: "FlowBitDistinction"; readonly value: WireFlowBitDistinction };
 
 interface WireObservableDelta {
   readonly source: string;
@@ -299,6 +308,18 @@ function toWireQuantumObservableRow(row: QuantumObservableRow): WireQuantumObser
         },
       };
     }
+    case "FlowBitDistinction": {
+      const v = row.value;
+      return {
+        type: "FlowBitDistinction",
+        value: {
+          id: v.Id,
+          operation: v.Operation,
+          externalBit: v.ExternalBit,
+          probabilities: toWireProbabilities(v.Probabilities),
+        },
+      };
+    }
   }
 }
 
@@ -358,6 +379,15 @@ function fromWireQuantumObservableRow(row: WireQuantumObservableRow): QuantumObs
       };
       return { type: "InterferenceVisibility", value: v };
     }
+    case "FlowBitDistinction": {
+      const v: FlowBitDistinction = {
+        Id: row.value.id,
+        Operation: row.value.operation,
+        ExternalBit: row.value.externalBit,
+        Probabilities: fromWireProbabilities(row.value.probabilities),
+      };
+      return { type: "FlowBitDistinction", value: v };
+    }
   }
 }
 
@@ -376,6 +406,14 @@ function readRecord(parent: Record<string, unknown>, field: string): Result<Reco
 function readString(parent: Record<string, unknown>, field: string): Result<string, PacketError> {
   const value = parent[field];
   if (typeof value !== "string") {
+    return malformed(field);
+  }
+  return ok(value);
+}
+
+function readBoolean(parent: Record<string, unknown>, field: string): Result<boolean, PacketError> {
+  const value = parent[field];
+  if (typeof value !== "boolean") {
     return malformed(field);
   }
   return ok(value);
@@ -630,6 +668,28 @@ function readInterferenceVisibilityRow(value: Record<string, unknown>): Result<W
   });
 }
 
+function readFlowBitDistinctionRow(value: Record<string, unknown>): Result<WireQuantumObservableRow, PacketError> {
+  const id = readString(value, "id");
+  if (!id.ok) return id;
+  const operation = readString(value, "operation");
+  if (!operation.ok) return operation;
+  const externalBit = readBoolean(value, "externalBit");
+  if (!externalBit.ok) return externalBit;
+  const probabilitiesRecord = readRecord(value, "probabilities");
+  if (!probabilitiesRecord.ok) return probabilitiesRecord;
+  const probabilities = readProbabilities(probabilitiesRecord.value);
+  if (!probabilities.ok) return probabilities;
+  return ok({
+    type: "FlowBitDistinction",
+    value: {
+      id: id.value,
+      operation: operation.value,
+      externalBit: externalBit.value,
+      probabilities: probabilities.value,
+    },
+  });
+}
+
 function readWireQuantumObservableRow(value: unknown): Result<WireQuantumObservableRow, PacketError> {
   if (!isRecord(value)) {
     return malformed("row");
@@ -653,6 +713,8 @@ function readWireQuantumObservableRow(value: unknown): Result<WireQuantumObserva
       return readBellCoincidenceRow(valueRecord.value);
     case "InterferenceVisibility":
       return readInterferenceVisibilityRow(valueRecord.value);
+    case "FlowBitDistinction":
+      return readFlowBitDistinctionRow(valueRecord.value);
     default:
       return malformed("row.type");
   }
@@ -956,6 +1018,18 @@ export function ofQuantumObservableRow(source: string, sequence: bigint, row: Qu
       const v = row.value;
       return {
         Room: "arcade",
+        Source: source,
+        Name: v.Id,
+        Value: v.Probabilities.One,
+        Norm: v.Probabilities.Zero + v.Probabilities.One,
+        Support: 2,
+        Sequence: sequence,
+      };
+    }
+    case "FlowBitDistinction": {
+      const v = row.value;
+      return {
+        Room: "salon",
         Source: source,
         Name: v.Id,
         Value: v.Probabilities.One,

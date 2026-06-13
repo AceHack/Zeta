@@ -70,13 +70,21 @@ export interface InterferenceVisibility {
   readonly Visibility?: number | undefined;
 }
 
+export interface FlowBitDistinction {
+  readonly Id: string;
+  readonly Operation: string;
+  readonly ExternalBit: boolean;
+  readonly Probabilities: Probabilities;
+}
+
 export type QuantumObservableRow =
   | { readonly type: "SingleQubit"; readonly value: SingleQubitMeasurement }
   | { readonly type: "CanonicalChsh"; readonly value: CanonicalChsh }
   | { readonly type: "SingletChsh"; readonly value: SingletChsh }
   | { readonly type: "BellCorner"; readonly value: BellCorner }
   | { readonly type: "BellCoincidence"; readonly value: BellCoincidence }
-  | { readonly type: "InterferenceVisibility"; readonly value: InterferenceVisibility };
+  | { readonly type: "InterferenceVisibility"; readonly value: InterferenceVisibility }
+  | { readonly type: "FlowBitDistinction"; readonly value: FlowBitDistinction };
 
 export interface QuantumObservableDelta {
   readonly row: QuantumObservableRow;
@@ -125,6 +133,8 @@ function tagOrder(type: QuantumObservableRow["type"]): number {
       return 4;
     case "InterferenceVisibility":
       return 5;
+    case "FlowBitDistinction":
+      return 6;
   }
 }
 
@@ -228,6 +238,21 @@ function compareInterferenceVisibility(va: InterferenceVisibility, vb: Interfere
   return compareNumbers(va.Visibility, vb.Visibility);
 }
 
+function compareBooleans(a: boolean, b: boolean): number {
+  if (a === b) return 0;
+  return a ? 1 : -1;
+}
+
+function compareFlowBitDistinction(va: FlowBitDistinction, vb: FlowBitDistinction): number {
+  let cmp = compareStrings(va.Operation, vb.Operation);
+  if (cmp !== 0) return cmp;
+  cmp = compareBooleans(va.ExternalBit, vb.ExternalBit);
+  if (cmp !== 0) return cmp;
+  cmp = compareNumbers(va.Probabilities.Zero, vb.Probabilities.Zero);
+  if (cmp !== 0) return cmp;
+  return compareNumbers(va.Probabilities.One, vb.Probabilities.One);
+}
+
 export function compareQuantumObservableRow(a: QuantumObservableRow, b: QuantumObservableRow): number {
   if (a.type !== b.type) {
     return tagOrder(a.type) - tagOrder(b.type);
@@ -253,5 +278,7 @@ export function compareQuantumObservableRow(a: QuantumObservableRow, b: QuantumO
       return compareBellCoincidence(a.value, b.value as BellCoincidence);
     case "InterferenceVisibility":
       return compareInterferenceVisibility(a.value, b.value as InterferenceVisibility);
+    case "FlowBitDistinction":
+      return compareFlowBitDistinction(a.value, b.value as FlowBitDistinction);
   }
 }

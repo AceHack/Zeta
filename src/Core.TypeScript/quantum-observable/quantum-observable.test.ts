@@ -118,4 +118,24 @@ describe("QuantumObservableOracle simulator", () => {
     expect(closedPi.Probabilities.Zero).toBeCloseTo(0.0, 5);
     expect(closedPi.Probabilities.One).toBeCloseTo(1.0, 5);
   });
+
+  test("flow-bit distinction turns one external bit into a measured identity", () => {
+    const zero = oracle.runFlowBitDistinction(
+      "external-bit-zero",
+      "Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero",
+      false,
+    );
+    expect(zero.ExternalBit).toBe(false);
+    expect(zero.Probabilities.Zero).toBeCloseTo(1.0, 5);
+    expect(zero.Probabilities.One).toBeCloseTo(0.0, 5);
+
+    const one = oracle.runFlowBitDistinction(
+      "external-bit-one",
+      "Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne",
+      true,
+    );
+    expect(one.ExternalBit).toBe(true);
+    expect(one.Probabilities.Zero).toBeCloseTo(0.0, 5);
+    expect(one.Probabilities.One).toBeCloseTo(1.0, 5);
+  });
 });

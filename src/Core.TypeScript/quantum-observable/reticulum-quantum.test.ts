@@ -149,6 +149,33 @@ describe("ReticulumQuantum symmetry and codec", () => {
     expect(consolidated.map((delta) => delta.weight)).toEqual([1]);
   });
 
+  test("flow-bit rows survive the Reticulum delta codec", () => {
+    const row: QuantumObservableRow = {
+      type: "FlowBitDistinction",
+      value: {
+        Id: "external-bit-one",
+        Operation: "Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne",
+        ExternalBit: true,
+        Probabilities: { Zero: 0, One: 1 },
+      },
+    };
+
+    const payload = encodeDelta({
+      source: "qsharp-flow-bit",
+      sequence: 7,
+      row,
+      weight: 1,
+    });
+
+    const decoded = decodeDelta(payload);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) {
+      throw new Error(decoded.error.reason);
+    }
+    expect(decoded.value.row).toEqual(row);
+    expect(decoded.value.weight).toBe(1);
+  });
+
   test("delta decode returns malformed error for invalid schema", () => {
     const decoded = decodeDelta('{"schema":"wrong","delta":{}}');
     expect(decoded.ok).toBe(false);

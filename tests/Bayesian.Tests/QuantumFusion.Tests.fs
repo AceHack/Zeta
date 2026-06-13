@@ -96,6 +96,29 @@ let ``Vision budget backpressure does not change fused arithmetic truth`` () =
     Assert.Equal(Vision.RejectedWithBackpressure, report.Prediction.Outcome)
 
 [<Fact>]
+let ``QSharp flow-bit oracle plugin bifurcates flow then fuses one exterior identity`` () =
+    let flow = QuantumObservableDbsp.flowBitRow false
+    let distinction = QuantumObservableDbsp.flowBitRow true
+
+    let oracle =
+        [ QuantumObservableDbsp.delta flow 1L
+          QuantumObservableDbsp.delta flow -1L
+          QuantumObservableDbsp.delta distinction 1L ]
+        |> QuantumFusion.oracleFromDeltas "qsharp-flow-bit-golden"
+
+    let report =
+        oracle
+        |> QuantumFusion.fuseOracle budget (SoftThrottle.tank 4096.0 0.0)
+        |> mustOk
+
+    Assert.Equal(1, GSet.count report.Exterior)
+    let fact = report.Exterior |> GSet.toList |> List.exactlyOne
+    Assert.Equal("FlowBitDistinction", fact.Kind)
+    Assert.Equal("external-bit-one", fact.Id)
+    Assert.Equal("Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne", fact.Operation)
+    Assert.Equal(Vision.Admitted, report.Prediction.Outcome)
+
+[<Fact>]
 let ``invalid quantum fusion budget returns feedback instead of throwing`` () =
     let invalid = { budget with ResolutionBits = -1 }
 

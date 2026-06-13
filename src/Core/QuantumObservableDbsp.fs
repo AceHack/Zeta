@@ -32,6 +32,9 @@ type QuantumObservableRowConverter() =
         | "InterferenceVisibility" ->
             let v = JsonSerializer.Deserialize<QuantumObservableTreaty.InterferenceVisibility>(valueVal.GetRawText(), options)
             QuantumObservableRow.InterferenceVisibility v
+        | "FlowBitDistinction" ->
+            let v = JsonSerializer.Deserialize<QuantumObservableTreaty.FlowBitDistinction>(valueVal.GetRawText(), options)
+            QuantumObservableRow.FlowBitDistinction v
         | _ -> failwithf "Unknown quantum observable row type: %s" typ
 
     override _.Write(writer: Utf8JsonWriter, value: QuantumObservableRow, options: JsonSerializerOptions) =
@@ -61,6 +64,10 @@ type QuantumObservableRowConverter() =
             writer.WriteString("type", "InterferenceVisibility")
             writer.WritePropertyName("value")
             JsonSerializer.Serialize(writer, v, options)
+        | QuantumObservableRow.FlowBitDistinction v ->
+            writer.WriteString("type", "FlowBitDistinction")
+            writer.WritePropertyName("value")
+            JsonSerializer.Serialize(writer, v, options)
         writer.WriteEndObject()
 
 and [<JsonConverter(typeof<QuantumObservableRowConverter>)>] QuantumObservableRow =
@@ -70,6 +77,7 @@ and [<JsonConverter(typeof<QuantumObservableRowConverter>)>] QuantumObservableRo
     | BellCorner of QuantumObservableTreaty.BellCorner
     | BellCoincidence of QuantumObservableTreaty.BellCoincidence
     | InterferenceVisibility of QuantumObservableTreaty.InterferenceVisibility
+    | FlowBitDistinction of QuantumObservableTreaty.FlowBitDistinction
 
 type QuantumObservableDelta =
     { [<JsonPropertyName("row")>] Row: QuantumObservableRow
@@ -144,3 +152,20 @@ module QuantumObservableDbsp =
 
     let machZehnderZSet () : ZSet<QuantumObservableRow> =
         machZehnderDeltas () |> zsetOfDeltas
+
+    let flowBitRows () : QuantumObservableRow list =
+        QuantumObservableTreaty.flowBitDistinctions ()
+        |> List.map QuantumObservableRow.FlowBitDistinction
+
+    let flowBitRow (externalBit: bool) : QuantumObservableRow =
+        flowBitRows ()
+        |> List.find (fun row ->
+            match row with
+            | QuantumObservableRow.FlowBitDistinction value -> value.ExternalBit = externalBit
+            | _ -> false)
+
+    let flowBitDeltas () : QuantumObservableDelta list =
+        flowBitRows () |> List.map (fun row -> delta row 1L)
+
+    let flowBitZSet () : ZSet<QuantumObservableRow> =
+        flowBitDeltas () |> zsetOfDeltas

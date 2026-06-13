@@ -70,6 +70,12 @@ module QuantumObservableTreaty =
           Probabilities: Probabilities
           Visibility: float option }
 
+    type FlowBitDistinction =
+        { Id: string
+          Operation: string
+          ExternalBit: bool
+          Probabilities: Probabilities }
+
     let private c = ImaginaryStack.complex
 
     let private real (value: float) : Complex =
@@ -235,3 +241,22 @@ module QuantumObservableTreaty =
           closed "mach-zehnder-closed-pi-over-2-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiOver2Phase" (System.Math.PI / 2.0)
           closed "mach-zehnder-closed-two-pi-over-3-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedTwoPiOver3Phase" (2.0 * System.Math.PI / 3.0)
           closed "mach-zehnder-closed-pi-phase" "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase" System.Math.PI ]
+
+    let private flowBitProbabilities externalBit =
+        let state =
+            zero
+            |> QubitIso.hadamard
+            |> (if externalBit then QubitIso.pauliZ else id)
+            |> QubitIso.hadamard
+
+        probabilitiesFromState state
+
+    let flowBitDistinctions () : FlowBitDistinction list =
+        [ { Id = "external-bit-zero"
+            Operation = "Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero"
+            ExternalBit = false
+            Probabilities = flowBitProbabilities false }
+          { Id = "external-bit-one"
+            Operation = "Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne"
+            ExternalBit = true
+            Probabilities = flowBitProbabilities true } ]

@@ -6,6 +6,7 @@ import type {
   BellCorner,
   BellCoincidence,
   InterferenceVisibility,
+  FlowBitDistinction,
 } from "./types";
 
 export interface IQuantumObservableOracle {
@@ -35,6 +36,7 @@ export interface IQuantumObservableOracle {
     event: string,
   ): BellCoincidence;
   runInterferenceVisibility(id: string, operation: string, phase?: number): InterferenceVisibility;
+  runFlowBitDistinction(id: string, operation: string, externalBit: boolean): FlowBitDistinction;
 }
 
 function getProb(amp: unknown): number {
@@ -231,6 +233,26 @@ export class QuantumObservableOracle implements IQuantumObservableOracle {
       PhaseRadians: phase,
       Probabilities: { Zero: probZero, One: probOne },
       Visibility: operation.endsWith("Open") ? undefined : 1.0,
+    };
+  }
+
+  runFlowBitDistinction(id: string, operation: string, externalBit: boolean): FlowBitDistinction {
+    const circuit = new QuantumCircuit(1);
+    circuit.appendGate("h", 0);
+    if (externalBit) {
+      circuit.appendGate("z", 0);
+    }
+    circuit.appendGate("h", 0);
+    circuit.run();
+
+    const probOne = circuit.probabilities()[0] ?? 0;
+    const probZero = 1 - probOne;
+
+    return {
+      Id: id,
+      Operation: operation,
+      ExternalBit: externalBit,
+      Probabilities: { Zero: probZero, One: probOne },
     };
   }
 }

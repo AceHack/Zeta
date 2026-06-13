@@ -85,6 +85,7 @@ let private rowId row =
     | QuantumObservableRow.BellCorner value -> value.Id
     | QuantumObservableRow.BellCoincidence value -> value.Id
     | QuantumObservableRow.InterferenceVisibility value -> value.Id
+    | QuantumObservableRow.FlowBitDistinction value -> value.Id
 
 [<Fact>]
 let ``qubit Born observable crosses Reticulum as a deterministic finite-room packet`` () =

@@ -142,6 +142,10 @@ let private fsharpInterferenceCase id =
     QuantumObservableTreaty.interferenceVisibility()
     |> List.find (fun item -> item.Id = id)
 
+let private fsharpFlowBitCase id =
+    QuantumObservableTreaty.flowBitDistinctions()
+    |> List.find (fun item -> item.Id = id)
+
 let private assertQSharpColumn (matrix: JsonElement) col (state: QubitIso.JoinState) =
     complexCloseTo (matrixEntry matrix 0 col) state.A
     complexCloseTo (matrixEntry matrix 1 col) state.B
@@ -232,18 +236,22 @@ let ``QubitIso raw kernels match Q# gate matrices on computational basis states`
 [<Fact>]
 let ``Q# flow-bit oracle turns external entropy into deterministic distinction`` () =
     let zero = flowBitCase "external-bit-zero"
+    let expectedZero = fsharpFlowBitCase "external-bit-zero"
     let zeroProb = zero.GetProperty("probabilities")
-    Assert.False(zero.GetProperty("externalBit").GetBoolean())
-    Assert.Equal("Zeta.ReferenceOracle.ApplyExternalBitDistinguishZero", zero.GetProperty("operation").GetString())
-    closeTo 1.0 (zeroProb.GetProperty("Zero").GetDouble())
-    closeTo 0.0 (zeroProb.GetProperty("One").GetDouble())
+    Assert.False(expectedZero.ExternalBit)
+    Assert.Equal(expectedZero.ExternalBit, zero.GetProperty("externalBit").GetBoolean())
+    Assert.Equal(expectedZero.Operation, zero.GetProperty("operation").GetString())
+    closeTo expectedZero.Probabilities.Zero (zeroProb.GetProperty("Zero").GetDouble())
+    closeTo expectedZero.Probabilities.One (zeroProb.GetProperty("One").GetDouble())
 
     let one = flowBitCase "external-bit-one"
+    let expectedOne = fsharpFlowBitCase "external-bit-one"
     let oneProb = one.GetProperty("probabilities")
-    Assert.True(one.GetProperty("externalBit").GetBoolean())
-    Assert.Equal("Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne", one.GetProperty("operation").GetString())
-    closeTo 0.0 (oneProb.GetProperty("Zero").GetDouble())
-    closeTo 1.0 (oneProb.GetProperty("One").GetDouble())
+    Assert.True(expectedOne.ExternalBit)
+    Assert.Equal(expectedOne.ExternalBit, one.GetProperty("externalBit").GetBoolean())
+    Assert.Equal(expectedOne.Operation, one.GetProperty("operation").GetString())
+    closeTo expectedOne.Probabilities.Zero (oneProb.GetProperty("Zero").GetDouble())
+    closeTo expectedOne.Probabilities.One (oneProb.GetProperty("One").GetDouble())
 
 [<Fact>]
 let ``BellTest canonical CHSH observables match the Q# golden vector`` () =
