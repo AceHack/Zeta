@@ -14,7 +14,7 @@ import {
   formatResult,
   interpretMetrics,
   parseArgs,
-} from "./measure";
+} from "./accelerator-measure";
 
 describe("parseArgs", () => {
   test("default window is 24h", () => {

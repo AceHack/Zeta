@@ -56,6 +56,11 @@ overlay exists.
 
 ## Bring it up
 
+CLI entrypoints live under `src/Core.TypeScript/cluster/dev-cluster/` and orchestrate
+through vendor-neutral ports in `src/Core.TypeScript/cluster/ports.ts` (container host,
+local cluster driver, control plane, package driver, app catalog). Adapters under
+`cluster/adapters/` are the only layer that names kind/k3d/kubectl/helm today.
+
 ```bash
 # Pre-requirements (one-time):
 bash tools/setup/install.sh

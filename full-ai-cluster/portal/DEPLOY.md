@@ -70,14 +70,14 @@ Two ways in.
 
 ```bash
 # 1. local k3d + ArgoCD
-full-ai-cluster/dev-cluster/up.sh
+bun src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts
 
 # 2. build the portal image and side-load it into k3d
 docker build -t ghcr.io/lucent-financial-group/zeta-portal:latest full-ai-cluster/portal
 k3d image import ghcr.io/lucent-financial-group/zeta-portal:latest -c <cluster>
 
 # 3. let ArgoCD deploy the platform (CRDs + controller + portal)
-full-ai-cluster/dev-cluster/apply-root-app.sh
+bun src/Core.TypeScript/cluster/dev-cluster/apply-root-app.ts
 
 # 4. reach the portal
 kubectl -n zeta-platform port-forward svc/portal 8080:80

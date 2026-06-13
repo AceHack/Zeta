@@ -65,14 +65,12 @@ These either run **before** Bun is installed (post-install scripts can use Bun;
 pre-install scripts cannot) or bootstrap macOS launchd into the pinned Bun
 environment before handing off to TypeScript. Per Otto-235 4-shell portability
 target (macOS bash 3.2 / Ubuntu / git-bash / WSL), these are the bootstrap
-layer, or service/installer/dev-cluster surfaces that still execute before the
+layer, or service/installer surfaces that still execute before the
 TypeScript/Bun control plane is available.
 
 ```text
 .gemini/service/install-lior-service.sh
 .gemini/service/lior-loop.sh
-full-ai-cluster/dev-cluster/down.sh
-full-ai-cluster/dev-cluster/up.sh
 full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh
 full-ai-cluster/usb-nixos-installer/zeta-install.sh
 tools/kiro/kiro-loop-wrapper.sh
