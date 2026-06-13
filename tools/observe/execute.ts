@@ -22,13 +22,12 @@
  * `mode` is just `fold(initial, events).mode`. So "persist the chosen mode" IS
  * "append the mode-setting NextAction to the log." No mode table — the log is it.
  *
- * ── This slice: zero-effect + do_item + operator channel (2026-06-12/13) ───────
- * Zero-effect kinds (free_time, self_reflect, explore, play) have NO external
- * side-effect. `do_item` delegates to `executeDoItem` (command/observation split).
- * `preserve_ferry` and `respond_to_operator` are the operator-channel effects:
- * they run the effect FIRST (preserve content / emit response) then append to the
- * log — durability-first for ferry content that might be lost to compaction.
- * Remaining kinds (decompose, edit_grammar) are `not-yet-executable`.
+ * ── This slice: ALL 9 action kinds wired (2026-06-13) ─────────────────────────
+ * Zero-effect kinds (free_time, self_reflect, explore, play, decompose,
+ * edit_grammar) have no external side-effect — append + simulate.
+ * `do_item` delegates to `executeDoItem` (command/observation split).
+ * `preserve_ferry` and `respond_to_operator` are operator-channel effects:
+ * effect-first (durability of ferry content / response emission) then append.
  *
  * The `EventSink` is INJECTED (asymmetric-authorship: the sink AUTHORS its own
  * outcome channel) so this slice is testable with a fake sink and no git I/O;
@@ -79,7 +78,7 @@ export function fakeOperatorPort(): OperatorPort & { preserved: string[]; respon
 }
 
 /** The action kinds this slice can execute (zero external side-effect: mode-set + append). */
-const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play"] as const;
+const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play", "decompose", "edit_grammar"] as const;
 type ZeroEffectKind = (typeof ZERO_EFFECT_KINDS)[number];
 
 function isZeroEffectKind(kind: NextAction["kind"]): kind is ZeroEffectKind {
@@ -124,18 +123,13 @@ export type ExecuteResult =
 /**
  * Execute a chosen action. Routes through four paths:
  *
- * 1. **Zero-effect kinds** (free_time, self_reflect, explore, play): mode-set only.
- *    Append the action itself to the log, then transition via `simulate`.
+ * 1. **Zero-effect kinds** (free_time, self_reflect, explore, play, decompose,
+ *    edit_grammar): backlog/mode transform only. Append then simulate.
  *
  * 2. **do_item**: delegates to `executeDoItem` (command/observation event split).
- *    Requires an injected `CommandExecutor` + `DoItemOptions`. If not provided,
- *    returns `not-yet-executable`.
  *
  * 3. **preserve_ferry / respond_to_operator**: operator-channel effects.
- *    Requires an injected `OperatorPort`. Effect first (preserve the ferry content
- *    or emit the response), then append, then simulate.
- *
- * 4. **Everything else** (decompose, edit_grammar): returns `not-yet-executable`.
+ *    Effect first, then append, then simulate.
  *
  * Order matters: for operator actions, EFFECT FIRST (the content might be lost to
  * compaction if we append-then-effect and the effect fails). For zero-effect kinds,
@@ -215,6 +209,7 @@ export async function execute(
     return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
   }
 
-  // Path 4: not yet wired
+  // Exhaustiveness guard — all 9 kinds are wired above; this is unreachable
+  // unless the NextAction union is extended without updating execute().
   return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
 }

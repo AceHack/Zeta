@@ -55,22 +55,14 @@ describe("execute — free_time + self_reflect slice", () => {
     if (r.ok) expect(r.world).toEqual(simulate(emptyWorld, freeTime));
   });
 
-  it("returns not-yet-executable for kinds that still lack wired effects", async () => {
-    const item = { id: "B-1", title: "x", ready: true, ambiguous: false };
-    const notYet: NextAction[] = [
-      { kind: "decompose", item },
-      { kind: "edit_grammar", reason: "needs new action", item },
-    ];
-    for (const action of notYet) {
-      const sink = fakeSink();
-      const r = await execute(emptyWorld, action, sink);
-      expect(r.ok).toBe(false);
-      expect(sink.appended).toEqual([]); // not-yet-executable → nothing appended
-      if (!r.ok) {
-        expect(r.feedback.kind).toBe("not-yet-executable");
-        if (r.feedback.kind === "not-yet-executable") expect(r.feedback.actionKind).toBe(action.kind);
-      }
-    }
+  it("returns not-yet-executable only for unknown/future action kinds (exhaustiveness guard)", async () => {
+    // All 9 current kinds are wired. This test verifies the guard exists
+    // for future extensions. We can't easily test it without a cast.
+    const sink = fakeSink();
+    const fakeAction = { kind: "future_unknown_kind", reason: "test" } as unknown as NextAction;
+    const r = await execute(emptyWorld, fakeAction, sink);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.feedback.kind).toBe("not-yet-executable");
   });
 
   it("preserve_ferry returns not-yet-executable when no operatorPort is provided", async () => {
@@ -278,5 +270,54 @@ describe("execute — respond_to_operator with injected OperatorPort", () => {
     const r = await execute(worldWithMessage, respond, sink, undefined, undefined, port);
     expect(r.ok).toBe(true);
     expect(port.responses).toEqual(["engaging with operator"]);
+  });
+});
+
+describe("execute — decompose + edit_grammar (zero-effect, backlog transform)", () => {
+  const ambiguousItem = { id: "B-99", title: "big ambiguous thing", ready: false, ambiguous: true };
+  const needsExtItem = { id: "B-100", title: "needs new action", ready: false, ambiguous: false, needsNewAction: true };
+  const worldWithItems: World = { backlog: [ambiguousItem, needsExtItem] };
+
+  it("decompose: appends + splits item into children via simulate", async () => {
+    const sink = fakeSink();
+    const action: NextAction = { kind: "decompose", item: ambiguousItem };
+    const r = await execute(worldWithItems, action, sink);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      // simulate splits into B-99.1 and B-99.2
+      expect(r.world.backlog.find((i) => i.id === "B-99")).toBeUndefined();
+      expect(r.world.backlog.find((i) => i.id === "B-99.1")).toBeDefined();
+      expect(r.world.backlog.find((i) => i.id === "B-99.2")).toBeDefined();
+      expect(sink.appended.length).toBe(1);
+    }
+  });
+
+  it("edit_grammar: appends + marks item as expressible via simulate", async () => {
+    const sink = fakeSink();
+    const action: NextAction = { kind: "edit_grammar", reason: "extend the grammar", item: needsExtItem };
+    const r = await execute(worldWithItems, action, sink);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      const updated = r.world.backlog.find((i) => i.id === "B-100");
+      expect(updated?.needsNewAction).toBe(false);
+      expect(updated?.ready).toBe(true);
+      expect(sink.appended.length).toBe(1);
+    }
+  });
+
+  it("decompose world matches pure simulate path", async () => {
+    const sink = fakeSink();
+    const action: NextAction = { kind: "decompose", item: ambiguousItem };
+    const r = await execute(worldWithItems, action, sink);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.world).toEqual(simulate(worldWithItems, action));
+  });
+
+  it("edit_grammar world matches pure simulate path", async () => {
+    const sink = fakeSink();
+    const action: NextAction = { kind: "edit_grammar", reason: "extend", item: needsExtItem };
+    const r = await execute(worldWithItems, action, sink);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.world).toEqual(simulate(worldWithItems, action));
   });
 });
