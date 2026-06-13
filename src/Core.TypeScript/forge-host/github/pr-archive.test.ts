@@ -5,7 +5,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "bun:test";
 
-const SCRIPT = resolve(dirname(fileURLToPath(import.meta.url)), "archive-pr.ts");
+const SCRIPT = resolve(dirname(fileURLToPath(import.meta.url)), "pr-archive.ts");
 
 function run(command: string, args: readonly string[], cwd: string, env?: NodeJS.ProcessEnv) {
   return spawnSync(command, Array.from(args), {
