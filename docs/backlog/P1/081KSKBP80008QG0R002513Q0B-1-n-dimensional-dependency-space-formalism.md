@@ -2,13 +2,13 @@
 id: B-0824.1
 zetaid: 081KSKBP80008QG0R002513Q0B
 priority: P1
-status: in_progress
+status: closed
 title: "Ace meta-PM: N-dimensional dependency-space formalism"
 tier: substrate-architecture
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-27
-last_updated: 2026-05-28
+last_updated: 2026-06-13
 parent: B-0824
 depends_on: [B-0822]
 composes_with: []

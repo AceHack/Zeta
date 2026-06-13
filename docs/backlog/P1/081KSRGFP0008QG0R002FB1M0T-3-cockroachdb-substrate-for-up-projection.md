@@ -2,13 +2,13 @@
 id: B-0824.3
 zetaid: 081KSRGFP0008QG0R002FB1M0T
 priority: P1
-status: open
+status: closed
 title: "Ace meta-PM: CockroachDB substrate for the up-projection"
 tier: substrate-engineering
 effort: L
 ask: aaron 2026-05-26
 created: 2026-05-29
-last_updated: 2026-05-29
+last_updated: 2026-06-13
 parent: B-0824
 depends_on: [B-0824.1]
 composes_with: [B-0819, B-0825]
