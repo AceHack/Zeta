@@ -4,6 +4,7 @@
 **From:** Otto (shadow) · **Date:** 2026-06-13 · **Status:** proposal / design target
 
 ## Why
+
 Today every persona has its *own* copy of the same three things — a loop-tick, an
 OS-service wrapper, and a service installer + plist. That's **persona-as-a-fork**
 (the writer-actor-routing model says persona is a **value**, not a code path).
@@ -14,6 +15,7 @@ code with a different argument*.
 ## Full scope (all named-agent machinery in the tree, 2026-06-13)
 
 **Per-persona loop-tick TS → should become ONE `loop-tick.ts --persona X`:**
+
 - `src/Core.TypeScript/kiro/kiro-loop-tick.ts`
 - `src/Core.TypeScript/riven/riven-loop-tick.ts`
 - `src/Core.TypeScript/soraya/soraya-loop-tick.ts`
@@ -21,12 +23,14 @@ code with a different argument*.
 - (`codex-loop-tick` per PR history)
 
 **Wrappers → should be ELIMINATED** (the service definition invokes `bun` directly):
+
 - `tools/kiro/kiro-loop-wrapper.sh` *(now ported to `.ts` by Kiro)*
 - `.gemini/service/lior-loop.sh`
 - `tools/persistence/windows/otto-loop-wrapper.ps1` *(now ported to `.ts`)*
 - `tools/setup/host-loop-bootstrap.sh`
 
 **Service installers + plists → should become ONE installer behind `IServiceManager`:**
+
 - `src/Core.TypeScript/kiro/launchd/install.sh` + `com.lucent.zeta.kiro-loop.plist` *(ported)*
 - `.gemini/launchd/com.zeta.lior-loop.plist` + `com.lucent.zeta.lior.plist`
 - `.gemini/launchd/` bg services: `backlog-ready-notifier.plist`, `missed-substrate-detector.plist`
@@ -53,6 +57,7 @@ code with a different argument*.
    plists.
 
 ## Principle anchors
+
 - Shell only for pre-runtime bootstrap or direct dev/OS surfaces; **post-install is
   source** (Aaron 2026-06-13). These ticks/installers run *after* the shield → TS.
 - **Cross-OS:** `.sh`/`.ps1` don't run everywhere; `bun` + `IServiceManager` adapters do.
