@@ -125,8 +125,8 @@ jobs:
           echo "asserting model: $MODEL"
           ollama list
           ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"
-          bun test tools/accelerator/local-llm.test.ts
-          bun tools/accelerator/validate-local-llm.ts --root "$PWD"
+          bun test src/Core.TypeScript/accelerator/local-llm.test.ts
+          bun src/Core.TypeScript/accelerator/validate-local-llm.ts --root "$PWD"
 
       - name: Idempotency / 2nd-run assert
         # A re-run on an already-provisioned mac must NOT redo work — in particular

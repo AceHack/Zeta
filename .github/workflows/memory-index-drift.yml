@@ -14,7 +14,7 @@ name: memory-index-drift
 #     Exit 2 is treated as failure here, and the remediation is printed.
 #
 # Remediation — if this check fails:
-#   1. Run: bun tools/memory/reindex-memory-md.ts
+#   1. Run: bun src/Core.TypeScript/memory/reindex-memory-md.ts
 #   2. Stage: git add memory/MEMORY.md
 #   3. Amend or add a commit: git commit --amend or git commit -m "chore: regenerate MEMORY.md"
 #   4. Push.
@@ -31,7 +31,7 @@ name: memory-index-drift
 # See:
 #   - docs/backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md
 #   - docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
-#   - tools/memory/reindex-memory-md.ts  (the generator; --check flag)
+#   - src/Core.TypeScript/memory/reindex-memory-md.ts  (the generator; --check flag)
 #   - .claude/hooks/post-write-memory-reindex.ts  (the harness hook)
 
 on:
@@ -71,14 +71,14 @@ jobs:
         run: |
           set -euo pipefail
 
-          if bun tools/memory/reindex-memory-md.ts --check; then
+          if bun src/Core.TypeScript/memory/reindex-memory-md.ts --check; then
             echo "MEMORY.md is current — OK" >&2
           else
             echo "" >&2
             echo "MEMORY.md is STALE — regenerate before merging." >&2
             echo "" >&2
             echo "Remediation:" >&2
-            echo "  1. bun tools/memory/reindex-memory-md.ts" >&2
+            echo "  1. bun src/Core.TypeScript/memory/reindex-memory-md.ts" >&2
             echo "  2. git add memory/MEMORY.md" >&2
             echo "  3. git commit -m 'chore: regenerate MEMORY.md'" >&2
             echo "  4. git push" >&2

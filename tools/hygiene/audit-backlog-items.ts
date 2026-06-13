@@ -599,7 +599,7 @@ function reportDuplicateIds(rows: readonly BacklogRow[]): number {
       "available B-NNNN ID; update frontmatter `id:`, body heading, and add a",
     );
     console.log(
-      "`renumbered_from:` breadcrumb. Per tools/backlog/README.md, backlog",
+      "`renumbered_from:` breadcrumb. Per src/Core.TypeScript/backlog/README.md, backlog",
     );
     console.log(
       "IDs must be factory-wide unique so edge references resolve unambiguously.",

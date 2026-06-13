@@ -95,7 +95,7 @@ memories freely — that is the whole point of this folder.
   `tools/memory/reindex-memory-md.ts` running on cadence via the
   autonomous-loop tick. Agents MAY run it manually to promote heap
   files to the stack view immediately:
-  `bun tools/memory/reindex-memory-md.ts`
+  `bun src/Core.TypeScript/memory/reindex-memory-md.ts`
 - Revise existing entries when they drift, when a new
   maintainer message refines the rule, or when a memory
   folds into a newer one. Leave a correction note when the

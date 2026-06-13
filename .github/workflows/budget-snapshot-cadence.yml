@@ -1,7 +1,7 @@
 name: budget-snapshot-cadence
 
 # Weekly cadence for evidence-based LFG burn tracking. Runs
-# tools/budget/snapshot-burn.ts, captures the resulting JSONL row,
+# src/Core.TypeScript/budget/snapshot-burn.ts, captures the resulting JSONL row,
 # and opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm)
 # with the snapshot included. The PR is left for the next
 # human-or-agent pass through the queue to merge — auto-merge is
@@ -143,7 +143,7 @@ jobs:
           else
             note="weekly cadence run via .github/workflows/budget-snapshot-cadence.yml (run $RUN_ID)"
           fi
-          bun tools/budget/snapshot-burn.ts --note "$note"
+          bun src/Core.TypeScript/budget/snapshot-burn.ts --note "$note"
 
       - name: Inspect diff
         id: diff
@@ -193,7 +193,7 @@ jobs:
             echo "What:"
             echo "- One JSONL row appended to"
             echo "  docs/budget-history/snapshots.jsonl by"
-            echo "  tools/budget/snapshot-burn.ts."
+            echo "  src/Core.TypeScript/budget/snapshot-burn.ts."
             echo
             echo "Proof:"
             echo "- snapshot-burn.ts ran successfully in workflow"

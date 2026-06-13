@@ -21,8 +21,8 @@ on:
       - "tools/setup/linux.sh"
       - "tools/setup/macos.sh"
       - "tools/setup/manifests/brew"
-      - "tools/accelerator/local-llm.ts"
-      - "tools/accelerator/validate-local-llm.ts"
+      - "src/Core.TypeScript/accelerator/local-llm.ts"
+      - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
       - ".github/workflows/accelerator-local-llm-validate.yml"
 
 concurrency:
@@ -73,9 +73,9 @@ jobs:
           ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"
 
       - name: Mock-backed primitive tests (logic; run anywhere)
-        run: bun test tools/accelerator/local-llm.test.ts
+        run: bun test src/Core.TypeScript/accelerator/local-llm.test.ts
 
       - name: REAL local-LLM validation (entropy-lever end-to-end)
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          bun tools/accelerator/validate-local-llm.ts --root "$PWD"
+          bun src/Core.TypeScript/accelerator/validate-local-llm.ts --root "$PWD"

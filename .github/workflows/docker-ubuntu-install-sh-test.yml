@@ -27,8 +27,8 @@ on:
     paths:
       - "tools/ci/dockerfiles/ubuntu-install-sh-test/**"
       - "tools/setup/**"
-      - "tools/accelerator/local-llm.ts"
-      - "tools/accelerator/validate-local-llm.ts"
+      - "src/Core.TypeScript/accelerator/local-llm.ts"
+      - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
       - ".mise.toml"
       - ".dockerignore"
       - ".github/workflows/docker-ubuntu-install-sh-test.yml"
@@ -41,8 +41,8 @@ on:
     paths:
       - "tools/ci/dockerfiles/ubuntu-install-sh-test/**"
       - "tools/setup/**"
-      - "tools/accelerator/local-llm.ts"
-      - "tools/accelerator/validate-local-llm.ts"
+      - "src/Core.TypeScript/accelerator/local-llm.ts"
+      - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
       - ".mise.toml"
       - ".dockerignore"
       - ".github/workflows/docker-ubuntu-install-sh-test.yml"

@@ -96,7 +96,7 @@ jobs:
         env:
           AGENT: ${{ steps.validate.outputs.agent }}
         run: |
-          bun tools/accelerator/move-next-harness.ts \
+          bun src/Core.TypeScript/accelerator/move-next-harness.ts \
             --agent "$AGENT" --max-iterations 1 --root "$PWD"
 
       - name: Commit + push new events (append-only, no force)

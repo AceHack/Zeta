@@ -33,7 +33,7 @@ incremental + checked into git (append-only, never stale — DV2.0 zero-change-r
 ## Create one
 
 ```
-bun tools/backlog/new-workitem.ts --type task --title "Do the thing" \
+bun src/Core.TypeScript/backlog/new-workitem.ts --type task --title "Do the thing" \
     [--priority P2] [--depends-on B-0956,<zetaid>] [--composes-with ...] [--dry-run]
 ```
 

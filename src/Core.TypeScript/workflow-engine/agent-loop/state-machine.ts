@@ -43,7 +43,7 @@ export interface AgentContext {
   readonly sessionStartIso: string;
 }
 
-// ─── Lane taxonomy (matches tools/dora-classify/classify.ts) ──────────
+// ─── Lane taxonomy (matches src/Core.TypeScript/dora-classify/classify.ts) ──────────
 
 export type Lane =
   | "operational"

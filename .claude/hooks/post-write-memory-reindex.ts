@@ -13,7 +13,7 @@
 //   - Path is NOT memory/persona/**  (per-persona notebooks)
 //
 // When a trigger-qualifying path is written, runs:
-//   bun tools/memory/reindex-memory-md.ts
+//   bun src/Core.TypeScript/memory/reindex-memory-md.ts
 //
 // This keeps MEMORY.md current in real time during agent sessions so
 // PRs arrive with the index already regenerated (CI backstop: memory-index-drift.yml).
@@ -48,7 +48,7 @@ function isMemoryHeapFile(rawPath: string): boolean {
 }
 
 function runReindex(): void {
-  const result = spawnSync("bun", ["tools/memory/reindex-memory-md.ts"], {
+  const result = spawnSync("bun", ["src/Core.TypeScript/memory/reindex-memory-md.ts"], {
     stdio: ["ignore", "pipe", "pipe"],
     encoding: "utf8",
   });

@@ -59,7 +59,7 @@
  * later, the work-hours KPI overlay (Max — expectations, not a time-lock).
  */
 
-import { chooseIndex, ollamaBackend, type ModelBackend } from "../../../tools/accelerator/local-llm";
+import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 import type { FourCornerOwnership } from "../workflow-engine/types";
 
 /** One backlog item, classified to just what the controller needs to decide. */

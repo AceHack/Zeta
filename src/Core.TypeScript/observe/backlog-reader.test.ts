@@ -9,7 +9,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { pickupToAction, nextActionFromBacklog } from "./backlog-reader";
-import type { BacklogItem as RichItem, PickupSelection } from "../../../tools/backlog/autonomous-pickup";
+import type { BacklogItem as RichItem, PickupSelection } from "../backlog/autonomous-pickup";
 
 const richItem = (id: string, title: string): RichItem => ({
   id,

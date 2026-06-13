@@ -25,7 +25,7 @@ import {
   type OperatorChannel,
   type NextAction,
 } from "./observe";
-import { ollamaBackend, type ModelBackend } from "../../../tools/accelerator/local-llm";
+import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 
 /** Deterministic mock backend: `complete` always returns `reply`. */
 const mock = (reply: string): ModelBackend => ({ name: "mock", complete: () => Promise.resolve(reply) });

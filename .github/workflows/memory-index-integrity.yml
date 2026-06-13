@@ -6,7 +6,7 @@ name: memory-index-integrity
 # gate (NSA-001 prevention) with a frontmatter-completeness gate.
 # Memory files commit without a same-PR MEMORY.md update (heap-state-
 # acceptable). MEMORY.md is kept current by the autonomous-loop tick
-# running `tools/memory/reindex-memory-md.ts` on cadence.
+# running `src/Core.TypeScript/memory/reindex-memory-md.ts` on cadence.
 # See: docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
 #
 # Previous behavior: enforced same-commit-or-same-PR pairing between
@@ -36,7 +36,7 @@ name: memory-index-integrity
 #
 # See:
 #   - docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md
-#   - tools/memory/reindex-memory-md.ts (the cadence reindexer)
+#   - src/Core.TypeScript/memory/reindex-memory-md.ts (the cadence reindexer)
 #   - docs/hygiene-history/nsa-test-history.md (NSA-001 — historical)
 
 on:
@@ -153,7 +153,7 @@ jobs:
             echo "" >&2
             echo "Required fields: name, description, type, created" >&2
             echo "" >&2
-            echo "The reindexer (tools/memory/reindex-memory-md.ts) requires these" >&2
+            echo "The reindexer (src/Core.TypeScript/memory/reindex-memory-md.ts) requires these" >&2
             echo "fields to index the file into MEMORY.md on cadence. Fix the" >&2
             echo "frontmatter before merging." >&2
             echo "" >&2

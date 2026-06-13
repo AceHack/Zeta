@@ -221,7 +221,7 @@ entry are in **heap** state — valid and accessible by direct path.
 `tools/memory/reindex-memory-md.ts` promotes heap files to the
 stack view on cadence (called from the autonomous-loop tick).
 Agents may run it manually:
-`bun tools/memory/reindex-memory-md.ts`
+`bun src/Core.TypeScript/memory/reindex-memory-md.ts`
 
 ## 6 Validation smoke check
 
