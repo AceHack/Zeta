@@ -15,7 +15,7 @@
 use std::path::PathBuf;
 
 use zeta_core_sha256::sha256_hex;
-use zeta_core_yaml::{parse, YamlValue};
+use zeta_core_yaml::{YamlValue, parse};
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel), matching the
 /// convention in `src/Core.Rust.ZetaId/tests/cross_verify.rs`.
@@ -32,25 +32,30 @@ fn repo_root() -> PathBuf {
 /// Pull a required string field from a vector's `Map`, panicking with a clear message
 /// (naming the vector id when possible) on absence or wrong type.
 fn str_field<'a>(entries: &'a [(String, YamlValue)], key: &str) -> Option<&'a str> {
-    entries.iter().find(|(k, _)| k == key).map(|(_, v)| match v {
-        YamlValue::Str(s) => s.as_str(),
-        other => {
-            let id = entries
-                .iter()
-                .find(|(k, _)| k == "id")
-                .map(|(_, v)| format!("{v:?}"))
-                .unwrap_or_else(|| "<no-id>".to_string());
-            panic!("vector {id} field {key} is not a Str: {other:?}")
-        }
-    })
+    entries
+        .iter()
+        .find(|(k, _)| k == key)
+        .map(|(_, v)| match v {
+            YamlValue::Str(s) => s.as_str(),
+            other => {
+                let id = entries
+                    .iter()
+                    .find(|(k, _)| k == "id")
+                    .map(|(_, v)| format!("{v:?}"))
+                    .unwrap_or_else(|| "<no-id>".to_string());
+                panic!("vector {id} field {key} is not a Str: {other:?}")
+            }
+        })
 }
 
 /// Decode a hex string (even length, lowercase or uppercase) into bytes.
 fn hex_decode(s: &str) -> Vec<u8> {
-    assert!(s.len() % 2 == 0, "input_hex {s:?} has odd length");
+    assert!(s.len().is_multiple_of(2), "input_hex {s:?} has odd length");
     (0..s.len())
         .step_by(2)
-        .map(|i| u8::from_str_radix(&s[i..i + 2], 16).unwrap_or_else(|_| panic!("bad hex byte in {s:?}")))
+        .map(|i| {
+            u8::from_str_radix(&s[i..i + 2], 16).unwrap_or_else(|_| panic!("bad hex byte in {s:?}"))
+        })
         .collect()
 }
 
@@ -72,7 +77,8 @@ fn json_str(s: &str) -> String {
 #[test]
 fn cross_verify_matches_shared_vectors() {
     let fixture_dir = repo_root().join("tests/cross-verification/sha256");
-    let text = std::fs::read_to_string(fixture_dir.join("vectors.yaml")).expect("read vectors.yaml");
+    let text =
+        std::fs::read_to_string(fixture_dir.join("vectors.yaml")).expect("read vectors.yaml");
 
     // Parse via our own zero-dep YAML port (dogfooding): top Map -> "vectors" -> Seq of Map.
     let doc = parse(&text).expect("parse vectors.yaml via YAML port");
@@ -100,11 +106,16 @@ fn cross_verify_matches_shared_vectors() {
             YamlValue::Map(e) => e,
             other => panic!("vector record is not a Map, got {other:?}"),
         };
-        let id = str_field(entries, "id").expect("vector missing 'id'").to_string();
+        let id = str_field(entries, "id")
+            .expect("vector missing 'id'")
+            .to_string();
 
         // Exactly one of input_utf8 / input_hex. A double-quoted empty `input_utf8: ""`
         // yields Str("") -> empty bytes (the `empty` vector), NOT Null.
-        let input_bytes: Vec<u8> = match (str_field(entries, "input_utf8"), str_field(entries, "input_hex")) {
+        let input_bytes: Vec<u8> = match (
+            str_field(entries, "input_utf8"),
+            str_field(entries, "input_hex"),
+        ) {
             (Some(utf8), None) => utf8.as_bytes().to_vec(),
             (None, Some(hex)) => hex_decode(hex),
             (Some(_), Some(_)) => panic!("vector {id} has BOTH input_utf8 and input_hex"),
@@ -112,7 +123,8 @@ fn cross_verify_matches_shared_vectors() {
         };
 
         let hex = sha256_hex(&input_bytes);
-        let expected_hex = str_field(entries, "expected_hex").expect("vector missing 'expected_hex'");
+        let expected_hex =
+            str_field(entries, "expected_hex").expect("vector missing 'expected_hex'");
         let matches_expected = hex == expected_hex;
         if !matches_expected {
             hex_mismatches += 1;
@@ -144,6 +156,9 @@ fn cross_verify_matches_shared_vectors() {
     }
 
     let n = results.len();
-    println!("Cross-verify: {n} vectors. Hex matches expected {}/{n}.", n - hex_mismatches);
+    println!(
+        "Cross-verify: {n} vectors. Hex matches expected {}/{n}.",
+        n - hex_mismatches
+    );
     assert_eq!(hex_mismatches, 0, "{hex_mismatches} hex mismatch(es)");
 }

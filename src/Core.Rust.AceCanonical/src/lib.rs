@@ -190,7 +190,7 @@ mod tests {
     #[test]
     fn float_is_rejected() {
         assert_eq!(
-            ace_canonical_json(&DynamicValue::Float(3.14)),
+            ace_canonical_json(&DynamicValue::Float(12.34)),
             Err(AceCanonicalError::FloatNotAllowed)
         );
     }
@@ -230,6 +230,9 @@ mod tests {
         let out = ace_canonical_json(&value).expect("encode");
         let astral_at = out.find('\u{1F600}').expect("astral key present");
         let bmp_at = out.find('\u{E000}').expect("bmp key present");
-        assert!(astral_at < bmp_at, "astral key must sort before U+E000 (UTF-16 order): {out}");
+        assert!(
+            astral_at < bmp_at,
+            "astral key must sort before U+E000 (UTF-16 order): {out}"
+        );
     }
 }

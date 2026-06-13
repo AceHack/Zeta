@@ -43,7 +43,10 @@ fn all_vectors_agree() {
     for v in s["vectors"].as_array().unwrap() {
         let braid = ints(&v["braid"]);
         assert_eq!(writhe(&braid), v["writhe"].as_i64().unwrap() as i32);
-        assert_eq!(writhe_parity(&braid), v["writheParity"].as_i64().unwrap() as i32);
+        assert_eq!(
+            writhe_parity(&braid),
+            v["writheParity"].as_i64().unwrap() as i32
+        );
         assert_eq!(permutation(n, &braid), ints(&v["permutation"]));
         let actions = v["actions"].as_array().unwrap();
         for (i, expected) in actions.iter().enumerate() {

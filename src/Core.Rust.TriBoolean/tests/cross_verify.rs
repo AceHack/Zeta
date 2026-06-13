@@ -9,10 +9,10 @@
 use std::path::PathBuf;
 
 use zeta_core_tri_boolean::{
-    and_tri, bind_tri, cooperate, from_bool, is_certain, is_living, map_tri, measure, not_tri,
-    or_tri, CollapseFeedback, Tri,
+    CollapseFeedback, Tri, and_tri, bind_tri, cooperate, from_bool, is_certain, is_living, map_tri,
+    measure, not_tri, or_tri,
 };
-use zeta_core_yaml::{parse, YamlValue};
+use zeta_core_yaml::{YamlValue, parse};
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel).
 fn repo_root() -> PathBuf {
@@ -28,17 +28,20 @@ fn repo_root() -> PathBuf {
 /// Pull a required string field from a vector's `Map`, panicking with a clear message
 /// (naming the vector id when possible) on absence or wrong type.
 fn str_field<'a>(entries: &'a [(String, YamlValue)], key: &str) -> Option<&'a str> {
-    entries.iter().find(|(k, _)| k == key).map(|(_, v)| match v {
-        YamlValue::Str(s) => s.as_str(),
-        other => {
-            let id = entries
-                .iter()
-                .find(|(k, _)| k == "id")
-                .map(|(_, v)| format!("{v:?}"))
-                .unwrap_or_else(|| "<no-id>".to_string());
-            panic!("vector {id} field {key} is not a Str: {other:?}")
-        }
-    })
+    entries
+        .iter()
+        .find(|(k, _)| k == key)
+        .map(|(_, v)| match v {
+            YamlValue::Str(s) => s.as_str(),
+            other => {
+                let id = entries
+                    .iter()
+                    .find(|(k, _)| k == "id")
+                    .map(|(_, v)| format!("{v:?}"))
+                    .unwrap_or_else(|| "<no-id>".to_string());
+                panic!("vector {id} field {key} is not a Str: {other:?}")
+            }
+        })
 }
 
 /// Minimal JSON string escaping (ids + values are plain ASCII, but be safe).
@@ -76,7 +79,8 @@ fn to_str(t: Tri) -> String {
 #[test]
 fn cross_verify_matches_shared_vectors() {
     let fixture_dir = repo_root().join("tests/cross-verification/tri-boolean");
-    let text = std::fs::read_to_string(fixture_dir.join("vectors.yaml")).expect("read vectors.yaml");
+    let text =
+        std::fs::read_to_string(fixture_dir.join("vectors.yaml")).expect("read vectors.yaml");
 
     // Parse via local YAML port
     let doc = parse(&text).expect("parse vectors.yaml via YAML port");
@@ -102,7 +106,9 @@ fn cross_verify_matches_shared_vectors() {
             YamlValue::Map(e) => e,
             other => panic!("vector record is not a Map, got {other:?}"),
         };
-        let id = str_field(entries, "id").expect("vector missing 'id'").to_string();
+        let id = str_field(entries, "id")
+            .expect("vector missing 'id'")
+            .to_string();
         let type_str = str_field(entries, "type").expect("vector missing 'type'");
 
         if type_str == "unary" {
@@ -172,7 +178,10 @@ fn cross_verify_matches_shared_vectors() {
             let low_str = str_field(entries, "low").unwrap();
 
             let high: Vec<Tri> = high_str.chars().map(|c| to_tri(&c.to_string())).collect();
-            let decoder_vec: Vec<Tri> = decoder_str.chars().map(|c| to_tri(&c.to_string())).collect();
+            let decoder_vec: Vec<Tri> = decoder_str
+                .chars()
+                .map(|c| to_tri(&c.to_string()))
+                .collect();
             let low: Vec<Tri> = low_str.chars().map(|c| to_tri(&c.to_string())).collect();
 
             let f = zeta_core_tri_boolean::float::from_trits(high, decoder_vec, low);
@@ -182,8 +191,12 @@ fn cross_verify_matches_shared_vectors() {
             let expected_value = d_res.unwrap_or(0.0);
             let expected_feedback = match d_res {
                 Ok(_) => "",
-                Err(zeta_core_tri_boolean::float::FloatFeedback::InterpretationSuperposed) => "interpretation-superposed",
-                Err(zeta_core_tri_boolean::float::FloatFeedback::ValueSuperposed) => "value-superposed",
+                Err(zeta_core_tri_boolean::float::FloatFeedback::InterpretationSuperposed) => {
+                    "interpretation-superposed"
+                }
+                Err(zeta_core_tri_boolean::float::FloatFeedback::ValueSuperposed) => {
+                    "value-superposed"
+                }
             };
 
             let mut line = format!(
@@ -205,7 +218,10 @@ fn cross_verify_matches_shared_vectors() {
             );
 
             // Check for encode_value
-            let encode_val_node = entries.iter().find(|(k, _)| k == "encode_value").map(|(_, v)| v);
+            let encode_val_node = entries
+                .iter()
+                .find(|(k, _)| k == "encode_value")
+                .map(|(_, v)| v);
             if let Some(val_node) = encode_val_node {
                 let encode_value = match val_node {
                     YamlValue::Int(i) => *i as f64,
@@ -223,7 +239,8 @@ fn cross_verify_matches_shared_vectors() {
                 match enc_res {
                     Ok(enc_float) => {
                         let enc_high: String = enc_float.high.iter().map(|t| to_str(*t)).collect();
-                        let enc_dec: String = enc_float.decoder.iter().map(|t| to_str(*t)).collect();
+                        let enc_dec: String =
+                            enc_float.decoder.iter().map(|t| to_str(*t)).collect();
                         let enc_low: String = enc_float.low.iter().map(|t| to_str(*t)).collect();
                         line.push_str(",\n");
                         line.push_str(&format!(
@@ -253,7 +270,11 @@ fn cross_verify_matches_shared_vectors() {
     let mut out = String::from("{\n");
     for (i, line) in json_records.iter().enumerate() {
         out.push_str(line);
-        out.push_str(if i + 1 < json_records.len() { ",\n" } else { "\n" });
+        out.push_str(if i + 1 < json_records.len() {
+            ",\n"
+        } else {
+            "\n"
+        });
     }
     out.push_str("}\n");
 

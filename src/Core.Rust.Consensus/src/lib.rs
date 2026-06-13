@@ -26,7 +26,12 @@ pub struct Decision {
 pub fn decide(votes: &[String]) -> Decision {
     let total = votes.len() as i64;
     if total == 0 {
-        return Decision { committed: false, value: None, count: 0, total: 0 };
+        return Decision {
+            committed: false,
+            value: None,
+            count: 0,
+            total: 0,
+        };
     }
     // First-occurrence-ordered (value, count) groups.
     let mut groups: Vec<(String, i64)> = Vec::new();
@@ -38,12 +43,22 @@ pub fn decide(votes: &[String]) -> Decision {
         }
     }
     // Stable sort by descending count (ties keep first-occurrence order).
-    groups.sort_by(|a, b| b.1.cmp(&a.1));
+    groups.sort_by_key(|g| std::cmp::Reverse(g.1));
     let threshold = quorum_threshold(total);
     let (value, count) = groups[0].clone();
     if count >= threshold {
-        Decision { committed: true, value: Some(value), count, total }
+        Decision {
+            committed: true,
+            value: Some(value),
+            count,
+            total,
+        }
     } else {
-        Decision { committed: false, value: None, count, total }
+        Decision {
+            committed: false,
+            value: None,
+            count,
+            total,
+        }
     }
 }

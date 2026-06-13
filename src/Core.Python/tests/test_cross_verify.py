@@ -3,6 +3,8 @@ import yaml
 from pathlib import Path
 from zeta import sha256
 from zeta import tri_boolean
+from zeta import zeta_id
+from zeta import yaml as zeta_yaml
 
 
 def find_repo_root() -> Path:
@@ -141,6 +143,184 @@ def test_cross_verify_tri_boolean():
                     float_res["expectedEncodeDetail"] = enc_res.feedback.detail
 
             out_map[v_id] = float_res
+
+    output_path = fixture_dir / "python-output.json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(out_map, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+def test_cross_verify_zeta_id():
+    repo_root = find_repo_root()
+    fixture_dir = repo_root / "tests" / "cross-verification" / "zeta-id"
+    vectors_path = fixture_dir / "vectors.yaml"
+
+    with open(vectors_path, "r", encoding="utf-8") as f:
+        y = yaml.safe_load(f)
+
+    def obs_equal(a: zeta_id.ZetaObservation, b: zeta_id.ZetaObservation) -> bool:
+        if a.authority.type == "Raw":
+            a_auth_val = a.authority.value
+        else:
+            a_auth_val = zeta_id.AUTHORITY_VALUES[a.authority.type]
+
+        if b.authority.type == "Raw":
+            b_auth_val = b.authority.value
+        else:
+            b_auth_val = zeta_id.AUTHORITY_VALUES[b.authority.type]
+
+        if a.momentum.type == "Raw":
+            a_mom_val = a.momentum.value
+        else:
+            a_mom_val = zeta_id.MOMENTUM_VALUES[a.momentum.type]
+
+        if b.momentum.type == "Raw":
+            b_mom_val = b.momentum.value
+        else:
+            b_mom_val = zeta_id.MOMENTUM_VALUES[b.momentum.type]
+
+        return (
+            a.version == b.version
+            and a.timestamp == b.timestamp
+            and a.chromosome == b.chromosome
+            and a.category == b.category
+            and a.firefly == b.firefly
+            and a.authority.type == b.authority.type
+            and a_auth_val == b_auth_val
+            and a.persona == b.persona
+            and a.momentum.type == b.momentum.type
+            and a_mom_val == b_mom_val
+            and a.location == b.location
+        )
+
+    out_map = {}
+    for v in y["vectors"]:
+        v_id = v["id"]
+        auth_raw = v.get("authority_raw")
+        auth_val = auth_raw if auth_raw is not None else 0
+        mom_raw = v.get("momentum_raw")
+        mom_val = mom_raw if mom_raw is not None else 0
+
+        obs = zeta_id.ZetaObservation(
+            version=v["version"],
+            timestamp=v["timestamp"],
+            chromosome=v["chromosome"],
+            category=v["category"],
+            firefly=v["firefly"],
+            authority=zeta_id.Authority(type_=v["authority_type"], value=auth_val),
+            persona=v["persona"],
+            momentum=zeta_id.Momentum(type_=v["momentum_type"], value=mom_val),
+            location=v["location"],
+        )
+
+        packed = zeta_id.pack(obs, zeta_id.DETERMINISTIC_ENV)
+        hex_val = zeta_id.to_hex(packed)
+
+        unpacked = zeta_id.unpack(packed)
+        roundtrip_ok = obs_equal(obs, unpacked)
+        matches_expected = hex_val == v["expected_hex"]
+
+        out_map[v_id] = {
+            "hex": hex_val,
+            "roundtripOk": roundtrip_ok,
+            "matchesExpected": matches_expected,
+        }
+
+    output_path = fixture_dir / "python-output.json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(out_map, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+def test_cross_verify_canonical_json():
+    class JsonNumber:
+        def __init__(self, s: str):
+            self.s = s
+
+    repo_root = find_repo_root()
+    fixture_dir = repo_root / "tests" / "cross-verification" / "canonical-json"
+    vectors_path = fixture_dir / "vectors.json"
+
+    with open(vectors_path, "r", encoding="utf-8") as f:
+        fixture = json.load(f, parse_int=JsonNumber, parse_float=JsonNumber)
+
+    from zeta.canonical_json import check_well_formed, escape_string
+
+    def to_canonical_json_with_number(val: object) -> str:
+        if val is None:
+            return "null"
+        if isinstance(val, bool):
+            return "true" if val else "false"
+        if isinstance(val, JsonNumber):
+            s = val.s
+            if "." in s or "e" in s or "E" in s:
+                raise ValueError("toTagged: float not allowed")
+            n = int(s)
+            if abs(n) > 9007199254740991:
+                raise ValueError(f"toTagged: {n} is not a safe integer")
+            return s
+        if isinstance(val, float):
+            raise ValueError("toTagged: float not allowed")
+        if isinstance(val, int):
+            if abs(val) > 9007199254740991:
+                raise ValueError(f"toTagged: {val} is not a safe integer")
+            return str(val)
+        if isinstance(val, str):
+            check_well_formed(val, "string")
+            return escape_string(val)
+        if isinstance(val, (list, tuple)):
+            return "[" + ",".join(to_canonical_json_with_number(x) for x in val) + "]"
+        if isinstance(val, dict):
+
+            def sort_key(s: str) -> bytes:
+                return s.encode("utf-16-be")
+
+            sorted_keys = sorted(val.keys(), key=sort_key)
+            parts = []
+            for k in sorted_keys:
+                check_well_formed(k, "object key")
+                parts.append(
+                    f"{escape_string(k)}:{to_canonical_json_with_number(val[k])}"
+                )
+            return "{" + ",".join(parts) + "}"
+        raise TypeError(f"Unsupported value type: {type(val)}")
+
+    out_map = {}
+    for v in fixture["canonical"]:
+        got = to_canonical_json_with_number(v["value"])
+        if got != v["expected_canonical_json"]:
+            raise ValueError(
+                f"canonical:{v['id']} mismatch: got={got} expected={v['expected_canonical_json']}"
+            )
+        out_map[f"canonical:{v['id']}"] = got
+
+    for v in fixture["invalid"]:
+        try:
+            to_canonical_json_with_number(v["value"])
+            rejected = False
+        except ValueError:
+            rejected = True
+
+        out_map[f"invalid:{v['id']}"] = "<rejected>" if rejected else "ACCEPTED"
+
+    output_path = fixture_dir / "python-output.json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(out_map, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+def test_cross_verify_yaml():
+    repo_root = find_repo_root()
+    fixture_dir = repo_root / "tests" / "cross-verification" / "yaml"
+    vectors_path = fixture_dir / "vectors.json"
+
+    with open(vectors_path, "r", encoding="utf-8") as f:
+        fixture = json.load(f)
+
+    out_map = {}
+    for v in fixture["vectors"]:
+        events = zeta_yaml.read_events(v["yaml"])
+        out_map[v["id"]] = events
 
     output_path = fixture_dir / "python-output.json"
     with open(output_path, "w", encoding="utf-8") as f:

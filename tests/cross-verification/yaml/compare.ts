@@ -25,6 +25,8 @@ if (!ts) {
 const fsImpl = load("fsharp-output.json");
 const csImpl = load("cs-output.json");
 const rustImpl = load("rust-output.json");
+const goImpl = load("go-output.json");
+const pythonImpl = load("python-output.json");
 
 // The fixture's `expected` is the cross-language source of truth; deep-equal every present
 // oracle against it too (not just against TS).
@@ -42,10 +44,12 @@ let mismatches = 0;
 const keys = Object.keys(ts);
 
 console.log(`Cross-verification across implementations:`);
-console.log(`  TS:   ${keys.length} vectors`);
-console.log(`  F#:   ${fsImpl ? Object.keys(fsImpl).length : "MISSING"} vectors`);
-console.log(`  C#:   ${csImpl ? Object.keys(csImpl).length : "MISSING"} vectors`);
-console.log(`  Rust: ${rustImpl ? Object.keys(rustImpl).length : "MISSING"} vectors`);
+console.log(`  TS:     ${keys.length} vectors`);
+console.log(`  F#:     ${fsImpl ? Object.keys(fsImpl).length : "MISSING"} vectors`);
+console.log(`  C#:     ${csImpl ? Object.keys(csImpl).length : "MISSING"} vectors`);
+console.log(`  Rust:   ${rustImpl ? Object.keys(rustImpl).length : "MISSING"} vectors`);
+console.log(`  Go:     ${goImpl ? Object.keys(goImpl).length : "MISSING"} vectors`);
+console.log(`  Python: ${pythonImpl ? Object.keys(pythonImpl).length : "MISSING"} vectors`);
 
 // Key-set equality — an EXTRA or renamed vector in another impl is drift and must fail
 // (mirrors the zeta-id compare guard).
@@ -54,6 +58,8 @@ for (const [name, impl] of [
   ["F#", fsImpl],
   ["C#", csImpl],
   ["Rust", rustImpl],
+  ["Go", goImpl],
+  ["Python", pythonImpl],
 ] as const) {
   if (!impl) continue;
   const implKeys = Object.keys(impl);
@@ -86,6 +92,8 @@ for (const key of keys) {
     ["F#", fsImpl],
     ["C#", csImpl],
     ["Rust", rustImpl],
+    ["Go", goImpl],
+    ["Python", pythonImpl],
   ] as const) {
     if (!impl) continue;
     const implEvents = impl[key];

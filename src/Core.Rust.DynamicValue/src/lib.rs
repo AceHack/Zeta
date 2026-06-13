@@ -299,7 +299,11 @@ impl DynamicValue {
         }
         match self {
             DynamicValue::Null => out.push_str("<null/>"),
-            DynamicValue::Bool(b) => out.push_str(if *b { "<bool>true</bool>" } else { "<bool>false</bool>" }),
+            DynamicValue::Bool(b) => out.push_str(if *b {
+                "<bool>true</bool>"
+            } else {
+                "<bool>false</bool>"
+            }),
             DynamicValue::Int(i) => {
                 out.push_str("<int>");
                 out.push_str(&i.to_string());
@@ -311,7 +315,9 @@ impl DynamicValue {
                 // Distinct for every corner (NaN canonical 7ff8000000000000; -0.0 != +0.0).
                 out.push_str("<float>");
                 for byte in f.to_bits().to_be_bytes() {
-                    out.push(char::from_digit((u32::from(byte) >> 4) & 0xf, 16).expect("hex digit"));
+                    out.push(
+                        char::from_digit((u32::from(byte) >> 4) & 0xf, 16).expect("hex digit"),
+                    );
                     out.push(char::from_digit(u32::from(byte) & 0xf, 16).expect("hex digit"));
                 }
                 out.push_str("</float>");
@@ -325,7 +331,9 @@ impl DynamicValue {
                 // <bytes> + lowercase hex (empty -> <bytes></bytes>) -- the CBOR byte/hex form.
                 out.push_str("<bytes>");
                 for byte in b {
-                    out.push(char::from_digit((u32::from(*byte) >> 4) & 0xf, 16).expect("hex digit"));
+                    out.push(
+                        char::from_digit((u32::from(*byte) >> 4) & 0xf, 16).expect("hex digit"),
+                    );
                     out.push(char::from_digit(u32::from(*byte) & 0xf, 16).expect("hex digit"));
                 }
                 out.push_str("</bytes>");
@@ -432,7 +440,10 @@ impl DynamicValue {
         }
     }
 
-    fn from_yaml_value(yv: &zeta_core_yaml::dom::YamlValue, depth: usize) -> Result<DynamicValue, DecodeError> {
+    fn from_yaml_value(
+        yv: &zeta_core_yaml::dom::YamlValue,
+        depth: usize,
+    ) -> Result<DynamicValue, DecodeError> {
         if depth > MAX_NESTING_DEPTH {
             return Err(DecodeError::NestingTooDeep);
         }
@@ -634,7 +645,9 @@ fn unescape_xml(s: &[char]) -> Result<String, DecodeError> {
             i += 1;
             continue;
         }
-        let semi = (i + 1..s.len()).find(|&j| s[j] == ';').ok_or(DecodeError::Unsupported)?;
+        let semi = (i + 1..s.len())
+            .find(|&j| s[j] == ';')
+            .ok_or(DecodeError::Unsupported)?;
         let ent: String = s[i + 1..semi].iter().collect();
         match ent.as_str() {
             "amp" => out.push('&'),
@@ -649,7 +662,8 @@ fn unescape_xml(s: &[char]) -> Result<String, DecodeError> {
                     return Err(DecodeError::Unsupported);
                 }
                 let radix = if is_hex { 16 } else { 10 };
-                let code = u32::from_str_radix(digits, radix).map_err(|_| DecodeError::Unsupported)?;
+                let code =
+                    u32::from_str_radix(digits, radix).map_err(|_| DecodeError::Unsupported)?;
                 let c = char::from_u32(code).ok_or(DecodeError::Unsupported)?;
                 out.push(c);
             }
@@ -689,7 +703,10 @@ fn read_xml_tag(s: &[char], pos: &mut usize) -> Result<XmlTag, DecodeError> {
     let mut attr_k: Option<String> = None;
     if s.get(*pos) == Some(&' ') {
         *pos += 1;
-        let prefix: String = s.get(*pos..*pos + 3).map(|c| c.iter().collect()).unwrap_or_default();
+        let prefix: String = s
+            .get(*pos..*pos + 3)
+            .map(|c| c.iter().collect())
+            .unwrap_or_default();
         if prefix != "k=\"" {
             return Err(DecodeError::Unsupported);
         }
@@ -713,7 +730,12 @@ fn read_xml_tag(s: &[char], pos: &mut usize) -> Result<XmlTag, DecodeError> {
         return Err(DecodeError::Unsupported);
     }
     *pos += 1;
-    Ok(XmlTag { name, close, self_close, attr_k })
+    Ok(XmlTag {
+        name,
+        close,
+        self_close,
+        attr_k,
+    })
 }
 
 // Read raw text (still-escaped) up to the next '<'.
@@ -772,11 +794,10 @@ fn parse_xml_value(s: &[char], pos: &mut usize, depth: usize) -> Result<DynamicV
             let text: String = read_xml_text_run(s, pos).iter().collect();
             expect_xml_close(s, pos, "int")?;
             let bytes = text.as_bytes();
-            let valid = !bytes.is_empty()
-                && {
-                    let digits = if bytes[0] == b'-' { &bytes[1..] } else { bytes };
-                    !digits.is_empty() && digits.iter().all(u8::is_ascii_digit)
-                };
+            let valid = !bytes.is_empty() && {
+                let digits = if bytes[0] == b'-' { &bytes[1..] } else { bytes };
+                !digits.is_empty() && digits.iter().all(u8::is_ascii_digit)
+            };
             if !valid {
                 return Err(DecodeError::Unsupported);
             }
@@ -819,7 +840,7 @@ fn parse_xml_value(s: &[char], pos: &mut usize, depth: usize) -> Result<DynamicV
             expect_xml_close(s, pos, "bytes")?;
             // canonical = even-length LOWERCASE hex
             let b = text.as_bytes();
-            let valid = b.len() % 2 == 0
+            let valid = b.len().is_multiple_of(2)
                 && b.iter()
                     .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(c));
             if !valid {
@@ -1340,7 +1361,11 @@ fn read_json_array(c: &[char], pos: &mut usize, depth: usize) -> Result<DynamicV
     }
 }
 
-fn read_json_object(c: &[char], pos: &mut usize, depth: usize) -> Result<DynamicValue, DecodeError> {
+fn read_json_object(
+    c: &[char],
+    pos: &mut usize,
+    depth: usize,
+) -> Result<DynamicValue, DecodeError> {
     *pos += 1; // past the opening brace
     let mut pairs = Vec::new();
     skip_json_ws(c, pos);

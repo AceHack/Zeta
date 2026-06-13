@@ -22,6 +22,20 @@ const rustExists = (() => {
     return null;
   }
 })();
+const pyExists = (() => {
+  try {
+    return JSON.parse(readFileSync("python-output.json", "utf8"));
+  } catch {
+    return null;
+  }
+})();
+const goExists = (() => {
+  try {
+    return JSON.parse(readFileSync("go-output.json", "utf8"));
+  } catch {
+    return null;
+  }
+})();
 
 let mismatches = 0;
 const keys = Object.keys(ts);
@@ -31,6 +45,8 @@ console.log(`  TS:   ${keys.length} vectors`);
 console.log(`  F#:   ${fsExists ? Object.keys(fsExists).length : "MISSING"} vectors`);
 console.log(`  C#:   ${csExists ? Object.keys(csExists).length : "MISSING"} vectors`);
 console.log(`  Rust: ${rustExists ? Object.keys(rustExists).length : "MISSING"} vectors`);
+console.log(`  Py:   ${pyExists ? Object.keys(pyExists).length : "MISSING"} vectors`);
+console.log(`  Go:   ${goExists ? Object.keys(goExists).length : "MISSING"} vectors`);
 
 // Key-set equality, not just TS-key iteration (PR review 2026-06-01): the per-key
 // loop below catches a vector MISSING from another impl (its hex reads undefined),
@@ -41,6 +57,8 @@ for (const [name, impl] of [
   ["F#", fsExists],
   ["C#", csExists],
   ["Rust", rustExists],
+  ["Python", pyExists],
+  ["Go", goExists],
 ] as const) {
   if (!impl) continue;
   const implKeys = Object.keys(impl);
@@ -76,6 +94,20 @@ for (const key of keys) {
     const rustHex = typeof rustExists[key] === "string" ? rustExists[key] : rustExists[key]?.hex;
     if (tsHex !== rustHex) {
       console.error(`Mismatch ${key}: TS=${tsHex} Rust=${rustHex ?? "MISSING"}`);
+      mismatches++;
+    }
+  }
+  if (pyExists) {
+    const pyHex = typeof pyExists[key] === "string" ? pyExists[key] : pyExists[key]?.hex;
+    if (tsHex !== pyHex) {
+      console.error(`Mismatch ${key}: TS=${tsHex} Py=${pyHex ?? "MISSING"}`);
+      mismatches++;
+    }
+  }
+  if (goExists) {
+    const goHex = typeof goExists[key] === "string" ? goExists[key] : goExists[key]?.hex;
+    if (tsHex !== goHex) {
+      console.error(`Mismatch ${key}: TS=${tsHex} Go=${goHex ?? "MISSING"}`);
       mismatches++;
     }
   }

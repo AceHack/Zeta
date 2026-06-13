@@ -136,4 +136,3 @@ pub fn combine(sources: &[i64]) -> i64 {
         i64::MIN
     }
 }
-

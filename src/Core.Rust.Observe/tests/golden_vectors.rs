@@ -11,7 +11,7 @@ use std::path::PathBuf;
 
 use zeta_core_observe::json::{JsonParser, ZetaJsonParser};
 use zeta_core_observe::observe_json::{parse_event, parse_world};
-use zeta_core_observe::{fold, replay, NextAction, World};
+use zeta_core_observe::{NextAction, World, fold, replay};
 
 /// Walk up from the crate dir to the repo root (Zeta.sln sentinel).
 fn repo_root() -> PathBuf {
@@ -31,7 +31,8 @@ fn load(parser: &dyn JsonParser) -> (World, Vec<NextAction>, World, Vec<World>) 
     let text = std::fs::read_to_string(&path).expect("read golden-vectors.json");
     let root = parser.parse(&text).expect("parse golden-vectors.json");
 
-    let initial = parse_world(root.get("initialWorld").expect("initialWorld")).expect("map initialWorld");
+    let initial =
+        parse_world(root.get("initialWorld").expect("initialWorld")).expect("map initialWorld");
     let events = root
         .get("events")
         .and_then(|e| e.as_array())
@@ -67,8 +68,7 @@ fn replay_reproduces_expected_replay_states() {
 #[test]
 fn golden_vectors_exercise_all_nine_kinds() {
     let (_, events, _, _) = load(&ZetaJsonParser);
-    let kinds: std::collections::HashSet<_> =
-        events.iter().map(std::mem::discriminant).collect();
+    let kinds: std::collections::HashSet<_> = events.iter().map(std::mem::discriminant).collect();
     assert_eq!(9, kinds.len(), "all nine NextAction kinds must appear");
 }
 
@@ -80,5 +80,8 @@ fn zeta_parser_matches_serde() {
     use zeta_core_observe::json::SerdeJsonParser;
     let ours = load(&ZetaJsonParser);
     let serde = load(&SerdeJsonParser);
-    assert_eq!(ours, serde, "ZetaJsonParser and SerdeJsonParser disagree on the fixture");
+    assert_eq!(
+        ours, serde,
+        "ZetaJsonParser and SerdeJsonParser disagree on the fixture"
+    );
 }

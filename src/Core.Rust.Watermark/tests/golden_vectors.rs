@@ -18,7 +18,11 @@ fn seed() -> Value {
 }
 
 fn longs(v: &Value) -> Vec<i64> {
-    v.as_array().unwrap().iter().map(|x| x.as_i64().unwrap()).collect()
+    v.as_array()
+        .unwrap()
+        .iter()
+        .map(|x| x.as_i64().unwrap())
+        .collect()
 }
 
 #[test]
@@ -49,6 +53,9 @@ fn is_late_agrees() {
 fn combine_agrees() {
     let s = seed();
     for v in s["combine"].as_array().unwrap() {
-        assert_eq!(combine(&longs(&v["sources"])), v["result"].as_i64().unwrap());
+        assert_eq!(
+            combine(&longs(&v["sources"])),
+            v["result"].as_i64().unwrap()
+        );
     }
 }

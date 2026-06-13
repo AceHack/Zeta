@@ -26,7 +26,7 @@
 pub mod bit_layout;
 pub mod zeta_id;
 
-pub use zeta_id::{pack, to_hex, unpack, PackError};
+pub use zeta_id::{PackError, pack, to_hex, unpack};
 
 /// Version field value for V1 (5-bit field; the only version today).
 pub const VERSION_V1: u8 = 1;

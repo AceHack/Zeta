@@ -134,8 +134,23 @@ mod tests {
     #[test]
     fn strings_round_trip_as_map_values() {
         for s in [
-            "123", "true", "null", "", "  sp  ", "a: b", "# c", "- d", "[x", "{y", "&z",
-            "line\nbreak", "tab\tsep", "q\"here", "back\\slash", "ret\rurn", "nul\0byte",
+            "123",
+            "true",
+            "null",
+            "",
+            "  sp  ",
+            "a: b",
+            "# c",
+            "- d",
+            "[x",
+            "{y",
+            "&z",
+            "line\nbreak",
+            "tab\tsep",
+            "q\"here",
+            "back\\slash",
+            "ret\rurn",
+            "nul\0byte",
         ] {
             let v = YamlValue::Map(vec![("v".into(), YamlValue::Str(s.into()))]);
             assert!(roundtrips(&v), "failed for {s:?}");

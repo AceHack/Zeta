@@ -7,7 +7,7 @@
 
 use serde_json::Value;
 use std::path::PathBuf;
-use zeta_core_soft_value::{observe_resolve, resolve, Weights};
+use zeta_core_soft_value::{Weights, observe_resolve, resolve};
 
 fn repo_root() -> PathBuf {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -42,10 +42,17 @@ fn soft_value_cross_verify_matches_golden_vectors() {
     let v: Value = serde_json::from_str(&text).expect("parse soft-value golden-vectors.json");
 
     for c in v["resolve"].as_array().expect("resolve array") {
-        let got = resolve(&to_weights(&c["candidates"]), c["num"].as_i64().unwrap(), c["den"].as_i64().unwrap());
+        let got = resolve(
+            &to_weights(&c["candidates"]),
+            c["num"].as_i64().unwrap(),
+            c["den"].as_i64().unwrap(),
+        );
         assert_eq!(got, expected(&c["result"]), "resolve");
     }
-    for c in v["observeResolve"].as_array().expect("observeResolve array") {
+    for c in v["observeResolve"]
+        .as_array()
+        .expect("observeResolve array")
+    {
         let got = observe_resolve(
             &to_weights(&c["prior"]),
             &to_weights(&c["likelihood"]),

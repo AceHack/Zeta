@@ -72,7 +72,9 @@ pub fn div(a: Rational, b: Rational) -> Rational {
 
 /// Relative-observer 3-way merge over the Merkle ancestor: `merged(i) = a(i)·b(i)/ancestor(i)`.
 pub fn merge3(ancestor: &[Rational], a: &[Rational], b: &[Rational]) -> Vec<Rational> {
-    (0..ancestor.len()).map(|i| div(mul(a[i], b[i]), ancestor[i])).collect()
+    (0..ancestor.len())
+        .map(|i| div(mul(a[i], b[i]), ancestor[i]))
+        .collect()
 }
 
 /// One forward step over `(+,×)`: `π'(j) = Σ_i π(i)·P(i,j)`.

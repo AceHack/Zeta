@@ -15,7 +15,10 @@ fn hex_to_bytes(s: &str) -> Vec<u8> {
 
 #[test]
 fn merkle_root_matches_fsharp_golden_vectors() {
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/golden-vectors-merkle.json");
+    let path = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/golden-vectors-merkle.json"
+    );
     let text = std::fs::read_to_string(path).expect("read golden vectors");
     let cases: serde_json::Value = serde_json::from_str(&text).expect("parse golden vectors");
 
@@ -31,6 +34,10 @@ fn merkle_root_matches_fsharp_golden_vectors() {
             .collect();
         let expected = case["root"].as_str().expect("root hex string");
         let got = MerkleTree::new(&leaves).root().to_hex();
-        assert_eq!(got, expected, "root mismatch for leaves={:?}", case["leaves"]);
+        assert_eq!(
+            got, expected,
+            "root mismatch for leaves={:?}",
+            case["leaves"]
+        );
     }
 }

@@ -24,8 +24,15 @@ impl BlockedBloomFilter {
     /// Create an empty filter.
     pub fn new(bucket_count: usize, probes_per_lookup: usize) -> Self {
         assert!(bucket_count > 0, "bucket_count must be positive");
-        assert!((1..=32).contains(&probes_per_lookup), "probes must be 1..32");
-        let bucket_mask = if bucket_count & (bucket_count - 1) == 0 { (bucket_count - 1) as u32 } else { 0 };
+        assert!(
+            (1..=32).contains(&probes_per_lookup),
+            "probes must be 1..32"
+        );
+        let bucket_mask = if bucket_count & (bucket_count - 1) == 0 {
+            (bucket_count - 1) as u32
+        } else {
+            0
+        };
         let is_pow2 = bucket_mask != 0 || bucket_count == 1;
         Self {
             table: vec![0u64; bucket_count * WORDS_PER_BUCKET],
@@ -102,7 +109,10 @@ impl BlockedBloomFilter {
     /// OR-merge another filter of the same shape (CRDT union).
     pub fn merge_from(&mut self, other: &BlockedBloomFilter) {
         assert_eq!(self.table.len(), other.table.len(), "table length differs");
-        assert_eq!(self.probes_per_lookup, other.probes_per_lookup, "probe count differs");
+        assert_eq!(
+            self.probes_per_lookup, other.probes_per_lookup,
+            "probe count differs"
+        );
         for i in 0..self.table.len() {
             self.table[i] |= other.table[i];
         }
@@ -132,7 +142,13 @@ impl CountMinSketch {
                 z ^ (z >> 31)
             })
             .collect();
-        Self { depth, width, seed, table: vec![0i64; depth * width], row_seeds }
+        Self {
+            depth,
+            width,
+            seed,
+            table: vec![0i64; depth * width],
+            row_seeds,
+        }
     }
 
     /// A copy of the raw counter table (row-major).
@@ -156,7 +172,8 @@ impl CountMinSketch {
     pub fn add(&mut self, base_hash: u64, weight: i64) {
         for row in 0..self.depth {
             let col = self.col_at(base_hash, row);
-            self.table[row * self.width + col] = self.table[row * self.width + col].wrapping_add(weight);
+            self.table[row * self.width + col] =
+                self.table[row * self.width + col].wrapping_add(weight);
         }
     }
 

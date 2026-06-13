@@ -8,7 +8,11 @@ const INT_KINDS: [&str; 4] = [
     "RoundsElapsedSinceFreeTime",
     "PeerPRMerged",
 ];
-const STR_KINDS: [&str; 3] = ["RateLimitExhausted", "OperatorMessageArrived", "CIFailureDetected"];
+const STR_KINDS: [&str; 3] = [
+    "RateLimitExhausted",
+    "OperatorMessageArrived",
+    "CIFailureDetected",
+];
 
 /// One membrane crossing: tick + interrupt kind + typed arg (int / string / none).
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -51,7 +55,12 @@ impl MembraneCrossing {
         if INT_KINDS.contains(&self.kind.as_str()) {
             format!("{}\t{}\t{}", self.tick, self.kind, self.int_arg.unwrap())
         } else if STR_KINDS.contains(&self.kind.as_str()) {
-            format!("{}\t{}\t{}", self.tick, self.kind, esc(self.str_arg.as_ref().unwrap()))
+            format!(
+                "{}\t{}\t{}",
+                self.tick,
+                self.kind,
+                esc(self.str_arg.as_ref().unwrap())
+            )
         } else {
             format!("{}\t{}", self.tick, self.kind)
         }
@@ -70,14 +79,24 @@ impl MembraneCrossing {
             if parts.len() != 2 {
                 return None;
             }
-            return Some(Self { tick, kind: kind.to_string(), int_arg: None, str_arg: None });
+            return Some(Self {
+                tick,
+                kind: kind.to_string(),
+                int_arg: None,
+                str_arg: None,
+            });
         }
         if INT_KINDS.contains(&kind) {
             if parts.len() != 3 {
                 return None;
             }
             let v: i64 = parts[2].parse().ok()?;
-            return Some(Self { tick, kind: kind.to_string(), int_arg: Some(v), str_arg: None });
+            return Some(Self {
+                tick,
+                kind: kind.to_string(),
+                int_arg: Some(v),
+                str_arg: None,
+            });
         }
         if STR_KINDS.contains(&kind) {
             if parts.len() != 3 {

@@ -11,7 +11,9 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 use zeta_core_bonsai::{BinOp, ConstValue, Expr};
-use zeta_core_resume::{Activity, Env, ResumeFeedback, SagaStep, parse_state, resume, serialize_state, start};
+use zeta_core_resume::{
+    Activity, Env, ResumeFeedback, SagaStep, parse_state, resume, serialize_state, start,
+};
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel), matching the other oracles.
 fn repo_root() -> PathBuf {
@@ -54,7 +56,12 @@ fn expr_of_json(v: &Value) -> Expr {
         "const" => Expr::Const(const_of_json(&v["value"])),
         "param" => Expr::Param(v["name"].as_str().expect("name").to_string()),
         "lambda" => Expr::Lambda {
-            params: v["params"].as_array().expect("params").iter().map(|p| p.as_str().expect("param").to_string()).collect(),
+            params: v["params"]
+                .as_array()
+                .expect("params")
+                .iter()
+                .map(|p| p.as_str().expect("param").to_string())
+                .collect(),
             body: Box::new(expr_of_json(&v["body"])),
         },
         "binary" => Expr::Binary {
@@ -64,7 +71,12 @@ fn expr_of_json(v: &Value) -> Expr {
         },
         "call" => Expr::Call {
             fn_name: v["fn"].as_str().expect("fn").to_string(),
-            args: v["args"].as_array().expect("args").iter().map(expr_of_json).collect(),
+            args: v["args"]
+                .as_array()
+                .expect("args")
+                .iter()
+                .map(expr_of_json)
+                .collect(),
         },
         "cond" => Expr::Cond {
             test: Box::new(expr_of_json(&v["test"])),
@@ -78,7 +90,12 @@ fn expr_of_json(v: &Value) -> Expr {
 fn activity_of_json(v: &Value) -> Activity {
     Activity {
         fn_name: v["fn"].as_str().expect("fn").to_string(),
-        args: v["args"].as_array().expect("args").iter().map(const_of_json).collect(),
+        args: v["args"]
+            .as_array()
+            .expect("args")
+            .iter()
+            .map(const_of_json)
+            .collect(),
     }
 }
 
@@ -99,8 +116,18 @@ fn rust_resume_replays_every_shared_golden_trace_restore_not_replay() {
                 bindings.insert(k.clone(), const_of_json(v));
             }
         }
-        let activity_results: Vec<ConstValue> = tr["activityResults"].as_array().expect("activityResults").iter().map(const_of_json).collect();
-        let expected_suspensions: Vec<Activity> = tr["expectedSuspensions"].as_array().expect("expectedSuspensions").iter().map(activity_of_json).collect();
+        let activity_results: Vec<ConstValue> = tr["activityResults"]
+            .as_array()
+            .expect("activityResults")
+            .iter()
+            .map(const_of_json)
+            .collect();
+        let expected_suspensions: Vec<Activity> = tr["expectedSuspensions"]
+            .as_array()
+            .expect("expectedSuspensions")
+            .iter()
+            .map(activity_of_json)
+            .collect();
         // the canonical serialize_state bytes the TS reference emits at each suspension, in order —
         // the cross-oracle STATE-BYTE lock this Rust oracle must reproduce verbatim (kont top-last)
         let expected_state_at_suspension: Vec<&str> = tr["expectedStateAtSuspension"]
@@ -111,26 +138,40 @@ fn rust_resume_replays_every_shared_golden_trace_restore_not_replay() {
             .collect();
         let expected_final = const_of_json(&tr["expectedFinal"]);
 
-        let mut step = start(&program, &bindings).unwrap_or_else(|f| panic!("{name}: start: {f:?}"));
+        let mut step =
+            start(&program, &bindings).unwrap_or_else(|f| panic!("{name}: start: {f:?}"));
         for (i, exp) in expected_suspensions.iter().enumerate() {
             match step {
                 SagaStep::Done(v) => panic!("{name}: expected suspension {i}, got Done {v:?}"),
                 SagaStep::Suspended { state, activity } => {
                     assert_eq!(*exp, activity, "{name}: suspension {i}");
                     // persist -> re-parse -> resume from the RESTORED state (not a replay)
-                    let ser = serialize_state(&state).unwrap_or_else(|f| panic!("{name}: serialize: {f:?}"));
+                    let ser = serialize_state(&state)
+                        .unwrap_or_else(|f| panic!("{name}: serialize: {f:?}"));
                     // STATE-BYTE LOCK: the persisted continuation must equal the TS reference bytes
                     // (the kont serializes top-last — innermost frame last in the array)
-                    assert_eq!(expected_state_at_suspension[i], ser.as_str(), "{name}: state byte-lock at suspension {i}");
-                    let restored = parse_state(&ser).unwrap_or_else(|f| panic!("{name}: parse: {f:?}"));
-                    assert_eq!(ser, serialize_state(&restored).expect("re-serialize"), "{name}: round-trip byte-stable");
-                    step = resume(restored, activity_results[i].clone()).unwrap_or_else(|f| panic!("{name}: resume: {f:?}"));
+                    assert_eq!(
+                        expected_state_at_suspension[i],
+                        ser.as_str(),
+                        "{name}: state byte-lock at suspension {i}"
+                    );
+                    let restored =
+                        parse_state(&ser).unwrap_or_else(|f| panic!("{name}: parse: {f:?}"));
+                    assert_eq!(
+                        ser,
+                        serialize_state(&restored).expect("re-serialize"),
+                        "{name}: round-trip byte-stable"
+                    );
+                    step = resume(restored, activity_results[i].clone())
+                        .unwrap_or_else(|f| panic!("{name}: resume: {f:?}"));
                 }
             }
         }
         match step {
             SagaStep::Done(v) => assert_eq!(expected_final, v, "{name}: final"),
-            SagaStep::Suspended { activity, .. } => panic!("{name}: expected Done, suspended on {activity:?}"),
+            SagaStep::Suspended { activity, .. } => {
+                panic!("{name}: expected Done, suspended on {activity:?}")
+            }
         }
     }
 }
@@ -152,13 +193,22 @@ fn rust_resume_type_mismatch_declines() {
         left: Box::new(Expr::Const(ConstValue::Int(1))),
         right: Box::new(Expr::Const(ConstValue::Bool(true))),
     };
-    assert!(matches!(start(&p, &Env::new()), Err(ResumeFeedback::TypeMismatch { .. })));
+    assert!(matches!(
+        start(&p, &Env::new()),
+        Err(ResumeFeedback::TypeMismatch { .. })
+    ));
 }
 
 #[test]
 fn rust_resume_lambda_unsupported() {
-    let p = Expr::Lambda { params: vec!["x".to_string()], body: Box::new(Expr::Const(ConstValue::Int(1))) };
-    assert!(matches!(start(&p, &Env::new()), Err(ResumeFeedback::UnsupportedNode(_))));
+    let p = Expr::Lambda {
+        params: vec!["x".to_string()],
+        body: Box::new(Expr::Const(ConstValue::Int(1))),
+    };
+    assert!(matches!(
+        start(&p, &Env::new()),
+        Err(ResumeFeedback::UnsupportedNode(_))
+    ));
 }
 
 #[test]
@@ -168,7 +218,10 @@ fn rust_resume_arithmetic_past_safe_int_declines() {
         left: Box::new(Expr::Const(ConstValue::Int(9_007_199_254_740_991))),
         right: Box::new(Expr::Const(ConstValue::Int(1))),
     };
-    assert!(matches!(start(&p, &Env::new()), Err(ResumeFeedback::NonSafeInt(_))));
+    assert!(matches!(
+        start(&p, &Env::new()),
+        Err(ResumeFeedback::NonSafeInt(_))
+    ));
 }
 
 #[test]
@@ -181,7 +234,10 @@ fn rust_resume_multiply_overflowing_i64_into_safe_range_declines() {
         left: Box::new(Expr::Const(ConstValue::Int(4_294_967_296))),
         right: Box::new(Expr::Const(ConstValue::Int(4_294_967_296))),
     };
-    assert!(matches!(start(&p, &Env::new()), Err(ResumeFeedback::NonSafeInt(_))));
+    assert!(matches!(
+        start(&p, &Env::new()),
+        Err(ResumeFeedback::NonSafeInt(_))
+    ));
 }
 
 #[test]
@@ -190,14 +246,21 @@ fn rust_resume_deep_embedded_program_restores_past_low_depth() {
         if n == 0 {
             Expr::Const(ConstValue::Int(0))
         } else {
-            Expr::Binary { op: BinOp::Add, left: Box::new(Expr::Const(ConstValue::Int(1))), right: Box::new(deep_nest(n - 1)) }
+            Expr::Binary {
+                op: BinOp::Add,
+                left: Box::new(Expr::Const(ConstValue::Int(1))),
+                right: Box::new(deep_nest(n - 1)),
+            }
         }
     }
 
     // left is a no-arg activity -> suspends immediately, leaving the deep right operand inline.
     let program = Expr::Binary {
         op: BinOp::Add,
-        left: Box::new(Expr::Call { fn_name: "a".to_string(), args: vec![] }),
+        left: Box::new(Expr::Call {
+            fn_name: "a".to_string(),
+            args: vec![],
+        }),
         right: Box::new(deep_nest(100)),
     };
     match start(&program, &Env::new()).expect("start") {
@@ -212,14 +275,20 @@ fn rust_resume_deep_embedded_program_restores_past_low_depth() {
 
 #[test]
 fn rust_resume_state_strings_escape_like_json_stringify() {
-    let program = Expr::Call { fn_name: "act".to_string(), args: vec![Expr::Const(ConstValue::Str("x<y\"z\n".to_string()))] };
+    let program = Expr::Call {
+        fn_name: "act".to_string(),
+        args: vec![Expr::Const(ConstValue::Str("x<y\"z\n".to_string()))],
+    };
     match start(&program, &Env::new()).expect("start") {
         SagaStep::Suspended { state, .. } => {
             let ser = serialize_state(&state).expect("serialize");
             assert!(ser.contains('<'), "literal '<': {ser}");
             assert!(!ser.contains("\\u003"), "no <-style escaping: {ser}");
             assert!(ser.contains("\\n"), "newline short escape: {ser}");
-            assert_eq!(ser, serialize_state(&parse_state(&ser).expect("parse")).expect("re-serialize"));
+            assert_eq!(
+                ser,
+                serialize_state(&parse_state(&ser).expect("parse")).expect("re-serialize")
+            );
         }
         SagaStep::Done(v) => panic!("expected suspension, got Done {v:?}"),
     }
@@ -227,7 +296,10 @@ fn rust_resume_state_strings_escape_like_json_stringify() {
 
 #[test]
 fn rust_resume_parse_state_declines_malformed() {
-    assert!(matches!(parse_state("not json"), Err(ResumeFeedback::MalformedState(_))));
+    assert!(matches!(
+        parse_state("not json"),
+        Err(ResumeFeedback::MalformedState(_))
+    ));
     assert!(matches!(
         parse_state(r#"{"v":2,"kont":[],"awaiting":{"fn":"a","args":[]}}"#),
         Err(ResumeFeedback::MalformedState(_))
@@ -236,8 +308,14 @@ fn rust_resume_parse_state_declines_malformed() {
     // a real suspension's persisted state with a tampered op / unsafe int must be rejected
     let program = Expr::Binary {
         op: BinOp::Add,
-        left: Box::new(Expr::Call { fn_name: "a".to_string(), args: vec![Expr::Const(ConstValue::Int(7))] }),
-        right: Box::new(Expr::Call { fn_name: "b".to_string(), args: vec![] }),
+        left: Box::new(Expr::Call {
+            fn_name: "a".to_string(),
+            args: vec![Expr::Const(ConstValue::Int(7))],
+        }),
+        right: Box::new(Expr::Call {
+            fn_name: "b".to_string(),
+            args: vec![],
+        }),
     };
     match start(&program, &Env::new()).expect("start") {
         SagaStep::Suspended { state, .. } => {
@@ -245,11 +323,17 @@ fn rust_resume_parse_state_declines_malformed() {
 
             let tampered_op = ser.replace(r#""op":"add""#, r#""op":"xor""#);
             assert_ne!(ser, tampered_op);
-            assert!(matches!(parse_state(&tampered_op), Err(ResumeFeedback::MalformedState(_))));
+            assert!(matches!(
+                parse_state(&tampered_op),
+                Err(ResumeFeedback::MalformedState(_))
+            ));
 
             let tampered_int = ser.replace(r#""v":7"#, r#""v":9007199254740993"#);
             assert_ne!(ser, tampered_int);
-            assert!(matches!(parse_state(&tampered_int), Err(ResumeFeedback::MalformedState(_))));
+            assert!(matches!(
+                parse_state(&tampered_int),
+                Err(ResumeFeedback::MalformedState(_))
+            ));
         }
         SagaStep::Done(v) => panic!("expected suspension, got Done {v:?}"),
     }

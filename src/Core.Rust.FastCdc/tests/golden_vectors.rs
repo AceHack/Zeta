@@ -36,8 +36,12 @@ fn chunk_lengths_agree() {
         let min = v["min"].as_u64().unwrap() as usize;
         let avg = v["avg"].as_u64().unwrap() as usize;
         let max = v["max"].as_u64().unwrap() as usize;
-        let expected: Vec<usize> =
-            v["lengths"].as_array().unwrap().iter().map(|x| x.as_u64().unwrap() as usize).collect();
+        let expected: Vec<usize> = v["lengths"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|x| x.as_u64().unwrap() as usize)
+            .collect();
         let bytes = gen_bytes(count);
         assert_eq!(chunk_lengths(&bytes, min, avg, max), expected);
     }

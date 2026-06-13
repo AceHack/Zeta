@@ -40,8 +40,20 @@ fn curve_cross_verify_matches_golden_vectors() {
 
     for vec in vectors {
         let input = i64_vec(&vec["input"]);
-        assert_eq!(differentiate(&input), i64_vec(&vec["rate"]), "rate mismatch");
-        assert_eq!(integrate(&input), i64_vec(&vec["integrate"]), "integrate mismatch");
-        assert_eq!(curvature(&input), i64_vec(&vec["curvature"]), "curvature mismatch");
+        assert_eq!(
+            differentiate(&input),
+            i64_vec(&vec["rate"]),
+            "rate mismatch"
+        );
+        assert_eq!(
+            integrate(&input),
+            i64_vec(&vec["integrate"]),
+            "integrate mismatch"
+        );
+        assert_eq!(
+            curvature(&input),
+            i64_vec(&vec["curvature"]),
+            "curvature mismatch"
+        );
     }
 }

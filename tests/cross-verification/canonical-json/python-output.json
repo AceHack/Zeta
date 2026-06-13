@@ -1,0 +1,16 @@
+{
+  "canonical:array-order-preserved": "{\"a\":2,\"b\":1,\"list\":[3,1,2]}",
+  "canonical:astral-in-value": "{\"emoji\":\"a\ud83d\ude00b\",\"plain\":\"text\"}",
+  "canonical:control-chars": "{\"ctrl\":\"a\\tb\\nc\\u0001d\"}",
+  "canonical:empty-and-nested-empty": "{\"arr\":[],\"nested\":{\"e\":[]},\"obj\":{}}",
+  "canonical:mixed-types": "{\"a\":[1,false,null],\"b\":true,\"i\":42,\"n\":null,\"s\":\"hi\"}",
+  "canonical:nested-sort": "{\"a\":3,\"z\":{\"x\":2,\"y\":1}}",
+  "canonical:safe-int-bounds": "{\"max\":9007199254740991,\"min\":-9007199254740991,\"neg\":-7,\"zero\":0}",
+  "canonical:sorted-keys": "{\"a\":1,\"b\":2,\"c\":3}",
+  "canonical:top-level-array": "[3,{\"a\":2,\"b\":1},\"x\"]",
+  "invalid:float": "<rejected>",
+  "invalid:lone-surrogate-bare": "<rejected>",
+  "invalid:lone-surrogate-key": "<rejected>",
+  "invalid:lone-surrogate-value": "<rejected>",
+  "invalid:unsafe-magnitude": "<rejected>"
+}

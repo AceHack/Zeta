@@ -32,6 +32,8 @@ const impls: Array<[string, Record<string, string> | null]> = [
   ["Rust", load("rust-output.json")],
   ["F#", load("fsharp-output.json")],
   ["C#", load("cs-output.json")],
+  ["Go", load("go-output.json")],
+  ["Python", load("python-output.json")],
 ];
 
 let mismatches = 0;

@@ -262,9 +262,7 @@ fn parse_value(token: &str) -> Result<ParsedScalar, YamlFeedback> {
             kind: ScalarKind::Str,
             style: ScalarStyle::SingleQuoted,
         }),
-        Some(c) if UNSUPPORTED_VALUE_START.contains(&c) => {
-            Err(YamlFeedback::UnsupportedConstruct)
-        }
+        Some(c) if UNSUPPORTED_VALUE_START.contains(&c) => Err(YamlFeedback::UnsupportedConstruct),
         _ => {
             let raw = strip_trailing_comment(token).trim_end().to_string();
             let kind = resolve_plain_kind(&raw);
@@ -586,7 +584,10 @@ fn scan(text: &str) -> Result<Vec<YamlEvent>, YamlFeedback> {
                     Some(v) => s.emit_value_or_empty_flow(&v)?,
                     None => match child_indent_at(&lines, li) {
                         Some(child_indent) if child_indent > map_indent => {
-                            s.push_container(child_indent, peek_child_kind(&lines, li, child_indent));
+                            s.push_container(
+                                child_indent,
+                                peek_child_kind(&lines, li, child_indent),
+                            );
                         }
                         _ => s.emit_null(),
                     },
@@ -680,7 +681,8 @@ mod tests {
 
     #[test]
     fn vector_flat_scalars() {
-        let got = read_events("name: zeta\ncount: 42\nratio: 3.14\nok: true\ngone: null\n").unwrap();
+        let got =
+            read_events("name: zeta\ncount: 42\nratio: 3.14\nok: true\ngone: null\n").unwrap();
         assert_eq!(
             got,
             vec![

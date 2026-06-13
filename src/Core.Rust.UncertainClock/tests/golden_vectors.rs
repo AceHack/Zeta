@@ -19,7 +19,10 @@ fn seed() -> Value {
 }
 
 fn hlc(v: &Value) -> Hlc {
-    Hlc::new(v["physical"].as_i64().unwrap(), v["logical"].as_i64().unwrap())
+    Hlc::new(
+        v["physical"].as_i64().unwrap(),
+        v["logical"].as_i64().unwrap(),
+    )
 }
 
 #[test]
@@ -37,7 +40,10 @@ fn compare_hlc_agrees() {
 fn send_agrees() {
     let s = seed();
     for v in s["send"].as_array().unwrap() {
-        assert_eq!(send(hlc(&v["clock"]), v["now"].as_i64().unwrap()), hlc(&v["result"]));
+        assert_eq!(
+            send(hlc(&v["clock"]), v["now"].as_i64().unwrap()),
+            hlc(&v["result"])
+        );
     }
 }
 

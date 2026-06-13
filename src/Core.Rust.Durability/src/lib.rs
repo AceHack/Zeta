@@ -43,7 +43,9 @@ where
                         };
                         entries.push(ZEntry { e: key, w: weight });
                     }
-                    other => return Err(format!("Expected [key, Int weight] pair, got {:?}", other)),
+                    other => {
+                        return Err(format!("Expected [key, Int weight] pair, got {:?}", other));
+                    }
                 }
             }
             Ok(ZSet::of_entries(entries))
@@ -96,7 +98,10 @@ where
     fn decode(&self, bytes: &[u8]) -> Result<ZSet<K>, String> {
         match DynamicValue::from_canonical_cbor(bytes) {
             Ok(dv) => of_dynamic_value(&self.key_dec, &dv),
-            Err(e) => Err(format!("CborDeltaCodec::decode: non-decodable CBOR: {:?}", e)),
+            Err(e) => Err(format!(
+                "CborDeltaCodec::decode: non-decodable CBOR: {:?}",
+                e
+            )),
         }
     }
 }
@@ -333,7 +338,11 @@ impl<K: Ord + Clone, L: DeltaLog<K>, S: SnapshotStore<K>> RecoverableSpine<K, L,
     }
 
     /// Commit one input delta.
-    pub fn commit(&mut self, delta: ZSet<K>, captured: BTreeMap<String, String>) -> Result<i64, String> {
+    pub fn commit(
+        &mut self,
+        delta: ZSet<K>,
+        captured: BTreeMap<String, String>,
+    ) -> Result<i64, String> {
         let seq = self.log.append(delta.clone(), captured);
         self.state = self.state.union(&delta);
         self.applied_seq = seq;
@@ -400,4 +409,3 @@ impl<K, S: SnapshotStore<K>> SnapshotStore<K> for &S {
         (*self).latest()
     }
 }
-

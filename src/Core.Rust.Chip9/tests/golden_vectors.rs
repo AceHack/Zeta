@@ -14,8 +14,8 @@ fn byte_lock_replaying_the_treaty_rom_reproduces_the_golden_color_grid_exactly()
         .unwrap()
         .to_path_buf();
     let path = root.join("src/Core.TypeScript/chip9/golden-vectors.lines");
-    let text =
-        fs::read_to_string(&path).unwrap_or_else(|_| panic!("golden not found: {}", path.display()));
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|_| panic!("golden not found: {}", path.display()));
     let lines: Vec<&str> = text
         .lines()
         .filter(|l| !l.starts_with('#') && !l.is_empty())
@@ -31,7 +31,9 @@ fn byte_lock_replaying_the_treaty_rom_reproduces_the_golden_color_grid_exactly()
 
     let mut m = Chip9::create();
     m.load_rom(&rom);
-    for k in 0..8 { m.mem.insert(0x300 + k, 0xff); } // solid 8x8 treaty sprite (B-1031)
+    for k in 0..8 {
+        m.mem.insert(0x300 + k, 0xff);
+    } // solid 8x8 treaty sprite (B-1031)
     for _ in 0..30 {
         m.step();
     }
@@ -73,7 +75,9 @@ fn fault_treaty_recorded_never_fatal_refused_call_falls_through_text_pc_depth_by
         let rom: Vec<u8> = (0..rom_hex.len() / 2)
             .map(|i| u8::from_str_radix(&rom_hex[i * 2..i * 2 + 2], 16).unwrap())
             .collect();
-        let steps: usize = keyed(&lines, &format!("fault-steps-{which}")).parse().unwrap();
+        let steps: usize = keyed(&lines, &format!("fault-steps-{which}"))
+            .parse()
+            .unwrap();
 
         let mut m = Chip9::create();
         m.load_rom(&rom);
@@ -91,7 +95,9 @@ fn fault_treaty_recorded_never_fatal_refused_call_falls_through_text_pc_depth_by
             keyed(&lines, &format!("fault-pc-{which}")),
             "{which}: pc"
         );
-        let depth: usize = keyed(&lines, &format!("fault-depth-{which}")).parse().unwrap();
+        let depth: usize = keyed(&lines, &format!("fault-depth-{which}"))
+            .parse()
+            .unwrap();
         assert_eq!(m.stack.len(), depth, "{which}: depth");
     }
 }

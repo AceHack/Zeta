@@ -342,7 +342,9 @@ fn parse_json(text: &str) -> Result<Json, ParseError> {
     let value = p.parse_value()?;
     p.skip_ws();
     if p.pos != p.chars.len() {
-        return Err(ParseError("trailing data after top-level value".to_string()));
+        return Err(ParseError(
+            "trailing data after top-level value".to_string(),
+        ));
     }
     Ok(value)
 }

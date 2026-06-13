@@ -33,5 +33,7 @@ pub fn dominates(a: &Frame, b: &Frame) -> bool {
 
 /// The common frame of a set: fold `transform` from the origin (the LUB).
 pub fn converge(frames: &[Frame]) -> Frame {
-    frames.iter().fold(Frame::new(), |acc, f| transform(&acc, f))
+    frames
+        .iter()
+        .fold(Frame::new(), |acc, f| transform(&acc, f))
 }

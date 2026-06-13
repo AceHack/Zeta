@@ -77,8 +77,10 @@ fn parse_token(token: &str) -> Result<Range, RangeSetFeedback> {
             if parts[0].is_empty() || parts[1].is_empty() {
                 return Err(RangeSetFeedback::Malformed(token.to_string()));
             }
-            let lo = parse_nat(parts[0]).ok_or_else(|| RangeSetFeedback::NotInteger(parts[0].to_string()))?;
-            let hi = parse_nat(parts[1]).ok_or_else(|| RangeSetFeedback::NotInteger(parts[1].to_string()))?;
+            let lo = parse_nat(parts[0])
+                .ok_or_else(|| RangeSetFeedback::NotInteger(parts[0].to_string()))?;
+            let hi = parse_nat(parts[1])
+                .ok_or_else(|| RangeSetFeedback::NotInteger(parts[1].to_string()))?;
             if lo > hi {
                 Err(RangeSetFeedback::InvertedRange { lo, hi })
             } else {
@@ -113,7 +115,13 @@ pub fn parse(s: &str) -> Result<RangeSet, RangeSetFeedback> {
 #[must_use]
 pub fn render(rs: &[Range]) -> String {
     rs.iter()
-        .map(|&(lo, hi)| if lo == hi { lo.to_string() } else { format!("{lo}-{hi}") })
+        .map(|&(lo, hi)| {
+            if lo == hi {
+                lo.to_string()
+            } else {
+                format!("{lo}-{hi}")
+            }
+        })
         .collect::<Vec<_>>()
         .join(",")
 }

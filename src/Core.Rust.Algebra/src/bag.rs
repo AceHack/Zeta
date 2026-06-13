@@ -358,7 +358,10 @@ mod tests {
         // explicit per-key-sum result (not `&a + &b == union`, which would be tautological)
         let a = bag(&[("a", 1), ("b", 2)]);
         let b = bag(&[("b", 1), ("c", 3)]);
-        assert_eq!((&a + &b).to_entries(), vec![e("a", 1), e("b", 3), e("c", 3)]);
+        assert_eq!(
+            (&a + &b).to_entries(),
+            vec![e("a", 1), e("b", 3), e("c", 3)]
+        );
     }
 
     #[test]
@@ -382,7 +385,11 @@ mod tests {
 
     #[test]
     fn generic_math_sum_folds_per_key() {
-        let bags = vec![bag(&[("a", 1)]), bag(&[("a", 2), ("b", 1)]), bag(&[("b", 3)])];
+        let bags = vec![
+            bag(&[("a", 1)]),
+            bag(&[("a", 2), ("b", 1)]),
+            bag(&[("b", 3)]),
+        ];
         let merged: Bag<String> = bags.into_iter().sum();
         assert_eq!(merged.to_entries(), vec![e("a", 3), e("b", 4)]);
     }

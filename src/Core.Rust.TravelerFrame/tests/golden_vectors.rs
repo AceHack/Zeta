@@ -7,7 +7,7 @@
 
 use serde_json::Value;
 use std::path::PathBuf;
-use zeta_core_traveler_frame::{converge, dominates, transform, Frame};
+use zeta_core_traveler_frame::{Frame, converge, dominates, transform};
 
 fn repo_root() -> PathBuf {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -34,7 +34,11 @@ fn traveler_frame_cross_verify_matches_golden_vectors() {
     let v: Value = serde_json::from_str(&text).expect("parse traveler-frame golden-vectors.json");
 
     for c in v["transform"].as_array().expect("transform array") {
-        assert_eq!(transform(&to_frame(&c["a"]), &to_frame(&c["b"])), to_frame(&c["result"]), "transform");
+        assert_eq!(
+            transform(&to_frame(&c["a"]), &to_frame(&c["b"])),
+            to_frame(&c["result"]),
+            "transform"
+        );
     }
     for c in v["dominates"].as_array().expect("dominates array") {
         assert_eq!(
@@ -44,7 +48,12 @@ fn traveler_frame_cross_verify_matches_golden_vectors() {
         );
     }
     for c in v["converge"].as_array().expect("converge array") {
-        let frames: Vec<Frame> = c["frames"].as_array().expect("frames").iter().map(to_frame).collect();
+        let frames: Vec<Frame> = c["frames"]
+            .as_array()
+            .expect("frames")
+            .iter()
+            .map(to_frame)
+            .collect();
         let lub = to_frame(&c["lub"]);
         assert_eq!(converge(&frames), lub, "converge");
         let mut reversed = frames.clone();

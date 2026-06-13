@@ -3,7 +3,11 @@ use crate::{DynamicValue, EncodeError};
 /// Parse a Markdown string into metadata (DynamicValue::Object) and the remaining body string.
 /// Asserts strict canonical check on the frontmatter YAML.
 pub fn parse_markdown(text: &str) -> Result<(DynamicValue, String), String> {
-    if text.starts_with("---") && (text.len() == 3 || text.as_bytes()[3] == b'\n' || (text.as_bytes()[3] == b'\r' && text.len() > 4 && text.as_bytes()[4] == b'\n')) {
+    if text.starts_with("---")
+        && (text.len() == 3
+            || text.as_bytes()[3] == b'\n'
+            || (text.as_bytes()[3] == b'\r' && text.len() > 4 && text.as_bytes()[4] == b'\n'))
+    {
         let header_len = if text.as_bytes()[3] == b'\r' { 5 } else { 4 };
 
         let mut index = header_len;
@@ -21,7 +25,8 @@ pub fn parse_markdown(text: &str) -> Result<(DynamicValue, String), String> {
                 is_newline = true;
                 cur_newline_len = 1;
                 next_idx = index + 1;
-            } else if bytes[index] == b'\r' && index + 1 < bytes.len() && bytes[index + 1] == b'\n' {
+            } else if bytes[index] == b'\r' && index + 1 < bytes.len() && bytes[index + 1] == b'\n'
+            {
                 is_newline = true;
                 cur_newline_len = 2;
                 next_idx = index + 2;
@@ -40,7 +45,10 @@ pub fn parse_markdown(text: &str) -> Result<(DynamicValue, String), String> {
                         newline_len = cur_newline_len;
                         close_end = tail_idx + 1;
                         break;
-                    } else if bytes[tail_idx] == b'\r' && tail_idx + 1 < bytes.len() && bytes[tail_idx + 1] == b'\n' {
+                    } else if bytes[tail_idx] == b'\r'
+                        && tail_idx + 1 < bytes.len()
+                        && bytes[tail_idx + 1] == b'\n'
+                    {
                         close_start = Some(index);
                         newline_len = cur_newline_len;
                         close_end = tail_idx + 2;

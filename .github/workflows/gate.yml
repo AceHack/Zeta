@@ -1116,19 +1116,15 @@ jobs:
         # discipline as bun's own CI patterns.
         run: bun install --frozen-lockfile
 
-      - name: Run tsc --noEmit on tsconfig.json
-        # Strict typecheck: catches type errors (TS2322 narrowing,
-        # noUncheckedIndexedAccess gaps, exactOptionalPropertyTypes
-        # mismatches, etc.) that eslint typed-linting may miss. Per
-        # the .tsconfig.json strictness profile (verbatimModuleSyntax,
-        # noUncheckedIndexedAccess, exactOptionalPropertyTypes).
-        run: bun --bun tsc --noEmit -p tsconfig.json
+      - name: Run TypeScript Lint Script
+        # Type check and lint checks for TypeScript files via dedicated orchestrator
+        run: bun src/Core.TypeScript/lint/lint-typescript.ts
 
   lint-go-python:
-    # Run formatter, linter, and type checker for Go and Python implementation files
-    # to prevent syntax, lint, and formatting regressions.
-    name: lint (Go & Python)
-    timeout-minutes: 5
+    # Run formatter, linter, and type checker for F#, C#, Go, Python, and Rust
+    # implementation files to prevent syntax, lint, and formatting regressions.
+    name: lint (F#, C#, Go, Python, Rust)
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
 
     steps:
@@ -1163,8 +1159,20 @@ jobs:
             sleep "$backoff"
           done
 
-      - name: Run Go and Python Lint Script
-        run: bash tools/lint/lint-go-python.sh
+      - name: Run F# Lint Script
+        run: bun src/Core.TypeScript/lint/lint-fsharp.ts
+
+      - name: Run C# Lint Script
+        run: bun src/Core.TypeScript/lint/lint-csharp.ts
+
+      - name: Run Go Lint Script
+        run: bun src/Core.TypeScript/lint/lint-go.ts
+
+      - name: Run Python Lint Script
+        run: bun src/Core.TypeScript/lint/lint-python.ts
+
+      - name: Run Rust Lint Script
+        run: bun src/Core.TypeScript/lint/lint-rust.ts
 
   cross-verify:
     # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace

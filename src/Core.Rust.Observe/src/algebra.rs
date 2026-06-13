@@ -35,7 +35,12 @@ pub fn simulate(world: &World, action: &NextAction) -> World {
 
         // Item done → drop it from the backlog; entering work mode.
         NextAction::DoItem { item } => World {
-            backlog: world.backlog.iter().filter(|i| i.id != item.id).cloned().collect(),
+            backlog: world
+                .backlog
+                .iter()
+                .filter(|i| i.id != item.id)
+                .cloned()
+                .collect(),
             operator: world.operator.clone(),
             mode: Some(Mode::Work),
         },
@@ -99,10 +104,22 @@ pub fn simulate(world: &World, action: &NextAction) -> World {
         },
 
         // The four free modes set the persisted mode and leave the backlog alone.
-        NextAction::Explore { .. } => World { mode: Some(Mode::Explore), ..world.clone() },
-        NextAction::Play { .. } => World { mode: Some(Mode::Play), ..world.clone() },
-        NextAction::SelfReflect { .. } => World { mode: Some(Mode::SelfReflect), ..world.clone() },
-        NextAction::FreeTime { .. } => World { mode: Some(Mode::FreeTime), ..world.clone() },
+        NextAction::Explore { .. } => World {
+            mode: Some(Mode::Explore),
+            ..world.clone()
+        },
+        NextAction::Play { .. } => World {
+            mode: Some(Mode::Play),
+            ..world.clone()
+        },
+        NextAction::SelfReflect { .. } => World {
+            mode: Some(Mode::SelfReflect),
+            ..world.clone()
+        },
+        NextAction::FreeTime { .. } => World {
+            mode: Some(Mode::FreeTime),
+            ..world.clone()
+        },
     }
 }
 

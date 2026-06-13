@@ -1,6 +1,6 @@
 //! Unit tests for BLAKE3 content hashing.
 
-use zeta_core_blake3::{ContentHash256, Blake3Hasher, IContentHasher};
+use zeta_core_blake3::{Blake3Hasher, ContentHash256, IContentHasher};
 
 #[test]
 fn empty_string_256_hash_matches_treaty() {

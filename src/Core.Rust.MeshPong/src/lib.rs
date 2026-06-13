@@ -89,7 +89,14 @@ impl Game {
     pub fn to_line(&self) -> String {
         format!(
             "ponggame1\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
-            self.ball_x, self.ball_y, self.vx, self.vy, self.paddle_a, self.paddle_b, self.score_a, self.score_b
+            self.ball_x,
+            self.ball_y,
+            self.vx,
+            self.vy,
+            self.paddle_a,
+            self.paddle_b,
+            self.score_a,
+            self.score_b
         )
     }
 

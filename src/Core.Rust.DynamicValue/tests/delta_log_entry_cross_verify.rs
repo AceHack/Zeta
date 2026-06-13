@@ -33,7 +33,10 @@ fn hex(bytes: &[u8]) -> String {
 }
 
 fn decode_hex(s: &str) -> Vec<u8> {
-    assert!(s.len().is_multiple_of(2), "byte hex must have even length: {s}");
+    assert!(
+        s.len().is_multiple_of(2),
+        "byte hex must have even length: {s}"
+    );
     (0..s.len())
         .step_by(2)
         .map(|i| u8::from_str_radix(&s[i..i + 2], 16).expect("hex byte"))
@@ -51,7 +54,10 @@ fn build_entry(entry: &Value) -> DynamicValue {
         .iter()
         .map(|p| {
             let a = p.as_array().expect("delta pair");
-            (a[0].as_str().expect("delta key").to_string(), a[1].as_i64().expect("delta weight"))
+            (
+                a[0].as_str().expect("delta key").to_string(),
+                a[1].as_i64().expect("delta weight"),
+            )
         })
         .collect();
     dpairs.sort_by(|a, b| a.0.cmp(&b.0)); // Rust String Ord = UTF-8 byte order = ordinal for ASCII
@@ -71,7 +77,10 @@ fn build_entry(entry: &Value) -> DynamicValue {
         .collect();
     cpairs.sort_by(|a, b| a.0.cmp(&b.0));
     let captured = DynamicValue::Object(
-        cpairs.into_iter().map(|(k, v)| (k, DynamicValue::String(v))).collect(),
+        cpairs
+            .into_iter()
+            .map(|(k, v)| (k, DynamicValue::String(v)))
+            .collect(),
     );
 
     DynamicValue::Object(vec![
@@ -99,7 +108,9 @@ fn delta_log_entry_cross_verify_matches_golden_vectors() {
         // encode -> must equal the seed hex (the cross-language byte-lock)
         let actual = hex(&value.to_canonical_cbor());
         if actual != expected {
-            failures.push(format!("{name}: encode expected {expected} but got {actual}"));
+            failures.push(format!(
+                "{name}: encode expected {expected} but got {actual}"
+            ));
             continue;
         }
 
@@ -115,5 +126,9 @@ fn delta_log_entry_cross_verify_matches_golden_vectors() {
         }
     }
 
-    assert!(failures.is_empty(), "byte-lock mismatches:\n{}", failures.join("\n"));
+    assert!(
+        failures.is_empty(),
+        "byte-lock mismatches:\n{}",
+        failures.join("\n")
+    );
 }

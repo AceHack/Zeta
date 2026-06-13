@@ -15,7 +15,9 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use zeta_core_zeta_id::{pack, to_hex, unpack, Authority, DeterministicEnv, Momentum, ZetaObservation};
+use zeta_core_zeta_id::{
+    Authority, DeterministicEnv, Momentum, ZetaObservation, pack, to_hex, unpack,
+};
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel), matching the
 /// convention in `src/Core.Rust.Observe/tests/golden_vectors.rs`.
@@ -94,7 +96,10 @@ fn u8_field(rec: &HashMap<String, String>, key: &str) -> u8 {
 fn opt_u8_field(rec: &HashMap<String, String>, key: &str) -> Option<u8> {
     match field(rec, key) {
         "null" => None,
-        v => Some(v.parse().unwrap_or_else(|_| panic!("field {key} not a u8: {v}"))),
+        v => Some(
+            v.parse()
+                .unwrap_or_else(|_| panic!("field {key} not a u8: {v}")),
+        ),
     }
 }
 
@@ -140,7 +145,8 @@ fn json_str(s: &str) -> String {
 #[test]
 fn cross_verify_matches_shared_vectors() {
     let fixture_dir = repo_root().join("tests/cross-verification/zeta-id");
-    let text = std::fs::read_to_string(fixture_dir.join("vectors.yaml")).expect("read vectors.yaml");
+    let text =
+        std::fs::read_to_string(fixture_dir.join("vectors.yaml")).expect("read vectors.yaml");
     let records = parse_vectors(&text);
     assert!(!records.is_empty(), "no vectors parsed");
 
@@ -157,9 +163,15 @@ fn cross_verify_matches_shared_vectors() {
             chromosome: u8_field(rec, "chromosome"),
             category: u8_field(rec, "category"),
             firefly: u8_field(rec, "firefly"),
-            authority: authority_from(field(rec, "authority_type"), opt_u8_field(rec, "authority_raw")),
+            authority: authority_from(
+                field(rec, "authority_type"),
+                opt_u8_field(rec, "authority_raw"),
+            ),
             persona: u8_field(rec, "persona"),
-            momentum: momentum_from(field(rec, "momentum_type"), opt_u8_field(rec, "momentum_raw")),
+            momentum: momentum_from(
+                field(rec, "momentum_type"),
+                opt_u8_field(rec, "momentum_raw"),
+            ),
             location: u8_field(rec, "location"),
         };
 
@@ -216,6 +228,9 @@ fn cross_verify_matches_shared_vectors() {
         n - hex_mismatches,
     );
 
-    assert_eq!(roundtrip_mismatches, 0, "{roundtrip_mismatches} roundtrip mismatch(es)");
+    assert_eq!(
+        roundtrip_mismatches, 0,
+        "{roundtrip_mismatches} roundtrip mismatch(es)"
+    );
     assert_eq!(hex_mismatches, 0, "{hex_mismatches} hex mismatch(es)");
 }

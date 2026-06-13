@@ -26,6 +26,6 @@ pub mod dom;
 pub mod reader;
 
 pub mod encoder;
-pub use dom::{parse, YamlValue};
+pub use dom::{YamlValue, parse};
 pub use encoder::encode;
-pub use reader::{read_events, ScalarKind, ScalarStyle, YamlEvent, YamlFeedback};
+pub use reader::{ScalarKind, ScalarStyle, YamlEvent, YamlFeedback, read_events};

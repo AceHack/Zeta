@@ -145,12 +145,20 @@ impl<'a> JsonReader<'a> {
             }
             State::Value => {
                 let (tok, is_start) = self.read_value()?;
-                self.state = if is_start { State::FirstMember } else { State::End };
+                self.state = if is_start {
+                    State::FirstMember
+                } else {
+                    State::End
+                };
                 Ok(Some(tok))
             }
             State::ObjectValue => {
                 let (tok, is_start) = self.read_value()?;
-                self.state = if is_start { State::FirstMember } else { State::AfterMember };
+                self.state = if is_start {
+                    State::FirstMember
+                } else {
+                    State::AfterMember
+                };
                 Ok(Some(tok))
             }
             State::FirstMember => match self.stack.last().copied() {
@@ -174,7 +182,11 @@ impl<'a> JsonReader<'a> {
                         Ok(Some(JsonToken::EndArray))
                     } else {
                         let (tok, is_start) = self.read_value()?;
-                        self.state = if is_start { State::FirstMember } else { State::AfterMember };
+                        self.state = if is_start {
+                            State::FirstMember
+                        } else {
+                            State::AfterMember
+                        };
                         Ok(Some(tok))
                     }
                 }
@@ -192,7 +204,11 @@ impl<'a> JsonReader<'a> {
                         }
                         Some(Container::Array) => {
                             let (tok, is_start) = self.read_value()?;
-                            self.state = if is_start { State::FirstMember } else { State::AfterMember };
+                            self.state = if is_start {
+                                State::FirstMember
+                            } else {
+                                State::AfterMember
+                            };
                             Ok(Some(tok))
                         }
                         None => Err(self.err("internal: AfterMember with empty stack")),
@@ -216,7 +232,11 @@ impl<'a> JsonReader<'a> {
     }
 
     fn pop_state(&self) -> State {
-        if self.stack.is_empty() { State::End } else { State::AfterMember }
+        if self.stack.is_empty() {
+            State::End
+        } else {
+            State::AfterMember
+        }
     }
 
     /// Push a container, enforcing the max-depth cap (rejects hostile deep nesting).
@@ -306,7 +326,10 @@ impl<'a> JsonReader<'a> {
     }
 
     fn err(&self, msg: &str) -> JsonError {
-        JsonError { message: msg.to_string(), position: self.pos }
+        JsonError {
+            message: msg.to_string(),
+            position: self.pos,
+        }
     }
 
     fn skip_ws(&mut self) {
@@ -332,7 +355,8 @@ impl<'a> JsonReader<'a> {
                 b'"' => {
                     let slice = &self.bytes[start..self.pos];
                     self.pos += 1;
-                    let s = std::str::from_utf8(slice).map_err(|_| self.err("invalid utf-8 in string"))?;
+                    let s = std::str::from_utf8(slice)
+                        .map_err(|_| self.err("invalid utf-8 in string"))?;
                     return Ok(Cow::Borrowed(s));
                 }
                 b'\\' => return self.read_string_escaped(start),
@@ -419,7 +443,9 @@ impl<'a> JsonReader<'a> {
     fn read_hex4(&mut self) -> Result<u16, JsonError> {
         let mut value: u16 = 0;
         for _ in 0..4 {
-            let b = self.peek().ok_or_else(|| self.err("unexpected end in \\u escape"))?;
+            let b = self
+                .peek()
+                .ok_or_else(|| self.err("unexpected end in \\u escape"))?;
             let digit = match b {
                 b'0'..=b'9' => b - b'0',
                 b'a'..=b'f' => b - b'a' + 10,
@@ -509,7 +535,8 @@ impl<'a> JsonReader<'a> {
             self.skip_ascii_digits();
         }
 
-        std::str::from_utf8(&self.bytes[start..self.pos]).map_err(|_| self.err("invalid number bytes"))
+        std::str::from_utf8(&self.bytes[start..self.pos])
+            .map_err(|_| self.err("invalid number bytes"))
     }
 
     fn skip_ascii_digits(&mut self) {
@@ -570,8 +597,14 @@ mod tests {
 
     #[test]
     fn empty_containers() {
-        assert_eq!(tokens("{}"), vec![JsonToken::StartObject, JsonToken::EndObject]);
-        assert_eq!(tokens("[]"), vec![JsonToken::StartArray, JsonToken::EndArray]);
+        assert_eq!(
+            tokens("{}"),
+            vec![JsonToken::StartObject, JsonToken::EndObject]
+        );
+        assert_eq!(
+            tokens("[]"),
+            vec![JsonToken::StartArray, JsonToken::EndArray]
+        );
     }
 
     #[test]
@@ -599,7 +632,10 @@ mod tests {
             }
         }
         assert_eq!(objects, n);
-        assert_eq!(max_depth, 2, "depth must stay bounded by nesting, not array length");
+        assert_eq!(
+            max_depth, 2,
+            "depth must stay bounded by nesting, not array length"
+        );
     }
 
     #[test]
@@ -631,18 +667,35 @@ mod tests {
     fn rejects_non_delimiter_after_value_eagerly() {
         // ANY non-terminator byte after a scalar (alnum OR symbol) errors on the
         // read() that produces the token — literals AND numbers.
-        for bad in ["truex", "false0", "nullx", "true_", "null/", "false\"", "1x", "12.3z"] {
+        for bad in [
+            "truex", "false0", "nullx", "true_", "null/", "false\"", "1x", "12.3z",
+        ] {
             let mut r = JsonReader::new(bad);
-            assert!(r.read().is_err(), "`{bad}` must error on the read that produces it");
+            assert!(
+                r.read().is_err(),
+                "`{bad}` must error on the read that produces it"
+            );
         }
         // `[1x]` / `[true_]` error when reading the element, not later.
         for bad in ["[1x]", "[true_]"] {
             let mut r = JsonReader::new(bad);
-            assert_eq!(r.read().expect("read").expect("token"), JsonToken::StartArray);
+            assert_eq!(
+                r.read().expect("read").expect("token"),
+                JsonToken::StartArray
+            );
             assert!(r.read().is_err(), "`{bad}` element must error eagerly");
         }
         // Valid scalars followed by a terminator (EOF / structural / ws) are fine.
-        for ok in ["true", "false", "null", "1", "[true]", "true ", "[true,false]", "[1,2]"] {
+        for ok in [
+            "true",
+            "false",
+            "null",
+            "1",
+            "[true]",
+            "true ",
+            "[true,false]",
+            "[1,2]",
+        ] {
             assert!(drain(ok).is_ok(), "`{ok}` should parse");
         }
     }
@@ -654,7 +707,9 @@ mod tests {
         // closing an array, `]` closing an object.
         // Includes whitespace-then-invalid (`[1 2]`, `1   x`): the check looks PAST
         // whitespace, so the bad byte is caught on the value's read, not later.
-        for bad in ["1,2", "1]", "1}", "[1}", "[1}]", "[1 2]", "1   x", "[1 2 3]"] {
+        for bad in [
+            "1,2", "1]", "1}", "[1}", "[1}]", "[1 2]", "1   x", "[1 2 3]",
+        ] {
             let mut r = JsonReader::new(bad);
             // First read() may be StartArray (for `[…`); the offending value's read
             // must surface the error.
@@ -666,7 +721,16 @@ mod tests {
             assert!(saw_err, "`{bad}` must be rejected");
         }
         // Context-valid terminators (incl. whitespace before them) still parse.
-        for ok in ["1", "1 ", "[1,2]", "[1 ,2]", "[1, 2]", "[1]", r#"{"a":1}"#, r#"{"a":1,"b":2}"#] {
+        for ok in [
+            "1",
+            "1 ",
+            "[1,2]",
+            "[1 ,2]",
+            "[1, 2]",
+            "[1]",
+            r#"{"a":1}"#,
+            r#"{"a":1,"b":2}"#,
+        ] {
             assert!(drain(ok).is_ok(), "`{ok}` should parse");
         }
     }
@@ -674,33 +738,62 @@ mod tests {
     #[test]
     fn enforces_json_number_grammar() {
         for bad in ["01", "1.", "-.1", "+1", "-", "1.e3", "00", "1..2"] {
-            assert!(drain(bad).is_err(), "non-JSON number '{bad}' must be rejected");
+            assert!(
+                drain(bad).is_err(),
+                "non-JSON number '{bad}' must be rejected"
+            );
         }
-        for good in ["0", "-0", "1", "-12", "12.5", "-12.5e3", "1E10", "0.5", "1e-9"] {
+        for good in [
+            "0", "-0", "1", "-12", "12.5", "-12.5e3", "1E10", "0.5", "1e-9",
+        ] {
             let mut r = JsonReader::new(good);
-            assert_eq!(r.read().expect("read").expect("token"), JsonToken::Number(good));
-            assert!(r.read().expect("eof").is_none(), "'{good}' should be a single number");
+            assert_eq!(
+                r.read().expect("read").expect("token"),
+                JsonToken::Number(good)
+            );
+            assert!(
+                r.read().expect("eof").is_none(),
+                "'{good}' should be a single number"
+            );
         }
         // Leading-zero forms are rejected EAGERLY on the first read() — a streaming
         // caller never gets a bogus Number("0") with the error delayed.
-        assert!(JsonReader::new("01").read().is_err(), "`01` must error on the first read");
+        assert!(
+            JsonReader::new("01").read().is_err(),
+            "`01` must error on the first read"
+        );
         let mut arr = JsonReader::new("[01]");
-        assert_eq!(arr.read().expect("read").expect("token"), JsonToken::StartArray);
-        assert!(arr.read().is_err(), "`[01]` must error when reading the element, not later");
+        assert_eq!(
+            arr.read().expect("read").expect("token"),
+            JsonToken::StartArray
+        );
+        assert!(
+            arr.read().is_err(),
+            "`[01]` must error when reading the element, not later"
+        );
     }
 
     #[test]
     fn caps_nesting_depth_for_untrusted_input() {
         // Hostile deep nesting beyond the default cap is rejected (not OOM).
         let deep = "[".repeat(DEFAULT_MAX_DEPTH + 50);
-        assert!(drain(&deep).is_err(), "nesting past DEFAULT_MAX_DEPTH must be rejected");
+        assert!(
+            drain(&deep).is_err(),
+            "nesting past DEFAULT_MAX_DEPTH must be rejected"
+        );
         // Explicit small cap: depth beyond it errors, within it is fine.
         let mut over = JsonReader::with_max_depth("[[[]]]", 2);
         let over_result = (|| -> Result<(), JsonError> {
             while over.read()?.is_some() {}
             Ok(())
         })();
-        assert!(over_result.is_err(), "nesting beyond max_depth=2 must be rejected");
-        assert!(JsonReader::with_max_depth("[[]]", 2).read().is_ok(), "within cap is fine");
+        assert!(
+            over_result.is_err(),
+            "nesting beyond max_depth=2 must be rejected"
+        );
+        assert!(
+            JsonReader::with_max_depth("[[]]", 2).read().is_ok(),
+            "within cap is fine"
+        );
     }
 }

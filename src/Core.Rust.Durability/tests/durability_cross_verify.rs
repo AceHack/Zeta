@@ -7,10 +7,10 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 use zeta_core_algebra::zset::{ZEntry, ZSet};
-use zeta_core_dynamic_value::DynamicValue;
 use zeta_core_durability::{
     CborDeltaCodec, DeltaCodec, InMemoryDeltaLog, InMemorySnapshotStore, RecoverableSpine,
 };
+use zeta_core_dynamic_value::DynamicValue;
 
 fn repo_root() -> PathBuf {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -109,17 +109,31 @@ fn recoverable_spine_recovery_flow_works() {
     assert_eq!(spine.consolidate(), &expected_state1);
 
     // Commit 3
-    let mut d3_entries = Vec::new();
-    d3_entries.push(ZEntry { e: "a".to_string(), w: -1 });
-    d3_entries.push(ZEntry { e: "c".to_string(), w: 3 });
+    let d3_entries = vec![
+        ZEntry {
+            e: "a".to_string(),
+            w: -1,
+        },
+        ZEntry {
+            e: "c".to_string(),
+            w: 3,
+        },
+    ];
     let d3 = ZSet::of_entries(d3_entries);
     let s3 = spine.commit(d3, BTreeMap::new()).unwrap();
     assert_eq!(s3, 3);
 
     // Consolidated state at 3: b:2, c:3 (a:1 + a:-1 nets to 0 and drops)
-    let mut expected_entries = Vec::new();
-    expected_entries.push(ZEntry { e: "b".to_string(), w: 2 });
-    expected_entries.push(ZEntry { e: "c".to_string(), w: 3 });
+    let expected_entries = vec![
+        ZEntry {
+            e: "b".to_string(),
+            w: 2,
+        },
+        ZEntry {
+            e: "c".to_string(),
+            w: 3,
+        },
+    ];
     let expected_state2 = ZSet::of_entries(expected_entries);
     assert_eq!(spine.consolidate(), &expected_state2);
 

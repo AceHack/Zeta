@@ -53,17 +53,29 @@ impl Json {
 
     /// The string value, if this is a `Str`.
     pub fn as_str(&self) -> Option<&str> {
-        if let Json::Str(s) = self { Some(s) } else { None }
+        if let Json::Str(s) = self {
+            Some(s)
+        } else {
+            None
+        }
     }
 
     /// The bool value, if this is a `Bool`.
     pub fn as_bool(&self) -> Option<bool> {
-        if let Json::Bool(b) = self { Some(*b) } else { None }
+        if let Json::Bool(b) = self {
+            Some(*b)
+        } else {
+            None
+        }
     }
 
     /// The array slice, if this is an `Array`.
     pub fn as_array(&self) -> Option<&[Json]> {
-        if let Json::Array(a) = self { Some(a) } else { None }
+        if let Json::Array(a) = self {
+            Some(a)
+        } else {
+            None
+        }
     }
 }
 
@@ -78,13 +90,20 @@ pub struct JsonError {
 
 impl JsonError {
     fn new(message: &str) -> Self {
-        JsonError { message: message.to_string(), position: 0 }
+        JsonError {
+            message: message.to_string(),
+            position: 0,
+        }
     }
 }
 
 impl fmt::Display for JsonError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "JSON parse error at byte {}: {}", self.position, self.message)
+        write!(
+            f,
+            "JSON parse error at byte {}: {}",
+            self.position, self.message
+        )
     }
 }
 
@@ -114,7 +133,9 @@ pub struct ZetaJsonParser;
 impl JsonParser for ZetaJsonParser {
     fn parse(&self, input: &str) -> Result<Json, JsonError> {
         let mut reader = JsonReader::new(input);
-        let first = reader.read()?.ok_or_else(|| JsonError::new("empty input"))?;
+        let first = reader
+            .read()?
+            .ok_or_else(|| JsonError::new("empty input"))?;
         let value = build_value(&mut reader, first)?;
         // The reader yields None at EOF and errors on trailing content; confirm EOF.
         match reader.read()? {
@@ -142,7 +163,9 @@ fn build_value<'a>(reader: &mut JsonReader<'a>, token: JsonToken<'a>) -> Result<
         JsonToken::StartArray => {
             let mut items = Vec::new();
             loop {
-                let t = reader.read()?.ok_or_else(|| JsonError::new("unterminated array"))?;
+                let t = reader
+                    .read()?
+                    .ok_or_else(|| JsonError::new("unterminated array"))?;
                 if t == JsonToken::EndArray {
                     break;
                 }
@@ -153,12 +176,15 @@ fn build_value<'a>(reader: &mut JsonReader<'a>, token: JsonToken<'a>) -> Result<
         JsonToken::StartObject => {
             let mut fields = Vec::new();
             loop {
-                let t = reader.read()?.ok_or_else(|| JsonError::new("unterminated object"))?;
+                let t = reader
+                    .read()?
+                    .ok_or_else(|| JsonError::new("unterminated object"))?;
                 match t {
                     JsonToken::EndObject => break,
                     JsonToken::Key(k) => {
-                        let value_token =
-                            reader.read()?.ok_or_else(|| JsonError::new("missing value after key"))?;
+                        let value_token = reader
+                            .read()?
+                            .ok_or_else(|| JsonError::new("missing value after key"))?;
                         let value = build_value(reader, value_token)?;
                         fields.push((k.into_owned(), value));
                     }
@@ -184,11 +210,10 @@ pub struct SerdeJsonParser;
 #[cfg(feature = "serde")]
 impl JsonParser for SerdeJsonParser {
     fn parse(&self, input: &str) -> Result<Json, JsonError> {
-        let value: serde_json::Value =
-            serde_json::from_str(input).map_err(|e| JsonError {
-                message: e.to_string(),
-                position: 0,
-            })?;
+        let value: serde_json::Value = serde_json::from_str(input).map_err(|e| JsonError {
+            message: e.to_string(),
+            position: 0,
+        })?;
         Ok(from_serde(&value))
     }
 }

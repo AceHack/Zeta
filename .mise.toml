@@ -24,7 +24,7 @@
 dotnet = "10.0.203"
 go = "1.26.4"
 golangci-lint = "2.12.2"
-python = "3.14"
+python = "3.14.6"
 # Java 26 (latest). Round-34 migration: OpenJDK moved off brew
 # and onto mise so all language runtimes share one manager.
 java = "26"
@@ -51,7 +51,7 @@ bun = "1.3"
 # latest` (both authoritative; tag_name = "0.11.16",
 # published_at = 2026-05-21T22:11:32Z). Source:
 # https://github.com/astral-sh/uv/releases/tag/0.11.16
-uv = "0.11.16"
+uv = "0.11.21"
 # actionlint: GitHub Actions workflow linter. Declarative install
 # (GOVERNANCE §24 three-way-parity) so dev laptops + CI runners
 # (including ubuntu-slim which doesn't ship with it) have identical
@@ -86,8 +86,8 @@ node = "24"
 "npm:markdownlint-cli2" = "0.22.1"
 # semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
 # here per the three-way-parity invariant (GOVERNANCE §24) — dev
-# laptops + CI runners + devcontainers should all install
-# semgrep through the same `tools/setup/install.sh` rather than
+# laptops + CI runners + devcontainers all get the same semgrep
+# through the same `tools/setup/install.sh` rather than
 # CI fetching its own copy via `actions/setup-python` + pip.
 # The `pipx:` backend prefix is mise's naming; the actual
 # installer mise uses is `uv tool install` (since `uv` above is
@@ -109,6 +109,8 @@ node = "24"
 # pip (the uv-canonical ADR; identical to `pipx:semgrep` above). No pip anywhere.
 # Pin per dep-pin-search-first (PyPI 2026-06-10: 1.38.0).
 "pipx:yamllint" = "1.38.0"
+"pipx:ruff" = "0.15.17"
+"pipx:mypy" = "2.1.0"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)

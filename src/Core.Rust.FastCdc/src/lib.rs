@@ -45,10 +45,7 @@ pub fn chunk_lengths(bytes: &[u8], min: usize, avg: usize, max: usize) -> Vec<us
                 hash = (hash << 1).wrapping_add(gear[bytes[i] as usize]);
                 let offset = i - head;
                 let mask = if offset < avg { MASK_S } else { MASK_L };
-                if hash & mask == 0 {
-                    end = i + 1;
-                    break;
-                } else if offset + 1 >= max {
+                if hash & mask == 0 || offset + 1 >= max {
                     end = i + 1;
                     break;
                 }

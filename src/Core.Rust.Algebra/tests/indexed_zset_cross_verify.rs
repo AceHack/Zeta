@@ -89,7 +89,11 @@ fn indexed_zset_cross_verify_matches_golden_vectors() {
         |kv: &(String, String)| kv.1.clone(),
         &index_input(&v["indexInput"]),
     );
-    assert_eq!(a, groups(&v["expectedA"]), "indexWith(indexInput) != expectedA");
+    assert_eq!(
+        a,
+        groups(&v["expectedA"]),
+        "indexWith(indexInput) != expectedA"
+    );
 
     let b = groups(&v["operandB"]);
 
@@ -99,7 +103,9 @@ fn indexed_zset_cross_verify_matches_golden_vectors() {
     assert_eq!(a.sub(&b), groups(&v["expectedSubAB"]), "sub(A, B) mismatch");
 
     // Bilinear join — merge-join on key, cross-product values, weight MULTIPLY.
-    let join_ab = a.join(&b, |k: &String, va: &String, vb: &String| format!("{k}|{va}|{vb}"));
+    let join_ab = a.join(&b, |k: &String, va: &String, vb: &String| {
+        format!("{k}|{va}|{vb}")
+    });
     assert_eq!(join_ab, zset(&v["expectedJoinAB"]), "join(A, B) mismatch");
 
     // Flatten to a Z-set of named (key, value) tuples.
@@ -114,7 +120,9 @@ fn indexed_zset_cross_verify_matches_golden_vectors() {
     );
     assert_eq!(
         a.tuple_count(),
-        v["expectedTupleCountA"].as_u64().expect("expectedTupleCountA") as usize,
+        v["expectedTupleCountA"]
+            .as_u64()
+            .expect("expectedTupleCountA") as usize,
         "tupleCount(A) mismatch",
     );
 }

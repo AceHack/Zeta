@@ -44,7 +44,12 @@ pub fn resolve(c: &Weights, num: i64, den: i64) -> Option<String> {
 
 /// Bayesian observe (pointwise-multiply the likelihood into the prior; drop zeroed candidates -- no
 /// fabricated certainty) followed by `resolve`. If every candidate zeroes, the result is `None`.
-pub fn observe_resolve(prior: &Weights, likelihood: &Weights, num: i64, den: i64) -> Option<String> {
+pub fn observe_resolve(
+    prior: &Weights,
+    likelihood: &Weights,
+    num: i64,
+    den: i64,
+) -> Option<String> {
     let posterior: Weights = prior
         .iter()
         .map(|(k, &w)| (k.clone(), w * likelihood.get(k).copied().unwrap_or(0)))

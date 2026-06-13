@@ -42,7 +42,12 @@ fn run_matches_clock_golden_vectors() {
         let name = v["name"].as_str().unwrap();
         let seed_val = v["seed"].as_i64().unwrap();
         let steps = v["steps"].as_u64().unwrap() as usize;
-        let expected: Vec<i64> = v["stamps"].as_array().unwrap().iter().map(|x| x.as_i64().unwrap()).collect();
+        let expected: Vec<i64> = v["stamps"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|x| x.as_i64().unwrap())
+            .collect();
         let actual = run(seed_val, steps);
         assert_eq!(actual, expected, "clock vector '{name}'");
     }

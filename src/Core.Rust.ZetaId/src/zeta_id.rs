@@ -8,8 +8,8 @@ use core::fmt;
 
 use crate::bit_layout::{BitField, BitLayout};
 use crate::{
-    is_named_authority_byte, is_named_momentum_byte, Authority, Momentum, SimulationEnvironment,
-    ZetaObservation, MAX_AUTHORITY,
+    Authority, MAX_AUTHORITY, Momentum, SimulationEnvironment, ZetaObservation,
+    is_named_authority_byte, is_named_momentum_byte,
 };
 
 /// Maximum timestamp value for the 48-bit field: `2^48 - 1`.
@@ -117,10 +117,11 @@ pub fn pack(obs: &ZetaObservation, env: &dyn SimulationEnvironment) -> Result<u1
             return Err(PackError::AuthorityRawAliasesNamed(v));
         }
     }
-    if let Momentum::Raw(v) = obs.momentum {
-        if is_named_momentum_byte(v) {
+    match obs.momentum {
+        Momentum::Raw(v) if is_named_momentum_byte(v) => {
             return Err(PackError::MomentumRawAliasesNamed(v));
         }
+        _ => {}
     }
 
     let layout = BitLayout::default();
@@ -170,7 +171,7 @@ pub fn to_hex(id: u128) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{category, chromosome, firefly, location, persona, DeterministicEnv, VERSION_V1};
+    use crate::{DeterministicEnv, VERSION_V1, category, chromosome, firefly, location, persona};
 
     fn human_verified_obs() -> ZetaObservation {
         ZetaObservation {
@@ -232,7 +233,10 @@ mod tests {
         obs.category = 16; // 4-bit field max is 15
         assert!(matches!(
             pack(&obs, &DeterministicEnv),
-            Err(PackError::EnumFieldOutOfRange { field: "category", .. })
+            Err(PackError::EnumFieldOutOfRange {
+                field: "category",
+                ..
+            })
         ));
     }
 

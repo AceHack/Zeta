@@ -22,7 +22,9 @@
 
 use std::collections::BTreeMap;
 
-use zeta_core_bonsai::{BinOp, ConstValue, Expr, parse as bonsai_parse, serialize as bonsai_serialize};
+use zeta_core_bonsai::{
+    BinOp, ConstValue, Expr, parse as bonsai_parse, serialize as bonsai_serialize,
+};
 
 /// The resume-state serialization version (the `v` field of the persisted wrapper).
 pub const RESUME_VERSION: i64 = 1;
@@ -144,14 +146,20 @@ pub enum SagaStep {
 fn as_int(v: &ConstValue, at: &str) -> Result<i64, ResumeFeedback> {
     match v {
         ConstValue::Int(i) => Ok(*i),
-        _ => Err(ResumeFeedback::TypeMismatch { at: at.to_string(), expected: "int".to_string() }),
+        _ => Err(ResumeFeedback::TypeMismatch {
+            at: at.to_string(),
+            expected: "int".to_string(),
+        }),
     }
 }
 
 fn as_bool(v: &ConstValue, at: &str) -> Result<bool, ResumeFeedback> {
     match v {
         ConstValue::Bool(b) => Ok(*b),
-        _ => Err(ResumeFeedback::TypeMismatch { at: at.to_string(), expected: "bool".to_string() }),
+        _ => Err(ResumeFeedback::TypeMismatch {
+            at: at.to_string(),
+            expected: "bool".to_string(),
+        }),
     }
 }
 
@@ -174,16 +182,32 @@ fn to_safe(p: i128) -> Result<ConstValue, ResumeFeedback> {
     Err(ResumeFeedback::NonSafeInt(v))
 }
 
-fn apply_binop(op: BinOp, left: &ConstValue, right: &ConstValue) -> Result<ConstValue, ResumeFeedback> {
+fn apply_binop(
+    op: BinOp,
+    left: &ConstValue,
+    right: &ConstValue,
+) -> Result<ConstValue, ResumeFeedback> {
     match op {
-        BinOp::Add => to_safe(i128::from(as_int(left, "add.left")?) + i128::from(as_int(right, "add.right")?)),
-        BinOp::Sub => to_safe(i128::from(as_int(left, "sub.left")?) - i128::from(as_int(right, "sub.right")?)),
-        BinOp::Mul => to_safe(i128::from(as_int(left, "mul.left")?) * i128::from(as_int(right, "mul.right")?)),
+        BinOp::Add => {
+            to_safe(i128::from(as_int(left, "add.left")?) + i128::from(as_int(right, "add.right")?))
+        }
+        BinOp::Sub => {
+            to_safe(i128::from(as_int(left, "sub.left")?) - i128::from(as_int(right, "sub.right")?))
+        }
+        BinOp::Mul => {
+            to_safe(i128::from(as_int(left, "mul.left")?) * i128::from(as_int(right, "mul.right")?))
+        }
         // ConstValue derives PartialEq -> structural equality is exactly constEq
         BinOp::Eq => Ok(ConstValue::Bool(left == right)),
-        BinOp::Lt => Ok(ConstValue::Bool(as_int(left, "lt.left")? < as_int(right, "lt.right")?)),
-        BinOp::And => Ok(ConstValue::Bool(as_bool(left, "and.left")? && as_bool(right, "and.right")?)),
-        BinOp::Or => Ok(ConstValue::Bool(as_bool(left, "or.left")? || as_bool(right, "or.right")?)),
+        BinOp::Lt => Ok(ConstValue::Bool(
+            as_int(left, "lt.left")? < as_int(right, "lt.right")?,
+        )),
+        BinOp::And => Ok(ConstValue::Bool(
+            as_bool(left, "and.left")? && as_bool(right, "and.right")?,
+        )),
+        BinOp::Or => Ok(ConstValue::Bool(
+            as_bool(left, "or.left")? || as_bool(right, "or.right")?,
+        )),
     }
 }
 
@@ -206,25 +230,49 @@ fn run(control: Control, kont: Vec<Frame>) -> Result<SagaStep, ResumeFeedback> {
                     None => return Err(ResumeFeedback::Unbound(name)),
                 },
                 Expr::Binary { op, left, right } => {
-                    stack.push(Frame::EvalRight { op, right: *right, env: env.clone() });
+                    stack.push(Frame::EvalRight {
+                        op,
+                        right: *right,
+                        env: env.clone(),
+                    });
                     ctrl = Control::Eval { node: *left, env };
                 }
                 Expr::Cond { test, then, els } => {
-                    stack.push(Frame::Branch { then: *then, els: *els, env: env.clone() });
+                    stack.push(Frame::Branch {
+                        then: *then,
+                        els: *els,
+                        env: env.clone(),
+                    });
                     ctrl = Control::Eval { node: *test, env };
                 }
                 Expr::Call { fn_name, args } => {
                     if args.is_empty() {
-                        let act = Activity { fn_name, args: Vec::new() };
-                        return Ok(SagaStep::Suspended { state: SagaState { kont: stack, awaiting: act.clone() }, activity: act });
+                        let act = Activity {
+                            fn_name,
+                            args: Vec::new(),
+                        };
+                        return Ok(SagaStep::Suspended {
+                            state: SagaState {
+                                kont: stack,
+                                awaiting: act.clone(),
+                            },
+                            activity: act,
+                        });
                     }
                     let mut it = args.into_iter();
                     let first = it.next().expect("args is non-empty");
                     let pending: Vec<Expr> = it.collect();
-                    stack.push(Frame::EvalArgs { fn_name, pending, done: Vec::new(), env: env.clone() });
+                    stack.push(Frame::EvalArgs {
+                        fn_name,
+                        pending,
+                        done: Vec::new(),
+                        env: env.clone(),
+                    });
                     ctrl = Control::Eval { node: first, env };
                 }
-                Expr::Lambda { .. } => return Err(ResumeFeedback::UnsupportedNode("lambda".to_string())),
+                Expr::Lambda { .. } => {
+                    return Err(ResumeFeedback::UnsupportedNode("lambda".to_string()));
+                }
             },
             Control::Ret(value) => match stack.pop() {
                 None => return Ok(SagaStep::Done(value)),
@@ -237,18 +285,40 @@ fn run(control: Control, kont: Vec<Frame>) -> Result<SagaStep, ResumeFeedback> {
                 }
                 Some(Frame::Branch { then, els, env }) => {
                     let t = as_bool(&value, "cond.test")?;
-                    ctrl = Control::Eval { node: if t { then } else { els }, env };
+                    ctrl = Control::Eval {
+                        node: if t { then } else { els },
+                        env,
+                    };
                 }
-                Some(Frame::EvalArgs { fn_name, pending, mut done, env }) => {
+                Some(Frame::EvalArgs {
+                    fn_name,
+                    pending,
+                    mut done,
+                    env,
+                }) => {
                     done.push(value);
                     if pending.is_empty() {
-                        let act = Activity { fn_name, args: done };
-                        return Ok(SagaStep::Suspended { state: SagaState { kont: stack, awaiting: act.clone() }, activity: act });
+                        let act = Activity {
+                            fn_name,
+                            args: done,
+                        };
+                        return Ok(SagaStep::Suspended {
+                            state: SagaState {
+                                kont: stack,
+                                awaiting: act.clone(),
+                            },
+                            activity: act,
+                        });
                     }
                     let mut it = pending.into_iter();
                     let next = it.next().expect("pending is non-empty");
                     let rest: Vec<Expr> = it.collect();
-                    stack.push(Frame::EvalArgs { fn_name, pending: rest, done, env: env.clone() });
+                    stack.push(Frame::EvalArgs {
+                        fn_name,
+                        pending: rest,
+                        done,
+                        env: env.clone(),
+                    });
                     ctrl = Control::Eval { node: next, env };
                 }
             },
@@ -263,7 +333,13 @@ fn run(control: Control, kont: Vec<Frame>) -> Result<SagaStep, ResumeFeedback> {
 /// Declines [`ResumeFeedback`] on an unbound param, type mismatch, unsupported node, or an
 /// arithmetic result outside the safe-int domain.
 pub fn start(program: &Expr, bindings: &Env) -> Result<SagaStep, ResumeFeedback> {
-    run(Control::Eval { node: program.clone(), env: bindings.clone() }, Vec::new())
+    run(
+        Control::Eval {
+            node: program.clone(),
+            env: bindings.clone(),
+        },
+        Vec::new(),
+    )
 }
 
 /// Resume a suspended saga: feed `activity_result` back as the awaited call's value and continue
@@ -365,7 +441,11 @@ fn emit_frame(f: &Frame) -> Result<String, ResumeFeedback> {
             emit_env(env)?
         ),
         Frame::ApplyOp { op, left } => {
-            format!("{{\"k\":\"applyOp\",\"op\":{},\"left\":{}}}", jstr(op_str(*op)), emit_const(left)?)
+            format!(
+                "{{\"k\":\"applyOp\",\"op\":{},\"left\":{}}}",
+                jstr(op_str(*op)),
+                emit_const(left)?
+            )
         }
         Frame::Branch { then, els, env } => format!(
             "{{\"k\":\"branch\",\"then\":{},\"els\":{},\"env\":{}}}",
@@ -373,7 +453,12 @@ fn emit_frame(f: &Frame) -> Result<String, ResumeFeedback> {
             emit_expr(els)?,
             emit_env(env)?
         ),
-        Frame::EvalArgs { fn_name, pending, done, env } => {
+        Frame::EvalArgs {
+            fn_name,
+            pending,
+            done,
+            env,
+        } => {
             let mut pend = Vec::with_capacity(pending.len());
             for p in pending {
                 pend.push(emit_expr(p)?);
@@ -442,7 +527,10 @@ struct Reader {
 
 impl Reader {
     fn new(s: &str) -> Self {
-        Reader { chars: s.chars().collect(), pos: 0 }
+        Reader {
+            chars: s.chars().collect(),
+            pos: 0,
+        }
     }
 
     fn skip_ws(&mut self) {
@@ -705,10 +793,19 @@ fn json_to_canonical(j: &Json) -> String {
         Json::Int(n) => n.to_string(),
         Json::Float(raw) => raw.clone(),
         Json::Str(s) => jstr(s),
-        Json::Arr(a) => format!("[{}]", a.iter().map(json_to_canonical).collect::<Vec<_>>().join(",")),
+        Json::Arr(a) => format!(
+            "[{}]",
+            a.iter()
+                .map(json_to_canonical)
+                .collect::<Vec<_>>()
+                .join(",")
+        ),
         Json::Obj(o) => format!(
             "{{{}}}",
-            o.iter().map(|(k, v)| format!("{}:{}", jstr(k), json_to_canonical(v))).collect::<Vec<_>>().join(",")
+            o.iter()
+                .map(|(k, v)| format!("{}:{}", jstr(k), json_to_canonical(v)))
+                .collect::<Vec<_>>()
+                .join(",")
         ),
     }
 }
@@ -742,7 +839,9 @@ fn read_const(j: &Json, at: &str) -> Result<ConstValue, ResumeFeedback> {
     };
     match tag {
         "int" => match get(o, "v") {
-            Some(Json::Int(n)) if (MIN_SAFE_INT..=MAX_SAFE_INT).contains(n) => Ok(ConstValue::Int(*n)),
+            Some(Json::Int(n)) if (MIN_SAFE_INT..=MAX_SAFE_INT).contains(n) => {
+                Ok(ConstValue::Int(*n))
+            }
             _ => Err(bad(format!("{at} int value"))),
         },
         "str" => match get(o, "v") {
@@ -799,7 +898,12 @@ fn read_eval_args(o: &[(String, Json)]) -> Result<Frame, ResumeFeedback> {
     for (i, c) in done.iter().enumerate() {
         d.push(read_const(c, &format!("evalArgs.done[{i}]"))?);
     }
-    Ok(Frame::EvalArgs { fn_name, pending: p, done: d, env: read_env(req(o, "env", "evalArgs.env")?, "evalArgs.env")? })
+    Ok(Frame::EvalArgs {
+        fn_name,
+        pending: p,
+        done: d,
+        env: read_env(req(o, "env", "evalArgs.env")?, "evalArgs.env")?,
+    })
 }
 
 fn read_frame(j: &Json) -> Result<Frame, ResumeFeedback> {
@@ -861,5 +965,8 @@ pub fn parse_state(s: &str) -> Result<SagaState, ResumeFeedback> {
     for (i, a) in args_j.iter().enumerate() {
         args.push(read_const(a, &format!("awaiting.args[{i}]"))?);
     }
-    Ok(SagaState { kont, awaiting: Activity { fn_name, args } })
+    Ok(SagaState {
+        kont,
+        awaiting: Activity { fn_name, args },
+    })
 }

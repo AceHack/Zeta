@@ -21,7 +21,8 @@ fn repo_root() -> PathBuf {
 
 fn golden() -> Value {
     let path = repo_root().join("src/Core.TypeScript/range-set/golden-vectors.json");
-    serde_json::from_str(&std::fs::read_to_string(&path).expect("read golden-vectors.json")).expect("parse golden")
+    serde_json::from_str(&std::fs::read_to_string(&path).expect("read golden-vectors.json"))
+        .expect("parse golden")
 }
 
 fn feedback_name(f: &RangeSetFeedback) -> &'static str {
@@ -45,7 +46,11 @@ fn rust_range_set_replays_golden_cases() {
         let rs = parse(input).unwrap_or_else(|e| panic!("{name}: parse {input:?}: {e:?}"));
         assert_eq!(canonical, render(&rs), "{name}: render");
         // canonical is a fixed point of parse->render
-        assert_eq!(canonical, render(&parse(canonical).expect("parse canonical")), "{name}: fixed point");
+        assert_eq!(
+            canonical,
+            render(&parse(canonical).expect("parse canonical")),
+            "{name}: fixed point"
+        );
 
         for probe in c["contains"].as_array().expect("contains array") {
             let arr = probe.as_array().expect("probe array");

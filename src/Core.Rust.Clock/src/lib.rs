@@ -26,13 +26,17 @@ impl Versionstamp {
     /// Advance one tick -- the forward unit step (inverse of `z⁻¹` delay).
     #[must_use]
     pub const fn tick(self) -> Versionstamp {
-        Versionstamp { version: self.version + 1 }
+        Versionstamp {
+            version: self.version + 1,
+        }
     }
 
     /// The previous stamp (`z⁻¹` delay): inverse of `tick`. `delay(tick v) = v`.
     #[must_use]
     pub const fn delay(self) -> Versionstamp {
-        Versionstamp { version: self.version - 1 }
+        Versionstamp {
+            version: self.version - 1,
+        }
     }
 
     /// Strict happens-before (total order, single-writer).
@@ -54,13 +58,17 @@ impl Scheduler {
     /// Construct a scheduler at a seed version.
     #[must_use]
     pub const fn from_seed(seed: i64) -> Scheduler {
-        Scheduler { now: Versionstamp::of_int(seed) }
+        Scheduler {
+            now: Versionstamp::of_int(seed),
+        }
     }
 
     /// Advance the scheduler by one tick.
     #[must_use]
     pub const fn step(self) -> Scheduler {
-        Scheduler { now: self.now.tick() }
+        Scheduler {
+            now: self.now.tick(),
+        }
     }
 }
 

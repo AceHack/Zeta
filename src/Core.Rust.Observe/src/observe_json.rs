@@ -13,7 +13,8 @@ use crate::types::{BacklogItem, Mode, NextAction, OperatorChannel, World};
 pub struct MapError(pub String);
 
 fn req<'a>(j: &'a Json, key: &str) -> Result<&'a Json, MapError> {
-    j.get(key).ok_or_else(|| MapError(format!("missing key '{key}'")))
+    j.get(key)
+        .ok_or_else(|| MapError(format!("missing key '{key}'")))
 }
 
 fn req_str(j: &Json, key: &str) -> Result<String, MapError> {
@@ -82,18 +83,29 @@ pub fn parse_world(j: &Json) -> Result<World, MapError> {
     };
 
     let mode = match j.get("mode") {
-        Some(m) => Some(parse_mode(
-            m.as_str().ok_or_else(|| MapError("'mode' is not a string".to_string()))?,
-        )?),
+        Some(m) => {
+            Some(parse_mode(m.as_str().ok_or_else(|| {
+                MapError("'mode' is not a string".to_string())
+            })?)?)
+        }
         None => None,
     };
 
-    Ok(World { backlog, operator, mode })
+    Ok(World {
+        backlog,
+        operator,
+        mode,
+    })
 }
 
 /// Map a JSON object → [`NextAction`].
 pub fn parse_event(j: &Json) -> Result<NextAction, MapError> {
-    let reason = || j.get("reason").and_then(Json::as_str).unwrap_or("").to_string();
+    let reason = || {
+        j.get("reason")
+            .and_then(Json::as_str)
+            .unwrap_or("")
+            .to_string()
+    };
     let item = || -> Result<BacklogItem, MapError> { parse_item(req(j, "item")?) };
     let item_opt = || -> Result<Option<BacklogItem>, MapError> {
         match j.get("item") {
@@ -107,7 +119,10 @@ pub fn parse_event(j: &Json) -> Result<NextAction, MapError> {
         "respond_to_operator" => Ok(NextAction::RespondToOperator { reason: reason() }),
         "do_item" => Ok(NextAction::DoItem { item: item()? }),
         "decompose" => Ok(NextAction::Decompose { item: item()? }),
-        "edit_grammar" => Ok(NextAction::EditGrammar { item: item_opt()?, reason: reason() }),
+        "edit_grammar" => Ok(NextAction::EditGrammar {
+            item: item_opt()?,
+            reason: reason(),
+        }),
         "explore" => Ok(NextAction::Explore { reason: reason() }),
         "play" => Ok(NextAction::Play { reason: reason() }),
         "self_reflect" => Ok(NextAction::SelfReflect { reason: reason() }),

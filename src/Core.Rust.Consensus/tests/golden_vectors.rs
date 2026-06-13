@@ -21,7 +21,10 @@ fn seed() -> Value {
 fn quorum_threshold_agrees() {
     let s = seed();
     for v in s["quorumThreshold"].as_array().unwrap() {
-        assert_eq!(quorum_threshold(v["n"].as_i64().unwrap()), v["result"].as_i64().unwrap());
+        assert_eq!(
+            quorum_threshold(v["n"].as_i64().unwrap()),
+            v["result"].as_i64().unwrap()
+        );
     }
 }
 
@@ -29,8 +32,12 @@ fn quorum_threshold_agrees() {
 fn decide_agrees() {
     let s = seed();
     for v in s["decide"].as_array().unwrap() {
-        let votes: Vec<String> =
-            v["votes"].as_array().unwrap().iter().map(|x| x.as_str().unwrap().to_string()).collect();
+        let votes: Vec<String> = v["votes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|x| x.as_str().unwrap().to_string())
+            .collect();
         let d = decide(&votes);
         let r = &v["result"];
         assert_eq!(d.committed, r["committed"].as_bool().unwrap());

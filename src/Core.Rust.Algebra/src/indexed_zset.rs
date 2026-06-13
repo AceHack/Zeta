@@ -275,17 +275,16 @@ impl<K: Ord + Clone, V: Ord + Clone> IndexedZSet<K, V> {
         let (mut i, mut j) = (0usize, 0usize);
         while i < a.len() && j < b.len() {
             match a[i].key.cmp(&b[j].key) {
-                Ordering::Less => i += 1,  // A-only key: product with 0 ⇒ nothing
+                Ordering::Less => i += 1,    // A-only key: product with 0 ⇒ nothing
                 Ordering::Greater => j += 1, // B-only key: product with 0 ⇒ nothing
                 Ordering::Equal => {
                     let key = &a[i].key;
                     for va in a[i].values.as_slice() {
                         for vb in b[j].values.as_slice() {
                             // Checked multiply — mirrors ZSet cartesian / F# Checked.(*).
-                            let w = va
-                                .w
-                                .checked_mul(vb.w)
-                                .expect("indexed-join weight overflow (i64)");
+                            let w =
+                                va.w.checked_mul(vb.w)
+                                    .expect("indexed-join weight overflow (i64)");
                             if w != 0 {
                                 out.push(ZEntry {
                                     e: combine(key, &va.e, &vb.e),

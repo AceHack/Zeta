@@ -6,7 +6,7 @@
 //! stream into a value tree. It does NOT re-scan text -- it consumes [`crate::reader::read_events`]
 //! output. Faithful port of the TS reference `src/Core.TypeScript/yaml/dom.ts`.
 
-use crate::reader::{read_events, ScalarKind, YamlEvent, YamlFeedback};
+use crate::reader::{ScalarKind, YamlEvent, YamlFeedback, read_events};
 
 /// The folded value tree. `Map` preserves insertion order (a list of pairs, not a hash
 /// map), mirroring the cross-language contract.
@@ -134,18 +134,23 @@ mod tests {
     use super::*;
 
     fn map(entries: Vec<(&str, YamlValue)>) -> YamlValue {
-        YamlValue::Map(entries.into_iter().map(|(k, v)| (k.to_string(), v)).collect())
+        YamlValue::Map(
+            entries
+                .into_iter()
+                .map(|(k, v)| (k.to_string(), v))
+                .collect(),
+        )
     }
 
     #[test]
     fn dom_flat_scalars() {
-        let v = parse("name: zeta\ncount: 42\nratio: 3.14\nok: true\ngone: null\n").unwrap();
+        let v = parse("name: zeta\ncount: 42\nratio: 12.34\nok: true\ngone: null\n").unwrap();
         assert_eq!(
             v,
             map(vec![
                 ("name", YamlValue::Str("zeta".to_string())),
                 ("count", YamlValue::Int(42)),
-                ("ratio", YamlValue::Float(3.14)),
+                ("ratio", YamlValue::Float(12.34)),
                 ("ok", YamlValue::Bool(true)),
                 ("gone", YamlValue::Null),
             ])

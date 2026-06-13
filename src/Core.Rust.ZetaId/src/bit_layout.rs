@@ -70,24 +70,51 @@ impl BitLayout {
         // Mutable cursor descending from 128; `o -= width` then record at `o`.
         let mut o: u32 = 128;
         o -= 5;
-        let version = BitField { offset: o, width: 5 }; // 123..128
+        let version = BitField {
+            offset: o,
+            width: 5,
+        }; // 123..128
         o -= 48;
-        let timestamp = BitField { offset: o, width: 48 }; // 75..123
+        let timestamp = BitField {
+            offset: o,
+            width: 48,
+        }; // 75..123
         o -= 5;
-        let chromosome = BitField { offset: o, width: 5 }; // 70..75
+        let chromosome = BitField {
+            offset: o,
+            width: 5,
+        }; // 70..75
         o -= 1; // reserved bit 69
         o -= 4;
-        let category = BitField { offset: o, width: 4 }; // 65..69
+        let category = BitField {
+            offset: o,
+            width: 4,
+        }; // 65..69
         o -= 1;
-        let firefly = BitField { offset: o, width: 1 }; // 64
+        let firefly = BitField {
+            offset: o,
+            width: 1,
+        }; // 64
         o -= 5;
-        let authority = BitField { offset: o, width: 5 }; // 59..64
+        let authority = BitField {
+            offset: o,
+            width: 5,
+        }; // 59..64
         o -= 8;
-        let persona = BitField { offset: o, width: 8 }; // 51..59
+        let persona = BitField {
+            offset: o,
+            width: 8,
+        }; // 51..59
         o -= 8;
-        let momentum = BitField { offset: o, width: 8 }; // 43..51
+        let momentum = BitField {
+            offset: o,
+            width: 8,
+        }; // 43..51
         o -= 8;
-        let location = BitField { offset: o, width: 8 }; // 35..43
+        let location = BitField {
+            offset: o,
+            width: 8,
+        }; // 35..43
         // bits 32..35 reserved; randomness occupies 0..32
         BitLayout {
             version,
@@ -99,7 +126,10 @@ impl BitLayout {
             persona,
             momentum,
             location,
-            randomness: BitField { offset: 0, width: 32 },
+            randomness: BitField {
+                offset: 0,
+                width: 32,
+            },
             total_bits: 128,
         }
     }
@@ -108,27 +138,57 @@ impl BitLayout {
     /// the identical layout to [`Self::top_down`] (asserted in tests).
     fn bottom_up() -> Self {
         let mut o: u32 = 0;
-        let randomness = BitField { offset: o, width: 32 }; // 0..32
+        let randomness = BitField {
+            offset: o,
+            width: 32,
+        }; // 0..32
         o += 32;
         o += 3; // reserved bits 32..35
-        let location = BitField { offset: o, width: 8 }; // 35..43
+        let location = BitField {
+            offset: o,
+            width: 8,
+        }; // 35..43
         o += 8;
-        let momentum = BitField { offset: o, width: 8 }; // 43..51
+        let momentum = BitField {
+            offset: o,
+            width: 8,
+        }; // 43..51
         o += 8;
-        let persona = BitField { offset: o, width: 8 }; // 51..59
+        let persona = BitField {
+            offset: o,
+            width: 8,
+        }; // 51..59
         o += 8;
-        let authority = BitField { offset: o, width: 5 }; // 59..64
+        let authority = BitField {
+            offset: o,
+            width: 5,
+        }; // 59..64
         o += 5;
-        let firefly = BitField { offset: o, width: 1 }; // 64
+        let firefly = BitField {
+            offset: o,
+            width: 1,
+        }; // 64
         o += 1;
-        let category = BitField { offset: o, width: 4 }; // 65..69
+        let category = BitField {
+            offset: o,
+            width: 4,
+        }; // 65..69
         o += 4;
         o += 1; // reserved bit 69
-        let chromosome = BitField { offset: o, width: 5 }; // 70..75
+        let chromosome = BitField {
+            offset: o,
+            width: 5,
+        }; // 70..75
         o += 5;
-        let timestamp = BitField { offset: o, width: 48 }; // 75..123
+        let timestamp = BitField {
+            offset: o,
+            width: 48,
+        }; // 75..123
         o += 48;
-        let version = BitField { offset: o, width: 5 }; // 123..128
+        let version = BitField {
+            offset: o,
+            width: 5,
+        }; // 123..128
         BitLayout {
             version,
             timestamp,

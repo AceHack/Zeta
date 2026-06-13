@@ -9,8 +9,11 @@ fn u64_from_hex(s: &str) -> u64 {
 
 #[test]
 fn bloom_table_matches_fsharp_golden() {
-    let text = std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/golden-vectors-bloom.json"))
-        .expect("read bloom golden");
+    let text = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/golden-vectors-bloom.json"
+    ))
+    .expect("read bloom golden");
     let v: serde_json::Value = serde_json::from_str(&text).expect("parse bloom golden");
     let bucket_count = v["bucketCount"].as_u64().unwrap() as usize;
     let probes = v["probesPerLookup"].as_u64().unwrap() as usize;
@@ -21,14 +24,22 @@ fn bloom_table_matches_fsharp_golden() {
         f.add(key);
     }
 
-    let expected: Vec<u64> = v["table"].as_array().unwrap().iter().map(|x| u64_from_hex(x.as_str().unwrap())).collect();
+    let expected: Vec<u64> = v["table"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|x| u64_from_hex(x.as_str().unwrap()))
+        .collect();
     assert_eq!(f.table(), expected.as_slice(), "Bloom table mismatch vs F#");
 }
 
 #[test]
 fn countmin_table_matches_fsharp_golden() {
-    let text = std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/golden-vectors-countmin.json"))
-        .expect("read countmin golden");
+    let text = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/golden-vectors-countmin.json"
+    ))
+    .expect("read countmin golden");
     let v: serde_json::Value = serde_json::from_str(&text).expect("parse countmin golden");
     let depth = v["depth"].as_u64().unwrap() as usize;
     let width = v["width"].as_u64().unwrap() as usize;
@@ -39,6 +50,11 @@ fn countmin_table_matches_fsharp_golden() {
         c.add(u64_from_hex(h.as_str().unwrap()), 1);
     }
 
-    let expected: Vec<i64> = v["table"].as_array().unwrap().iter().map(|x| x.as_str().unwrap().parse().unwrap()).collect();
+    let expected: Vec<i64> = v["table"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|x| x.as_str().unwrap().parse().unwrap())
+        .collect();
     assert_eq!(c.snapshot(), expected, "CountMin table mismatch vs F#");
 }

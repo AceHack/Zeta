@@ -30,7 +30,10 @@ fn test_yaml_rejects_non_canonical() {
 #[test]
 fn test_markdown_treaty_round_trip() {
     let metadata = DynamicValue::Object(vec![
-        ("title".to_string(), DynamicValue::String("Zeta Rust Treaty".to_string())),
+        (
+            "title".to_string(),
+            DynamicValue::String("Zeta Rust Treaty".to_string()),
+        ),
         ("version".to_string(), DynamicValue::Int(1)),
     ]);
     let body = "This is the document body.\nLine 2.\n";

@@ -14,12 +14,16 @@ fn byte_lock_replaying_the_golden_session_hits_every_checkpoint_exactly() {
         .unwrap()
         .to_path_buf();
     let path = root.join("src/Core.TypeScript/mesh-pong/golden-vectors.lines");
-    let text = fs::read_to_string(&path).unwrap_or_else(|_| panic!("golden not found: {}", path.display()));
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|_| panic!("golden not found: {}", path.display()));
 
     let mut g = Game::create();
     let mut inputs = 0;
     let mut checks = 0;
-    for line in text.lines().filter(|l| !l.starts_with('#') && !l.is_empty()) {
+    for line in text
+        .lines()
+        .filter(|l| !l.starts_with('#') && !l.is_empty())
+    {
         let i1 = line.find('\t').unwrap();
         let i2 = line[i1 + 1..].find('\t').unwrap() + i1 + 1;
         let kind = &line[..i1];

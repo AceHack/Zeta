@@ -27,6 +27,11 @@ fn crc32c_agrees() {
             .iter()
             .map(|x| x.as_u64().unwrap() as u8)
             .collect();
-        assert_eq!(crc32c(&payload) as u64, v["result"].as_u64().unwrap(), "case {}", v["name"]);
+        assert_eq!(
+            crc32c(&payload) as u64,
+            v["result"].as_u64().unwrap(),
+            "case {}",
+            v["name"]
+        );
     }
 }

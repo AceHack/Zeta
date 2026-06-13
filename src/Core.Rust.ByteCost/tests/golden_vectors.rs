@@ -8,7 +8,7 @@
 use std::path::PathBuf;
 
 use serde_json::Value;
-use zeta_core_byte_cost::{measure_text, sum, ByteCost};
+use zeta_core_byte_cost::{ByteCost, measure_text, sum};
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel).
 fn repo_root() -> PathBuf {
@@ -48,7 +48,10 @@ fn measure_matches_golden_vectors() {
         let text = v["text"].as_str().expect("text is a string");
         let expected = v["bytes"].as_u64().expect("bytes is a number");
         let actual = measure_text(text).bytes;
-        assert_eq!(actual, expected, "byte-cost vector '{name}': expected {expected}, measured {actual}");
+        assert_eq!(
+            actual, expected,
+            "byte-cost vector '{name}': expected {expected}, measured {actual}"
+        );
         costs.push(ByteCost::of_bytes(actual));
     }
 

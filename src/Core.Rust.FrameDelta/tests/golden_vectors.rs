@@ -7,7 +7,7 @@
 
 use serde_json::Value;
 use std::path::PathBuf;
-use zeta_core_frame_delta::{apply, between, compose, distance, inverse, magnitude, FrameMap};
+use zeta_core_frame_delta::{FrameMap, apply, between, compose, distance, inverse, magnitude};
 
 fn repo_root() -> PathBuf {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -34,19 +34,35 @@ fn frame_delta_cross_verify_matches_golden_vectors() {
     let v: Value = serde_json::from_str(&text).expect("parse frame-delta golden-vectors.json");
 
     for c in v["compose"].as_array().expect("compose array") {
-        assert_eq!(compose(&to_map(&c["a"]), &to_map(&c["b"])), to_map(&c["result"]), "compose");
+        assert_eq!(
+            compose(&to_map(&c["a"]), &to_map(&c["b"])),
+            to_map(&c["result"]),
+            "compose"
+        );
     }
     for c in v["inverse"].as_array().expect("inverse array") {
         assert_eq!(inverse(&to_map(&c["d"])), to_map(&c["result"]), "inverse");
     }
     for c in v["between"].as_array().expect("between array") {
-        assert_eq!(between(&to_map(&c["from"]), &to_map(&c["to"])), to_map(&c["result"]), "between");
+        assert_eq!(
+            between(&to_map(&c["from"]), &to_map(&c["to"])),
+            to_map(&c["result"]),
+            "between"
+        );
     }
     for c in v["apply"].as_array().expect("apply array") {
-        assert_eq!(apply(&to_map(&c["delta"]), &to_map(&c["frame"])), to_map(&c["result"]), "apply");
+        assert_eq!(
+            apply(&to_map(&c["delta"]), &to_map(&c["frame"])),
+            to_map(&c["result"]),
+            "apply"
+        );
     }
     for c in v["magnitude"].as_array().expect("magnitude array") {
-        assert_eq!(magnitude(&to_map(&c["d"])), c["result"].as_i64().expect("i64"), "magnitude");
+        assert_eq!(
+            magnitude(&to_map(&c["d"])),
+            c["result"].as_i64().expect("i64"),
+            "magnitude"
+        );
     }
     for c in v["distance"].as_array().expect("distance array") {
         assert_eq!(
@@ -57,7 +73,12 @@ fn frame_delta_cross_verify_matches_golden_vectors() {
     }
     // homeostat leg (order-independent aggregation): folding the deltas in any order gives the same total.
     for c in v["aggregate"].as_array().expect("aggregate array") {
-        let deltas: Vec<FrameMap> = c["deltas"].as_array().expect("deltas").iter().map(to_map).collect();
+        let deltas: Vec<FrameMap> = c["deltas"]
+            .as_array()
+            .expect("deltas")
+            .iter()
+            .map(to_map)
+            .collect();
         let total = to_map(&c["total"]);
         let fold = |ds: &[FrameMap]| ds.iter().fold(FrameMap::new(), |acc, d| compose(&acc, d));
         assert_eq!(fold(&deltas), total, "aggregate");

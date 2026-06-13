@@ -66,7 +66,11 @@ mod tests {
 
     #[test]
     fn sum_is_order_independent() {
-        let costs = [ByteCost::of_bytes(3), ByteCost::of_bytes(5), ByteCost::of_bytes(9)];
+        let costs = [
+            ByteCost::of_bytes(3),
+            ByteCost::of_bytes(5),
+            ByteCost::of_bytes(9),
+        ];
         let mut rev = costs;
         rev.reverse();
         assert_eq!(sum(&costs), sum(&rev));

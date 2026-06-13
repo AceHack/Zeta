@@ -24,7 +24,10 @@ fn repo_root() -> PathBuf {
 
 /// Decode an even-length lowercase-hex string into bytes (mirrors the CBOR golden test).
 fn decode_hex(s: &str) -> Vec<u8> {
-    assert!(s.len() % 2 == 0, "byte hex must have even length: {s}");
+    assert!(
+        s.len().is_multiple_of(2),
+        "byte hex must have even length: {s}"
+    );
     (0..s.len())
         .step_by(2)
         .map(|i| u8::from_str_radix(&s[i..i + 2], 16).expect("hex byte"))
@@ -105,7 +108,11 @@ fn xml_byte_lock_encode_matches_golden() {
             Err(e) => failures.push(format!("{name}: expected {expected} but got Err {e:?}")),
         }
     }
-    assert!(failures.is_empty(), "byte-lock mismatches:\n{}", failures.join("\n"));
+    assert!(
+        failures.is_empty(),
+        "byte-lock mismatches:\n{}",
+        failures.join("\n")
+    );
 }
 
 #[test]
@@ -116,9 +123,15 @@ fn xml_round_trip_decode_matches_golden() {
             // NaN: Rust f64::NAN != f64::NAN under derived PartialEq, so the float-nan
             // vector is compared via the bit pattern (mirrors the CBOR golden test).
             Ok(DynamicValue::Float(a)) if matches!(value, DynamicValue::Float(_)) => {
-                let DynamicValue::Float(b) = value else { unreachable!() };
+                let DynamicValue::Float(b) = value else {
+                    unreachable!()
+                };
                 if a.to_bits() != b.to_bits() {
-                    failures.push(format!("{name}: decode({xml}) bits {:x} != {:x}", a.to_bits(), b.to_bits()));
+                    failures.push(format!(
+                        "{name}: decode({xml}) bits {:x} != {:x}",
+                        a.to_bits(),
+                        b.to_bits()
+                    ));
                 }
             }
             Ok(actual) if actual == value => {}
@@ -126,7 +139,11 @@ fn xml_round_trip_decode_matches_golden() {
             Err(e) => failures.push(format!("{name}: decode({xml}) = Err {e:?}")),
         }
     }
-    assert!(failures.is_empty(), "round-trip mismatches:\n{}", failures.join("\n"));
+    assert!(
+        failures.is_empty(),
+        "round-trip mismatches:\n{}",
+        failures.join("\n")
+    );
 }
 
 #[test]
@@ -134,7 +151,9 @@ fn xml_never_collapses_empties() {
     let null = DynamicValue::Null.to_canonical_xml().unwrap();
     let arr = DynamicValue::Array(vec![]).to_canonical_xml().unwrap();
     let obj = DynamicValue::Object(vec![]).to_canonical_xml().unwrap();
-    let str = DynamicValue::String(String::new()).to_canonical_xml().unwrap();
+    let str = DynamicValue::String(String::new())
+        .to_canonical_xml()
+        .unwrap();
     let bytes = DynamicValue::Bytes(vec![]).to_canonical_xml().unwrap();
     assert_eq!(null, "<null/>");
     assert_eq!(arr, "<arr></arr>");
@@ -152,7 +171,16 @@ fn xml_never_collapses_empties() {
 #[test]
 fn xml_decode_rejects_non_canonical() {
     // self-closing empties and leading-zero ints are well-formed-ish but not canonical
-    assert_eq!(DynamicValue::from_canonical_xml("<arr/>"), Err(DecodeError::NonCanonical));
-    assert_eq!(DynamicValue::from_canonical_xml("<str/>"), Err(DecodeError::NonCanonical));
-    assert_eq!(DynamicValue::from_canonical_xml("<int>01</int>"), Err(DecodeError::NonCanonical));
+    assert_eq!(
+        DynamicValue::from_canonical_xml("<arr/>"),
+        Err(DecodeError::NonCanonical)
+    );
+    assert_eq!(
+        DynamicValue::from_canonical_xml("<str/>"),
+        Err(DecodeError::NonCanonical)
+    );
+    assert_eq!(
+        DynamicValue::from_canonical_xml("<int>01</int>"),
+        Err(DecodeError::NonCanonical)
+    );
 }

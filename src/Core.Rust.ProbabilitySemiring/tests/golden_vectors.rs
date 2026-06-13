@@ -3,7 +3,9 @@
 use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
-use zeta_probability_semiring::{add, div, forward_step, max, merge3, mul, rat, viterbi_step, Rational};
+use zeta_probability_semiring::{
+    add, div, forward_step, max, merge3, mul, rat, viterbi_step, Rational,
+};
 
 fn seed() -> Value {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -31,7 +33,10 @@ fn mat_r(v: &Value) -> Vec<Vec<Rational>> {
 fn normalize_agrees() {
     let s = seed();
     for v in s["normalize"].as_array().unwrap() {
-        assert_eq!(rat(v["n"].as_i64().unwrap(), v["d"].as_i64().unwrap()), r(&v["result"]));
+        assert_eq!(
+            rat(v["n"].as_i64().unwrap(), v["d"].as_i64().unwrap()),
+            r(&v["result"])
+        );
     }
 }
 
@@ -63,7 +68,10 @@ fn max_agrees() {
 fn forward_step_agrees() {
     let s = seed();
     for v in s["forwardStep"].as_array().unwrap() {
-        assert_eq!(forward_step(&vec_r(&v["pi"]), &mat_r(&v["p"])), vec_r(&v["result"]));
+        assert_eq!(
+            forward_step(&vec_r(&v["pi"]), &mat_r(&v["p"])),
+            vec_r(&v["result"])
+        );
     }
 }
 
@@ -71,7 +79,10 @@ fn forward_step_agrees() {
 fn viterbi_step_agrees() {
     let s = seed();
     for v in s["viterbiStep"].as_array().unwrap() {
-        assert_eq!(viterbi_step(&vec_r(&v["v"]), &mat_r(&v["p"])), vec_r(&v["result"]));
+        assert_eq!(
+            viterbi_step(&vec_r(&v["v"]), &mat_r(&v["p"])),
+            vec_r(&v["result"])
+        );
     }
 }
 

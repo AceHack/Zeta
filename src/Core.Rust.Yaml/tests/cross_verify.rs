@@ -15,7 +15,7 @@
 
 use std::path::PathBuf;
 
-use zeta_core_yaml::{read_events, ScalarKind, ScalarStyle, YamlEvent};
+use zeta_core_yaml::{ScalarKind, ScalarStyle, YamlEvent, read_events};
 
 // ===================================================================================
 // Minimal zero-dep JSON reader (only what the fixture needs: objects, arrays, strings,
@@ -148,8 +148,7 @@ impl<'a> JsonReader<'a> {
                             let mut code = 0u32;
                             for _ in 0..4 {
                                 let h = self.bump();
-                                code = code * 16
-                                    + h.to_digit(16).expect("JSON: bad \\u hex digit");
+                                code = code * 16 + h.to_digit(16).expect("JSON: bad \\u hex digit");
                             }
                             out.push(char::from_u32(code).expect("JSON: bad \\u codepoint"));
                         }
@@ -187,13 +186,7 @@ impl<'a> JsonReader<'a> {
     fn number(&mut self) -> Json {
         let start = self.pos;
         while let Some(c) = self.peek() {
-            if c.is_ascii_digit()
-                || c == '-'
-                || c == '+'
-                || c == '.'
-                || c == 'e'
-                || c == 'E'
-            {
+            if c.is_ascii_digit() || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E' {
                 self.pos += 1;
             } else {
                 break;
@@ -395,7 +388,13 @@ fn cross_verify_matches_shared_vectors() {
     std::fs::write(fixture_dir.join("rust-output.json"), &out).expect("write rust-output.json");
 
     let n = results.len();
-    println!("Cross-verify: {n} vectors. Event-stream matches expected on {} of {n}.", n - mismatches.min(n));
+    println!(
+        "Cross-verify: {n} vectors. Event-stream matches expected on {} of {n}.",
+        n - mismatches.min(n)
+    );
 
-    assert_eq!(mismatches, 0, "{mismatches} event mismatch(es) vs fixture expected");
+    assert_eq!(
+        mismatches, 0,
+        "{mismatches} event mismatch(es) vs fixture expected"
+    );
 }
