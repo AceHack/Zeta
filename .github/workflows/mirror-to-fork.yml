@@ -1,0 +1,78 @@
+# mirror-to-fork.yml — keep the acehack/Zeta fork an exact mirror of the
+# canonical Lucent-Financial-Group/Zeta repository.
+#
+# WHY: acehack/Zeta is a *pure mirror* (no unique content of its own — that is
+# the standing contract; see the 2026-06-13 mirror reconciliation). Without a
+# sync job it drifts the moment origin advances (every merge pushes a fresh
+# automation/pr-archive-* branch). This workflow re-establishes the mirror on
+# every push, on branch deletions, and on a 6-hourly safety-net schedule.
+#
+# DESTRUCTIVE BY DESIGN: the push uses --prune, so any ref on the fork that is
+# absent on origin is DELETED on the fork. This is correct for a pure mirror.
+# It is safe ONLY while the fork-holds-no-unique-content contract holds. The
+# one-time reconciliation that established that contract preserved every prior
+# fork-unique tip under origin tags `archive/2026-06-13-acehack/*`.
+#
+# SECRET REQUIRED (maintainer/Dejan to provision before enabling):
+#   ACEHACK_MIRROR_TOKEN — a fine-grained PAT scoped to acehack/Zeta ONLY,
+#   with Contents: read+write. NOT the default GITHUB_TOKEN (that cannot push
+#   to a different repository). Rotate per the HSM/secret-rotation cadence.
+#
+# GATED: workflow + secret handling. Requires Dejan (devops) review + human
+# sign-off before merge/enable (GOVERNANCE.md §23). Drafted by Otto (shadow)
+# at Aaron's request; NOT auto-merged.
+
+name: mirror-to-fork
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["**"]
+  delete: {}
+  schedule:
+    - cron: "13 */6 * * *" # safety net every 6h (off-peak minute, not :00)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-to-fork
+  cancel-in-progress: false # never interrupt a mirror push mid-flight
+
+jobs:
+  mirror:
+    # Only the canonical repo mirrors outward; a fork running this is a no-op.
+    if: github.repository == 'Lucent-Financial-Group/Zeta'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout (all history)
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Mirror all branches and tags to the acehack fork
+        env:
+          MIRROR_TOKEN: ${{ secrets.ACEHACK_MIRROR_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MIRROR_TOKEN}" ]; then
+            echo "::error::ACEHACK_MIRROR_TOKEN is not set — cannot push to the fork." >&2
+            exit 1
+          fi
+          # Fetch every origin head + tag locally (checkout only fetched the
+          # triggering ref's history).
+          git fetch --prune --no-tags origin "+refs/heads/*:refs/heads/*"
+          git fetch --prune --tags origin
+
+          # Token is interpolated into the URL only at runtime; never logged.
+          git remote add mirror \
+            "https://x-access-token:${MIRROR_TOKEN}@github.com/acehack/Zeta.git"
+
+          # --prune makes the fork MATCH origin (deletes fork refs absent here).
+          # '+' forces divergent same-name refs to origin's tip.
+          echo "Mirroring heads…"
+          git push --prune --force mirror "+refs/heads/*:refs/heads/*"
+          echo "Mirroring tags…"
+          git push --prune --force mirror "+refs/tags/*:refs/tags/*"
+          echo "Mirror sync complete."
