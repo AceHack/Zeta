@@ -22,6 +22,8 @@
 # own `.NET`-native pin contract. Round-34 flip from
 # Microsoft's dotnet-install.sh to mise (see header).
 dotnet = "10.0.203"
+go = "1.26.4"
+golangci-lint = "2.12.2"
 python = "3.14"
 # Java 26 (latest). Round-34 migration: OpenJDK moved off brew
 # and onto mise so all language runtimes share one manager.

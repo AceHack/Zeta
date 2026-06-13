@@ -1147,6 +1147,48 @@ jobs:
         # noUncheckedIndexedAccess, exactOptionalPropertyTypes).
         run: bun --bun tsc --noEmit -p tsconfig.json
 
+  lint-go-python:
+    # Run formatter, linter, and type checker for Go and Python implementation files
+    # to prevent syntax, lint, and formatting regressions.
+    name: lint (Go & Python)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Run Go and Python Lint Script
+        run: bash tools/lint/lint-go-python.sh
+
   cross-verify:
     # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
     # package-manager suite. Previously only `lint (tsc TypeScript)` type-checked these, so a

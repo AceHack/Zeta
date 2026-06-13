@@ -1,0 +1,222 @@
+{
+  "and-f-f": {
+    "expectedAnd": "F",
+    "expectedOr": "F",
+    "left": "F",
+    "right": "F",
+    "type": "binary"
+  },
+  "and-f-n": {
+    "expectedAnd": "F",
+    "expectedOr": "N",
+    "left": "F",
+    "right": "N",
+    "type": "binary"
+  },
+  "and-f-t": {
+    "expectedAnd": "F",
+    "expectedOr": "T",
+    "left": "F",
+    "right": "T",
+    "type": "binary"
+  },
+  "and-n-f": {
+    "expectedAnd": "F",
+    "expectedOr": "N",
+    "left": "N",
+    "right": "F",
+    "type": "binary"
+  },
+  "and-n-n": {
+    "expectedAnd": "N",
+    "expectedOr": "N",
+    "left": "N",
+    "right": "N",
+    "type": "binary"
+  },
+  "and-n-t": {
+    "expectedAnd": "N",
+    "expectedOr": "T",
+    "left": "N",
+    "right": "T",
+    "type": "binary"
+  },
+  "and-t-f": {
+    "expectedAnd": "F",
+    "expectedOr": "T",
+    "left": "T",
+    "right": "F",
+    "type": "binary"
+  },
+  "and-t-n": {
+    "expectedAnd": "N",
+    "expectedOr": "T",
+    "left": "T",
+    "right": "N",
+    "type": "binary"
+  },
+  "and-t-t": {
+    "expectedAnd": "T",
+    "expectedOr": "T",
+    "left": "T",
+    "right": "T",
+    "type": "binary"
+  },
+  "float-both-superposed": {
+    "decoder": "NFF",
+    "expectedFeedback": "interpretation-superposed",
+    "expectedOk": false,
+    "expectedValue": 0,
+    "high": "NFFF",
+    "low": "FFFF",
+    "type": "float"
+  },
+  "float-encode-0": {
+    "decoder": "FFF",
+    "encodeValue": 0,
+    "expectedEncodeDecoder": "FFF",
+    "expectedEncodeHigh": "FFFF",
+    "expectedEncodeLow": "FFFF",
+    "expectedEncodeOk": true,
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 0,
+    "high": "FFFF",
+    "low": "FFFF",
+    "type": "float"
+  },
+  "float-encode-negative": {
+    "decoder": "FFF",
+    "encodeValue": -1,
+    "expectedEncodeDetail": "v0 is unsigned + finite",
+    "expectedEncodeOk": false,
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 0,
+    "high": "FFFF",
+    "low": "FFFF",
+    "type": "float"
+  },
+  "float-encode-non-dyadic": {
+    "decoder": "FFF",
+    "encodeValue": 0.1,
+    "expectedEncodeDetail": "no (mode,V) with mode<=7 and V<256 represents 0.1",
+    "expectedEncodeOk": false,
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 0,
+    "high": "FFFF",
+    "low": "FFFF",
+    "type": "float"
+  },
+  "float-interpretation-superposed": {
+    "decoder": "TNF",
+    "expectedFeedback": "interpretation-superposed",
+    "expectedOk": false,
+    "expectedValue": 0,
+    "high": "FFFF",
+    "low": "FTFT",
+    "type": "float"
+  },
+  "float-mode-equals-bias": {
+    "decoder": "TFF",
+    "encodeValue": 5,
+    "expectedEncodeDecoder": "FFF",
+    "expectedEncodeHigh": "FTFT",
+    "expectedEncodeLow": "FFFF",
+    "expectedEncodeOk": true,
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 5,
+    "high": "FFFF",
+    "low": "FTFT",
+    "type": "float"
+  },
+  "float-mode-greater-than-bias": {
+    "decoder": "TFT",
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 6,
+    "high": "FFFF",
+    "low": "FFTT",
+    "type": "float"
+  },
+  "float-mode-less-than-bias-half": {
+    "decoder": "FTT",
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 4,
+    "high": "FFFF",
+    "low": "TFFF",
+    "type": "float"
+  },
+  "float-mode-less-than-bias-quarter": {
+    "decoder": "FTF",
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 1,
+    "high": "FFFF",
+    "low": "FTFF",
+    "type": "float"
+  },
+  "float-reads-high-low": {
+    "decoder": "TFF",
+    "expectedFeedback": "",
+    "expectedOk": true,
+    "expectedValue": 16,
+    "high": "FFFT",
+    "low": "FFFF",
+    "type": "float"
+  },
+  "float-value-superposed": {
+    "decoder": "TFF",
+    "expectedFeedback": "value-superposed",
+    "expectedOk": false,
+    "expectedValue": 0,
+    "high": "FFFN",
+    "low": "FFFF",
+    "type": "float"
+  },
+  "unary-f": {
+    "bindNot": "T",
+    "bindToT": "T",
+    "cooperateState": "F",
+    "isCertain": true,
+    "isLiving": false,
+    "mapNot": "T",
+    "measureFeedback": "",
+    "measureOk": true,
+    "measureValue": false,
+    "notState": "T",
+    "state": "F",
+    "type": "unary"
+  },
+  "unary-n": {
+    "bindNot": "N",
+    "bindToT": "N",
+    "cooperateState": "N",
+    "isCertain": false,
+    "isLiving": true,
+    "mapNot": "N",
+    "measureFeedback": "collapsed-living-uncertainty",
+    "measureOk": false,
+    "measureValue": false,
+    "notState": "N",
+    "state": "N",
+    "type": "unary"
+  },
+  "unary-t": {
+    "bindNot": "F",
+    "bindToT": "T",
+    "cooperateState": "T",
+    "isCertain": true,
+    "isLiving": false,
+    "mapNot": "F",
+    "measureFeedback": "",
+    "measureOk": true,
+    "measureValue": true,
+    "notState": "F",
+    "state": "T",
+    "type": "unary"
+  }
+}

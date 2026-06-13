@@ -22,6 +22,20 @@ const rustExists = (() => {
     return null;
   }
 })();
+const pyExists = (() => {
+  try {
+    return JSON.parse(readFileSync("python-output.json", "utf8")) as Record<string, string>;
+  } catch {
+    return null;
+  }
+})();
+const goExists = (() => {
+  try {
+    return JSON.parse(readFileSync("go-output.json", "utf8")) as Record<string, string>;
+  } catch {
+    return null;
+  }
+})();
 
 // Read vectors.yaml to assert each impl's hex against the canonical expected_hex.
 // This catches a lone-wrong oracle even before all four exist, and even if two agree wrongly.
@@ -41,6 +55,8 @@ console.log(`  TS:   ${keys.length} vectors`);
 console.log(`  F#:   ${fsExists ? Object.keys(fsExists).length : "MISSING"} vectors`);
 console.log(`  C#:   ${csExists ? Object.keys(csExists).length : "MISSING"} vectors`);
 console.log(`  Rust: ${rustExists ? Object.keys(rustExists).length : "MISSING"} vectors`);
+console.log(`  Py:   ${pyExists ? Object.keys(pyExists).length : "MISSING"} vectors`);
+console.log(`  Go:   ${goExists ? Object.keys(goExists).length : "MISSING"} vectors`);
 
 // Key-set equality: every present impl must have exactly the TS key set.
 const tsKeySet = new Set(keys);
@@ -48,6 +64,8 @@ for (const [name, impl] of [
   ["F#", fsExists],
   ["C#", csExists],
   ["Rust", rustExists],
+  ["Python", pyExists],
+  ["Go", goExists],
 ] as const) {
   if (!impl) continue;
   const implKeys = Object.keys(impl);
@@ -105,6 +123,28 @@ for (const key of keys) {
     }
     if (canonical !== undefined && rustHex !== canonical) {
       console.error(`Rust hex vs canonical MISMATCH ${key}: Rust=${rustHex ?? "MISSING"} expected=${canonical}`);
+      mismatches++;
+    }
+  }
+  if (pyExists) {
+    const pyHex = typeof pyExists[key] === "string" ? pyExists[key] : (pyExists[key] as { hex: string } | undefined)?.hex;
+    if (tsHex !== pyHex) {
+      console.error(`Mismatch ${key}: TS=${tsHex ?? "MISSING"} Py=${pyHex ?? "MISSING"}`);
+      mismatches++;
+    }
+    if (canonical !== undefined && pyHex !== canonical) {
+      console.error(`Py hex vs canonical MISMATCH ${key}: Py=${pyHex ?? "MISSING"} expected=${canonical}`);
+      mismatches++;
+    }
+  }
+  if (goExists) {
+    const goHex = typeof goExists[key] === "string" ? goExists[key] : (goExists[key] as { hex: string } | undefined)?.hex;
+    if (tsHex !== goHex) {
+      console.error(`Mismatch ${key}: TS=${tsHex ?? "MISSING"} Go=${goHex ?? "MISSING"}`);
+      mismatches++;
+    }
+    if (canonical !== undefined && goHex !== canonical) {
+      console.error(`Go hex vs canonical MISMATCH ${key}: Go=${goHex ?? "MISSING"} expected=${canonical}`);
       mismatches++;
     }
   }

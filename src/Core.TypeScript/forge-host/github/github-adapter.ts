@@ -1,0 +1,416 @@
+/**
+ * forge-host/github/github-adapter.ts — GitHub implementation of ForgeHost.
+ *
+ * Wraps the `gh` CLI and GitHub GraphQL/REST APIs behind the ForgeHost interface.
+ * All methods return Result<T, ForgeError> — never throw.
+ */
+
+import type { ForgeHost } from "../forge-host";
+import type {
+  Result,
+  ForgeError,
+  PullRequest,
+  PrGateState,
+  Issue,
+  CheckRollup,
+  CheckSummary,
+  CiRun,
+  RepoInfo,
+  BranchProtection,
+  ThreadResolution,
+  BatchResult,
+  CommentRef,
+  TreeEntry,
+  CreateCommitOpts,
+  ListPrOpts,
+  ListMergedPrOpts,
+  CreatePrOpts,
+  ListIssueOpts,
+  CreateIssueOpts,
+  MergeMethod,
+  NextAction,
+} from "../types";
+import { ok, err, forgeError } from "../result";
+import { runGh, runGhJson } from "./gh-cli";
+
+// ─── GitHub-specific raw response types ─────────────────────────────────────
+
+interface GhPrListItem {
+  number: number;
+  title: string;
+  headRefName: string;
+  baseRefName: string;
+  state: string;
+  isDraft: boolean;
+  mergeStateStatus: string;
+  reviewDecision: string | null;
+  url: string;
+  updatedAt: string;
+  author: { login: string };
+}
+
+// ─── Adapter ────────────────────────────────────────────────────────────────
+
+export class GitHubAdapter implements ForgeHost {
+  readonly forgeName = "github";
+  private readonly owner: string;
+  private readonly repo: string;
+
+  constructor(owner: string, repo: string) {
+    this.owner = owner;
+    this.repo = repo;
+  }
+
+  private get nwo(): string {
+    return `${this.owner}/${this.repo}`;
+  }
+
+  // ─── PR state ───────────────────────────────────────────────────────────
+
+  async listOpenPullRequests(opts?: ListPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
+    const limit = opts?.limit ?? 100;
+    const result = runGhJson<GhPrListItem[]>([
+      "pr", "list", "--repo", this.nwo, "--state", "open",
+      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
+      "--limit", String(limit),
+    ]);
+    if (!result.ok) return result;
+    return ok(result.value.map(mapPr));
+  }
+
+  async getPullRequest(number: number): Promise<Result<PullRequest, ForgeError>> {
+    const result = runGhJson<GhPrListItem>([
+      "pr", "view", String(number), "--repo", this.nwo,
+      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
+    ]);
+    if (!result.ok) return result;
+    return ok(mapPr(result.value));
+  }
+
+  async getPrGateState(number: number): Promise<Result<PrGateState, ForgeError>> {
+    // Fetch PR + statusCheckRollup + reviewThreads in one call
+    const prResult = runGhJson<{
+      number: number;
+      state: string;
+      mergeStateStatus: string;
+      autoMergeRequest: { enabledAt?: string } | null;
+      mergeCommit: { oid: string } | null;
+      statusCheckRollup: { status?: string; conclusion?: string; name?: string }[];
+      reviewThreads: { nodes: { isResolved: boolean }[] };
+    }>([
+      "pr", "view", String(number), "--repo", this.nwo,
+      "--json", "number,state,mergeStateStatus,autoMergeRequest,mergeCommit,statusCheckRollup,reviewThreads",
+    ]);
+    if (!prResult.ok) return prResult;
+
+    const pr = prResult.value;
+    const rollup = pr.statusCheckRollup ?? [];
+    const checks = classifyChecks(rollup);
+    const unresolvedThreads = (pr.reviewThreads?.nodes ?? []).filter(t => !t.isResolved).length;
+
+    // Fetch required checks
+    let requiredChecks = checks; // fallback: treat all as required
+    const reqResult = runGhJson<{ name?: string }[]>([
+      "pr", "checks", String(number), "--repo", this.nwo, "--required", "--json", "name",
+    ]);
+    if (reqResult.ok) {
+      const requiredNames = new Set(reqResult.value.map(r => r.name).filter((n): n is string => !!n));
+      requiredChecks = classifyChecks(rollup.filter(c => c.name && requiredNames.has(c.name)));
+    }
+
+    const state = mapPrState(pr.state);
+    const gate = classifyGate(pr.mergeStateStatus, pr.state, requiredChecks, unresolvedThreads);
+    const warnings: string[] = [];
+    const nextAction = computeNextAction(state, gate, requiredChecks, unresolvedThreads);
+
+    return ok({
+      number: pr.number,
+      state,
+      gate,
+      checks,
+      requiredChecks,
+      unresolvedThreads,
+      autoMerge: pr.autoMergeRequest ? "armed" : "none",
+      mergeCommit: pr.mergeCommit?.oid ?? null,
+      warnings,
+      nextAction,
+    });
+  }
+
+  async listMergedPullRequests(opts?: ListMergedPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
+    const limit = opts?.limit ?? 20;
+    const result = runGhJson<GhPrListItem[]>([
+      "pr", "list", "--repo", this.nwo, "--state", "merged",
+      "--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author",
+      "--limit", String(limit),
+    ]);
+    if (!result.ok) return result;
+    return ok(result.value.map(mapPr));
+  }
+
+  // ─── PR actions ─────────────────────────────────────────────────────────
+
+  async resolveThread(threadId: string, body: string): Promise<Result<void, ForgeError>> {
+    // Reply then resolve
+    const replyResult = runGh([
+      "api", "graphql",
+      "-F", `thread_id=${threadId}`,
+      "-F", `body=${body}`,
+      "-f", `query=mutation($thread_id: ID!, $body: String!) { addPullRequestReviewThreadReply(input: { pullRequestReviewThreadId: $thread_id, body: $body }) { comment { id } } }`,
+    ]);
+    if (!replyResult.ok) return replyResult;
+
+    const resolveResult = runGh([
+      "api", "graphql",
+      "-F", `thread_id=${threadId}`,
+      "-f", `query=mutation($thread_id: ID!) { resolveReviewThread(input: { threadId: $thread_id }) { thread { isResolved } } }`,
+    ]);
+    if (!resolveResult.ok) return resolveResult;
+
+    return ok(undefined);
+  }
+
+  async resolveThreadsBatch(threads: readonly ThreadResolution[]): Promise<Result<BatchResult, ForgeError>> {
+    let resolved = 0;
+    const failed: { threadId: string; error: ForgeError }[] = [];
+
+    for (const t of threads) {
+      const result = await this.resolveThread(t.threadId, t.body);
+      if (result.ok) {
+        resolved++;
+      } else {
+        failed.push({ threadId: t.threadId, error: result.error });
+      }
+    }
+
+    return ok({ resolved, failed });
+  }
+
+  async createPullRequest(opts: CreatePrOpts): Promise<Result<PullRequest, ForgeError>> {
+    const args = [
+      "pr", "create", "--repo", this.nwo,
+      "--title", opts.title, "--body", opts.body,
+      "--head", opts.head, "--base", opts.base,
+    ];
+    if (opts.draft) args.push("--draft");
+    args.push("--json", "number,title,headRefName,baseRefName,state,isDraft,mergeStateStatus,reviewDecision,url,updatedAt,author");
+
+    const result = runGhJson<GhPrListItem>(args);
+    if (!result.ok) return result;
+    return ok(mapPr(result.value));
+  }
+
+  async enableAutoMerge(prNumber: number, method?: MergeMethod): Promise<Result<void, ForgeError>> {
+    const args = ["pr", "merge", String(prNumber), "--repo", this.nwo, "--auto"];
+    if (method === "squash") args.push("--squash");
+    else if (method === "rebase") args.push("--rebase");
+    else args.push("--merge");
+
+    const result = runGh(args);
+    if (!result.ok) return result;
+    return ok(undefined);
+  }
+
+  async addPrComment(prNumber: number, body: string): Promise<Result<CommentRef, ForgeError>> {
+    const result = runGh([
+      "pr", "comment", String(prNumber), "--repo", this.nwo, "--body", body,
+    ]);
+    if (!result.ok) return result;
+    return ok({ id: "", url: `https://github.com/${this.nwo}/pull/${prNumber}` });
+  }
+
+  // ─── Issues ─────────────────────────────────────────────────────────────
+
+  async listOpenIssues(opts?: ListIssueOpts): Promise<Result<readonly Issue[], ForgeError>> {
+    const limit = opts?.limit ?? 50;
+    const args = [
+      "issue", "list", "--repo", this.nwo, "--state", "open",
+      "--json", "number,title,body,state,url,labels",
+      "--limit", String(limit),
+    ];
+    if (opts?.labels?.length) {
+      for (const l of opts.labels) args.push("--label", l);
+    }
+
+    const result = runGhJson<{ number: number; title: string; body: string; state: string; url: string; labels: { name: string }[] }[]>(args);
+    if (!result.ok) return result;
+    return ok(result.value.map(i => ({
+      number: i.number,
+      title: i.title,
+      body: i.body ?? "",
+      state: i.state.toLowerCase() as "open" | "closed",
+      url: i.url,
+      labels: i.labels.map(l => l.name),
+    })));
+  }
+
+  async createIssue(opts: CreateIssueOpts): Promise<Result<Issue, ForgeError>> {
+    const args = [
+      "issue", "create", "--repo", this.nwo,
+      "--title", opts.title, "--body", opts.body,
+    ];
+    if (opts.labels?.length) {
+      for (const l of opts.labels) args.push("--label", l);
+    }
+    // gh issue create doesn't return full JSON easily; use --json after create
+    const result = runGh(args);
+    if (!result.ok) return result;
+    // Parse the URL from stdout (gh outputs the issue URL)
+    const url = result.value.trim();
+    const numMatch = url.match(/\/issues\/(\d+)/);
+    return ok({
+      number: numMatch ? parseInt(numMatch[1]!, 10) : 0,
+      title: opts.title,
+      body: opts.body,
+      state: "open",
+      url,
+      labels: opts.labels ?? [],
+    });
+  }
+
+  // ─── CI state ───────────────────────────────────────────────────────────
+
+  async getCheckStatus(_ref: string): Promise<Result<CheckRollup, ForgeError>> {
+    return err(forgeError("not-supported", "getCheckStatus: use getPrGateState for PR-level check status"));
+  }
+
+  async listPendingRuns(_ref: string): Promise<Result<readonly CiRun[], ForgeError>> {
+    const runs: CiRun[] = [];
+    for (const status of ["in_progress", "queued"]) {
+      const result = runGhJson<{ databaseId: number; status: string; workflowName: string; headSha: string }[]>([
+        "run", "list", "--repo", this.nwo, "--status", status,
+        "--json", "databaseId,status,workflowName,headSha", "--limit", "20",
+      ]);
+      if (!result.ok) return result;
+      for (const r of result.value) {
+        runs.push({ id: String(r.databaseId), name: r.workflowName, status: status as "queued" | "in-progress", headSha: r.headSha });
+      }
+    }
+    return ok(runs);
+  }
+
+  // ─── Repository info ────────────────────────────────────────────────────
+
+  async getRepoInfo(): Promise<Result<RepoInfo, ForgeError>> {
+    const result = runGhJson<{ owner: { login: string }; name: string; defaultBranchRef: { name: string }; isPrivate: boolean; url: string }>([
+      "repo", "view", this.nwo, "--json", "owner,name,defaultBranchRef,isPrivate,url",
+    ]);
+    if (!result.ok) return result;
+    return ok({
+      owner: result.value.owner.login,
+      name: result.value.name,
+      defaultBranch: result.value.defaultBranchRef?.name ?? "main",
+      isPrivate: result.value.isPrivate,
+      url: result.value.url,
+    });
+  }
+
+  async getBranchProtection(_branch: string): Promise<Result<BranchProtection, ForgeError>> {
+    return err(forgeError("not-supported", "getBranchProtection: not yet implemented for GitHub adapter"));
+  }
+
+  // ─── Git data API ──────────────────────────────────────────────────────
+
+  async createBlob(_content: string, _encoding?: "utf-8" | "base64"): Promise<Result<string, ForgeError>> {
+    return err(forgeError("not-supported", "createBlob: requires stdin piping, deferred to follow-up"));
+  }
+
+  async createTree(_tree: readonly TreeEntry[], _baseTree?: string): Promise<Result<string, ForgeError>> {
+    return err(forgeError("not-supported", "createTree: deferred to follow-up (requires stdin piping)"));
+  }
+
+  async createCommit(_opts: CreateCommitOpts): Promise<Result<string, ForgeError>> {
+    return err(forgeError("not-supported", "createCommit: deferred to follow-up (requires stdin piping)"));
+  }
+
+  async updateRef(_ref: string, _sha: string, _force?: boolean): Promise<Result<void, ForgeError>> {
+    return err(forgeError("not-supported", "updateRef: deferred to follow-up (requires stdin piping)"));
+  }
+}
+
+// ─── Mapping helpers ────────────────────────────────────────────────────────
+
+function mapPr(raw: GhPrListItem): PullRequest {
+  return {
+    number: raw.number,
+    title: raw.title,
+    headRef: raw.headRefName,
+    baseRef: raw.baseRefName,
+    state: mapPrState(raw.state),
+    isDraft: raw.isDraft,
+    mergeStateStatus: mapMergeState(raw.mergeStateStatus),
+    reviewDecision: mapReviewDecision(raw.reviewDecision),
+    url: raw.url,
+    updatedAt: raw.updatedAt,
+    author: raw.author?.login ?? "(unknown)",
+  };
+}
+
+function mapPrState(state: string): "open" | "merged" | "closed" {
+  const lower = state.toLowerCase();
+  if (lower === "merged") return "merged";
+  if (lower === "closed") return "closed";
+  return "open";
+}
+
+function mapMergeState(status: string): "clean" | "blocked" | "dirty" | "unstable" | "unknown" {
+  const lower = status.toLowerCase();
+  if (lower === "clean") return "clean";
+  if (lower === "blocked") return "blocked";
+  if (lower === "dirty" || lower === "behind") return "dirty";
+  if (lower === "unstable") return "unstable";
+  return "unknown";
+}
+
+function mapReviewDecision(decision: string | null): "approved" | "changes-requested" | "review-required" | null {
+  if (!decision) return null;
+  const lower = decision.toLowerCase();
+  if (lower === "approved") return "approved";
+  if (lower === "changes_requested") return "changes-requested";
+  if (lower === "review_required") return "review-required";
+  return null;
+}
+
+// ─── Check classification (mirrors poll-pr-gate.ts logic) ───────────────────
+
+const OK_CONCLUSIONS = new Set(["SUCCESS", "NEUTRAL", "SKIPPED"]);
+const BLOCKING_CONCLUSIONS = new Set(["FAILURE", "CANCELLED", "TIMED_OUT", "STARTUP_FAILURE", "ACTION_REQUIRED", "STALE", "ERROR"]);
+const PENDING_STATUSES = new Set(["QUEUED", "PENDING", "EXPECTED", "REQUESTED", "WAITING"]);
+
+function classifyChecks(rollup: { status?: string; conclusion?: string; name?: string }[]): CheckSummary {
+  let okCount = 0, inProgress = 0, pending = 0, failed = 0;
+  for (const c of rollup) {
+    if (c.status === "IN_PROGRESS") { inProgress++; continue; }
+    if (c.status && PENDING_STATUSES.has(c.status)) { pending++; continue; }
+    if (c.conclusion && OK_CONCLUSIONS.has(c.conclusion)) { okCount++; continue; }
+    if (c.conclusion && BLOCKING_CONCLUSIONS.has(c.conclusion)) { failed++; }
+  }
+  return { ok: okCount, inProgress, pending, failed };
+}
+
+function classifyGate(
+  mergeStateStatus: string, state: string, requiredChecks: CheckSummary, unresolvedThreads: number,
+): "clean" | "blocked" | "dirty" | "unstable" | "unknown" {
+  if (state === "MERGED" || state === "CLOSED") return "clean";
+  if (mergeStateStatus === "DIRTY" || mergeStateStatus === "BEHIND") return "dirty";
+  if (mergeStateStatus === "UNSTABLE") return "unstable";
+  if (requiredChecks.failed > 0) return "blocked";
+  if (mergeStateStatus === "BLOCKED") return "blocked";
+  if (mergeStateStatus === "CLEAN" && unresolvedThreads === 0) return "clean";
+  return "unknown";
+}
+
+function computeNextAction(
+  state: "open" | "merged" | "closed",
+  gate: string,
+  requiredChecks: CheckSummary,
+  unresolvedThreads: number,
+): NextAction {
+  if (state === "merged") return "verify-merge";
+  if (state === "closed") return "none";
+  if (gate === "dirty") return "rebase";
+  if (requiredChecks.failed > 0) return "fix-failed-checks";
+  if (unresolvedThreads > 0) return "resolve-threads";
+  if (requiredChecks.inProgress > 0 || requiredChecks.pending > 0) return "wait-ci";
+  return "none";
+}

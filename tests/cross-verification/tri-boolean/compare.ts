@@ -36,6 +36,22 @@ const rustExists = (() => {
   }
 })();
 
+const pyExists = (() => {
+  try {
+    return JSON.parse(readFileSync("python-output.json", "utf8")) as Record<string, any>;
+  } catch {
+    return null;
+  }
+})();
+
+const goExists = (() => {
+  try {
+    return JSON.parse(readFileSync("go-output.json", "utf8")) as Record<string, any>;
+  } catch {
+    return null;
+  }
+})();
+
 // Read vectors.yaml to assert each impl against the canonical expected values.
 interface UnaryVec {
   id: string;
@@ -92,6 +108,8 @@ console.log(`  TS:   ${keys.length} vectors`);
 console.log(`  F#:   ${fsExists ? Object.keys(fsExists).length : "MISSING"} vectors`);
 console.log(`  C#:   ${csExists ? Object.keys(csExists).length : "MISSING"} vectors`);
 console.log(`  Rust: ${rustExists ? Object.keys(rustExists).length : "MISSING"} vectors`);
+console.log(`  Py:   ${pyExists ? Object.keys(pyExists).length : "MISSING"} vectors`);
+console.log(`  Go:   ${goExists ? Object.keys(goExists).length : "MISSING"} vectors`);
 
 // Key-set equality: every present impl must have exactly the TS key set.
 const tsKeySet = new Set(keys);
@@ -99,6 +117,8 @@ for (const [name, impl] of [
   ["F#", fsExists],
   ["C#", csExists],
   ["Rust", rustExists],
+  ["Python", pyExists],
+  ["Go", goExists],
 ] as const) {
   if (!impl) continue;
   const implKeys = Object.keys(impl);
@@ -229,6 +249,24 @@ for (const key of keys) {
       mismatches++;
     }
     assertAgainstCanonical("Rust", rustVal);
+  }
+
+  if (pyExists) {
+    const pyVal = pyExists[key];
+    if (!Bun.deepEquals(tsVal, pyVal)) {
+      console.error(`Mismatch ${key}: TS vs Py`);
+      mismatches++;
+    }
+    assertAgainstCanonical("Py", pyVal);
+  }
+
+  if (goExists) {
+    const goVal = goExists[key];
+    if (!Bun.deepEquals(tsVal, goVal)) {
+      console.error(`Mismatch ${key}: TS vs Go`);
+      mismatches++;
+    }
+    assertAgainstCanonical("Go", goVal);
   }
 }
 

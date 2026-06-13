@@ -24,3 +24,10 @@
 # the Q# interpreter/dump_operation oracle through the qdk.qsharp Python
 # API; this file is an opt-in generator for committed observable vectors.
 src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py
+
+# Go & Python 6-Language Cross-Verification Integration
+src/Core.Python/src/zeta/__init__.py
+src/Core.Python/src/zeta/sha256.py
+src/Core.Python/src/zeta/tri_boolean.py
+src/Core.Python/tests/test_cross_verify.py
+

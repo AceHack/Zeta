@@ -244,3 +244,13 @@ tools/alignment/out/
 *.secret.json
 .zeta-keys/
 src/Core.Rust.*/target/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
