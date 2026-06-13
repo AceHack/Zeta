@@ -17,8 +17,11 @@ function makeRepo(): string {
 }
 
 function writeAllowlist(root: string, body: string): void {
-  mkdirSync(join(root, "tools", "lint"), { recursive: true });
-  writeFileSync(join(root, "tools", "lint", "no-python-files.allowlist"), body);
+  mkdirSync(join(root, "src", "Core.TypeScript", "lint"), { recursive: true });
+  writeFileSync(
+    join(root, "src", "Core.TypeScript", "lint", "no-python-files.allowlist"),
+    body,
+  );
 }
 
 function captureStdout<T>(fn: () => T): { result: T; stdout: string; stderr: string } {
