@@ -53,6 +53,7 @@ export type RetainedShellCategory =
   | "host-service wrappers"
   | "kiro loop wrapper"
   | "launchd bootstrap"
+  | "lint toolchain wrapper"
   | "nixos installer"
   | "setup/bootstrap";
 
@@ -90,6 +91,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "tools/kiro/kiro-loop-wrapper.sh",
   "tools/kiro/launchd/install.sh",
+  "tools/lint/lint-go-python.sh",
   "tools/setup/common/agent-clis.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/dotnet-tools.sh",
@@ -123,6 +125,7 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
   "host-service wrappers",
   "launchd bootstrap",
   "kiro loop wrapper",
+  "lint toolchain wrapper",
   "nixos installer",
   "dev-cluster wrappers",
 ];
@@ -139,6 +142,7 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   "tools/kiro/kiro-loop-wrapper.sh": "kiro loop wrapper",
   "tools/kiro/launchd/install.sh": "launchd bootstrap",
+  "tools/lint/lint-go-python.sh": "lint toolchain wrapper",
   "tools/setup/common/agent-clis.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
   "tools/setup/common/dotnet-tools.sh": "setup/bootstrap",
