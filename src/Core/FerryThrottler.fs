@@ -533,3 +533,45 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
 
     interface IDisposable with
         member _.Dispose() = (inner :> IDisposable).Dispose()
+
+
+/// **ContextualResultFerryThrottler** — the request/response (result) arity with
+/// explicit context threading (Option-A increment 3). Each submitted item carries
+/// the caller's context — supplied explicitly or captured at the door — threaded as
+/// DATA to the boat processor; the per-item `Task<'TResult>` still fans back to the
+/// caller. Composes `FerryThrottler<struct('TItem*'Ctx), 'TResult>`, mirroring
+/// `ContextualFerryThrottler` for the result arity. (Background ferries: the
+/// synchronous manual-pump is single-arity-only today — result-arity replay is the
+/// later "full background" increment.)
+[<Sealed>]
+type ContextualResultFerryThrottler<'TItem, 'Ctx, 'TResult>
+    (config: FerryThrottlerConfig,
+     processBatch: ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task<'TResult array>,
+     ?itemSizeBytes: 'TItem -> int,
+     // Capture-at-the-boundary reader (see ContextualFerryThrottler): snapshots the
+     // ambient on the caller's flow at ProcessCapturedAsync time, threaded as data.
+     ?capture: unit -> 'Ctx) =
+
+    let innerSizer =
+        itemSizeBytes |> Option.map (fun f -> fun (struct (item, _ctx): struct ('TItem * 'Ctx)) -> f item)
+
+    let inner =
+        new FerryThrottler<struct ('TItem * 'Ctx), 'TResult>(
+            config, processBatch, ?itemSizeBytes = innerSizer)
+
+    /// Submit one item with an explicit context; returns that item's result task.
+    member _.ProcessAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : Task<'TResult> =
+        inner.ProcessAsync(struct (item, context), ?cancellationToken = cancellationToken)
+
+    /// Capture-at-the-boundary submit: snapshots the ambient context now and threads it.
+    member _.ProcessCapturedAsync(item: 'TItem, ?cancellationToken: CancellationToken) : Task<'TResult> =
+        match capture with
+        | Some readAmbient ->
+            inner.ProcessAsync(struct (item, readAmbient ()), ?cancellationToken = cancellationToken)
+        | None -> invalidOp "ProcessCapturedAsync requires a `capture` reader supplied at construction"
+
+    /// Signal completion and await the queue draining.
+    member _.CompleteAsync() : Task = inner.CompleteAsync()
+
+    interface IDisposable with
+        member _.Dispose() = (inner :> IDisposable).Dispose()

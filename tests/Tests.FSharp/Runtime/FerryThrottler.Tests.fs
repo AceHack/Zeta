@@ -434,3 +434,25 @@ let ``contextual throttler captures ambient context AT the enqueue boundary, not
         // The boat sees the enqueue-time snapshot, not the later mutation.
         List.ofSeq seen |> should equal [ struct (1, "at-enqueue") ]
     }
+
+
+[<Fact>]
+let ``contextual result throttler threads context and fans aligned results back`` () : Task =
+    // Result arity with explicit context: each item's context rides to the boat,
+    // and the per-item Task<'TResult> still returns the aligned result.
+    task {
+        let processBatch (boat: ReadOnlyMemory<struct (int * string)>) (_ct: CancellationToken) : Task<string array> =
+            task {
+                return
+                    [| for i in 0 .. boat.Length - 1 do
+                           let struct (n, ctx) = boat.Span.[i]
+                           sprintf "%d@%s" n ctx |]
+            }
+        use throttler =
+            new ContextualResultFerryThrottler<int, string, string>(FerryThrottlerConfig.deterministic, processBatch)
+        let t1 = throttler.ProcessAsync(1, "a")
+        let t2 = throttler.ProcessAsync(2, "b")
+        let! results = Task.WhenAll([| t1; t2 |])
+        do! throttler.CompleteAsync()
+        results |> should equal [| "1@a"; "2@b" |]
+    }
