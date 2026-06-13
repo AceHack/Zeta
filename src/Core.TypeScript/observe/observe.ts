@@ -140,6 +140,14 @@ export interface World {
   readonly backlog: readonly BacklogItem[];
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
+  readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
+}
+
+/** Forge host state snapshot, populated by the async path in run-loop-real.ts. */
+export interface ForgeState {
+  readonly openPrCount: number;
+  readonly cleanPrCount: number;
+  readonly cleanPrNumbers: readonly number[];
 }
 
 // Centralized reason strings — used by BOTH observe() and buildMenu() so the
