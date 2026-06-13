@@ -16,18 +16,8 @@ const MOMENTUM_VALUES: Record<string, number> = {
   Critical: 248,
 };
 
-const BIT_MASKS = {
-  version: { offset: 123n, width: 5n },
-  timestamp: { offset: 75n, width: 48n },
-  chromosome: { offset: 70n, width: 5n },
-  category: { offset: 65n, width: 4n },
-  firefly: { offset: 64n, width: 1n },
-  authority: { offset: 59n, width: 5n },
-  persona: { offset: 51n, width: 8n },
-  momentum: { offset: 43n, width: 8n },
-  location: { offset: 35n, width: 8n },
-  randomness: { offset: 0n, width: 32n },
-};
+import { BIT_MASKS } from "./zeta-id.gen";
+
 
 function setBits(value: bigint, offset: bigint, width: bigint, fieldValue: bigint): bigint {
   const mask = (1n << width) - 1n;

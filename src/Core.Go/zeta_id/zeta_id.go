@@ -160,16 +160,16 @@ var BitLayout = struct {
 	Location   BitField
 	Randomness BitField
 }{
-	Version:    BitField{Offset: 123, Width: 5},
-	Timestamp:  BitField{Offset: 75, Width: 48},
-	Chromosome: BitField{Offset: 70, Width: 5},
-	Category:   BitField{Offset: 65, Width: 4},
-	Firefly:    BitField{Offset: 64, Width: 1},
-	Authority:  BitField{Offset: 59, Width: 5},
-	Persona:    BitField{Offset: 51, Width: 8},
-	Momentum:   BitField{Offset: 43, Width: 8},
-	Location:   BitField{Offset: 35, Width: 8},
-	Randomness: BitField{Offset: 0, Width: 32},
+	Version:    BitField{Offset: VersionOffset, Width: VersionWidth},
+	Timestamp:  BitField{Offset: TimestampOffset, Width: TimestampWidth},
+	Chromosome: BitField{Offset: ChromosomeOffset, Width: ChromosomeWidth},
+	Category:   BitField{Offset: CategoryOffset, Width: CategoryWidth},
+	Firefly:    BitField{Offset: FireflyOffset, Width: FireflyWidth},
+	Authority:  BitField{Offset: AuthorityOffset, Width: AuthorityWidth},
+	Persona:    BitField{Offset: PersonaOffset, Width: PersonaWidth},
+	Momentum:   BitField{Offset: MomentumOffset, Width: MomentumWidth},
+	Location:   BitField{Offset: LocationOffset, Width: LocationWidth},
+	Randomness: BitField{Offset: RandomnessOffset, Width: RandomnessWidth},
 }
 
 func setBits(target *big.Int, field BitField, val uint64) {

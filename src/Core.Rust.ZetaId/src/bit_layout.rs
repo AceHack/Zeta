@@ -67,68 +67,47 @@ impl BitLayout {
     /// Top-down construction: allocate fields from the MSB downward, with the
     /// reserved-bit gaps preserved per `docs/zeta-id-v1-layout.yaml`.
     fn top_down() -> Self {
-        // Mutable cursor descending from 128; `o -= width` then record at `o`.
-        let mut o: u32 = 128;
-        o -= 5;
-        let version = BitField {
-            offset: o,
-            width: 5,
-        }; // 123..128
-        o -= 48;
-        let timestamp = BitField {
-            offset: o,
-            width: 48,
-        }; // 75..123
-        o -= 5;
-        let chromosome = BitField {
-            offset: o,
-            width: 5,
-        }; // 70..75
-        o -= 1; // reserved bit 69
-        o -= 4;
-        let category = BitField {
-            offset: o,
-            width: 4,
-        }; // 65..69
-        o -= 1;
-        let firefly = BitField {
-            offset: o,
-            width: 1,
-        }; // 64
-        o -= 5;
-        let authority = BitField {
-            offset: o,
-            width: 5,
-        }; // 59..64
-        o -= 8;
-        let persona = BitField {
-            offset: o,
-            width: 8,
-        }; // 51..59
-        o -= 8;
-        let momentum = BitField {
-            offset: o,
-            width: 8,
-        }; // 43..51
-        o -= 8;
-        let location = BitField {
-            offset: o,
-            width: 8,
-        }; // 35..43
-        // bits 32..35 reserved; randomness occupies 0..32
+        use crate::bit_layout_gen::*;
         BitLayout {
-            version,
-            timestamp,
-            chromosome,
-            category,
-            firefly,
-            authority,
-            persona,
-            momentum,
-            location,
+            version: BitField {
+                offset: VERSION_OFFSET,
+                width: VERSION_WIDTH,
+            },
+            timestamp: BitField {
+                offset: TIMESTAMP_OFFSET,
+                width: TIMESTAMP_WIDTH,
+            },
+            chromosome: BitField {
+                offset: CHROMOSOME_OFFSET,
+                width: CHROMOSOME_WIDTH,
+            },
+            category: BitField {
+                offset: CATEGORY_OFFSET,
+                width: CATEGORY_WIDTH,
+            },
+            firefly: BitField {
+                offset: FIREFLY_OFFSET,
+                width: FIREFLY_WIDTH,
+            },
+            authority: BitField {
+                offset: AUTHORITY_OFFSET,
+                width: AUTHORITY_WIDTH,
+            },
+            persona: BitField {
+                offset: PERSONA_OFFSET,
+                width: PERSONA_WIDTH,
+            },
+            momentum: BitField {
+                offset: MOMENTUM_OFFSET,
+                width: MOMENTUM_WIDTH,
+            },
+            location: BitField {
+                offset: LOCATION_OFFSET,
+                width: LOCATION_WIDTH,
+            },
             randomness: BitField {
-                offset: 0,
-                width: 32,
+                offset: RANDOMNESS_OFFSET,
+                width: RANDOMNESS_WIDTH,
             },
             total_bits: 128,
         }
@@ -137,57 +116,58 @@ impl BitLayout {
     /// Bottom-up construction: allocate fields from the LSB upward. Must produce
     /// the identical layout to [`Self::top_down`] (asserted in tests).
     fn bottom_up() -> Self {
+        use crate::bit_layout_gen::*;
         let mut o: u32 = 0;
         let randomness = BitField {
             offset: o,
-            width: 32,
+            width: RANDOMNESS_WIDTH,
         }; // 0..32
-        o += 32;
+        o += RANDOMNESS_WIDTH;
         o += 3; // reserved bits 32..35
         let location = BitField {
             offset: o,
-            width: 8,
+            width: LOCATION_WIDTH,
         }; // 35..43
-        o += 8;
+        o += LOCATION_WIDTH;
         let momentum = BitField {
             offset: o,
-            width: 8,
+            width: MOMENTUM_WIDTH,
         }; // 43..51
-        o += 8;
+        o += MOMENTUM_WIDTH;
         let persona = BitField {
             offset: o,
-            width: 8,
+            width: PERSONA_WIDTH,
         }; // 51..59
-        o += 8;
+        o += PERSONA_WIDTH;
         let authority = BitField {
             offset: o,
-            width: 5,
+            width: AUTHORITY_WIDTH,
         }; // 59..64
-        o += 5;
+        o += AUTHORITY_WIDTH;
         let firefly = BitField {
             offset: o,
-            width: 1,
+            width: FIREFLY_WIDTH,
         }; // 64
-        o += 1;
+        o += FIREFLY_WIDTH;
         let category = BitField {
             offset: o,
-            width: 4,
+            width: CATEGORY_WIDTH,
         }; // 65..69
-        o += 4;
+        o += CATEGORY_WIDTH;
         o += 1; // reserved bit 69
         let chromosome = BitField {
             offset: o,
-            width: 5,
+            width: CHROMOSOME_WIDTH,
         }; // 70..75
-        o += 5;
+        o += CHROMOSOME_WIDTH;
         let timestamp = BitField {
             offset: o,
-            width: 48,
+            width: TIMESTAMP_WIDTH,
         }; // 75..123
-        o += 48;
+        o += TIMESTAMP_WIDTH;
         let version = BitField {
             offset: o,
-            width: 5,
+            width: VERSION_WIDTH,
         }; // 123..128
         BitLayout {
             version,

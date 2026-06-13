@@ -98,17 +98,21 @@ class BitField(NamedTuple):
     width: int
 
 
+import zeta.zeta_id_gen as gen
+
+
 class BitLayout:
-    version = BitField(123, 5)
-    timestamp = BitField(75, 48)
-    chromosome = BitField(70, 5)
-    category = BitField(65, 4)
-    firefly = BitField(64, 1)
-    authority = BitField(59, 5)
-    persona = BitField(51, 8)
-    momentum = BitField(43, 8)
-    location = BitField(35, 8)
-    randomness = BitField(0, 32)
+    version = BitField(gen.VERSION_OFFSET, gen.VERSION_WIDTH)
+    timestamp = BitField(gen.TIMESTAMP_OFFSET, gen.TIMESTAMP_WIDTH)
+    chromosome = BitField(gen.CHROMOSOME_OFFSET, gen.CHROMOSOME_WIDTH)
+    category = BitField(gen.CATEGORY_OFFSET, gen.CATEGORY_WIDTH)
+    firefly = BitField(gen.FIREFLY_OFFSET, gen.FIREFLY_WIDTH)
+    authority = BitField(gen.AUTHORITY_OFFSET, gen.AUTHORITY_WIDTH)
+    persona = BitField(gen.PERSONA_OFFSET, gen.PERSONA_WIDTH)
+    momentum = BitField(gen.MOMENTUM_OFFSET, gen.MOMENTUM_WIDTH)
+    location = BitField(gen.LOCATION_OFFSET, gen.LOCATION_WIDTH)
+    randomness = BitField(gen.RANDOMNESS_OFFSET, gen.RANDOMNESS_WIDTH)
+
 
 
 def set_bits(value: int, field: BitField, field_value: int) -> int:

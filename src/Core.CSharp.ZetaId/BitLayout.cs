@@ -64,16 +64,16 @@ public sealed class BitLayout
         // Spec: docs/zeta-id-v1-layout.yaml reserved_bits — 1 bit at offset 69
         // (between Chromosome and Category), 3 bits at offsets 32-34 (between
         // Location and Randomness). Total: 5+48+5+1+4+1+5+8+8+8+3+32 = 128.
-        var version = Next(5);     // bits 123-127
-        var timestamp = Next(48);    // bits 75-122
-        var chromosome = Next(5);     // bits 70-74
+        var version = Next(GeneratedBitLayout.VersionWidth);     // bits 123-127
+        var timestamp = Next(GeneratedBitLayout.TimestampWidth);    // bits 75-122
+        var chromosome = Next(GeneratedBitLayout.ChromosomeWidth);     // bits 70-74
         Skip(1);                      // reserved bit 69
-        var category = Next(4);     // bits 65-68
-        var firefly = Next(1);     // bit 64
-        var authority = Next(5);     // bits 59-63
-        var persona = Next(8);     // bits 51-58
-        var momentum = Next(8);     // bits 43-50
-        var location = Next(8);     // bits 35-42
+        var category = Next(GeneratedBitLayout.CategoryWidth);     // bits 65-68
+        var firefly = Next(GeneratedBitLayout.FireflyWidth);     // bit 64
+        var authority = Next(GeneratedBitLayout.AuthorityWidth);     // bits 59-63
+        var persona = Next(GeneratedBitLayout.PersonaWidth);     // bits 51-58
+        var momentum = Next(GeneratedBitLayout.MomentumWidth);     // bits 43-50
+        var location = Next(GeneratedBitLayout.LocationWidth);     // bits 35-42
         // Bits 32-34 reserved; Randomness starts at offset 0
 
         return new BitLayout(
@@ -86,7 +86,7 @@ public sealed class BitLayout
             persona,
             momentum,
             location,
-            (0, 32)
+            (0, GeneratedBitLayout.RandomnessWidth)
         );
     }
 
@@ -107,18 +107,18 @@ public sealed class BitLayout
 
         void Skip(int bits) => offset += bits;
 
-        var randomness = Next(32);    // bits 0-31
+        var randomness = Next(GeneratedBitLayout.RandomnessWidth);    // bits 0-31
         Skip(3);                      // reserved bits 32-34
-        var location = Next(8);     // bits 35-42
-        var momentum = Next(8);     // bits 43-50
-        var persona = Next(8);     // bits 51-58
-        var authority = Next(5);     // bits 59-63
-        var firefly = Next(1);     // bit 64
-        var category = Next(4);     // bits 65-68
+        var location = Next(GeneratedBitLayout.LocationWidth);     // bits 35-42
+        var momentum = Next(GeneratedBitLayout.MomentumWidth);     // bits 43-50
+        var persona = Next(GeneratedBitLayout.PersonaWidth);     // bits 51-58
+        var authority = Next(GeneratedBitLayout.AuthorityWidth);     // bits 59-63
+        var firefly = Next(GeneratedBitLayout.FireflyWidth);     // bit 64
+        var category = Next(GeneratedBitLayout.CategoryWidth);     // bits 65-68
         Skip(1);                      // reserved bit 69
-        var chromosome = Next(5);     // bits 70-74
-        var timestamp = Next(48);    // bits 75-122
-        var version = Next(5);     // bits 123-127
+        var chromosome = Next(GeneratedBitLayout.ChromosomeWidth);     // bits 70-74
+        var timestamp = Next(GeneratedBitLayout.TimestampWidth);    // bits 75-122
+        var version = Next(GeneratedBitLayout.VersionWidth);     // bits 123-127
 
         return new BitLayout(
             version,

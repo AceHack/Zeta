@@ -44,16 +44,16 @@ module BitLayout =
         // Spec: docs/zeta-id-v1-layout.yaml reserved_bits — 1 bit at offset 69
         // (between Chromosome and Category), 3 bits at offsets 32-34 (between
         // Location and Randomness).
-        let version    = next 5       // bits 123-127
-        let timestamp  = next 48      // bits 75-122
-        let chromosome = next 5       // bits 70-74
+        let version    = next GeneratedBitLayout.VersionWidth       // bits 123-127
+        let timestamp  = next GeneratedBitLayout.TimestampWidth      // bits 75-122
+        let chromosome = next GeneratedBitLayout.ChromosomeWidth     // bits 70-74
         skip 1                        // reserved bit 69
-        let category   = next 4       // bits 65-68
-        let firefly    = next 1       // bit 64
-        let authority  = next 5       // bits 59-63
-        let persona    = next 8       // bits 51-58
-        let momentum   = next 8       // bits 43-50
-        let location   = next 8       // bits 35-42
+        let category   = next GeneratedBitLayout.CategoryWidth       // bits 65-68
+        let firefly    = next GeneratedBitLayout.FireflyWidth        // bit 64
+        let authority  = next GeneratedBitLayout.AuthorityWidth      // bits 59-63
+        let persona    = next GeneratedBitLayout.PersonaWidth        // bits 51-58
+        let momentum   = next GeneratedBitLayout.MomentumWidth       // bits 43-50
+        let location   = next GeneratedBitLayout.LocationWidth       // bits 35-42
         // Bits 32-34 reserved; Randomness occupies offset 0..31
         {
             Version = version
@@ -65,7 +65,7 @@ module BitLayout =
             Persona = persona
             Momentum = momentum
             Location = location
-            Randomness = { Offset = 0; Width = 32 }
+            Randomness = { Offset = 0; Width = GeneratedBitLayout.RandomnessWidth }
             TotalBits = 128
         }
 
@@ -83,18 +83,18 @@ module BitLayout =
 
         let skip bits = offset <- offset + bits
 
-        let randomness = next 32      // bits 0-31
+        let randomness = next GeneratedBitLayout.RandomnessWidth      // bits 0-31
         skip 3                        // reserved bits 32-34
-        let location   = next 8       // bits 35-42
-        let momentum   = next 8       // bits 43-50
-        let persona    = next 8       // bits 51-58
-        let authority  = next 5       // bits 59-63
-        let firefly    = next 1       // bit 64
-        let category   = next 4       // bits 65-68
+        let location   = next GeneratedBitLayout.LocationWidth       // bits 35-42
+        let momentum   = next GeneratedBitLayout.MomentumWidth       // bits 43-50
+        let persona    = next GeneratedBitLayout.PersonaWidth       // bits 51-58
+        let authority  = next GeneratedBitLayout.AuthorityWidth       // bits 59-63
+        let firefly    = next GeneratedBitLayout.FireflyWidth       // bit 64
+        let category   = next GeneratedBitLayout.CategoryWidth       // bits 65-68
         skip 1                        // reserved bit 69
-        let chromosome = next 5       // bits 70-74
-        let timestamp  = next 48      // bits 75-122
-        let version    = next 5       // bits 123-127
+        let chromosome = next GeneratedBitLayout.ChromosomeWidth       // bits 70-74
+        let timestamp  = next GeneratedBitLayout.TimestampWidth       // bits 75-122
+        let version    = next GeneratedBitLayout.VersionWidth       // bits 123-127
         {
             Version = version
             Timestamp = timestamp

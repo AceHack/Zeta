@@ -24,6 +24,9 @@
 //!   but the *observable contract* (reject out-of-range / aliasing) is identical.
 
 pub mod bit_layout;
+/// Generated bit layout constants.
+#[path = "bit_layout.gen.rs"]
+pub mod bit_layout_gen;
 pub mod zeta_id;
 
 pub use zeta_id::{PackError, pack, to_hex, unpack};
