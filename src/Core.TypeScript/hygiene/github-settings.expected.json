@@ -41,13 +41,13 @@
         "status": "disabled"
       },
       "secret_scanning_non_provider_patterns": {
-        "status": "disabled"
+        "status": "enabled"
       },
       "secret_scanning_push_protection": {
         "status": "enabled"
       },
       "secret_scanning_validity_checks": {
-        "status": "disabled"
+        "status": "enabled"
       }
     },
     "squash_merge_commit_message": "COMMIT_MESSAGES",
@@ -82,7 +82,7 @@
           ]
         }
       },
-      "enforcement": "active",
+      "enforcement": "disabled",
       "id": 16134995,
       "name": "CI Gate",
       "rules": [
@@ -91,15 +91,7 @@
             "do_not_enforce_on_create": false,
             "required_status_checks": [
               {
-                "context": "build-and-test (macos-26)",
-                "integration_id": 15368
-              },
-              {
                 "context": "build-and-test (ubuntu-24.04)",
-                "integration_id": 15368
-              },
-              {
-                "context": "build-and-test (ubuntu-24.04-arm)",
                 "integration_id": 15368
               },
               {
@@ -136,43 +128,6 @@
         }
       },
       "enforcement": "active",
-      "id": 16168181,
-      "name": "Review Policy",
-      "rules": [
-        {
-          "parameters": {
-            "review_draft_pull_requests": true,
-            "review_on_push": true
-          },
-          "type": "copilot_code_review"
-        },
-        {
-          "parameters": {
-            "allowed_merge_methods": [
-              "squash"
-            ],
-            "dismiss_stale_reviews_on_push": false,
-            "require_code_owner_review": false,
-            "require_last_push_approval": false,
-            "required_approving_review_count": 0,
-            "required_review_thread_resolution": true,
-            "required_reviewers": []
-          },
-          "type": "pull_request"
-        }
-      ],
-      "target": "branch"
-    },
-    {
-      "conditions": {
-        "ref_name": {
-          "exclude": [],
-          "include": [
-            "~DEFAULT_BRANCH"
-          ]
-        }
-      },
-      "enforcement": "active",
       "id": 16189060,
       "name": "Branch Safety",
       "rules": [
@@ -190,6 +145,30 @@
         }
       ],
       "target": "branch"
+    },
+    {
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/heads/agent-heartbeats"
+          ]
+        }
+      },
+      "enforcement": "active",
+      "id": 16934633,
+      "name": "Heartbeat Branch Protection",
+      "rules": [
+        {
+          "parameters": null,
+          "type": "deletion"
+        },
+        {
+          "parameters": null,
+          "type": "non_fast_forward"
+        }
+      ],
+      "target": "branch"
     }
   ],
   "default_branch_protection": {
@@ -200,12 +179,7 @@
     "lock_branch": false,
     "required_conversation_resolution": true,
     "required_linear_history": true,
-    "required_pull_request_reviews": {
-      "dismiss_stale_reviews": true,
-      "require_code_owner_reviews": false,
-      "require_last_push_approval": false,
-      "required_approving_review_count": 0
-    },
+    "required_pull_request_reviews": null,
     "required_signatures": false,
     "required_status_checks": null
   },
@@ -225,33 +199,18 @@
   ],
   "workflows": [
     {
-      "name": "Automatic Dependency Submission",
-      "path": "dynamic/dependency-graph/auto-submission",
-      "state": "active"
-    },
-    {
       "name": "CodeQL",
       "path": ".github/workflows/codeql.yml",
       "state": "active"
     },
     {
-      "name": "CodeQL",
-      "path": "dynamic/github-code-scanning/codeql",
+      "name": "accelerator-local-llm-validate",
+      "path": ".github/workflows/accelerator-local-llm-validate.yml",
       "state": "active"
     },
     {
-      "name": "Copilot cloud agent",
-      "path": "dynamic/copilot-swe-agent/copilot",
-      "state": "active"
-    },
-    {
-      "name": "Copilot code review",
-      "path": "dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer",
-      "state": "active"
-    },
-    {
-      "name": "Dependabot Updates",
-      "path": "dynamic/dependabot/dependabot-updates",
+      "name": "accelerator-move-next",
+      "path": ".github/workflows/accelerator-move-next.yml",
       "state": "active"
     },
     {
@@ -265,8 +224,43 @@
       "state": "active"
     },
     {
+      "name": "build-ai-cluster-iso",
+      "path": ".github/workflows/build-ai-cluster-iso.yml",
+      "state": "active"
+    },
+    {
+      "name": "build-platform-images",
+      "path": ".github/workflows/build-platform-images.yml",
+      "state": "active"
+    },
+    {
       "name": "ci-cache-paths-lint",
       "path": ".github/workflows/ci-cache-paths-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "context-cost-trend-cadence",
+      "path": ".github/workflows/context-cost-trend-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "docker-nixos-install-sh-test",
+      "path": ".github/workflows/docker-nixos-install-sh-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "docker-ubuntu-install-sh-test",
+      "path": ".github/workflows/docker-ubuntu-install-sh-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "docker-windows-install-ps1-test",
+      "path": ".github/workflows/docker-windows-install-ps1-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "factory-hygiene-audit-cadence",
+      "path": ".github/workflows/factory-hygiene-audit-cadence.yml",
       "state": "active"
     },
     {
@@ -280,8 +274,28 @@
       "state": "active"
     },
     {
+      "name": "gitbash-install-routing-test",
+      "path": ".github/workflows/gitbash-install-routing-test.yml",
+      "state": "active"
+    },
+    {
       "name": "github-settings-drift",
       "path": ".github/workflows/github-settings-drift.yml",
+      "state": "active"
+    },
+    {
+      "name": "inventory-phase5-proof",
+      "path": ".github/workflows/inventory-phase5-proof.yml",
+      "state": "active"
+    },
+    {
+      "name": "k8s-argocd-health-test",
+      "path": ".github/workflows/k8s-argocd-health-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "keyring 1000x DST",
+      "path": ".github/workflows/keyring-dst1000.yml",
       "state": "active"
     },
     {
@@ -290,8 +304,33 @@
       "state": "active"
     },
     {
+      "name": "lint-autofix",
+      "path": ".github/workflows/lint-autofix.yml",
+      "state": "active"
+    },
+    {
+      "name": "lint-autofix-apply",
+      "path": ".github/workflows/lint-autofix-apply.yml",
+      "state": "active"
+    },
+    {
       "name": "low-memory",
       "path": ".github/workflows/low-memory.yml",
+      "state": "active"
+    },
+    {
+      "name": "macos-install-sh-test",
+      "path": ".github/workflows/macos-install-sh-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "manifesto-citation-snapshot-cadence",
+      "path": ".github/workflows/manifesto-citation-snapshot-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "memory-index-drift",
+      "path": ".github/workflows/memory-index-drift.yml",
       "state": "active"
     },
     {
@@ -308,36 +347,6 @@
       "name": "memory-reference-existence-lint",
       "path": ".github/workflows/memory-reference-existence-lint.yml",
       "state": "active"
-    },
-    {
-      "name": "pr-archive-on-merge",
-      "path": ".github/workflows/pr-archive-on-merge.yml",
-      "state": "active"
-    },
-    {
-      "name": "razor-cadence",
-      "path": ".github/workflows/razor-cadence.yml",
-      "state": "active"
-    },
-    {
-      "name": "resume-diff",
-      "path": ".github/workflows/resume-diff.yml",
-      "state": "active"
-    },
-    {
-      "name": "role-ref-current-state-surfaces-lint",
-      "path": ".github/workflows/role-ref-current-state-surfaces-lint.yml",
-      "state": "active"
-    },
-    {
-      "name": "scorecard",
-      "path": ".github/workflows/scorecard.yml",
-      "state": "active"
-    },
-    {
-      "name": "stryker-mutation",
-      "path": ".github/workflows/stryker-mutation.yml",
-      "state": "active"
     }
   ],
   "environments": [
@@ -353,7 +362,7 @@
     }
   ],
   "pages": {
-    "build_type": "workflow",
+    "build_type": "legacy",
     "https_enforced": true,
     "public": true,
     "source": {
@@ -365,9 +374,12 @@
     "languages": [
       "actions",
       "csharp",
+      "go",
       "java-kotlin",
       "javascript",
       "javascript-typescript",
+      "python",
+      "rust",
       "typescript"
     ],
     "query_suite": "extended",
@@ -388,7 +400,7 @@
   "counts": {
     "webhooks": 0,
     "deploy_keys": 0,
-    "actions_secrets": 0,
+    "actions_secrets": 10,
     "dependabot_secrets": 0
   }
 }
