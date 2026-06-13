@@ -67,6 +67,16 @@
           [ -n "$path" ] || { echo "VOL_DIR empty; refusing to rm"; exit 1; }
           case "$path" in /var/lib/zeta-local-storage/*) ;; *) echo "VOL_DIR outside allowed root: $path"; exit 1 ;; esac
           rm -rf "$path"
+        helperPod.yaml: |-
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: helper-pod
+          spec:
+            containers:
+              - name: helper-pod
+                image: busybox
+                imagePullPolicy: IfNotPresent
       ---
       apiVersion: apps/v1
       kind: Deployment

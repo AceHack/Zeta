@@ -103,6 +103,12 @@
     # bootstrap, the `bootstrapAfter` annotation pattern (TBD) would
     # be added in a follow-up.
     manifests = {
+      # Gateway API CRDs — MUST exist before Cilium (gatewayAPI.enabled) and
+      # cert-manager (ExperimentalGatewayAPISupport) start, else cert-manager
+      # crash-loops "Gateway API CRDs do not seem to be present" (observed on
+      # node-09485d: 869 restarts/3d). Cilium does NOT ship them. The `aa-`
+      # prefix forces it first in k3s's alphabetical apply order.
+      aa-gateway-api-crds.source = ../../k8s/bootstrap/gateway-api-crds.yaml;
       # Cilium (CNI must exist before any pod can schedule).
       cilium-namespace.source = ../../k8s/bootstrap/cilium-namespace.yaml;
       cilium-install.source = ../../k8s/bootstrap/cilium-install.yaml;
