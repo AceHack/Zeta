@@ -1,0 +1,54 @@
+# MinIO — shared in-cluster S3 (default consumer target). Runs alongside
+# seaweedfs/ in object-store; see k8s/object-store/BLOB-STORE-CONTRACT.md.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  name: minio
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.min.io/
+    chart: minio
+    targetRevision: 5.4.0
+    helm:
+      releaseName: blob-store
+      valuesObject:
+        mode: standalone
+        fullnameOverride: blob-store
+        rootUser: zeta-blob-store
+        rootPassword: zeta-blob-store-dev-secret
+        persistence:
+          enabled: true
+          size: 20Gi
+          storageClass: zeta-local-path
+        buckets:
+          - name: loki-chunks
+            policy: none
+            purge: false
+          - name: loki-ruler
+            policy: none
+            purge: false
+          - name: mimir-tsdb
+            policy: none
+            purge: false
+          - name: mimir-ruler
+            policy: none
+            purge: false
+          - name: zeta-backups
+            policy: none
+            purge: false
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: object-store
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

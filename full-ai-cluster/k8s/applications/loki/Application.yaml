@@ -1,4 +1,5 @@
-# Loki — log aggregation.
+# Loki — log aggregation. Object storage via shared in-cluster MinIO
+# (default) or SeaweedFS — see k8s/object-store/BLOB-STORE-CONTRACT.md.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -18,6 +19,8 @@ spec:
       releaseName: loki
       valuesObject:
         deploymentMode: SimpleScalable
+        minio:
+          enabled: false
         loki:
           auth_enabled: false
           schemaConfig:
@@ -29,11 +32,13 @@ spec:
                 index: { prefix: loki_index_, period: 24h }
           storage:
             type: s3
-            # TODO: point at an in-cluster S3 (MinIO, SeaweedFS) or
-            # external S3-compatible storage. For now, bucket lives
-            # in a placeholder values-set you wire after picking
-            # object-storage backend.
             bucketNames: { chunks: loki-chunks, ruler: loki-ruler }
+            s3:
+              endpoint: blob-store.object-store.svc:9000
+              accessKeyId: zeta-blob-store
+              secretAccessKey: zeta-blob-store-dev-secret
+              insecure: true
+              s3ForcePathStyle: true
         write: { replicas: 1 }
         read:  { replicas: 1 }
         backend: { replicas: 1 }

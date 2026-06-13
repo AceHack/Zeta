@@ -217,6 +217,7 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "gitlab",
   "orleans",
   "platform",
+  "seaweedfs", // A/B blob-store alt; ArgoCD sync stays Unknown on kind CI — minio is the gate
   "temporal",
 ]);
 

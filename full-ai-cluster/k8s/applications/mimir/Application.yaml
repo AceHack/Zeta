@@ -1,6 +1,7 @@
 # Mimir — long-term metrics storage. Complements kube-prometheus-stack
 # which keeps recent metrics; Mimir holds the long tail for trend
-# analysis.
+# analysis. Object storage via shared in-cluster MinIO (default) or
+# SeaweedFS — see k8s/object-store/BLOB-STORE-CONTRACT.md.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -21,13 +22,34 @@ spec:
       valuesObject:
         metaMonitoring:
           serviceMonitor: { enabled: false }
-        # MinIO bundled for object storage. Swap to external S3
-        # once you stand up real object storage.
         minio:
-          enabled: true
-          persistence:
-            storageClass: longhorn
-            size: 100Gi
+          enabled: false
+        mimir:
+          structuredConfig:
+            blocks_storage:
+              backend: s3
+              s3:
+                endpoint: blob-store.object-store.svc:9000
+                bucket_name: mimir-tsdb
+                access_key_id: zeta-blob-store
+                secret_access_key: zeta-blob-store-dev-secret
+                insecure: true
+            alertmanager_storage:
+              backend: s3
+              s3:
+                endpoint: blob-store.object-store.svc:9000
+                bucket_name: mimir-ruler
+                access_key_id: zeta-blob-store
+                secret_access_key: zeta-blob-store-dev-secret
+                insecure: true
+            ruler_storage:
+              backend: s3
+              s3:
+                endpoint: blob-store.object-store.svc:9000
+                bucket_name: mimir-ruler
+                access_key_id: zeta-blob-store
+                secret_access_key: zeta-blob-store-dev-secret
+                insecure: true
         ingester:
           persistentVolume:
             storageClass: longhorn

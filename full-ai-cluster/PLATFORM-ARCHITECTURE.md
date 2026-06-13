@@ -285,7 +285,10 @@ platforms don't.
 
 Longhorn for all stateful state: game saves, VM disks, DB data, agent memory.
 Single replica on one node (set in the hardening PR); 2–3 as workers join.
-Object storage (MinIO/SeaweedFS) added for backups, images, large blobs.
+Object storage: shared in-cluster S3 via `k8s/applications/minio/` (default
+consumer target) and `k8s/applications/seaweedfs/` (A/B alternative — both
+reconcile; repoint Loki/Mimir endpoint to switch). See
+`k8s/object-store/BLOB-STORE-CONTRACT.md`.
 
 ### 4.4 Security
 

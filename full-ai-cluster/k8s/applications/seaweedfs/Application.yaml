@@ -1,0 +1,56 @@
+# SeaweedFS — lighter S3-compatible blob store (runs alongside MinIO).
+#
+# Both minio/ and seaweedfs/ reconcile into object-store with distinct
+# service names and ports. Loki/Mimir default to MinIO; repoint the S3
+# endpoint to exercise SeaweedFS without deleting either backend.
+# See full-ai-cluster/k8s/object-store/BLOB-STORE-CONTRACT.md.
+#
+# allInOne mode: single pod with embedded master/volume/filer/S3 gateway.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  name: seaweedfs
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://seaweedfs.github.io/seaweedfs/helm
+    chart: seaweedfs
+    targetRevision: 4.33.0
+    helm:
+      releaseName: blob-store
+      valuesObject:
+        master: { enabled: false }
+        volume: { enabled: false }
+        filer: { enabled: false }
+        s3:
+          enabled: false
+          credentials:
+            admin:
+              accessKey: zeta-blob-store
+              secretKey: zeta-blob-store-dev-secret
+        allInOne:
+          enabled: true
+          data:
+            type: persistentVolumeClaim
+            size: 20Gi
+            storageClass: zeta-local-path
+          s3:
+            enabled: true
+            enableAuth: true
+            createBuckets:
+              - name: loki-chunks
+              - name: loki-ruler
+              - name: mimir-tsdb
+              - name: mimir-ruler
+              - name: zeta-backups
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: object-store
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

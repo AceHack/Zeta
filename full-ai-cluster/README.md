@@ -51,6 +51,8 @@ full-ai-cluster/
         ├── argo-workflows/     ← DAG job scheduler
         ├── argo-rollouts/      ← progressive delivery
         ├── longhorn/           ← distributed block storage
+        ├── minio/              ← shared S3 blob store (default consumer target)
+        ├── seaweedfs/          ← shared S3 blob store (A/B alt; same namespace)
         ├── cockroachdb/        ← distributed SQL
         ├── hindsight/          ← agent persistent memory for Hermes (vectorize-io OCI chart)
         ├── oz/                 ← OpenZiti zero-trust overlay
