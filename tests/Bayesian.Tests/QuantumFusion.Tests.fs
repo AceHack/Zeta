@@ -50,6 +50,12 @@ let private piRow =
 let private flowZero = QuantumObservableDbsp.flowBitRow false
 let private flowOne = QuantumObservableDbsp.flowBitRow true
 
+let private retDelta source sequence row weight : ReticulumQuantum.ObservableDelta =
+    { Source = source
+      Sequence = sequence
+      Row = row
+      Weight = weight }
+
 let private exteriorIds (report: QuantumFusion.Report) =
     report.Exterior
     |> GSet.toList
@@ -59,6 +65,10 @@ let private exteriorIds (report: QuantumFusion.Report) =
 let private boardedIds (report: QuantumFusion.Report) =
     report.Prediction.Boarded
     |> List.map (fun branch -> branch.State.Id)
+
+let private forecastIds (forecast: QuantumFusion.Forecast<QuantumFusion.ReticulumFuture>) =
+    forecast.Branches
+    |> List.map (fun branch -> branch.State.Fact.Id)
 
 [<Fact>]
 let ``QSharp Mach-Zehnder deltas fuse into an exterior Bayesian GSet`` () =
@@ -179,6 +189,69 @@ let ``time horizon bytes backpressure without changing exterior fusion`` () =
     Assert.Single(report.Prediction.Deferred) |> ignore
     Assert.Equal(Vision.RejectedWithBackpressure, report.Prediction.Outcome)
     Assert.True(report.Prediction.DeferredBytes > int64 report.Prediction.TankBefore.Charge)
+
+[<Fact>]
+let ``Reticulum forecast turns fused facts into scheduler future branches`` () =
+    let deltas =
+        [ retDelta "edge-zero" 10L flowZero 1L
+          retDelta "edge-one" 11L flowOne 1L ]
+
+    let favorOne : QuantumFusion.AttentionPolicy =
+        fun (_: Beta) (fact: QuantumFusion.BoundaryFact) ->
+            if fact.Id = "external-bit-one" then 10.0 else 0.1
+
+    let forecast =
+        deltas
+        |> QuantumFusion.forecastReticulumDeltasWithAttention budget favorOne
+        |> mustOk
+
+    Assert.Equal(2, forecast.Snapshot.Ledger.ExteriorIdentities)
+    Assert.Equal<string list>([ "external-bit-one"; "external-bit-zero" ], forecastIds forecast)
+
+    let first = forecast.Branches.Head
+    Assert.Equal("external-bit-one", first.State.Fact.Id)
+    Assert.Equal<string list>([ "edge-one" ], first.State.Sources)
+    Assert.Equal(11L, first.State.FirstSequence)
+    Assert.Equal(11L, first.State.LastSequence)
+    Assert.Equal(1, first.State.DeltaCount)
+    Assert.True(first.State.WireBytes > 0L)
+    Assert.True(first.Cost.SpaceBytes >= first.State.WireBytes)
+
+    let firstBytes = Vision.branchBytes first.Cost |> mustOk
+
+    let report =
+        Vision.predictBranches forecast.Branches (SoftThrottle.tank (float firstBytes) 0.0)
+        |> mustOk
+
+    Assert.Equal(Vision.PartiallyAdmitted, report.Outcome)
+
+    Assert.Equal<string list>(
+        [ "external-bit-one" ],
+        report.Boarded |> List.map (fun branch -> branch.State.Fact.Id)
+    )
+
+[<Fact>]
+let ``Reticulum forecast keeps retracted interior churn out of branch states`` () =
+    let deltas =
+        [ retDelta "edge" 20L openRow 1L
+          retDelta "edge" 21L openRow -1L
+          retDelta "edge" 22L piRow 1L ]
+
+    let forecast =
+        deltas
+        |> QuantumFusion.forecastReticulumDeltasWithAttention budget (fun posterior _ -> Beta.mean posterior)
+        |> mustOk
+
+    Assert.Equal(3, forecast.Snapshot.Ledger.DeltaCount)
+    Assert.Equal(2, forecast.Snapshot.Ledger.TouchedIdentities)
+    Assert.Equal(1, forecast.Snapshot.Ledger.ExteriorIdentities)
+    Assert.Equal(1, forecast.Snapshot.Ledger.HiddenInteriorIdentities)
+
+    let branch = Assert.Single forecast.Branches
+    Assert.Equal("mach-zehnder-closed-pi-phase", branch.State.Fact.Id)
+    Assert.Equal(1, branch.State.DeltaCount)
+    Assert.Equal(22L, branch.State.FirstSequence)
+    Assert.Equal(22L, branch.State.LastSequence)
 
 [<Fact>]
 let ``invalid attention policy returns feedback instead of throwing`` () =
