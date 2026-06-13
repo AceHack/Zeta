@@ -26,6 +26,9 @@ import { loadWorld } from "./load-world";
 import { observe, renderAction } from "./observe";
 import { execute, type OperatorPort } from "./execute";
 import { folderSink } from "./event-sink-folder";
+import { resolveForgeHost } from "../forge-host/registry";
+import { readPRStateAsync } from "./world-infra";
+import "../forge-host/github/index"; // registers the GitHub adapter
 
 interface CliArgs {
   by: string;
@@ -64,6 +67,15 @@ async function main(): Promise<number> {
     eventDir: args.eventDir,
     repoRoot: args.repoRoot,
   });
+
+  // 1b. Resolve ForgeHost and query PR state (async, host-agnostic)
+  const forgeResult = resolveForgeHost(args.repoRoot);
+  if (forgeResult.ok) {
+    const prState = await readPRStateAsync(forgeResult.value);
+    console.log(`[forge:${forgeResult.value.forgeName}] ${prState.open.length} open PRs, ${prState.clean.length} clean`);
+  } else {
+    console.log(`[forge] not resolved: ${forgeResult.error.message} (continuing without PR state)`);
+  }
 
   // 2. Pick the next action (pure oracle)
   const action = observe(world);
