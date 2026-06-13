@@ -33,9 +33,9 @@ tags:
   - x86-64-and-arm64
 ---
 
-> **Closed 2026-06-13** — squash merge `e0ba87a4` ([#7911](https://github.com/Lucent-Financial-Group/Zeta/pull/7911)).
-> **Landed (Riven):** `--scope included` proves 14 kind-eligible dev ArgoCD Applications
-> Synced+Healthy (local + CI `live-kind-included`). Smoke scope + path-filtered CI remain.
+> **Closed 2026-06-13** — squash merge `e0ba87a4` ([#7911](https://github.com/Lucent-Financial-Group/Zeta/pull/7911)); dev-cluster/zflash CLIs consolidated under `src/Core.TypeScript/` ([#8076](https://github.com/Lucent-Financial-Group/Zeta/pull/8076)).
+> **Landed (Riven):** `--scope included` proves kind-eligible dev ArgoCD Applications
+> Synced+Healthy (17 charts after seaweedfs/object-store fix; local + CI `live-kind-included`). Smoke scope + path-filtered CI remain.
 > **Deferred:** `--scope full` (Longhorn/Cilium/Vault/SPIRE stack), drift-repair check,
 > hat-system Gatekeeper `policies/**` on kind — see follow-on workitems below.
 
@@ -138,7 +138,7 @@ dependencies, and live `--run` modes for:
 - `--provider kind --scope smoke --runtime podman`, the Podman-standard local
   lane once the Podman VM has enough memory for the Argo graph.
 - `--provider kind --scope included --runtime docker`, the outside-ISO proof that
-  every kind-eligible dev Application reconciles Synced+Healthy (14 apps; #7911).
+  every kind-eligible dev Application reconciles Synced+Healthy (17 charts; #7911, #8076).
 - `--provider k3d --scope full --runtime docker`, the closer Cilium-parity lane.
 
 The first CI workflow is `.github/workflows/k8s-argocd-health-test.yml`: it runs
@@ -147,15 +147,16 @@ PR/push surface plus weekly cadence. The workflow runs on Ubuntu x86_64 and
 Ubuntu ARM64 runners so Linux/architecture drift is visible before the
 installer lane consumes the signal.
 
-The helper scripts now keep the desired-state source canonical:
+The helper CLIs now keep the desired-state source canonical (shell wrappers retired in #8076):
 
-- `full-ai-cluster/dev-cluster/apply-root-app.sh` applies the root App-of-Apps
-  from the current git ref and keeps dev-only GPU/storage exclusions in one
-  place.
-- `full-ai-cluster/dev-cluster/up.sh` and `down.sh` accept `--config` and
+- `bun src/Core.TypeScript/cluster/dev-cluster/apply-root-app.ts` applies the root App-of-Apps
+  from the current git ref and keeps dev-only GPU/storage exclusions in one place.
+- `bun src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts` / `k3d-down.ts` accept `--config` and
   parse the k3d cluster name from the profile.
-- `full-ai-cluster/dev-cluster/kind-up.sh` and `kind-down.sh` provide the
-  smoke substrate for Docker and Podman.
+- `bun src/Core.TypeScript/cluster/dev-cluster/kind-up.ts` / `kind-down.ts` provide the
+  smoke substrate for Docker and Podman (`ZETA_CONTAINER_RUNTIME`).
+
+The older `full-ai-cluster/dev-cluster/*.sh` wrappers were removed ([#8078](https://github.com/Lucent-Financial-Group/Zeta/pull/8078)).
 
 The Podman lane reuses the repo-wide B-0964 OCI runtime selector:
 `ZETA_CONTAINER_RUNTIME=podman` selects Podman. The older
