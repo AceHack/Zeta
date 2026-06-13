@@ -25,6 +25,12 @@
     <TieredPGO>true</TieredPGO>
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.fsproj'">
+    <!-- Keep F# gates deterministic: the shared compiler server can preserve
+         bad native state after an fsc abort and turn clean rebuilds into exit
+         139/134 crashes. -->
+    <UseSharedCompilation>false</UseSharedCompilation>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <Optimize>true</Optimize>
     <DebugType>embedded</DebugType>
