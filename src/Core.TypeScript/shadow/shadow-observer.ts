@@ -45,7 +45,7 @@
 import { appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "util";
-import { FerryThrottler } from "../../src/Core.TypeScript/ferry-throttler/ferry-throttler.ts";
+import { FerryThrottler } from "../ferry-throttler/ferry-throttler.ts";
 
 export interface ShadowConfig {
   delayMs: number;
@@ -662,7 +662,7 @@ export function parseConfig(argv: string[]): ShadowConfig {
       loop: { type: "string" },
       once: { type: "boolean", default: false },
       "loop-interval": { type: "string", default: "1000" },
-      "log-file": { type: "string", default: "tools/shadow/shadow-observer.log" },
+      "log-file": { type: "string", default: "src/Core.TypeScript/shadow/shadow-observer.log" },
       "restore-arrow": { type: "boolean", default: false },
       "freshness-threshold-ms": { type: "string", default: "0" },
     },
@@ -706,7 +706,7 @@ export function parseConfig(argv: string[]): ShadowConfig {
     dryRun: values["dry-run"] ?? false,
     once: values.once ?? false,
     loopIntervalMs,
-    logFile: values["log-file"] ?? "tools/shadow/shadow-observer.log",
+    logFile: values["log-file"] ?? "src/Core.TypeScript/shadow/shadow-observer.log",
     restoreArrow: values["restore-arrow"] ?? false,
     freshnessThresholdMs,
   };

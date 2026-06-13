@@ -48,7 +48,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>{{BUN_PATH}}</string>
-        <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.ts</string>
+        <string>{{REPO_ROOT}}/src/Core.TypeScript/shadow/shadow-observer.ts</string>
         <string>--loop</string>
         <string>5000</string>
         <string>--loop-interval</string>
@@ -60,7 +60,7 @@
         <string>--freshness-threshold-ms</string>
         <string>5000</string>
         <string>--log-file</string>
-        <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.log</string>
+        <string>{{REPO_ROOT}}/src/Core.TypeScript/shadow/shadow-observer.log</string>
     </array>
 
     <key>WorkingDirectory</key>
@@ -103,10 +103,10 @@
     <integer>60</integer>
 
     <key>StandardOutPath</key>
-    <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.stdout.log</string>
+    <string>{{REPO_ROOT}}/src/Core.TypeScript/shadow/shadow-observer.stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>{{REPO_ROOT}}/tools/shadow/shadow-observer.stderr.log</string>
+    <string>{{REPO_ROOT}}/src/Core.TypeScript/shadow/shadow-observer.stderr.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>

@@ -56,12 +56,12 @@
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { allActiveClaims } from "../../src/Core.TypeScript/bus/claim.ts";
-import type { ClaimRecord } from "../../src/Core.TypeScript/bus/claim.ts";
-import { PriorityFerryThrottlerWithResult } from "../../src/Core.TypeScript/ferry-throttler/priority-ferry-throttler-with-result.ts";
-import type { PriorityFerryThrottlerConfig } from "../../src/Core.TypeScript/ferry-throttler/priority-config.ts";
-import type { ProcessBatchWithResult } from "../../src/Core.TypeScript/ferry-throttler/ferry-throttler.ts";
-import { readPRState } from "../../src/Core.TypeScript/observe/world-infra.ts";
+import { allActiveClaims } from "../bus/claim.ts";
+import type { ClaimRecord } from "../bus/claim.ts";
+import { PriorityFerryThrottlerWithResult } from "../ferry-throttler/priority-ferry-throttler-with-result.ts";
+import type { PriorityFerryThrottlerConfig } from "../ferry-throttler/priority-config.ts";
+import type { ProcessBatchWithResult } from "../ferry-throttler/ferry-throttler.ts";
+import { readPRState } from "../observe/world-infra.ts";
 
 export interface CheckCounts {
   ok: number;

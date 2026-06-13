@@ -264,7 +264,7 @@ export function plutilLint(content: string): void {
 
 export function main(): void {
   const args = parseArgs(process.argv.slice(2));
-  const templatePath = join(args.repoRoot, "tools/shadow/launchd/com.zeta.shadow-observer.plist");
+  const templatePath = join(args.repoRoot, "src/Core.TypeScript/shadow/launchd/com.zeta.shadow-observer.plist");
   if (!existsSync(templatePath)) {
     console.error(`Template not found at ${templatePath}. Wrong --repo-root?`);
     process.exit(1);

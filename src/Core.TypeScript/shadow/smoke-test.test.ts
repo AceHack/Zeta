@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 
 const ZETA_SHADOW = join(import.meta.dir, "zeta-shadow.ts");
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 describe("shadow — B-0433 distribution smoke tests", () => {
   let SMOKE_DIR: string;
