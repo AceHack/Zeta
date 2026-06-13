@@ -1,5 +1,5 @@
 /**
- * tools/observe/execute.ts — "execute the pick": the impure twin of `simulate`.
+ * src/Core.TypeScript/observe/execute.ts — "execute the pick": the impure twin of `simulate`.
  *
  * The controller (`observe.ts`) is pure all the way down: `observe` picks,
  * `simulate` transitions in-memory, `fold`/`replay` project the log. None of it
@@ -34,7 +34,7 @@
  * the real folder-direct-to-main sink is a follow-up adapter.
  *
  * Composes with (exact paths):
- *   - tools/observe/observe.ts (simulate = the pure reducer; World / NextAction)
+ *   - src/Core.TypeScript/observe/observe.ts (simulate = the pure reducer; World / NextAction)
  *   - docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md (the event log + materialized views)
  *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md (the observe→act loop this completes)
  *   - docs/backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md (eventually-consistent git-native indexes — the read side of the same log)
@@ -44,7 +44,13 @@
  */
 
 import { simulate, type NextAction, type World } from "./observe";
-import { executeDoItem, type CommandExecutor, type DoItemOptions, type DoItemResult, type ActionObservation } from "./do-item";
+import {
+  executeDoItem,
+  type CommandExecutor,
+  type DoItemOptions,
+  type DoItemResult,
+  type ActionObservation,
+} from "./do-item";
 
 export type { CommandExecutor, DoItemOptions, DoItemResult, ActionObservation };
 
@@ -72,8 +78,14 @@ export function fakeOperatorPort(): OperatorPort & { preserved: string[]; respon
   return {
     preserved,
     responses,
-    preserveFerry: async (content) => { preserved.push(content); return { ok: true, path: `ferry/${preserved.length}.md` }; },
-    emitResponse: async (text) => { responses.push(text); return { ok: true }; },
+    preserveFerry: async (content) => {
+      preserved.push(content);
+      return { ok: true, path: `ferry/${preserved.length}.md` };
+    },
+    emitResponse: async (text) => {
+      responses.push(text);
+      return { ok: true };
+    },
   };
 }
 

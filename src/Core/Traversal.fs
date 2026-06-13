@@ -56,9 +56,10 @@ module Traversal =
         |> List.sortByDescending voi
         |> List.fold
             (fun (spent, chosen) t ->
-                if spent + t.Cost <= budget then (spent + t.Cost, chosen @ [ t ]) else (spent, chosen))
+                if spent + t.Cost <= budget then (spent + t.Cost, t :: chosen) else (spent, chosen))
             (0.0, [])
         |> snd
+        |> List.rev
 
     /// Run the scheduled traversals from a state, returning each resolved clarity (with its target label).
     let runScheduled (budget: float) (f: Chip8Cow.Frame) (ts: Traversal<'r> list) : (string * 'r) list =

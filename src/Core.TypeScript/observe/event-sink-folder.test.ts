@@ -1,5 +1,5 @@
 /**
- * tools/observe/event-sink-folder.test.ts — the real folder-direct-to-main sink.
+ * src/Core.TypeScript/observe/event-sink-folder.test.ts — the real folder-direct-to-main sink.
  *
  * No real git: `commit` is injected with a fake. Writes go to a real temp dir.
  * Verifies the fact envelope shape + ZetaId identity (Category.WorkItem) +
@@ -14,7 +14,14 @@ import { join } from "node:path";
 import { unpack } from "../zeta-id/zeta-id";
 import { Category, type ZetaId } from "../zeta-id/types";
 import { execute } from "./execute";
-import { coauthorFor, folderSink, gitCommitToMain, mintObserveEventIdHex, type CommitOutcome, type EventEnvelope } from "./event-sink-folder";
+import {
+  coauthorFor,
+  folderSink,
+  gitCommitToMain,
+  mintObserveEventIdHex,
+  type CommitOutcome,
+  type EventEnvelope,
+} from "./event-sink-folder";
 import type { NextAction, World } from "./observe";
 
 let dir: string;
@@ -63,7 +70,13 @@ describe("folderSink — write the fact envelope + commit", () => {
   });
 
   it("rejects a same-id collision with DIFFERENT content (not a silent no-op)", async () => {
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_CLASH, now: () => FIXED, commit: okCommit });
+    const sink = folderSink({
+      eventDir: dir,
+      by: "otto-cli",
+      mint: () => ID_CLASH,
+      now: () => FIXED,
+      commit: okCommit,
+    });
     const first = await sink.append(freeTime);
     const second = await sink.append({ kind: "self_reflect", reason: "different action, same id" });
     expect(first.ok).toBe(true);
@@ -82,7 +95,13 @@ describe("folderSink — write the fact envelope + commit", () => {
 
   it("surfaces a commit failure as ok:false (never throws)", async () => {
     const failCommit = (): CommitOutcome => ({ ok: false, reason: "not on main" });
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_FAILC, now: () => FIXED, commit: failCommit });
+    const sink = folderSink({
+      eventDir: dir,
+      by: "otto-cli",
+      mint: () => ID_FAILC,
+      now: () => FIXED,
+      commit: failCommit,
+    });
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("not on main");
@@ -91,7 +110,13 @@ describe("folderSink — write the fact envelope + commit", () => {
   });
 
   it("surfaces a write failure as ok:false (unwritable dir, never throws)", async () => {
-    const sink = folderSink({ eventDir: "/dev/null/cannot-create", by: "otto-cli", mint: () => ID_WRITEF, now: () => FIXED, commit: okCommit });
+    const sink = folderSink({
+      eventDir: "/dev/null/cannot-create",
+      by: "otto-cli",
+      mint: () => ID_WRITEF,
+      now: () => FIXED,
+      commit: okCommit,
+    });
     const r = await sink.append(freeTime);
     expect(r.ok).toBe(false);
     expect(committed).toHaveLength(0); // never reached commit
@@ -100,11 +125,19 @@ describe("folderSink — write the fact envelope + commit", () => {
   it("does NOT delete a pre-existing durable event when a later append's commit fails (G-Set P0)", async () => {
     const ID_DUR = "1".repeat(32);
     // 1) land the event durably (commit ok)
-    await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_DUR, now: () => FIXED, commit: okCommit }).append(freeTime);
+    await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_DUR, now: () => FIXED, commit: okCommit }).append(
+      freeTime,
+    );
     expect(existsSync(join(dir, `${ID_DUR}.json`))).toBe(true);
     // 2) a second append of the SAME id whose commit fails must NOT delete the pre-existing file
     const failCommit = (): CommitOutcome => ({ ok: false, reason: "not on main" });
-    const r = await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_DUR, now: () => FIXED, commit: failCommit }).append(freeTime);
+    const r = await folderSink({
+      eventDir: dir,
+      by: "otto-cli",
+      mint: () => ID_DUR,
+      now: () => FIXED,
+      commit: failCommit,
+    }).append(freeTime);
     expect(r.ok).toBe(false);
     expect(existsSync(join(dir, `${ID_DUR}.json`))).toBe(true); // durable event preserved
   });
@@ -114,14 +147,26 @@ describe("folderSink — write the fact envelope + commit", () => {
     const throwCommit = (): CommitOutcome => {
       throw new Error("boom");
     };
-    const r = await folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_THROW, now: () => FIXED, commit: throwCommit }).append(freeTime);
+    const r = await folderSink({
+      eventDir: dir,
+      by: "otto-cli",
+      mint: () => ID_THROW,
+      now: () => FIXED,
+      commit: throwCommit,
+    }).append(freeTime);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toContain("append failed");
     expect(existsSync(join(dir, `${ID_THROW}.json`))).toBe(false); // our half-written file cleaned up
   });
 
   it("converts an injected throw (now()=NaN) to ok:false, never throws (Result-only contract)", async () => {
-    const sink = folderSink({ eventDir: dir, by: "otto-cli", mint: () => ID_A, now: () => Number.NaN, commit: okCommit });
+    const sink = folderSink({
+      eventDir: dir,
+      by: "otto-cli",
+      mint: () => ID_A,
+      now: () => Number.NaN,
+      commit: okCommit,
+    });
     const r = await sink.append(freeTime); // new Date(NaN).toISOString() throws inside append
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toContain("append failed");

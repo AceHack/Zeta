@@ -1,7 +1,7 @@
 //! observe/simulate/fold event algebra (B-0867.27) — Rust parity oracle (#4 of
 //! TS/F#/C#/Rust) for the cross-language compiler-BFT consensus (B-0944, "the
 //! compilers don't lie"). The algebra replays the shared golden-vector fixture
-//! (tools/observe/golden-vectors.json) and must value-match the TS reference.
+//! (src/Core.TypeScript/observe/golden-vectors.json) and must value-match the TS reference.
 //!
 //! JSON ingestion is hexagonal (ports & adapters). The forward-only
 //! [`json_reader::JsonReader`] is the streaming PRIMITIVE (Utf8JsonReader model:

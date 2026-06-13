@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 /**
- * tools/observe/backlog-reader.ts — bridge the REAL backlog to the observe DU.
+ * src/Core.TypeScript/observe/backlog-reader.ts — bridge the REAL backlog to the observe DU.
  *
  * observe.ts's `observe()` is the pure 4-button controller (a toy oracle over a
  * synthetic BacklogItem). The REAL backlog already has a deterministic selector:
- * `tools/backlog/autonomous-pickup.ts` `selectNextBacklogItem` (priority-ranked,
+ * `src/Core.TypeScript/backlog/autonomous-pickup.ts` `selectNextBacklogItem` (priority-ranked,
  * dependency-aware, claim-aware, decompose-vs-claim). This reader REUSES it and
  * maps its `PickupSelection` onto the observe `NextAction` DU — it does NOT
  * reimplement selection. So on real rows, `selectNextBacklogItem` is the oracle;

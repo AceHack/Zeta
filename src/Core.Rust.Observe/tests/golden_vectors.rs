@@ -1,7 +1,7 @@
 //! Cross-language-parity = non-Byzantine-BFT (B-0944): the Rust observe-algebra
 //! (oracle #4) replays the SHARED golden-vector fixture and must produce the SAME
 //! states the TS reference (oracle #1) emitted — and that the F#/C# oracles already
-//! reproduced. "The compilers don't lie." Fixture: tools/observe/golden-vectors.json.
+//! reproduced. "The compilers don't lie." Fixture: src/Core.TypeScript/observe/golden-vectors.json.
 //!
 //! The parity tests use the zero-dep `ZetaJsonParser`. The differential test
 //! (feature `serde`) parses the fixture with BOTH our parser and the serde adapter
@@ -27,7 +27,7 @@ fn repo_root() -> PathBuf {
 /// Parse the fixture with the given parser → (initial, events, expectedFinal,
 /// expectedReplay). Panics with a clear message on any shape mismatch.
 fn load(parser: &dyn JsonParser) -> (World, Vec<NextAction>, World, Vec<World>) {
-    let path = repo_root().join("tools/observe/golden-vectors.json");
+    let path = repo_root().join("src/Core.TypeScript/observe/golden-vectors.json");
     let text = std::fs::read_to_string(&path).expect("read golden-vectors.json");
     let root = parser.parse(&text).expect("parse golden-vectors.json");
 

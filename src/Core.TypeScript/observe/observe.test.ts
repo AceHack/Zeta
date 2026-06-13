@@ -1,5 +1,5 @@
 /**
- * tools/observe/observe.test.ts — the controller's decision table.
+ * src/Core.TypeScript/observe/observe.test.ts — the controller's decision table.
  *
  * Four layers:
  *  - the pure `observe()` decision table over a World (exact assertions);
@@ -41,7 +41,8 @@ const item = (id: string, ready: boolean, ambiguous: boolean, needsNewAction = f
 });
 
 /** World builder: backlog + optional operator channel (omit the prop when absent — exactOptionalPropertyTypes). */
-const w = (backlog: BacklogItem[], operator?: OperatorChannel): World => (operator ? { backlog, operator } : { backlog });
+const w = (backlog: BacklogItem[], operator?: OperatorChannel): World =>
+  operator ? { backlog, operator } : { backlog };
 const op = (pendingMessage: boolean, pendingFerry: boolean): OperatorChannel => ({ pendingMessage, pendingFerry });
 
 /** The four always-available free modes. */
@@ -81,9 +82,9 @@ describe("observe — backlog controller (no operator channel wired)", () => {
   });
 
   it("priority order is do > decompose > edit_grammar > explore(forward default)", () => {
-    expect(observe(w([item("B-edit", false, false, true), item("B-amb", false, true), item("B-ready", true, false)])).kind).toBe(
-      "do_item",
-    );
+    expect(
+      observe(w([item("B-edit", false, false, true), item("B-amb", false, true), item("B-ready", true, false)])).kind,
+    ).toBe("do_item");
     expect(observe(w([item("B-edit", false, false, true), item("B-amb", false, true)])).kind).toBe("decompose");
     expect(observe(w([item("B-edit", false, false, true), item("B-idle", false, false)])).kind).toBe("edit_grammar");
     expect(observe(w([item("B-idle", false, false)])).kind).toBe("explore");
@@ -353,7 +354,11 @@ describe("the loop — real local LLM (ollama) when reachable; the mock loop abo
       "free_time",
       "edit_grammar",
     ]);
-    const { trace, finalWorld } = await runLoop(w([item("B-ready", true, false), item("B-amb", false, true)]), backend, 25);
+    const { trace, finalWorld } = await runLoop(
+      w([item("B-ready", true, false), item("B-amb", false, true)]),
+      backend,
+      25,
+    );
     expect(trace.length).toBeGreaterThan(0);
     expect(trace.every((a) => valid.has(a.kind))).toBe(true); // every choice is a real menu action
     expect(Array.isArray(finalWorld.backlog)).toBe(true); // simulate produced well-formed worlds
@@ -399,7 +404,10 @@ describe("fold — event-sourcing projection (state is a projection of the event
   it("fold does not mutate the initial world (pure projection)", () => {
     const initial = w([item("B-1", true, false)]);
     const snapshot = JSON.stringify(initial);
-    fold(initial, [{ kind: "do_item", item: item("B-1", true, false) }, { kind: "explore", reason: "x" }]);
+    fold(initial, [
+      { kind: "do_item", item: item("B-1", true, false) },
+      { kind: "explore", reason: "x" },
+    ]);
     expect(JSON.stringify(initial)).toBe(snapshot);
   });
 

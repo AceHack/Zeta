@@ -1,5 +1,5 @@
 /**
- * tools/observe/golden-vectors.test.ts — the conformance fixture is in sync + the
+ * src/Core.TypeScript/observe/golden-vectors.test.ts — the conformance fixture is in sync + the
  * reference fold/replay reproduce it. The committed golden-vectors.json is the
  * cross-language spec (B-0867.27); these tests keep it honest on the TS side. The
  * F#/C#/Rust impls will run the SAME fixture and assert the same expected states.

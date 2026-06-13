@@ -12,7 +12,7 @@ open Zeta.Core.FSharp.Observe
 /// delta-log event, `World` becomes the persisted `Remains`, and `Observe.Algebra.fold` over
 /// the log = recovery.
 ///
-/// Wire form mirrors `tools/observe/observe.ts` (snake/lower tags: "work", "self_reflect",
+/// Wire form mirrors `src/Core.TypeScript/observe/observe.ts` (snake/lower tags: "work", "self_reflect",
 /// "preserve_ferry", …) so the persisted form is parity-faithful across the 4 oracles. Encoders
 /// are total; decoders return `Result<_, string>` (Result-over-exception). The Observe oracle
 /// stays dependency-free — this coupling to `DynamicValue` lives ONLY here.

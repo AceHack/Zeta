@@ -2,6 +2,6 @@
   "model": "claude-opus-4-8",
   "bytesPerToken": 3.8,
   "calibrated": false,
-  "provenance": "PLACEHOLDER — industry-typical ~3.5-4 UTF-8 bytes/token for English+code (OpenAI/Anthropic rule-of-thumb). NOT measured against the real tokenizer. Run `bun tools/observe/token-calibration.ts --fit` once token-calibration.json.samples carry observedTokens from the real tokenizer.",
+  "provenance": "PLACEHOLDER — industry-typical ~3.5-4 UTF-8 bytes/token for English+code (OpenAI/Anthropic rule-of-thumb). NOT measured against the real tokenizer. Run `bun src/Core.TypeScript/observe/token-calibration.ts --fit` once token-calibration.json.samples carry observedTokens from the real tokenizer.",
   "samples": []
 }

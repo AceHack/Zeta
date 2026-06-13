@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/observe/golden-vectors.ts — the cross-language conformance spec.
+ * src/Core.TypeScript/observe/golden-vectors.ts — the cross-language conformance spec.
  *
  * One language-neutral scenario (an initial world + an event log covering every
  * NextAction kind) that EVERY implementation of the observe/simulate/fold algebra
@@ -17,7 +17,7 @@
  * byte-identical JSON — canonical cross-language serialization is a separate
  * refinement; agreement is on the projected state, not the wire format.)
  *
- * Regenerate: `bun tools/observe/golden-vectors.ts` (deterministic — same
+ * Regenerate: `bun src/Core.TypeScript/observe/golden-vectors.ts` (deterministic — same
  * scenario → same JSON, per DST). The committed JSON is the spec; the test keeps
  * it in sync.
  */
@@ -92,5 +92,7 @@ if (import.meta.main) {
   const vectors = generateGoldenVectors();
   writeFileSync(GOLDEN_VECTORS_PATH, `${JSON.stringify(vectors, null, 2)}\n`);
   console.log(`wrote ${GOLDEN_VECTORS_PATH}`);
-  console.log(`  ${vectors.events.length} events; final backlog=${String(vectors.expectedFinalState.backlog.length)} mode=${vectors.expectedFinalState.mode ?? "-"}`);
+  console.log(
+    `  ${vectors.events.length} events; final backlog=${String(vectors.expectedFinalState.backlog.length)} mode=${vectors.expectedFinalState.mode ?? "-"}`,
+  );
 }

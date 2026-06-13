@@ -1,5 +1,5 @@
 /**
- * tools/observe/execute.test.ts — the impure twin (free_time + self_reflect slice).
+ * src/Core.TypeScript/observe/execute.test.ts — the impure twin (free_time + self_reflect slice).
  *
  * Verifies: execute appends FIRST then transitions via `simulate`; the executed
  * world is identical to the pure `simulate` path; effectful kinds are

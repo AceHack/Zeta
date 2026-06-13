@@ -1,5 +1,5 @@
 /**
- * tools/observe/world-infra.ts — infrastructure state readers for the observe loop.
+ * src/Core.TypeScript/observe/world-infra.ts — infrastructure state readers for the observe loop.
  *
  * Extension to load-world.ts that adds cluster cell awareness and PR state.
  * These are the readers from the deleted move-next.ts, re-homed here as
@@ -58,11 +58,11 @@ export function readCellState(repoRoot: string): CellState {
   const result = spawnSync("launchctl", ["list"], { encoding: "utf8", timeout: 5000 });
   const running = (result.status === 0 ? result.stdout : "")
     .split("\n")
-    .filter(l => l.includes("com.lucent.zeta."))
-    .map(l => l.split("\t").pop()?.replace("com.lucent.zeta.", "") || "")
+    .filter((l) => l.includes("com.lucent.zeta."))
+    .map((l) => l.split("\t").pop()?.replace("com.lucent.zeta.", "") || "")
     .filter(Boolean);
 
-  const missing = declared.filter(c => !running.includes(c.agent));
+  const missing = declared.filter((c) => !running.includes(c.agent));
 
   return { declared, running, missing };
 }
@@ -76,22 +76,28 @@ export interface PRInfo {
 }
 
 export function readPRState(): { open: readonly PRInfo[]; clean: readonly PRInfo[] } {
-  const result = spawnSync("gh", [
-    "pr", "list", "--state", "open", "--limit", "20",
-    "--json", "number,title,mergeStateStatus",
-  ], { encoding: "utf8", timeout: 30000 });
+  const result = spawnSync(
+    "gh",
+    ["pr", "list", "--state", "open", "--limit", "20", "--json", "number,title,mergeStateStatus"],
+    { encoding: "utf8", timeout: 30000 },
+  );
 
   if (result.status !== 0) return { open: [], clean: [] };
 
   let prs: PRInfo[] = [];
   try {
-    prs = (JSON.parse(result.stdout) as { number: number; title: string; mergeStateStatus: string }[])
-      .map(p => ({ number: p.number, title: p.title, mergeState: p.mergeStateStatus }));
-  } catch { /* parse failure → empty */ }
+    prs = (JSON.parse(result.stdout) as { number: number; title: string; mergeStateStatus: string }[]).map((p) => ({
+      number: p.number,
+      title: p.title,
+      mergeState: p.mergeStateStatus,
+    }));
+  } catch {
+    /* parse failure → empty */
+  }
 
   return {
     open: prs,
-    clean: prs.filter(p => p.mergeState === "CLEAN"),
+    clean: prs.filter((p) => p.mergeState === "CLEAN"),
   };
 }
 

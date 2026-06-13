@@ -1,7 +1,7 @@
 //! The event-algebra types. Native Rust enums = native discriminated unions, and
 //! `#[derive(PartialEq, Eq)]` gives structural equality for free — including
 //! element-wise `Vec` comparison (no C#-style reference-equality gotcha). Mirrors
-//! the TS reference (tools/observe/observe.ts) and the F#/C# oracles.
+//! the TS reference (src/Core.TypeScript/observe/observe.ts) and the F#/C# oracles.
 
 /// The persisted mode. The JSON wire form uses the lower/snake strings
 /// `"work" | "explore" | "play" | "self_reflect" | "free_time"`.

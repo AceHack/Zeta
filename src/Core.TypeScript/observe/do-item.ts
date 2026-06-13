@@ -1,5 +1,5 @@
 /**
- * tools/observe/do-item.ts — effectful `do_item`, Phase 1 (B-0964).
+ * src/Core.TypeScript/observe/do-item.ts — effectful `do_item`, Phase 1 (B-0964).
  *
  * `do_item` is the first action kind with a REAL side-effect (the agent actually
  * does work). The other kinds `execute` handles (`free_time`/`self_reflect`) have
@@ -40,8 +40,8 @@
  * until reconciled (needs a World in-flight field — beyond Phase-1's envelope scope).
  *
  * Composes with (exact paths):
- *   - tools/observe/observe.ts (simulate = the single reducer; World / BacklogItem)
- *   - tools/observe/execute.ts (EventSink<E> = the durability port reused here for observations; AppendOutcome)
+ *   - src/Core.TypeScript/observe/observe.ts (simulate = the single reducer; World / BacklogItem)
+ *   - src/Core.TypeScript/observe/execute.ts (EventSink<E> = the durability port reused here for observations; AppendOutcome)
  *   - docs/backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md (Result<T, TFeedback>)

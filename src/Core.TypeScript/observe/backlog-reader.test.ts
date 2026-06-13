@@ -1,5 +1,5 @@
 /**
- * tools/observe/backlog-reader.test.ts
+ * src/Core.TypeScript/observe/backlog-reader.test.ts
  *
  * Two layers:
  *  - `pickupToAction` mapping (pure, exact) — PickupSelection → observe DU; and

@@ -1,5 +1,5 @@
 /**
- * tools/observe/do-item.test.ts — Phase-1 acceptance for effectful do_item (B-0964).
+ * src/Core.TypeScript/observe/do-item.test.ts — Phase-1 acceptance for effectful do_item (B-0964).
  *
  * Proves: the observation envelope (Started→Succeeded|Failed), the injected executor port
  * (fake — no shell), the success/failure transitions, the audit tier in the

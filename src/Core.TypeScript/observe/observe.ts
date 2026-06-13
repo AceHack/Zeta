@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/observe/observe.ts — the simplest autonomous-loop controller.
+ * src/Core.TypeScript/observe/observe.ts — the simplest autonomous-loop controller.
  *
  * The whole loop as a tiny set of buttons. Each tick: look at the WORLD (the
  * wired channels), pick ONE action. This is the do/decompose/free-time grammar

@@ -3,7 +3,7 @@ namespace Zeta.Core.CSharp.Observe;
 /// <summary>
 /// The pure event algebra. Three functions, all deterministic + side-effect-free:
 /// <c>Simulate</c> (the reducer / step), <c>Fold</c> (left-fold = projection),
-/// <c>Replay</c> (state after each event). These mirror tools/observe/observe.ts
+/// <c>Replay</c> (state after each event). These mirror src/Core.TypeScript/observe/observe.ts
 /// and src/Core.FSharp.Observe byte-for-byte in behaviour, so the shared
 /// golden-vector fixture produces the SAME states here — the cross-language-parity
 /// = non-Byzantine-BFT check (B-0944).

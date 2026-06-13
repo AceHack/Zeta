@@ -1,7 +1,7 @@
 namespace Zeta.Core.FSharp.Observe
 
 /// The pure controller / **chooser** — `observe : World -> NextAction`, the deterministic v0
-/// decision function. F# port (oracle #2) of the `observe()` in `tools/observe/observe.ts`,
+/// decision function. F# port (oracle #2) of the `observe()` in `src/Core.TypeScript/observe/observe.ts`,
 /// mirroring it exactly so the choice is cross-language parity (B-0944) like the reducer.
 ///
 /// Priority: **operator > offered-work > forward-default.** `preserve_ferry` (durability-first)

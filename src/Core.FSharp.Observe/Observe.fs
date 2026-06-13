@@ -5,8 +5,8 @@ namespace Zeta.Core.FSharp.Observe
 ///   fold     : World -> NextAction list -> World          (left-fold = projection)
 ///   replay   : World -> NextAction list -> World list     (state after each event)
 ///
-/// These mirror tools/observe/observe.ts byte-for-byte in behaviour so the shared
-/// golden-vector fixture (tools/observe/golden-vectors.json) produces the SAME
+/// These mirror src/Core.TypeScript/observe/observe.ts byte-for-byte in behaviour so the shared
+/// golden-vector fixture (src/Core.TypeScript/observe/golden-vectors.json) produces the SAME
 /// states here as in TS — the cross-language-parity = non-Byzantine-BFT check
 /// (B-0944: agreement across independent compilers, not trust in any one).
 ///

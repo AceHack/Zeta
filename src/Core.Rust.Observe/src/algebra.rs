@@ -1,5 +1,5 @@
 //! The pure event algebra: `simulate` (reducer) / `fold` (projection) / `replay`.
-//! Mirrors tools/observe/observe.ts + the F#/C# oracles byte-for-byte in behaviour,
+//! Mirrors src/Core.TypeScript/observe/observe.ts + the F#/C# oracles byte-for-byte in behaviour,
 //! so the shared golden-vector fixture produces the SAME states here — the
 //! cross-language-parity = non-Byzantine-BFT check (B-0944).
 //!

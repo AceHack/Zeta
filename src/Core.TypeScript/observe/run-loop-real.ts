@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/observe/run-loop-real.ts — the real observe loop, wired end-to-end.
+ * src/Core.TypeScript/observe/run-loop-real.ts — the real observe loop, wired end-to-end.
  *
  * Connects the three completed subsystems:
  *   loadWorld()    → real World from backlog + event log + operator channel
@@ -12,8 +12,8 @@
  * on success, 1 on execute failure, 2 on loadWorld failure.
  *
  * Usage:
- *   bun tools/observe/run-loop-real.ts [--by <agentId>] [--event-dir <path>]
- *   bun tools/observe/run-loop-real.ts --dry-run
+ *   bun src/Core.TypeScript/observe/run-loop-real.ts [--by <agentId>] [--event-dir <path>]
+ *   bun src/Core.TypeScript/observe/run-loop-real.ts --dry-run
  *
  * Flags:
  *   --by <id>         Agent identity (default: "alexa", from ZETA_AGENT_ID env)
@@ -43,10 +43,15 @@ function parseArgs(argv: string[]): CliArgs {
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
-    if (arg === "--by" && argv[i + 1]) { args.by = argv[++i]!; }
-    else if (arg === "--event-dir" && argv[i + 1]) { args.eventDir = argv[++i]!; }
-    else if (arg === "--repo-root" && argv[i + 1]) { args.repoRoot = argv[++i]!; }
-    else if (arg === "--dry-run") { args.dryRun = true; }
+    if (arg === "--by" && argv[i + 1]) {
+      args.by = argv[++i]!;
+    } else if (arg === "--event-dir" && argv[i + 1]) {
+      args.eventDir = argv[++i]!;
+    } else if (arg === "--repo-root" && argv[i + 1]) {
+      args.repoRoot = argv[++i]!;
+    } else if (arg === "--dry-run") {
+      args.dryRun = true;
+    }
   }
   return args;
 }
@@ -90,7 +95,9 @@ async function main(): Promise<number> {
   const result = await execute(world, action, sink, undefined, undefined, operatorPort);
 
   if (!result.ok) {
-    console.error(`[execute] FAILED: ${result.feedback.kind} — ${result.feedback.kind === "append-failed" ? result.feedback.reason : result.feedback.actionKind}`);
+    console.error(
+      `[execute] FAILED: ${result.feedback.kind} — ${result.feedback.kind === "append-failed" ? result.feedback.reason : result.feedback.actionKind}`,
+    );
     return 1;
   }
 

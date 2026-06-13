@@ -1,5 +1,5 @@
 /**
- * tools/observe/load-world.test.ts — the real World snapshot (read side of the loop).
+ * src/Core.TypeScript/observe/load-world.test.ts — the real World snapshot (read side of the loop).
  *
  * Backlog channel is injected (so no real repo backlog needed); mode channel reads
  * real event JSON from a temp dir (the schema-on-read fold). Closes-the-loop test:
@@ -40,12 +40,21 @@ describe("readEventActions — schema-on-read, deterministic order", () => {
 
   it("skips malformed files, non-canonical ids, unknown kinds, and ill-shaped payloads", () => {
     writeFileSync(join(dir, "bad.json"), "{not json");
-    writeFileSync(join(dir, `${ID("c")}.json`), JSON.stringify({ id: "short", at: "t", action: { kind: "free_time", reason: "x" } }));
-    writeFileSync(join(dir, `${ID("d")}.json`), JSON.stringify({ id: ID("d"), at: "t", action: { kind: "bogus_kind" } }));
+    writeFileSync(
+      join(dir, `${ID("c")}.json`),
+      JSON.stringify({ id: "short", at: "t", action: { kind: "free_time", reason: "x" } }),
+    );
+    writeFileSync(
+      join(dir, `${ID("d")}.json`),
+      JSON.stringify({ id: ID("d"), at: "t", action: { kind: "bogus_kind" } }),
+    );
     // canonical id + known kind but NO item — would throw in simulate; must be skipped
     writeFileSync(join(dir, `${ID("9")}.json`), JSON.stringify({ id: ID("9"), at: "t", action: { kind: "do_item" } }));
     // known reason-kind but no reason — skipped
-    writeFileSync(join(dir, `${ID("8")}.json`), JSON.stringify({ id: ID("8"), at: "t", action: { kind: "free_time" } }));
+    writeFileSync(
+      join(dir, `${ID("8")}.json`),
+      JSON.stringify({ id: ID("8"), at: "t", action: { kind: "free_time" } }),
+    );
     writeEvent(ID("e"), "2026-05-31T00:00:01.000Z", { kind: "free_time", reason: "ok" });
     expect(readEventActions(dir).map((a) => a.kind)).toEqual(["free_time"]);
   });
@@ -53,7 +62,15 @@ describe("readEventActions — schema-on-read, deterministic order", () => {
   it("recurses into date-partitioned subdirs (YYYY/MM/DD/{id}.json)", () => {
     const day = join(dir, "2026", "05", "31");
     mkdirSync(day, { recursive: true });
-    writeFileSync(join(day, `${ID("a")}.json`), JSON.stringify({ id: ID("a"), at: "2026-05-31T00:00:01.000Z", by: "otto-cli", action: { kind: "self_reflect", reason: "deep" } }));
+    writeFileSync(
+      join(day, `${ID("a")}.json`),
+      JSON.stringify({
+        id: ID("a"),
+        at: "2026-05-31T00:00:01.000Z",
+        by: "otto-cli",
+        action: { kind: "self_reflect", reason: "deep" },
+      }),
+    );
     expect(readEventActions(dir).map((a) => a.kind)).toEqual(["self_reflect"]);
   });
 

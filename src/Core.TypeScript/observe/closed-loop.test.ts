@@ -1,5 +1,5 @@
 /**
- * tools/observe/closed-loop.test.ts — the END-TO-END CLOSED-LOOP integration test
+ * src/Core.TypeScript/observe/closed-loop.test.ts — the END-TO-END CLOSED-LOOP integration test
  * (B-0958 LEFT item #2). The operator 2026-06-01: "any slice is fine; test with our
  * local-llm tests we already have until we feel comfortable turning it on for
  * Otto in the foreground loop."
@@ -25,11 +25,11 @@
  * outcome channel; the test injects fakes so CI is an always-green shield.
  *
  * Composes with (exact paths):
- *   - tools/observe/observe.ts           (observeWithLlm / buildMenu / fold / simulate / World / NextAction)
- *   - tools/observe/execute.ts           (execute = effect + append + simulate; EventSink)
+ *   - src/Core.TypeScript/observe/observe.ts           (observeWithLlm / buildMenu / fold / simulate / World / NextAction)
+ *   - src/Core.TypeScript/observe/execute.ts           (execute = effect + append + simulate; EventSink)
  *   - tools/accelerator/local-llm.ts     (ModelBackend — the injected chooser backend)
- *   - tools/observe/observe.test.ts      (the in-memory loop test this complements)
- *   - tools/observe/execute.test.ts      (the fakeSink pattern reused here)
+ *   - src/Core.TypeScript/observe/observe.test.ts      (the in-memory loop test this complements)
+ *   - src/Core.TypeScript/observe/execute.test.ts      (the fakeSink pattern reused here)
  *   - docs/backlog/P1/B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md (LEFT item #2: end-to-end closed-loop integration test)
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  */

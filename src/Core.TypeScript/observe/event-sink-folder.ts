@@ -1,5 +1,5 @@
 /**
- * tools/observe/event-sink-folder.ts — the real EventSink: folder-direct-to-main.
+ * src/Core.TypeScript/observe/event-sink-folder.ts — the real EventSink: folder-direct-to-main.
  *
  * The sovereign transport for `execute` (per the observe-act + DB-design + keystone
  * ADRs). Where `execute.ts` defines the `EventSink` port (append a chosen action to
@@ -35,8 +35,8 @@
  * with no real git and a temp dir.
  *
  * Composes with:
- *   - tools/observe/execute.ts (the EventSink port this implements)
- *   - tools/observe/observe.ts (NextAction — the action recorded)
+ *   - src/Core.TypeScript/observe/execute.ts (the EventSink port this implements)
+ *   - src/Core.TypeScript/observe/observe.ts (NextAction — the action recorded)
  *   - tools/agent-bus/publish.ts (the proven atomic-write + git-direct-to-main pattern this mirrors)
  *   - src/Core.TypeScript/zeta-id (the ZetaId codec — Category.WorkItem ids)
  *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
@@ -222,7 +222,10 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
     run(["fetch", "origin", "main"]);
     const ahead = run(["rev-list", "--count", "origin/main..HEAD"]);
     if (ahead !== "0") {
-      return { ok: false, reason: `local main is ${ahead} commit(s) ahead of origin/main; reconcile before appending events` };
+      return {
+        ok: false,
+        reason: `local main is ${ahead} commit(s) ahead of origin/main; reconcile before appending events`,
+      };
     }
     run(["add", gitPath]);
     // Idempotent re-append: if the file is already committed + unchanged, `git add` stages

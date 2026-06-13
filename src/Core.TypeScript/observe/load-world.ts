@@ -1,5 +1,5 @@
 /**
- * tools/observe/load-world.ts — wire the real World snapshot (closes the loop).
+ * src/Core.TypeScript/observe/load-world.ts — wire the real World snapshot (closes the loop).
  *
  * observe.ts's roadmap was "wire the real World snapshot + execute the pick." The
  * execute side landed (execute.ts + event-sink-folder.ts). `loadWorld` is the
@@ -31,9 +31,9 @@
  * whole thing is testable without the real backlog.
  *
  * Composes with:
- *   - tools/observe/observe.ts (World / BacklogItem / Mode / NextAction / fold)
- *   - tools/observe/backlog-reader.ts (the backlog channel; selector = oracle)
- *   - tools/observe/execute.ts + event-sink-folder.ts (the write side this reads back)
+ *   - src/Core.TypeScript/observe/observe.ts (World / BacklogItem / Mode / NextAction / fold)
+ *   - src/Core.TypeScript/observe/backlog-reader.ts (the backlog channel; selector = oracle)
+ *   - src/Core.TypeScript/observe/execute.ts + event-sink-folder.ts (the write side this reads back)
  *   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
  */
 
@@ -146,8 +146,7 @@ export function loadWorld(opts: LoadWorldOptions): World {
     ? opts.nextAction()
     : nextActionFromBacklog(opts.repoRoot ?? process.cwd(), opts.activeClaims ?? [], opts.maxPriority ?? "P2");
   // Selector = oracle: the chosen item IS the backlog for this tick (no re-selection).
-  const backlog: readonly BacklogItem[] =
-    next.kind === "do_item" || next.kind === "decompose" ? [next.item] : [];
+  const backlog: readonly BacklogItem[] = next.kind === "do_item" || next.kind === "decompose" ? [next.item] : [];
 
   // Mode = projection of the event log (v5). Fold over an EMPTY backlog: mode
   // transitions don't depend on backlog contents, so this isolates the persisted mode.
