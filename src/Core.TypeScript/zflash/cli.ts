@@ -1,7 +1,5 @@
 #!/usr/bin/env bun
-// full-ai-cluster/tools/zflash.ts
-//
-// Ultra-short wrapper around flash-usb.ts for the AI-cluster installer.
+// src/Core.TypeScript/zflash/cli.ts — zflash operator CLI (ISO discovery, USB flash, ESP inject).
 //
 // Auto-discovers the newest `~/Downloads/zeta-installer-*.iso`, invokes
 // flash-usb with the `--short` challenge format, and lets sudo's PAM
@@ -18,7 +16,7 @@
 //
 // End-to-end keystrokes after first-time setup:
 //
-//   $ bun full-ai-cluster/tools/zflash.ts
+//   $ bun src/Core.TypeScript/zflash/cli.ts
 //   ISO: ~/Downloads/zeta-installer-25.11.iso (1.70 GiB)
 //   USB: /dev/disk6 (115 GiB, USB 3.2.1 FD)
 //   *** ALL DATA ON /dev/disk6 WILL BE DESTROYED ***
@@ -32,7 +30,7 @@
 // Recommended shell alias (set up by zflash-setup) — note the path
 // is shell-quoted so checkout paths containing spaces / unicode work
 // (zflash-setup emits the quoted form automatically):
-//   alias zflash='bun "/Users/acehack/Documents/src/repos/Zeta/full-ai-cluster/tools/zflash.ts"'
+//   alias zflash='bun "/path/to/Zeta/src/Core.TypeScript/zflash/cli.ts"'
 // Then just type: zflash
 //
 // Safety contract — preserved end-to-end:
@@ -71,12 +69,12 @@ import {
   buildBlob,
   composeBundle,
   parseArgs as parsePersistArgs,
-} from "../../src/Core.TypeScript/installer/zeta-creds-persist";
+} from "../installer/zeta-creds-persist";
 import {
   composeAuthorizedKeysFileContent,
   parseUuidFromDiskutilInfo,
   ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
-} from "./zflash-lib";
+} from "./lib.ts";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -142,8 +140,8 @@ function autoDiscoverIso(): string {
 //     local newest → contributor never has to remember `gh run download`
 
 const INSTALL_SUBSTRATE_FILES = [
-  "full-ai-cluster/tools/zflash.ts",
-  "full-ai-cluster/tools/flash-usb.ts",
+  "src/Core.TypeScript/zflash/cli.ts",
+  "src/Core.TypeScript/zflash/flash-usb.ts",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "full-ai-cluster/usb-nixos-installer/flake.nix",
   "full-ai-cluster/nixos/modules/initial-password.nix",
@@ -1044,7 +1042,7 @@ async function main() {
   const isHelp = rawFlags.includes("-h") || rawFlags.includes("--help");
   if (isHelp) {
     process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/zflash.ts [flags] [iso-path]\n" +
+      "Usage: bun src/Core.TypeScript/zflash/cli.ts [flags] [iso-path]\n" +
         "  --ssh-key <path>          override default ~/.ssh/id_ed25519.pub for iter-4.2 inject\n" +
         "  --no-inject               skip the iter-4.2 ESP pubkey write (v1 manual-edit fallback)\n" +
         "  --skip-freshness-check    bypass iter-4.3 stale-checkout detection (NOT recommended)\n" +

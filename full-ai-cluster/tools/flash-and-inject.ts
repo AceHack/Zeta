@@ -42,7 +42,7 @@ import {
 import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { autoDiscoverIso, human, validateIso } from "./flash-usb-windows.ts";
+import { autoDiscoverIso, human, validateIso } from "../../src/Core.TypeScript/zflash/flash-usb-windows.ts";
 
 const device = process.argv[2] ?? "\\\\.\\PhysicalDrive3";
 const keyFile = process.argv[3]!;

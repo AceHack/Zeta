@@ -7,7 +7,7 @@ point at MinIO unless you repoint the endpoint.
 | App | Sync | Endpoint (in-cluster) | Port | Consumer default |
 |-----|------|------------------------|------|------------------|
 | **minio/** | automated | `blob-store.object-store.svc.cluster.local` | 9000 | **yes** |
-| **seaweedfs/** | automated | `blob-store-seaweedfs-all-in-one.object-store.svc.cluster.local` | 8333 | no (opt-in; not in kind included gate) |
+| **seaweedfs/** | automated | `blob-store-seaweedfs-all-in-one.object-store.svc.cluster.local` | 8333 | no (opt-in consumer; included gate proves deploy) |
 
 ## When to pick which (production)
 

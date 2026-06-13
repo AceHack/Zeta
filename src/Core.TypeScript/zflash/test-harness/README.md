@@ -158,8 +158,8 @@ When a scenario transitions to composes-with-existing:
 - [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 disk bootstrap + snapshot/restart command planner
 - [`path-fork.ts`](path-fork.ts) — scenario 4 migrate-vs-fresh path-fork command planner
 - [`tools/ci/audit-installer-iso-content.ts`](../../../../tools/ci/audit-installer-iso-content.ts) — cascade #4 ISO content audit
-- [`full-ai-cluster/tools/zflash.ts`](../../../../full-ai-cluster/tools/zflash.ts) — the zflash CLI under test
-- [`full-ai-cluster/tools/zflash-lib.ts`](../../../../full-ai-cluster/tools/zflash-lib.ts) — library substrate
+- [`src/Core.TypeScript/zflash/cli.ts`](../cli.ts) — the zflash CLI under test
+- [`src/Core.TypeScript/zflash/lib.ts`](../lib.ts) — library substrate
 - [`docs/runbooks/zflash-end-to-end.md`](../../../../docs/runbooks/zflash-end-to-end.md) — operator-facing runbook
 - [`docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md`](../../../../docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md) — CP-1..CP-6 critical-path sequence
 - [B-0891](../../../../docs/backlog/P1/081KSNY2Z0008QG0R0008PN7RQ-zflash-done-acceptance-criteria-qemu-test-harness-5-scenario.md) — backlog row this PoC implements

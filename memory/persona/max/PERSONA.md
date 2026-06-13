@@ -74,7 +74,7 @@ Multi-node ≠ multi-cluster. Multi-node (3 nodes in one DD-managed kind cluster
 
 ### Touch ID / biometrics integration Max gets to use
 
-Zeta has a Touch ID + PAM integration for sudo and admin operations, canonical pattern at [`full-ai-cluster/tools/zflash-setup.ts`](../../../full-ai-cluster/tools/zflash-setup.ts). When AI agents need to do anything privileged on Max's macOS workstation (installing Docker Desktop, enabling Kubernetes, mounting disks, etc.), the pattern is: AI announces → invokes via expect wrapper → Max taps fingerprint sensor → command runs with elevated privilege. **Max does not type passwords for admin operations**; if an AI agent reaches for a password prompt, that's a signal to extend the Touch ID pattern instead. Skill candidate: `tools/dev/zfingerprint.ts` — thin wrapper generalizing the zflash pattern for any Max-side privileged operation.
+Zeta has a Touch ID + PAM integration for sudo and admin operations, canonical pattern at [`src/Core.TypeScript/zflash/setup.ts`](../../../src/Core.TypeScript/zflash/setup.ts). When AI agents need to do anything privileged on Max's macOS workstation (installing Docker Desktop, enabling Kubernetes, mounting disks, etc.), the pattern is: AI announces → invokes via expect wrapper → Max taps fingerprint sensor → command runs with elevated privilege. **Max does not type passwords for admin operations**; if an AI agent reaches for a password prompt, that's a signal to extend the Touch ID pattern instead. Skill candidate: `tools/dev/zfingerprint.ts` — thin wrapper generalizing the zflash pattern for any Max-side privileged operation.
 
 ### Skills-and-scripts encoding contract (load-bearing)
 

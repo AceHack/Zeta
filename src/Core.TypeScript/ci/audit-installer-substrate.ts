@@ -83,7 +83,9 @@ const REQUIRED_FILES: readonly FileAssertion[] = [
   // B-0855.1 post-install first-boot self-registration service surface
   { path: "full-ai-cluster/nixos/modules/zeta-self-register.nix", minBytes: 500 },
   // operator-side flash tool (B-0789 + iter-5.x)
-  { path: "full-ai-cluster/tools/zflash.ts", minBytes: 1000 },
+  { path: "src/Core.TypeScript/zflash/cli.ts", minBytes: 1000 },
+  { path: "src/Core.TypeScript/zflash/flash-usb.ts", minBytes: 1000 },
+  { path: "src/Core.TypeScript/zflash/flash-usb-windows.ts", minBytes: 1000 },
 ];
 
 // Sentinel-string assertions: catches the case where a file exists but

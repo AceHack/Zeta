@@ -27,8 +27,19 @@ export function assertContainerHostReady(host: ContainerHost, repoRoot: string):
   process.exit(1);
 }
 
+function versionArgsForTool(tool: string): readonly string[] {
+  switch (tool) {
+    case "kubectl":
+      return ["version", "--client=true"];
+    case "helm":
+      return ["version", "--short"];
+    default:
+      return ["--version"];
+  }
+}
+
 export function assertProcessToolReady(runner: ProcessRunner, tool: string, repoRoot: string): void {
-  if (commandSucceeded(runner, tool, ["--version"])) return;
+  if (commandSucceeded(runner, tool, versionArgsForTool(tool))) return;
   console.error(`ERROR: ${tool} not found. Install with:`);
   console.error(installHintForTool(tool, repoRoot));
   process.exit(1);

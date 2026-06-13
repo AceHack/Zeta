@@ -1,7 +1,5 @@
 #!/usr/bin/env bun
-// full-ai-cluster/tools/flash-usb.ts
-//
-// Safety-railed `dd` wrapper for flashing the AI-cluster installer
+// src/Core.TypeScript/zflash/flash-usb.ts — safety-railed dd wrapper for installer ISO → USB.
 // ISO to a USB stick on macOS. Built so the maintainer (and any
 // autonomous agent the maintainer authorizes) can flash without
 // risk of picking the wrong device.
@@ -39,13 +37,13 @@
 //   - `diskutil eject` on success
 //
 // Usage:
-//   bun full-ai-cluster/tools/flash-usb.ts <path-to-iso>
+//   bun src/Core.TypeScript/zflash/flash-usb.ts <path-to-iso>
 //
 // Authorization for agent execution:
 //   The classifier may block `diskutil list` + `dd` even from this
 //   script. To allow an agent to run it, add to .claude/settings.json:
 //     "permissions": { "allow": [
-//       "Bash(bun full-ai-cluster/tools/flash-usb.ts *)"
+//       "Bash(bun src/Core.TypeScript/zflash/flash-usb.ts *)"
 //     ] }
 //
 //   The permission rule grants INVOCATION, not absolution. The

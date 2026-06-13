@@ -4,7 +4,7 @@
  *
  * B-0891 — produce a zflash-prepared raw boot image for QEMU scenarios 3–4.
  *
- * Wraps full-ai-cluster/tools/zflash-file-backed.ts with deterministic test
+ * Wraps src/Core.TypeScript/zflash/file-backed.ts with deterministic test
  * credentials so CI can set ZFLASH_QEMU_*_BOOT_IMAGE without physical USB.
  *
  * Usage:
@@ -26,8 +26,8 @@ import { fileURLToPath } from "node:url";
 import {
   detectIsohybridEspOffsetBytes,
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
-} from "../../../../full-ai-cluster/tools/zflash-lib";
-import { runFileBackedZflashCli } from "../../../../full-ai-cluster/tools/zflash-file-backed";
+} from "../lib.ts";
+import { runFileBackedZflashCli } from "../file-backed.ts";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";

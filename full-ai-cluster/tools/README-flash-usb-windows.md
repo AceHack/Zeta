@@ -11,12 +11,12 @@ the physical-presence gate; Windows Hello applies if configured):
 
 ```powershell
 # Right-click PowerShell -> Run as administrator, then:
-bun full-ai-cluster\tools\flash-usb-windows.ts                       # auto-discovers newest %USERPROFILE%\Downloads\zeta-installer-*.iso
-bun full-ai-cluster\tools\flash-usb-windows.ts C:\path\to\zeta-installer-25.11.iso
-bun full-ai-cluster\tools\flash-usb-windows.ts --short              # shorter `yes <4-hex>` confirm
-bun full-ai-cluster\tools\flash-usb-windows.ts --dry-run            # print device + planned commands, write NOTHING
-bun full-ai-cluster\tools\flash-usb-windows.ts --ssh-key C:\k\x.pub # inject a specific public key
-bun full-ai-cluster\tools\flash-usb-windows.ts --no-inject          # skip key injection (password-only login)
+bun src/Core.TypeScript/zflash/flash-usb-windows.ts                       # auto-discovers newest %USERPROFILE%\Downloads\zeta-installer-*.iso
+bun src/Core.TypeScript/zflash/flash-usb-windows.ts C:\path\to\zeta-installer-25.11.iso
+bun src/Core.TypeScript/zflash/flash-usb-windows.ts --short              # shorter `yes <4-hex>` confirm
+bun src/Core.TypeScript/zflash/flash-usb-windows.ts --dry-run            # print device + planned commands, write NOTHING
+bun src/Core.TypeScript/zflash/flash-usb-windows.ts --ssh-key C:\k\x.pub # inject a specific public key
+bun src/Core.TypeScript/zflash/flash-usb-windows.ts --no-inject          # skip key injection (password-only login)
 ```
 
 It prints the selected device + its volumes + a `*** WILL BE DESTROYED ***`

@@ -31,9 +31,9 @@ export class SpawnProcessRunner implements ProcessRunner {
   }
 }
 
-export function assertCommandSucceeded(result: CommandResult, argv0: string, args: readonly string[]): void {
+export function assertCommandSucceeded(result: CommandResult, _argv0: string, _args: readonly string[]): void {
   if (result.status === 0) return;
-  process.stderr.write(`ERROR: command failed: ${[argv0, ...args].join(" ")}\n`);
+  process.stderr.write(`ERROR: command failed: ${[_argv0, ..._args].join(" ")}\n`);
   process.exit(result.status ?? 1);
 }
 

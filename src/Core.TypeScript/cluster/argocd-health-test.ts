@@ -217,7 +217,6 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   "gitlab",
   "orleans",
   "platform",
-  "seaweedfs", // A/B blob-store alt; ArgoCD sync stays Unknown on kind CI — minio is the gate
   "temporal",
 ]);
 
@@ -664,7 +663,12 @@ function kubectlJsonFailure(message: string, args: readonly string[], stdout: st
   };
 }
 
-function runCommand(command: string, args: readonly string[], timeoutMs?: number): CommandOutput {
+function runCommand(
+  command: string,
+  args: readonly string[],
+  timeoutMs?: number,
+  envOverride?: NodeJS.ProcessEnv,
+): CommandOutput {
   // sonarjs/no-os-command-from-path suppression rationale: this harness
   // intentionally spawns local cluster CLIs (`docker`/`podman`, `kind`/`k3d`,
   // `kubectl`, `helm`) from PATH because those tools are the named dependency
@@ -674,7 +678,7 @@ function runCommand(command: string, args: readonly string[], timeoutMs?: number
   const result = spawnSync(command, [...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",
-    env: process.env,
+    env: envOverride === undefined ? process.env : { ...process.env, ...envOverride },
     maxBuffer: SPAWN_MAX_BUFFER,
     stdio: ["ignore", "pipe", "pipe"],
     timeout: timeoutMs,
@@ -773,8 +777,9 @@ function runOrFail(
   args: readonly string[],
   failureKind: FailureKind,
   timeoutSeconds: number,
+  envOverride?: NodeJS.ProcessEnv,
 ): Failure | null {
-  const result = runCommand(command, args, timeoutSeconds * 1000);
+  const result = runCommand(command, args, timeoutSeconds * 1000, envOverride);
   if (result.status === 0) return null;
   const signal = result.signal === null ? "" : ` signal ${result.signal}`;
   return {
@@ -835,10 +840,9 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       return runOrFail("kubectl", ["config", "use-context", `kind-${plan.clusterName}`], "KubectlFailed", 30);
     }
     return runOrFail(
-      "env",
+      "bun",
       [
-        `ZETA_CONTAINER_RUNTIME=${options.runtime}`,
-        "full-ai-cluster/dev-cluster/kind-up.sh",
+        "src/Core.TypeScript/cluster/dev-cluster/kind-up.ts",
         "--config",
         options.configPath,
         "--cluster-name",
@@ -848,14 +852,15 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
       ],
       "ClusterBootstrapFailed",
       options.timeoutSeconds,
+      { ZETA_CONTAINER_RUNTIME: options.runtime },
     );
   }
   if (options.existing) {
     return runOrFail("kubectl", ["config", "use-context", `k3d-${plan.clusterName}`], "KubectlFailed", 30);
   }
   return runOrFail(
-    "full-ai-cluster/dev-cluster/up.sh",
-    ["--config", options.configPath, "--git-ref", options.gitRef],
+    "bun",
+    ["src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts", "--config", options.configPath, "--git-ref", options.gitRef],
     "ClusterBootstrapFailed",
     options.timeoutSeconds,
   );

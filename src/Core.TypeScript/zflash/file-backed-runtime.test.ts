@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   createNodeFileBackedZflashImageExecutor,
   createNodeFileBackedZflashInlineStagingDirectory,
-} from "./zflash-file-backed-runtime";
+} from "./file-backed-runtime.ts";
 
 describe("createNodeFileBackedZflashImageExecutor", () => {
   test("creates the inline staging directory before writing UTF-8 content", () => {

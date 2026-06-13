@@ -1,5 +1,5 @@
 /**
- * full-ai-cluster/tools/flash-usb-windows.test.ts
+ * src/Core.TypeScript/zflash/flash-usb-windows.test.ts
  *
  * Runs on ANY OS (bun test). Validates the dangerous decision logic of
  * the Windows flasher — device selection, safety rails, the confirm

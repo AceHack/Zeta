@@ -23,7 +23,7 @@
  *   - tools/ci/qemu-full-install-test.ts (existing QEMU full-install starter)
  *   - tools/ci/qemu-boot-test.ts (cascade #5 boot smoke-test)
  *   - tools/ci/audit-installer-iso-content.ts (cascade #4 ISO content audit)
- *   - full-ai-cluster/tools/zflash-lib.ts (the zflash library under test)
+ *   - src/Core.TypeScript/zflash/lib.ts (the zflash library under test)
  *   - docs/runbooks/zflash-end-to-end.md (operator-facing runbook)
  *   - docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md (CP-1..CP-6)
  *
@@ -70,8 +70,8 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     composesWith: [
       "tools/ci/audit-installer-iso-content.ts",
       "tools/ci/qemu-boot-test.ts",
-      "full-ai-cluster/tools/zflash.ts",
-      "full-ai-cluster/tools/zflash-lib.ts",
+      "src/Core.TypeScript/zflash/cli.ts",
+      "src/Core.TypeScript/zflash/lib.ts",
     ],
     gates: ["boot-cluster-up"],
     notes:

@@ -1,17 +1,21 @@
 import type { ContainerHost, LocalClusterCreateSpec, LocalClusterDriver, ProcessRunner } from "../ports.ts";
 import { runOrExit } from "./spawn-process-runner.ts";
 
-export function kindLocalClusterDriver(process: ProcessRunner, host: ContainerHost): LocalClusterDriver {
-  const envOptions = (): { env?: NodeJS.ProcessEnv } => {
-    const env = host.clusterDriverEnv();
-    return env === undefined ? {} : { env };
-  };
+function runOptionsWithEnv(
+  env: NodeJS.ProcessEnv | undefined,
+  extra: { stdio?: "inherit" | "pipe" | "ignore" } = {},
+): Parameters<ProcessRunner["run"]>[2] {
+  return env === undefined ? extra : { ...extra, env };
+}
+
+export function kindLocalClusterDriver(runner: ProcessRunner, host: ContainerHost): LocalClusterDriver {
+  const env = () => host.clusterDriverEnv();
 
   return {
     shape: "kind-in-docker",
     list: () =>
-      process
-        .run("kind", ["get", "clusters"], envOptions())
+      runner
+        .run("kind", ["get", "clusters"], runOptionsWithEnv(env()))
         .stdout.split("\n")
         .map((line) => line.trim())
         .filter((line) => line.length > 0),
@@ -20,43 +24,36 @@ export function kindLocalClusterDriver(process: ProcessRunner, host: ContainerHo
       if (spec.waitForReady !== false) {
         args.push("--wait", `${String(spec.waitTimeoutSec ?? 180)}s`);
       }
-      runOrExit(process, "kind", args, { ...envOptions(), stdio: "inherit" });
+      runOrExit(runner, "kind", args, runOptionsWithEnv(env(), { stdio: "inherit" }));
     },
     delete: (name) =>
-      runOrExit(process, "kind", ["delete", "cluster", "--name", name], { ...envOptions(), stdio: "inherit" }),
+      runOrExit(runner, "kind", ["delete", "cluster", "--name", name], runOptionsWithEnv(env(), { stdio: "inherit" })),
     contextName: (clusterName) => `kind-${clusterName}`,
   };
 }
 
-export function k3dLocalClusterDriver(process: ProcessRunner): LocalClusterDriver {
+export function k3dLocalClusterDriver(runner: ProcessRunner): LocalClusterDriver {
   return {
     shape: "k3d-in-docker",
     list: () =>
-      process
+      runner
         .run("k3d", ["cluster", "list"])
         .stdout.split("\n")
         .map((line) => line.split(/\s+/)[0] ?? "")
         .filter((name) => name.length > 0 && name !== "NAME"),
     create: (spec) =>
-      runOrExit(process, "k3d", ["cluster", "create", "--config", spec.configPath, "--wait=false"], {
-        stdio: "inherit",
-      }),
-    delete: (name) => runOrExit(process, "k3d", ["cluster", "delete", name], { stdio: "inherit" }),
+      runOrExit(runner, "k3d", ["cluster", "create", "--config", spec.configPath, "--wait=false"], { stdio: "inherit" }),
+    delete: (name) => runOrExit(runner, "k3d", ["cluster", "delete", name], { stdio: "inherit" }),
     contextName: (clusterName) => `k3d-${clusterName}`,
     mergeCredentials: (clusterName) =>
-      runOrExit(
-        process,
-        "k3d",
-        ["kubeconfig", "merge", clusterName, "--kubeconfig-merge-default", "--kubeconfig-switch-context"],
-        {
-          stdio: "inherit",
-        },
-      ),
+      runOrExit(runner, "k3d", ["kubeconfig", "merge", clusterName, "--kubeconfig-merge-default", "--kubeconfig-switch-context"], {
+        stdio: "inherit",
+      }),
     registryName: (clusterName) => `${clusterName}-registry`,
     deleteRegistry: (registryName) => {
-      const listed = process.run("k3d", ["registry", "list"]).stdout.split("\n");
+      const listed = runner.run("k3d", ["registry", "list"]).stdout.split("\n");
       if (listed.some((line) => line.startsWith(`k3d-${registryName} `))) {
-        process.run("k3d", ["registry", "delete", registryName], { stdio: "inherit" });
+        runner.run("k3d", ["registry", "delete", registryName], { stdio: "inherit" });
       }
     },
   };

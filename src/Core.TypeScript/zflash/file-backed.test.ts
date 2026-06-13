@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   parseFileBackedZflashArgs,
   runFileBackedZflashCli,
-} from "./zflash-file-backed";
+} from "./file-backed.ts";
 
 describe("parseFileBackedZflashArgs", () => {
   test("parses the file-backed QEMU image CLI shape", () => {

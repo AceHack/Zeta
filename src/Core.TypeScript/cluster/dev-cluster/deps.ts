@@ -11,21 +11,21 @@ export function liveDevClusterPorts(options: {
   readonly clusterShape: "kind-in-docker" | "k3d-in-docker";
   readonly containerHostKind?: ContainerHostKind;
 }): DevClusterPorts {
-  const process = new SpawnProcessRunner();
+  const runner = new SpawnProcessRunner();
   const containerHostKind = options.containerHostKind ?? resolveContainerHostKindFromEnv();
-  const containerHost = containerHostAdapter(containerHostKind, process);
-  const controlPlane = kubectlControlPlane(process);
+  const containerHost = containerHostAdapter(containerHostKind, runner);
+  const controlPlane = kubectlControlPlane(runner);
   const localCluster =
     options.clusterShape === "kind-in-docker"
-      ? kindLocalClusterDriver(process, containerHost)
-      : k3dLocalClusterDriver(process);
+      ? kindLocalClusterDriver(runner, containerHost)
+      : k3dLocalClusterDriver(runner);
 
   return {
-    process,
+    process: runner,
     containerHost,
     localCluster,
     controlPlane,
-    packages: helmPackageDriver(process),
+    packages: helmPackageDriver(runner),
     appCatalog: gitOpsAppCatalog(controlPlane),
   };
 }

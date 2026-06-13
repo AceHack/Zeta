@@ -1,4 +1,4 @@
-// full-ai-cluster/tools/zflash-lib.test.ts
+// src/Core.TypeScript/zflash/lib.test.ts
 //
 // CI test cascade #2 (per the maintainer 2026-05-26 — substrate
 // engineerable in isolation gets unit-tested cheaply before paying
@@ -12,7 +12,7 @@
 //     these tests pin the parser against representative outputs)
 //   - auto-name format regressions (iter-5.2.1; node-<6hex>)
 //
-// Run via: bun test full-ai-cluster/tools/zflash-lib.test.ts
+// Run via: bun test src/Core.TypeScript/zflash/lib.test.ts
 // Or as part of the full suite: bun test
 
 import { describe, expect, test } from "bun:test";
@@ -30,7 +30,7 @@ import {
   planFileBackedZflashImageExecution,
   VALID_HOSTNAME_REGEX,
   ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
-} from "./zflash-lib";
+} from "./lib.ts";
 
 describe("ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH", () => {
   test("points at the source-owned zflash QEMU public key", () => {

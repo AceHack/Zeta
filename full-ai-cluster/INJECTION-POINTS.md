@@ -221,8 +221,8 @@ entry; the persist/restore code reads the manifest + iterates.
 
 ## Source-of-truth pointers
 
-- `full-ai-cluster/tools/zflash.ts` — flash-time orchestrator + USB ESP injection
-- `full-ai-cluster/tools/zflash-lib.ts` — pure logic (hostname regex; ESP partition detection)
+- `src/Core.TypeScript/zflash/cli.ts` — flash-time orchestrator + USB ESP injection
+- `src/Core.TypeScript/zflash/lib.ts` — pure logic (hostname regex; ESP partition detection)
 - `full-ai-cluster/usb-nixos-installer/zeta-install.sh` — installer-side injection probes + console prompts
 - `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh` — first-boot console prompts (WiFi)
 - `full-ai-cluster/nixos/modules/injected-hostname.nix` — hostname reader

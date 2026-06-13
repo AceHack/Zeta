@@ -36,11 +36,11 @@ What differs between dev and prod:
   exclude it until a storage overlay exists.
 - **Network MTU** - dev/CI use the runtime default. Prod uses the real
   NIC MTU.
-- **Persistence** - dev/CI data is removed by `./down.sh` or
-  `kind-down.sh`. Prod data survives reboots.
+- **Persistence** - dev/CI data is removed by `k3d-down` or
+  `kind-down`. Prod data survives reboots.
 
 Apps that don't make sense in dev are excluded by the root
-App-of-Apps `exclude:` glob in `up.sh`:
+App-of-Apps `exclude:` glob in `apply-root-app.ts`:
 
 - `longhorn/**` - no second NVMe to back it; local-path-provisioner
   handles PVCs in dev
@@ -69,10 +69,9 @@ bash tools/setup/install.sh
 # install.sh/mise installs the cluster tools pinned in .mise.toml:
 # k3d, kind, kubectl, and helm.
 
-cd full-ai-cluster/dev-cluster
-./up.sh                       # main branch
-./up.sh feat/my-pr-2026-05-25 # dev-test a PR before merging
-./up.sh --config profiles/ci.k3d-config.yaml --git-ref feat/my-pr-2026-05-25
+bun src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts
+bun src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts feat/my-pr-2026-05-25
+bun src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --git-ref feat/my-pr-2026-05-25
                               # single-node CI-sized profile
 
 # Watch reconciliation
@@ -91,10 +90,10 @@ open https://localhost:8443
 ## Tear down
 
 ```bash
-./down.sh
-./down.sh --config profiles/ci.k3d-config.yaml
-./kind-down.sh --cluster-name zeta-ci
-ZETA_CONTAINER_RUNTIME=podman ./kind-down.sh --cluster-name zeta-ci-podman
+bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts
+bun src/Core.TypeScript/cluster/dev-cluster/k3d-down.ts --config full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml
+bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
+ZETA_CONTAINER_RUNTIME=podman bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-podman
 ```
 
 Removes the cluster, any matching registry, and clears the kubectl context.
@@ -105,7 +104,7 @@ Idempotent -- safe to re-run.
 Docker Desktop's multi-cluster support means you can run multiple
 k3d clusters in parallel. Adjust `metadata.name` and the
 `hostPort` for the registry + load-balancer ports in
-`k3d-config.yaml`, then `up.sh` against a copy of the config.
+`k3d-config.yaml`, then `k3d-up.ts` against a copy of the config.
 Pattern: per-PR dev clusters for parallel dev-testing.
 
 ## Automated health harness
@@ -150,7 +149,7 @@ zflash retention lane.
 | Scope | Proof |
 |-------|-------|
 | `smoke` | Root + argocd + cert-manager healthy; ≥20 child Applications exist |
-| `included` | Every non-excluded dev Application **Synced + Healthy** (16 charts today) |
+| `included` | Every non-excluded dev Application **Synced + Healthy** (17 charts today) |
 | `full` | Same as `included` on k3d (Cilium-parity lane) |
 
 ```bash

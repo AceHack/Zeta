@@ -16,7 +16,8 @@ spec:
     chart: minio
     targetRevision: 5.4.0
     helm:
-      releaseName: blob-store
+      # Distinct Helm release from seaweedfs; fullnameOverride keeps Service name blob-store.
+      releaseName: minio
       valuesObject:
         mode: standalone
         fullnameOverride: blob-store

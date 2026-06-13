@@ -1,7 +1,5 @@
 #!/usr/bin/env bun
-// full-ai-cluster/tools/zflash-setup.ts
-//
-// One-time setup for zflash: installs Touch ID as the PAM auth method
+// src/Core.TypeScript/zflash/setup.ts — one-time Touch ID PAM setup for zflash.
 // for sudo so each `zflash` flash gates on biometric proof of physical
 // presence instead of typing a password.
 //
@@ -43,7 +41,7 @@
 // Idempotent: safe to re-run. Reports current state on each invocation.
 //
 // Usage:
-//   bun full-ai-cluster/tools/zflash-setup.ts [--install-alias]
+//   bun src/Core.TypeScript/zflash/setup.ts [--install-alias]
 //     --install-alias  also add `alias zflash='bun <path>/zflash.ts'`
 //                      to ~/.zshrc (or $SHELL_RC env var)
 //
@@ -146,7 +144,7 @@ function addShellAlias(): void {
   // checkout path produce a valid filesystem path. Then shell-quote so
   // the alias works when expanded in the shell (Copilot/Codex P0 catch:
   // unquoted path with spaces would break alias expansion).
-  const zflashPath = join(dirname(fileURLToPath(import.meta.url)), "zflash.ts");
+  const zflashPath = join(dirname(fileURLToPath(import.meta.url)), "cli.ts");
   const aliasLine = `alias zflash='bun ${shellQuoteForAlias(zflashPath)}'`;
 
   if (!existsSync(rcPath)) {
@@ -190,7 +188,7 @@ async function main() {
   const isHelp = argv.includes("-h") || argv.includes("--help");
   if (isHelp) {
     process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/zflash-setup.ts [--install-alias]\n" +
+      "Usage: bun src/Core.TypeScript/zflash/setup.ts [--install-alias]\n" +
         "  --install-alias   also add `alias zflash=...` to ~/.zshrc\n",
     );
     process.exit(0);
@@ -213,7 +211,7 @@ async function main() {
     // checkout path produce a valid filesystem path the shell can use.
     // Shell-quote so the manually-pasted alias works with spaces/unicode
     // in the path (same discipline as addShellAlias()).
-    const zflashPath = join(dirname(fileURLToPath(import.meta.url)), "zflash.ts");
+    const zflashPath = join(dirname(fileURLToPath(import.meta.url)), "cli.ts");
     info(`to add manually:  alias zflash='bun ${shellQuoteForAlias(zflashPath)}'`);
   }
 

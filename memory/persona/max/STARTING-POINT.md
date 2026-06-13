@@ -77,7 +77,7 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 3. [`.claude/rules/`](../../../.claude/rules/) — auto-loaded behavioral rules. Especially: [`rule-0-no-sh-files.md`](../../../.claude/rules/rule-0-no-sh-files.md), [`dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md), [`claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md), [`zeta-expected-branch.md`](../../../.claude/rules/zeta-expected-branch.md)
 4. [`docs/backlog/P1/B-0780-*.md`](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md) — tier-2's parent substrate; Max's workstream IS tier-2
 5. `docs/backlog/P1/B-0759-*.md` — first-time-CLI-user persona Max's `zeta dev up` UX serves
-6. [`full-ai-cluster/tools/zflash-setup.ts`](../../../full-ai-cluster/tools/zflash-setup.ts) — canonical Touch ID + PAM + sudo-elevation pattern Max gets to use for all privileged macOS operations
+6. [`src/Core.TypeScript/zflash/setup.ts`](../../../src/Core.TypeScript/zflash/setup.ts) — canonical Touch ID + PAM + sudo-elevation pattern Max gets to use for all privileged macOS operations
 7. [`full-ai-cluster/usb-nixos-installer/zeta-install.sh`](../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh) — zero-typing install pattern Max should emulate at Docker-Desktop scope
 8. The "simplest first; add complexity only when simple shape demonstrably doesn't fit" feedback memory at `~/.claude/projects/.../memory/feedback_simplest_first_*` (Aaron-Mika 2026-05-25) — the substrate-engineering discipline Max applies at every backend / topology / profile decision
 

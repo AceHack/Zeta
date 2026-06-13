@@ -13,7 +13,7 @@
 ## Pre-conditions (one-time setup; verify before CP-1)
 
 - [ ] macOS with Touch ID enrolled
-- [ ] `bun full-ai-cluster/tools/zflash-setup.ts --install-alias` previously run (PAM Touch ID line in `/etc/pam.d/sudo`; `zflash` alias in `~/.zshrc`)
+- [ ] `bun src/Core.TypeScript/zflash/setup.ts --install-alias` previously run (PAM Touch ID line in `/etc/pam.d/sudo`; `zflash` alias in `~/.zshrc`)
 - [ ] Shell can find `zflash`: `which zflash` returns a path
 - [ ] Fresh USB stick (operator has queued one per 2026-05-27 framing)
 - [ ] Target PC available with USB-bootable BIOS (SecureBoot may need disabling; one-time BIOS setting)
@@ -67,7 +67,7 @@ ls -la ~/Downloads/zeta-installer-*.iso
 diskutil list external  # verify it's recognized
 
 # Invoke zflash with --agent flag (per B-0844 + flash-cluster-iso skill Path C):
-bun full-ai-cluster/tools/zflash.ts --agent 2>&1 | tail -100
+bun src/Core.TypeScript/zflash/cli.ts --agent 2>&1 | tail -100
 ```
 
 **Expected glass-halo lines** (verify each in output):

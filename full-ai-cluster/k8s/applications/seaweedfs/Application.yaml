@@ -22,7 +22,8 @@ spec:
     chart: seaweedfs
     targetRevision: 4.33.0
     helm:
-      releaseName: blob-store
+      # Must differ from minio in object-store; keeps Service blob-store-seaweedfs-all-in-one.
+      releaseName: blob-store-seaweedfs
       valuesObject:
         master: { enabled: false }
         volume: { enabled: false }

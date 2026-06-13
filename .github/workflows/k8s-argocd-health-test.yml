@@ -140,7 +140,7 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: full-ai-cluster/dev-cluster/kind-down.sh --cluster-name zeta-ci
+        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci
 
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})
@@ -192,4 +192,4 @@ jobs:
 
       - name: Tear down kind cluster
         if: always()
-        run: full-ai-cluster/dev-cluster/kind-down.sh --cluster-name zeta-ci-included
+        run: bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included

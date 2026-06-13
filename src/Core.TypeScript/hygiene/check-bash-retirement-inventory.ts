@@ -5,7 +5,7 @@
 // should not grow new shell-family entrypoints outside the explicit repo-wide
 // retained-shell allowlist. Retained shell exists only where the script runs
 // before Bun is available, bootstraps a host service environment, or belongs
-// to a low-level installer/dev-cluster surface that is still shell-native.
+// to a low-level installer surface that is still shell-native.
 //
 // Usage:
 //   bun src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts
@@ -49,7 +49,6 @@ interface AllowlistIntegrity {
 }
 
 export type RetainedShellCategory =
-  | "dev-cluster wrappers"
   | "host-service wrappers"
   | "kiro loop wrapper"
   | "launchd bootstrap"
@@ -73,8 +72,7 @@ export interface InventoryReport {
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const SHEBANG_READ_BYTES = 512;
 const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh", ".command"];
-export const RETAINED_SHELL_SCOPE =
-  "repo-wide setup/bootstrap/service-wrapper/lint-wrapper/installer/dev-cluster allowlist";
+export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/lint-wrapper/installer allowlist";
 export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
 const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
 const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);
@@ -83,11 +81,6 @@ const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
-  "full-ai-cluster/dev-cluster/apply-root-app.sh",
-  "full-ai-cluster/dev-cluster/down.sh",
-  "full-ai-cluster/dev-cluster/kind-down.sh",
-  "full-ai-cluster/dev-cluster/kind-up.sh",
-  "full-ai-cluster/dev-cluster/up.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "tools/kiro/kiro-loop-wrapper.sh",
@@ -128,17 +121,11 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
   "kiro loop wrapper",
   "lint toolchain wrapper",
   "nixos installer",
-  "dev-cluster wrappers",
 ];
 
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
-  "full-ai-cluster/dev-cluster/apply-root-app.sh": "dev-cluster wrappers",
-  "full-ai-cluster/dev-cluster/down.sh": "dev-cluster wrappers",
-  "full-ai-cluster/dev-cluster/kind-down.sh": "dev-cluster wrappers",
-  "full-ai-cluster/dev-cluster/kind-up.sh": "dev-cluster wrappers",
-  "full-ai-cluster/dev-cluster/up.sh": "dev-cluster wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   "tools/kiro/kiro-loop-wrapper.sh": "kiro loop wrapper",

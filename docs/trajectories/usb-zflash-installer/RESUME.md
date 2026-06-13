@@ -32,7 +32,7 @@ substrates; usb/zflash keeps the local one alive with minimal human-in-the-loop
 
 Shipped artifacts:
 
-- [`full-ai-cluster/tools/zflash.ts`](../../../full-ai-cluster/tools/zflash.ts) — the flashing tool (Touch ID + nonce + SSH auto-inject)
+- [`src/Core.TypeScript/zflash/cli.ts`](../../../src/Core.TypeScript/zflash/cli.ts) — the flashing tool (Touch ID + nonce + SSH auto-inject)
 - [`full-ai-cluster/usb-nixos-installer/`](../../../full-ai-cluster/usb-nixos-installer/) — the installer ISO substrate + first-boot role-picker
 - [`.claude/skills/flash-cluster-iso/SKILL.md`](../../../.claude/skills/flash-cluster-iso/SKILL.md) — operator + agent-driven (expect) flashing skill
 

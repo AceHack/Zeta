@@ -1,15 +1,6 @@
-// full-ai-cluster/tools/zflash-lib.ts
+// src/Core.TypeScript/zflash/lib.ts
 //
-// Pure-logic library extracted from zflash.ts for unit-testability
-// (CI test cascade #2 per the maintainer 2026-05-26 — substrate
-// engineerable in isolation gets unit-tested cheaply before paying
-// for slower integration tests).
-//
-// All exports here are pure functions / pure constants — NO I/O
-// (no fs, no execFileSync, no process.exit). zflash.ts imports + uses
-// them in I/O-wrapping contexts.
-//
-// Tests live at zflash-lib.test.ts (run via `bun test`).
+// Pure-logic library for zflash — unit-testable without I/O.
 
 /**
  * RFC1123 hostname regex.

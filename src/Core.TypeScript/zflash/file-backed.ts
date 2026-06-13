@@ -5,20 +5,20 @@ import { fileURLToPath } from "node:url";
 import {
   createNodeFileBackedZflashImageExecutor,
   createNodeFileBackedZflashInlineStagingDirectory,
-} from "./zflash-file-backed-runtime";
+} from "./file-backed-runtime.ts";
 import {
   composeAuthorizedKeysFileContent,
   executeFileBackedZflashImageExecutionPlan,
   planFileBackedZflashImage,
   planFileBackedZflashImageExecution,
   ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
-} from "./zflash-lib";
+} from "./lib.ts";
 import type {
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
   FileBackedZflashImageExecutor,
   FileBackedZflashImagePlanInput,
-} from "./zflash-lib";
+} from "./lib.ts";
 
 export interface FileBackedZflashCliOptions {
   readonly isoPath: string;
@@ -51,7 +51,7 @@ export type FileBackedZflashCliRunResult =
   | { readonly ok: false; readonly error: string };
 
 const USAGE =
-  "Usage: bun full-ai-cluster/tools/zflash-file-backed.ts --iso <installer.iso> --output <raw.img> --esp-offset-bytes <bytes> [ESP writes]\n" +
+  "Usage: bun src/Core.TypeScript/zflash/file-backed.ts --iso <installer.iso> --output <raw.img> --esp-offset-bytes <bytes> [ESP writes]\n" +
   "  --ssh-key <path>             write /zeta-authorized-keys.pub from a public key file\n" +
   "  --test                       QEMU/CI-only: union zeta-test-infra.pub with --ssh-key content\n" +
   "  --host <name>                write /zeta-hostname.txt with an RFC1123 hostname\n" +

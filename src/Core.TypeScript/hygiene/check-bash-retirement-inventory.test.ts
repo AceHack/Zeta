@@ -181,16 +181,6 @@ describe("buildInventoryReport", () => {
           "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
         ],
       },
-      {
-        category: "dev-cluster wrappers",
-        files: [
-          "full-ai-cluster/dev-cluster/apply-root-app.sh",
-          "full-ai-cluster/dev-cluster/down.sh",
-          "full-ai-cluster/dev-cluster/kind-down.sh",
-          "full-ai-cluster/dev-cluster/kind-up.sh",
-          "full-ai-cluster/dev-cluster/up.sh",
-        ],
-      },
     ]);
     expect(report.retainedCategories.flatMap((summary) => summary.files)).toHaveLength(EXPECTED_RETAINED_SHELL.length);
   });

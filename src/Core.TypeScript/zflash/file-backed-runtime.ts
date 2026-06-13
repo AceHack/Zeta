@@ -11,7 +11,7 @@ import type {
   FileBackedInlineFile,
   FileBackedZflashImageCommandResult,
   FileBackedZflashImageExecutor,
-} from "./zflash-lib";
+} from "./lib.ts";
 
 interface SpawnSyncLikeResult {
   readonly status: number | null;

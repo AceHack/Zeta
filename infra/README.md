@@ -46,7 +46,7 @@ cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
 
 ```bash
 # macOS (recommended): zflash — Touch ID + random nonce + SSH key auto-inject
-bun full-ai-cluster/tools/zflash.ts
+bun src/Core.TypeScript/zflash/cli.ts
 
 # Linux / Windows fallback:
 sudo dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress conv=fsync

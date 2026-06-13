@@ -4,7 +4,7 @@
 // Composes with:
 //   - tools/installer/zeta-creds-manifest.ts (B-0852.5; declares cred types)
 //   - tools/installer/zeta-creds-crypto.ts (B-0852.1; cipher layer for blob)
-//   - full-ai-cluster/tools/zflash.ts (B-0852.9 future; consumes via --bake-cred)
+//   - src/Core.TypeScript/zflash/cli.ts (B-0852.9 future; consumes via --bake-cred)
 //
 // CLI-override design (operator-named; substrate-anchor in B-0852 row body
 // Phase-split section "CLI override > prompt loop"): `zflash --bake-cred
