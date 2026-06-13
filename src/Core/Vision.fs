@@ -203,12 +203,34 @@ module Vision =
           PredictedBytes: int64
           DeferredBytes: int64 }
 
+    type ForecastBudgeted<'Inner, 'Snapshot, 'BranchState> =
+        { Inner: 'Inner
+          Tank: SoftThrottle.Tank
+          Tick: int
+          LastForecast: Forecast<'Snapshot, 'BranchState> option
+          LastPrediction: PredictionReport<'BranchState> option
+          PredictedBytes: int64
+          DeferredBytes: int64 }
+
     type BranchEstimator<'S> = InterruptKind -> 'S -> FutureBranch<'S> list
+    type ForecastInput<'Inner, 'Input> = InterruptKind -> 'Inner -> 'Input
 
     let budgeted (inner: 'S) (tank: SoftThrottle.Tank) : Budgeted<'S> =
         { Inner = inner
           Tank = tank
           Tick = 0
+          LastPrediction = None
+          PredictedBytes = 0L
+          DeferredBytes = 0L }
+
+    let forecastBudgeted
+        (inner: 'Inner)
+        (tank: SoftThrottle.Tank)
+        : ForecastBudgeted<'Inner, 'Snapshot, 'BranchState> =
+        { Inner = inner
+          Tank = tank
+          Tick = 0
+          LastForecast = None
           LastPrediction = None
           PredictedBytes = 0L
           DeferredBytes = 0L }
@@ -317,6 +339,35 @@ module Vision =
         | NegativeUncertaintyResolutionBits bits -> sprintf "negative uncertainty resolution bits: %d" bits
         | ByteCostOverflow bytes -> sprintf "projected branch byte cost overflows int64: %O" bytes
 
+    let private applyForecastPolicy
+        (makeInput: ForecastInput<'Inner, 'Input>)
+        (forecaster: IBranchForecaster<'Input, 'Snapshot, 'BranchState, 'Feedback>)
+        (feedbackText: 'Feedback -> string)
+        (intr: InterruptKind)
+        (state: ForecastBudgeted<'Inner, 'Snapshot, 'BranchState>)
+        : Result<ForecastBudgeted<'Inner, 'Snapshot, 'BranchState>, InterruptFeedback> =
+        result {
+            let input = makeInput intr state.Inner
+            let! forecast =
+                forecaster.Forecast input
+                |> Result.mapError (fun feedback ->
+                    Failed("vision forecast policy: " + feedbackText feedback))
+
+            let! report =
+                predictForecast forecast state.Tank
+                |> Result.mapError (fun feedback ->
+                    Failed("vision forecast budget: " + growthErrorText feedback))
+
+            return
+                { state with
+                    Tank = report.TankAfter
+                    Tick = state.Tick + 1
+                    LastForecast = Some forecast
+                    LastPrediction = Some report
+                    PredictedBytes = addBytesCapped state.PredictedBytes report.BoardedBytes
+                    DeferredBytes = addBytesCapped state.DeferredBytes report.DeferredBytes }
+        }
+
     /// Scheduler-facing policy handler. It observes each boundary crossing,
     /// asks the room for its projected future branches, funds the affordable
     /// prefix from the tank, and records the self-prediction report in state.
@@ -339,6 +390,19 @@ module Vision =
                 | Error feedback ->
                     return Error(Failed("vision budget policy: " + growthErrorText feedback))
             })
+
+    /// Scheduler-facing forecast-port policy. The room state and branch state
+    /// are intentionally separate: plugins can forecast their own branch
+    /// payloads while the scheduler records the common Vision prediction
+    /// report.
+    let forecastPolicyHandler
+        (name: string)
+        (makeInput: ForecastInput<'Inner, 'Input>)
+        (forecaster: IBranchForecaster<'Input, 'Snapshot, 'BranchState, 'Feedback>)
+        (feedbackText: 'Feedback -> string)
+        : SoftScheduler.HandlerK<ForecastBudgeted<'Inner, 'Snapshot, 'BranchState>> =
+        SoftScheduler.handlerK name (fun _ -> true) (fun intr _ctx state ->
+            Task.FromResult(applyForecastPolicy makeInput forecaster feedbackText intr state))
 
     /// Wrap an arrival-aware scheduler handler so prediction and action ride
     /// together. The policy does not hide uncertainty: if branches are
@@ -364,6 +428,32 @@ module Vision =
                                 LastPrediction = Some report
                                 PredictedBytes = addBytesCapped state.PredictedBytes report.BoardedBytes
                                 DeferredBytes = addBytesCapped state.DeferredBytes report.DeferredBytes }
+                        let! inner = handler.RunK intr ctx policyState.Inner
+                        return
+                            inner
+                            |> Result.map (fun next ->
+                                { policyState with Inner = next })
+                })
+
+    /// Wrap an arrival-aware handler with a forecast-port prediction step. This
+    /// is the hexagonal version of `wrapHandlerK`: the branch forecast comes
+    /// from an owned port, not from a room-specific estimator function, and the
+    /// branch state does not need to equal the room state.
+    let wrapForecastHandlerK
+        (makeInput: ForecastInput<'Inner, 'Input>)
+        (forecaster: IBranchForecaster<'Input, 'Snapshot, 'BranchState, 'Feedback>)
+        (feedbackText: 'Feedback -> string)
+        (handler: SoftScheduler.HandlerK<'Inner>)
+        : SoftScheduler.HandlerK<ForecastBudgeted<'Inner, 'Snapshot, 'BranchState>> =
+        SoftScheduler.handlerK
+            ("vision-" + handler.Name)
+            handler.Matches
+            (fun intr ctx state ->
+                task {
+                    match applyForecastPolicy makeInput forecaster feedbackText intr state with
+                    | Error feedback ->
+                        return Error feedback
+                    | Ok policyState ->
                         let! inner = handler.RunK intr ctx policyState.Inner
                         return
                             inner

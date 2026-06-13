@@ -10,6 +10,14 @@ interface Field {
   type: string;
 }
 
+function valueAfterColon(line: string): string {
+  const colon = line.indexOf(':');
+  if (colon < 0) {
+    throw new Error(`Expected YAML key/value line with colon: ${line}`);
+  }
+  return line.slice(colon + 1).trim();
+}
+
 // Simple robust parser for docs/zeta-id-v1-layout.yaml
 function parseYaml(filePath: string): Field[] {
   const content = fs.readFileSync(filePath, 'utf-8');
@@ -35,14 +43,14 @@ function parseYaml(filePath: string): Field[] {
       if (currentField && currentField.name !== undefined && currentField.offset !== undefined && currentField.width !== undefined) {
         fields.push(currentField as Field);
       }
-      currentField = { name: trimmed.split(':')[1].trim() };
+      currentField = { name: valueAfterColon(trimmed) };
     } else if (currentField) {
       if (trimmed.startsWith('offset:')) {
-        currentField.offset = parseInt(trimmed.split(':')[1].trim(), 10);
+        currentField.offset = parseInt(valueAfterColon(trimmed), 10);
       } else if (trimmed.startsWith('width:')) {
-        currentField.width = parseInt(trimmed.split(':')[1].trim(), 10);
+        currentField.width = parseInt(valueAfterColon(trimmed), 10);
       } else if (trimmed.startsWith('type:')) {
-        currentField.type = trimmed.split(':')[1].trim();
+        currentField.type = valueAfterColon(trimmed);
       }
     }
   }

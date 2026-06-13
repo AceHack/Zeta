@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="GitDeltaLog.Tests.fs" />
     <Compile Include="GitCommand.Tests.fs" />
     <Compile Include="CliParse.Tests.fs" />

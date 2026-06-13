@@ -30,7 +30,7 @@ src/Core.Python/src/zeta/__init__.py
 src/Core.Python/src/zeta/sha256.py
 src/Core.Python/src/zeta/tri_boolean.py
 src/Core.Python/src/zeta/zeta_id.py
+src/Core.Python/src/zeta/zeta_id_gen.py
 src/Core.Python/src/zeta/canonical_json.py
 src/Core.Python/src/zeta/yaml.py
 src/Core.Python/tests/test_cross_verify.py
-

@@ -1,3 +1,4 @@
+[<Xunit.Collection("FeatureFlags")>]
 module Zeta.Tests.Storage.SpineDiskAsyncTests
 #nowarn "0893"
 
@@ -149,10 +150,22 @@ let ``createAsyncBackingStore StableStorage fsyncs and roundtrips through disk``
 
 [<Fact>]
 let ``createAsyncBackingStore WitnessDurable without the flag is rejected`` () =
+    let witnessEnv = Environment.GetEnvironmentVariable("DBSP_FLAG_WITNESSDURABLE")
+    let researchPreviewEnv = Environment.GetEnvironmentVariable("DBSP_FLAG_RESEARCHPREVIEW")
+
     let ex =
-        Assert.Throws<InvalidOperationException>(fun () ->
-            DurabilityMode.createAsyncBackingStore<int>
-                DurabilityMode.WitnessDurable "wd" "wd" 1024L |> ignore)
+        try
+            FeatureFlags.resetAll ()
+            Environment.SetEnvironmentVariable("DBSP_FLAG_WITNESSDURABLE", null)
+            Environment.SetEnvironmentVariable("DBSP_FLAG_RESEARCHPREVIEW", null)
+
+            Assert.Throws<InvalidOperationException>(fun () ->
+                DurabilityMode.createAsyncBackingStore<int>
+                    DurabilityMode.WitnessDurable "wd" "wd" 1024L |> ignore)
+        finally
+            Environment.SetEnvironmentVariable("DBSP_FLAG_WITNESSDURABLE", witnessEnv)
+            Environment.SetEnvironmentVariable("DBSP_FLAG_RESEARCHPREVIEW", researchPreviewEnv)
+            FeatureFlags.resetAll ()
 
     Assert.Contains("WitnessDurable", ex.Message)
     Assert.Contains("research preview", ex.Message)

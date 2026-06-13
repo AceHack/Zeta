@@ -1,6 +1,8 @@
 import secrets
 from typing import Dict, NamedTuple, Protocol, List
 
+import zeta.zeta_id_gen as gen
+
 AUTHORITY_VALUES: Dict[str, int] = {
     "Simulated": 3,
     "BestEffort": 8,
@@ -98,9 +100,6 @@ class BitField(NamedTuple):
     width: int
 
 
-import zeta.zeta_id_gen as gen
-
-
 class BitLayout:
     version = BitField(gen.VERSION_OFFSET, gen.VERSION_WIDTH)
     timestamp = BitField(gen.TIMESTAMP_OFFSET, gen.TIMESTAMP_WIDTH)
@@ -112,7 +111,6 @@ class BitLayout:
     momentum = BitField(gen.MOMENTUM_OFFSET, gen.MOMENTUM_WIDTH)
     location = BitField(gen.LOCATION_OFFSET, gen.LOCATION_WIDTH)
     randomness = BitField(gen.RANDOMNESS_OFFSET, gen.RANDOMNESS_WIDTH)
-
 
 
 def set_bits(value: int, field: BitField, field_value: int) -> int:

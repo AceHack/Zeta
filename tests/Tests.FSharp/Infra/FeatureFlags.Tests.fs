@@ -1,8 +1,12 @@
+[<Xunit.Collection("FeatureFlags")>]
 module Zeta.Tests.Infra.FeatureFlagsTests
 
 open System
 open Xunit
 open Zeta.Core
+
+[<CollectionDefinition("FeatureFlags", DisableParallelization = true)>]
+type FeatureFlagStateCollection() = class end
 
 [<Fact>]
 let ``all flags default to off`` () =

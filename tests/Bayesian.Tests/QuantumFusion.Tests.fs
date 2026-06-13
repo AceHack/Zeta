@@ -4,6 +4,7 @@ module Zeta.Bayesian.Tests.QuantumFusionTests
 open System
 open System.IO
 open System.Reflection
+open System.Threading.Tasks
 open System.Text.Json
 open FsUnit.Xunit
 open global.Xunit
@@ -20,6 +21,13 @@ let private repoRoot () =
     while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
         dir <- dir.Parent
     if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
+let private ctx () : IntrCtx =
+    { Memetic = "quantum-fusion"
+      Prompt = ""
+      Trust = ""
+      Log = ""
+      Otel = System.Diagnostics.ActivityContext() }
 
 let private qsharpGolden () =
     Path.Join(repoRoot (), "src", "Core.QSharp.ReferenceOracle", "qsharp-golden.json")
@@ -257,6 +265,57 @@ let ``Reticulum forecaster plugs into the owned Vision port`` () =
 
     Assert.Equal(Vision.PartiallyAdmitted, report.Outcome)
     Assert.Equal("external-bit-zero", report.Boarded.Head.State.Fact.Id)
+
+[<Fact>]
+let ``Reticulum forecaster records scheduler prediction through the Vision wrapper`` () =
+    task {
+        let deltas =
+            [ retDelta "edge-zero" 40L flowZero 1L
+              retDelta "edge-one" 41L flowOne 1L ]
+
+        let favorOne : QuantumFusion.AttentionPolicy =
+            fun (_: Beta) (fact: QuantumFusion.BoundaryFact) ->
+                if fact.Id = "external-bit-one" then 10.0 else 0.1
+
+        let forecaster = QuantumFusion.reticulumForecasterWithAttention budget favorOne
+        let makeInput _ _ = deltas :> ReticulumQuantum.ObservableDelta seq
+        let feedbackText feedback = sprintf "%A" feedback
+
+        let handler =
+            SoftScheduler.handlerK
+                "count"
+                (function TimerElapsed _ -> true | _ -> false)
+                (fun _ _ count -> Task.FromResult(Ok(count + 1)))
+
+        let forecast =
+            Vision.forecastWith forecaster (deltas :> ReticulumQuantum.ObservableDelta seq)
+            |> mustOk
+
+        let firstBytes = Vision.branchBytes forecast.Branches.Head.Cost |> mustOk
+
+        let initial: Vision.ForecastBudgeted<int, QuantumFusion.FusionSnapshot, QuantumFusion.ReticulumFuture> =
+            Vision.forecastBudgeted 0 (SoftThrottle.tank (float firstBytes) 0.0)
+
+        let source _ = [ TimerElapsed 17 ]
+
+        let! result =
+            (SoftScheduler.driveK [ Vision.wrapForecastHandlerK makeInput forecaster feedbackText handler ] source)
+                .Run(ctx ()) 7L initial 1
+
+        let final = result |> mustOk
+        Assert.Equal(1, final.Inner)
+        Assert.Equal(1, final.Tick)
+
+        match final.LastForecast, final.LastPrediction with
+        | Some recordedForecast, Some report ->
+            Assert.Equal(2, recordedForecast.Snapshot.Ledger.ExteriorIdentities)
+            Assert.Equal(Vision.PartiallyAdmitted, report.Outcome)
+            Assert.Equal<string list>(
+                [ "external-bit-one" ],
+                report.Boarded |> List.map (fun branch -> branch.State.Fact.Id)
+            )
+        | _ -> Assert.Fail "Vision should record the Reticulum forecast and prediction"
+    }
 
 [<Fact>]
 let ``Reticulum forecast keeps retracted interior churn out of branch states`` () =

@@ -38,6 +38,15 @@ let private branch<'S>
           BytesPerTick = bytesPerTick
           UncertaintyResolutionBits = uncertaintyResolutionBits } }
 
+type private ForecastRoom =
+    { Count: int }
+
+type private ForecastSnapshot =
+    { Input: string }
+
+type private ForecastError =
+    | ForecastRejected of string
+
 [<Fact>]
 let ``cache identity integrates a delta stream`` () =
     task {
@@ -140,4 +149,81 @@ let ``vision wraps the soft scheduler with a self-prediction budget policy`` () 
             Assert.True(report.Starved)
             Assert.Equal<string list>([ "self-now-0" ], report.Boarded |> List.map _.Label)
         | None -> Assert.Fail "vision should record the self-prediction report"
+    }
+
+[<Fact>]
+let ``vision forecast port wrapper records branch predictions separate from room state`` () =
+    task {
+        let forecaster =
+            { new Vision.IBranchForecaster<string, ForecastSnapshot, string, ForecastError> with
+                member _.Forecast input =
+                    Ok
+                        { Snapshot = { Input = input }
+                          Branches =
+                            [ branch (input + "-near") "branch-near" 5L 0 0L 8
+                              branch (input + "-far") "branch-far" 20L 0 0L 16 ] } }
+
+        let handler =
+            SoftScheduler.handlerK
+                "inc"
+                (function TimerElapsed _ -> true | _ -> false)
+                (fun _ _ (room: ForecastRoom) ->
+                    Task.FromResult(Ok { room with Count = room.Count + 1 }))
+
+        let makeInput intr room =
+            match intr with
+            | TimerElapsed ms -> sprintf "room-%d-timer-%d" room.Count ms
+            | _ -> sprintf "room-%d-other" room.Count
+
+        let feedbackText =
+            function
+            | ForecastRejected text -> text
+
+        let initial: Vision.ForecastBudgeted<ForecastRoom, ForecastSnapshot, string> =
+            Vision.forecastBudgeted { Count = 0 } (SoftThrottle.tank 10.0 0.0)
+
+        let source _ = [ TimerElapsed 17 ]
+
+        let! result =
+            (SoftScheduler.driveK [ Vision.wrapForecastHandlerK makeInput forecaster feedbackText handler ] source)
+                .Run(ctx ()) 7L initial 1
+
+        let final = result |> ok
+        Assert.Equal(1, final.Inner.Count)
+        Assert.Equal(1, final.Tick)
+        Assert.Equal(6L, final.PredictedBytes)
+        Assert.Equal(22L, final.DeferredBytes)
+
+        match final.LastForecast, final.LastPrediction with
+        | Some forecast, Some report ->
+            Assert.Equal("room-0-timer-17", forecast.Snapshot.Input)
+            Assert.Equal(Vision.PartiallyAdmitted, report.Outcome)
+            Assert.Equal<string list>([ "branch-near" ], report.Boarded |> List.map _.State)
+            Assert.Equal<string list>([ "branch-far" ], report.Deferred |> List.map _.State)
+        | _ -> Assert.Fail "vision should record both forecast and prediction report"
+    }
+
+[<Fact>]
+let ``vision forecast policy surfaces forecaster feedback through the scheduler channel`` () =
+    task {
+        let forecaster =
+            { new Vision.IBranchForecaster<string, ForecastSnapshot, string, ForecastError> with
+                member _.Forecast input = Error(ForecastRejected input) }
+
+        let makeInput _ room = sprintf "blocked-%d" room.Count
+
+        let feedbackText =
+            function
+            | ForecastRejected text -> text
+
+        let initial: Vision.ForecastBudgeted<ForecastRoom, ForecastSnapshot, string> =
+            Vision.forecastBudgeted { Count = 0 } (SoftThrottle.tank 10.0 0.0)
+
+        let source _ = [ TimerElapsed 17 ]
+        let handler = Vision.forecastPolicyHandler "forecast" makeInput forecaster feedbackText
+        let! result = (SoftScheduler.driveK [ handler ] source).Run(ctx ()) 7L initial 1
+
+        match result with
+        | Error (Failed message) -> Assert.Contains("blocked-0", message)
+        | other -> Assert.Fail(sprintf "expected scheduler feedback, got %A" other)
     }
