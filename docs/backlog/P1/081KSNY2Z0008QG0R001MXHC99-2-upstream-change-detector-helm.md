@@ -2,7 +2,7 @@
 id: B-0824.2
 zetaid: 081KSNY2Z0008QG0R001MXHC99
 priority: P1
-status: open
+status: closed
 title: Upstream Change Detector for Helm
 effort: S
 ask: lior 2026-05-28

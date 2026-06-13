@@ -32,7 +32,7 @@
 //   2 — argument errors
 
 import { spawnSync } from "node:child_process";
-import { appendAttribution } from "../github/ai-attribution";
+import { appendAttribution } from "../../src/Core.TypeScript/github/ai-attribution";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -297,19 +297,9 @@ const NAME_ATTRIBUTION_DIRECT_PATTERNS: readonly string[] = [
   "repo's standing rule",
 ];
 
-const NAME_ATTRIBUTION_FUZZY_NAME: readonly string[] = [
-  "name attribution",
-  "contributor names",
-  "no name",
-];
+const NAME_ATTRIBUTION_FUZZY_NAME: readonly string[] = ["name attribution", "contributor names", "no name"];
 
-const NAME_ATTRIBUTION_FUZZY_RULE: readonly string[] = [
-  "rule",
-  "standing",
-  "policy",
-  "conflicts with",
-  "prohibits",
-];
+const NAME_ATTRIBUTION_FUZZY_RULE: readonly string[] = ["rule", "standing", "policy", "conflicts with", "prohibits"];
 
 type Classification = "dangling-ref" | "name-attribution" | "unknown";
 
@@ -353,9 +343,7 @@ function classifyThreads(threads: readonly ThreadNode[]): ClassifiedThreads {
     const commentNodes = t.comments?.nodes ?? [];
     // Bash builds the body via `[.comments.nodes[].body] | join("\n---\n")`
     // — TS mirror.
-    const body = commentNodes
-      .map((c) => c.body ?? "")
-      .join("\n---\n");
+    const body = commentNodes.map((c) => c.body ?? "").join("\n---\n");
     const classification = classifyBody(body.toLowerCase());
     if (classification === "dangling-ref") dangling.push(t.id);
     else if (classification === "name-attribution") nameAttribution.push(t.id);
@@ -416,14 +404,7 @@ function resolveThread(threadId: string, replyBody: string): ResolveError | null
     };
   }
 
-  const resolveArgs: string[] = [
-    "api",
-    "graphql",
-    "-F",
-    `thread_id=${threadId}`,
-    "-f",
-    `query=${RESOLVE_MUTATION}`,
-  ];
+  const resolveArgs: string[] = ["api", "graphql", "-F", `thread_id=${threadId}`, "-f", `query=${RESOLVE_MUTATION}`];
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   const resolveResult = spawnSync("gh", resolveArgs, {
     encoding: "utf8",
@@ -480,9 +461,7 @@ function applyResolutions(classified: ClassifiedThreads): number {
     process.stdout.write(`  resolving dangling-ref: ${tid}\n`);
     const err = resolveThread(tid, attributed(REPLY_DANGLING_REF));
     if (err !== null) {
-      process.stderr.write(
-        `error: could not ${err.stage} thread ${err.threadId}: ${err.message}\n`,
-      );
+      process.stderr.write(`error: could not ${err.stage} thread ${err.threadId}: ${err.message}\n`);
       return 1;
     }
   }
@@ -490,9 +469,7 @@ function applyResolutions(classified: ClassifiedThreads): number {
     process.stdout.write(`  resolving name-attribution: ${tid}\n`);
     const err = resolveThread(tid, attributed(REPLY_NAME_ATTRIBUTION));
     if (err !== null) {
-      process.stderr.write(
-        `error: could not ${err.stage} thread ${err.threadId}: ${err.message}\n`,
-      );
+      process.stderr.write(`error: could not ${err.stage} thread ${err.threadId}: ${err.message}\n`);
       return 1;
     }
   }
