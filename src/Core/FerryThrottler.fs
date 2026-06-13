@@ -493,7 +493,13 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
     (config: FerryThrottlerConfig,
      processBatch: ReadOnlyMemory<struct ('TItem * 'Ctx)> -> CancellationToken -> Task,
      ?itemSizeBytes: 'TItem -> int,
-     ?manual: bool) =
+     ?manual: bool,
+     // Capture-at-the-boundary: an ambient-context reader run ON THE ENQUEUER'S
+     // flow at each `EnqueueCapturedAsync` call, so the ambient (e.g.
+     // `Activity.Current` / `IntrCtx` / a Zeta `AsyncLocal`) is snapshotted at the
+     // door and then threaded as DATA — the boundary is the only place the side
+     // channel is touched; nothing ambient flows into the background ferry.
+     ?capture: unit -> 'Ctx) =
 
     // Size the PAYLOAD, not the (payload, ctx) pair — the threaded context is
     // metadata that rides along; it does not count against the byte budget.
@@ -504,9 +510,19 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
         new FerryThrottler<struct ('TItem * 'Ctx)>(
             config, processBatch, ?itemSizeBytes = innerSizer, ?manual = manual)
 
-    /// Enqueue one item together with the context value to thread to its boat.
+    /// Enqueue one item together with an explicit context value to thread to its boat.
     member _.EnqueueAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : ValueTask =
         inner.EnqueueAsync(struct (item, context), ?cancellationToken = cancellationToken)
+
+    /// Capture-at-the-boundary enqueue (the Itron "capture so I can pass it through"
+    /// pattern): snapshots the ambient context NOW — via the `capture` reader run on
+    /// the caller's flow — and threads that snapshot with the item. Requires a
+    /// `capture` reader at construction.
+    member _.EnqueueCapturedAsync(item: 'TItem, ?cancellationToken: CancellationToken) : ValueTask =
+        match capture with
+        | Some readAmbient ->
+            inner.EnqueueAsync(struct (item, readAmbient ()), ?cancellationToken = cancellationToken)
+        | None -> invalidOp "EnqueueCapturedAsync requires a `capture` reader supplied at construction"
 
     /// Deterministic manual drive (when constructed with `manual = true`).
     member _.PumpToIdleAsync(?cancellationToken: CancellationToken) : Task =
