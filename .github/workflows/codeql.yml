@@ -511,7 +511,7 @@ jobs:
           # workflow-local classifier embedded in codeql.yml as
           # the smallest sufficient unblock for the retired-
           # python case. The future canonical classifier should
-          # pull this logic into `tools/ci/classify-changed-
+          # pull this logic into `src/Core.TypeScript/ci/classify-changed-
           # files.*` with fixtures so CodeQL, docs-substrate,
           # and code gates share one path-universe rather than
           # each growing their own. Tracked via task #306

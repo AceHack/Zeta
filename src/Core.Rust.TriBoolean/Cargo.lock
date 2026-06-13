@@ -5,3 +5,10 @@ version = 4
 [[package]]
 name = "zeta-core-tri-boolean"
 version = "0.1.0"
+dependencies = [
+ "zeta-core-yaml",
+]
+
+[[package]]
+name = "zeta-core-yaml"
+version = "0.1.0"

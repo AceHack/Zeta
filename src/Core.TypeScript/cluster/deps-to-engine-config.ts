@@ -24,7 +24,7 @@ import {
   loadDependencyGraphFromFile,
   resolveGraph,
   type OutputEngine,
-} from "../../src/Core.TypeScript/ace/deps.ts";
+} from "../ace/deps.ts";
 
 interface Args {
   graphPath: string;

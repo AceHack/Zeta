@@ -1,0 +1,107 @@
+{
+  "unary-t": {
+    "bindNot": "F",
+    "bindToT": "T",
+    "cooperateState": "T",
+    "isCertain": true,
+    "isLiving": false,
+    "mapNot": "F",
+    "measureFeedback": "",
+    "measureOk": true,
+    "measureValue": true,
+    "notState": "F",
+    "state": "T",
+    "type": "unary"
+  },
+  "unary-f": {
+    "bindNot": "T",
+    "bindToT": "T",
+    "cooperateState": "F",
+    "isCertain": true,
+    "isLiving": false,
+    "mapNot": "T",
+    "measureFeedback": "",
+    "measureOk": true,
+    "measureValue": false,
+    "notState": "T",
+    "state": "F",
+    "type": "unary"
+  },
+  "unary-n": {
+    "bindNot": "N",
+    "bindToT": "N",
+    "cooperateState": "N",
+    "isCertain": false,
+    "isLiving": true,
+    "mapNot": "N",
+    "measureFeedback": "collapsed-living-uncertainty",
+    "measureOk": false,
+    "measureValue": false,
+    "notState": "N",
+    "state": "N",
+    "type": "unary"
+  },
+  "and-t-t": {
+    "expectedAnd": "T",
+    "expectedOr": "T",
+    "left": "T",
+    "right": "T",
+    "type": "binary"
+  },
+  "and-t-f": {
+    "expectedAnd": "F",
+    "expectedOr": "T",
+    "left": "T",
+    "right": "F",
+    "type": "binary"
+  },
+  "and-t-n": {
+    "expectedAnd": "N",
+    "expectedOr": "T",
+    "left": "T",
+    "right": "N",
+    "type": "binary"
+  },
+  "and-f-t": {
+    "expectedAnd": "F",
+    "expectedOr": "T",
+    "left": "F",
+    "right": "T",
+    "type": "binary"
+  },
+  "and-f-f": {
+    "expectedAnd": "F",
+    "expectedOr": "F",
+    "left": "F",
+    "right": "F",
+    "type": "binary"
+  },
+  "and-f-n": {
+    "expectedAnd": "F",
+    "expectedOr": "N",
+    "left": "F",
+    "right": "N",
+    "type": "binary"
+  },
+  "and-n-t": {
+    "expectedAnd": "N",
+    "expectedOr": "T",
+    "left": "N",
+    "right": "T",
+    "type": "binary"
+  },
+  "and-n-f": {
+    "expectedAnd": "F",
+    "expectedOr": "N",
+    "left": "N",
+    "right": "F",
+    "type": "binary"
+  },
+  "and-n-n": {
+    "expectedAnd": "N",
+    "expectedOr": "N",
+    "left": "N",
+    "right": "N",
+    "type": "binary"
+  }
+}

@@ -1,0 +1,108 @@
+version: 1
+description: "Canonical TriBoolean digital qubit test vectors for cross-verification"
+
+vectors:
+  - id: unary-t
+    type: unary
+    state: T
+    is_living: false
+    is_certain: true
+    not_state: F
+    cooperate_state: T
+    measure_ok: true
+    measure_value: true
+    measure_feedback: ""
+    map_not: F
+    bind_not: F
+    bind_to_t: T
+
+  - id: unary-f
+    type: unary
+    state: F
+    is_living: false
+    is_certain: true
+    not_state: T
+    cooperate_state: F
+    measure_ok: true
+    measure_value: false
+    measure_feedback: ""
+    map_not: T
+    bind_not: T
+    bind_to_t: T
+
+  - id: unary-n
+    type: unary
+    state: N
+    is_living: true
+    is_certain: false
+    not_state: N
+    cooperate_state: N
+    measure_ok: false
+    measure_value: false
+    measure_feedback: "collapsed-living-uncertainty"
+    map_not: N
+    bind_not: N
+    bind_to_t: N
+
+  - id: and-t-t
+    type: binary
+    left: T
+    right: T
+    expected_and: T
+    expected_or: T
+
+  - id: and-t-f
+    type: binary
+    left: T
+    right: F
+    expected_and: F
+    expected_or: T
+
+  - id: and-t-n
+    type: binary
+    left: T
+    right: N
+    expected_and: N
+    expected_or: T
+
+  - id: and-f-t
+    type: binary
+    left: F
+    right: T
+    expected_and: F
+    expected_or: T
+
+  - id: and-f-f
+    type: binary
+    left: F
+    right: F
+    expected_and: F
+    expected_or: F
+
+  - id: and-f-n
+    type: binary
+    left: F
+    right: N
+    expected_and: F
+    expected_or: N
+
+  - id: and-n-t
+    type: binary
+    left: N
+    right: T
+    expected_and: N
+    expected_or: T
+
+  - id: and-n-f
+    type: binary
+    left: N
+    right: F
+    expected_and: F
+    expected_or: N
+
+  - id: and-n-n
+    type: binary
+    left: N
+    right: N
+    expected_and: N
+    expected_or: N

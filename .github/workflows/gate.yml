@@ -1152,7 +1152,7 @@ jobs:
     # package-manager suite. Previously only `lint (tsc TypeScript)` type-checked these, so a
     # regression to a committed golden vector, or a 4-language disagreement, could merge green.
     # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
-    # oracle via tools/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
+    # oracle via src/Core.TypeScript/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
     # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
     # TS golden-vector oracle) plus `bun test src/Core.TypeScript/ace/` and the Q# source-oracle tests. The
     # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
@@ -1212,4 +1212,4 @@ jobs:
         run: bun test src/Core.QSharp.ReferenceOracle/qsharp-golden.test.ts src/Core.QSharp.ReferenceOracle/quantum-circuit.test.ts
 
       - name: Cross-language byte-lock + golden-vector oracles
-        run: bun tools/ci/cross-verify-all.ts
+        run: bun src/Core.TypeScript/ci/cross-verify-all.ts

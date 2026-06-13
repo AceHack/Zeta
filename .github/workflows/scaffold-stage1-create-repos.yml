@@ -17,9 +17,9 @@ name: scaffold-stage1-create-repos
 #    repo, read:org, workflow scopes on a user with LFG org owner/admin rights.
 #    (GITHUB_TOKEN cannot create org repos — its scope is the current repo only.)
 # 3. Verify dry-run output locally first:
-#    bun tools/scaffold/create-repo.ts --repo forge  --dry-run
-#    bun tools/scaffold/create-repo.ts --repo ace    --dry-run
-#    bun tools/scaffold/create-repo.ts --repo civsim --dry-run
+#    bun src/Core.TypeScript/scaffold/create-repo.ts --repo forge  --dry-run
+#    bun src/Core.TypeScript/scaffold/create-repo.ts --repo ace    --dry-run
+#    bun src/Core.TypeScript/scaffold/create-repo.ts --repo civsim --dry-run
 #
 # SECURITY (safe-pattern compliance):
 # All workflow_dispatch inputs are routed via env: into run blocks and
@@ -123,15 +123,15 @@ jobs:
           echo "=== DRY-RUN PREVIEW ==="
           if [ "$REPO_INPUT" = "forge" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "--- Forge ---"
-            bun tools/scaffold/create-repo.ts --repo forge --dry-run
+            bun src/Core.TypeScript/scaffold/create-repo.ts --repo forge --dry-run
           fi
           if [ "$REPO_INPUT" = "ace" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "--- ace ---"
-            bun tools/scaffold/create-repo.ts --repo ace --dry-run
+            bun src/Core.TypeScript/scaffold/create-repo.ts --repo ace --dry-run
           fi
           if [ "$REPO_INPUT" = "civsim" ] || [ "$REPO_INPUT" = "both" ]; then
             echo "--- civsim ---"
-            bun tools/scaffold/create-repo.ts --repo civsim --dry-run
+            bun src/Core.TypeScript/scaffold/create-repo.ts --repo civsim --dry-run
           fi
           echo "=== END DRY-RUN ==="
 
@@ -141,7 +141,7 @@ jobs:
           GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
         run: |
           set -euo pipefail
-          bun tools/scaffold/create-repo.ts --repo forge --apply
+          bun src/Core.TypeScript/scaffold/create-repo.ts --repo forge --apply
 
       - name: Create ace repo
         if: ${{ github.event.inputs.repo == 'ace' || github.event.inputs.repo == 'both' }}
@@ -149,7 +149,7 @@ jobs:
           GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
         run: |
           set -euo pipefail
-          bun tools/scaffold/create-repo.ts --repo ace --apply
+          bun src/Core.TypeScript/scaffold/create-repo.ts --repo ace --apply
 
       - name: Create civsim repo
         if: ${{ github.event.inputs.repo == 'civsim' || github.event.inputs.repo == 'both' }}
@@ -157,7 +157,7 @@ jobs:
           GH_TOKEN: ${{ secrets.SCAFFOLD_STAGE1_PAT }}
         run: |
           set -euo pipefail
-          bun tools/scaffold/create-repo.ts --repo civsim --apply
+          bun src/Core.TypeScript/scaffold/create-repo.ts --repo civsim --apply
 
       - name: Post-creation summary
         if: success()

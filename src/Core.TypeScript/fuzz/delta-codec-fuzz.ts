@@ -7,9 +7,9 @@
 
 import { join } from "node:path";
 import { existsSync } from "node:fs";
-import { CborDeltaCodec } from "../../src/Core.TypeScript/durability/delta-codec";
-import { type Tagged, fromHex, toHex } from "../../src/Core.TypeScript/dynamic-value/cbor";
-import { ofEntries } from "../../src/Core.TypeScript/z-set/z-set";
+import { CborDeltaCodec } from "../durability/delta-codec";
+import { type Tagged, fromHex, toHex } from "../dynamic-value/cbor";
+import { ofEntries } from "../z-set/z-set";
 
 const numCompare = (a: number, b: number) => a - b;
 const keyEnc = (i: number): Tagged => ({ t: "int", v: i.toString() });

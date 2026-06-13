@@ -5,8 +5,8 @@
 // the fixture's `expected`, and writes `{ [id]: events }` to `ts-output.json` for the
 // 4-way `compare.ts`. Non-zero exit on any mismatch (no silent-non-enforcing harness).
 
-import { readEvents } from "../../../src/Core.TypeScript/yaml/reader";
-import type { YamlEvent } from "../../../src/Core.TypeScript/yaml/reader";
+import { readEvents } from "../yaml/reader";
+import type { YamlEvent } from "../yaml/reader";
 
 interface Vector {
   id: string;

@@ -32,7 +32,7 @@
 //   2 — argument errors
 
 import { spawnSync } from "node:child_process";
-import { appendAttribution } from "../../src/Core.TypeScript/github/ai-attribution";
+import { appendAttribution } from "../github/ai-attribution";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 

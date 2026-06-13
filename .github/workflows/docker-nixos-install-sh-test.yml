@@ -34,8 +34,8 @@ on:
       # transitively via the systemd unit's Environment block)
       - 'full-ai-cluster/nixos/modules/common.nix'
       # The Docker harness itself
-      - 'tools/ci/dockerfiles/nixos-install-sh-test/**'
-      - 'tools/ci/docker-nixos-install-sh-test.ts'
+      - 'src/Core.TypeScript/ci/dockerfiles/nixos-install-sh-test/**'
+      - 'src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts'
       # .dockerignore affects build context for ALL docker builds
       - '.dockerignore'
       # bun deps + lockfile (used by the TS wrapper)
@@ -57,8 +57,8 @@ on:
       - 'tools/setup/**'
       - '.mise.toml'
       - 'full-ai-cluster/nixos/modules/common.nix'
-      - 'tools/ci/dockerfiles/nixos-install-sh-test/**'
-      - 'tools/ci/docker-nixos-install-sh-test.ts'
+      - 'src/Core.TypeScript/ci/dockerfiles/nixos-install-sh-test/**'
+      - 'src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts'
       - '.dockerignore'
       - 'package.json'
       - 'bun.lock'
@@ -107,7 +107,7 @@ jobs:
           # no 403); the driver passes it into the build as a BuildKit secret. BuildKit on.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_BUILDKIT: '1'
-        run: bun tools/ci/docker-nixos-install-sh-test.ts
+        run: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts
 
       - name: Upload Docker test log (always)
         if: always()

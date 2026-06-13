@@ -71,7 +71,7 @@ import {
   buildBlob,
   composeBundle,
   parseArgs as parsePersistArgs,
-} from "../../tools/installer/zeta-creds-persist";
+} from "../../src/Core.TypeScript/installer/zeta-creds-persist";
 import {
   composeAuthorizedKeysFileContent,
   parseUuidFromDiskutilInfo,

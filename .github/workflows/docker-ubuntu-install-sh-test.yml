@@ -25,7 +25,7 @@ on:
   push:
     branches: [accelerator/pr-less-git-monster]
     paths:
-      - "tools/ci/dockerfiles/ubuntu-install-sh-test/**"
+      - "src/Core.TypeScript/ci/dockerfiles/ubuntu-install-sh-test/**"
       - "tools/setup/**"
       - "src/Core.TypeScript/accelerator/local-llm.ts"
       - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
@@ -39,7 +39,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - "tools/ci/dockerfiles/ubuntu-install-sh-test/**"
+      - "src/Core.TypeScript/ci/dockerfiles/ubuntu-install-sh-test/**"
       - "tools/setup/**"
       - "src/Core.TypeScript/accelerator/local-llm.ts"
       - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
@@ -73,6 +73,6 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
             --secret id=github_token,env=GITHUB_TOKEN \
-            -f tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile \
+            -f src/Core.TypeScript/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile \
             -t zeta-ubuntu-install-sh-test \
             .

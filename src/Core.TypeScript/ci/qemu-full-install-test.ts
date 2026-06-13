@@ -63,7 +63,7 @@ import { execFileSync, spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { serialFirstBootInProgress } from "../../src/Core.TypeScript/zflash/test-harness/serial-markers";
+import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers";
 
 // Success marker: the `[iter-5.1]` prefix appears at the wifi-persistence
 // step in zeta-install.sh (Step 6.7; line 527). This is the correct

@@ -1,0 +1,107 @@
+{
+  "unary-t": {
+    "type": "unary",
+    "state": "T",
+    "isLiving": false,
+    "isCertain": true,
+    "notState": "F",
+    "cooperateState": "T",
+    "measureOk": true,
+    "measureValue": true,
+    "measureFeedback": "",
+    "mapNot": "F",
+    "bindNot": "F",
+    "bindToT": "T"
+  },
+  "unary-f": {
+    "type": "unary",
+    "state": "F",
+    "isLiving": false,
+    "isCertain": true,
+    "notState": "T",
+    "cooperateState": "F",
+    "measureOk": true,
+    "measureValue": false,
+    "measureFeedback": "",
+    "mapNot": "T",
+    "bindNot": "T",
+    "bindToT": "T"
+  },
+  "unary-n": {
+    "type": "unary",
+    "state": "N",
+    "isLiving": true,
+    "isCertain": false,
+    "notState": "N",
+    "cooperateState": "N",
+    "measureOk": false,
+    "measureValue": false,
+    "measureFeedback": "collapsed-living-uncertainty",
+    "mapNot": "N",
+    "bindNot": "N",
+    "bindToT": "N"
+  },
+  "and-t-t": {
+    "type": "binary",
+    "left": "T",
+    "right": "T",
+    "expectedAnd": "T",
+    "expectedOr": "T"
+  },
+  "and-t-f": {
+    "type": "binary",
+    "left": "T",
+    "right": "F",
+    "expectedAnd": "F",
+    "expectedOr": "T"
+  },
+  "and-t-n": {
+    "type": "binary",
+    "left": "T",
+    "right": "N",
+    "expectedAnd": "N",
+    "expectedOr": "T"
+  },
+  "and-f-t": {
+    "type": "binary",
+    "left": "F",
+    "right": "T",
+    "expectedAnd": "F",
+    "expectedOr": "T"
+  },
+  "and-f-f": {
+    "type": "binary",
+    "left": "F",
+    "right": "F",
+    "expectedAnd": "F",
+    "expectedOr": "F"
+  },
+  "and-f-n": {
+    "type": "binary",
+    "left": "F",
+    "right": "N",
+    "expectedAnd": "F",
+    "expectedOr": "N"
+  },
+  "and-n-t": {
+    "type": "binary",
+    "left": "N",
+    "right": "T",
+    "expectedAnd": "N",
+    "expectedOr": "T"
+  },
+  "and-n-f": {
+    "type": "binary",
+    "left": "N",
+    "right": "F",
+    "expectedAnd": "F",
+    "expectedOr": "N"
+  },
+  "and-n-n": {
+    "type": "binary",
+    "left": "N",
+    "right": "N",
+    "expectedAnd": "N",
+    "expectedOr": "N"
+  }
+}

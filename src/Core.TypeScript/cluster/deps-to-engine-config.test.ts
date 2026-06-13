@@ -5,7 +5,7 @@ import { mkdtempSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { parseArgs, runDepsToEngineConfig } from "./deps-to-engine-config.ts";
-import { parseYaml } from "../../src/Core.TypeScript/ace/deps.ts";
+import { parseYaml } from "../ace/deps.ts";
 
 const repoRoot = join(import.meta.dir, "../..");
 const exampleGraph = join(

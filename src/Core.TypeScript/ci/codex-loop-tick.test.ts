@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { buildCodexPrompt, codexExecArgs, codexLoopEnv } from "../.codex/bin/codex-loop-tick";
+import { buildCodexPrompt, codexExecArgs, codexLoopEnv } from "../../../.codex/bin/codex-loop-tick";
 
 describe("codex-loop-tick service contract", () => {
   test("launches Codex with the current noninteractive bypass flag", () => {

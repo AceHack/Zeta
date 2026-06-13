@@ -1,16 +1,16 @@
 name: context-cost-trend-cadence
 
 # Daily DORA trend cadence for B-1016 context-window minimization. Runs
-# `bun tools/observe/context-cost-trend.ts --record`, which appends one row per
+# `bun src/Core.TypeScript/observe/context-cost-trend.ts --record`, which appends one row per
 # harness (bytes + token estimate) to the append-only trend store
-# tools/observe/context-cost-trend.jsonl, and commits it directly to main
+# src/Core.TypeScript/observe/context-cost-trend.jsonl, and commits it directly to main
 # (folders-on-main / no-PR — the local build + this deterministic script ARE the
 # gate; no LLM, free runner). This turns the trend store from one datapoint into a
 # real over-time series so context-cost DRIFT is visible.
 #
 # Composes with:
-#  - tools/observe/context-cost-trend.ts (the --record tool)
-#  - tools/observe/context-cost.ts + byte-cost meter (the measured signal)
+#  - src/Core.TypeScript/observe/context-cost-trend.ts (the --record tool)
+#  - src/Core.TypeScript/observe/context-cost.ts + byte-cost meter (the measured signal)
 #  - .github/workflows/manifesto-citation-snapshot-cadence.yml (pattern reference)
 #  - B-1016 (context-window minimization; over-time enforcement leg)
 #
@@ -55,13 +55,13 @@ jobs:
       - name: Record context-cost trend row
         run: |
           set -euo pipefail
-          bun tools/observe/context-cost-trend.ts --record
+          bun src/Core.TypeScript/observe/context-cost-trend.ts --record
 
       - name: Inspect diff
         id: diff
         run: |
           set -euo pipefail
-          if [ -z "$(git status --porcelain -- tools/observe/context-cost-trend.jsonl)" ]; then
+          if [ -z "$(git status --porcelain -- src/Core.TypeScript/observe/context-cost-trend.jsonl)" ]; then
             echo "changed=false" >>"$GITHUB_OUTPUT"
             echo "no change (today's row already recorded)"
           else
@@ -77,7 +77,7 @@ jobs:
           today="$(date -u +%Y-%m-%d)"
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/observe/context-cost-trend.jsonl
+          git add src/Core.TypeScript/observe/context-cost-trend.jsonl
           {
             echo "ops(B-1016): daily context-cost trend row $today"
             echo

@@ -28,7 +28,7 @@ import {
   ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES,
 } from "../../../../full-ai-cluster/tools/zflash-lib";
 import { runFileBackedZflashCli } from "../../../../full-ai-cluster/tools/zflash-file-backed";
-import { buildBlob, composeBundle } from "../../../../tools/installer/zeta-creds-persist";
+import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
 export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";

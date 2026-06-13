@@ -47,13 +47,13 @@ on:
       # tools/** under full-ai-cluster + the source-substrate audit tool.
       - "full-ai-cluster/nixos/**"
       - "full-ai-cluster/tools/**"
-      - "tools/ci/audit-installer-substrate.ts"
-      - "tools/ci/audit-installer-iso-content.ts"
-      - "tools/ci/qemu-boot-test.ts"
-      - "tools/ci/qemu-full-install-test.ts"
-      - "tools/ci/test-iter-54-install-flow.test.ts"
+      - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
+      - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
+      - "src/Core.TypeScript/ci/qemu-boot-test.ts"
+      - "src/Core.TypeScript/ci/qemu-full-install-test.ts"
+      - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
-      - "tools/installer/zeta-creds-restore.ts"
+      - "src/Core.TypeScript/installer/zeta-creds-restore.ts"
       - ".github/workflows/build-ai-cluster-iso.yml"
   push:
     branches: [main]
@@ -63,13 +63,13 @@ on:
       - "full-ai-cluster/usb-nixos-installer/**"
       - "full-ai-cluster/nixos/**"
       - "full-ai-cluster/tools/**"
-      - "tools/ci/audit-installer-substrate.ts"
-      - "tools/ci/audit-installer-iso-content.ts"
-      - "tools/ci/qemu-boot-test.ts"
-      - "tools/ci/qemu-full-install-test.ts"
-      - "tools/ci/test-iter-54-install-flow.test.ts"
+      - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
+      - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
+      - "src/Core.TypeScript/ci/qemu-boot-test.ts"
+      - "src/Core.TypeScript/ci/qemu-full-install-test.ts"
+      - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
-      - "tools/installer/zeta-creds-restore.ts"
+      - "src/Core.TypeScript/installer/zeta-creds-restore.ts"
       - ".github/workflows/build-ai-cluster-iso.yml"
   workflow_dispatch:
 
@@ -120,7 +120,7 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: Audit installer substrate (source-level)
-        run: bun tools/ci/audit-installer-substrate.ts
+        run: bun src/Core.TypeScript/ci/audit-installer-substrate.ts
 
       # Layer 2a (structural-behavioral) — asserts logical relationships
       # between iter-5.4 substrate elements (gh auth setup-git is INSIDE
@@ -129,7 +129,7 @@ jobs:
       # Stronger than the source-substrate audit (which just checks for
       # substring presence). Runs in ~150ms.
       - name: Iter-5.4 install-flow structural-behavioral test
-        run: bun test tools/ci/test-iter-54-install-flow.test.ts
+        run: bun test src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
@@ -224,7 +224,7 @@ jobs:
           # p7zip-full` step before this line (the `-y` matters in
           # CI: without it apt-get prompts interactively and the
           # workflow run hangs).
-          bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
+          bun src/Core.TypeScript/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
       # QEMU boot smoke-test (USB cleanup PR 3 — 2026-05-26):
       # Boots the built ISO in QEMU/KVM with serial console capture +
@@ -242,7 +242,7 @@ jobs:
       #
       # Security: this step uses no `github.event.*` interpolation in
       # `run:` lines; all inputs are filesystem paths from prior steps
-      # of THIS workflow. The TS helper at tools/ci/qemu-boot-test.ts
+      # of THIS workflow. The TS helper at src/Core.TypeScript/ci/qemu-boot-test.ts
       # takes the ISO path as a positional CLI arg (no shell expansion
       # of attacker-controllable strings).
       - name: Install QEMU + zflash toolchain (apt)
@@ -558,7 +558,7 @@ jobs:
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "Booting aarch64 ISO: $iso_abs"
-          bun ../tools/ci/qemu-boot-test.ts "$iso_abs" --arch aarch64
+          bun ../src/Core.TypeScript/ci/qemu-boot-test.ts "$iso_abs" --arch aarch64
 
       - name: Upload aarch64 ISO artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4.6.1
