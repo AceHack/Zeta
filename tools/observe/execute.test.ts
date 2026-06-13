@@ -214,7 +214,10 @@ describe("execute — preserve_ferry with injected OperatorPort", () => {
     port.preserveFerry = async () => ({ ok: false, reason: "disk full" });
     const r = await execute(worldWithFerry, preserveFerry, sink, undefined, undefined, port);
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.feedback.reason).toBe("disk full");
+    if (!r.ok) {
+      expect(r.feedback.kind).toBe("append-failed");
+      if (r.feedback.kind === "append-failed") expect(r.feedback.reason).toBe("disk full");
+    }
     expect(sink.appended).toEqual([]); // effect failed → nothing appended
   });
 
@@ -261,7 +264,10 @@ describe("execute — respond_to_operator with injected OperatorPort", () => {
     port.emitResponse = async () => ({ ok: false, reason: "channel closed" });
     const r = await execute(worldWithMessage, respond, sink, undefined, undefined, port);
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.feedback.reason).toBe("channel closed");
+    if (!r.ok) {
+      expect(r.feedback.kind).toBe("append-failed");
+      if (r.feedback.kind === "append-failed") expect(r.feedback.reason).toBe("channel closed");
+    }
   });
 
   it("succeeds even when append fails after effect (response already emitted)", async () => {

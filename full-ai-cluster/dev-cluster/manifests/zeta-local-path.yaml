@@ -1,0 +1,10 @@
+# Dev/CI alias StorageClass — kind/k3d already run rancher.io/local-path-provisioner.
+# Charts referencing `zeta-local-path` (e.g. forgejo) bind via the existing provisioner.
+# Do NOT deploy a second provisioner (conflicts with kind's bundled Deployment).
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: zeta-local-path
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete

@@ -6,6 +6,8 @@ apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
   name: hatmaxnew
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   crd:
     spec:
@@ -50,6 +52,9 @@ apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: HatMaxNew
 metadata:
   name: hat-max-new-default
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   match:
     kinds:

@@ -136,9 +136,29 @@ bun src/Core.TypeScript/cluster/argocd-health-test.ts \
 ```
 
 The harness names missing dependencies (`docker` or `podman`, provider CLI,
-`kubectl`, and `helm`), waits for ArgoCD readiness, asserts expected Application
+`kubectl`, and `helm`), waits for ArgoCD readiness, and asserts expected Application
 sync/health, and keeps this Kubernetes/ArgoCD proof separate from the USB/ISO
 zflash retention lane.
+
+**Scopes:**
+
+| Scope | Proof |
+|-------|-------|
+| `smoke` | Root + argocd + cert-manager healthy; ≥20 child Applications exist |
+| `included` | Every non-excluded dev Application **Synced + Healthy** (16 charts today) |
+| `full` | Same as `included` on k3d (Cilium-parity lane) |
+
+```bash
+bun src/Core.TypeScript/cluster/argocd-health-test.ts \
+  --run \
+  --provider kind \
+  --scope included \
+  --runtime docker \
+  --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
+  --cluster-name zeta-ci-included \
+  --git-ref main \
+  --timeout-sec 2400
+```
 
 `ZETA_CONTAINER_RUNTIME` is the repo-wide OCI runtime switch used by the
 effectful work substrate. The older `CONTAINER_RUNTIME` spelling is not

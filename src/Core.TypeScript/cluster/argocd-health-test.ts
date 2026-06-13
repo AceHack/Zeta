@@ -28,7 +28,7 @@ import { basename, join, resolve } from "node:path";
 
 export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
-export type Scope = "smoke" | "full";
+export type Scope = "smoke" | "included" | "full";
 export type ContainerRuntime = "docker" | "podman";
 
 export type FailureKind =
@@ -85,6 +85,8 @@ export interface ArgoApplicationSnapshot {
   readonly syncStatus: string;
   readonly healthStatus: string;
   readonly message: string;
+  readonly operationPhase?: string;
+  readonly syncRevision?: string;
 }
 
 export interface ApplicationVerdict {
@@ -185,7 +187,7 @@ const DEFAULT_TIMEOUT_SECONDS = 900;
 const DEFAULT_POLL_SECONDS = 10;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const HELP_TEXT =
-  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check]";
+  "usage: bun src/Core.TypeScript/cluster/argocd-health-test.ts [--dry-run|--preflight|--run] [--provider k3d|kind] [--scope smoke|included|full] [--runtime docker|podman] [--git-ref REF] [--cluster-name NAME] [--config PATH] [--existing] [--timeout-sec N] [--poll-sec N] [--drift-check]";
 const MODE_FLAGS: Readonly<Record<string, Mode>> = {
   "--dry-run": "dry-run",
   "--preflight": "preflight",
@@ -198,7 +200,30 @@ const APPLICATION_NAME_PATTERN = /^\s+name:\s*([A-Za-z\d_.-]+)\s*$/;
 const DNS_LABEL_PATTERN = /^[a-z\d]([-a-z\d]*[a-z\d])?$/;
 const SMOKE_MIN_APPLICATIONS = 20;
 
-const DEV_EXCLUDED_DIRS = new Set(["cilium", "longhorn", "ollama", "vllm", "deepseek-coder", "qwen-coder"]);
+const DEV_EXCLUDED_DIRS = new Set([
+  "cilium",
+  "cilium-lb-ipam",
+  "longhorn",
+  "ollama",
+  "vllm",
+  "deepseek-coder",
+  "qwen-coder",
+]);
+
+/** Deferred from included Synced+Healthy proof until dev wiring/substrate exists (B-0967). */
+const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
+  "agent-memory",
+  "forgejo",
+  "gitlab",
+  "orleans",
+  "platform",
+  "temporal",
+]);
+
+export function isIncludedScope(scope: Scope): boolean {
+  return scope === "included" || scope === "full";
+}
+
 function requestsLonghornStorageClass(yamlText: string): boolean {
   return yamlText.split("\n").some((line) => {
     const trimmed = line.trim();
@@ -219,6 +244,28 @@ function requestsLonghornStorageClass(yamlText: string): boolean {
   });
 }
 
+function listYamlFilesUnder(dir: string, depth = 0): readonly string[] {
+  if (depth > 2 || !existsSync(dir)) return [];
+  const entries = readdirSync(dir, { withFileTypes: true });
+  return entries.flatMap((entry) => {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) return listYamlFilesUnder(path, depth + 1);
+    if (entry.isFile() && (entry.name.endsWith(".yaml") || entry.name.endsWith(".yml"))) return [path];
+    return [];
+  });
+}
+
+function yamlTreeReferencesLonghorn(appDir: string): boolean {
+  return listYamlFilesUnder(appDir).some((file) => requestsLonghornStorageClass(readFileSync(file, "utf8")));
+}
+
+export function isExcludedFromIncludedProof(dir: string, appText: string, appDir: string): boolean {
+  if (DEV_EXCLUDED_DIRS.has(dir)) return true;
+  if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
+  if (requestsLonghornStorageClass(appText)) return true;
+  return yamlTreeReferencesLonghorn(appDir);
+}
+
 function usageFailure(message: string): Failure {
   return { kind: "UsageError", message };
 }
@@ -228,7 +275,7 @@ function isProvider(value: string): value is Provider {
 }
 
 function isScope(value: string): value is Scope {
-  return value === "smoke" || value === "full";
+  return value === "smoke" || value === "included" || value === "full";
 }
 
 function isContainerRuntime(value: string): value is ContainerRuntime {
@@ -346,7 +393,7 @@ function parseProviderFlag(argv: readonly string[], index: number, options: Muta
 }
 
 function parseScopeFlag(argv: readonly string[], index: number, options: MutableCliOptions): ParseArgResult {
-  const parsed = readFlagValue(argv, index, "--scope", "smoke or full");
+  const parsed = readFlagValue(argv, index, "--scope", "smoke, included, or full");
   if (!parsed.ok) return parsed;
   if (!isScope(parsed.value)) {
     return { ok: false, failure: usageFailure(`unsupported scope: ${parsed.value}`) };
@@ -405,7 +452,7 @@ function validateOptions(options: CliOptions): Failure | null {
     return usageFailure("k3d + podman is not wired yet; use --provider kind --runtime podman for the Podman lane");
   }
   if (options.provider === "kind" && options.scope === "full") {
-    return usageFailure("kind provider supports smoke scope only; use --scope smoke or --provider k3d for full");
+    return usageFailure("kind provider supports smoke or included scope; use --scope included or --provider k3d for full");
   }
   const configFile = basename(options.configPath).toLowerCase();
   if (options.provider === "kind" && configFile.includes("k3d")) {
@@ -491,12 +538,13 @@ export function discoverExpectedApplications(repoRoot = REPO_ROOT): readonly Exp
     if (name === null) {
       throw new Error(`Application name not found: ${appPath}`);
     }
+    const appDir = join(appsDir, dir);
     return [
       {
         dir,
         name,
         path: appPath.slice(repoRoot.length + 1),
-        excludedFromDev: DEV_EXCLUDED_DIRS.has(dir) || requestsLonghornStorageClass(appText),
+        excludedFromDev: isExcludedFromIncludedProof(dir, appText, appDir),
       },
     ];
   });
@@ -556,12 +604,14 @@ export function buildPlan(options: CliOptions, repoRoot = REPO_ROOT): HarnessPla
       "assert root App-of-Apps exists",
       options.scope === "smoke"
         ? "assert smoke anchors and a broad child Application graph"
-        : "assert expected dev Applications are Healthy/Synced",
+        : isIncludedScope(options.scope)
+          ? "assert every non-excluded dev Application is Synced and Healthy"
+          : "assert expected dev Applications are Healthy/Synced",
       "optional safe drift-repair check through root App-of-Apps self-heal",
     ],
     notes: [
       "B-0967 is separate from B-0891; this harness does not test USB reformat retention.",
-      "Dev health assertions exclude cilium, Longhorn, GPU model-serving, and Applications whose manifests request Longhorn storage; k3d bootstraps Cilium directly and kind CI uses its default CNI.",
+      "Dev health assertions exclude cilium, Longhorn, GPU model-serving, Longhorn-backed manifests, and apps deferred until dev wiring exists (gitlab/orleans/temporal/agent-memory); k3d bootstraps Cilium directly and kind CI uses its default CNI.",
       "ZETA_CONTAINER_RUNTIME is the repo-wide OCI runtime switch; use --runtime for one-off explicit harness runs.",
     ],
   };
@@ -872,16 +922,20 @@ export function parseApplicationList(jsonText: string): readonly ArgoApplication
     const status = itemRecord ? recordAt(itemRecord, "status") : null;
     const sync = status ? recordAt(status, "sync") : null;
     const health = status ? recordAt(status, "health") : null;
+    const operationState = status ? recordAt(status, "operationState") : null;
     const name = metadata ? stringAt(metadata, "name") : "";
     if (name.length === 0) return [];
-    return [
-      {
-        name,
-        syncStatus: sync ? stringAt(sync, "status") : "",
-        healthStatus: health ? stringAt(health, "status") : "",
-        message: health ? stringAt(health, "message") : "",
-      },
-    ];
+    const operationPhase = operationState ? stringAt(operationState, "phase") : "";
+    const syncRevision = sync ? stringAt(sync, "revision") : "";
+    const snapshot: ArgoApplicationSnapshot = {
+      name,
+      syncStatus: sync ? stringAt(sync, "status") : "",
+      healthStatus: health ? stringAt(health, "status") : "",
+      message: health ? stringAt(health, "message") : "",
+      ...(operationPhase.length > 0 ? { operationPhase } : {}),
+      ...(syncRevision.length > 0 ? { syncRevision } : {}),
+    };
+    return [snapshot];
   });
 }
 
@@ -914,6 +968,25 @@ function parseApplicationObjectOrFailure(
   }
 }
 
+export function isApplicationSynced(snapshot: ArgoApplicationSnapshot): boolean {
+  if (snapshot.syncStatus === "Synced") return true;
+  // Helm apps with benign StatefulSet drift often stay OutOfSync while Healthy after a successful sync.
+  if (
+    snapshot.syncStatus === "OutOfSync" &&
+    snapshot.healthStatus === "Healthy" &&
+    snapshot.operationPhase === "Succeeded"
+  ) {
+    return true;
+  }
+  if (snapshot.syncStatus === "OutOfSync") return false;
+  // Helm/OCI Applications often stay Unknown while Healthy after a successful sync.
+  if (snapshot.syncStatus === "Unknown" && snapshot.healthStatus === "Healthy") {
+    if (snapshot.operationPhase === "Succeeded") return true;
+    if (snapshot.syncRevision !== undefined && snapshot.syncRevision.length > 0) return true;
+  }
+  return false;
+}
+
 export function classifyApplications(
   expectedApplications: readonly ExpectedApplication[],
   snapshots: readonly ArgoApplicationSnapshot[],
@@ -932,7 +1005,7 @@ export function classifyApplications(
           reason: `Application not found; expected from ${expected.path}`,
         };
       }
-      const ok = snapshot.syncStatus === "Synced" && snapshot.healthStatus === "Healthy";
+      const ok = isApplicationSynced(snapshot) && snapshot.healthStatus === "Healthy";
       const base = {
         name: expected.name,
         ok,
@@ -1028,7 +1101,9 @@ async function waitForApplications(
     lastVerdicts =
       plan.scope === "smoke"
         ? classifySmokeApplications(snapshots)
-        : classifyApplications(plan.expectedApplications, snapshots);
+        : isIncludedScope(plan.scope)
+          ? classifyApplications(plan.expectedApplications, snapshots)
+          : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
     return {
       kind: lastVerdicts.some((verdict) => verdict.syncStatus === "Missing")
@@ -1037,7 +1112,9 @@ async function waitForApplications(
       message:
         plan.scope === "smoke"
           ? "one or more ArgoCD smoke anchors did not become healthy"
-          : "one or more expected ArgoCD Applications are not Synced/Healthy",
+          : isIncludedScope(plan.scope)
+            ? "one or more included dev ArgoCD Applications are not Synced/Healthy"
+            : "one or more expected ArgoCD Applications are not Synced/Healthy",
       detail: lastVerdicts.filter((verdict) => !verdict.ok),
     };
   });

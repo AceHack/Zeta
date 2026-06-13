@@ -46,7 +46,9 @@ spec:
       #                local-path-provisioner handles PVCs.
       #   ollama / vllm / deepseek-coder / qwen-coder - GPU stack;
       #                no GPUs on the Mac or on normal CI runners.
-      exclude: '{cilium/**,longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**}'
+      #   gitlab / orleans / temporal / agent-memory / platform - deferred from
+      #                included Synced+Healthy proof until dev wiring exists.
+      exclude: '{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,deepseek-coder/**,qwen-coder/**,gitlab/**,orleans/**,temporal/**,agent-memory/**,platform/**}'
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

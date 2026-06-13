@@ -141,3 +141,55 @@ jobs:
       - name: Tear down kind cluster
         if: always()
         run: full-ai-cluster/dev-cluster/kind-down.sh --cluster-name zeta-ci
+
+  live-kind-included:
+    name: live kind included Synced+Healthy proof (${{ matrix.runner }})
+    needs: dry-run
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04]
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run live kind included ArgoCD health proof
+        env:
+          ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        run: |
+          bun src/Core.TypeScript/cluster/argocd-health-test.ts \
+            --run \
+            --provider kind \
+            --scope included \
+            --runtime docker \
+            --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
+            --cluster-name zeta-ci-included \
+            --git-ref "$ZETA_ARGOCD_GIT_REF" \
+            --timeout-sec 2400 \
+            --poll-sec 15
+
+      - name: Print cluster diagnostics
+        if: always()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl -n argocd get applications.argoproj.io -o wide || true
+          kubectl get pods -A -o wide || true
+          kubectl get events -A --sort-by=.lastTimestamp | tail -200 || true
+
+      - name: Tear down kind cluster
+        if: always()
+        run: full-ai-cluster/dev-cluster/kind-down.sh --cluster-name zeta-ci-included

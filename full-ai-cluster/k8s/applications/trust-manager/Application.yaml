@@ -38,6 +38,11 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager   # trust-manager runs in the cert-manager namespace
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - .status.terminatingReplicas
   syncPolicy:
     automated: { prune: false, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

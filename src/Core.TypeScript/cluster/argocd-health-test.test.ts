@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -8,6 +8,9 @@ import {
   classifyApplications,
   classifySmokeApplications,
   discoverExpectedApplications,
+  isExcludedFromIncludedProof,
+  isApplicationSynced,
+  isIncludedScope,
   parseApplicationList,
   parseApplicationName,
   parseArgs,
@@ -186,7 +189,15 @@ describe("B-0967 argocd-health-test argument parsing", () => {
     const parsed = parseArgs(["--run", "--provider", "kind", "--scope", "full"], {});
     expect("kind" in parsed).toBe(true);
     if (!("kind" in parsed)) throw new Error("expected usage error");
-    expect(parsed.message).toContain("kind provider supports smoke scope only");
+    expect(parsed.message).toContain("kind provider supports smoke or included scope");
+  });
+
+  test("accepts included scope on kind for Synced+Healthy proof", () => {
+    const parsed = parseArgs(["--run", "--provider", "kind", "--scope", "included"], {});
+    expect("kind" in parsed).toBe(false);
+    if ("kind" in parsed) throw new Error(parsed.message);
+    expect(parsed.scope).toBe("included");
+    expect(isIncludedScope(parsed.scope)).toBe(true);
   });
 });
 
@@ -216,8 +227,37 @@ describe("B-0967 argocd-health-test manifest parsing", () => {
     expect(applications.length).toBeGreaterThan(20);
     expect(applications.some((app) => app.name === "argocd" && !app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "cilium" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "cilium-lb-ipam" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "longhorn" && app.excludedFromDev)).toBe(true);
     expect(applications.some((app) => app.dir === "vault" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "agent-memory" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "gitlab" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "orleans" && app.excludedFromDev)).toBe(true);
+    expect(applications.some((app) => app.dir === "temporal" && app.excludedFromDev)).toBe(true);
+    const included = applications.filter((app) => !app.excludedFromDev);
+    expect(included.length).toBeGreaterThan(10);
+    expect(included.some((app) => app.name === "trust-manager")).toBe(true);
+    expect(included.some((app) => app.name === "forgejo")).toBe(false);
+  });
+
+  test("isExcludedFromIncludedProof catches Longhorn in child manifests", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-argocd-health-longhorn-"));
+    try {
+      const appDir = join(repoRoot, "full-ai-cluster/k8s/applications/demo");
+      mkdirSync(appDir, { recursive: true });
+      writeFileSync(
+        join(appDir, "Application.yaml"),
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata:\n  name: demo\nspec: {}\n",
+      );
+      writeFileSync(
+        join(appDir, "statefulset.yaml"),
+        "spec:\n  volumeClaimTemplates:\n    - spec:\n        storageClassName: longhorn\n",
+      );
+      const appText = readFileSync(join(appDir, "Application.yaml"), "utf8");
+      expect(isExcludedFromIncludedProof("demo", appText, appDir)).toBe(true);
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
   });
 
   test("smoke scope accepts a broad graph with lightweight healthy anchors", () => {
@@ -259,8 +299,9 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
           {
             metadata: { name: "argocd" },
             status: {
-              sync: { status: "Synced" },
+              sync: { status: "Synced", revision: "7.7.10" },
               health: { status: "Healthy", message: "" },
+              operationState: { phase: "Succeeded" },
             },
           },
         ],
@@ -272,8 +313,32 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
         syncStatus: "Synced",
         healthStatus: "Healthy",
         message: "",
+        operationPhase: "Succeeded",
+        syncRevision: "7.7.10",
       },
     ]);
+  });
+
+  test("isApplicationSynced accepts Unknown Helm apps that reconciled successfully", () => {
+    expect(
+      isApplicationSynced({
+        name: "cert-manager",
+        syncStatus: "Unknown",
+        healthStatus: "Healthy",
+        message: "",
+        operationPhase: "Succeeded",
+        syncRevision: "v1.16.2",
+      }),
+    ).toBe(true);
+    expect(
+      isApplicationSynced({
+        name: "dapr",
+        syncStatus: "OutOfSync",
+        healthStatus: "Healthy",
+        message: "",
+        operationPhase: "Succeeded",
+      }),
+    ).toBe(true);
   });
 
   test("reports exact missing and unhealthy Applications", () => {
@@ -336,7 +401,21 @@ describe("B-0967 argocd-health-test planning", () => {
     expect(plan.scope).toBe("full");
     expect(plan.clusterName).toBe("zeta-dev");
     expect(plan.expectedApplications.some((app) => app.name === "argocd")).toBe(true);
+    expect(plan.expectedApplications.filter((app) => !app.excludedFromDev).length).toBeGreaterThan(10);
     expect(plan.notes.join("\n")).toContain("separate from B-0891");
+  });
+
+  test("included dry-run lists proof targets on kind", () => {
+    const parsed = parseArgs(["--dry-run", "--provider", "kind", "--scope", "included"], {});
+    if ("kind" in parsed) throw new Error(parsed.message);
+    const plan = buildPlan(parsed);
+    if ("kind" in plan) throw new Error(plan.message);
+    expect(plan.scope).toBe("included");
+    expect(plan.checks.join("\n")).toContain("Synced and Healthy");
+    const included = plan.expectedApplications.filter((app) => !app.excludedFromDev).map((app) => app.name);
+    expect(included).not.toContain("gitlab");
+    expect(included).not.toContain("forgejo");
+    expect(included).not.toContain("agent-memory");
   });
 
   test("architecture guard names the supported hardware classes", () => {

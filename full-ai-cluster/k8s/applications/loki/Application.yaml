@@ -34,14 +34,19 @@ spec:
             # in a placeholder values-set you wire after picking
             # object-storage backend.
             bucketNames: { chunks: loki-chunks, ruler: loki-ruler }
-        write: { replicas: 2 }
-        read:  { replicas: 2 }
-        backend: { replicas: 2 }
-        chunksCache: { enabled: true }
-        resultsCache: { enabled: true }
+        write: { replicas: 1 }
+        read:  { replicas: 1 }
+        backend: { replicas: 1 }
+        chunksCache: { enabled: false }
+        resultsCache: { enabled: false }
   destination:
     server: https://kubernetes.default.svc
     namespace: loki
+  ignoreDifferences:
+    - group: apps
+      kind: StatefulSet
+      jqPathExpressions:
+        - .status.terminatingReplicas
   syncPolicy:
     automated: { prune: false, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

@@ -29,6 +29,11 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: dapr-system
+  ignoreDifferences:
+    - group: apps
+      kind: StatefulSet
+      jqPathExpressions:
+        - .status.terminatingReplicas
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
