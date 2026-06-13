@@ -130,26 +130,32 @@ surface-contact surfaces the gaps.
 
 ## Initial term candidates (to land in v1)
 
-Zero terms landed yet. First candidates (not prescriptive,
-agent-pick; Aaron + formal-verification-expert nudge):
+**v1 landed (6 terms; the DAG is in `prereq-graph.json`):**
 
-- **truth** (Tarski's predicate; metalanguage-scoped)
-- **implication** (material conditional; Meredith-derivable)
-- **equality** (structural identity; reflexive /
-  symmetric / transitive)
-- **set** (extensional; Zermelo-Fraenkel-subset-minimal)
-- **function** (set-theoretic: set of ordered pairs with
-  uniqueness)
-- **axiom** (self-referential in the seed itself: a
-  seed-term whose `defined-by: axiomatic`)
-- **definition** (self-referential: a seed-term that
-  makes another term precise)
-- **retraction** (Zeta-adjacent; negative-weight
-  inverse; grounds into signed-integer weights)
+- **truth** (Tarski's predicate; metalanguage-scoped) — `terms/truth.md`
+- **implication** (material conditional; Meredith-derivable) —
+  `terms/implication.md`, deps `[truth]`
+- **equality** (Leibniz indiscernibility; reflexive / symmetric /
+  transitive) — `terms/equality.md`, deps `[implication]`
+- **set** (extensional; Zermelo-Fraenkel) — `terms/set.md`,
+  deps `[equality, implication]`
+- **function** (set-theoretic: single-valued total relation) —
+  `terms/function.md`, deps `[set, equality]`
+- **retraction** (Zeta-adjacent; Z-set negative-weight inverse;
+  the formal twin of the five-year-old walk's "honest take-back") —
+  `terms/retraction.md`, deps `[function]`
 
-Adding a ninth term requires the previous eight to be
-landed first (per backwards-chain discipline — each term
-can only depend on already-landed terms).
+**Candidates next** (backwards-chained as downstream need surfaces):
+
+- **membership** (the `∈` primitive set.md currently leaves untermed —
+  the one honest dangling edge in the graph)
+- **axiom** (self-referential: a seed-term whose `defined-by: axiomatic`)
+- **definition** (self-referential: a seed-term that makes another precise)
+- **relation** / **order** / **number** (as Craft / soulfile need them)
+
+Per the backwards-chain discipline, each new term may depend only on
+already-landed terms (no dangling references; `prereq-graph.json` enforces
+the constraint).
 
 ## Composition with other substrate
 
@@ -217,16 +223,18 @@ commitment is adopter-pluggable.
 
 ## Follow-up work (tracked via gap #2 closure)
 
-- Land the prereq-graph.json skeleton with empty DAG
-- Land first 3-5 terms (`truth` / `implication` / `equality`
-  / `set` / `function`) as v1
+- [x] Land the `prereq-graph.json` (landed **populated**, not empty — six
+  terms with real edges; one honest dangling primitive recorded)
+- [x] Land first 3-5 terms (`truth` / `implication` / `equality` / `set` /
+  `function`) as v1 — landed, plus `retraction` as the Zeta-adjacent capstone
 - Route formal-verification-expert (Soraya) for Lean4
-  sketch-and-formalise pattern
+  sketch-and-formalise pattern (the term Lean blocks are **draft sketches**,
+  not proven — Soraya's lane to harden)
 - Route applied-mathematics-expert + formal-verification-
   expert for initial term-review cadence
 - Update cross-references from other factory memories
   (soulfile DSL, Craft memory, prompt-injection-bootstrap
-  memory) to point at live seed files once v1 lands
+  memory) to point at live seed files now that v1 has landed
 
 ## Gap #2 closure status
 

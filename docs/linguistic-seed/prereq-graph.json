@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "description": "Linguistic-seed term dependency DAG. Each term's dependencies are the seed terms directly invoked in its mathematical definition. Constraints: no cycles; root terms have empty dependencies (axiomatic); every dependency names a landed term. Grows by backwards-chaining from downstream need (README S growth-discipline).",
+  "constraints": {
+    "acyclic": true,
+    "roots-have-empty-deps": true,
+    "no-dangling-refs": true
+  },
+  "terms": {
+    "truth": [],
+    "implication": ["truth"],
+    "equality": ["implication"],
+    "set": ["equality", "implication"],
+    "function": ["set", "equality"],
+    "retraction": ["function"]
+  },
+  "primitives-not-yet-termed": {
+    "membership": "The set-membership relation (x is-in A) is taken primitive in set.md but has no seed term yet; an honest dangling edge to be backwards-chained when a downstream term forces it."
+  },
+  "landed": ["truth", "implication", "equality", "set", "function", "retraction"],
+  "candidates-next": ["axiom", "definition", "membership", "relation", "order", "number"]
+}
