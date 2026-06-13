@@ -60,6 +60,7 @@ code with a different argument*.
   swappable adapters (the same hexagonal discipline as `IClock`/`IBackingStore`/…).
 
 ## Sequencing / ownership
+
 - This **subsumes** the in-flight `kiro/shell-to-ts-services` — widen that branch to the
   unified shape rather than porting 3 files 1:1.
 - **Collision watch:** Riven owns `riven-loop-tick.ts` + the dev-cluster area — coordinate
@@ -70,6 +71,7 @@ code with a different argument*.
   art: the maintainer's Itron `Platform.Capability/Util/AsyncState.cs`.
 
 ## Done-when
+
 - One `loop-tick.ts` (persona arg) — per-persona tick scripts deleted.
 - One `IServiceManager` + launchd/Task-Scheduler/systemd adapters; one `install --persona X`.
 - Wrappers gone; one plist/task template; one env schema.
