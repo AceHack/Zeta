@@ -57,7 +57,7 @@ inline as a comment block).
 
 Each shard's first non-empty line MUST be a 6-column pipe-row
 matching the validator at
-[`tools/hygiene/check-tick-history-shard-schema.ts`](../../../tools/hygiene/check-tick-history-shard-schema.ts):
+[`check-tick-history-shard-schema.ts`](../../../src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts):
 
 ```
 | <ISO 8601 UTC timestamp> | <model id> | <cron sentinel> | <body> | <PR ref> | <observation> |
@@ -99,7 +99,7 @@ sub-sections, prose, links).
 The validator only inspects the first non-empty line; the body's
 content is unconstrained markdown. For retrofit of older
 H1-first-only shards, the
-[`tools/hygiene/add-pipe-row-header.ts`](../../../tools/hygiene/add-pipe-row-header.ts)
+[`add-pipe-row-header.ts`](../../../src/Core.TypeScript/hygiene/add-pipe-row-header.ts)
 tool prepends a placeholder pipe-row above the existing body,
 preserving substantive content while satisfying the validator.
 

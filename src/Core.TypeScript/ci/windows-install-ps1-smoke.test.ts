@@ -72,7 +72,7 @@ test("Windows .ps1 entrypoints are ASCII-only (PS 5.1 reads BOM-less .ps1 as ANS
   const repoRoot = join(import.meta.dir, "..", "..", "..");
   const files = [
     join(repoRoot, "tools", "setup", "install.ps1"),
-    join(repoRoot, "src", "Core.TypeScript", "persistence", "windows", "otto-loop-wrapper.ps1"),
+    join(repoRoot, "tools", "persistence", "windows", "otto-loop-wrapper.ps1"),
   ];
   for (const f of files) {
     const text = readFileSync(f, "utf8");

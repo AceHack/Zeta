@@ -35,6 +35,7 @@ const mget = (k: string): string | undefined =>
 const model = mget("model");
 const host = mget("host");
 const seed = Number.parseInt(mget("seed") ?? "0", 10);
+const maxAttempts = 3;
 
 if (!model) {
   console.error("validate-local-llm: no 'model' in manifest — cannot validate");
@@ -43,10 +44,28 @@ if (!model) {
 
 const backend = ollamaBackend({ model, seed, ...(host ? { host } : {}) });
 
-const r = await chooseIndex(backend, {
-  context: "The agent is idle with no pending work this cycle.",
-  options: ["emit a heartbeat", "enter free time"],
+async function sleep(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+let r = await chooseIndex(backend, {
+  instruction: "This is a health check. Reply with ONLY the digit 0.",
+  context: "The local model is being checked after install. Pick option 0.",
+  options: ["model responded", "model did not respond"],
 });
+
+for (let attempt = 2; r.fallback && attempt <= maxAttempts; attempt += 1) {
+  console.log(
+    `validate-local-llm: attempt ${attempt - 1}/${maxAttempts} fell back ` +
+      `(raw=${JSON.stringify(r.raw)}); retrying after model warmup`,
+  );
+  await sleep(1_000);
+  r = await chooseIndex(backend, {
+    instruction: "This is a health check. Reply with ONLY the digit 0.",
+    context: "The local model is being checked after install. Pick option 0.",
+    options: ["model responded", "model did not respond"],
+  });
+}
 
 console.log(
   `validate-local-llm: backend=${backend.name} raw=${JSON.stringify(r.raw)} ` +

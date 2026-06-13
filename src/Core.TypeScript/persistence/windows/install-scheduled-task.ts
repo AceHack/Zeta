@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/persistence/windows/install-scheduled-task.ts
+// src/Core.TypeScript/persistence/windows/install-scheduled-task.ts
 //
 // Install Zeta's autonomous-loop worker as a USER-MODE Windows Task Scheduler task.
 // Windows parity for tools/shadow/launchd/install-launchagent.ts + the macOS
@@ -11,8 +11,8 @@
 // %LOCALAPPDATA%\zeta-otto-loop\Zeta — NEVER the operator checkout (the tick does
 // `git reset --hard origin/main`, which would wipe a working checkout).
 //
-//   bun tools/persistence/windows/install-scheduled-task.ts             # dry run: print rendered XML
-//   bun tools/persistence/windows/install-scheduled-task.ts --register  # clone + register/replace the task
+//   bun src/Core.TypeScript/persistence/windows/install-scheduled-task.ts             # dry run: print rendered XML
+//   bun src/Core.TypeScript/persistence/windows/install-scheduled-task.ts --register  # clone + register/replace the task
 //   ... --ref feat/x   # which ref the dedicated clone tracks (default: main)
 //   ... --run-claude --model opus   # enable harness-launch instead of heartbeat-only
 //
@@ -34,7 +34,10 @@ export interface Args {
   register: boolean;
 }
 
-export type Placeholders = Record<"TASK_NAME" | "USER_ID" | "CONHOST_PATH" | "PWSH_PATH" | "WRAPPER_PATH" | "REPO_ROOT", string>;
+export type Placeholders = Record<
+  "TASK_NAME" | "USER_ID" | "CONHOST_PATH" | "PWSH_PATH" | "WRAPPER_PATH" | "REPO_ROOT",
+  string
+>;
 
 /** Escape the five XML predefined entities — substituted values land in element text. */
 export function xmlEscape(s: string): string {
@@ -63,7 +66,14 @@ export function toUtf16WithBom(content: string): Buffer {
 }
 
 export function parseArgs(argv: string[]): Args {
-  const a: Args = { taskName: "ZetaOttoLoop", ref: "main", runClaude: false, model: "sonnet", dryRun: false, register: false };
+  const a: Args = {
+    taskName: "ZetaOttoLoop",
+    ref: "main",
+    runClaude: false,
+    model: "sonnet",
+    dryRun: false,
+    register: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const t = argv[i];
     const next = (name: string): string => {
@@ -72,15 +82,32 @@ export function parseArgs(argv: string[]): Args {
       return v;
     };
     switch (t) {
-      case "--task-name": a.taskName = next("--task-name"); break;
-      case "--ref": a.ref = next("--ref"); break;
-      case "--model": a.model = next("--model"); break;
-      case "--repo-root": a.repoRoot = next("--repo-root"); break;
-      case "--clone-dir": a.cloneDir = next("--clone-dir"); break;
-      case "--run-claude": a.runClaude = true; break;
-      case "--dry-run": a.dryRun = true; break;
-      case "--register": a.register = true; break;
-      default: throw new Error(`Unknown argument: ${t}`);
+      case "--task-name":
+        a.taskName = next("--task-name");
+        break;
+      case "--ref":
+        a.ref = next("--ref");
+        break;
+      case "--model":
+        a.model = next("--model");
+        break;
+      case "--repo-root":
+        a.repoRoot = next("--repo-root");
+        break;
+      case "--clone-dir":
+        a.cloneDir = next("--clone-dir");
+        break;
+      case "--run-claude":
+        a.runClaude = true;
+        break;
+      case "--dry-run":
+        a.dryRun = true;
+        break;
+      case "--register":
+        a.register = true;
+        break;
+      default:
+        throw new Error(`Unknown argument: ${t}`);
     }
   }
   return a;
@@ -110,7 +137,9 @@ function detectPwsh(): string {
     try {
       const p = execFileSync("where.exe", [exe], { encoding: "utf8" }).trim().split(/\r?\n/)[0];
       if (p) return p;
-    } catch { /* try next */ }
+    } catch {
+      /* try next */
+    }
   }
   throw new Error("Neither pwsh.exe nor powershell.exe found on PATH");
 }
@@ -144,14 +173,15 @@ function ensureClone(cloneDir: string, ref: string): void {
 }
 
 export function renderXml(repoRoot: string, args: Args): string {
-  const here = join(repoRoot, "tools", "persistence", "windows");
-  const template = readFileSync(join(here, "scheduled-task.xml"), "utf8");
+  const sourceDir = join(repoRoot, "src", "Core.TypeScript", "persistence", "windows");
+  const wrapperDir = join(repoRoot, "tools", "persistence", "windows");
+  const template = readFileSync(join(sourceDir, "scheduled-task.xml"), "utf8");
   return substitutePlaceholders(template, {
     TASK_NAME: args.taskName,
     USER_ID: detectUserSid(),
     CONHOST_PATH: detectConhost(),
     PWSH_PATH: detectPwsh(),
-    WRAPPER_PATH: join(here, "otto-loop-wrapper.ps1"),
+    WRAPPER_PATH: join(wrapperDir, "otto-loop-wrapper.ps1"),
     REPO_ROOT: repoRoot,
   });
 }
@@ -176,7 +206,11 @@ function main(): void {
   const xmlPath = join(tmp, "task.xml");
   try {
     writeFileSync(xmlPath, toUtf16WithBom(xml));
-    try { execFileSync("schtasks.exe", ["/Delete", "/TN", args.taskName, "/F"], { stdio: "ignore" }); } catch { /* not present */ }
+    try {
+      execFileSync("schtasks.exe", ["/Delete", "/TN", args.taskName, "/F"], { stdio: "ignore" });
+    } catch {
+      /* not present */
+    }
     execFileSync("schtasks.exe", ["/Create", "/TN", args.taskName, "/XML", xmlPath, "/F"], { stdio: "inherit" });
     console.error(`Registered user-mode task "${args.taskName}". Verify: schtasks /Query /TN ${args.taskName}`);
   } finally {
@@ -185,4 +219,6 @@ function main(): void {
 }
 
 // Only run side effects when invoked directly — lets the test import the pure functions.
-if (import.meta.main) { main(); }
+if (import.meta.main) {
+  main();
+}

@@ -7,8 +7,8 @@
 // accident.
 //
 // Usage:
-//   bun tools/lint/no-python-files.ts          # check mode
-//   bun tools/lint/no-python-files.ts --list   # list mode (always exit 0)
+//   bun src/Core.TypeScript/lint/no-python-files.ts          # check mode
+//   bun src/Core.TypeScript/lint/no-python-files.ts --list   # list mode
 //
 // Exit codes:
 //   0   no flagged .py files (or --list mode)

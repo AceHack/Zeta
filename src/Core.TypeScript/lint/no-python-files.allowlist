@@ -1,4 +1,4 @@
-# tools/lint/no-python-files.allowlist
+# src/Core.TypeScript/lint/no-python-files.allowlist
 #
 # Repo-relative paths to .py files that are legitimately allowed
 # in this repository despite the B-0156 (Aaron 2026-05-01) policy

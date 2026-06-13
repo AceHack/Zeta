@@ -8,7 +8,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 PLIST_NAME="com.lucent.zeta.kiro-loop.plist"
 PLIST_LABEL="com.lucent.zeta.kiro-loop"
-PLIST_SRC="$SCRIPT_DIR/$PLIST_NAME"
+PLIST_SRC="$REPO_ROOT/src/Core.TypeScript/kiro/launchd/$PLIST_NAME"
 PLIST_DST="$HOME/Library/LaunchAgents/$PLIST_NAME"
 LOG_DIR="$HOME/Library/Logs/zeta-kiro-loop"
 STATE_DIR="$HOME/Library/Application Support/ZetaKiroLoop"

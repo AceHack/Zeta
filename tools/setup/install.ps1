@@ -5,7 +5,7 @@
 # resolve scoop -> winget -> chocolatey (operator 2026-05-30; scoop primary = user-mode, no
 # admin, AI-native). Runtimes via mise/.mise.toml; agent CLIs via manifests/agent-clis +
 # bun --global -- the IDENTICAL files Unix uses, so the tool set stays in sync + symmetric across
-# OSes. Background loop registered via tools/persistence/windows/install-scheduled-task.ts
+# OSes. Background loop registered via src/Core.TypeScript/persistence/windows/install-scheduled-task.ts
 # (schtasks ~= launchd). No admin required.
 #
 # Idempotent (detect-first-install-else-update) -- safe to run repeatedly to keep tools fresh.
@@ -299,7 +299,7 @@ if (Test-Path $llmManifest) {
 
 # 7. register the per-minute (windowless, conhost --headless) loop unless skipped.
 if (-not $SkipLoopRegister) {
-  Invoke-Tool { mise exec -- bun "$RepoRoot\tools\persistence\windows\install-scheduled-task.ts" --register } 'register loop task'
+  Invoke-Tool { mise exec -- bun "$RepoRoot\src\Core.TypeScript\persistence\windows\install-scheduled-task.ts" --register } 'register loop task'
 }
 
 Write-Host ""

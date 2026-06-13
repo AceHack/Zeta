@@ -164,11 +164,11 @@ describe("buildInventoryReport", () => {
       },
       {
         category: "launchd bootstrap",
-        files: ["src/Core.TypeScript/kiro/launchd/install.sh"],
+        files: ["tools/kiro/launchd/install.sh"],
       },
       {
         category: "kiro loop wrapper",
-        files: ["src/Core.TypeScript/kiro/kiro-loop-wrapper.sh"],
+        files: ["tools/kiro/kiro-loop-wrapper.sh"],
       },
       {
         category: "nixos installer",

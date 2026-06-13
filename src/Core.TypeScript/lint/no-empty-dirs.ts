@@ -6,8 +6,8 @@
 // migration. See docs/best-practices/repo-scripting.md.
 //
 // Usage:
-//   bun tools/lint/no-empty-dirs.ts          # check mode
-//   bun tools/lint/no-empty-dirs.ts --list   # list mode
+//   bun src/Core.TypeScript/lint/no-empty-dirs.ts          # check mode
+//   bun src/Core.TypeScript/lint/no-empty-dirs.ts --list   # list mode
 //
 // Exit codes:
 //   0   no flagged empty dirs (or --list mode)

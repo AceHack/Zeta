@@ -118,9 +118,9 @@ COPY .mise.toml /workspace/.mise.toml
 # package.json + bun.lock pin TS-runtime deps if install.sh references
 # them (e.g., bun --version checks); copy to mirror dev environment
 COPY package.json bun.lock* /workspace/
-# tools/accelerator carries the local-LLM primitive's validator + tests
+# src/Core.TypeScript/accelerator carries the local-LLM primitive's validator + tests
 # (validate-local-llm.ts + local-llm.test.ts) for validation step 4 below.
-COPY tools/accelerator /workspace/tools/accelerator
+COPY src/Core.TypeScript/accelerator /workspace/src/Core.TypeScript/accelerator
 
 # Run install.sh — this exercises:
 #   1. install.sh dispatch (detects Linux → linux.sh)
@@ -194,8 +194,8 @@ RUN bash -lc 'set -eu; eval "$(mise activate bash)"; \
     echo "asserting model: $MODEL"; \
     ollama list; \
     ollama list | awk "NR>1 {print \$1}" | grep -qx "$MODEL"; \
-    bun test tools/accelerator/local-llm.test.ts; \
-    bun tools/accelerator/validate-local-llm.ts --root "$PWD"'
+    bun test src/Core.TypeScript/accelerator/local-llm.test.ts; \
+    bun src/Core.TypeScript/accelerator/validate-local-llm.ts --root "$PWD"'
 
 # Final marker — if all steps succeed, this echo lands in the build
 # output as the success signal for CI.

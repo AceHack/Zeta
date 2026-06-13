@@ -69,8 +69,9 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 6 * * *'   # 06:00 UTC daily (catches drift on
-                          # weekends / when no main commits land)
+    - cron:
+        "0 6 * * *" # 06:00 UTC daily (catches drift on
+        # weekends / when no main commits land)
   workflow_dispatch: {}
 
 permissions:
@@ -93,7 +94,7 @@ jobs:
   build-and-test-low-memory:
     name: build-and-test (ubuntu-slim, low-memory)
     runs-on: ubuntu-slim
-    timeout-minutes: 14   # fail gracefully before the 15-minute runner-class hard cap
+    timeout-minutes: 14 # fail gracefully before the 15-minute runner-class hard cap
 
     steps:
       - name: Checkout
@@ -118,18 +119,6 @@ jobs:
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('tools/setup/common/elan.sh') }}
-
-      - name: Cache verifier jars (TLC + Alloy)
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          # Path narrowed 2026-05-03 — same fix as gate.yml. Caching
-          # whole src/Core.TLA / src/Core.Alloy directories overwrote
-          # source-controlled spec files on cache hit. See gate.yml
-          # comment for the full failure-mode write-up.
-          path: |
-            src/Core.TLA/tla2tools.jar
-            src/Core.Alloy/alloy.jar
-          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}-v2
 
       - name: Cache NuGet packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5

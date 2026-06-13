@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile
+# src/Core.TypeScript/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile
 #
 # Docker-based install.sh test on Ubuntu userspace — sibling to
 # nixos-install-sh-test (operator 2026-05-30: "center our docker tests around
@@ -67,8 +67,8 @@ RUN set -eu; \
     echo "asserting model: $MODEL"; \
     ollama list; \
     ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"; \
-    bun test tools/accelerator/local-llm.test.ts; \
-    bun tools/accelerator/validate-local-llm.ts --root "$PWD"
+    bun test src/Core.TypeScript/accelerator/local-llm.test.ts; \
+    bun src/Core.TypeScript/accelerator/validate-local-llm.ts --root "$PWD"
 
 # Idempotency / 2nd-run assert (operator 2026-05-31: "like our mac installs
 # homebrew ... the windows should be the same idempotent install/update everything

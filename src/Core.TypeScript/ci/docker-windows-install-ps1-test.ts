@@ -1,18 +1,18 @@
 #!/usr/bin/env bun
 /**
- * tools/ci/docker-windows-install-ps1-test.ts
+ * src/Core.TypeScript/ci/docker-windows-install-ps1-test.ts
  *
  * Slice 2c — TS wrapper for the Server-Core Docker test of tools/setup/install.ps1 (B-0857
- * Windows parity). Mirrors tools/ci/docker-nixos-install-sh-test.ts (per
+ * Windows parity). Mirrors src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts (per
  * .claude/rules/rule-0-no-sh-files.md: TS-over-bash). Wraps `docker build` of
- * tools/ci/dockerfiles/windows-install-ps1-test/Dockerfile with exit-code mapping, log capture
+ * src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile with exit-code mapping, log capture
  * (CI artifact), and timeout enforcement.
  *
  * REQUIRES a Windows host with Docker in Windows-container mode (the windows-2025 GitHub runner).
  * Windows containers cannot run on Linux hosts.
  *
  * Usage:
- *   bun tools/ci/docker-windows-install-ps1-test.ts [--keep-image]
+ *   bun src/Core.TypeScript/ci/docker-windows-install-ps1-test.ts [--keep-image]
  *
  * Env:
  *   DOCKER_BUILD_TIMEOUT_SEC   override timeout (default 2400 — servercore pull + scoop + mise
@@ -48,6 +48,7 @@ function spawnDocker(args: string[], opts: { timeoutMs?: number } = {}): ReturnT
 }
 
 const DOCKERFILE_PATH = "src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile";
+const SMOKE_PATH = "src/Core.TypeScript/ci/windows-install-ps1-smoke.ts";
 const IMAGE_TAG = "zeta-windows-install-ps1-test:local";
 const DEFAULT_TIMEOUT_SEC = 2400;
 const DEFAULT_LOG_PATH = ".tools/docker-windows-install-ps1-test.log";
@@ -75,7 +76,7 @@ function checkPrereqs(): void {
     console.error("error: docker not installed or not on PATH");
     process.exit(2);
   }
-  for (const p of [DOCKERFILE_PATH, ".mise.toml", "src/Core.TypeScript/ci/windows-install-ps1-smoke.ts"]) {
+  for (const p of [DOCKERFILE_PATH, ".mise.toml", SMOKE_PATH]) {
     if (!existsSync(p)) {
       console.error(`error: ${p} not found (run from repo root)`);
       process.exit(2);
@@ -103,13 +104,18 @@ function runBuild(timeoutSec: number, logPath: string, keepImage: boolean): Buil
   const ambientToken = process.env.GITHUB_TOKEN ?? "";
   const miseGithubToken = keepImage ? "" : ambientToken;
   if (keepImage && ambientToken !== "") {
-    console.log("[Slice 2c] --keep-image set: OMITTING MISE_GITHUB_TOKEN so the retained image's history carries no token (mise runs unauthenticated for this run; GitHub rate-limit possible).");
+    console.log(
+      "[Slice 2c] --keep-image set: OMITTING MISE_GITHUB_TOKEN so the retained image's history carries no token (mise runs unauthenticated for this run; GitHub rate-limit possible).",
+    );
   }
   const buildArgs = [
     "build",
-    "--file", DOCKERFILE_PATH,
-    "--build-arg", `MISE_GITHUB_TOKEN=${miseGithubToken}`,
-    "--tag", IMAGE_TAG,
+    "--file",
+    DOCKERFILE_PATH,
+    "--build-arg",
+    `MISE_GITHUB_TOKEN=${miseGithubToken}`,
+    "--tag",
+    IMAGE_TAG,
     ".",
   ];
   // REDACT the token value in the logged command — NEVER print the secret to CI logs. (GHA also
@@ -162,7 +168,9 @@ function main(): void {
 
   const timeoutSec = parseInt(process.env.DOCKER_BUILD_TIMEOUT_SEC ?? String(DEFAULT_TIMEOUT_SEC), 10);
   if (!Number.isFinite(timeoutSec) || timeoutSec <= 0) {
-    console.error(`error: DOCKER_BUILD_TIMEOUT_SEC must be a positive integer (got: ${process.env.DOCKER_BUILD_TIMEOUT_SEC})`);
+    console.error(
+      `error: DOCKER_BUILD_TIMEOUT_SEC must be a positive integer (got: ${process.env.DOCKER_BUILD_TIMEOUT_SEC})`,
+    );
     process.exit(2);
   }
   const logPath = resolve(process.env.DOCKER_LOG_OUT_PATH ?? DEFAULT_LOG_PATH);

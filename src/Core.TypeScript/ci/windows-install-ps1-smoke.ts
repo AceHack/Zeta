@@ -144,8 +144,10 @@ function main(): void {
       const xml = execFileSync("schtasks", ["/Query", "/TN", "ZetaOttoLoop", "/XML"], { encoding: "utf8" });
       const v = execFileSync("schtasks", ["/Query", "/TN", "ZetaOttoLoop", "/V", "/FO", "LIST"], { encoding: "utf8" });
       const h = taskHasDurationAndNextRun(xml, v);
-      if (h.durationPresent && h.nextRunPopulated) pass("ZetaOttoLoop healthy (Repetition Duration + Next Run populated)");
-      else fail(`ZetaOttoLoop unhealthy (durationPresent=${h.durationPresent}, nextRunPopulated=${h.nextRunPopulated})`);
+      if (h.durationPresent && h.nextRunPopulated)
+        pass("ZetaOttoLoop healthy (Repetition Duration + Next Run populated)");
+      else
+        fail(`ZetaOttoLoop unhealthy (durationPresent=${h.durationPresent}, nextRunPopulated=${h.nextRunPopulated})`);
     } catch {
       fail("could not query the ZetaOttoLoop task");
     }

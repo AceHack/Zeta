@@ -1,4 +1,4 @@
-# tools/lint/no-empty-dirs.allowlist — paths that legitimately exist
+# src/Core.TypeScript/lint/no-empty-dirs.allowlist — paths that legitimately exist
 # as empty directories in a clean checkout. One path per line, relative
 # to repo root. Comments (#) and blank lines ignored.
 #

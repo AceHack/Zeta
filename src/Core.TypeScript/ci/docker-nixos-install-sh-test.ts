@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 /**
- * tools/ci/docker-nixos-install-sh-test.ts
+ * src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts
  *
  * B-0849 Phase 1 — TS wrapper for the Docker NixOS install.sh test
  * harness. Per .claude/rules/rule-0-no-sh-files.md: TS-over-bash for
  * DST + cross-platform. Wraps `docker build` of
- * tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile with:
+ * src/Core.TypeScript/ci/dockerfiles/nixos-install-sh-test/Dockerfile with:
  *
  *   - exit-code mapping (build success = 0; build failure = 1)
  *   - log capture (saved to workspace-relative path for CI artifact)
@@ -25,7 +25,7 @@
  * dockerfile" → B-0849 backlog row → this implementation.
  *
  * Usage:
- *   bun tools/ci/docker-nixos-install-sh-test.ts [--keep-image]
+ *   bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts [--keep-image]
  *
  * Flags:
  *   --keep-image    Don't `docker rmi` after the test (default: cleanup)
@@ -53,16 +53,13 @@ import { dirname, resolve } from "node:path";
 
 // Centralized docker invocation helper — single point for the
 // sonarjs/no-os-command-from-path suppression (matches the pattern
-// in tools/ci/audit-installer-iso-content.ts:186-194). Rationale:
+// in src/Core.TypeScript/ci/audit-installer-iso-content.ts:186-194). Rationale:
 // the `docker` binary comes from the runner's default PATH; the CI
 // workflow doesn't pin an absolute path, and the binary name is
 // stable across docker versions. The `maxBuffer` is set generously
 // because `docker build --progress=plain` produces a lot of output
 // per build step (could exceed Node's default 1 MiB).
-function spawnDocker(
-  args: string[],
-  opts: { timeoutMs?: number } = {}
-): ReturnType<typeof spawnSync> {
+function spawnDocker(args: string[], opts: { timeoutMs?: number } = {}): ReturnType<typeof spawnSync> {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
   return spawnSync("docker", args, {
     encoding: "utf8",
@@ -88,9 +85,7 @@ interface BuildResult {
 }
 
 function usage(): never {
-  console.error(
-    "usage: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts [--keep-image]"
-  );
+  console.error("usage: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts [--keep-image]");
   console.error("");
   console.error("env:");
   console.error("  DOCKER_BUILD_TIMEOUT_SEC  override timeout (default 600)");
@@ -110,9 +105,7 @@ function checkPrereqs(): void {
   // Verify we're at repo root (Dockerfile path is repo-relative)
   if (!existsSync(DOCKERFILE_PATH)) {
     console.error(`error: ${DOCKERFILE_PATH} not found`);
-    console.error(
-      "  run from repo root: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts"
-    );
+    console.error("  run from repo root: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts");
     process.exit(2);
   }
 
@@ -175,9 +168,7 @@ function runBuild(timeoutSec: number, logPath: string): BuildResult {
   }
 
   if (result.status === 0) {
-    console.log(
-      `[B-0849 Phase 1] SUCCESS — docker build completed in ${elapsedSec}s`
-    );
+    console.log(`[B-0849 Phase 1] SUCCESS — docker build completed in ${elapsedSec}s`);
     return {
       exitCode: 0,
       reason: `docker build succeeded in ${elapsedSec}s`,
@@ -194,9 +185,7 @@ function runBuild(timeoutSec: number, logPath: string): BuildResult {
 
 function cleanup(keepImage: boolean): void {
   if (keepImage) {
-    console.log(
-      `[B-0849 Phase 1] --keep-image set; image ${IMAGE_TAG} retained for inspection`
-    );
+    console.log(`[B-0849 Phase 1] --keep-image set; image ${IMAGE_TAG} retained for inspection`);
     return;
   }
   // spawnDocker helper centralizes the sonarjs suppression
@@ -204,9 +193,7 @@ function cleanup(keepImage: boolean): void {
   if (rm.status === 0) {
     console.log(`[B-0849 Phase 1] cleaned up image ${IMAGE_TAG}`);
   } else {
-    console.error(
-      `[B-0849 Phase 1] warning: docker rmi ${IMAGE_TAG} failed (non-fatal)`
-    );
+    console.error(`[B-0849 Phase 1] warning: docker rmi ${IMAGE_TAG} failed (non-fatal)`);
   }
 }
 
@@ -226,13 +213,10 @@ function main(): void {
   }
 
   // Resolve env overrides
-  const timeoutSec = parseInt(
-    process.env.DOCKER_BUILD_TIMEOUT_SEC ?? String(DEFAULT_TIMEOUT_SEC),
-    10
-  );
+  const timeoutSec = parseInt(process.env.DOCKER_BUILD_TIMEOUT_SEC ?? String(DEFAULT_TIMEOUT_SEC), 10);
   if (!Number.isFinite(timeoutSec) || timeoutSec <= 0) {
     console.error(
-      `error: DOCKER_BUILD_TIMEOUT_SEC must be a positive integer (got: ${process.env.DOCKER_BUILD_TIMEOUT_SEC})`
+      `error: DOCKER_BUILD_TIMEOUT_SEC must be a positive integer (got: ${process.env.DOCKER_BUILD_TIMEOUT_SEC})`,
     );
     process.exit(2);
   }

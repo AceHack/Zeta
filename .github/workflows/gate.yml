@@ -362,29 +362,6 @@ jobs:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/common/elan.sh') }}
 
-      - name: Cache verifier jars (TLC + Alloy)
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          # Path narrowed 2026-05-03 to specific jar files only. The
-          # prior pattern (`src/Core.TLA` + `src/Core.Alloy` as whole
-          # directories) caused cache hits to OVERWRITE source-
-          # controlled spec files (`src/Core.TLA/specs/*.tla` /
-          # `*.cfg`, `src/Core.Alloy/specs/*.als`,
-          # `src/Core.Alloy/AlloyRunner.java`). Failure mode: PR edits
-          # to specs were silently reverted to whatever version was
-          # cached, while the test report claimed CI ran "the new"
-          # spec. Surfaced empirically by #1401 (CircuitRegistration
-          # Safety invariant fix passing locally but failing on CI
-          # with the pre-fix error). Cache key suffix `-v2` busts
-          # the stale cache containing the pre-narrow content.
-          path: |
-            src/Core.TLA/tla2tools.jar
-            src/Core.Alloy/alloy.jar
-          # Manifest is the single source of truth — cache busts when
-          # either URL or (future) SHA changes. Jars are JVM bytecode
-          # so arch-neutral; key kept os-only on purpose.
-          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}-v2
-
       - name: Cache NuGet packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:

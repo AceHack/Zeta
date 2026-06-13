@@ -14,9 +14,15 @@
 # fork-unique tip under origin tags `archive/2026-06-13-acehack/*`.
 #
 # SECRET REQUIRED (maintainer/Dejan to provision before enabling):
-#   ACEHACK_MIRROR_TOKEN — a fine-grained PAT scoped to acehack/Zeta ONLY,
-#   with Contents: read+write. NOT the default GITHUB_TOKEN (that cannot push
-#   to a different repository). Rotate per the HSM/secret-rotation cadence.
+#   ACEHACK_MIRROR_TOKEN — a fine-grained PAT scoped to AceHack/Zeta ONLY,
+#   with Contents: read+write and Workflows: read+write. NOT the default
+#   GITHUB_TOKEN (that cannot push to a different repository). Rotate per the
+#   HSM/secret-rotation cadence.
+#
+# ENABLEMENT REQUIRED:
+#   Set repository variable ACEHACK_MIRROR_ENABLED=true only after the token has
+#   the workflow scope above. Without that explicit enablement, the job is a
+#   no-op so ordinary PRs do not fail on an unprovisioned side-effect.
 #
 # GATED: workflow + secret handling. Requires Dejan (devops) review + human
 # sign-off before merge/enable (GOVERNANCE.md §23). Drafted by Otto (shadow)
@@ -43,7 +49,7 @@ concurrency:
 jobs:
   mirror:
     # Only the canonical repo mirrors outward; a fork running this is a no-op.
-    if: github.repository == 'Lucent-Financial-Group/Zeta'
+    if: github.repository == 'Lucent-Financial-Group/Zeta' && vars.ACEHACK_MIRROR_ENABLED == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout (all history)
@@ -72,6 +78,7 @@ jobs:
           # checked-out branch. Tags fetch into refs/tags/* (no conflict).
           git fetch --prune origin "+refs/heads/*:refs/remotes/origin/*"
           git fetch --prune --tags origin
+          git update-ref -d refs/remotes/origin/HEAD || true
 
           # Token is interpolated into the URL only at runtime; never logged.
           git remote add mirror \
@@ -81,7 +88,7 @@ jobs:
           # the fork MATCH origin (deletes fork refs absent here); '+' forces
           # divergent same-name refs to origin's tip.
           echo "Mirroring heads…"
-          git push --prune --force mirror "refs/remotes/origin/*:refs/heads/*"
+          git push --prune --force mirror "+refs/remotes/origin/*:refs/heads/*"
           echo "Mirroring tags…"
           git push --prune --force mirror "+refs/tags/*:refs/tags/*"
           echo "Mirror sync complete."

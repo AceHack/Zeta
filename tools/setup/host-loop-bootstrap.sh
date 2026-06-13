@@ -129,8 +129,7 @@ provision_cell() {
     <string>${LABEL}</string>
     <key>ProgramArguments</key>
     <array>
-        <string>${BUN_PATH}</string>
-        <string>${CLONE_DIR}/tools/kiro/kiro-loop-tick.ts</string>
+        <string>${CLONE_DIR}/tools/kiro/kiro-loop-wrapper.sh</string>
     </array>
     <key>StartInterval</key>
     <integer>${INTERVAL}</integer>

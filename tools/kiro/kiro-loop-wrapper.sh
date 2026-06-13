@@ -21,5 +21,5 @@ cd "$SCRIPT_DIR/../.."
 # `cd` above does not propagate to Bun.spawn calls.
 export ZETA_KIRO_LOOP_WORKTREE="${ZETA_KIRO_LOOP_WORKTREE:-$(pwd)}"
 
-# Run the Kiro loop tick script with bun
-exec bun tools/kiro/kiro-loop-tick.ts
+# Run the source-owned Kiro loop tick script with bun.
+exec bun src/Core.TypeScript/kiro/kiro-loop-tick.ts

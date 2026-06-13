@@ -1,10 +1,10 @@
 # escape=`
-# tools/ci/dockerfiles/windows-install-ps1-test/Dockerfile
+# src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile
 #
 # Slice 2c — Server-Core Docker test for tools/setup/install.ps1 (B-0857 Windows parity).
 # Validates install.ps1's TOOL-INSTALL GRAPH (scoop -> git/mise -> .mise.toml runtimes ->
 # manifests/agent-clis) on a clean Windows Server Core userspace, then asserts via
-# tools/ci/windows-install-ps1-smoke.ts --mode container. The user-mode scheduled task is NOT
+# src/Core.TypeScript/ci/windows-install-ps1-smoke.ts --mode container. The user-mode scheduled task is NOT
 # covered here — a Windows container has no interactive session; the desktop loop-smoke covers it.
 # The smoke PRINTS that skip (not silent)
 # per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md.
@@ -48,6 +48,7 @@ WORKDIR C:\workspace
 # avoids invalidating the build cache on unrelated repo changes).
 COPY tools/setup C:/workspace/tools/setup
 COPY src/Core.TypeScript/ci/windows-install-ps1-smoke.ts C:/workspace/src/Core.TypeScript/ci/windows-install-ps1-smoke.ts
+COPY tools/persistence/windows C:/workspace/tools/persistence/windows
 COPY src/Core.TypeScript/persistence/windows C:/workspace/src/Core.TypeScript/persistence/windows
 COPY .mise.toml C:/workspace/.mise.toml
 COPY package.json C:/workspace/package.json
