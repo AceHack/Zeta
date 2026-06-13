@@ -9,6 +9,13 @@ formalisation is follow-up work.
 verification-expert (Soraya) on Lean4 formalisation when it
 fires.
 
+**Vernacular companion:** [`FIVE-YEAR-OLD-WALK.md`](FIVE-YEAR-OLD-WALK.md)
+— the top-down child-register telling of the composable kernel
+(the deliverable ferry 24 named "the natural next build"). This
+README + `terms/*.md` are the bottom-up formal side; the walk is
+the same shapes said in plain words. Vernacular is the strongest
+Beacon form, so the two sides meet in the middle.
+
 ## Why this exists
 
 The linguistic seed is the factory's **most-fundamental
