@@ -48,7 +48,9 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const repoRoot = resolve(here, "..", "..");
+// 3 levels up from src/Core.TypeScript/invariant-substrates/ (was "..",".."
+// at tools/invariant-substrates/; the relocation added a directory level).
+const repoRoot = resolve(here, "..", "..", "..");
 
 type Flags = {
   failOnMismatch: boolean;

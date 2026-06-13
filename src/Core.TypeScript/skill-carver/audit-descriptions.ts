@@ -8,7 +8,9 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const SKILLS_ROOT = join(import.meta.dir, "../../.claude/skills");
+// 3 levels up from src/Core.TypeScript/skill-carver/ to repo root (was "../.."
+// at tools/skill-carver/; the relocation added a directory level).
+const SKILLS_ROOT = join(import.meta.dir, "../../../.claude/skills");
 const MAX_CHARS = 120;
 
 interface SkillReport {

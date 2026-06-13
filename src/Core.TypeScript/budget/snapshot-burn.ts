@@ -122,7 +122,9 @@ function ghJsonOrEmpty(path: string, fallback: unknown): {
 
 function repoRoot(): string {
   const here = dirname(fileURLToPath(import.meta.url));
-  return resolve(here, "..", "..");
+  // 3 levels up from src/Core.TypeScript/budget/ (was "..","..", when this
+  // lived at tools/budget/; the relocation added a directory level).
+  return resolve(here, "..", "..", "..");
 }
 
 function gitHeadSha(): string {
