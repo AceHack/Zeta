@@ -259,6 +259,24 @@ export function observe(world: World): NextAction {
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) return { kind: "do_item", item: doable };
 
+  // Forge-aware: if no backlog work is ready but clean PRs exist, signal
+  // that merge work is available. The action is "do_item" with a synthetic
+  // item representing the merge task — the executor recognizes it by the
+  // "merge-pr-" prefix on the id.
+  if (world.forgeState && world.forgeState.cleanPrCount > 0 && !doable) {
+    const prNum = world.forgeState.cleanPrNumbers[0]!;
+    return {
+      kind: "do_item",
+      item: {
+        id: `merge-pr-${prNum}`,
+        title: `Merge clean PR #${prNum}`,
+        ready: true,
+        ambiguous: false,
+        needsNewAction: false,
+      },
+    };
+  }
+
   const toDecompose = world.backlog.find((i) => i.ambiguous);
   if (toDecompose) return { kind: "decompose", item: toDecompose };
 
