@@ -50,8 +50,6 @@ interface AllowlistIntegrity {
 
 export type RetainedShellCategory =
   | "host-service wrappers"
-  | "kiro loop wrapper"
-  | "launchd bootstrap"
   | "nixos installer"
   | "setup/bootstrap";
 
@@ -82,8 +80,6 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
-  "tools/kiro/kiro-loop-wrapper.sh",
-  "tools/kiro/launchd/install.sh",
   "tools/setup/common/agent-clis.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/dotnet-tools.sh",
@@ -115,8 +111,6 @@ export const EXPECTED_RETAINED_BASH = EXPECTED_RETAINED_SHELL;
 const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
   "setup/bootstrap",
   "host-service wrappers",
-  "launchd bootstrap",
-  "kiro loop wrapper",
   "nixos installer",
 ];
 
@@ -125,8 +119,6 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   ".gemini/service/lior-loop.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
-  "tools/kiro/kiro-loop-wrapper.sh": "kiro loop wrapper",
-  "tools/kiro/launchd/install.sh": "launchd bootstrap",
   "tools/setup/common/agent-clis.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
   "tools/setup/common/dotnet-tools.sh": "setup/bootstrap",

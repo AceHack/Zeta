@@ -163,14 +163,6 @@ describe("buildInventoryReport", () => {
         files: [".gemini/service/install-lior-service.sh", ".gemini/service/lior-loop.sh"],
       },
       {
-        category: "launchd bootstrap",
-        files: ["tools/kiro/launchd/install.sh"],
-      },
-      {
-        category: "kiro loop wrapper",
-        files: ["tools/kiro/kiro-loop-wrapper.sh"],
-      },
-      {
         category: "nixos installer",
         files: [
           "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
