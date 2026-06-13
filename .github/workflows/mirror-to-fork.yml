@@ -60,19 +60,22 @@ jobs:
             echo "::error::ACEHACK_MIRROR_TOKEN is not set — cannot push to the fork." >&2
             exit 1
           fi
-          # Fetch every origin head + tag locally (checkout only fetched the
-          # triggering ref's history).
-          git fetch --prune --no-tags origin "+refs/heads/*:refs/heads/*"
+          # Fetch every origin head into the REMOTE-TRACKING namespace
+          # (refs/remotes/origin/*), NOT local refs/heads/* — the runner has
+          # refs/heads/main checked out, and git refuses to fetch into a
+          # checked-out branch. Tags fetch into refs/tags/* (no conflict).
+          git fetch --prune origin "+refs/heads/*:refs/remotes/origin/*"
           git fetch --prune --tags origin
 
           # Token is interpolated into the URL only at runtime; never logged.
           git remote add mirror \
             "https://x-access-token:${MIRROR_TOKEN}@github.com/acehack/Zeta.git"
 
-          # --prune makes the fork MATCH origin (deletes fork refs absent here).
-          # '+' forces divergent same-name refs to origin's tip.
+          # Push the remote-tracking refs to the fork's heads. --prune makes
+          # the fork MATCH origin (deletes fork refs absent here); '+' forces
+          # divergent same-name refs to origin's tip.
           echo "Mirroring heads…"
-          git push --prune --force mirror "+refs/heads/*:refs/heads/*"
+          git push --prune --force mirror "refs/remotes/origin/*:refs/heads/*"
           echo "Mirroring tags…"
           git push --prune --force mirror "+refs/tags/*:refs/tags/*"
           echo "Mirror sync complete."
