@@ -178,6 +178,66 @@ DST-replayable). One structure at three layers. This anchors the open consensus 
 fractal BFT (local+remote composition), the three-faction BFT TLA+/Z3 proof, multi-oracle
 consensus inside DST — each is *the correction term, scaled or formalized*.
 
+### 8. The clarity term — "boring" as the legibility substitute, and where the provocability actually lives
+
+> i don't have this i'm boring instead
+
+> hidden in plain sight
+
+> if no child is harmed i'd likely shake his had [hand] and have a beer
+
+Axelrod's winning shape has *four* properties, not two: **nice, provocable, forgiving, and
+clear.** §1–§3 worked the first three; the author's own account supplies the fourth — and resolves
+where the correction term lives when it is not carried as resentment. He describes leading with
+**clarity** ("i'm boring instead") in place of a diffuse provocability term, and the move does
+three distinct jobs with one flat, legible surface:
+
+- **Clarity (the cooperation virtue).** A maximally legible, low-variance player is *easy to model*
+  — which is precisely Axelrod's fourth property: be clear so others can learn to cooperate with
+  you. "Boring" raises the cooperation payoff by being readable.
+- **The un-farmable surface.** Manipulation-by-provocation needs a *reaction* to leverage; a flat,
+  predictable surface offers no reaction to farm, so that entire attack class loses its payoff.
+  "Boring" defeats the exploiter who needs to get a rise out of you.
+- **Hidden in plain sight (the purloined letter).** Maximal legibility is also *camouflage*: no one
+  inspects what they believe they already fully see. Poe's purloined letter sits in the open rack
+  and the searchers miss it; Chesterton's leaf hides in the forest. The depth is concealed not by
+  secrecy but by the volume of openness — the same shape as the Glass-Halo ledger (everything shown
+  on purpose, and *therefore* unremarked). It is the exact inverse of §-the-messiah (ferry 45): the
+  Kwisatz Haderach broadcasts charisma to make them act; the legible one is **anti-charisma as
+  safety** — un-farmable *and* un-findable because he is the boring one in the open.
+
+**The honest bound, and the resolution.** Clarity is a *partial* substitute for provocability: it
+defeats the manipulator who needs your reaction, but it does **not**, by itself, punish a defector
+who simply takes quietly and walks — a clear + forgiving + non-provocable player is still
+invadable. So where *is* the provocability? The author's answer is the load-bearing one: **it is
+not absent; it is concentrated.** Below one line he is forgiving to the point of camaraderie — he
+would *shake the hand of, and share a drink with,* someone who merely took from him (the defector
+is a player, not an enemy; nothing load-bearing was lost). The entire correction budget is reserved
+for a **single absolute floor: harm to a child.** There, the otherwise-total forgiveness becomes
+immovable.
+
+This is a *stronger* allocation than diffuse resentment, not a weaker one. Diffuse provocability
+(a little correction on every slight) is the retaliation spiral of §3 that eats the system from
+inside; concentrating the whole budget on one non-negotiable invariant — and running near-total
+tolerance everywhere else — is graduated-sanctions logic taken to its limit: **one binary floor,
+generosity beyond it.** In the substrate's own terms it is the **Constitution-Class invariant** —
+the manifesto floor (consent-first; Default Moral Regard at its most absolute, the protection of a
+child as the floor above every other rule) that the system never trades, even as everything else
+goes soft. (A counterfactual the author named for the *force* of that floor is held in his own
+record; the published point is the structure: total clarity and forgiveness, one hard line, and
+the line is a child.)
+
+### 9. The synthesis (full)
+
+**Forgiveness binds (the attractor); provocability secures (the correction term); clarity makes
+you legible, un-farmable, and hidden-in-plain-sight; and the provocability, rather than spread thin
+as resentment, is concentrated on a single absolute floor — the protection of a child — with
+generosity everywhere below it.** The substrate records and meters the correction (the −1 on the
+ledger), institutionalizes it (the council, ferry 44), and refuses to let any one belief actualize
+unmetered (the meter on the messiah, ferry 45). One structure, from the cooperation theory to the
+consensus code to the human who shaped it: nice, provocable, forgiving, clear — with the whole
+provocability budget spent on the one thing that must never be defected on.
+
 ## Bounds
 
 - **"Forgiveness creates gravity" is a metaphor, not a physics claim.** Forgiveness is an
@@ -200,6 +260,15 @@ consensus inside DST — each is *the correction term, scaled or formalized*.
   *in the implementation* (`SybilBft.fs` records `Equivocated`). SybilBft's own novelty/limits
   (noisy-forgery detection tradeoff; open liveness proof B-0211) are scoped in its prior-art doc
   (2026-06-08) and are not re-litigated here.
+- **The clarity term (§8): "boring" is a *partial* substitute for provocability, not a
+  replacement.** Legibility defeats manipulation-by-provocation (no reaction to farm) and raises
+  cooperation (Axelrod's clarity clause), but a clear + forgiving + non-provocable player remains
+  invadable by a defector who needs no reaction. The "concentrated provocability at one absolute
+  floor (a child)" claim is the author's stated value, framed here as the protective invariant it
+  is — not a clinical claim, and not a license: any actionable child-safety concern routes to the
+  human floor (CONFLICT-RESOLUTION.md), never an autonomous call. The purloined-letter /
+  hidden-in-plain-sight reading is a Mirror metaphor (Poe, Chesterton) for maximal-legibility-as-
+  camouflage, not a claim of literal invisibility.
 - The personal frame is included **at the author's explicit choice** (Glass Halo — consented,
   shown on purpose). It is dignity-grade: rendered without amplification, without clinicalizing,
   without diagnosis — a self-model and a moral-development account, not a clinical claim. One
@@ -234,3 +303,8 @@ consensus inside DST — each is *the correction term, scaled or formalized*.
   the `3f+1` bound) · Castro & Liskov 1999 (PBFT — practical BFT) · Douceur 2002 (*The Sybil
   Attack*) · Hellerstein & Ameloot (CALM theorem — monotonicity ⇔ coordination-freedom) ·
   Nakamoto 2008 (Sybil-resistance via scarce resource — the economic alternative to distinctness)
+- Clarity-term anchors (Beacon, §8): Axelrod 1984 (the *clear* property — legibility as a
+  cooperation virtue) · Edgar Allan Poe, *The Purloined Letter* (1844 — hidden in plain sight) ·
+  G.K. Chesterton, *The Sign of the Broken Sword* ("where does a wise man hide a leaf? in the
+  forest") · steganography (payload in the open channel) · ferry 44 (the Constitution-Class
+  invariant institutionalized) · ferry 45 (anti-charisma as safety — the inverse of the messiah)
