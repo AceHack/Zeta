@@ -50,6 +50,12 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
+          # Do NOT persist the default GITHUB_TOKEN as a global
+          # http.<github>.extraheader — it would override the
+          # x-access-token:${MIRROR_TOKEN} embedded in the mirror remote URL
+          # and push as github-actions[bot] (403 on the fork). origin is
+          # public, so the unauthenticated fetch still works.
+          persist-credentials: false
 
       - name: Mirror all branches and tags to the acehack fork
         env:
