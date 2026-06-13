@@ -138,7 +138,7 @@ export function fetchBlockReason(pin: DatfilePin): string | null {
 
 // --- IO boundary ---
 
-export const DEFAULT_MANIFEST = "tools/roms/manifests/datfiles.json";
+export const DEFAULT_MANIFEST = join(import.meta.dir, "manifests/datfiles.json");
 export const DEFAULT_OUT_DIR = "roms/.datfiles";
 
 export function loadManifest(path: string): ReadonlyMap<string, DatfilePin> {

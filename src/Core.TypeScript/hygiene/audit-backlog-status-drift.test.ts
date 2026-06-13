@@ -253,7 +253,7 @@ describe("findDriftCandidates", () => {
                 id: "B-0001",
                 path: "docs/backlog/P3/fake.md",
                 status: "open",
-                primaryArtifacts: ["tools/hygiene/audit-backlog-status-drift.ts"], // exists
+                primaryArtifacts: ["src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts"], // exists
             },
             {
                 id: "B-0002",
@@ -285,7 +285,7 @@ describe("findDriftCandidates", () => {
                 path: "fake",
                 status: "open",
                 primaryArtifacts: [
-                    "tools/hygiene/audit-backlog-status-drift.ts", // exists
+                    "src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts", // exists
                     "tools/does/not/exist.ts",
                 ],
             },
@@ -301,7 +301,7 @@ describe("detectRepoRoot", () => {
         const root = detectRepoRoot();
         expect(typeof root).toBe("string");
         expect(root.length).toBeGreaterThan(0);
-        expect(existsSync(join(root, "tools/hygiene/audit-backlog-status-drift.ts"))).toBe(true);
+        expect(existsSync(join(root, "src/Core.TypeScript/hygiene/audit-backlog-status-drift.ts"))).toBe(true);
     });
 
     test("returns repo root from cwd inside the repo (not just current cwd)", () => {

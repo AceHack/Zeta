@@ -391,10 +391,10 @@ describe("mapping table integrity", () => {
     expect(CAPABILITY_ARTIFACT_MAP["tick-history"]).toEqual([
       "docs/hygiene-history/loop-tick-history.md",
       "docs/hygiene-history/ticks/README.md",
-      "tools/hygiene/check-tick-history-order.ts",
-      "tools/hygiene/check-tick-history-order.test.ts",
-      "tools/hygiene/check-tick-history-shard-schema.ts",
-      "tools/hygiene/check-tick-history-shard-schema.test.ts",
+      "src/Core.TypeScript/hygiene/check-tick-history-order.ts",
+      "src/Core.TypeScript/hygiene/check-tick-history-order.test.ts",
+      "src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts",
+      "src/Core.TypeScript/hygiene/check-tick-history-shard-schema.test.ts",
     ]);
   });
 
@@ -426,7 +426,7 @@ describe("mapping table integrity", () => {
 
 describe("integration: real repo scan", () => {
   test("finds at least 6 specs in the real openspec/specs/ dir", () => {
-    const repoRoot = join(import.meta.dir, "..", "..");
+    const repoRoot = join(import.meta.dir, "../../..");
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     expect(specs.length).toBeGreaterThanOrEqual(6);
 
@@ -440,13 +440,13 @@ describe("integration: real repo scan", () => {
   });
 
   test("finds at least 50 modules in the real src/Core/ dir", () => {
-    const repoRoot = join(import.meta.dir, "..", "..");
+    const repoRoot = join(import.meta.dir, "../../..");
     const modules = scanModules(join(repoRoot, "src", "Core"));
     expect(modules.length).toBeGreaterThanOrEqual(50);
   });
 
   test("real z-set-algebra spec is artifact-mapped", () => {
-    const repoRoot = join(import.meta.dir, "..", "..");
+    const repoRoot = join(import.meta.dir, "../../..");
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     const modules = scanModules(join(repoRoot, "src", "Core"));
     const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
@@ -459,20 +459,20 @@ describe("integration: real repo scan", () => {
   });
 
   test("real tick-history spec is artifact-mapped", () => {
-    const repoRoot = join(import.meta.dir, "..", "..");
+    const repoRoot = join(import.meta.dir, "../../..");
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     const modules = scanModules(join(repoRoot, "src", "Core"));
     const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
 
     const tickHistoryMapping = report.artifactMappings.find((m) => m.capability === "tick-history");
     expect(tickHistoryMapping).toBeDefined();
-    expect(tickHistoryMapping!.artifacts).toContain("tools/hygiene/check-tick-history-shard-schema.ts");
+    expect(tickHistoryMapping!.artifacts).toContain("src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts");
     expect(tickHistoryMapping!.missingArtifacts).toEqual([]);
     expect(report.unmappedSpecs).not.toContain("tick-history");
   });
 
   test("real agentic-organization spec is artifact-mapped", () => {
-    const repoRoot = join(import.meta.dir, "..", "..");
+    const repoRoot = join(import.meta.dir, "../../..");
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     const modules = scanModules(join(repoRoot, "src", "Core"));
     const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
@@ -486,7 +486,7 @@ describe("integration: real repo scan", () => {
   });
 
   test("real README-only capability directories are not strict spec inputs", () => {
-    const repoRoot = join(import.meta.dir, "..", "..");
+    const repoRoot = join(import.meta.dir, "../../..");
     const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
     const report = buildGapReport(specs, [], { artifactRoot: repoRoot });
 

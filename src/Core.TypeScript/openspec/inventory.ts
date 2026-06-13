@@ -120,10 +120,10 @@ const CAPABILITY_ARTIFACT_MAP: Record<string, string[]> = {
   "tick-history": [
     "docs/hygiene-history/loop-tick-history.md",
     "docs/hygiene-history/ticks/README.md",
-    "tools/hygiene/check-tick-history-order.ts",
-    "tools/hygiene/check-tick-history-order.test.ts",
-    "tools/hygiene/check-tick-history-shard-schema.ts",
-    "tools/hygiene/check-tick-history-shard-schema.test.ts",
+    "src/Core.TypeScript/hygiene/check-tick-history-order.ts",
+    "src/Core.TypeScript/hygiene/check-tick-history-order.test.ts",
+    "src/Core.TypeScript/hygiene/check-tick-history-shard-schema.ts",
+    "src/Core.TypeScript/hygiene/check-tick-history-shard-schema.test.ts",
   ],
   "retraction-native": [
     "tests/Tests.FSharp/Algebra/Graph.Tests.fs",

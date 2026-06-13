@@ -175,8 +175,8 @@ console-*.log
 # These files can contain live GitHub cookies and must never be committed.
 .github-ui-storage-state.json
 .github-ui-cookies.json
-tools/playwright/github-ui/*.storage-state.json
-tools/playwright/github-ui/*.cookies.json
+src/Core.TypeScript/playwright/github-ui/*.storage-state.json
+src/Core.TypeScript/playwright/github-ui/*.cookies.json
 
 # Session-scoped `/btw` aside queue at repo root (see
 # .claude/commands/btw.md). Regenerated per session; not source.

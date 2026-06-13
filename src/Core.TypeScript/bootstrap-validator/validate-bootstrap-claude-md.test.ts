@@ -196,7 +196,7 @@ describe("runValidation against the live repo root", () => {
   // Resolve repo root from this test file's location:
   // tools/bootstrap-validator/<file> -> repo root is two dirs up.
   const here = fileURLToPath(import.meta.url);
-  const repoRoot = join(here, "..", "..", "..");
+  const repoRoot = join(here, "..", "..", "..", "..");
 
   test("the live bootstrap CLAUDE.md passes all hard checks", () => {
     const report = runValidation(repoRoot, DEFAULT_MAX_LINES);

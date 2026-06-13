@@ -25,8 +25,8 @@
 //   1  Gate tripped (when --gate N given and any surface has < N citations)
 //   2  Script error / bad args
 
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
@@ -69,6 +69,20 @@ interface AuditResult {
 }
 
 function repoRoot(): string {
+  if (process.env["REPO_ROOT"]) {
+    return process.env["REPO_ROOT"];
+  }
+  let current = import.meta.dir || process.cwd();
+  while (true) {
+    if (existsSync(join(current, ".git"))) {
+      return current;
+    }
+    const parent = dirname(current);
+    if (parent === current) {
+      break;
+    }
+    current = parent;
+  }
   const result = spawnSync(
     "git", // eslint-disable-line sonarjs/no-os-command-from-path
     ["rev-parse", "--show-toplevel"],

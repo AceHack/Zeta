@@ -249,19 +249,19 @@ function refExists(ref: Ref): boolean {
     // to `tools/peer-call/<name>` per the established peer-call wrapper
     // convention.
     if (ref.raw.endsWith(".ts") && !ref.raw.includes("/")) {
-      if (existsSync(join("tools/peer-call", ref.raw))) return true;
+      if (existsSync(join("src/Core.TypeScript/peer-call", ref.raw))) return true;
     }
-    // tools/hygiene/ fallback for bare `.ts`/`.sh` references in
+    // src/Core.TypeScript/hygiene/ fallback for bare `.ts`/`.sh` references in
     // hygiene-related rules (backlog-item-start-gate.md, rule-0-no-sh-
     // files.md, etc.)
     if ((ref.raw.endsWith(".ts") || ref.raw.endsWith(".sh")) && !ref.raw.includes("/")) {
-      if (existsSync(join("tools/hygiene", ref.raw))) return true;
+      if (existsSync(join("src/Core.TypeScript/hygiene", ref.raw))) return true;
     }
-    // tools/github/ fallback for bare `.ts` references in
+    // src/Core.TypeScript/github/ fallback for bare `.ts` references in
     // GitHub/PR-tooling-related rules (refresh-before-decide.md cites
     // `poll-pr-gate-batch.ts` etc.)
     if (ref.raw.endsWith(".ts") && !ref.raw.includes("/")) {
-      if (existsSync(join("tools/github", ref.raw))) return true;
+      if (existsSync(join("src/Core.TypeScript/github", ref.raw))) return true;
     }
     // memory/ fallback for bare MEMORY.md (the canonical memory-index)
     if (ref.raw === "MEMORY.md") {

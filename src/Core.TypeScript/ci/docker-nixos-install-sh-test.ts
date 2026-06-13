@@ -72,7 +72,7 @@ function spawnDocker(
   });
 }
 
-const DOCKERFILE_PATH = "tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile";
+const DOCKERFILE_PATH = "src/Core.TypeScript/ci/dockerfiles/nixos-install-sh-test/Dockerfile";
 const IMAGE_TAG = "zeta-nixos-install-sh-test:local";
 const DEFAULT_TIMEOUT_SEC = 600;
 // Default log path uses .tools/ which is .gitignored — prevents the
@@ -89,7 +89,7 @@ interface BuildResult {
 
 function usage(): never {
   console.error(
-    "usage: bun tools/ci/docker-nixos-install-sh-test.ts [--keep-image]"
+    "usage: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts [--keep-image]"
   );
   console.error("");
   console.error("env:");
@@ -111,7 +111,7 @@ function checkPrereqs(): void {
   if (!existsSync(DOCKERFILE_PATH)) {
     console.error(`error: ${DOCKERFILE_PATH} not found`);
     console.error(
-      "  run from repo root: bun tools/ci/docker-nixos-install-sh-test.ts"
+      "  run from repo root: bun src/Core.TypeScript/ci/docker-nixos-install-sh-test.ts"
     );
     process.exit(2);
   }

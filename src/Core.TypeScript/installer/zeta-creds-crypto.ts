@@ -111,8 +111,9 @@ export function deriveKey(usbUuid: string, passphrase: string, salt: Uint8Array)
   if (salt.length !== SALT_LEN) {
     throw new Error(`salt must be ${SALT_LEN} bytes; got ${salt.length}`);
   }
+  const saltCopy = Buffer.from(salt);
   // Layer 1: scrypt stretches low-entropy passphrase into high-entropy intermediate.
-  const stretched = scryptSync(passphrase, salt, SCRYPT_STRETCHED_LEN, {
+  const stretched = scryptSync(passphrase, saltCopy, SCRYPT_STRETCHED_LEN, {
     N: SCRYPT_N,
     r: SCRYPT_R,
     p: SCRYPT_P,
@@ -121,7 +122,7 @@ export function deriveKey(usbUuid: string, passphrase: string, salt: Uint8Array)
   // Layer 2: HKDF binds the stretched secret to the USB UUID via IKM concatenation.
   // UUID first then stretched (order-sensitive; documented; decrypt must match).
   const ikm = Buffer.concat([Buffer.from(usbUuid, "utf8"), Buffer.from("|", "utf8"), stretched]);
-  const derived = hkdfSync("sha256", ikm, salt, HKDF_INFO, KEY_LEN);
+  const derived = hkdfSync("sha256", ikm, saltCopy, HKDF_INFO, KEY_LEN);
   return Buffer.from(derived);
 }
 

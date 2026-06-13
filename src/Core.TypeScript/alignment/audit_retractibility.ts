@@ -17,8 +17,8 @@
 //   1  Gate tripped (when --gate N given and any surface has >= N inbound refs)
 //   2  Script error / bad args
 
-import { readFileSync, readdirSync } from "node:fs";
-import { relative } from "node:path";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 
 type ExitCode = 0 | 1 | 2;
@@ -60,6 +60,20 @@ type ParseResult =
 const ENTANGLEMENT_THRESHOLD = 5;
 
 function repoRoot(): string {
+  if (process.env["REPO_ROOT"]) {
+    return process.env["REPO_ROOT"];
+  }
+  let current = import.meta.dir || process.cwd();
+  while (true) {
+    if (existsSync(join(current, ".git"))) {
+      return current;
+    }
+    const parent = dirname(current);
+    if (parent === current) {
+      break;
+    }
+    current = parent;
+  }
   const result = spawnSync(
     "git", // eslint-disable-line sonarjs/no-os-command-from-path
     ["rev-parse", "--show-toplevel"],

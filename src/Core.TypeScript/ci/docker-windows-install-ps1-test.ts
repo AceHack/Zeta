@@ -47,7 +47,7 @@ function spawnDocker(args: string[], opts: { timeoutMs?: number } = {}): ReturnT
   });
 }
 
-const DOCKERFILE_PATH = "tools/ci/dockerfiles/windows-install-ps1-test/Dockerfile";
+const DOCKERFILE_PATH = "src/Core.TypeScript/ci/dockerfiles/windows-install-ps1-test/Dockerfile";
 const IMAGE_TAG = "zeta-windows-install-ps1-test:local";
 const DEFAULT_TIMEOUT_SEC = 2400;
 const DEFAULT_LOG_PATH = ".tools/docker-windows-install-ps1-test.log";
@@ -59,7 +59,7 @@ interface BuildResult {
 }
 
 function usage(): never {
-  console.error("usage: bun tools/ci/docker-windows-install-ps1-test.ts [--keep-image]");
+  console.error("usage: bun src/Core.TypeScript/ci/docker-windows-install-ps1-test.ts [--keep-image]");
   console.error("");
   console.error("env:");
   console.error("  DOCKER_BUILD_TIMEOUT_SEC  override timeout (default 2400)");
@@ -75,7 +75,7 @@ function checkPrereqs(): void {
     console.error("error: docker not installed or not on PATH");
     process.exit(2);
   }
-  for (const p of [DOCKERFILE_PATH, ".mise.toml", "tools/ci/windows-install-ps1-smoke.ts"]) {
+  for (const p of [DOCKERFILE_PATH, ".mise.toml", "src/Core.TypeScript/ci/windows-install-ps1-smoke.ts"]) {
     if (!existsSync(p)) {
       console.error(`error: ${p} not found (run from repo root)`);
       process.exit(2);

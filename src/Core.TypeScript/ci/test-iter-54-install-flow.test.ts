@@ -42,7 +42,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, test } from "bun:test";
 
-const ROOT = resolve(import.meta.dir, "../..");
+const ROOT = resolve(import.meta.dir, "../../..");
 const SCRIPT_PATH = resolve(
   ROOT,
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",

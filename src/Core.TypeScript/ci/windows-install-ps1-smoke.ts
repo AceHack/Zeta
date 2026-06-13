@@ -92,7 +92,7 @@ function have(cmd: string): boolean {
 }
 
 function repoRoot(): string {
-  return join(import.meta.dir, "..", "..");
+  return join(import.meta.dir, "..", "..", "..");
 }
 
 function main(): void {

@@ -62,7 +62,7 @@ if ($pushHb) {
     # $PSNativeCommandUseErrorActionPreference is PS 7.3+ (this script floors at
     # 5.1). So check $LASTEXITCODE explicitly and only stamp $hbStamp on success --
     # stamping on failure would suppress retries for ~10 min (see gate above).
-    & $bun (Join-Path $Clone 'tools\agent-heartbeats\write-heartbeat.ts') `
+    & $bun (Join-Path $Clone 'src\Core.TypeScript\agent-heartbeats\write-heartbeat.ts') `
         --push --persona-name otto-windows --disposition loop-tick *>> (Join-Path $LogDir 'wrapper.log')
     if ($LASTEXITCODE -eq 0) {
         (Get-Date -Format o) | Out-File -Encoding utf8 $hbStamp
@@ -75,7 +75,7 @@ if ($pushHb) {
 # Asserts install.ps1's outcomes on this real Win desktop (scoop/git/mise/bun/claude +
 # ZetaOttoLoop health). Default OFF -- opt in by setting ZETA_RUN_DESKTOP_SMOKE on the task.
 if ($env:ZETA_RUN_DESKTOP_SMOKE) {
-    $smoke = Join-Path $Clone 'tools\ci\windows-install-ps1-smoke.ts'
+    $smoke = Join-Path $Clone 'src\Core.TypeScript\ci\windows-install-ps1-smoke.ts'
     if (Test-Path $smoke) {
         & $bun $smoke --mode desktop *>> (Join-Path $LogDir 'desktop-smoke.log')
         "$(Get-Date -Format o) exit=$LASTEXITCODE" | Out-File -Encoding utf8 (Join-Path $Base 'desktop-smoke-result.txt')

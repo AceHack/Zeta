@@ -8,8 +8,8 @@ import { join } from "node:path";
 // A new apt/brew tool with no Windows disposition fails this test — so the OSes can't drift apart
 // silently. (Per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md: this asserts.)
 
-const setupDir = join(import.meta.dir, "..", "setup");
-const repoRoot = join(import.meta.dir, "..", "..");
+const setupDir = join(import.meta.dir, "../../..", "tools/setup");
+const repoRoot = join(import.meta.dir, "../../..");
 
 function parseManifest(name: string): string[] {
   let raw: string;
@@ -129,7 +129,7 @@ test("Windows agent CLI install consumes the shared agent-clis manifest", () => 
 
 test("NixOS install shield validates agent-clis manifest, not one hardcoded CLI", () => {
   const dockerfile = readFileSync(
-    join(repoRoot, "tools", "ci", "dockerfiles", "nixos-install-sh-test", "Dockerfile"),
+    join(import.meta.dir, "dockerfiles", "nixos-install-sh-test", "Dockerfile"),
     "utf8",
   );
 
@@ -143,7 +143,7 @@ test("NixOS install shield validates agent-clis manifest, not one hardcoded CLI"
 test("local-llm install defaults to skip outside interactive/full install contexts", () => {
   const localLlm = readFileSync(join(setupDir, "common", "local-llm.sh"), "utf8");
   const ubuntuDockerfile = readFileSync(
-    join(repoRoot, "tools", "ci", "dockerfiles", "ubuntu-install-sh-test", "Dockerfile"),
+    join(import.meta.dir, "dockerfiles", "ubuntu-install-sh-test", "Dockerfile"),
     "utf8",
   );
 

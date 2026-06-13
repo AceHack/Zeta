@@ -128,7 +128,7 @@ describe("fetchBlockReason (fail-closed gate)", () => {
 });
 
 describe("real pinned manifest", () => {
-  test("tools/roms/manifests/datfiles.json parses", () => {
+  test("src/Core.TypeScript/roms/manifests/datfiles.json parses", () => {
     const pins = loadManifest(DEFAULT_MANIFEST);
     expect(pins.has("atari-2600")).toBe(true);
   });

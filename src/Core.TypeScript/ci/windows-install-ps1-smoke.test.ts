@@ -69,10 +69,10 @@ test("bun global package detection accepts scoped id or unscoped package name", 
 // entrypoints ASCII-clean (decorative em-dashes -> '--') so they run on 5.1 AND 7, BOM or no BOM.
 // Per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md: this asserts the positive.
 test("Windows .ps1 entrypoints are ASCII-only (PS 5.1 reads BOM-less .ps1 as ANSI, not UTF-8)", () => {
-  const repoRoot = join(import.meta.dir, "..", "..");
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
   const files = [
     join(repoRoot, "tools", "setup", "install.ps1"),
-    join(repoRoot, "tools", "persistence", "windows", "otto-loop-wrapper.ps1"),
+    join(repoRoot, "src", "Core.TypeScript", "persistence", "windows", "otto-loop-wrapper.ps1"),
   ];
   for (const f of files) {
     const text = readFileSync(f, "utf8");

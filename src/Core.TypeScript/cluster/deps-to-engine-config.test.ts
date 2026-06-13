@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { parseArgs, runDepsToEngineConfig } from "./deps-to-engine-config.ts";
 import { parseYaml } from "../ace/deps.ts";
 
-const repoRoot = join(import.meta.dir, "../..");
+const repoRoot = join(import.meta.dir, "../../..");
 const exampleGraph = join(
   repoRoot,
   "examples/helm-dependency-graph/my-app-postgres/zeta-deps.yaml",

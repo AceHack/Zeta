@@ -215,9 +215,9 @@ describe("withGitHubSession", () => {
 
 describe("gitignore coverage", () => {
   test("keeps common GitHub UI session-state files local-only", () => {
-    const repoRoot = resolve(import.meta.dir, "..", "..", "..");
+    const repoRoot = resolve(import.meta.dir, "../../../..");
     const gitignore = readFileSync(join(repoRoot, ".gitignore"), "utf8");
     expect(gitignore).toContain(".github-ui-storage-state.json");
-    expect(gitignore).toContain("tools/playwright/github-ui/*.storage-state.json");
+    expect(gitignore).toContain("src/Core.TypeScript/playwright/github-ui/*.storage-state.json");
   });
 });

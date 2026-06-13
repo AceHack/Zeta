@@ -125,7 +125,7 @@ describe("refExists", () => {
     expect(
       refExists({
         fromRule: "test.md",
-        raw: "bun tools/hygiene/audit-rule-cross-refs.ts",
+        raw: "bun src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts",
         kind: "path",
       }),
     ).toBe(true);

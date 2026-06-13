@@ -182,11 +182,10 @@ describe("atomic write behavior (processOne with --write)", () => {
       mkdirSync(join(repo, `${SHARD_PREFIX}/2026/05/17`), { recursive: true });
       writeFileSync(shardAbs, "# Tick 0001Z — fixture\n\nbody\n", "utf8");
 
-      // Drive the script via Bun subprocess to exercise the real main().
       const proc = Bun.spawn(
         [
           "bun",
-          "tools/hygiene/add-pipe-row-header.ts",
+          "src/Core.TypeScript/hygiene/add-pipe-row-header.ts",
           "--write",
           "--files",
           shardRel,
@@ -224,7 +223,7 @@ describe("atomic write behavior (processOne with --write)", () => {
       const proc = Bun.spawn(
         [
           "bun",
-          "tools/hygiene/add-pipe-row-header.ts",
+          "src/Core.TypeScript/hygiene/add-pipe-row-header.ts",
           "--write",
           "--files",
           shardRel,
@@ -255,7 +254,7 @@ describe("argument-parser fail-closed behaviors (via subprocess)", () => {
 
   async function run(args: string[]): Promise<{ exit: number; stderr: string }> {
     const proc = Bun.spawn(
-      ["bun", "tools/hygiene/add-pipe-row-header.ts", ...args],
+      ["bun", "src/Core.TypeScript/hygiene/add-pipe-row-header.ts", ...args],
       {
         cwd: REPO_ROOT,
         env: { ...process.env, REPO_ROOT: "/nonexistent-tmpdir-for-test" },

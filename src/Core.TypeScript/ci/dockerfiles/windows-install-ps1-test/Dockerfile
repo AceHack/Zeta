@@ -47,8 +47,8 @@ WORKDIR C:\workspace
 # COPY only the install-relevant subset (forward-slash dests are fine on Windows containers;
 # avoids invalidating the build cache on unrelated repo changes).
 COPY tools/setup C:/workspace/tools/setup
-COPY tools/ci/windows-install-ps1-smoke.ts C:/workspace/tools/ci/windows-install-ps1-smoke.ts
-COPY tools/persistence/windows C:/workspace/tools/persistence/windows
+COPY src/Core.TypeScript/ci/windows-install-ps1-smoke.ts C:/workspace/src/Core.TypeScript/ci/windows-install-ps1-smoke.ts
+COPY src/Core.TypeScript/persistence/windows C:/workspace/src/Core.TypeScript/persistence/windows
 COPY .mise.toml C:/workspace/.mise.toml
 COPY package.json C:/workspace/package.json
 
@@ -87,7 +87,7 @@ ARG MISE_GITHUB_TOKEN
 # 2026-05-31: install.ps1 succeeded end-to-end; the quoting bug + missing VC++ runtime were the
 # last blockers.)
 RUN & 'C:\workspace\tools\setup\install.ps1' -SkipLoopRegister; `
-    mise exec -- bun 'C:\workspace\tools\ci\windows-install-ps1-smoke.ts' --mode container; `
+    mise exec -- bun 'C:\workspace\src\Core.TypeScript\ci\windows-install-ps1-smoke.ts' --mode container; `
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 RUN Write-Host "Slice 2c — install.ps1 Server-Core Docker validation COMPLETE"
