@@ -42,10 +42,19 @@ module QuantumFusion =
         | VisionBudget of VisionAttention.Feedback
         | QuantumOracle of OracleFeedback
 
+    type EvidenceLedger =
+        { DeltaCount: int
+          TouchedIdentities: int
+          ExteriorIdentities: int
+          HiddenInteriorIdentities: int }
+
     type Report =
         { Exterior: GSet<BoundaryFact>
           Posterior: Beta
+          Ledger: EvidenceLedger
           Prediction: Vision.PredictionReport<BoundaryFact> }
+
+    type AttentionPolicy = Beta -> BoundaryFact -> float
 
     type IQuantumFusionOracle =
         abstract Name: string
@@ -130,7 +139,11 @@ module QuantumFusion =
                   Memory = None }
         }
 
-    let private prediction (facts: GSet<BoundaryFact>) (posterior: Beta) (budget: Budget) (tank: SoftThrottle.Tank)
+    let private predictionWithAttention
+        (attention: BoundaryFact -> float)
+        (facts: GSet<BoundaryFact>)
+        (budget: Budget)
+        (tank: SoftThrottle.Tank)
         : Result<Vision.PredictionReport<BoundaryFact>, Feedback> =
         let rec loop acc rest =
             result {
@@ -138,19 +151,43 @@ module QuantumFusion =
                 | [] ->
                     return! VisionAttention.predict (List.rev acc) tank |> Result.mapError VisionBudget
                 | fact :: tail ->
-                    let! p = proposal (Beta.mean posterior) budget fact
+                    let! p = proposal (attention fact) budget fact
                     return! loop (p :: acc) tail
             }
 
         loop [] (GSet.toList facts)
 
+    let private evidenceLedger
+        (materialized: QuantumObservableDelta array)
+        (touchedFacts: GSet<BoundaryFact>)
+        (exteriorFacts: GSet<BoundaryFact>)
+        : EvidenceLedger =
+        let touched = GSet.count touchedFacts
+        let exterior = GSet.count exteriorFacts
+        { DeltaCount = materialized.Length
+          TouchedIdentities = touched
+          ExteriorIdentities = exterior
+          HiddenInteriorIdentities = max 0 (touched - exterior) }
+
+    let predictExteriorWithAttention
+        (budget: Budget)
+        (tank: SoftThrottle.Tank)
+        (attention: BoundaryFact -> float)
+        (facts: GSet<BoundaryFact>)
+        : Result<Vision.PredictionReport<BoundaryFact>, Feedback> =
+        result {
+            do! validateBudget budget
+            return! predictionWithAttention attention facts budget tank
+        }
+
     /// Compose signed quantum deltas, fuse their positive support into an
     /// exterior G-set, and attach a Bayesian/Vision budget report. Retractions
     /// and multiplicities affect only aggregate confidence; they are not visible
     /// as exterior G-set members.
-    let fuseDeltas
+    let fuseDeltasWithAttention
         (budget: Budget)
         (tank: SoftThrottle.Tank)
+        (attentionPolicy: AttentionPolicy)
         (deltas: QuantumObservableDelta seq)
         : Result<Report, Feedback> =
         result {
@@ -168,13 +205,26 @@ module QuantumFusion =
             let successes = exteriorFacts |> GSet.count |> float
             let failures = max 0 (GSet.count touchedFacts - GSet.count exteriorFacts) |> float
             let posterior = Beta.product budget.Prior (Beta.likelihood successes failures)
-            let! report = prediction exteriorFacts posterior budget tank
+            let ledger = evidenceLedger materialized touchedFacts exteriorFacts
+            let! report =
+                predictionWithAttention (attentionPolicy posterior) exteriorFacts budget tank
 
             return
                 { Exterior = exteriorFacts
                   Posterior = posterior
+                  Ledger = ledger
                   Prediction = report }
         }
+
+    /// Default Bayesian attention: every exterior fact receives the posterior
+    /// mean. This keeps the old arithmetic surface while allowing experiments
+    /// to use `fuseDeltasWithAttention` for attention/gravity priority.
+    let fuseDeltas
+        (budget: Budget)
+        (tank: SoftThrottle.Tank)
+        (deltas: QuantumObservableDelta seq)
+        : Result<Report, Feedback> =
+        fuseDeltasWithAttention budget tank (fun posterior _ -> Beta.mean posterior) deltas
 
     let fuseOracle
         (budget: Budget)
@@ -184,4 +234,15 @@ module QuantumFusion =
         result {
             let! deltas = oracle.Observe() |> Result.mapError QuantumOracle
             return! fuseDeltas budget tank deltas
+        }
+
+    let fuseOracleWithAttention
+        (budget: Budget)
+        (tank: SoftThrottle.Tank)
+        (attentionPolicy: AttentionPolicy)
+        (oracle: IQuantumFusionOracle)
+        : Result<Report, Feedback> =
+        result {
+            let! deltas = oracle.Observe() |> Result.mapError QuantumOracle
+            return! fuseDeltasWithAttention budget tank attentionPolicy deltas
         }

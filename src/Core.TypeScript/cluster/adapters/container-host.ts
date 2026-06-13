@@ -1,10 +1,10 @@
 import type { ContainerHost, ContainerHostKind, ProcessRunner } from "../ports.ts";
 import { commandSucceeded } from "./spawn-process-runner.ts";
 
-export function containerHostAdapter(kind: ContainerHostKind, process: ProcessRunner): ContainerHost {
+export function containerHostAdapter(kind: ContainerHostKind, runner: ProcessRunner): ContainerHost {
   return {
     kind,
-    probe: () => commandSucceeded(process, kind, ["--version"]),
+    probe: () => commandSucceeded(runner, kind, ["--version"]),
     clusterDriverEnv: () => (kind === "podman" ? { KIND_EXPERIMENTAL_PROVIDER: "podman" } : undefined),
   };
 }
@@ -27,8 +27,8 @@ export function assertContainerHostReady(host: ContainerHost, repoRoot: string):
   process.exit(1);
 }
 
-export function assertProcessToolReady(process: ProcessRunner, tool: string, repoRoot: string): void {
-  if (commandSucceeded(process, tool, ["--version"])) return;
+export function assertProcessToolReady(runner: ProcessRunner, tool: string, repoRoot: string): void {
+  if (commandSucceeded(runner, tool, ["--version"])) return;
   console.error(`ERROR: ${tool} not found. Install with:`);
   console.error(installHintForTool(tool, repoRoot));
   process.exit(1);

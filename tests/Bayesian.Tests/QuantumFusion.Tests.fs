@@ -47,6 +47,19 @@ let private piRow =
         "Zeta.ReferenceOracle.ApplyMachZehnderClosedPiPhase"
         Math.PI
 
+let private flowZero = QuantumObservableDbsp.flowBitRow false
+let private flowOne = QuantumObservableDbsp.flowBitRow true
+
+let private exteriorIds (report: QuantumFusion.Report) =
+    report.Exterior
+    |> GSet.toList
+    |> List.map (fun fact -> fact.Id)
+    |> Set.ofList
+
+let private boardedIds (report: QuantumFusion.Report) =
+    report.Prediction.Boarded
+    |> List.map (fun branch -> branch.State.Id)
+
 [<Fact>]
 let ``QSharp Mach-Zehnder deltas fuse into an exterior Bayesian GSet`` () =
     let report =
@@ -69,6 +82,10 @@ let ``QSharp Mach-Zehnder deltas fuse into an exterior Bayesian GSet`` () =
     report.Posterior.Alpha |> should (equalWithin 1e-9) 2.0
     report.Posterior.Beta |> should (equalWithin 1e-9) 2.0
     Beta.mean report.Posterior |> should (equalWithin 1e-9) 0.5
+    Assert.Equal(3, report.Ledger.DeltaCount)
+    Assert.Equal(2, report.Ledger.TouchedIdentities)
+    Assert.Equal(1, report.Ledger.ExteriorIdentities)
+    Assert.Equal(1, report.Ledger.HiddenInteriorIdentities)
 
 [<Fact>]
 let ``fusion hides multiplicity while Bayesian confidence counts exterior identity once`` () =
@@ -82,6 +99,10 @@ let ``fusion hides multiplicity while Bayesian confidence counts exterior identi
     Assert.Equal(1, GSet.count report.Exterior)
     report.Posterior.Alpha |> should (equalWithin 1e-9) 2.0
     report.Posterior.Beta |> should (equalWithin 1e-9) 1.0
+    Assert.Equal(3, report.Ledger.DeltaCount)
+    Assert.Equal(1, report.Ledger.TouchedIdentities)
+    Assert.Equal(1, report.Ledger.ExteriorIdentities)
+    Assert.Equal(0, report.Ledger.HiddenInteriorIdentities)
 
 [<Fact>]
 let ``Vision budget backpressure does not change fused arithmetic truth`` () =
@@ -97,13 +118,10 @@ let ``Vision budget backpressure does not change fused arithmetic truth`` () =
 
 [<Fact>]
 let ``QSharp flow-bit oracle plugin bifurcates flow then fuses one exterior identity`` () =
-    let flow = QuantumObservableDbsp.flowBitRow false
-    let distinction = QuantumObservableDbsp.flowBitRow true
-
     let oracle =
-        [ QuantumObservableDbsp.delta flow 1L
-          QuantumObservableDbsp.delta flow -1L
-          QuantumObservableDbsp.delta distinction 1L ]
+        [ QuantumObservableDbsp.delta flowZero 1L
+          QuantumObservableDbsp.delta flowZero -1L
+          QuantumObservableDbsp.delta flowOne 1L ]
         |> QuantumFusion.oracleFromDeltas "qsharp-flow-bit-golden"
 
     let report =
@@ -117,6 +135,59 @@ let ``QSharp flow-bit oracle plugin bifurcates flow then fuses one exterior iden
     Assert.Equal("external-bit-one", fact.Id)
     Assert.Equal("Zeta.ReferenceOracle.ApplyExternalBitDistinguishOne", fact.Operation)
     Assert.Equal(Vision.Admitted, report.Prediction.Outcome)
+
+[<Fact>]
+let ``attention changes boarding order but not fused DBSP truth`` () =
+    let deltas =
+        [ QuantumObservableDbsp.delta flowZero 1L
+          QuantumObservableDbsp.delta flowOne 1L ]
+
+    let favor id : QuantumFusion.AttentionPolicy =
+        fun (_: Beta) (fact: QuantumFusion.BoundaryFact) -> if fact.Id = id then 10.0 else 0.1
+
+    let oneFirst =
+        deltas
+        |> QuantumFusion.fuseDeltasWithAttention budget (SoftThrottle.tank 100.0 0.0) (favor "external-bit-one")
+        |> mustOk
+
+    let zeroFirst =
+        deltas
+        |> QuantumFusion.fuseDeltasWithAttention budget (SoftThrottle.tank 100.0 0.0) (favor "external-bit-zero")
+        |> mustOk
+
+    Assert.True(exteriorIds oneFirst = exteriorIds zeroFirst)
+    oneFirst.Posterior.Alpha |> should (equalWithin 1e-9) zeroFirst.Posterior.Alpha
+    oneFirst.Posterior.Beta |> should (equalWithin 1e-9) zeroFirst.Posterior.Beta
+    Assert.Equal(Vision.PartiallyAdmitted, oneFirst.Prediction.Outcome)
+    Assert.Equal(Vision.PartiallyAdmitted, zeroFirst.Prediction.Outcome)
+    Assert.Equal<string list>([ "external-bit-one" ], boardedIds oneFirst)
+    Assert.Equal<string list>([ "external-bit-zero" ], boardedIds zeroFirst)
+    Assert.Equal(2, oneFirst.Ledger.ExteriorIdentities)
+    Assert.Equal(0, oneFirst.Ledger.HiddenInteriorIdentities)
+
+[<Fact>]
+let ``time horizon bytes backpressure without changing exterior fusion`` () =
+    let horizon = { budget with TimeTicks = 4; BytesPerTick = 64L }
+
+    let report =
+        [ QuantumObservableDbsp.delta flowOne 1L ]
+        |> QuantumFusion.fuseDeltas horizon (SoftThrottle.tank 100.0 0.0)
+        |> mustOk
+
+    Assert.True(Set.singleton "external-bit-one" = exteriorIds report)
+    Assert.Empty(report.Prediction.Boarded)
+    Assert.Single(report.Prediction.Deferred) |> ignore
+    Assert.Equal(Vision.RejectedWithBackpressure, report.Prediction.Outcome)
+    Assert.True(report.Prediction.DeferredBytes > int64 report.Prediction.TankBefore.Charge)
+
+[<Fact>]
+let ``invalid attention policy returns feedback instead of throwing`` () =
+    match
+        [ QuantumObservableDbsp.delta flowOne 1L ]
+        |> QuantumFusion.fuseDeltasWithAttention budget (SoftThrottle.tank 4096.0 0.0) (fun _ _ -> Double.NaN)
+    with
+    | Error (QuantumFusion.VisionBudget (VisionAttention.InvalidAttentionWeight value)) -> Assert.True(Double.IsNaN value)
+    | other -> Assert.Fail(sprintf "expected InvalidAttentionWeight, got %A" other)
 
 [<Fact>]
 let ``invalid quantum fusion budget returns feedback instead of throwing`` () =

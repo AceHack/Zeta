@@ -149,10 +149,13 @@ let ``createAsyncBackingStore StableStorage fsyncs and roundtrips through disk``
 
 [<Fact>]
 let ``createAsyncBackingStore WitnessDurable without the flag is rejected`` () =
-    (fun () ->
-        DurabilityMode.createAsyncBackingStore<int>
-            DurabilityMode.WitnessDurable "wd" "wd" 1024L |> ignore)
-    |> should throw typeof<exn>
+    let ex =
+        Assert.Throws<InvalidOperationException>(fun () ->
+            DurabilityMode.createAsyncBackingStore<int>
+                DurabilityMode.WitnessDurable "wd" "wd" 1024L |> ignore)
+
+    Assert.Contains("WitnessDurable", ex.Message)
+    Assert.Contains("research preview", ex.Message)
 
 
 [<Fact>]
