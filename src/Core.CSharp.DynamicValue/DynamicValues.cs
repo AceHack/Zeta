@@ -4,7 +4,9 @@
 
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using Zeta.Core.CSharp.Yaml;
 
 namespace Zeta.Core.CSharp;
 
@@ -217,6 +219,112 @@ public static class DynamicValues
         var sb = new StringBuilder();
         WriteCanonical(sb, value);
         return new Result<string, EncodeError>.Ok(sb.ToString());
+    }
+
+    public static Result<string, EncodeError> ToYaml(DynamicValue value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        if (FirstDeferred(value, 0) is EncodeError deferred)
+        {
+            return new Result<string, EncodeError>.Err(deferred);
+        }
+
+        YamlValue yv = ToYamlValue(value);
+        string encoded = YamlEncoder.Encode(yv);
+        return new Result<string, EncodeError>.Ok(encoded);
+    }
+
+    private static YamlValue ToYamlValue(DynamicValue value)
+    {
+        return value switch
+        {
+            DynamicValue.Null => YamlValue.YNull.Instance,
+            DynamicValue.Bool b => new YamlValue.YBool(b.Value),
+            DynamicValue.Int i => new YamlValue.YInt(i.Value),
+            DynamicValue.Float f => new YamlValue.YFloat(f.Value),
+            DynamicValue.String s => new YamlValue.YStr(s.Value),
+            DynamicValue.Array a => new YamlValue.YSeq(a.Items.Select(ToYamlValue).ToList()),
+            DynamicValue.Object o => new YamlValue.YMap(o.Pairs.Select(p => new KeyValuePair<string, YamlValue>(p.Key, ToYamlValue(p.Value))).ToList()),
+            _ => throw new InvalidOperationException("Unreachable: Bytes checked by FirstDeferred")
+        };
+    }
+
+    public static Result<DynamicValue, DecodeError> FromYaml(string yaml)
+    {
+        if (yaml == null)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
+        }
+
+        ParseResult parseResult = YamlDom.Parse(yaml);
+        if (!parseResult.Ok)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
+        }
+
+        var decodeResult = FromYamlValue(parseResult.Value!, 0);
+        if (decodeResult is not Result<DynamicValue, DecodeError>.Ok okDec)
+        {
+            var errDec = (Result<DynamicValue, DecodeError>.Err)decodeResult;
+            return new Result<DynamicValue, DecodeError>.Err(errDec.Error);
+        }
+
+        var reEncodeResult = ToYaml(okDec.Value);
+        if (reEncodeResult is not Result<string, EncodeError>.Ok okEnc || !string.Equals(okEnc.Value, yaml, StringComparison.Ordinal))
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
+        }
+
+        return new Result<DynamicValue, DecodeError>.Ok(okDec.Value);
+    }
+
+    private static Result<DynamicValue, DecodeError> FromYamlValue(YamlValue yv, int depth)
+    {
+        if (depth > MaxNestingDepth)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NestingTooDeep);
+        }
+
+        switch (yv)
+        {
+            case YamlValue.YNull:
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.Null());
+            case YamlValue.YBool b:
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.Bool(b.Value));
+            case YamlValue.YInt i:
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.Int(i.Value));
+            case YamlValue.YFloat f:
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.Float(f.Value));
+            case YamlValue.YStr s:
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.String(s.Value));
+            case YamlValue.YSeq seq:
+                var items = ImmutableArray.CreateBuilder<DynamicValue>(seq.Items.Count);
+                foreach (var item in seq.Items)
+                {
+                    var res = FromYamlValue(item, depth + 1);
+                    if (res is not Result<DynamicValue, DecodeError>.Ok okRes)
+                    {
+                        return res;
+                    }
+                    items.Add(okRes.Value);
+                }
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.Array(items.ToImmutable()));
+            case YamlValue.YMap map:
+                var pairs = ImmutableArray.CreateBuilder<KeyValuePair<string, DynamicValue>>(map.Entries.Count);
+                foreach (var kv in map.Entries)
+                {
+                    var res = FromYamlValue(kv.Value, depth + 1);
+                    if (res is not Result<DynamicValue, DecodeError>.Ok okRes)
+                    {
+                        return res;
+                    }
+                    pairs.Add(new KeyValuePair<string, DynamicValue>(kv.Key, okRes.Value));
+                }
+                return new Result<DynamicValue, DecodeError>.Ok(new DynamicValue.Object(pairs.ToImmutable()));
+            default:
+                return new Result<DynamicValue, DecodeError>.Err(DecodeError.Unsupported);
+        }
     }
 
     // The first deferred variant (Float/Bytes) or NestingTooDeep anywhere in the tree, or null if

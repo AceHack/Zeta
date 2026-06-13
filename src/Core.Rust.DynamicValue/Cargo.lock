@@ -96,7 +96,12 @@ name = "zeta-core-dynamic-value"
 version = "0.1.0"
 dependencies = [
  "serde_json",
+ "zeta-core-yaml",
 ]
+
+[[package]]
+name = "zeta-core-yaml"
+version = "0.1.0"
 
 [[package]]
 name = "zmij"

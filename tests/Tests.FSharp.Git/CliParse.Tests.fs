@@ -8,23 +8,23 @@ open Zeta.Core.FSharp.Git
 
 [<Fact>]
 let ``parse maps the git-ref verbs`` () =
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Commit "msg"), CliParse.parse [| "commit"; "msg" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Log 20), CliParse.parse [| "log" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Log 5), CliParse.parse [| "log"; "5" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Branch "feature"), CliParse.parse [| "branch"; "feature" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Checkout "main"), CliParse.parse [| "checkout"; "main" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok GitCommand.Status, CliParse.parse [| "status" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Commit "msg")), CliParse.parse [| "commit"; "msg" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Log 20)), CliParse.parse [| "log" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Log 5)), CliParse.parse [| "log"; "5" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Branch "feature")), CliParse.parse [| "branch"; "feature" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Checkout "main")), CliParse.parse [| "checkout"; "main" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git GitCommand.Status), CliParse.parse [| "status" |])
 
 [<Fact>]
 let ``parse maps the network verbs with remote/branch defaults`` () =
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Push("origin", None)), CliParse.parse [| "push" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Push("upstream", None)), CliParse.parse [| "push"; "upstream" |])
-    Assert.Equal<Result<GitCommand, string>>(
-        Ok(GitCommand.Push("origin", Some "main")),
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Push("origin", None))), CliParse.parse [| "push" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Push("upstream", None))), CliParse.parse [| "push"; "upstream" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(
+        Ok(ZetaCliCommand.Git(GitCommand.Push("origin", Some "main"))),
         CliParse.parse [| "push"; "origin"; "main" |]
     )
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Fetch "origin"), CliParse.parse [| "fetch" |])
-    Assert.Equal<Result<GitCommand, string>>(Ok(GitCommand.Fetch "upstream"), CliParse.parse [| "fetch"; "upstream" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Fetch "origin")), CliParse.parse [| "fetch" |])
+    Assert.Equal<Result<ZetaCliCommand, string>>(Ok(ZetaCliCommand.Git(GitCommand.Fetch "upstream")), CliParse.parse [| "fetch"; "upstream" |])
 
 [<Fact>]
 let ``parse errors on empty, bad count, and unknown verbs`` () =

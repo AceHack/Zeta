@@ -62,6 +62,7 @@
     <Compile Include="BeliefConvergence.fs" />
     <Compile Include="Evolution.fs" />
     <Compile Include="DynamicValue.fs" />
+    <Compile Include="MarkdownTreaty.fs" />
     <Compile Include="YinYang.fs" />
     <Compile Include="Diplomacy.fs" />
     <Compile Include="DurableDiplomacy.fs" />
@@ -340,6 +341,7 @@
     <!-- Language-neutral contract lib (ITensor); WeightedSet implements it -->
     <ProjectReference Include="..\Core.Abstractions\Zeta.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
+    <ProjectReference Include="..\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
   </ItemGroup>
 
   <!-- F# static analyzers. Run via `dotnet msbuild -t:AnalyzeFSharpProject`. -->

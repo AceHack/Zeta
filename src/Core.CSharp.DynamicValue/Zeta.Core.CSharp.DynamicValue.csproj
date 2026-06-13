@@ -28,4 +28,7 @@
        (supply-chain doctrine). namespace is Zeta.Core.CSharp (assembly is …DynamicValue) so the
        namespace doesn't collide with the DynamicValue type. -->
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core.CSharp.Yaml\Zeta.Core.CSharp.Yaml.csproj" />
+  </ItemGroup>
 </Project>

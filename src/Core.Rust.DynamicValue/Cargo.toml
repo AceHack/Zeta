@@ -8,6 +8,7 @@ publish = false
 
 # Production default = ZERO external dependencies (supply-chain doctrine).
 [dependencies]
+zeta-core-yaml = { path = "../Core.Rust.Yaml" }
 
 # serde_json is DEV-ONLY: the cross-verify test reads the shared nested-JSON
 # golden-vectors.json fixture, for which a real parser is warranted; we match the

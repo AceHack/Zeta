@@ -84,22 +84,47 @@ let main argv =
             let credSource = Some(EnvTokenCredentialSource() :> CredentialSource)
 
             try
-                match GitCommand.run repo (fun () -> DateTimeOffset.UtcNow) credSource cmd with
-                | Branched n -> printfn "branched %s" n
-                | CheckedOut n -> printfn "checked out %s" n
-                | Committed sha -> printfn "committed %s" sha
-                | Logged entries ->
-                    for (sha, msg) in entries do
-                        printfn "%s %s" (sha.Substring(0, min 9 sha.Length)) msg
-                | Statused(clean, pending) ->
-                    if clean then
-                        printfn "clean"
-                    else
-                        printfn "dirty (%d pending):" pending.Length
-                        for p in pending do printfn "  %s" p
-                | Pushed(remote, refspec) -> printfn "pushed %s -> %s" refspec remote
-                | Fetched remote -> printfn "fetched %s" remote
-                0
+                match cmd with
+                | ZetaCliCommand.Git gitCmd ->
+                    match GitCommand.run repo (fun () -> DateTimeOffset.UtcNow) credSource gitCmd with
+                    | Branched n -> printfn "branched %s" n
+                    | CheckedOut n -> printfn "checked out %s" n
+                    | Committed sha -> printfn "committed %s" sha
+                    | Logged entries ->
+                        for (sha, msg) in entries do
+                            printfn "%s %s" (sha.Substring(0, min 9 sha.Length)) msg
+                    | Statused(clean, pending) ->
+                        if clean then
+                            printfn "clean"
+                        else
+                            printfn "dirty (%d pending):" pending.Length
+                            for p in pending do printfn "  %s" p
+                    | Pushed(remote, refspec) -> printfn "pushed %s -> %s" refspec remote
+                    | Fetched remote -> printfn "fetched %s" remote
+                    0
+                | ZetaCliCommand.Db dbCmd ->
+                    let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+                    let log = GitDeltaLog<DvKey>(repo, codec)
+                    let res = Zeta.Core.DbCommand.run log Threading.CancellationToken.None dbCmd |> Async.AwaitTask |> Async.RunSynchronously
+                    match res with
+                    | DbCommandResult.Appended seq ->
+                        printfn "appended seq: %d" seq
+                    | DbCommandResult.History entries ->
+                        for entry in entries do
+                            let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
+                            match DynamicValue.toCanonicalJson dv with
+                            | Ok json -> printfn "%s" json
+                            | Error e -> eprintfn "failed to format entry: %A" e
+                    | DbCommandResult.Got (Some entry) ->
+                        let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
+                        match DynamicValue.toCanonicalJson dv with
+                        | Ok json -> printfn "%s" json
+                        | Error e -> eprintfn "failed to format entry: %A" e
+                    | DbCommandResult.Got None ->
+                        printfn "not found"
+                    | DbCommandResult.Status highWater ->
+                        printfn "highwater: %d" highWater
+                    0
             with ex ->
                 eprintfn "zeta: %s" ex.Message
                 1

@@ -15,6 +15,9 @@
 //! oracle replays the shared seed and must value-match every locked vector.
 //! "The compilers don't lie."
 
+/// Markdown + Frontmatter Treaty (Priority 1)
+pub mod markdown;
+
 /// The runtime type tag -- QueryInterface ("what shape are you?") for a value
 /// with no compile-time type.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -373,6 +376,86 @@ impl DynamicValue {
         match value.to_canonical_xml() {
             Ok(s) if s == xml => Ok(value),
             _ => Err(DecodeError::NonCanonical),
+        }
+    }
+
+    /// Canonical YAML encoding -- the text-lock target for six shapes (Float + Bytes are DEFERRED).
+    /// Object keys in INSERTION order.
+    ///
+    /// # Errors
+    /// Returns [`EncodeError`] for `Bytes` or if nesting depth is exceeded.
+    pub fn to_canonical_yaml(&self) -> Result<String, EncodeError> {
+        let yv = self.to_yaml_value(0)?;
+        Ok(zeta_core_yaml::encoder::encode(&yv))
+    }
+
+    fn to_yaml_value(&self, depth: usize) -> Result<zeta_core_yaml::dom::YamlValue, EncodeError> {
+        if depth > MAX_NESTING_DEPTH {
+            return Err(EncodeError::NestingTooDeep);
+        }
+        match self {
+            DynamicValue::Null => Ok(zeta_core_yaml::dom::YamlValue::Null),
+            DynamicValue::Bool(b) => Ok(zeta_core_yaml::dom::YamlValue::Bool(*b)),
+            DynamicValue::Int(i) => Ok(zeta_core_yaml::dom::YamlValue::Int(*i)),
+            DynamicValue::Float(f) => Ok(zeta_core_yaml::dom::YamlValue::Float(*f)),
+            DynamicValue::String(s) => Ok(zeta_core_yaml::dom::YamlValue::Str(s.clone())),
+            DynamicValue::Bytes(_) => Err(EncodeError::BytesDeferred),
+            DynamicValue::Array(items) => {
+                let mut y_items = Vec::with_capacity(items.len());
+                for item in items {
+                    y_items.push(item.to_yaml_value(depth + 1)?);
+                }
+                Ok(zeta_core_yaml::dom::YamlValue::Seq(y_items))
+            }
+            DynamicValue::Object(pairs) => {
+                let mut y_pairs = Vec::with_capacity(pairs.len());
+                for (k, v) in pairs {
+                    y_pairs.push((k.clone(), v.to_yaml_value(depth + 1)?));
+                }
+                Ok(zeta_core_yaml::dom::YamlValue::Map(y_pairs))
+            }
+        }
+    }
+
+    /// Decode canonical YAML back into a DynamicValue. Strict canonical check requires
+    /// to_canonical_yaml() == yaml.
+    ///
+    /// # Errors
+    /// Returns [`DecodeError`] if parsing fails or YAML is non-canonical.
+    pub fn from_canonical_yaml(yaml: &str) -> Result<DynamicValue, DecodeError> {
+        let y_val = zeta_core_yaml::dom::parse(yaml).map_err(|_| DecodeError::NonCanonical)?;
+        let decoded = Self::from_yaml_value(&y_val, 0)?;
+        // Strict canonical check
+        match decoded.to_canonical_yaml() {
+            Ok(s) if s == yaml => Ok(decoded),
+            _ => Err(DecodeError::NonCanonical),
+        }
+    }
+
+    fn from_yaml_value(yv: &zeta_core_yaml::dom::YamlValue, depth: usize) -> Result<DynamicValue, DecodeError> {
+        if depth > MAX_NESTING_DEPTH {
+            return Err(DecodeError::NestingTooDeep);
+        }
+        match yv {
+            zeta_core_yaml::dom::YamlValue::Null => Ok(DynamicValue::Null),
+            zeta_core_yaml::dom::YamlValue::Bool(b) => Ok(DynamicValue::Bool(*b)),
+            zeta_core_yaml::dom::YamlValue::Int(i) => Ok(DynamicValue::Int(*i)),
+            zeta_core_yaml::dom::YamlValue::Float(f) => Ok(DynamicValue::Float(*f)),
+            zeta_core_yaml::dom::YamlValue::Str(s) => Ok(DynamicValue::String(s.clone())),
+            zeta_core_yaml::dom::YamlValue::Seq(items) => {
+                let mut dv_items = Vec::with_capacity(items.len());
+                for item in items {
+                    dv_items.push(Self::from_yaml_value(item, depth + 1)?);
+                }
+                Ok(DynamicValue::Array(dv_items))
+            }
+            zeta_core_yaml::dom::YamlValue::Map(pairs) => {
+                let mut dv_pairs = Vec::with_capacity(pairs.len());
+                for (k, v) in pairs {
+                    dv_pairs.push((k.clone(), Self::from_yaml_value(v, depth + 1)?));
+                }
+                Ok(DynamicValue::Object(dv_pairs))
+            }
         }
     }
 }

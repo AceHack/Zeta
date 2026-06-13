@@ -1431,3 +1431,74 @@ module DynamicValue =
                 match toCanonicalXml value with
                 | Ok s when System.String.Equals(s, xml, System.StringComparison.Ordinal) -> Ok value
                 | _ -> Error DecodeError.NonCanonical
+
+    /// Canonical YAML encoding — the text-lock target for six shapes (Float + Bytes are DEFERRED
+    /// in YAML). Object keys in INSERTION order.
+    let toYaml (value: DynamicValue) : Result<string, EncodeError> =
+        let rec go (depth: int) (v: DynamicValue) : Result<Zeta.Core.FSharp.Yaml.Dom.YamlValue, EncodeError> =
+            if depth > maxNestingDepth then
+                Error EncodeError.NestingTooDeep
+            else
+                match v with
+                | DynamicValue.Null -> Ok Zeta.Core.FSharp.Yaml.Dom.YamlValue.VNull
+                | DynamicValue.Bool b -> Ok (Zeta.Core.FSharp.Yaml.Dom.YamlValue.VBool b)
+                | DynamicValue.Int i -> Ok (Zeta.Core.FSharp.Yaml.Dom.YamlValue.VInt i)
+                | DynamicValue.Float f -> Ok (Zeta.Core.FSharp.Yaml.Dom.YamlValue.VFloat f)
+                | DynamicValue.String s -> Ok (Zeta.Core.FSharp.Yaml.Dom.YamlValue.VStr s)
+                | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
+                | DynamicValue.Array items ->
+                    items
+                    |> List.fold
+                        (fun acc item -> acc |> Result.bind (fun parsed -> go (depth + 1) item |> Result.map (fun y -> y :: parsed)))
+                        (Ok [])
+                    |> Result.map (fun parsed -> Zeta.Core.FSharp.Yaml.Dom.YamlValue.VSeq (List.rev parsed))
+                | DynamicValue.Object pairs ->
+                    pairs
+                    |> List.fold
+                        (fun acc (k, v) ->
+                            acc |> Result.bind (fun parsed -> go (depth + 1) v |> Result.map (fun y -> (k, y) :: parsed)))
+                        (Ok [])
+                    |> Result.map (fun parsed -> Zeta.Core.FSharp.Yaml.Dom.YamlValue.VMap (List.rev parsed))
+
+        go 0 value |> Result.map Zeta.Core.FSharp.Yaml.Encoder.encode
+
+    /// Decode canonical YAML back into a DynamicValue. Strict canonical check requires
+    /// toYaml(decoded) = yaml.
+    let fromYaml (yaml: string) : Result<DynamicValue, DecodeError> =
+        let yaml = if System.Object.ReferenceEquals(yaml, null) then "" else yaml
+        let rec go (depth: int) (y: Zeta.Core.FSharp.Yaml.Dom.YamlValue) : Result<DynamicValue, DecodeError> =
+            if depth > maxNestingDepth then
+                Error DecodeError.NestingTooDeep
+            else
+                match y with
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VNull -> Ok DynamicValue.Null
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VBool b -> Ok (DynamicValue.Bool b)
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VInt i -> Ok (DynamicValue.Int i)
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VFloat f -> Ok (DynamicValue.Float f)
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VStr s -> Ok (DynamicValue.String s)
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VSeq items ->
+                    items
+                    |> List.fold
+                        (fun acc item -> acc |> Result.bind (fun parsed -> go (depth + 1) item |> Result.map (fun d -> d :: parsed)))
+                        (Ok [])
+                    |> Result.map (fun parsed -> DynamicValue.Array (List.rev parsed))
+                | Zeta.Core.FSharp.Yaml.Dom.YamlValue.VMap pairs ->
+                    pairs
+                    |> List.fold
+                        (fun acc (k, v) ->
+                            acc |> Result.bind (fun parsed -> go (depth + 1) v |> Result.map (fun d -> (k, d) :: parsed)))
+                        (Ok [])
+                    |> Result.map (fun parsed -> DynamicValue.Object (List.rev parsed))
+
+        let parsedResult =
+            match Zeta.Core.FSharp.Yaml.Dom.parse yaml with
+            | Ok y -> Ok y
+            | Error _ -> Error DecodeError.NonCanonical
+
+        parsedResult
+        |> Result.bind (go 0)
+        |> Result.bind (fun decoded ->
+            match toYaml decoded with
+            | Ok canonicalYaml when canonicalYaml = yaml -> Ok decoded
+            | _ -> Error DecodeError.NonCanonical)
+
