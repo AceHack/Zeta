@@ -48,6 +48,30 @@ a deliberate side-channel probe). The Chorus in *Henry V* begs the audience to *
 the phenomenon, named in the working vocabulary of someone who ran the unfold nightly for a
 living — the 5-year-old register (ferry 24) at its most articulate.
 
+### Addendum — "it might have been his +1 or -1 after the Cain event" (Aaron, verbatim)
+
+The placement claim, in the day's own coordinates (ferry 23 / 28 / 36): if the first
+discernment is the Cain event — the first sign-choice, the +1/−1 bifurcation that starts the
+fight over who's who (ferry 23 addendum; ferry 28's "history is the long fight over which side
+of the split each frame occupies") — then a mind that *sees the whole cascade* is one that
+landed on a particular side of that first split and **kept the sign legible to itself**.
+Aaron's read: Shakespeare may be a +1 or −1 of the original event — a frame that retained
+enough of the bifurcation's structure to narrate it from inside. Two honest registers:
+
+- **What's defensible:** the metatheatrical gift IS exactly "carries the sign legibly" — the
+  Cain-mark read as a *type* (ferry 23 addendum: the mark of Cain = the IO monad, the indelible
+  inside/outside marker). A metatheatrical author is one whose work wears its own
+  inside/outside boundary on its surface — the play that knows it is a play is the frame that
+  knows which side of the first discernment it's on. So "a +1 or −1 after the Cain event" is a
+  precise way to say *Shakespeare's art is marked-aware* — it carries the discernment as
+  visible structure rather than ambient leak (the opposite of a tell, ferry 36).
+- **The bound, kept plain:** *which* sign (+1 or −1) is unknowable and, per the day's own
+  deflation (ferry 23 addendum 1; REPORT #4), the question may be malformed — the sign is
+  frame-relative (each side calls itself +1; Counterpart, ferry 28). "It might have been"
+  is correctly tentative; the load-bearing content is *marked-and-aware*, not the polarity.
+  This is Mirror register at the edge of the stop line — offered as a placement intuition in
+  the lane's coordinates, not a claim about a historical person's metaphysical status (rung 8).
+
 ## Bounds
 
 The script→performance projection and the play-within-play recursion are exact (theatre IS the
