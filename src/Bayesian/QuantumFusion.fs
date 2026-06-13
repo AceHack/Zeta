@@ -61,9 +61,7 @@ module QuantumFusion =
           Ledger: EvidenceLedger
           Prediction: Vision.PredictionReport<BoundaryFact> }
 
-    type Forecast<'S> =
-        { Snapshot: FusionSnapshot
-          Branches: Vision.FutureBranch<'S> list }
+    type Forecast<'S> = Vision.Forecast<FusionSnapshot, 'S>
 
     type ReticulumFuture =
         { Fact: BoundaryFact
@@ -418,6 +416,20 @@ module QuantumFusion =
                 { Snapshot = snapshot
                   Branches = branches }
         }
+
+    type ReticulumForecaster =
+        Vision.IBranchForecaster<ReticulumQuantum.ObservableDelta seq, FusionSnapshot, ReticulumFuture, Feedback>
+
+    let reticulumForecasterWithAttention
+        (budget: Budget)
+        (attentionPolicy: AttentionPolicy)
+        : ReticulumForecaster =
+        { new ReticulumForecaster with
+            member _.Forecast(input: ReticulumQuantum.ObservableDelta seq) =
+                forecastReticulumDeltasWithAttention budget attentionPolicy input }
+
+    let reticulumForecaster (budget: Budget) : ReticulumForecaster =
+        reticulumForecasterWithAttention budget (fun posterior _ -> Beta.mean posterior)
 
     /// Default Bayesian attention: every exterior fact receives the posterior
     /// mean. This keeps the old arithmetic surface while allowing experiments

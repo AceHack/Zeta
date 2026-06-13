@@ -231,6 +231,34 @@ let ``Reticulum forecast turns fused facts into scheduler future branches`` () =
     )
 
 [<Fact>]
+let ``Reticulum forecaster plugs into the owned Vision port`` () =
+    let deltas =
+        [ retDelta "edge-zero" 30L flowZero 1L
+          retDelta "edge-one" 31L flowOne 1L ]
+
+    let favorZero : QuantumFusion.AttentionPolicy =
+        fun (_: Beta) (fact: QuantumFusion.BoundaryFact) ->
+            if fact.Id = "external-bit-zero" then 10.0 else 0.1
+
+    let forecaster = QuantumFusion.reticulumForecasterWithAttention budget favorZero
+
+    let forecast =
+        (deltas :> ReticulumQuantum.ObservableDelta seq)
+        |> Vision.forecastWith forecaster
+        |> mustOk
+
+    Assert.Equal<string list>([ "external-bit-zero"; "external-bit-one" ], forecastIds forecast)
+
+    let firstBytes = Vision.branchBytes forecast.Branches.Head.Cost |> mustOk
+
+    let report =
+        Vision.predictForecast forecast (SoftThrottle.tank (float firstBytes) 0.0)
+        |> mustOk
+
+    Assert.Equal(Vision.PartiallyAdmitted, report.Outcome)
+    Assert.Equal("external-bit-zero", report.Boarded.Head.State.Fact.Id)
+
+[<Fact>]
 let ``Reticulum forecast keeps retracted interior churn out of branch states`` () =
     let deltas =
         [ retDelta "edge" 20L openRow 1L

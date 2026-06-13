@@ -182,6 +182,19 @@ module Vision =
           Starved: bool
           Confidence: float }
 
+    /// Scheduler-facing forecast envelope. Implementations may carry any
+    /// plugin/domain snapshot, but the scheduler consumes only the ordered
+    /// future branches and their honest byte-denominated costs.
+    type Forecast<'Snapshot, 'S> =
+        { Snapshot: 'Snapshot
+          Branches: FutureBranch<'S> list }
+
+    /// Hexagonal forecast port: a room/plugin turns an input batch into
+    /// budgeted future branches on our Vision interface. Q#, Bayesian,
+    /// Reticulum, or hardware adapters stay behind this boundary.
+    type IBranchForecaster<'Input, 'Snapshot, 'S, 'Feedback> =
+        abstract Forecast: input: 'Input -> Result<Forecast<'Snapshot, 'S>, 'Feedback>
+
     type Budgeted<'S> =
         { Inner: 'S
           Tank: SoftThrottle.Tank
@@ -281,6 +294,18 @@ module Vision =
                   Starved = not (List.isEmpty deferred)
                   Confidence = confidence }
         }
+
+    let forecastWith
+        (forecaster: IBranchForecaster<'Input, 'Snapshot, 'S, 'Feedback>)
+        (input: 'Input)
+        : Result<Forecast<'Snapshot, 'S>, 'Feedback> =
+        forecaster.Forecast input
+
+    let predictForecast
+        (forecast: Forecast<'Snapshot, 'S>)
+        (tank: SoftThrottle.Tank)
+        : Result<PredictionReport<'S>, GrowthFeedback> =
+        predictBranches forecast.Branches tank
 
     let private growthErrorText =
         function
