@@ -22,13 +22,13 @@
  * `mode` is just `fold(initial, events).mode`. So "persist the chosen mode" IS
  * "append the mode-setting NextAction to the log." No mode table — the log is it.
  *
- * ── This slice: zero-effect kinds + do_item (operator 2026-05-31 / 2026-06-12) ─
+ * ── This slice: zero-effect + do_item + operator channel (2026-06-12/13) ───────
  * Zero-effect kinds (free_time, self_reflect, explore, play) have NO external
- * side-effect — executing them is purely (a) append the event + (b) set the mode
- * via simulate. `do_item` is the first effectful kind: it delegates to
- * `executeDoItem` (command/observation event split, injected CommandExecutor).
- * Remaining kinds (preserve_ferry, respond_to_operator, decompose, edit_grammar)
- * are returned as `not-yet-executable` until their effects are wired.
+ * side-effect. `do_item` delegates to `executeDoItem` (command/observation split).
+ * `preserve_ferry` and `respond_to_operator` are the operator-channel effects:
+ * they run the effect FIRST (preserve content / emit response) then append to the
+ * log — durability-first for ferry content that might be lost to compaction.
+ * Remaining kinds (decompose, edit_grammar) are `not-yet-executable`.
  *
  * The `EventSink` is INJECTED (asymmetric-authorship: the sink AUTHORS its own
  * outcome channel) so this slice is testable with a fake sink and no git I/O;
@@ -48,6 +48,35 @@ import { simulate, type NextAction, type World } from "./observe";
 import { executeDoItem, type CommandExecutor, type DoItemOptions, type DoItemResult, type ActionObservation } from "./do-item";
 
 export type { CommandExecutor, DoItemOptions, DoItemResult, ActionObservation };
+
+// ─── Operator port (injected for preserve_ferry + respond_to_operator) ──────
+
+/**
+ * The operator port — the effectful seam for operator-channel actions.
+ * Injected so tests use a fake (no file I/O, no real response emission).
+ *
+ * `preserveFerry`: durably write the ferried content to substrate (e.g. a
+ * committed file). Returns the path/id of what was preserved.
+ *
+ * `emitResponse`: emit the agent's response to the operator (e.g. write to
+ * a response channel, print to stdout, or append to a transcript file).
+ */
+export interface OperatorPort {
+  preserveFerry: (content: string) => Promise<{ ok: true; path: string } | { ok: false; reason: string }>;
+  emitResponse: (text: string) => Promise<{ ok: true } | { ok: false; reason: string }>;
+}
+
+/** A fake operator port for tests — records calls without I/O. */
+export function fakeOperatorPort(): OperatorPort & { preserved: string[]; responses: string[] } {
+  const preserved: string[] = [];
+  const responses: string[] = [];
+  return {
+    preserved,
+    responses,
+    preserveFerry: async (content) => { preserved.push(content); return { ok: true, path: `ferry/${preserved.length}.md` }; },
+    emitResponse: async (text) => { responses.push(text); return { ok: true }; },
+  };
+}
 
 /** The action kinds this slice can execute (zero external side-effect: mode-set + append). */
 const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play"] as const;
@@ -93,21 +122,25 @@ export type ExecuteResult =
   | { readonly ok: false; readonly feedback: ExecuteFeedback };
 
 /**
- * Execute a chosen action. Routes through three paths:
+ * Execute a chosen action. Routes through four paths:
  *
  * 1. **Zero-effect kinds** (free_time, self_reflect, explore, play): mode-set only.
  *    Append the action itself to the log, then transition via `simulate`.
  *
  * 2. **do_item**: delegates to `executeDoItem` (command/observation event split).
  *    Requires an injected `CommandExecutor` + `DoItemOptions`. If not provided,
- *    returns `not-yet-executable` (backward-compatible with callers that don't
- *    have an executor wired yet).
+ *    returns `not-yet-executable`.
  *
- * 3. **Everything else** (preserve_ferry, respond_to_operator, decompose,
- *    edit_grammar): returns `not-yet-executable` until their effects are wired.
+ * 3. **preserve_ferry / respond_to_operator**: operator-channel effects.
+ *    Requires an injected `OperatorPort`. Effect first (preserve the ferry content
+ *    or emit the response), then append, then simulate.
  *
- * Order matters: APPEND FIRST, then project. If the append fails, no transition
- * is reported (the durable log stays the source of truth).
+ * 4. **Everything else** (decompose, edit_grammar): returns `not-yet-executable`.
+ *
+ * Order matters: for operator actions, EFFECT FIRST (the content might be lost to
+ * compaction if we append-then-effect and the effect fails). For zero-effect kinds,
+ * APPEND FIRST (no effect to lose). For do_item, APPEND-STARTED-FIRST (the executor
+ * contract per B-0964).
  */
 export async function execute(
   world: World,
@@ -115,6 +148,7 @@ export async function execute(
   sink: EventSink,
   executor?: CommandExecutor,
   doItemOpts?: DoItemOptions,
+  operatorPort?: OperatorPort,
 ): Promise<ExecuteResult> {
   // Path 1: zero-effect kinds (mode-set + append)
   if (isZeroEffectKind(action.kind)) {
@@ -130,25 +164,57 @@ export async function execute(
     if (!executor || !doItemOpts) {
       return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
     }
-    // executeDoItem uses its own observation sink (ActionObservation, not NextAction).
-    // Adapt the sink: the observation events get their own event ids from the same
-    // underlying transport; we wrap the NextAction sink as an ActionObservation sink.
     const observationSink: EventSink<ActionObservation> = {
       append: (obs) => sink.append(obs as unknown as NextAction),
     };
     const result: DoItemResult = await executeDoItem(world, action.item, observationSink, executor, doItemOpts);
     if (!result.ok) {
-      // Map DoItemFeedback to ExecuteFeedback
       return { ok: false, feedback: { kind: "append-failed", actionKind: "do_item", reason: result.feedback.reason } };
     }
     if (result.completed) {
       return { ok: true, world: result.world, appended: action, eventId: "do-item-completed" };
     }
-    // Work ran but failed — the item stays in the backlog. Still report the
-    // transition (mode → work) so the caller sees the updated world.
     return { ok: true, world: result.world, appended: action, eventId: "do-item-failed" };
   }
 
-  // Path 3: not yet wired
+  // Path 3: preserve_ferry — effect first (durability of the ferry content)
+  if (action.kind === "preserve_ferry") {
+    if (!operatorPort) {
+      return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+    }
+    // The ferry content is in action.reason (the verbatim text to preserve).
+    const effectResult = await operatorPort.preserveFerry(action.reason);
+    if (!effectResult.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: effectResult.reason } };
+    }
+    const outcome = await sink.append(action);
+    if (!outcome.ok) {
+      // Effect succeeded but append failed — the ferry IS preserved (the content
+      // is durable at effectResult.path), but the log doesn't reflect it yet.
+      // Return success anyway: the content is safe (durability-first).
+      return { ok: true, world: simulate(world, action), appended: action, eventId: "ferry-preserved-append-lagged" };
+    }
+    return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
+  }
+
+  // Path 3b: respond_to_operator — effect first (emit the response)
+  if (action.kind === "respond_to_operator") {
+    if (!operatorPort) {
+      return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
+    }
+    const effectResult = await operatorPort.emitResponse(action.reason);
+    if (!effectResult.ok) {
+      return { ok: false, feedback: { kind: "append-failed", actionKind: action.kind, reason: effectResult.reason } };
+    }
+    const outcome = await sink.append(action);
+    if (!outcome.ok) {
+      // Response emitted but append lagged — the operator got the reply (effect
+      // succeeded), so report success; the log will catch up on next tick.
+      return { ok: true, world: simulate(world, action), appended: action, eventId: "response-emitted-append-lagged" };
+    }
+    return { ok: true, world: simulate(world, action), appended: action, eventId: outcome.eventId };
+  }
+
+  // Path 4: not yet wired
   return { ok: false, feedback: { kind: "not-yet-executable", actionKind: action.kind } };
 }

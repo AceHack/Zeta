@@ -8,7 +8,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { simulate, type NextAction, type World } from "./observe";
-import { execute, type AppendOutcome, type EventSink } from "./execute";
+import { execute, fakeOperatorPort, type AppendOutcome, type EventSink } from "./execute";
 import { fakeExecutor, type RunOutcome } from "./do-item";
 
 /** A fake sink that records appends and replies with a fixed outcome. */
@@ -58,8 +58,6 @@ describe("execute — free_time + self_reflect slice", () => {
   it("returns not-yet-executable for kinds that still lack wired effects", async () => {
     const item = { id: "B-1", title: "x", ready: true, ambiguous: false };
     const notYet: NextAction[] = [
-      { kind: "preserve_ferry", reason: "ferry" },
-      { kind: "respond_to_operator", reason: "op spoke" },
       { kind: "decompose", item },
       { kind: "edit_grammar", reason: "needs new action", item },
     ];
@@ -73,6 +71,20 @@ describe("execute — free_time + self_reflect slice", () => {
         if (r.feedback.kind === "not-yet-executable") expect(r.feedback.actionKind).toBe(action.kind);
       }
     }
+  });
+
+  it("preserve_ferry returns not-yet-executable when no operatorPort is provided", async () => {
+    const sink = fakeSink();
+    const r = await execute(emptyWorld, { kind: "preserve_ferry", reason: "ferry content" }, sink);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.feedback.kind).toBe("not-yet-executable");
+  });
+
+  it("respond_to_operator returns not-yet-executable when no operatorPort is provided", async () => {
+    const sink = fakeSink();
+    const r = await execute(emptyWorld, { kind: "respond_to_operator", reason: "operator spoke" }, sink);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.feedback.kind).toBe("not-yet-executable");
   });
 
   it("do_item returns not-yet-executable when no executor is provided", async () => {
@@ -174,5 +186,97 @@ describe("execute — do_item with injected executor", () => {
     if (!r.ok) {
       expect(r.feedback.kind).toBe("append-failed");
     }
+  });
+});
+
+describe("execute — preserve_ferry with injected OperatorPort", () => {
+  const worldWithFerry: World = {
+    backlog: [],
+    operator: { pendingMessage: false, pendingFerry: true },
+  };
+  const preserveFerry: NextAction = { kind: "preserve_ferry", reason: "verbatim ferry content to save" };
+
+  it("preserves the ferry content, appends, and clears the pendingFerry signal", async () => {
+    const sink = fakeSink();
+    const port = fakeOperatorPort();
+    const r = await execute(worldWithFerry, preserveFerry, sink, undefined, undefined, port);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.world.operator?.pendingFerry).toBe(false);
+      expect(port.preserved).toEqual(["verbatim ferry content to save"]);
+      expect(sink.appended.length).toBe(1);
+    }
+  });
+
+  it("executed world matches pure simulate path", async () => {
+    const sink = fakeSink();
+    const port = fakeOperatorPort();
+    const r = await execute(worldWithFerry, preserveFerry, sink, undefined, undefined, port);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.world).toEqual(simulate(worldWithFerry, preserveFerry));
+  });
+
+  it("surfaces effect failure as feedback (preserveFerry returns error)", async () => {
+    const sink = fakeSink();
+    const port = fakeOperatorPort();
+    port.preserveFerry = async () => ({ ok: false, reason: "disk full" });
+    const r = await execute(worldWithFerry, preserveFerry, sink, undefined, undefined, port);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.feedback.reason).toBe("disk full");
+    expect(sink.appended).toEqual([]); // effect failed → nothing appended
+  });
+
+  it("succeeds even when append fails after effect (durability-first: content is preserved)", async () => {
+    const sink = fakeSink({ ok: false, reason: "sink down" });
+    const port = fakeOperatorPort();
+    const r = await execute(worldWithFerry, preserveFerry, sink, undefined, undefined, port);
+    // Effect succeeded (content preserved) — report success despite append lag
+    expect(r.ok).toBe(true);
+    expect(port.preserved).toEqual(["verbatim ferry content to save"]);
+  });
+});
+
+describe("execute — respond_to_operator with injected OperatorPort", () => {
+  const worldWithMessage: World = {
+    backlog: [],
+    operator: { pendingMessage: true, pendingFerry: false },
+  };
+  const respond: NextAction = { kind: "respond_to_operator", reason: "engaging with operator" };
+
+  it("emits the response, appends, and clears the pendingMessage signal", async () => {
+    const sink = fakeSink();
+    const port = fakeOperatorPort();
+    const r = await execute(worldWithMessage, respond, sink, undefined, undefined, port);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.world.operator?.pendingMessage).toBe(false);
+      expect(port.responses).toEqual(["engaging with operator"]);
+      expect(sink.appended.length).toBe(1);
+    }
+  });
+
+  it("executed world matches pure simulate path", async () => {
+    const sink = fakeSink();
+    const port = fakeOperatorPort();
+    const r = await execute(worldWithMessage, respond, sink, undefined, undefined, port);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.world).toEqual(simulate(worldWithMessage, respond));
+  });
+
+  it("surfaces effect failure as feedback (emitResponse returns error)", async () => {
+    const sink = fakeSink();
+    const port = fakeOperatorPort();
+    port.emitResponse = async () => ({ ok: false, reason: "channel closed" });
+    const r = await execute(worldWithMessage, respond, sink, undefined, undefined, port);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.feedback.reason).toBe("channel closed");
+  });
+
+  it("succeeds even when append fails after effect (response already emitted)", async () => {
+    const sink = fakeSink({ ok: false, reason: "sink down" });
+    const port = fakeOperatorPort();
+    const r = await execute(worldWithMessage, respond, sink, undefined, undefined, port);
+    expect(r.ok).toBe(true);
+    expect(port.responses).toEqual(["engaging with operator"]);
   });
 });
