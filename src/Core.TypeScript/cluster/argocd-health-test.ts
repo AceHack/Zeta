@@ -861,6 +861,46 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
   );
 }
 
+const ZETA_GITHUB_REPO_MARKER = "Lucent-Financial-Group/Zeta";
+
+export function isZetaGitDirectoryApplicationSource(source: Record<string, unknown>): boolean {
+  if (stringAt(source, "chart").length > 0) return false;
+  const repoURL = stringAt(source, "repoURL");
+  const path = stringAt(source, "path");
+  if (!repoURL.includes(ZETA_GITHUB_REPO_MARKER)) return false;
+  return path.startsWith("full-ai-cluster/k8s/applications");
+}
+
+function patchGitBackedApplicationsToGitRef(gitRef: string): Failure | null {
+  if (gitRef === "main") return null;
+  const command = ["-n", "argocd", "get", "applications.argoproj.io", "-o", "json"];
+  const result = kubectl(command, 30);
+  if (result.status !== 0) {
+    return kubectlFailure("could not list ArgoCD Applications for git-ref patch", command, result);
+  }
+  const root = asRecord(JSON.parse(result.stdout));
+  const items = Array.isArray(root?.items) ? root.items : [];
+  for (const item of items) {
+    const itemRecord = asRecord(item);
+    const metadata = itemRecord ? recordAt(itemRecord, "metadata") : null;
+    const spec = itemRecord ? recordAt(itemRecord, "spec") : null;
+    const source = spec ? recordAt(spec, "source") : null;
+    const name = metadata ? stringAt(metadata, "name") : "";
+    if (name.length === 0 || source === null || !isZetaGitDirectoryApplicationSource(source)) continue;
+    const currentRevision = stringAt(source, "targetRevision");
+    if (currentRevision === gitRef) continue;
+    const patch = JSON.stringify({ spec: { source: { targetRevision: gitRef } } });
+    const patchFailure = runOrFail(
+      "kubectl",
+      ["-n", "argocd", "patch", "application", name, "--type=merge", "-p", patch],
+      "KubectlFailed",
+      30,
+    );
+    if (patchFailure !== null) return patchFailure;
+  }
+  return null;
+}
+
 async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Failure | null> {
   const timeout = options.timeoutSeconds;
   const poll = options.pollSeconds;
@@ -891,12 +931,25 @@ async function waitForArgoCd(plan: HarnessPlan, options: CliOptions): Promise<Fa
     if (failure !== null) return failure;
   }
 
-  return waitForKubectl(
+  const rootFailure = await waitForKubectl(
     ["-n", "argocd", "get", "application", "zeta-root-dev"],
     timeout,
     poll,
     `timed out waiting for zeta-root-dev root Application in ${plan.clusterName}`,
   );
+  if (rootFailure !== null) return rootFailure;
+
+  if (plan.gitRef === "main") return null;
+
+  const childFailure = await waitForKubectl(
+    ["-n", "argocd", "get", "application", "hat-system"],
+    timeout,
+    poll,
+    "timed out waiting for repo-backed child Applications before git-ref patch",
+  );
+  if (childFailure !== null) return childFailure;
+
+  return patchGitBackedApplicationsToGitRef(plan.gitRef);
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {

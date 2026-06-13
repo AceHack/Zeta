@@ -1,0 +1,91 @@
+# ArgoCD Sync hook: wait for Gatekeeper to register Constraint CRDs after
+# ConstraintTemplates (wave 1) before Constraints (wave 3) apply.
+#
+# Without this, cold-start sync fails with "could not find
+# constraints.gatekeeper.sh/HatWarmup" even when sync-waves are set.
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gatekeeper-crd-wait
+  namespace: hat-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hat-system-gatekeeper-crd-wait
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+rules:
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["templates.gatekeeper.sh"]
+    resources: ["constrainttemplates"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hat-system-gatekeeper-crd-wait
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hat-system-gatekeeper-crd-wait
+subjects:
+  - kind: ServiceAccount
+    name: gatekeeper-crd-wait
+    namespace: hat-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-gatekeeper-hat-constraint-crds
+  namespace: hat-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      serviceAccountName: gatekeeper-crd-wait
+      restartPolicy: Never
+      containers:
+        - name: wait
+          image: bitnami/kubectl:1.32.3
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              set -o pipefail
+              KINDS=(HatCooldown HatMaxBindings HatConflict HatQuorum HatWarmup HatMaxNew HatNoCycle)
+              TEMPLATES=(hatcooldown hatmaxbindings hatconflict hatquorum hatwarmup hatmaxnew hatnocycle)
+              echo "waiting for hat ConstraintTemplates to exist..."
+              for t in "${TEMPLATES[@]}"; do
+                for i in $(seq 1 150); do
+                  if kubectl get constrainttemplate "$t" >/dev/null 2>&1; then
+                    echo "  constrainttemplate/$t present"
+                    break
+                  fi
+                  sleep 2
+                done
+              done
+              echo "waiting for hat constraint CRDs (Established)..."
+              for kind in "${KINDS[@]}"; do
+                for i in $(seq 1 150); do
+                  name="$(kubectl get crd -o jsonpath="{range .items[?(@.spec.names.kind=='${kind}')]}{.metadata.name}{end}")"
+                  if [ -n "$name" ]; then
+                    kubectl wait --for=condition=Established "crd/${name}" --timeout=120s
+                    echo "  ${kind} -> ${name}"
+                    break
+                  fi
+                  sleep 2
+                done
+              done
+              echo "all hat Gatekeeper constraint CRDs ready"

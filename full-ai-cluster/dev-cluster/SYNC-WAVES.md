@@ -121,3 +121,20 @@ waves until it recovers or the operator manually intervenes
 
 This is what makes dev/prod parity reliable: same Applications,
 same waves, same reconciliation order on both substrates.
+
+## hat-system internal waves (Gatekeeper)
+
+Within the `hat-system` Application directory (not the App-of-Apps
+wave `-10` on `Application.yaml` itself):
+
+| Wave | Resources |
+|------|-----------|
+| 0 | society.zeta.io CRDs, namespace, seed hats, operator Deployment |
+| 1 | ConstraintTemplates (`templates.gatekeeper.sh`) |
+| 2 | Sync hook Job `wait-gatekeeper-hat-constraint-crds` — polls until Gatekeeper registers constraint CRDs |
+| 3 | Constraints (`constraints.gatekeeper.sh`) |
+
+ArgoCD sync-waves alone are insufficient on a cold cluster: Gatekeeper
+registers constraint CRDs asynchronously after ConstraintTemplates land.
+The wave-2 hook closes that gap so kind/CI included proofs can ship
+`policies/**` without manual resync.

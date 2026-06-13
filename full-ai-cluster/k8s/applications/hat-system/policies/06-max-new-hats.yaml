@@ -53,7 +53,7 @@ kind: HatMaxNew
 metadata:
   name: hat-max-new-default
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   match:

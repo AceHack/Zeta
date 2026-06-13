@@ -11,6 +11,7 @@ import {
   isExcludedFromIncludedProof,
   isApplicationSynced,
   isIncludedScope,
+  isZetaGitDirectoryApplicationSource,
   parseApplicationList,
   parseApplicationName,
   parseArgs,
@@ -416,6 +417,23 @@ describe("B-0967 argocd-health-test planning", () => {
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
+  });
+
+  test("detects repo-backed child Applications that should track the harness git ref", () => {
+    expect(
+      isZetaGitDirectoryApplicationSource({
+        repoURL: "https://github.com/Lucent-Financial-Group/Zeta",
+        targetRevision: "main",
+        path: "full-ai-cluster/k8s/applications/hat-system",
+      }),
+    ).toBe(true);
+    expect(
+      isZetaGitDirectoryApplicationSource({
+        repoURL: "https://grafana.github.io/helm-charts",
+        chart: "loki",
+        targetRevision: "6.18.0",
+      }),
+    ).toBe(false);
   });
 
   test("architecture guard names the supported hardware classes", () => {

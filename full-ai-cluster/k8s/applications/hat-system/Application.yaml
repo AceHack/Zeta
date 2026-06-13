@@ -31,13 +31,21 @@ spec:
       recurse: true
       # Skip the operator's Go source — it's not a manifest. Same for
       # the graph/render helper and the queries docs.
-      # Policies require Gatekeeper ConstraintTemplate CRD registration; on kind/CI
-      # the constraint kinds are applied via a follow-on homelab sync once CTs are
-      # Established. CRDs + seed hats + operator (replicas:0) are enough here.
-      exclude: '{operator/**,graph/**,queries/**,Application.yaml,policies/**}'
+      exclude: '{operator/**,graph/**,queries/**,Application.yaml}'
   destination:
     server: https://kubernetes.default.svc
     namespace: hat-system
+  ignoreDifferences:
+    # K8s 1.35+ populates status.terminatingReplicas before OpenAPI catches up;
+    # ArgoCD structured merge diff then fails with ComparisonError (B-0967 CI).
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - .status.terminatingReplicas
+    - group: apps
+      kind: StatefulSet
+      jqPathExpressions:
+        - .status.terminatingReplicas
   syncPolicy:
     automated:
       prune: true
