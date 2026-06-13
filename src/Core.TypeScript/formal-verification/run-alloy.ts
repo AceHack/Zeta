@@ -87,11 +87,11 @@ interface Toolchain {
 }
 
 function checkToolchain(root: string): Toolchain | null {
-  const alloyJarPath = join(root, "tools", "alloy", "alloy.jar");
-  const alloyRunnerSource = join(root, "tools", "alloy", "AlloyRunner.java");
-  const runnerClassDir = join(root, "tools", "alloy", "classes");
+  const alloyJarPath = join(root, "src", "Core.Alloy", "alloy.jar");
+  const alloyRunnerSource = join(root, "src", "Core.Alloy", "AlloyRunner.java");
+  const runnerClassDir = join(root, "src", "Core.Alloy", "classes");
   const runnerClassFile = join(runnerClassDir, "AlloyRunner.class");
-  const specsPath = join(root, "tools", "alloy", "specs");
+  const specsPath = join(root, "src", "Core.Alloy", "specs");
   const javaPath = which("java");
   const javacPath = which("javac");
   if (javaPath === null || javacPath === null) return null;
@@ -301,7 +301,7 @@ function main(argv: readonly string[]): ExitCode {
     const tc = checkToolchain(root);
     if (tc === null) {
       process.stderr.write(
-        "ERROR: Alloy toolchain not ready (need java + javac on PATH + tools/alloy/alloy.jar + tools/alloy/AlloyRunner.java). Run tools/setup/install.sh\n",
+        "ERROR: Alloy toolchain not ready (need java + javac on PATH + src/Core.Alloy/alloy.jar + src/Core.Alloy/AlloyRunner.java). Run tools/setup/install.sh\n",
       );
       return 2;
     }
@@ -316,7 +316,7 @@ function main(argv: readonly string[]): ExitCode {
   const toolchain = checkToolchain(root);
   if (toolchain === null) {
     process.stderr.write(
-      "ERROR: Alloy toolchain not ready (need java + javac on PATH + tools/alloy/alloy.jar + tools/alloy/AlloyRunner.java). Run tools/setup/install.sh\n",
+      "ERROR: Alloy toolchain not ready (need java + javac on PATH + src/Core.Alloy/alloy.jar + src/Core.Alloy/AlloyRunner.java). Run tools/setup/install.sh\n",
     );
     return 2;
   }

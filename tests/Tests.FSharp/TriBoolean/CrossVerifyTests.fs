@@ -58,6 +58,26 @@ let private toStr (t: Tri) : string =
     | Tri.F -> "F"
     | Tri.N -> "N"
 
+let private tryField (entries: (string * YamlValue) list) (key: string) : YamlValue option =
+    entries |> List.tryFind (fun (k, _) -> String.Equals(k, key, StringComparison.Ordinal)) |> Option.map snd
+
+let private asNumber (v: YamlValue) : float =
+    match v with
+    | VInt i -> float i
+    | VFloat f -> f
+    | other -> raise (InvalidOperationException(sprintf "expected Int or Float, got %A" other))
+
+let private toTritsList (s: string) : Tri list =
+    [ for c in s -> toTri (string c) ]
+
+let private tritsListToStr (ts: Tri list) : string =
+    ts |> List.map toStr |> String.concat ""
+
+let private feedbackToStr (fb: Float.FloatFeedback) : string =
+    match fb with
+    | Float.FloatFeedback.InterpretationSuperposed -> "interpretation-superposed"
+    | Float.FloatFeedback.ValueSuperposed -> "value-superposed"
+
 // ---------------------------------------------------------------------------
 // Cross-verify fact
 // ---------------------------------------------------------------------------
@@ -124,6 +144,49 @@ let ``cross-verify tri-boolean vectors match TS + F# + C# + Rust`` () =
                 expectedAnd = toStr (andTri left right)
                 expectedOr = toStr (orTri left right)
             |}
+            results.[id] <- box res
+        else if typeStr = "float" then
+            let highStr = asStr (field m "high" ctx) (ctx + ".high")
+            let decoderStr = asStr (field m "decoder" ctx) (ctx + ".decoder")
+            let lowStr = asStr (field m "low" ctx) (ctx + ".low")
+
+            let high = toTritsList highStr
+            let decoderVec = toTritsList decoderStr
+            let low = toTritsList lowStr
+
+            let f = Float.fromTrits high decoderVec low
+            let dRes = Float.decode f
+
+            let (expectedOk, expectedValue, expectedFeedback) =
+                match dRes with
+                | Ok v -> (true, v, "")
+                | Error fb -> (false, 0.0, feedbackToStr fb)
+
+            let res = System.Collections.Generic.Dictionary<string, obj>(StringComparer.Ordinal)
+            res.["type"] <- "float"
+            res.["high"] <- highStr
+            res.["decoder"] <- decoderStr
+            res.["low"] <- lowStr
+            res.["expectedOk"] <- expectedOk
+            res.["expectedValue"] <- expectedValue
+            res.["expectedFeedback"] <- expectedFeedback
+
+            match tryField m "encode_value" with
+            | Some encodeValNode ->
+                let encodeValue = asNumber encodeValNode
+                let encRes = Float.fromValue encodeValue f.Shape
+                res.["encodeValue"] <- encodeValue
+                match encRes with
+                | Ok encFloat ->
+                    res.["expectedEncodeOk"] <- true
+                    res.["expectedEncodeHigh"] <- tritsListToStr encFloat.High
+                    res.["expectedEncodeDecoder"] <- tritsListToStr encFloat.Decoder
+                    res.["expectedEncodeLow"] <- tritsListToStr encFloat.Low
+                | Error detail ->
+                    res.["expectedEncodeOk"] <- false
+                    res.["expectedEncodeDetail"] <- detail
+            | None -> ()
+
             results.[id] <- box res
 
     // Write fsharp-output.json

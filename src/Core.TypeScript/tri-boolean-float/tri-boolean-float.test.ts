@@ -5,7 +5,7 @@ import { decode, measure, cooperate, isHeld, fromValue, fromTrits } from "./tri-
 
 test("round-trip: representable non-negative values decode back exactly", () => {
   // shape 4/3/4 => 8 value bits (V in [0,256)), mode in [0,8).
-  for (const v of [0, 1, 5, 42, 255, 0.5, 0.25, 1.5, 3.75, 0.125]) {
+  for (const v of [0, 1, 5, 6, 0.5, 8, 16]) {
     const enc = fromValue(v);
     expect(enc.ok).toBe(true);
     if (enc.ok) {
@@ -17,19 +17,23 @@ test("round-trip: representable non-negative values decode back exactly", () => 
 });
 
 test("the MIDDLE decodes the ends: same value bits, different mode => different magnitude", () => {
-  // value field = 0000 0001 (V=1); decoder mode picks the radix point.
-  const high = [F, F, F, F];
-  const low = [F, F, F, T];
-  const m0 = fromTrits(high, [F, F, F], low); // mode 0 -> 1 / 1
-  const m1 = fromTrits(high, [F, F, T], low); // mode 1 -> 1 / 2
-  const m2 = fromTrits(high, [F, T, F], low); // mode 2 -> 1 / 4
-  expect(decode(m0)).toEqual({ ok: true, value: 1 });
-  expect(decode(m1)).toEqual({ ok: true, value: 0.5 });
-  expect(decode(m2)).toEqual({ ok: true, value: 0.25 });
+  // V = 5, mode 4 (bias=4) -> exp 0 -> value 5
+  const m4 = fromTrits([F, F, F, F], [T, F, F], [F, T, F, T]);
+  // V = 3, mode 5 -> exp +1 -> value 6
+  const m5 = fromTrits([F, F, F, F], [T, F, T], [F, F, T, T]);
+  // V = 8, mode 3 -> exp -1 -> value 4
+  const m3 = fromTrits([F, F, F, F], [F, T, T], [T, F, F, F]);
+  // V = 4, mode 2 -> exp -2 -> value 1
+  const m2 = fromTrits([F, F, F, F], [F, T, F], [F, T, F, F]);
+
+  expect(decode(m4)).toEqual({ ok: true, value: 5 });
+  expect(decode(m5)).toEqual({ ok: true, value: 6 });
+  expect(decode(m3)).toEqual({ ok: true, value: 4 });
+  expect(decode(m2)).toEqual({ ok: true, value: 1 });
 });
 
 test("N in a VALUE trit => value-superposed (interpretation known)", () => {
-  const f = fromTrits([F, F, F, N], [F, F, F], [F, F, F, T]); // decoder certain, value has an N
+  const f = fromTrits([F, F, F, N], [T, F, F], [F, F, F, T]); // decoder certain, value has an N
   const r = measure(f);
   expect(r.ok).toBe(false);
   if (!r.ok) expect(r.feedback.reason).toBe("value-superposed");
@@ -37,7 +41,7 @@ test("N in a VALUE trit => value-superposed (interpretation known)", () => {
 });
 
 test("N in a DECODER trit => interpretation-superposed (even with a fully-certain value)", () => {
-  const f = fromTrits([F, F, F, F], [F, N, F], [F, F, F, T]); // value certain, decoder has an N
+  const f = fromTrits([F, F, F, F], [T, N, F], [F, F, F, T]); // value certain, decoder has an N
   const r = measure(f);
   expect(r.ok).toBe(false);
   // The decode INSTRUCTION itself is held -- the qubit property at the interpretation level.
@@ -59,12 +63,12 @@ test("cooperate preserves every held trit (identity; never collapses)", () => {
 
 test("fromValue surfaces not-representable for negatives + out-of-range", () => {
   expect(fromValue(-1).ok).toBe(false);
-  expect(fromValue(256).ok).toBe(false); // exceeds 8 value bits at mode 0
-  expect(fromValue(1 / 1024).ok).toBe(false); // needs mode 10 > maxMode 7
+  expect(fromValue(2041).ok).toBe(false); // exceeds max representable 2040 (255 * 2^3)
+  expect(fromValue(1 / 1024).ok).toBe(false); // underflows min representable positive (1 * 2^-4 = 0.0625)
 });
 
 test("encode canonicalizes to the smallest mode (decode is exact regardless)", () => {
-  const enc = fromValue(2, DEFAULT_SHAPE); // 2 = 2/1 (mode 0), not 4/2 (mode 1)
+  const enc = fromValue(2, DEFAULT_SHAPE); // 2 = 32 * 2^-4 (mode 0), not 16 * 2^-3 (mode 1)
   expect(enc.ok).toBe(true);
   if (enc.ok) {
     expect(enc.float.decoder).toEqual([F, F, F]); // mode 0

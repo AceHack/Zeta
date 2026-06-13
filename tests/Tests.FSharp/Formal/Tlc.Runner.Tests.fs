@@ -59,10 +59,10 @@ let private repoRoot =
 
 
 let private tlaJarPath =
-    Path.Combine(repoRoot, "tools", "tla", "tla2tools.jar")
+    Path.Combine(repoRoot, "src", "Core.TLA", "tla2tools.jar")
 
 
-let private specsPath = Path.Combine(repoRoot, "tools", "tla", "specs")
+let private specsPath = Path.Combine(repoRoot, "src", "Core.TLA", "specs")
 
 
 let private which (exe: string) : string option =

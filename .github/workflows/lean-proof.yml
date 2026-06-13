@@ -1,7 +1,7 @@
 name: lean-proof
 
 # Type-checks the Lean 4 / Mathlib formalization of DBSP at
-# tools/lean4/Lean4/DbspChainRule.lean. Per the math-proofs
+# src/Core.Lean4/Lean4/DbspChainRule.lean. Per the math-proofs
 # honest assessment (docs/research/2026-05-03-math-proofs-
 # honest-assessment.md) the Lean proof is A-grade today
 # hand-run (chain_rule_proposition_3_2 + Dop_LTI_commute) but
@@ -17,7 +17,7 @@ name: lean-proof
 # build-and-test surface.
 #
 # Composes with:
-#   - tools/lean4/Lean4/DbspChainRule.lean (the artifact)
+#   - src/Core.Lean4/Lean4/DbspChainRule.lean (the artifact)
 #   - docs/research/verification-registry.md (the registry
 #     rows for chain_rule_proposition_3_2 + Dop_LTI_commute)
 #   - docs/research/2026-05-03-math-proofs-honest-assessment.md
@@ -35,12 +35,12 @@ name: lean-proof
 on:
   pull_request:
     paths:
-      - "tools/lean4/**"
+      - "src/Core.Lean4/**"
       - ".github/workflows/lean-proof.yml"
   push:
     branches: [main]
     paths:
-      - "tools/lean4/**"
+      - "src/Core.Lean4/**"
       - ".github/workflows/lean-proof.yml"
   workflow_dispatch: {}
 
@@ -84,8 +84,8 @@ jobs:
       - name: Cache lake (Mathlib oleans)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
-          path: tools/lean4/.lake
-          key: lake-${{ runner.os }}-${{ hashFiles('tools/lean4/lean-toolchain', 'tools/lean4/lakefile.toml', 'tools/lean4/lake-manifest.json') }}
+          path: src/Core.Lean4/.lake
+          key: lake-${{ runner.os }}-${{ hashFiles('src/Core.Lean4/lean-toolchain', 'src/Core.Lean4/lakefile.toml', 'src/Core.Lean4/lake-manifest.json') }}
           # Restore-keys allow falling back to a partial cache on
           # cache-miss; lake exe cache get fills the gap. Faster than
           # cold-build of Mathlib.
@@ -109,7 +109,7 @@ jobs:
         # Mathlib's CLI downloads pre-compiled .olean files from S3;
         # this skips the multi-hour Mathlib build. After cache get,
         # lake env lean type-checks the proof in ~30s.
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: lake exe cache get
 
       - name: Type-check DbspChainRule.lean
@@ -118,26 +118,26 @@ jobs:
         # rows for chain_rule_proposition_3_2 + Dop_LTI_commute:
         # this is the gate that converts both rows from A-grade-
         # hand-run to A-grade-with-CI.
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: lake env lean Lean4/DbspChainRule.lean
 
       - name: Type-check ImaginaryStack/ToyModel.lean
         # The Adinkra-as-generator / bulk-from-boundary toy lemma. Its `sorry`
         # placeholders were discharged 2026-06-05; this step keeps it honest
-        # (type-checks the proof on every PR that touches tools/lean4/**).
-        working-directory: tools/lean4
+        # (type-checks the proof on every PR that touches src/Core.Lean4/**).
+        working-directory: src/Core.Lean4
         run: lake env lean ImaginaryStack/ToyModel.lean
 
       - name: Type-check ImaginaryStack/ErasureDistance.lean
         # The erasure-correction principle (distance ⇒ any <d erasures correctable)
         # and its 16/12/5 specialisation — the QECC strengthening on top of ToyModel.
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: lake env lean ImaginaryStack/ErasureDistance.lean
 
       - name: Type-check Privacy/IdentityForcesPrivacy.lean
         # The privacy-from-identity necessity theorem (Leibniz identity-of-indiscernibles): under public
         # convergence, persistent distinction must live in private state. Pure Lean (no Mathlib).
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: lake env lean Privacy/IdentityForcesPrivacy.lean
 
       - name: Type-check Privacy/UnboundedNeedsInfinitePrivacy.lean
@@ -146,7 +146,7 @@ jobs:
         # (an injective orbit) forces an INFINITE state space; with a finite converged commons, that
         # infinite differentiation must live in PRIVATE state. The honest DST↔proof boundary: DST can
         # only fail to refute unboundedness; Lean proves "unbounded ⇒ infinite private state".
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: lake env lean Privacy/UnboundedNeedsInfinitePrivacy.lean
 
       - name: Type-check Safety/ChildFloor.lean
@@ -154,15 +154,15 @@ jobs:
         # to Lean): a DENIED effect is never executed at ANY RunWork depth — an Agent cannot get a
         # gated/child-floor-class effect executed by *proposing* it (source ≠ authorization, structural).
         # Cross-checked empirically by tests/Tests.FSharp/Formal/ChildFloorCrossVerify.Tests.fs (BP-16).
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: lake env lean Safety/ChildFloor.lean
 
       - name: Type-check Safety/Bifurcation.lean
         # Bifurcation / split-brain reconciliation CONVERGENCE (Face-1, Soraya-routed to Lean as a
         # corollary of the proven CRDT/G-Set floor): a join-semilattice merge is order-independent +
         # absorbing, so two split cells converge to the same state. The CONSERVATION face (partition /
-        # no-double-spend / divvy-liveness) is the interleaving property in tools/tla/specs/Bifurcation.tla.
-        working-directory: tools/lean4
+        # no-double-spend / divvy-liveness) is the interleaving property in src/Core.TLA/specs/Bifurcation.tla.
+        working-directory: src/Core.Lean4
         run: lake env lean Safety/Bifurcation.lean
 
       - name: Type-check Safety/NonRegisterCollapse.lean
@@ -171,15 +171,15 @@ jobs:
         # join) two travelers' distinct STANDING registers survive the merge untouched — consensus
         # cannot collapse two registers into one. A standalone corollary of the same Leibniz-
         # indiscernibles argument as Privacy/IdentityForcesPrivacy.private_is_persistent_locus. The
-        # CONSERVATION/no-capture face (no foreign permanent weighting) is tools/tla/specs/NonRegisterCollapse.tla.
-        working-directory: tools/lean4
+        # CONSERVATION/no-capture face (no foreign permanent weighting) is src/Core.TLA/specs/NonRegisterCollapse.tla.
+        working-directory: src/Core.Lean4
         run: lake env lean Safety/NonRegisterCollapse.lean
 
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
         # lemmas and fail if `sorryAx` appears — the rigorous sorry-free check.
-        working-directory: tools/lean4
+        working-directory: src/Core.Lean4
         run: |
           printf '#print axioms lemma1_toy\n#print axioms reconstruction_property\n#print axioms code_covers_boundary\n' \
             | cat ImaginaryStack/ToyModel.lean - > /tmp/toymodel_axiom_audit.lean

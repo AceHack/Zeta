@@ -12,7 +12,7 @@
 #   1. `java-kotlin` matrix cell kept (was previously dropped
 #      based on the wrong assumption "no Java/Kotlin source").
 #      Zeta is primarily F#/C# on .NET 10 but
-#      `tools/alloy/AlloyRunner.java` is first-party Java — a
+#      `src/Core.Alloy/AlloyRunner.java` is first-party Java — a
 #      headless JVM driver that runs `.als` Alloy specs from the
 #      formal-verification surface. Java is a managed dependency
 #      pinned via `.mise.toml` (Java 26, round-34 migration off
@@ -254,7 +254,7 @@ jobs:
               # SC2222 (later pattern shadowed by earlier one).
               src/*|tests/*|tools/*) code_changed=true ;;
               *.cs|*.fs|*.fsproj|*.csproj|*.sln) code_changed=true ;;
-              # JVM surface: tools/alloy/AlloyRunner.java is the
+              # JVM surface: src/Core.Alloy/AlloyRunner.java is the
               # only first-party Java today. CodeQL java-kotlin
               # extractor handles .java + .kt + .scala.
               *.java|*.kt|*.scala) code_changed=true ;;
@@ -428,7 +428,7 @@ jobs:
             build-mode: none
           - language: csharp
             build-mode: manual
-          # java-kotlin scans `tools/alloy/AlloyRunner.java` —
+          # java-kotlin scans `src/Core.Alloy/AlloyRunner.java` —
           # a single-file JVM driver with no Maven/Gradle build,
           # so `build-mode: none` (CodeQL's source-only pack)
           # produces a real DB. Java 26 is on PATH via mise per
@@ -517,7 +517,7 @@ jobs:
           # each growing their own. Tracked via task #306
           # (cadence-fast classifier work) — do not treat the
           # duplicated regex as the permanent design.
-          shared_ignored_paths_regex='^(references/prior-art/|bench/|tools/tla/|tools/lean4/)|(^|.*/)(obj|bin)/'
+          shared_ignored_paths_regex='^(references/prior-art/|bench/|src/Core.TLA/|src/Core.Lean4/)|(^|.*/)(obj|bin)/'
           case "${{ matrix.language }}" in
             python)
               count=$(git ls-files -- '*.py' \
@@ -525,7 +525,7 @@ jobs:
                 || true)
               ;;
             java-kotlin)
-              # tools/alloy/AlloyRunner.java is first-party Java.
+              # src/Core.Alloy/AlloyRunner.java is first-party Java.
               count=$(git ls-files -- '*.java' '*.kt' '*.kts' \
                 | grep -cvE "${shared_ignored_paths_regex}" \
                 || true)

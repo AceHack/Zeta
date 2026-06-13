@@ -62,7 +62,24 @@ interface BinaryVec {
   expected_or: string;
 }
 
-type Vec = UnaryVec | BinaryVec;
+interface FloatVec {
+  id: string;
+  type: "float";
+  high: string;
+  decoder: string;
+  low: string;
+  expected_ok: boolean;
+  expected_value: number;
+  expected_feedback: string;
+  encode_value?: number;
+  expected_encode_ok?: boolean;
+  expected_encode_high?: string;
+  expected_encode_decoder?: string;
+  expected_encode_low?: string;
+  expected_encode_detail?: string;
+}
+
+type Vec = UnaryVec | BinaryVec | FloatVec;
 
 const parsedYaml = Bun.YAML.parse(await Bun.file("vectors.yaml").text()) as { vectors: Vec[] };
 const expectedByKey = new Map<string, Vec>(parsedYaml.vectors.map((v) => [v.id, v]));
@@ -135,7 +152,7 @@ for (const key of keys) {
           mismatches++;
         }
       }
-    } else {
+    } else if (canonical.type === "binary") {
       const b = canonical as BinaryVec;
       const checks: [string, string][] = [
         ["type", "binary"],
@@ -144,6 +161,36 @@ for (const key of keys) {
         ["expectedAnd", b.expected_and],
         ["expectedOr", b.expected_or],
       ];
+      for (const [prop, expected] of checks) {
+        if (val[prop] !== expected) {
+          console.error(
+            `${implName} mismatch on ${key}.${prop}: got=${val[prop]} expected=${expected}`
+          );
+          mismatches++;
+        }
+      }
+    } else {
+      const f = canonical as FloatVec;
+      const checks: [string, any][] = [
+        ["type", "float"],
+        ["high", f.high],
+        ["decoder", f.decoder],
+        ["low", f.low],
+        ["expectedOk", f.expected_ok],
+        ["expectedValue", f.expected_value],
+        ["expectedFeedback", f.expected_feedback],
+      ];
+      if (f.encode_value !== undefined) {
+        checks.push(["encodeValue", f.encode_value]);
+        checks.push(["expectedEncodeOk", f.expected_encode_ok]);
+        if (f.expected_encode_ok) {
+          checks.push(["expectedEncodeHigh", f.expected_encode_high]);
+          checks.push(["expectedEncodeDecoder", f.expected_encode_decoder]);
+          checks.push(["expectedEncodeLow", f.expected_encode_low]);
+        } else {
+          checks.push(["expectedEncodeDetail", f.expected_encode_detail]);
+        }
+      }
       for (const [prop, expected] of checks) {
         if (val[prop] !== expected) {
           console.error(

@@ -166,6 +166,87 @@ fn cross_verify_matches_shared_vectors() {
                 json_str(&to_str(or_tri(left, right)))
             );
             json_records.push(line);
+        } else if type_str == "float" {
+            let high_str = str_field(entries, "high").unwrap();
+            let decoder_str = str_field(entries, "decoder").unwrap();
+            let low_str = str_field(entries, "low").unwrap();
+
+            let high: Vec<Tri> = high_str.chars().map(|c| to_tri(&c.to_string())).collect();
+            let decoder_vec: Vec<Tri> = decoder_str.chars().map(|c| to_tri(&c.to_string())).collect();
+            let low: Vec<Tri> = low_str.chars().map(|c| to_tri(&c.to_string())).collect();
+
+            let f = zeta_core_tri_boolean::float::from_trits(high, decoder_vec, low);
+            let d_res = zeta_core_tri_boolean::float::decode(&f);
+
+            let expected_ok = d_res.is_ok();
+            let expected_value = d_res.unwrap_or(0.0);
+            let expected_feedback = match d_res {
+                Ok(_) => "",
+                Err(zeta_core_tri_boolean::float::FloatFeedback::InterpretationSuperposed) => "interpretation-superposed",
+                Err(zeta_core_tri_boolean::float::FloatFeedback::ValueSuperposed) => "value-superposed",
+            };
+
+            let mut line = format!(
+                "  {}: {{\n\
+                 \x20   \"type\": \"float\",\n\
+                 \x20   \"high\": {},\n\
+                 \x20   \"decoder\": {},\n\
+                 \x20   \"low\": {},\n\
+                 \x20   \"expectedOk\": {},\n\
+                 \x20   \"expectedValue\": {},\n\
+                 \x20   \"expectedFeedback\": {}",
+                json_str(&id),
+                json_str(high_str),
+                json_str(decoder_str),
+                json_str(low_str),
+                expected_ok,
+                expected_value,
+                json_str(expected_feedback)
+            );
+
+            // Check for encode_value
+            let encode_val_node = entries.iter().find(|(k, _)| k == "encode_value").map(|(_, v)| v);
+            if let Some(val_node) = encode_val_node {
+                let encode_value = match val_node {
+                    YamlValue::Int(i) => *i as f64,
+                    YamlValue::Float(fv) => *fv,
+                    other => panic!("expected Int or Float for encode_value, got {other:?}"),
+                };
+                let enc_res = zeta_core_tri_boolean::float::from_value(encode_value, f.shape);
+                line.push_str(",\n");
+                line.push_str(&format!(
+                    "    \"encodeValue\": {},\n\
+                     \x20   \"expectedEncodeOk\": {}",
+                    encode_value,
+                    enc_res.is_ok()
+                ));
+                match enc_res {
+                    Ok(enc_float) => {
+                        let enc_high: String = enc_float.high.iter().map(|t| to_str(*t)).collect();
+                        let enc_dec: String = enc_float.decoder.iter().map(|t| to_str(*t)).collect();
+                        let enc_low: String = enc_float.low.iter().map(|t| to_str(*t)).collect();
+                        line.push_str(",\n");
+                        line.push_str(&format!(
+                            "    \"expectedEncodeHigh\": {},\n\
+                             \x20   \"expectedEncodeDecoder\": {},\n\
+                             \x20   \"expectedEncodeLow\": {}",
+                            json_str(&enc_high),
+                            json_str(&enc_dec),
+                            json_str(&enc_low)
+                        ));
+                    }
+                    Err(detail) => {
+                        line.push_str(",\n");
+                        line.push_str(&format!(
+                            "    \"expectedEncodeDetail\": {}",
+                            json_str(&detail)
+                        ));
+                    }
+                }
+            }
+
+            line.push_str("\n  }");
+            json_records.push(line);
         }
     }
 

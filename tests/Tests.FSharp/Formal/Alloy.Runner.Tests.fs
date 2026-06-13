@@ -41,11 +41,11 @@ let private repoRoot =
 
 
 let private alloyJarPath =
-    Path.Combine(repoRoot, "tools", "alloy", "alloy.jar")
+    Path.Combine(repoRoot, "src", "Core.Alloy", "alloy.jar")
 
 
 let private alloyRunnerSource =
-    Path.Combine(repoRoot, "tools", "alloy", "AlloyRunner.java")
+    Path.Combine(repoRoot, "src", "Core.Alloy", "AlloyRunner.java")
 
 
 // Alloy specs live at tools/alloy/specs/<Spec>.als (not docs/) since
@@ -54,13 +54,13 @@ let private alloyRunnerSource =
 // triggered toolchainReady-false-path skip-pattern; B2 from #1383
 // math-proofs assessment was correct that Alloy "not in CI"). The
 // path correction is the prerequisite for the tests to actually run.
-let private alloySpecsPath = Path.Combine(repoRoot, "tools", "alloy", "specs")
+let private alloySpecsPath = Path.Combine(repoRoot, "src", "Core.Alloy", "specs")
 
 
 /// Scratch directory holding the compiled `AlloyRunner.class`. Colocated
 /// under bin/obj so normal `dotnet clean` sweeps it away.
 let private runnerClassDir =
-    Path.Combine(repoRoot, "tools", "alloy", "classes")
+    Path.Combine(repoRoot, "src", "Core.Alloy", "classes")
 
 
 let private which (tool: string) : string option =

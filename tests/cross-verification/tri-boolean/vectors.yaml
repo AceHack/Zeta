@@ -106,3 +106,118 @@ vectors:
     right: N
     expected_and: N
     expected_or: N
+
+  - id: float-mode-equals-bias
+    type: float
+    high: "FFFF"
+    decoder: "TFF"
+    low: "FTFT"
+    expected_ok: true
+    expected_value: 5.0
+    expected_feedback: ""
+    encode_value: 5.0
+    expected_encode_ok: true
+    expected_encode_high: "FTFT"
+    expected_encode_decoder: "FFF"
+    expected_encode_low: "FFFF"
+
+  - id: float-mode-greater-than-bias
+    type: float
+    high: "FFFF"
+    decoder: "TFT"
+    low: "FFTT"
+    expected_ok: true
+    expected_value: 6.0
+    expected_feedback: ""
+
+  - id: float-mode-less-than-bias-half
+    type: float
+    high: "FFFF"
+    decoder: "FTT"
+    low: "TFFF"
+    expected_ok: true
+    expected_value: 4.0
+    expected_feedback: ""
+
+  - id: float-mode-less-than-bias-quarter
+    type: float
+    high: "FFFF"
+    decoder: "FTF"
+    low: "FTFF"
+    expected_ok: true
+    expected_value: 1.0
+    expected_feedback: ""
+
+  - id: float-reads-high-low
+    type: float
+    high: "FFFT"
+    decoder: "TFF"
+    low: "FFFF"
+    expected_ok: true
+    expected_value: 16.0
+    expected_feedback: ""
+
+  - id: float-interpretation-superposed
+    type: float
+    high: "FFFF"
+    decoder: "TNF"
+    low: "FTFT"
+    expected_ok: false
+    expected_value: 0.0
+    expected_feedback: "interpretation-superposed"
+
+  - id: float-value-superposed
+    type: float
+    high: "FFFN"
+    decoder: "TFF"
+    low: "FFFF"
+    expected_ok: false
+    expected_value: 0.0
+    expected_feedback: "value-superposed"
+
+  - id: float-both-superposed
+    type: float
+    high: "NFFF"
+    decoder: "NFF"
+    low: "FFFF"
+    expected_ok: false
+    expected_value: 0.0
+    expected_feedback: "interpretation-superposed"
+
+  - id: float-encode-0
+    type: float
+    high: "FFFF"
+    decoder: "FFF"
+    low: "FFFF"
+    expected_ok: true
+    expected_value: 0.0
+    expected_feedback: ""
+    encode_value: 0.0
+    expected_encode_ok: true
+    expected_encode_high: "FFFF"
+    expected_encode_decoder: "FFF"
+    expected_encode_low: "FFFF"
+
+  - id: float-encode-negative
+    type: float
+    high: "FFFF"
+    decoder: "FFF"
+    low: "FFFF"
+    expected_ok: true
+    expected_value: 0.0
+    expected_feedback: ""
+    encode_value: -1.0
+    expected_encode_ok: false
+    expected_encode_detail: "v0 is unsigned + finite"
+
+  - id: float-encode-non-dyadic
+    type: float
+    high: "FFFF"
+    decoder: "FFF"
+    low: "FFFF"
+    expected_ok: true
+    expected_value: 0.0
+    expected_feedback: ""
+    encode_value: 0.1
+    expected_encode_ok: false
+    expected_encode_detail: "no (mode,V) with mode<=7 and V<256 represents 0.1"

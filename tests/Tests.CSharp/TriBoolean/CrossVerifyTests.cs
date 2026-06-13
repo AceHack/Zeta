@@ -44,6 +44,42 @@ public class CrossVerifyTests
             ?? throw new InvalidOperationException("Could not locate repo root (Zeta.sln) from test assembly location.");
     }
 
+    private static YamlValue? TryField(IReadOnlyList<KeyValuePair<string, YamlValue>> entries, string key)
+    {
+        foreach (var kvp in entries)
+            if (string.Equals(kvp.Key, key, StringComparison.Ordinal))
+                return kvp.Value;
+        return null;
+    }
+
+    private static double AsNumber(YamlValue v) => v switch
+    {
+        YamlValue.YInt i => i.Value,
+        YamlValue.YFloat f => f.Value,
+        _ => throw new InvalidOperationException($"expected YInt or YFloat, got {v.GetType().Name}")
+    };
+
+    private static List<Tri> ToTritsList(string s)
+    {
+        var list = new List<Tri>(s.Length);
+        foreach (var c in s) list.Add(ToTri(c.ToString()));
+        return list;
+    }
+
+    private static string TritsListToStr(IReadOnlyList<Tri> ts)
+    {
+        var sb = new StringBuilder(ts.Count);
+        foreach (var t in ts) sb.Append(ToStr(t));
+        return sb.ToString();
+    }
+
+    private static string FeedbackToStr(FloatFeedback fb) => fb switch
+    {
+        FloatFeedback.InterpretationSuperposed => "interpretation-superposed",
+        FloatFeedback.ValueSuperposed => "value-superposed",
+        _ => throw new InvalidOperationException("unknown feedback enum")
+    };
+
     private static Tri ToTri(string s) => s switch
     {
         "T" => Tri.T,
@@ -108,6 +144,58 @@ public class CrossVerifyTests
         };
     }
 
+    private static Dictionary<string, object> ProcessFloat(YamlValue val, string ctx)
+    {
+        var m = MapEntries(val, ctx);
+        var highStr = AsStr(Field(m, "high", ctx), $"{ctx}.high");
+        var decoderStr = AsStr(Field(m, "decoder", ctx), $"{ctx}.decoder");
+        var lowStr = AsStr(Field(m, "low", ctx), $"{ctx}.low");
+
+        var high = ToTritsList(highStr);
+        var decoderVec = ToTritsList(decoderStr);
+        var low = ToTritsList(lowStr);
+
+        var f = FloatOps.FromTrits(high, decoderVec, low);
+        var dRes = FloatOps.Decode(f);
+
+        bool expectedOk = dRes is DecodeResult.Decoded;
+        double expectedValue = dRes is DecodeResult.Decoded d ? d.Value : 0.0;
+        string expectedFeedback = dRes is DecodeResult.Held h ? FeedbackToStr(h.Feedback) : "";
+
+        var res = new Dictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["type"] = "float",
+            ["high"] = highStr,
+            ["decoder"] = decoderStr,
+            ["low"] = lowStr,
+            ["expectedOk"] = expectedOk,
+            ["expectedValue"] = expectedValue,
+            ["expectedFeedback"] = expectedFeedback
+        };
+
+        var encodeValNode = TryField(m, "encode_value");
+        if (encodeValNode is not null)
+        {
+            double encodeValue = AsNumber(encodeValNode);
+            var encRes = FloatOps.FromValue(encodeValue, f.Shape);
+            res["encodeValue"] = encodeValue;
+            if (encRes is EncodeResult.Encoded encoded)
+            {
+                res["expectedEncodeOk"] = true;
+                res["expectedEncodeHigh"] = TritsListToStr(encoded.Value.High);
+                res["expectedEncodeDecoder"] = TritsListToStr(encoded.Value.Decoder);
+                res["expectedEncodeLow"] = TritsListToStr(encoded.Value.Low);
+            }
+            else if (encRes is EncodeResult.NotRepresentable notRep)
+            {
+                res["expectedEncodeOk"] = false;
+                res["expectedEncodeDetail"] = notRep.Detail;
+            }
+        }
+
+        return res;
+    }
+
     [Fact]
     public void CrossVerifyTriBooleanVectorsMatchParity()
     {
@@ -141,6 +229,10 @@ public class CrossVerifyTests
             else if (string.Equals(type, "binary", StringComparison.Ordinal))
             {
                 results[id] = ProcessBinary(item, ctx);
+            }
+            else if (string.Equals(type, "float", StringComparison.Ordinal))
+            {
+                results[id] = ProcessFloat(item, ctx);
             }
         }
 

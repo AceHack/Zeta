@@ -12,6 +12,22 @@ import {
   orTri,
 } from "./tri-boolean";
 import { parse, type YamlValue } from "../yaml/dom";
+import { decode, fromValue, fromTrits } from "../tri-boolean-float/tri-boolean-float";
+
+function toTrits(s: string): Tri[] {
+  return Array.from(s).map(toTri);
+}
+
+function tritsToStr(trits: readonly Tri[]): string {
+  return trits.map(toStr).join("");
+}
+
+function asNumber(v: YamlValue | undefined): number | undefined {
+  if (v === undefined) return undefined;
+  if (v.t === "Int") return Number(v.value);
+  if (v.t === "Float") return v.value;
+  return undefined;
+}
 
 function toTri(s: string): Tri {
   switch (s) {
@@ -105,6 +121,44 @@ for (const item of vectorsNode.items) {
       expectedAnd: toStr(andTri(left, right)),
       expectedOr: toStr(orTri(left, right)),
     };
+  } else if (type === "float") {
+    const highStr = asStr(field(e, "high"))!;
+    const decoderStr = asStr(field(e, "decoder"))!;
+    const lowStr = asStr(field(e, "low"))!;
+
+    const high = toTrits(highStr);
+    const decoderVec = toTrits(decoderStr);
+    const low = toTrits(lowStr);
+
+    const f = fromTrits(high, decoderVec, low);
+    const dRes = decode(f);
+
+    const record: Record<string, any> = {
+      type: "float",
+      high: highStr,
+      decoder: decoderStr,
+      low: lowStr,
+      expectedOk: dRes.ok,
+      expectedValue: dRes.ok ? dRes.value : 0.0,
+      expectedFeedback: dRes.ok ? "" : dRes.feedback.reason,
+    };
+
+    const encodeValNode = field(e, "encode_value");
+    if (encodeValNode !== undefined) {
+      const encodeValue = asNumber(encodeValNode)!;
+      const encRes = fromValue(encodeValue, f.shape);
+      record.encodeValue = encodeValue;
+      record.expectedEncodeOk = encRes.ok;
+      if (encRes.ok) {
+        record.expectedEncodeHigh = tritsToStr(encRes.float.high);
+        record.expectedEncodeDecoder = tritsToStr(encRes.float.decoder);
+        record.expectedEncodeLow = tritsToStr(encRes.float.low);
+      } else {
+        record.expectedEncodeDetail = encRes.feedback.detail;
+      }
+    }
+
+    results[id] = record;
   }
 }
 

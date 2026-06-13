@@ -97,7 +97,7 @@ interface Toolchain {
 /** Resolve tlapm: opam switch bin/ first (the cross-OS source build's
  *  install location), then PATH, then `opam exec` as a last resort. */
 function checkToolchain(root: string): Toolchain | null {
-  const specsPath = join(root, "tools", "tla", "specs");
+  const specsPath = join(root, "src", "Core.TLA", "specs");
   if (!existsSync(specsPath)) return null;
 
   const switchBin = join(homedir(), ".opam", TLAPS_SWITCH, "bin", "tlapm");

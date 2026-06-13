@@ -1,7 +1,7 @@
 name: tlaps-proof
 
 # Discharges the TLAPS (tlapm) machine-checked proofs at
-# tools/tla/specs/*.tla — rung 3 of the societal-emergence ladder
+# src/Core.TLA/specs/*.tla — rung 3 of the societal-emergence ladder
 # (docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md §B-converge). Where the
 # TLC model-checker CHECKS invariants on a bounded model (run via the
 # F# Tlc.Runner.Tests.fs inside gate.yml), tlapm PROVES them UNBOUNDED;
@@ -20,7 +20,7 @@ name: tlaps-proof
 # Mathlib's multi-GB lake build off the main gate.
 #
 # Composes with:
-#   - tools/tla/specs/NciSafetyProofs.tla (the artifact) + NciSafety.tla
+#   - src/Core.TLA/specs/NciSafetyProofs.tla (the artifact) + NciSafety.tla
 #   - src/Core.TypeScript/formal-verification/run-tlaps.ts (the runner / catalogue)
 #   - tools/setup/common/tlaps.sh (the cross-OS opam source-build)
 #   - docs/research/verification-registry.md (rung-3 registry row)
@@ -37,7 +37,7 @@ name: tlaps-proof
 on:
   pull_request:
     paths:
-      - "tools/tla/specs/**"
+      - "src/Core.TLA/specs/**"
       - "src/Core.TypeScript/formal-verification/run-tlaps.ts"
       - "tools/setup/common/tlaps.sh"
       - "tools/setup/manifests/**"
@@ -45,7 +45,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "tools/tla/specs/**"
+      - "src/Core.TLA/specs/**"
       - "src/Core.TypeScript/formal-verification/run-tlaps.ts"
       - "tools/setup/common/tlaps.sh"
       - "tools/setup/manifests/**"

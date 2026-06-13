@@ -8,10 +8,10 @@
 // A tri-boolean float is built FROM the digital-qubit cell (B-0944 slices 1-4): every position is a
 // `Tri` (True | False | N). Layout, MSB-first within each field:
 //   [ high value: H trits ] [ decoder: D trits ] [ low value: L trits ]
-// The MIDDLE decoder selects how the OUTER ends are read (read middle-out). v0 decoder semantics:
-// `mode` = radix-point position; decoded number = intOf(high ++ low) / 2^mode (self-describing
-// precision). N in a value trit => value-superposed; N in a decoder trit => the decode instruction
-// itself is superposed (interpretation-superposed) -- the qubit property at the interpretation level.
+// The MIDDLE decoder selects how the OUTER ends are read (read middle-out).
+// Decoded number = V * 2^(mode - bias), bias = 2^(decoderWidth - 1), where V = intOf(high ++ low)
+// and mode = intOf(decoder). N in a value trit => value-superposed; N in a decoder trit =>
+// interpretation-superposed -- the qubit property at the interpretation level.
 
 import { type Tri } from "../tri-boolean";
 

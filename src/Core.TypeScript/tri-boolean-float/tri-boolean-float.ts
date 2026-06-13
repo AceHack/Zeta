@@ -30,7 +30,8 @@ export const decode = (f: TriFloat): DecodeResult => {
   if (mode === null) return { ok: false, feedback: { reason: "interpretation-superposed" } };
   const v = intOf([...f.high, ...f.low]);
   if (v === null) return { ok: false, feedback: { reason: "value-superposed" } };
-  return { ok: true, value: v / 2 ** mode };
+  const bias = 2 ** (f.decoder.length - 1);
+  return { ok: true, value: v * 2 ** (mode - bias) };
 };
 
 /** measure: the ONLY collapsing operation -- resolves to a number iff fully certain, else surfaces
@@ -45,9 +46,9 @@ export const cooperate = (f: TriFloat): TriFloat => f;
 /** True iff the float cannot be collapsed to a single number (any value or decoder trit is held). */
 export const isHeld = (f: TriFloat): boolean => !decode(f).ok;
 
-/** fromValue: encode a non-negative finite number into the given shape (v0). Picks the smallest
- *  `mode` (radix-point position) for which `value * 2^mode` is a non-negative integer that fits the
- *  value field -- a canonical representation. Surfaces feedback when not representable. */
+/** fromValue (biased-exponent canonical encode): find a (mode, V) with V * 2^(mode-bias) = value,
+ *  V a non-negative integer fitting the value field and mode in the decoder field. Picks the
+ *  smallest mode that works (a canonical representation). Surfaces feedback when not representable. */
 export const fromValue = (value: number, shape: FloatShape = DEFAULT_SHAPE): EncodeResult => {
   if (!Number.isFinite(value) || value < 0) {
     return { ok: false, feedback: { reason: "not-representable", detail: "v0 is unsigned + finite" } };
@@ -55,8 +56,9 @@ export const fromValue = (value: number, shape: FloatShape = DEFAULT_SHAPE): Enc
   const valueBits = shape.highWidth + shape.lowWidth;
   const maxMode = (1 << shape.decoderWidth) - 1;
   const maxV = 2 ** valueBits;
+  const bias = 2 ** (shape.decoderWidth - 1);
   for (let mode = 0; mode <= maxMode; mode++) {
-    const scaled = value * 2 ** mode;
+    const scaled = value / 2 ** (mode - bias);
     if (Number.isInteger(scaled) && scaled >= 0 && scaled < maxV) {
       const bits = intToTrits(scaled, valueBits);
       return {

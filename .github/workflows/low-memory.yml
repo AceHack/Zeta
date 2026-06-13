@@ -123,12 +123,12 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           # Path narrowed 2026-05-03 — same fix as gate.yml. Caching
-          # whole tools/tla / tools/alloy directories overwrote
+          # whole src/Core.TLA / src/Core.Alloy directories overwrote
           # source-controlled spec files on cache hit. See gate.yml
           # comment for the full failure-mode write-up.
           path: |
-            tools/tla/tla2tools.jar
-            tools/alloy/alloy.jar
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}-v2
 
       - name: Cache NuGet packages

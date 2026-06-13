@@ -366,11 +366,11 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           # Path narrowed 2026-05-03 to specific jar files only. The
-          # prior pattern (`tools/tla` + `tools/alloy` as whole
+          # prior pattern (`src/Core.TLA` + `src/Core.Alloy` as whole
           # directories) caused cache hits to OVERWRITE source-
-          # controlled spec files (`tools/tla/specs/*.tla` /
-          # `*.cfg`, `tools/alloy/specs/*.als`,
-          # `tools/alloy/AlloyRunner.java`). Failure mode: PR edits
+          # controlled spec files (`src/Core.TLA/specs/*.tla` /
+          # `*.cfg`, `src/Core.Alloy/specs/*.als`,
+          # `src/Core.Alloy/AlloyRunner.java`). Failure mode: PR edits
           # to specs were silently reverted to whatever version was
           # cached, while the test report claimed CI ran "the new"
           # spec. Surfaced empirically by #1401 (CircuitRegistration
@@ -378,8 +378,8 @@ jobs:
           # with the pre-fix error). Cache key suffix `-v2` busts
           # the stale cache containing the pre-narrow content.
           path: |
-            tools/tla/tla2tools.jar
-            tools/alloy/alloy.jar
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
           # Manifest is the single source of truth — cache busts when
           # either URL or (future) SHA changes. Jars are JVM bytecode
           # so arch-neutral; key kept os-only on purpose.
@@ -604,7 +604,7 @@ jobs:
 
       - name: Run shellcheck
         # Scope: Zeta's own scripts under `tools/setup/` only —
-        # `tools/lean4/.lake/packages/**` is Lean/Mathlib vendored
+        # `src/Core.Lean4/.lake/packages/**` is Lean/Mathlib vendored
         # code not governed by Zeta standards.
         # Format: -f gcc for file:line:col:msg output parseable by
         # IDEs. Severity floor: style (catches everything including
@@ -613,7 +613,7 @@ jobs:
           set -euo pipefail
           mapfile -t files < <(
             find tools -name "*.sh" -type f \
-              -not -path "tools/lean4/.lake/*" \
+              -not -path "src/Core.Lean4/.lake/*" \
               | sort
           )
           if [ ${#files[@]} -eq 0 ]; then

@@ -95,7 +95,11 @@ mkdir -p "$ZETA_ENV_DIR"
   # shims, flip back to `mise activate bash --shims` and file
   # a DEBT entry explaining which step failed and why.
   if command -v mise >/dev/null 2>&1; then
-    echo "eval \"\$(mise activate bash)\""
+    echo "if [ -n \"\${ZSH_VERSION:-}\" ]; then"
+    echo "  eval \"\$(mise activate zsh)\""
+    echo "else"
+    echo "  eval \"\$(mise activate bash)\""
+    echo "fi"
   fi
 } > "$ZETA_ENV_FILE"
 

@@ -113,8 +113,8 @@ interface Toolchain {
 }
 
 function checkToolchain(root: string): Toolchain | null {
-  const tlaJarPath = join(root, "tools", "tla", "tla2tools.jar");
-  const specsPath = join(root, "tools", "tla", "specs");
+  const tlaJarPath = join(root, "src", "Core.TLA", "tla2tools.jar");
+  const specsPath = join(root, "src", "Core.TLA", "specs");
   const javaPath = which("java");
   if (javaPath === null) return null;
   if (!fileExists(tlaJarPath)) return null;
@@ -303,7 +303,7 @@ function main(argv: readonly string[]): ExitCode {
   }
 
   if (argv[0] === "--list") {
-    const specsPath = join(root, "tools", "tla", "specs");
+    const specsPath = join(root, "src", "Core.TLA", "specs");
     for (const specName of configuredSpecNames(specsPath)) {
       process.stdout.write(`${specName}\n`);
     }
@@ -314,7 +314,7 @@ function main(argv: readonly string[]): ExitCode {
     const tc = checkToolchain(root);
     if (tc === null) {
       process.stderr.write(
-        "ERROR: TLC toolchain not ready (need java on PATH + tools/tla/tla2tools.jar). Run tools/setup/install.sh\n",
+        "ERROR: TLC toolchain not ready (need java on PATH + src/Core.TLA/tla2tools.jar). Run tools/setup/install.sh\n",
       );
       return 2;
     }
@@ -325,7 +325,7 @@ function main(argv: readonly string[]): ExitCode {
   const toolchain = checkToolchain(root);
   if (toolchain === null) {
     process.stderr.write(
-      "ERROR: TLC toolchain not ready (need java on PATH + tools/tla/tla2tools.jar). Run tools/setup/install.sh\n",
+      "ERROR: TLC toolchain not ready (need java on PATH + src/Core.TLA/tla2tools.jar). Run tools/setup/install.sh\n",
     );
     return 2;
   }

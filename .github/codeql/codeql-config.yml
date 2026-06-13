@@ -31,15 +31,15 @@ paths-ignore:
   # Incidental C# helper code in these dirs (e.g. TLC driver
   # shims) is tool-internal, not shipped.
   #
-  # `tools/alloy/**` was previously listed here. Removed
-  # 2026-04-28: `tools/alloy/AlloyRunner.java` is first-party
+  # `src/Core.Alloy/**` was previously listed here. Removed
+  # 2026-04-28: `src/Core.Alloy/AlloyRunner.java` is first-party
   # Java that drives Alloy from .NET, and Java is a managed
   # runtime pinned via `.mise.toml` (java = "26"). Treating
   # that file as scannable code is consistent with how csharp
   # / fsharp / actions are treated elsewhere; CodeQL's
   # `java-kotlin` extractor handles it.
-  - "tools/tla/**"
-  - "tools/lean4/**"
+  - "src/Core.TLA/**"
+  - "src/Core.Lean4/**"
 
   # Generated code. If any file ends in `.generated.cs` it is
   # source-of-truth-elsewhere; findings on it would ask us to

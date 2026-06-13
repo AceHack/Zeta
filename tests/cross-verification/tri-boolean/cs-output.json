@@ -103,5 +103,120 @@
     "right": "N",
     "expectedAnd": "N",
     "expectedOr": "N"
+  },
+  "float-mode-equals-bias": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "TFF",
+    "low": "FTFT",
+    "expectedOk": true,
+    "expectedValue": 5,
+    "expectedFeedback": "",
+    "encodeValue": 5,
+    "expectedEncodeOk": true,
+    "expectedEncodeHigh": "FTFT",
+    "expectedEncodeDecoder": "FFF",
+    "expectedEncodeLow": "FFFF"
+  },
+  "float-mode-greater-than-bias": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "TFT",
+    "low": "FFTT",
+    "expectedOk": true,
+    "expectedValue": 6,
+    "expectedFeedback": ""
+  },
+  "float-mode-less-than-bias-half": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "FTT",
+    "low": "TFFF",
+    "expectedOk": true,
+    "expectedValue": 4,
+    "expectedFeedback": ""
+  },
+  "float-mode-less-than-bias-quarter": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "FTF",
+    "low": "FTFF",
+    "expectedOk": true,
+    "expectedValue": 1,
+    "expectedFeedback": ""
+  },
+  "float-reads-high-low": {
+    "type": "float",
+    "high": "FFFT",
+    "decoder": "TFF",
+    "low": "FFFF",
+    "expectedOk": true,
+    "expectedValue": 16,
+    "expectedFeedback": ""
+  },
+  "float-interpretation-superposed": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "TNF",
+    "low": "FTFT",
+    "expectedOk": false,
+    "expectedValue": 0,
+    "expectedFeedback": "interpretation-superposed"
+  },
+  "float-value-superposed": {
+    "type": "float",
+    "high": "FFFN",
+    "decoder": "TFF",
+    "low": "FFFF",
+    "expectedOk": false,
+    "expectedValue": 0,
+    "expectedFeedback": "value-superposed"
+  },
+  "float-both-superposed": {
+    "type": "float",
+    "high": "NFFF",
+    "decoder": "NFF",
+    "low": "FFFF",
+    "expectedOk": false,
+    "expectedValue": 0,
+    "expectedFeedback": "interpretation-superposed"
+  },
+  "float-encode-0": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "FFF",
+    "low": "FFFF",
+    "expectedOk": true,
+    "expectedValue": 0,
+    "expectedFeedback": "",
+    "encodeValue": 0,
+    "expectedEncodeOk": true,
+    "expectedEncodeHigh": "FFFF",
+    "expectedEncodeDecoder": "FFF",
+    "expectedEncodeLow": "FFFF"
+  },
+  "float-encode-negative": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "FFF",
+    "low": "FFFF",
+    "expectedOk": true,
+    "expectedValue": 0,
+    "expectedFeedback": "",
+    "encodeValue": -1,
+    "expectedEncodeOk": false,
+    "expectedEncodeDetail": "v0 is unsigned \u002B finite"
+  },
+  "float-encode-non-dyadic": {
+    "type": "float",
+    "high": "FFFF",
+    "decoder": "FFF",
+    "low": "FFFF",
+    "expectedOk": true,
+    "expectedValue": 0,
+    "expectedFeedback": "",
+    "encodeValue": 0.1,
+    "expectedEncodeOk": false,
+    "expectedEncodeDetail": "no (mode,V) with mode\u003C=7 and V\u003C256 represents 0.1"
   }
 }
