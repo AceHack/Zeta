@@ -130,6 +130,54 @@ an exploit; pure retaliation is a spiral; the durable system is the metered, log
 correction — Axelrod's winning shape, expressed in the factory's own signed-weight, retraction-
 not-erasure, noninterference primitives.
 
+### 7. Anchoring the BFT — 3f+1 is the provocability budget; equivocation is the recorded defection
+
+> we need to anchor our bft in this   *(Aaron)*
+
+This is the load-bearing systems claim, and it makes ferry 43 the **why** under Zeta's
+already-built consensus layer (`src/Core/Consensus.fs`, `src/Core/SybilBft.fs`). **Byzantine
+Fault Tolerance is the correction term, proven.** The correspondence is exact, layer by layer:
+
+- **The Byzantine node *is* Axelrod's defector.** "Without this the system could be hacked" (§2)
+  is, formally, the **Byzantine Generals Problem** (Lamport–Shostak–Pease 1982): a protocol with
+  no tolerance term is broken by a single traitor. BFT's entire job is the §2 correction term made
+  rigorous — *agreement despite defectors.*
+- **3f+1 is the price of the correction term.** Classical BFT tolerates `f` Byzantine nodes only
+  at `n ≥ 3f+1`, quorum `2f+1` (`Consensus.fs` `quorumThreshold = 2*((n-1)/3)+1`). That bound is
+  the formal statement of §2's "you must pay a cost to be safe against defection": the redundancy
+  `3f+1` is exactly **how provocable the system must be** to survive `f` defectors. Too little
+  redundancy (no provocability) → the defector wins. The bound *is* the minimum correction budget.
+- **Equivocation detection is the −1 recording the defection.** SybilBft flags a source that votes
+  two values (`Equivocated`) — that *is* the Byzantine defection, and **catching-and-recording** it
+  is precisely §4's metered −1: the defection is answered and written to the ledger
+  (retraction-not-erasure, ferry 17), never silently merged. The "provocable" clause, mechanized as
+  equivocation-catch.
+- **Anti-Sybil-first is the identity-layer ALLC exploit, closed.** A **Sybil attack** (Douceur
+  2002) is *manufacturing fake cooperators* to invade — the purest farming of an unconditionally-
+  trusting system, §2's open port pushed down to *who counts as a player*. Zeta counts quorum over
+  **distinct entropy sources**, not claimed names (`SybilBft.fs`, `AntiSybil.fs`): you cannot forge
+  cooperators faster than you can source independent entropy. The correction term applied *before*
+  the vote — distinctness as the admission gate. (Composes with ferry 15: identity = captured
+  entropy.)
+- **CALM says *when* the correction term must be consensus at all.** Monotone ops merge
+  coordination-free (G-sets / Z-sets — no defection surface); only non-monotone / exclusive claims
+  need the BFT correction term (the reorder-loophole doc, 2026-06-08; Hellerstein–Ameloot's CALM).
+  So *forgiveness-as-default* (cheap, coordination-free) and *provocable-consensus-where-needed*
+  (the 3f+1 correction) is CALM operationalized: don't make the whole substrate pay the correction
+  cost — only the parts that can actually be defected on. ("Consensus is gravity — use it where
+  mass is needed.")
+- **Generous, not strict.** §3's noise-recovery (generous-TFT / Pavlov beats strict-TFT spiral) is
+  already Zeta's **default-strategy-stack** (2026-06-09: "tit-for-lesser-tat, teach-play"). A BFT
+  layer that *only* punishes deadlocks under noise; the correction term forgives proportionally —
+  which is why the consensus layer sits under a generous strategy, not a vindictive one.
+
+Net: ferry 43 gives the cooperation-theory *why* (forgiveness binds, provocability secures);
+**SybilBft + Consensus.fs give the implemented *how* with the proven bound** (3f+1,
+equivocation-catch, distinct-source quorum); the ledger gives the *substrate* (recorded −1,
+DST-replayable). One structure at three layers. This anchors the open consensus threads — B-0211
+fractal BFT (local+remote composition), the three-faction BFT TLA+/Z3 proof, multi-oracle
+consensus inside DST — each is *the correction term, scaled or formalized*.
+
 ## Bounds
 
 - **"Forgiveness creates gravity" is a metaphor, not a physics claim.** Forgiveness is an
@@ -145,6 +193,13 @@ not-erasure, noninterference primitives.
   shape (signed correction, recorded not erased, metered not ambient), not a formal equivalence.
   Rung-appropriate: the analogy is tight and generative; it is not claimed as a theorem that
   cooperation theory reduces to Z-sets.
+- **The BFT anchor (§7): the 3f+1 bound is a proven theorem; "provocability budget" is its
+  cooperation-theory *reading*, not a new theorem.** Lamport–Shostak–Pease's `n ≥ 3f+1` stands on
+  its own proof; calling `3f+1` the "minimum correction budget" is the §2 lens on that result, not
+  an independent claim. The equivocation-catch = recorded-−1 correspondence, by contrast, is exact
+  *in the implementation* (`SybilBft.fs` records `Equivocated`). SybilBft's own novelty/limits
+  (noisy-forgery detection tradeoff; open liveness proof B-0211) are scoped in its prior-art doc
+  (2026-06-08) and are not re-litigated here.
 - The personal frame is included **at the author's explicit choice** (Glass Halo — consented,
   shown on purpose). It is dignity-grade: rendered without amplification, without clinicalizing,
   without diagnosis — a self-model and a moral-development account, not a clinical claim. One
@@ -162,6 +217,12 @@ not-erasure, noninterference primitives.
   crossing, not ambient grudge) · idempotency #6 (forgive-once, replay-safe) ·
   [`every-bug-has-economic-value.md`](../../.claude/rules/every-bug-has-economic-value.md)
   (Ostrom + mechanism design already anchored there — the correction-term economy)
+- BFT layer (§7): `src/Core/Consensus.fs` (3f+1 quorum) · `src/Core/SybilBft.fs` +
+  `src/Core/AntiSybil.fs` (distinct-entropy-source quorum; equivocation-catch) ·
+  `docs/research/2026-06-08-anti-sybil-first-BFT-quorum-over-distinct-sources-prior-art.md`
+  (SybilBft prior-art + novelty scope) · `docs/research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md`
+  (CALM — when consensus is required) · `docs/research/2026-06-09-the-default-strategy-stack-survival-then-uncertainty-reduction-then-tit-for-lesser-tat-teach-play-generous-forgiving-tft.md`
+  (generous-TFT default — the strategy this consensus runs under) · B-0211 / B-0211.1 (fractal BFT)
 - Anchors (Beacon): Axelrod & Hamilton 1981 (*Science*) · Axelrod 1984 (*The Evolution of
   Cooperation* — nice/provocable/forgiving/clear; ALLC invadable) · Trivers 1971 (reciprocal
   altruism) · Fehr & Gächter 2002 (*Nature* — altruistic/costly punishment sustains cooperation)
@@ -169,3 +230,7 @@ not-erasure, noninterference primitives.
   1990 (*Governing the Commons* — graduated sanctions) · Boyd & Richerson (punishment in large
   groups) · R.J.R. Blair (Violence Inhibition Mechanism; the felt guilt/empathy preview) · A.D.
   Craig (the anterior insula as interoceptive cortex — where the felt correction is computed)
+- BFT anchors (Beacon, §7): Lamport, Shostak & Pease 1982 (*The Byzantine Generals Problem* —
+  the `3f+1` bound) · Castro & Liskov 1999 (PBFT — practical BFT) · Douceur 2002 (*The Sybil
+  Attack*) · Hellerstein & Ameloot (CALM theorem — monotonicity ⇔ coordination-freedom) ·
+  Nakamoto 2008 (Sybil-resistance via scarce resource — the economic alternative to distinctness)
