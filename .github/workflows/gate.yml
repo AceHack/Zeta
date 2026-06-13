@@ -779,7 +779,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run check-tick-history-order
-        run: bun tools/hygiene/check-tick-history-order.ts
+        run: bun src/Core.TypeScript/hygiene/check-tick-history-order.ts
 
   lint-no-conflict-markers:
     # Fail if any committed file contains git merge-conflict markers
@@ -811,7 +811,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run check-no-conflict-markers
-        run: bun tools/hygiene/check-no-conflict-markers.ts
+        run: bun src/Core.TypeScript/hygiene/check-no-conflict-markers.ts
 
   lint-archive-header-section33:
     # Fail if any courier-ferry / external-conversation import under
@@ -847,7 +847,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run check-archive-header-section33
-        run: bun tools/hygiene/check-archive-header-section33.ts
+        run: bun src/Core.TypeScript/hygiene/check-archive-header-section33.ts
 
   lint-section-33-migration-xrefs:
     # Fail if any live-nav surface (.claude/, memory/*.md top-level,
@@ -875,7 +875,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run audit-section-33-migration-xrefs (--enforce)
-        run: bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce
+        run: bun src/Core.TypeScript/hygiene/audit-section-33-migration-xrefs.ts --enforce
 
   lint-tick-shard-relative-paths:
     # Fail if any tick shard at docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
@@ -905,9 +905,9 @@ jobs:
 
       - name: Run audit-tick-shard-relative-paths (--enforce --baseline)
         run: |
-          bun tools/hygiene/audit-tick-shard-relative-paths.ts \
+          bun src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.ts \
             --enforce \
-            --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json
+            --baseline src/Core.TypeScript/hygiene/audit-tick-shard-relative-paths.baseline.json
 
   lint-backlog-id-uniqueness:
     # Fail if any B-NNNN ID is claimed by more than one backlog row file.
@@ -933,18 +933,18 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run audit-backlog-items (--enforce-duplicate-ids)
-        run: bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
+        run: bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 
       # Dangling tracked symlinks crash the GitHub Pages (Jekyll) build on realpath — invisible
       # to the test suites. Surfaced 2026-06-11: #7820 moved 31 dirs to db/ and nine relative
       # links dangled; Pages was red for hours on every push.
       - name: Run audit-dangling-symlinks (Pages/Jekyll guard)
-        run: bun tools/hygiene/audit-dangling-symlinks.ts
+        run: bun src/Core.TypeScript/hygiene/audit-dangling-symlinks.ts
 
       # B-1035 Reticulum-only clause: files marked SEALED-ROOM carry zero ambient-channel
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
       - name: Run audit-sealed-rooms (B-1035 Reticulum-only lint half)
-        run: bun tools/hygiene/audit-sealed-rooms.ts
+        run: bun src/Core.TypeScript/hygiene/audit-sealed-rooms.ts
 
   lint-backlog-parent-child-status:
     # Fail if any backlog row declares `status: closed` (or equivalent —
@@ -972,16 +972,16 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run audit-backlog-items (--enforce-parent-child-status)
-        run: bun tools/hygiene/audit-backlog-items.ts --enforce-parent-child-status
+        run: bun src/Core.TypeScript/hygiene/audit-backlog-items.ts --enforce-parent-child-status
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a
     # SKILL.md, a research folder with no report). Born round 35 after
     # Aaron: "we need a build script that will fail the build if it
-    # detects an empty folder". Script under tools/lint/ respects
+    # detects an empty folder". Script under src/Core.TypeScript/lint/ respects
     # .gitignore and an explicit allowlist at
-    # tools/lint/no-empty-dirs.allowlist. Upstream mirrors under
+    # src/Core.TypeScript/lint/no-empty-dirs.allowlist. Upstream mirrors under
     # references/prior-art/** are excluded by the script itself.
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no empty dirs)
@@ -996,14 +996,14 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run no-empty-dirs
-        run: bun tools/lint/no-empty-dirs.ts
+        run: bun src/Core.TypeScript/lint/no-empty-dirs.ts
 
   lint-no-python-files:
     # Fail if a committed .py file exists outside the allowlist /
     # vendored-toolchain hard-excludes. Per B-0156 Phase 6
     # (Aaron 2026-05-01: "any .py" should be ported to TS or
-    # excluded). Script under tools/lint/ respects .gitignore and
-    # the explicit allowlist at tools/lint/no-python-files.allowlist;
+    # excluded). Script under src/Core.TypeScript/lint/ respects .gitignore and
+    # the explicit allowlist at src/Core.TypeScript/lint/no-python-files.allowlist;
     # references/prior-art, .venv, __pycache__, site-packages, .lake
     # are hard-excluded by the script itself.
     # No untrusted input used in run: — only a fixed repo path.
@@ -1019,7 +1019,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Run no-python-files
-        run: bun tools/lint/no-python-files.ts
+        run: bun src/Core.TypeScript/lint/no-python-files.ts
 
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in

@@ -8,7 +8,7 @@ import { buildIndex } from "./concept-index.js";
 import { writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 export async function main(): Promise<void> {
     const outPath = join(REPO_ROOT, ".concept-index.json");

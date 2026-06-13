@@ -2,7 +2,7 @@
 id: B-0825
 zetaid: 081KSGS9H0008QG0R002PT5C7J
 priority: P1
-status: open
+status: closed
 title: time-modeled dependencies for Helm — clusters are long-running stateful systems; chart-graph needs temporal axis for revision history + migration phases + rolling-upgrade windows + concurrent-version overlap; Helm uniquely requires this among package managers; substrate-engineering target for Ace meta-PM (Aaron 2026-05-26)
 effort: L
 ask: aaron 2026-05-26

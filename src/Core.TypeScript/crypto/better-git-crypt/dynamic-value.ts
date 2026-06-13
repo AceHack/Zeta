@@ -29,7 +29,7 @@ import {
   fromCanonicalCbor,
   type Tagged,
   type DecodeError,
-} from "../../../src/Core.TypeScript/dynamic-value/cbor";
+} from "../../dynamic-value/cbor";
 import { encryptBytes, decryptBytes, type SelfKeys } from "./files";
 import type { RecipientKey, EncryptionFeedback, DecryptionFeedback } from "./types";
 

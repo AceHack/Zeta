@@ -123,7 +123,7 @@ export function auditRowFiles(files: string[]): AuditResult {
  * (no submodule / .gitignored traversal needed) and report findings.
  */
 function main(): number {
-  const repoRoot = resolve(import.meta.dir, "..", "..");
+  const repoRoot = resolve(import.meta.dir, "..", "..", "..");
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
   const lsFiles = spawnSync(
     "git",

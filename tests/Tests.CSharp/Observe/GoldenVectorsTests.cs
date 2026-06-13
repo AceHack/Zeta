@@ -92,7 +92,7 @@ public sealed class GoldenVectorsTests
 
     private static (World Initial, List<NextAction> Events, World Final, List<World> Replay) Load()
     {
-        var path = Path.Join(RepoRoot(), "tools", "observe", "golden-vectors.json");
+        var path = Path.Join(RepoRoot(), "src", "Core.TypeScript", "observe", "golden-vectors.json");
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         var root = doc.RootElement;
         var initial = ParseWorld(root.GetProperty("initialWorld"));

@@ -30,7 +30,7 @@ name: role-ref-current-state-surfaces-lint
 #   - runs-on ubuntu-24.04 pinned
 #
 # See:
-#   - tools/hygiene/check-role-ref-on-current-state-surfaces.ts
+#   - src/Core.TypeScript/hygiene/check-role-ref-on-current-state-surfaces.ts
 #   - docs/AGENT-BEST-PRACTICES.md Otto-279 carve-out
 #   - docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md
 
@@ -50,7 +50,7 @@ on:
       - docs/EXPERT-REGISTRY.md
       - .claude/skills/**
       - .claude/agents/**
-      - tools/hygiene/check-role-ref-on-current-state-surfaces.ts
+      - src/Core.TypeScript/hygiene/check-role-ref-on-current-state-surfaces.ts
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
   push:
     branches: [main]
@@ -68,7 +68,7 @@ on:
       - docs/EXPERT-REGISTRY.md
       - .claude/skills/**
       - .claude/agents/**
-      - tools/hygiene/check-role-ref-on-current-state-surfaces.ts
+      - src/Core.TypeScript/hygiene/check-role-ref-on-current-state-surfaces.ts
       - .github/workflows/role-ref-current-state-surfaces-lint.yml
   workflow_dispatch: {}
 
@@ -92,4 +92,4 @@ jobs:
 
       - name: run role-ref lint (soft-launch mode)
         shell: bash
-        run: bun tools/hygiene/check-role-ref-on-current-state-surfaces.ts
+        run: bun src/Core.TypeScript/hygiene/check-role-ref-on-current-state-surfaces.ts

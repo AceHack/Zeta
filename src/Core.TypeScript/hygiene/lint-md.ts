@@ -5,7 +5,7 @@
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 const DEFAULT_EXCLUDES = [
     "references/",

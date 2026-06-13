@@ -5,7 +5,7 @@ name: git-hotspot-cadence
 # Runs the audit-git-hotspots.ts detector and uploads the resulting
 # markdown report as a workflow artifact. Per B-0067 phase 2 (cadence
 # wiring); phase 1 (the script itself) is already on disk at
-# tools/hygiene/audit-git-hotspots.ts.
+# src/Core.TypeScript/hygiene/audit-git-hotspots.ts.
 #
 # Why weekly: hotspot patterns surface across multiple PRs, not
 # per-PR — a daily report would show flapping noise. Weekly is the
@@ -24,7 +24,7 @@ name: git-hotspot-cadence
 #   - Does NOT enforce a hard cap. The script prints a markdown
 #     ranking; the maintainer / future-Otto reviews the artifact.
 #
-# Composes with tools/hygiene/audit-git-hotspots.ts (the detector),
+# Composes with src/Core.TypeScript/hygiene/audit-git-hotspots.ts (the detector),
 # docs/backlog/P1/B-0067 (the row), B-0061 (BACKLOG.md migration),
 # B-0066 (MEMORY.md migration).
 #
@@ -43,7 +43,7 @@ on:
   workflow_dispatch: {}
   pull_request:
     paths:
-      - "tools/hygiene/audit-git-hotspots.ts"
+      - "src/Core.TypeScript/hygiene/audit-git-hotspots.ts"
       - ".github/workflows/git-hotspot-cadence.yml"
 
 permissions:
@@ -80,7 +80,7 @@ jobs:
       - name: Run hotspot detector
         run: |
           mkdir -p hotspot-reports
-          bun tools/hygiene/audit-git-hotspots.ts \
+          bun src/Core.TypeScript/hygiene/audit-git-hotspots.ts \
             --window 60d \
             --top 30 \
             --report hotspot-reports/git-hotspots.md

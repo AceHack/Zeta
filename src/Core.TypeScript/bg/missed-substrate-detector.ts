@@ -23,8 +23,8 @@
 // Compose with: B-0442 + B-0400 (bus) + B-0440 / B-0441 (companion services).
 
 import { spawnSync } from "node:child_process";
-import { publish } from "../../src/Core.TypeScript/bus/bus";
-import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../../src/Core.TypeScript/bus/types";
+import { publish } from "../bus/bus";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 import {
   openRecoveryPR,
   type RecoveryAdapters,

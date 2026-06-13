@@ -19,7 +19,7 @@ name: memory-reference-existence-lint
 #   - Concurrency group + pinned runs-on
 #
 # See:
-#   - tools/hygiene/audit-memory-references.ts (the tool)
+#   - src/Core.TypeScript/hygiene/audit-memory-references.ts (the tool)
 #   - docs/aurora/2026-04-23-amara-memory-drift-alignment-
 #     claude-to-memories-drift.md (Amara ferry)
 
@@ -27,13 +27,13 @@ on:
   pull_request:
     paths:
       - "memory/**"
-      - "tools/hygiene/audit-memory-references.ts"
+      - "src/Core.TypeScript/hygiene/audit-memory-references.ts"
       - ".github/workflows/memory-reference-existence-lint.yml"
   push:
     branches: [main]
     paths:
       - "memory/**"
-      - "tools/hygiene/audit-memory-references.ts"
+      - "src/Core.TypeScript/hygiene/audit-memory-references.ts"
       - ".github/workflows/memory-reference-existence-lint.yml"
   workflow_dispatch: {}
 
@@ -63,4 +63,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bun tools/hygiene/audit-memory-references.ts --enforce
+          bun src/Core.TypeScript/hygiene/audit-memory-references.ts --enforce

@@ -14,7 +14,7 @@ import { dirname, resolve, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
+const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..", "..");
 
 type Category = "lean4" | "tla+" | "z3" | "alloy" | "formal-test";
 

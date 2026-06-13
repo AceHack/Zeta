@@ -8,7 +8,7 @@ import { basename, join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { Glob } from "bun";
 
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const home = process.env.HOME ?? homedir();
 
 const DEFAULT_MEMORY_DIR = join(

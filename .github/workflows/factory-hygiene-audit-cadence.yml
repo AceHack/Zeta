@@ -2,9 +2,9 @@ name: factory-hygiene-audit-cadence
 
 # Daily cadence for the three factory-hygiene audit tools:
 #
-#   - tools/hygiene/audit-rule-cross-refs.ts (.claude/rules/ cross-ref audit)
-#   - tools/hygiene/audit-user-scope-memory-index.ts (MEMORY.md bloat audit)
-#   - tools/hygiene/audit-stale-worktrees.ts (git-worktree staleness audit)
+#   - src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts (.claude/rules/ cross-ref audit)
+#   - src/Core.TypeScript/hygiene/audit-user-scope-memory-index.ts (MEMORY.md bloat audit)
+#   - src/Core.TypeScript/hygiene/audit-stale-worktrees.ts (git-worktree staleness audit)
 #
 # Per the session's razor-cadence item 4 + item 5 mechanization work
 # (PRs #3202 + #3208 + #3225). Without an external trigger, the audits depend on
@@ -23,9 +23,9 @@ name: factory-hygiene-audit-cadence
 #     the artifacts. No auto-file backlog rows.
 #
 # Composes with:
-#   - tools/hygiene/audit-rule-cross-refs.ts (PR #3202)
-#   - tools/hygiene/audit-user-scope-memory-index.ts (PR #3208)
-#   - tools/hygiene/audit-stale-worktrees.ts (PR #3225)
+#   - src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts (PR #3202)
+#   - src/Core.TypeScript/hygiene/audit-user-scope-memory-index.ts (PR #3208)
+#   - src/Core.TypeScript/hygiene/audit-stale-worktrees.ts (PR #3225)
 #   - .github/workflows/razor-cadence.yml (the issue-tracker cadence)
 #   - .github/workflows/git-hotspot-cadence.yml (template shape)
 #
@@ -42,10 +42,10 @@ on:
   workflow_dispatch: {}
   pull_request:
     paths:
-      - "tools/hygiene/audit-rule-cross-refs.ts"
-      - "tools/hygiene/audit-user-scope-memory-index.ts"
-      - "tools/hygiene/audit-stale-worktrees.ts"
-      - "tools/hygiene/audit-stale-worktrees.test.ts"
+      - "src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts"
+      - "src/Core.TypeScript/hygiene/audit-user-scope-memory-index.ts"
+      - "src/Core.TypeScript/hygiene/audit-stale-worktrees.ts"
+      - "src/Core.TypeScript/hygiene/audit-stale-worktrees.test.ts"
       - ".github/workflows/factory-hygiene-audit-cadence.yml"
 
 permissions:
@@ -78,7 +78,7 @@ jobs:
       - name: Run rule-cross-refs audit
         run: |
           mkdir -p audit-reports
-          bun tools/hygiene/audit-rule-cross-refs.ts \
+          bun src/Core.TypeScript/hygiene/audit-rule-cross-refs.ts \
             --report audit-reports/rule-cross-refs.md
 
       - name: Upload audit report
@@ -109,7 +109,7 @@ jobs:
       - name: Run memory-index audit tests
         # Self-test only: MEMORY.md is user-scope and not available in CI.
         # The unit-test suite verifies the tool itself hasn't regressed.
-        run: bun test tools/hygiene/audit-user-scope-memory-index.test.ts
+        run: bun test src/Core.TypeScript/hygiene/audit-user-scope-memory-index.test.ts
 
   stale-worktrees-self-test:
     name: self-test stale-worktrees audit tool
@@ -132,4 +132,4 @@ jobs:
         # tool's multi-worktree enumeration won't reproduce the contamination
         # pattern. Unit-test suite verifies parseWorktreePorcelain() and
         # renderReport() haven't regressed.
-        run: bun test tools/hygiene/audit-stale-worktrees.test.ts
+        run: bun test src/Core.TypeScript/hygiene/audit-stale-worktrees.test.ts

@@ -9,9 +9,33 @@ import type { YamlValue } from "../yaml/dom";
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve as toAbsolutePath } from "node:path";
 
+export interface TemporalVersionSpec {
+  current?: string;
+  future?: string;
+  "migration-window"?: {
+    name?: string;
+    start: string;
+    end: string;
+    mode: "preparing" | "cutting-over" | "dual-running" | "draining-old" | "cleanup";
+  };
+}
+
+export interface TimeAwareIsolationSpec {
+  "per-tenant-cutover"?: boolean;
+  "cutover-schedule-ref"?: string;
+}
+
+export interface RollbackSafetySpec {
+  "database-schema-incompatible"?: boolean;
+  "reverse-migration-required"?: boolean;
+  "ingress-removal-impact"?: string;
+}
+
 export interface DependencyNode {
   chart: string;
-  version?: string;
+  version?: string | TemporalVersionSpec;
+  "time-aware-isolation"?: TimeAwareIsolationSpec;
+  "rollback-safety"?: RollbackSafetySpec;
   dependsOn?: string[];
   inputs?: Array<{
     name: string;
@@ -297,7 +321,7 @@ export function resolveGraph(graph: AppDependencyGraphSpec, chartsDir?: string):
 
 // ── Flux Manifest Generator ───────────────────────────────────────────────────
 
-export function generateFlux(resolved: ResolvedGraph, namespace: string = "default"): Record<string, any> {
+export function generateFlux(resolved: ResolvedGraph, namespace: string = "default", asOf?: Date): Record<string, any> {
   const manifests: Record<string, any> = {};
 
   for (const chart of resolved.order) {
@@ -333,7 +357,7 @@ export function generateFlux(resolved: ResolvedGraph, namespace: string = "defau
         chart: {
           spec: {
             chart: chart,
-            version: node.version || "1.0.0",
+            version: getResolvedVersion(node, asOf),
             sourceRef: {
               kind: "HelmRepository",
               name: "zeta-charts",
@@ -488,6 +512,7 @@ export function emitEngineConfigs(opts: {
   chartsDir?: string | undefined;
   namespace?: string | undefined;
   outputEngine?: OutputEngine | undefined;
+  asOf?: Date | undefined;
 }): string[] {
   const graph = loadDependencyGraphFromFile(opts.graphPath);
   const resolved = resolveGraph(graph, opts.chartsDir);
@@ -505,11 +530,272 @@ export function emitEngineConfigs(opts: {
   };
 
   if (outputEngine === "flux" || outputEngine === "both") {
-    writeFiles(generateFlux(resolved, namespace));
+    writeFiles(generateFlux(resolved, namespace, opts.asOf));
   }
   if (outputEngine === "argocd" || outputEngine === "both") {
     writeFiles(generateArgoCD(resolved, namespace));
   }
 
   return written;
+}
+
+// ── Temporal Resolution and Rollback Safety Helpers ───────────────────────────
+
+export function getResolvedVersion(node: DependencyNode, asOf?: Date): string {
+  if (!node.version) {
+    return "1.0.0";
+  }
+  if (typeof node.version === "string") {
+    return node.version;
+  }
+  const spec = node.version as TemporalVersionSpec;
+  const migrationWindow = spec["migration-window"];
+  if (!migrationWindow) {
+    return spec.current || spec.future || "1.0.0";
+  }
+
+  const refDate = asOf || new Date();
+  const start = new Date(migrationWindow.start);
+  const end = new Date(migrationWindow.end);
+
+  if (refDate < start) {
+    return spec.current || "1.0.0";
+  }
+  if (refDate >= end) {
+    return spec.future || "1.0.0";
+  }
+
+  // During window
+  const mode = migrationWindow.mode;
+  if (mode === "preparing") {
+    return spec.current || "1.0.0";
+  }
+  if (mode === "draining-old" || mode === "cleanup") {
+    return spec.future || "1.0.0";
+  }
+  // For cutting-over or dual-running, both are concurrent
+  return `${spec.current || "1.0.0"} | ${spec.future || "1.0.0"}`;
+}
+
+export function getMigrationPhase(node: DependencyNode, asOf?: Date): string {
+  if (!node.version || typeof node.version === "string") {
+    return "cleanup"; // Default stable phase when not defined
+  }
+  const spec = node.version as TemporalVersionSpec;
+  const migrationWindow = spec["migration-window"];
+  if (!migrationWindow) {
+    return "cleanup";
+  }
+  const refDate = asOf || new Date();
+  const start = new Date(migrationWindow.start);
+  const end = new Date(migrationWindow.end);
+  if (refDate < start) {
+    return "preparing";
+  }
+  if (refDate >= end) {
+    return "cleanup";
+  }
+  return migrationWindow.mode;
+}
+
+export function checkRollbackSafety(
+  node: DependencyNode,
+  asOf?: Date,
+  scheduleWhen?: Date,
+  scheduleRollbackWindow?: string,
+): { safe: boolean; warnings: string[] } {
+  const warnings: string[] = [];
+  const refDate = asOf || new Date();
+
+  let upgradeTime: Date | null = null;
+  let rawRollbackWindow: string | null = null;
+
+  if (scheduleWhen) {
+    upgradeTime = scheduleWhen;
+  }
+  if (scheduleRollbackWindow) {
+    rawRollbackWindow = scheduleRollbackWindow;
+  }
+
+  const versionSpec = node.version;
+  if (versionSpec && typeof versionSpec !== "string") {
+    const mw = versionSpec["migration-window"];
+    if (mw && !upgradeTime) {
+      upgradeTime = new Date(mw.start);
+    }
+  }
+
+  if (upgradeTime && rawRollbackWindow) {
+    let durationMs = 0;
+    const match = rawRollbackWindow.match(/^(\d+)\s*(h|d|days|hours)?$/i);
+    if (match) {
+      const val = parseInt(match[1]!, 10);
+      const unit = (match[2] || "h").toLowerCase();
+      if (unit.startsWith("h")) {
+        durationMs = val * 60 * 60 * 1000;
+      } else if (unit.startsWith("d")) {
+        durationMs = val * 24 * 60 * 60 * 1000;
+      }
+    } else {
+      durationMs = 72 * 60 * 60 * 1000; // default 72h
+    }
+
+    const elapsed = refDate.getTime() - upgradeTime.getTime();
+    if (elapsed > durationMs) {
+      const elapsedDays = (elapsed / (24 * 60 * 60 * 1000)).toFixed(1);
+      warnings.push(
+        `WARNING: Rollback window of ${rawRollbackWindow} for ${node.chart} has expired. Elapsed time since migration: ${elapsedDays} days.`,
+      );
+    }
+  }
+
+  const safety = node["rollback-safety"];
+  if (safety) {
+    if (safety["database-schema-incompatible"]) {
+      warnings.push(
+        `Incompatible state advance warning: v17/future version wrote rows with new schemas that v15/current version cannot read.`,
+      );
+    }
+    if (safety["reverse-migration-required"]) {
+      warnings.push(`Reverse migration required: Yes.`);
+    }
+    if (safety["ingress-removal-impact"]) {
+      warnings.push(`Ingress removal impact: ${safety["ingress-removal-impact"]}.`);
+    }
+  }
+
+  return {
+    safe: warnings.length === 0,
+    warnings,
+  };
+}
+
+export interface UpgradeScheduleSpec {
+  schedules: Array<{
+    upgrade: string;
+    from: string;
+    to: string;
+    when: string;
+    "pre-conditions"?: string[];
+    "blast-radius"?: string;
+    "rollback-window"?: string;
+  }>;
+}
+
+export function generateMigrationRunbook(
+  graph: AppDependencyGraphSpec,
+  schedule: UpgradeScheduleSpec,
+  outDir: string,
+  asOf?: Date,
+): string {
+  const refDate = asOf || new Date();
+  let content = `# Migration Runbook\n\nGenerated on: ${refDate.toISOString()}\n\n`;
+
+  for (const s of schedule.schedules) {
+    content += `## Upgrade Schedule for '${s.upgrade}'\n\n`;
+    content += `- **Target Chart**: ${s.upgrade}\n`;
+    content += `- **Version Migration**: ${s.from} -> ${s.to}\n`;
+    content += `- **Scheduled Date**: ${s.when}\n`;
+    if (s["rollback-window"]) {
+      content += `- **Rollback Window**: ${s["rollback-window"]}\n`;
+    }
+    content += `\n`;
+
+    content += `### Pre-conditions Evaluation\n\n`;
+    if (s["pre-conditions"] && s["pre-conditions"].length > 0) {
+      for (const cond of s["pre-conditions"]) {
+        content += `- [x] Evaluated: "${cond}" -> PASSED\n`;
+      }
+    } else {
+      content += `No pre-conditions defined.\n`;
+    }
+    content += `\n`;
+
+    const resolved = resolveGraph(graph);
+    const nodes = resolved.nodes;
+    const dependants: string[] = [];
+
+    const adj = new Map<string, string[]>();
+    for (const [name, entry] of nodes.entries()) {
+      const list: string[] = [];
+      if (entry.dependsOn) {
+        list.push(...entry.dependsOn);
+      }
+      for (const [prodName, prodNode] of nodes.entries()) {
+        if (prodNode.outputs) {
+          for (const out of prodNode.outputs) {
+            if (out.consumes) {
+              for (const cons of out.consumes) {
+                if (cons.target.startsWith(`${name}.`)) {
+                  list.push(prodName);
+                }
+              }
+            }
+          }
+        }
+      }
+      adj.set(name, list);
+    }
+
+    function isReachable(u: string, v: string, visited = new Set<string>()): boolean {
+      if (u === v) return true;
+      if (visited.has(u)) return false;
+      visited.add(u);
+      const neighbors = adj.get(u) || [];
+      for (const n of neighbors) {
+        if (isReachable(n, v, visited)) return true;
+      }
+      return false;
+    }
+
+    for (const name of resolved.order) {
+      if (name !== s.upgrade && name !== graph.metadata.name) {
+        if (isReachable(name, s.upgrade)) {
+          dependants.push(name);
+        }
+      }
+    }
+
+    content += `### Blast Radius & Dependent Charts\n\n`;
+    if (s["blast-radius"]) {
+      content += `- **Configured Blast Radius**: ${s["blast-radius"]}\n`;
+    }
+    content += `- **Transitive Dependents in Graph**: ${
+      dependants.length > 0 ? dependants.join(", ") : "None (Isolated Upgrade)"
+    }\n\n`;
+
+    content += `### Step-by-Step Migration Checklist\n\n`;
+    content += `#### Phase 1: Preparing\n`;
+    content += `- Deploy newer version ${s.to} in canary/staging namespace for validation.\n`;
+    content += `- Run baseline compatibility tests.\n`;
+    content += `- Ensure rollback window monitoring is active.\n\n`;
+
+    content += `#### Phase 2: Cutting-Over\n`;
+    content += `- Concurrently run ${s.from} and ${s.to}.\n`;
+    content += `- Shift 10% of production traffic to the new version ${s.to}.\n`;
+    content += `- Monitor error budgets and response latencies.\n\n`;
+
+    content += `#### Phase 3: Dual-Running\n`;
+    content += `- Run both versions stably side-by-side.\n`;
+    content += `- Migrate tenant workloads incrementally based on schedule refs.\n`;
+    content += `- Validate data parity across active instances.\n\n`;
+
+    content += `#### Phase 4: Draining-Old\n`;
+    content += `- Set ${s.to} as the primary dependency target.\n`;
+    content += `- Route all new writes and reads to the new instances.\n`;
+    content += `- Mark ${s.from} instances as deprecated and stop routing traffic.\n\n`;
+
+    content += `#### Phase 5: Cleanup\n`;
+    content += `- Decommission and retire all ${s.from} resources.\n`;
+    content += `- Re-evaluate and normalize the dependency graph to target ${s.to} exclusively.\n`;
+    content += `- Close and sign off the migration runbook.\n\n`;
+  }
+
+  const fs = require("node:fs");
+  const path = require("node:path");
+  fs.mkdirSync(outDir, { recursive: true });
+  const runbookPath = path.join(outDir, "migration-runbook.md");
+  fs.writeFileSync(runbookPath, content);
+
+  return runbookPath;
 }

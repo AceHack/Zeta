@@ -14,8 +14,8 @@
 // Compose with: B-0440 + B-0400 (bus, PR #3016) + B-0441 (proactive notifier).
 
 import { spawnSync } from "node:child_process";
-import { publish } from "../../src/Core.TypeScript/bus/bus";
-import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../../src/Core.TypeScript/bus/types";
+import { publish } from "../bus/bus";
+import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
 
 export type DetectorConfig = {
   /** How often to poll, in minutes */

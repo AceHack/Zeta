@@ -10,7 +10,7 @@
 import { describe, expect, test } from "bun:test";
 import { encryptValue, decryptValue } from "./dynamic-value";
 import { encryptBytes, generateKeyPairJSON, deserializeSecretBundle, type SelfKeys } from "./files";
-import { f64ToBitsHex, type Tagged } from "../../../src/Core.TypeScript/dynamic-value/cbor";
+import { f64ToBitsHex, type Tagged } from "../../dynamic-value/cbor";
 
 function selfFrom(identity: string): SelfKeys {
   return deserializeSecretBundle(generateKeyPairJSON(identity).secret);

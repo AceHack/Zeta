@@ -3,7 +3,7 @@
 # CI-wire the skill-description audit gate (B-0347.6) so the routing-budget
 # cap is *enforced*, not just manually checkable.
 #
-# B-0347.4 (PR #6029) shipped tools/hygiene/audit-skill-description-length.ts —
+# B-0347.4 (PR #6029) shipped src/Core.TypeScript/hygiene/audit-skill-description-length.ts —
 # a deterministic Rule-0 gate that fails on any over-cap (>150 char), multiline,
 # or boilerplate skill description. But nothing ran it automatically, so a
 # description could silently regrow past the budget and only be caught on a
@@ -26,7 +26,7 @@
 #   - runs-on ubuntu-24.04 pinned (not -latest)
 #
 # See:
-#   - tools/hygiene/audit-skill-description-length.ts (the gate this invokes)
+#   - src/Core.TypeScript/hygiene/audit-skill-description-length.ts (the gate this invokes)
 #   - docs/backlog/P2/B-0347.6-ci-wire-skill-description-audit-gate.md
 #   - .github/workflows/role-ref-current-state-surfaces-lint.yml (the precedent)
 
@@ -34,13 +34,13 @@ on:
   pull_request:
     paths:
       - .claude/skills/**
-      - tools/hygiene/audit-skill-description-length.ts
+      - src/Core.TypeScript/hygiene/audit-skill-description-length.ts
       - .github/workflows/skill-description-lint.yml
   push:
     branches: [main]
     paths:
       - .claude/skills/**
-      - tools/hygiene/audit-skill-description-length.ts
+      - src/Core.TypeScript/hygiene/audit-skill-description-length.ts
       - .github/workflows/skill-description-lint.yml
   workflow_dispatch: {}
 
@@ -66,4 +66,4 @@ jobs:
 
       - name: run skill-description audit (fails on over-cap / multiline / boilerplate)
         shell: bash
-        run: bun tools/hygiene/audit-skill-description-length.ts
+        run: bun src/Core.TypeScript/hygiene/audit-skill-description-length.ts

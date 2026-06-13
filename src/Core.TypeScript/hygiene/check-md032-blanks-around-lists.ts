@@ -722,7 +722,7 @@ export function checkStagedFiles(
 }
 
 export function main(): number {
-  const repoRoot = resolve(import.meta.dir, "..", "..");
+  const repoRoot = resolve(import.meta.dir, "..", "..", "..");
   const argv = process.argv.slice(2);
   const isStaged = argv.includes("--staged");
 

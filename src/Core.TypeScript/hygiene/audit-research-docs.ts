@@ -22,7 +22,7 @@ interface AuditRoots {
 }
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
+const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..", "..");
 const RESEARCH_DIR = join(REPO_ROOT, "docs", "research");
 const MEMORY_DIR = join(REPO_ROOT, "memory");
 const DEFAULT_ROOTS: AuditRoots = {

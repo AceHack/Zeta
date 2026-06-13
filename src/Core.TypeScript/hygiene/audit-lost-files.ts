@@ -30,7 +30,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
+const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..", "..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
 
 interface SpawnResult {

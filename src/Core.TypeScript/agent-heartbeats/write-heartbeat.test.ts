@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { parseArgs, buildHeartbeatObservation, zetaIdToHex, heartbeatPath, heartbeatRepoRelPath, renderHeartbeat } from "./write-heartbeat";
-import { pack, DEFAULT_ENV } from "../../src/Core.TypeScript/zeta-id/zeta-id";
+import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 
 // Empty env for tests — exclude any harness-set ZETA_AGENT_* + disable
 // auto-push (tests do not have network).

@@ -70,7 +70,12 @@ import {
   resolveGraph,
   generateFlux,
   generateArgoCD,
+  getResolvedVersion,
+  getMigrationPhase,
+  checkRollbackSafety,
+  generateMigrationRunbook,
   type AppDependencyGraphSpec,
+  type UpgradeScheduleSpec,
 } from "./deps";
 
 interface ListArgs {
@@ -160,12 +165,16 @@ interface RegistryArgs {
 
 interface DepsArgs {
   readonly command: "deps";
-  readonly sub: "validate" | "resolve";
+  readonly sub: "validate" | "resolve" | "query" | "evaluate-schedule";
   readonly graphPath: string;
   readonly outDir?: string;
   readonly outputEngine: "flux" | "argocd" | "both";
   readonly chartsDir?: string;
   readonly namespace: string;
+  readonly asOf?: string;
+  readonly duringMigration?: string;
+  readonly rollbackWindow?: string;
+  readonly schedulePath?: string;
 }
 
 type ParsedArgs =
@@ -504,8 +513,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
 
   if (command === "deps") {
     const sub = argv[1];
-    if (sub !== "validate" && sub !== "resolve") {
-      return { error: "deps requires subcommand: validate | resolve" };
+    if (sub !== "validate" && sub !== "resolve" && sub !== "query" && sub !== "evaluate-schedule") {
+      return { error: "deps requires subcommand: validate | resolve | query | evaluate-schedule" };
     }
 
     let graphPath: string | undefined;
@@ -513,6 +522,10 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     let outputEngine: DepsArgs["outputEngine"] = "both";
     let chartsDir: string | undefined;
     let namespace = "default";
+    let asOf: string | undefined;
+    let duringMigration: string | undefined;
+    let rollbackWindow: string | undefined;
+    let schedulePath: string | undefined;
 
     for (let i = 2; i < argv.length; i++) {
       const arg = argv[i];
@@ -544,6 +557,26 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         if (!next || next.startsWith("-")) return { error: "--namespace requires a name argument" };
         namespace = next;
         i++;
+      } else if (arg === "--as-of") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--as-of requires a date/time argument" };
+        asOf = next;
+        i++;
+      } else if (arg === "--during-migration") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--during-migration requires a name argument" };
+        duringMigration = next;
+        i++;
+      } else if (arg === "--rollback-window") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--rollback-window requires a release/chart name" };
+        rollbackWindow = next;
+        i++;
+      } else if (arg === "--schedule") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--schedule requires a path argument" };
+        schedulePath = next;
+        i++;
       } else {
         return { error: `Unknown option for deps ${sub}: ${arg}` };
       }
@@ -551,6 +584,9 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
 
     if (!graphPath) return { error: "deps requires --graph <path>" };
     if (sub === "resolve" && !outDir) return { error: "deps resolve requires --out-dir <dir>" };
+    if (sub === "evaluate-schedule" && !outDir) return { error: "deps evaluate-schedule requires --out-dir <dir>" };
+    if (sub === "evaluate-schedule" && !schedulePath)
+      return { error: "deps evaluate-schedule requires --schedule <path>" };
 
     return {
       command: "deps",
@@ -560,6 +596,10 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       namespace,
       ...(outDir === undefined ? {} : { outDir }),
       ...(chartsDir === undefined ? {} : { chartsDir }),
+      ...(asOf === undefined ? {} : { asOf }),
+      ...(duringMigration === undefined ? {} : { duringMigration }),
+      ...(rollbackWindow === undefined ? {} : { rollbackWindow }),
+      ...(schedulePath === undefined ? {} : { schedulePath }),
     };
   }
 
@@ -600,8 +640,12 @@ Usage:
   ace registry remote list                       List configured remote registries
   ace registry remote rm <url>                   Remove a configured remote registry
   ace deps validate --graph <path> [--charts-dir <dir>]  Validate an AppDependencyGraph (cycle + contract checks)
-  ace deps resolve --graph <path> --out-dir <dir> [--output-engine flux|argocd|both] [--charts-dir <dir>] [--namespace <ns>]
-                                                   Resolve graph and write Flux/ArgoCD manifests
+  ace deps resolve --graph <path> --out-dir <dir> [--output-engine flux|argocd|both] [--charts-dir <dir>] [--namespace <ns>] [--as-of <date>]
+                                                   Resolve graph and write Flux/ArgoCD manifests at the specified date
+  ace deps query --graph <path> [--as-of <date>] [--during-migration <name>] [--rollback-window <release>] [--schedule <path>] [--charts-dir <dir>]
+                                                   Query temporal graph state and run rollback safety audits
+  ace deps evaluate-schedule --graph <path> --schedule <path> --out-dir <dir> [--as-of <date>]
+                                                   Evaluate scheduled upgrades and generate migration runbooks
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -1763,6 +1807,114 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (parsed.command === "deps") {
     try {
       const graph = loadDependencyGraph(parsed.graphPath);
+
+      let asOfDate = new Date();
+      if (parsed.asOf) {
+        asOfDate = new Date(parsed.asOf);
+      }
+
+      if (parsed.sub === "query") {
+        let evaluatedAsOf = asOfDate;
+
+        if (parsed.duringMigration) {
+          let found = false;
+          for (const node of graph.spec.dependsOn) {
+            if (node.version && typeof node.version !== "string") {
+              const mw = node.version["migration-window"];
+              if (mw && mw.name === parsed.duringMigration) {
+                const start = new Date(mw.start).getTime();
+                const end = new Date(mw.end).getTime();
+                evaluatedAsOf = new Date((start + end) / 2);
+                found = true;
+                break;
+              }
+            }
+          }
+          if (!found) {
+            if (parsed.schedulePath && existsSync(parsed.schedulePath)) {
+              const schedule = parseYaml(readFileSync(parsed.schedulePath, "utf8")) as UpgradeScheduleSpec;
+              for (const s of schedule.schedules) {
+                if (s.upgrade === parsed.duringMigration || `${s.upgrade}-upgrade` === parsed.duringMigration) {
+                  evaluatedAsOf = new Date(s.when);
+                  found = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (!found) {
+            console.error(`ace: deps query: migration window or schedule for '${parsed.duringMigration}' not found`);
+            return 1;
+          }
+        }
+
+        const resolved = resolveGraph(graph, parsed.chartsDir);
+        console.log(`Dependency Graph Query Result (Evaluated as of: ${evaluatedAsOf.toISOString()}):`);
+        console.log(`=============================================================================`);
+
+        for (const name of resolved.order) {
+          const node = resolved.nodes.get(name);
+          if (!node || name === graph.metadata.name) continue;
+
+          const version = getResolvedVersion(node, evaluatedAsOf);
+          const phase = getMigrationPhase(node, evaluatedAsOf);
+
+          console.log(`- Chart: ${name}`);
+          console.log(`  Resolved Version: ${version}`);
+          console.log(`  Active Phase:     ${phase}`);
+
+          if (node.dependsOn && node.dependsOn.length > 0) {
+            console.log(`  Depends On:       ${node.dependsOn.join(", ")}`);
+          }
+          console.log("");
+        }
+
+        if (parsed.rollbackWindow) {
+          const node = graph.spec.dependsOn.find((n) => n.chart === parsed.rollbackWindow);
+          if (!node) {
+            console.error(`ace: deps query: chart '${parsed.rollbackWindow}' not found in dependency graph`);
+            return 1;
+          }
+
+          let scheduleWhen: Date | undefined;
+          let scheduleRollbackWindow: string | undefined;
+
+          if (parsed.schedulePath && existsSync(parsed.schedulePath)) {
+            const schedule = parseYaml(readFileSync(parsed.schedulePath, "utf8")) as UpgradeScheduleSpec;
+            const s = schedule.schedules.find((s) => s.upgrade === parsed.rollbackWindow);
+            if (s) {
+              scheduleWhen = new Date(s.when);
+              scheduleRollbackWindow = s["rollback-window"];
+            }
+          }
+
+          const safety = checkRollbackSafety(node, evaluatedAsOf, scheduleWhen, scheduleRollbackWindow);
+          console.log(`Rollback Safety Audit for '${parsed.rollbackWindow}':`);
+          console.log(`-----------------------------------------------`);
+          if (safety.safe) {
+            console.log(`Rollback is considered safe under current constraints.`);
+          } else {
+            for (const warning of safety.warnings) {
+              console.log(`- ${warning}`);
+            }
+          }
+          console.log("");
+        }
+        return 0;
+      }
+
+      if (parsed.sub === "evaluate-schedule") {
+        if (!parsed.schedulePath) {
+          console.error("ace: deps evaluate-schedule requires --schedule <path>");
+          return 1;
+        }
+        const schedule = parseYaml(readFileSync(parsed.schedulePath, "utf8")) as UpgradeScheduleSpec;
+        const outDir = parsed.outDir!;
+        const runbookFile = generateMigrationRunbook(graph, schedule, outDir, asOfDate);
+        console.log(`ace: evaluated schedule and generated migration runbook: ${runbookFile}`);
+        return 0;
+      }
+
       const resolved = resolveGraph(graph, parsed.chartsDir);
       if (parsed.sub === "validate") {
         console.log(`ace: dependency graph '${graph.metadata.name}' is valid (${resolved.order.length} charts)`);
@@ -1771,7 +1923,7 @@ export async function main(argv: readonly string[]): Promise<number> {
 
       const outDir = parsed.outDir!;
       if (parsed.outputEngine === "flux" || parsed.outputEngine === "both") {
-        writeManifestDir(outDir, generateFlux(resolved, parsed.namespace));
+        writeManifestDir(outDir, generateFlux(resolved, parsed.namespace, asOfDate));
       }
       if (parsed.outputEngine === "argocd" || parsed.outputEngine === "both") {
         writeManifestDir(outDir, generateArgoCD(resolved, parsed.namespace));

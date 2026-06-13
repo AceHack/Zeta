@@ -4,7 +4,7 @@ name: github-settings-drift
 # declarative-in-tree surface (rulesets, branch protection, Actions
 # variables, environments, Pages, CodeQL default-setup state, etc.).
 # Compares live `gh api` output against the checked-in expected snapshot
-# at tools/hygiene/github-settings.expected.json. Drift blocks this
+# at src/Core.TypeScript/hygiene/github-settings.expected.json. Drift blocks this
 # workflow; resolve by either reverting the setting in GitHub or
 # re-snapshotting and committing the new expected.
 #
@@ -29,9 +29,9 @@ on:
   # signal that the snapshot matches reality at merge time.
   pull_request:
     paths:
-      - "tools/hygiene/github-settings.expected.json"
-      - "tools/hygiene/snapshot-github-settings.ts"
-      - "tools/hygiene/check-github-settings-drift.ts"
+      - "src/Core.TypeScript/hygiene/github-settings.expected.json"
+      - "src/Core.TypeScript/hygiene/snapshot-github-settings.ts"
+      - "src/Core.TypeScript/hygiene/check-github-settings-drift.ts"
       - ".github/workflows/github-settings-drift.yml"
 
 permissions:
@@ -79,4 +79,4 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          bun tools/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"
+          bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"

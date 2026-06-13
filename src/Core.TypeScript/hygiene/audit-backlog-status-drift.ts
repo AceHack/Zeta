@@ -63,10 +63,10 @@ export function detectRepoRoot(): string {
     try {
         return execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" }).trim();
     } catch {
-        // Fallback: this file lives at <repo>/tools/hygiene/<name>.ts;
-        // resolve two levels up to reach the repo root. import.meta.dir is
+        // Fallback: this file lives at <repo>/src/Core.TypeScript/hygiene/<name>.ts;
+        // resolve three levels up to reach the repo root. import.meta.dir is
         // Bun-native and gives the directory containing THIS module file.
-        return resolve(import.meta.dir, "../..");
+        return resolve(import.meta.dir, "../../..");
     }
 }
 

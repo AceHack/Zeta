@@ -91,7 +91,7 @@ let private parseEvent (e: JsonElement) : NextAction =
 /// Read the fixture once; all primitives are copied into F# values so the
 /// JsonDocument can be disposed safely before the values are used.
 let private loadVectors () : World * NextAction list * World * World list =
-    let path = Path.Join(repoRoot (), "tools", "observe", "golden-vectors.json")
+    let path = Path.Join(repoRoot (), "src", "Core.TypeScript", "observe", "golden-vectors.json")
     use doc = JsonDocument.Parse(File.ReadAllText(path))
     let root = doc.RootElement
     let initial = parseWorld (root.GetProperty("initialWorld"))

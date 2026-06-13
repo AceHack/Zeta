@@ -37,8 +37,8 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { posix } from "node:path";
 import { join, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
-import { pack, DEFAULT_ENV } from "../../src/Core.TypeScript/zeta-id/zeta-id";
-import type { ZetaObservation, Authority, Momentum } from "../../src/Core.TypeScript/zeta-id/types";
+import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
+import type { ZetaObservation, Authority, Momentum } from "../zeta-id/types";
 
 interface Args {
   readonly personaSlot: number;

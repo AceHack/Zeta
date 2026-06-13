@@ -15,7 +15,7 @@ import { readdirSync, existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join, resolve, relative } from "node:path";
 
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 const SCAN_DIRS = [
     "memory",

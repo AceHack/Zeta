@@ -39,7 +39,7 @@ name: budget-snapshot-cadence
 # automatically (Actions billing / Packages / shared-storage).
 #
 # AgencySignature v1 attribution (per the canonical 10-trailer
-# convention documented in tools/hygiene/validate-
+# convention documented in src/Core.TypeScript/hygiene/validate-
 # agencysignature-pr-body.sh): this workflow's commits identify
 # themselves as the budget-cadence-workflow agent running on
 # GitHub Actions. The Human-Review-Evidence trailer is "none"

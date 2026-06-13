@@ -9,8 +9,13 @@ import {
   stringifyYaml,
   getTargetPath,
   setNestedProperty,
+  getResolvedVersion,
+  getMigrationPhase,
+  checkRollbackSafety,
+  generateMigrationRunbook,
   type AppDependencyGraphSpec,
   type ChartOutputsSpec,
+  type UpgradeScheduleSpec,
 } from "./deps";
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -134,7 +139,9 @@ describe("Graph Resolution & Topo Sort", () => {
       },
     };
 
-    expect(() => resolveGraph(graph)).toThrow(/Cycle detected: (chart-a -> chart-b -> chart-a|chart-b -> chart-a -> chart-b)/);
+    expect(() => resolveGraph(graph)).toThrow(
+      /Cycle detected: (chart-a -> chart-b -> chart-a|chart-b -> chart-a -> chart-b)/,
+    );
   });
 
   test("throws detailed error when implicit variable flow cycle detected", () => {
@@ -218,9 +225,7 @@ describe("Chart contract verification", () => {
       apiVersion: "zeta.lucent-financial-group.com/v1",
       kind: "ChartOutputs",
       metadata: { name: "postgres" },
-      outputs: [
-        { name: "connection-url", type: "string", value: ".Values.postgres.connectionUrl" },
-      ],
+      outputs: [{ name: "connection-url", type: "string", value: ".Values.postgres.connectionUrl" }],
     };
 
     writeFileSync(join(tmpDir, "postgres", "zeta-chart-outputs.yaml"), stringifyYaml(contract));
@@ -258,9 +263,7 @@ describe("Chart contract verification", () => {
       apiVersion: "zeta.lucent-financial-group.com/v1",
       kind: "ChartOutputs",
       metadata: { name: "postgres" },
-      outputs: [
-        { name: "admin-password", type: "string", value: ".Values.postgres.adminPassword" },
-      ],
+      outputs: [{ name: "admin-password", type: "string", value: ".Values.postgres.adminPassword" }],
     };
 
     writeFileSync(join(tmpDir, "postgres", "zeta-chart-outputs.yaml"), stringifyYaml(contract));
@@ -285,7 +288,9 @@ describe("Chart contract verification", () => {
       },
     };
 
-    expect(() => resolveGraph(graph, tmpDir)).toThrow(/Validation error: chart 'postgres' references output 'connection-url' which is not declared in its outputs contract/);
+    expect(() => resolveGraph(graph, tmpDir)).toThrow(
+      /Validation error: chart 'postgres' references output 'connection-url' which is not declared in its outputs contract/,
+    );
     rmSync(tmpDir, { recursive: true, force: true });
   });
 });
@@ -362,5 +367,117 @@ describe("Manifest Generation", () => {
         },
       },
     });
+  });
+});
+
+describe("Temporal Graph & B-0825 Features", () => {
+  const nodeWithTemporalSpec = {
+    chart: "postgres",
+    version: {
+      current: ">=15.0.0",
+      future: "==17.x",
+      "migration-window": {
+        name: "postgres-v17-cutover",
+        start: "2026-06-01T00:00:00Z",
+        end: "2026-08-01T00:00:00Z",
+        mode: "dual-running" as const,
+      },
+    },
+    "rollback-safety": {
+      "database-schema-incompatible": true,
+      "reverse-migration-required": true,
+      "ingress-removal-impact": "in-flight requests will fail",
+    },
+  };
+
+  test("getResolvedVersion and getMigrationPhase before, during, and after migration window", () => {
+    // Before migration
+    const beforeDate = new Date("2026-05-15T00:00:00Z");
+    expect(getResolvedVersion(nodeWithTemporalSpec, beforeDate)).toBe(">=15.0.0");
+    expect(getMigrationPhase(nodeWithTemporalSpec, beforeDate)).toBe("preparing");
+
+    // During migration (dual-running mode)
+    const duringDate = new Date("2026-07-01T00:00:00Z");
+    expect(getResolvedVersion(nodeWithTemporalSpec, duringDate)).toBe(">=15.0.0 | ==17.x");
+    expect(getMigrationPhase(nodeWithTemporalSpec, duringDate)).toBe("dual-running");
+
+    // After migration
+    const afterDate = new Date("2026-08-15T00:00:00Z");
+    expect(getResolvedVersion(nodeWithTemporalSpec, afterDate)).toBe("==17.x");
+    expect(getMigrationPhase(nodeWithTemporalSpec, afterDate)).toBe("cleanup");
+  });
+
+  test("getResolvedVersion resolves simple string version", () => {
+    const simpleNode = { chart: "redis", version: "7.0.0" };
+    expect(getResolvedVersion(simpleNode, new Date())).toBe("7.0.0");
+  });
+
+  test("checkRollbackSafety audits rollback window and logs warnings", () => {
+    // Audit before window expiry
+    const testDateWithin = new Date("2026-06-02T00:00:00Z"); // 1 day after start
+    const safetyWithin = checkRollbackSafety(nodeWithTemporalSpec, testDateWithin, undefined, "72h");
+
+    // It should have warnings from the compatibility settings but NOT rollback window expiry
+    expect(safetyWithin.safe).toBe(false);
+    expect(safetyWithin.warnings.some((w) => w.includes("expired"))).toBe(false);
+    expect(safetyWithin.warnings).toContain("Reverse migration required: Yes.");
+
+    // Audit after window expiry
+    const testDateExpired = new Date("2026-06-05T00:00:00Z"); // 4 days after start (exceeds 72h)
+    const safetyExpired = checkRollbackSafety(nodeWithTemporalSpec, testDateExpired, undefined, "72h");
+
+    expect(safetyExpired.safe).toBe(false);
+    expect(
+      safetyExpired.warnings.some((w) => w.includes("WARNING: Rollback window of 72h for postgres has expired")),
+    ).toBe(true);
+  });
+
+  test("generateMigrationRunbook generates a valid markdown runbook with blast radius", () => {
+    const graph: AppDependencyGraphSpec = {
+      apiVersion: "zeta.lucent-financial-group.com/v1",
+      kind: "AppDependencyGraph",
+      metadata: { name: "my-app" },
+      spec: {
+        dependsOn: [
+          nodeWithTemporalSpec,
+          {
+            chart: "my-service",
+            dependsOn: ["postgres"],
+          },
+        ],
+      },
+    };
+
+    const schedule: UpgradeScheduleSpec = {
+      schedules: [
+        {
+          upgrade: "postgres",
+          from: "15.x",
+          to: "17.x",
+          when: "2026-06-15T03:00:00Z",
+          "pre-conditions": ["canary-cluster has 7-day clean run with v17"],
+          "blast-radius": "all-tenants-using-postgres",
+          "rollback-window": "72h",
+        },
+      ],
+    };
+
+    const outDir = join(__dirname, "tmp-test-runbook");
+    const runbookPath = generateMigrationRunbook(graph, schedule, outDir, new Date("2026-06-01T00:00:00Z"));
+
+    const fs = require("node:fs");
+    expect(fs.existsSync(runbookPath)).toBe(true);
+    const content = fs.readFileSync(runbookPath, "utf8");
+
+    expect(content).toContain("# Migration Runbook");
+    expect(content).toContain("## Upgrade Schedule for 'postgres'");
+    expect(content).toContain("- **Target Chart**: postgres");
+    expect(content).toContain("- **Version Migration**: 15.x -> 17.x");
+    expect(content).toContain("- **Rollback Window**: 72h");
+    expect(content).toContain("- **Transitive Dependents in Graph**: my-service");
+    expect(content).toContain("#### Phase 1: Preparing");
+    expect(content).toContain("#### Phase 5: Cleanup");
+
+    fs.rmSync(outDir, { recursive: true, force: true });
   });
 });

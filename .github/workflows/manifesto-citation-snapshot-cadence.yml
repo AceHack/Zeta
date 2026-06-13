@@ -1,7 +1,7 @@
 name: manifesto-citation-snapshot-cadence
 
 # Daily cadence for B-0707 manifesto-citation time-series. Runs
-# `bun tools/hygiene/audit-manifesto-citations.ts --snapshot`,
+# `bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --snapshot`,
 # captures the resulting per-day JSON file under
 # docs/hygiene-history/manifesto-citations/YYYY-MM-DD.json, and pushes
 # a snapshot branch for the next maintainer/agent pass to land.
@@ -13,7 +13,7 @@ name: manifesto-citation-snapshot-cadence
 #  - .github/workflows/razor-cadence.yml (sibling daily-cadence)
 #  - B-0525 (constitutional-promotion readiness tracking — parent)
 #  - B-0707 (citation time-series — this workflow ships its 5th criterion)
-#  - tools/hygiene/audit-manifesto-citations.ts (the snapshot tool)
+#  - src/Core.TypeScript/hygiene/audit-manifesto-citations.ts (the snapshot tool)
 #
 # Security note (safe-pattern compliance per
 # https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/
@@ -81,7 +81,7 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          bun tools/hygiene/audit-manifesto-citations.ts --snapshot
+          bun src/Core.TypeScript/hygiene/audit-manifesto-citations.ts --snapshot
           if [ -n "${NOTE_INPUT:-}" ]; then
             echo "Note: $NOTE_INPUT"
           fi
@@ -151,7 +151,7 @@ jobs:
             echo "What:"
             echo "- One JSON snapshot at"
             echo "  docs/hygiene-history/manifesto-citations/${today}.json"
-            echo "  written by tools/hygiene/audit-manifesto-citations.ts"
+            echo "  written by src/Core.TypeScript/hygiene/audit-manifesto-citations.ts"
             echo "  --snapshot."
             echo
             echo "Proof:"

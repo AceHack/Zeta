@@ -51,7 +51,7 @@ import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
+const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..", "..");
 const LEDGER_PATH = join(REPO_ROOT, "memory", "promotion-ledger.jsonl");
 const WONT_DO_PATH = join(REPO_ROOT, "docs", "WONT-DO.md");
 

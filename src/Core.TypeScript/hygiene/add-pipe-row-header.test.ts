@@ -9,7 +9,7 @@ import {
   parseShardPath,
 } from "./add-pipe-row-header";
 
-const REPO_ROOT = resolve(import.meta.dir, "..", "..");
+const REPO_ROOT = resolve(import.meta.dir, "..", "..", "..");
 const SHARD_PREFIX = "docs/hygiene-history/ticks";
 
 function shardPath(rel: string): string {

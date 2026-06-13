@@ -8,7 +8,7 @@ import { lookup, type ConceptIndex } from "./concept-index.js";
 import { readFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-const REPO_ROOT = resolve(import.meta.dir, "../..");
+const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
 export function main(argv: string[]): number {
     const indexPath = join(REPO_ROOT, ".concept-index.json");

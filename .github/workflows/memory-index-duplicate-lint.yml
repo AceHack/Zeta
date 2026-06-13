@@ -19,19 +19,19 @@ name: memory-index-duplicate-lint
 #   - runs-on: ubuntu-24.04 pinned
 #
 # See:
-#   - tools/hygiene/audit-memory-index-duplicates.ts (the tool)
+#   - src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts (the tool)
 
 on:
   pull_request:
     paths:
       - "memory/MEMORY.md"
-      - "tools/hygiene/audit-memory-index-duplicates.ts"
+      - "src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts"
       - ".github/workflows/memory-index-duplicate-lint.yml"
   push:
     branches: [main]
     paths:
       - "memory/MEMORY.md"
-      - "tools/hygiene/audit-memory-index-duplicates.ts"
+      - "src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts"
       - ".github/workflows/memory-index-duplicate-lint.yml"
   workflow_dispatch: {}
 
@@ -62,4 +62,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bun tools/hygiene/audit-memory-index-duplicates.ts --enforce
+          bun src/Core.TypeScript/hygiene/audit-memory-index-duplicates.ts --enforce
