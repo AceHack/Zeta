@@ -2235,6 +2235,11 @@
     "target": "../../../../../../.claude/rules/claim-acquire-before-worktree-work.md"
   },
   {
+    "file": "docs/hygiene-history/ticks/2026/05/18/2131Z.md",
+    "line": 20,
+    "target": "../../../../../../src/Core.TypeScript/github/rest-push.ts"
+  },
+  {
     "file": "docs/hygiene-history/ticks/2026/05/18/2133Z.md",
     "line": 18,
     "target": "../../../../../../tools/hygiene/audit-tick-shard-relative-paths.baseline.json"
