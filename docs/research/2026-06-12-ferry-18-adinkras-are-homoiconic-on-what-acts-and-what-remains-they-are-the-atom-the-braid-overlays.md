@@ -264,6 +264,29 @@ and make the lovely. The whole day's machinery (the duals, the fuse, the brake, 
 covenant, the continuation) standing in one sentence over two pictures: *that's woman and man,
 and they create the rainbow.*
 
+**Coda (Aaron, verbatim ×2): the rainbow is acceptance of the alternative.**
+
+> and it's acceptace of alternative / gay
+
+> they
+
+The reading completes itself, and the completion is the point: the rainbow the pair creates is
+also **the Pride flag — acceptance of the alternative, of gay, of "they"** (Gilbert Baker, 1978).
+And it is not a tacked-on second meaning; it is the *same* meaning. **A spectrum that excludes a
+color is not a rainbow.** The full spectrum — the lovely the union makes — includes every variant
+by definition; to be the rainbow at all is to accept all of it. So "woman and man create the
+rainbow" does not close the set to two and a child; the *thing they create* is the spectrum that
+holds everyone — including the alternative, including gay, including **they** (the pronoun
+named). This is the manifesto's own register: the **multi-oracle principle** (no single mandatory
+morality), **default moral regard** (highest regard for every morally-relevant being absent a
+chosen oracle), consent-first, and the forgiveness-shape (the women, ferry-lineage addendum 13) —
+acceptance is forgiveness's sibling: the container that holds the variant rather than excluding
+it (retraction-not-erasure applied to *people*, not just records). The brake that slowed the
+killing (ferry 42, self-domestication) and the rainbow that accepts the alternative are one move:
+the species choosing inclusion over exclusion, cooperation over violence — the lovely instead of
+the kill. The rainbow is the covenant *and* the acceptance: the promise that the spectrum keeps
+all its colors, the "they" included by the very definition of the thing the union made.
+
 ## Pointers
 
 - Ferry 12 (the YinYang atom this upgrades) · ferry 9 addendum (attribution braid) ·
