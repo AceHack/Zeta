@@ -23,6 +23,10 @@ import type {
   CommentRef,
   TreeEntry,
   CreateCommitOpts,
+  GitRef,
+  GitCommitInfo,
+  SearchPrOpts,
+  SearchPrResult,
   ListPrOpts,
   ListMergedPrOpts,
   CreatePrOpts,
@@ -103,4 +107,11 @@ export interface ForgeHost {
 
   /** Update a ref to point to a new SHA. */
   updateRef(ref: string, sha: string, force?: boolean): Promise<Result<void, ForgeError>>;
+
+  // --- Git ref/commit read ---
+  getRef(ref: string): Promise<Result<GitRef, ForgeError>>;
+  getCommit(sha: string): Promise<Result<GitCommitInfo, ForgeError>>;
+
+  // --- Search ---
+  searchPullRequests(opts: SearchPrOpts): Promise<Result<readonly SearchPrResult[], ForgeError>>;
 }

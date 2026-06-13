@@ -34,6 +34,10 @@ export type {
   CreatePrOpts,
   ListIssueOpts,
   CreateIssueOpts,
+  GitRef,
+  GitCommitInfo,
+  SearchPrOpts,
+  SearchPrResult,
 } from "./types";
 
 // Interface

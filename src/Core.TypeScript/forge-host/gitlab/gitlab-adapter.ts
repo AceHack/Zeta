@@ -129,4 +129,13 @@ export class GitLabAdapter implements ForgeHost {
   async updateRef(_ref: string, _sha: string, _force?: boolean): Promise<Result<void, ForgeError>> {
     return err(forgeError("not-supported", "GitLab: updateRef not yet implemented"));
   }
+  async getRef(_ref: string): Promise<Result<import("../types").GitRef, ForgeError>> {
+    return err(forgeError("not-supported", "GitLab: getRef not yet implemented"));
+  }
+  async getCommit(_sha: string): Promise<Result<import("../types").GitCommitInfo, ForgeError>> {
+    return err(forgeError("not-supported", "GitLab: getCommit not yet implemented"));
+  }
+  async searchPullRequests(_opts: import("../types").SearchPrOpts): Promise<Result<readonly import("../types").SearchPrResult[], ForgeError>> {
+    return err(forgeError("not-supported", "GitLab: searchPullRequests not yet implemented"));
+  }
 }

@@ -220,3 +220,35 @@ export interface CreateIssueOpts {
   readonly body: string;
   readonly labels?: readonly string[];
 }
+
+// --- Git ref/commit read types ---
+
+export interface GitRef {
+  readonly ref: string;
+  readonly sha: string;
+}
+
+export interface GitCommitInfo {
+  readonly sha: string;
+  readonly treeSha: string;
+  readonly message: string;
+  readonly parents: readonly string[];
+}
+
+// --- Extended PR search ---
+
+export interface SearchPrOpts {
+  readonly state?: "open" | "merged" | "closed" | "all";
+  readonly search?: string;
+  readonly limit?: number;
+  readonly author?: string;
+  readonly since?: string;
+}
+
+export interface SearchPrResult {
+  readonly number: number;
+  readonly state: "open" | "merged" | "closed";
+  readonly createdAt: string;
+  readonly mergedAt: string | null;
+  readonly closedAt: string | null;
+}

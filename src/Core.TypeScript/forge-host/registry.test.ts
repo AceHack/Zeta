@@ -25,6 +25,9 @@ function stubAdapter(name: string): ForgeHost {
     createTree: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
     createCommit: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
     updateRef: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
+    getRef: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
+    getCommit: async () => ({ ok: false, error: { kind: "not-supported", message: "stub", retryable: false } }),
+    searchPullRequests: async () => ok([]),
   } as ForgeHost;
 }
 
