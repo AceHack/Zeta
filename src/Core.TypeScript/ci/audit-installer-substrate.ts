@@ -163,17 +163,14 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "RestartSec = \"30s\"", // bounded backoff before retrying registration intent
       "network-online.target", // waits for network before registration intent
       "zeta-creds-restore.service", // ordered after restored creds when that service exists
-      'default = "${cfg.home}/Zeta";', // repoRoot derives from home override
-      'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.ts";', // scriptPath derives from repoRoot override
-      'default = "${cfg.home}/.config/zeta/self-registered.marker";', // markerPath derives from home override
-      'default = "${cfg.home}/.config/zeta/self-registration-intent";', // intentDir derives from home override
-      "tools/installer/zeta-self-register.ts", // delegates implementation to B-0855.2
-      ".local/share/mise/shims/bun", // runtime follows the repo-wide mise-managed Bun substrate
-      "BUN_INSTALL", // keeps Bun global CLI state anchored under cfg.home
+      'default = "/etc/zeta";', // repoRoot = the install repo (flake source on the node)
+      'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.sh";', // scriptPath = the B-0855.2 bash impl
+      'default = "/var/lib/zeta-self-register/self-registered.marker";', // markerPath via systemd StateDirectory
+      "tools/installer/zeta-self-register.sh", // delegates implementation to the B-0855.2 bash script
+      'StateDirectory = "zeta-self-register"', // marker dir owned by the service user (cred-restore leaves ~/.config root-owned)
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
-      "ZETA_SELF_REGISTER_INTENT_DIR", // intent handoff dir exported to implementation
     ],
-    rationale: "B-0855.1 service must be a post-install marker-gated oneshot ordered after network and credential restore surfaces",
+    rationale: "B-0855.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces",
   },
   {
     path: "full-ai-cluster/nixos/modules/injected-hostname.nix",
