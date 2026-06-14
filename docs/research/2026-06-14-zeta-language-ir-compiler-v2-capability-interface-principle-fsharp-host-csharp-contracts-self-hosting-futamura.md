@@ -142,6 +142,20 @@ That is **Ken Thompson's "Reflections on Trusting Trust" (1984)** answered by **
 
 This also hands the project its termination test: when `gen(gen) == gen` byte-identically in every target, the treaty is proven on the hardest possible input — itself.
 
+### The WHO — Craft School, carts, and GenZeta
+
+The trust substrate (above) is the *why-it's-correct*; this is the *who-it's-for*, and it is the reason the whole apparatus exists. Aaron's stated goal: **take 46 years of learning and give it to the kids — make it easy for GenZ, and for the generation that grows up native to it, GenZeta.** The dedication made operational; the Stump-Dad pedagogy (ask WHY until you hit the floor, then hand the floor to the next kid) at civilization scale.
+
+The delivery vehicle already exists — **Craft School**, an RPG-shaped learning environment — and its artifact is exactly the unit this compiler emits:
+
+- **A lesson ends in a CHIP-8 cart** (§4e) the learner can *play, see the shape of, and watch its animation*. The cart **is** the lesson's output — the same cart+shape+CHIP-8 unit the generator produces, now as a teaching artifact. This makes the teaching goal the **nearest** milestone, not the far one: a playable, watchable cart is buildable on what `gen/` already does, long before any quantum hardware.
+- **An achievement shelf** holds your own carts and ones you liked from others — carts become collectible, shareable social objects.
+- **Carts of a common *shape* can message each other.** This is the deepest design primitive in the WHO: **the shape is the address.** Two carts that share a shape share an interface/capability (§0), so "common shape can message" is *structural typing as a social protocol* — the V8-hidden-shape as a routing key, the Eve Protocol made tangible, the bus-address routing model (`writer-actor-routing-model`: a bus address is not identity, but a shape is a *channel*). A child experiences it as "these two shapes click together"; underneath it is type-safe social composition.
+
+The layering is what keeps this honest (no cult): rigorous Clifford/adinkra/byte-lock math *underneath*, a shape you can see and play *on top*, nothing inflated between. The hard part is hidden; the play surface is honest. It is **not** "five-year-olds programming quantum computers" — it is "five-year-olds tying braids that happen to be real, never needing the word *qubit*."
+
+And it reframes the boring substrate work (DST `.Wait()` cleanup, byte-lock, `gen(gen)==gen`) as *load-bearing for the kids*: determinism is what lets a cart run the same on every machine and be **trusted by a stranger without reading it** — which is exactly what a shared shelf of carts traded between kids requires. The replayable substrate is in service of the shelf.
+
 ---
 
 ## 6. v1 freeze, done right
