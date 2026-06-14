@@ -181,6 +181,7 @@
     <Compile Include="Dsl.fs" />
     <Compile Include="Vision.fs" />
     <Compile Include="PredictionInference.fs" />
+    <Compile Include="PredictionScheduler.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="Injection.fs" />
     <Compile Include="InjectionExt.fs" />
