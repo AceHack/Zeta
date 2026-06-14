@@ -104,7 +104,7 @@ export function fromCanonicalYaml(yaml: string): DecodeResult {
   return { ok: true, value: decodeResult.value };
 }
 
-function fromYamlValue(yv: YamlValue, depth: number): DecodeResult {
+export function fromYamlValue(yv: YamlValue, depth: number): DecodeResult {
   if (depth > MAX_NESTING_DEPTH) {
     return { ok: false, error: "NestingTooDeep" };
   }

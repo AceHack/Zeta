@@ -10,6 +10,7 @@ let ``DynamicValue toYaml and fromYaml round-trips correctly`` () =
         DynamicValue.Object [
             "a", DynamicValue.Int 10L
             "b", DynamicValue.String "hello"
+            "f", DynamicValue.Float 3.14
             "n", DynamicValue.Null
             "nested", DynamicValue.Array [ DynamicValue.Int 1L; DynamicValue.Bool true ]
         ]

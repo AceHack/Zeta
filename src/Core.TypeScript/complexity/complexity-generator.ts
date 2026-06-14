@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
+import { parse as parseYaml } from "../yaml/dom";
+import { fromYamlValue, canonicalYaml } from "../dynamic-value/yaml";
 
 interface Entry {
   artifact: string;
@@ -10,70 +12,69 @@ interface Entry {
   by: string;
 }
 
-function valueAfterColon(line: string): string {
-  const colon = line.indexOf(":");
-  if (colon < 0) {
-    throw new Error(`Expected YAML key/value line with colon: ${line}`);
-  }
-  return line.slice(colon + 1).trim();
-}
-
-function stripQuotes(str: string): string {
-  if ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'"))) {
-    return str.slice(1, -1);
-  }
-  return str;
-}
-
-function parseYaml(filePath: string): Entry[] {
+function parseYamlFile(filePath: string): Entry[] {
   const content = fs.readFileSync(filePath, "utf-8");
+  const parseRes = parseYaml(content);
+  if (!parseRes.ok) {
+    throw new Error(`YAML syntax error in ${filePath}: ${parseRes.feedback}`);
+  }
+  const decodeRes = fromYamlValue(parseRes.value, 0);
+  if (!decodeRes.ok) {
+    throw new Error(`YAML decode error in ${filePath}: ${decodeRes.error}`);
+  }
+  const dv = decodeRes.value;
+  if (dv.t !== "obj") {
+    throw new Error(`Expected YAML root to be a map (Object), got: ${dv.t}`);
+  }
+  const entriesPair = dv.v.find(([k]) => k === "entries");
+  if (!entriesPair) {
+    throw new Error(`Expected 'entries' key in complexity registry YAML.`);
+  }
+  const entriesVal = entriesPair[1];
+  if (entriesVal.t !== "arr") {
+    throw new Error(`Expected 'entries' to be a sequence (Array), got: ${entriesVal.t}`);
+  }
   const entries: Entry[] = [];
-  let currentEntry: Partial<Entry> | null = null;
-  const lines = content.split("\n");
-  let inEntries = false;
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.startsWith("entries:")) {
-      inEntries = true;
-      continue;
+  for (const item of entriesVal.v) {
+    if (item.t !== "obj") {
+      throw new Error(`Expected each entry in 'entries' to be a map, got: ${item.t}`);
     }
-    if (!inEntries) continue;
-
-    if (trimmed.startsWith("- artifact:")) {
-      if (
-        currentEntry &&
-        currentEntry.artifact &&
-        currentEntry.op &&
-        currentEntry.time &&
-        currentEntry.space &&
-        currentEntry.by
-      ) {
-        entries.push(currentEntry as Entry);
+    const entry: Partial<Entry> = {};
+    for (const [k, val] of item.v) {
+      let valStr = "";
+      if (val.t === "str") {
+        valStr = val.v;
+      } else if (val.t === "int") {
+        valStr = val.v;
+      } else if (val.t === "bool") {
+        valStr = val.v ? "true" : "false";
+      } else if (val.t === "null") {
+        valStr = "null";
+      } else {
+        throw new Error(`Expected entry field ${k} to be a primitive scalar, got: ${val.t}`);
       }
-      currentEntry = { artifact: valueAfterColon(trimmed) };
-    } else if (currentEntry) {
-      if (trimmed.startsWith("op:")) {
-        currentEntry.op = valueAfterColon(trimmed);
-      } else if (trimmed.startsWith("time:")) {
-        currentEntry.time = stripQuotes(valueAfterColon(trimmed));
-      } else if (trimmed.startsWith("space:")) {
-        currentEntry.space = stripQuotes(valueAfterColon(trimmed));
-      } else if (trimmed.startsWith("by:")) {
-        currentEntry.by = valueAfterColon(trimmed);
-      }
+      if (k === "artifact") entry.artifact = valStr;
+      else if (k === "op") entry.op = valStr;
+      else if (k === "time") entry.time = valStr;
+      else if (k === "space") entry.space = valStr;
+      else if (k === "by") entry.by = valStr;
     }
+    if (!entry.artifact || !entry.op || !entry.time || !entry.space || !entry.by) {
+      throw new Error(`Missing fields in entry: ${JSON.stringify(entry)}`);
+    }
+    entries.push(entry as Entry);
   }
-  if (
-    currentEntry &&
-    currentEntry.artifact &&
-    currentEntry.op &&
-    currentEntry.time &&
-    currentEntry.space &&
-    currentEntry.by
-  ) {
-    entries.push(currentEntry as Entry);
+
+  // Canonicalize the source file itself
+  const canonicalRes = canonicalYaml(dv);
+  if (!canonicalRes.ok) {
+    throw new Error(`Failed to canonicalize DynamicValue YAML: ${canonicalRes.error}`);
   }
+  if (canonicalRes.value !== content) {
+    console.log(`Re-formatting ${filePath} to canonical format...`);
+    fs.writeFileSync(filePath, canonicalRes.value, "utf-8");
+  }
+
   return entries;
 }
 
@@ -332,7 +333,7 @@ export const DECLARED: Record<string, Cost> = {
 function main() {
   const rootDir = path.resolve(__dirname, "../../..");
   const yamlPath = path.join(rootDir, "registry/complexity-registry.yaml");
-  const entries = parseYaml(yamlPath);
+  const entries = parseYamlFile(yamlPath);
 
   console.log(`Parsed ${entries.length} entries from ${yamlPath}`);
 

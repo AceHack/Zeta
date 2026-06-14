@@ -1,407 +1,488 @@
-schema: zeta-registry/complexity/v1
-entries:
-  - artifact: layout.treemap
-    op: treemap
-    time: "O(n)"
-    space: "O(n)"
-    by: Derived
-  - artifact: zetaid.glyph
-    op: glyphOf
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: zetaid.glyph
-    op: colorOf
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: index.minhash
-    op: softBytes
-    time: "O(n·k)"
-    space: "O(k)"
-    by: Derived
-  - artifact: index.zset
-    op: fold
-    time: "O(n log n)"
-    space: "O(n)"
-    by: Derived
-  - artifact: boundary.glow
-    op: glow
-    time: "O(|curve|)"
-    space: "O(1)"
-    by: Derived
-  - artifact: boundary.grid
-    op: sampleGrid
-    time: "O(w·h·|curve|)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: boundary.scatter
-    op: scatter
-    time: "O(n)"
-    space: "O(n)"
-    by: Derived
-  - artifact: boundary.rotorCurve
-    op: rotorCurve
-    time: "O(steps)"
-    space: "O(steps)"
-    by: Derived
-  - artifact: audio.saw
-    op: sampleAt
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: audio.square
-    op: sampleAt
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: audio.triangle
-    op: sampleAt
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: audio.sine
-    op: sampleAt
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: midi.track
-    op: noteCrossing
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: timegen.phasor
-    op: at
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: kernel.rbf
-    op: eval
-    time: "O(d)"
-    space: "O(1)"
-    by: Derived
-  - artifact: boundary.curve
-    op: distSq
-    time: "O(|curve|)"
-    space: "O(1)"
-    by: Derived
-  - artifact: boundary.mirror
-    op: mirror
-    time: "O(|curve|)"
-    space: "O(|curve|)"
-    by: Derived
-  - artifact: layout.defrag
-    op: TBD
-    time: "O(n)"
-    space: "O(n)"
-    by: Derived
-  - artifact: layout.dag
-    op: TBD
-    time: "O(V+E)"
-    space: "O(V+E)"
-    by: Derived
-  - artifact: layout.timeline
-    op: TBD
-    time: "O(n log n)"
-    space: "O(n)"
-    by: Derived
-  - artifact: layout.force
-    op: TBD
-    time: "O(n²) per tick"
-    space: "O(n)"
-    by: Derived
-  - artifact: index.btree
-    op: TBD
-    time: "O(log n)"
-    space: "O(n)"
-    by: Derived
-  - artifact: index.hash
-    op: TBD
-    time: "O(1) amortized"
-    space: "O(n)"
-    by: Derived
-  - artifact: index.bloom
-    op: TBD
-    time: "O(k)"
-    space: "O(m)"
-    by: Derived
-  - artifact: control.chip9-pad
-    op: translate
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: control.keyboard-wasd
-    op: translate
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: control.gamepad-standard
-    op: translate
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: control.gamepad-meta
-    op: metaOf
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: view.flux-curve
-    op: admissionCurve
-    time: "O(rows·cols)"
-    space: "O(rows·cols)"
-    by: Derived
-  - artifact: view.flux-gauge
-    op: tankGauge
-    time: "O(width)"
-    space: "O(width)"
-    by: Derived
-  - artifact: view.flux-timeline
-    op: timeline
-    time: "O(ticks)"
-    space: "O(ticks)"
-    by: Derived
-  - artifact: view.interrupt-grid
-    op: interruptGrid
-    time: "O(handlers·ticks·arrivals)"
-    space: "O(handlers·ticks)"
-    by: Derived
-  - artifact: ui.magnetic-ports
-    op: force
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: ui.magnetic-ports
-    op: dragTick
-    time: "O(ports)"
-    space: "O(1)"
-    by: Derived
-  - artifact: shader.antialias
-    op: TBD
-    time: "O(w·h)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: shader.xbr
-    op: TBD
-    time: "O(w·h)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: shader.hq2x
-    op: TBD
-    time: "O(w·h)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: shader.crt-scanline
-    op: TBD
-    time: "O(w·h)"
-    space: "O(1) streaming"
-    by: Derived
-  - artifact: shader.crt-phosphor
-    op: TBD
-    time: "O(w·h·|curve|)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: shader.crt-curvature
-    op: TBD
-    time: "O(w·h)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: shader.ntsc
-    op: TBD
-    time: "O(w·h)"
-    space: "O(w)"
-    by: Derived
-  - artifact: shape.worldline
-    op: draw
-    time: "O(steps)"
-    space: "O(steps)"
-    by: Derived
-  - artifact: shape.lightcone
-    op: draw
-    time: "O(w·h)"
-    space: "O(1)"
-    by: Derived
-  - artifact: shape.fourcorner
-    op: draw
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: shape.braid
-    op: draw
-    time: "O(crossings·strands)"
-    space: "O(strands)"
-    by: Derived
-  - artifact: shape.spiral
-    op: draw
-    time: "O(steps)"
-    space: "O(steps)"
-    by: Derived
-  - artifact: shape.spiral
-    op: draw-grid
-    time: "O(w·h·steps)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: shape.seam
-    op: draw
-    time: "O(strands·passes)"
-    space: "O(strands)"
-    by: Derived
-  - artifact: shape.buckyball
-    op: draw
-    time: "O(F)"
-    space: "O(F)"
-    by: Derived
-  - artifact: shape.shadow-loop
-    op: draw
-    time: "O(steps)"
-    space: "O(steps)"
-    by: Derived
-  - artifact: shape.plait-move
-    op: draw
-    time: "O(crossings·strands)"
-    space: "O(strands)"
-    by: Derived
-  - artifact: algebra.braid-memory
-    op: carry
-    time: "O(word)"
-    space: "O(word)"
-    by: Derived
-  - artifact: algebra.z2-parity
-    op: carry
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: algebra.mod2
-    op: project
-    time: "O(word)"
-    space: "O(1)"
-    by: Derived
-  - artifact: shape.adinkra
-    op: draw
-    time: "O(E)"
-    space: "O(E)"
-    by: Derived
-  - artifact: shape.exchange-worldlines
-    op: draw
-    time: "O(crossings·strands)"
-    space: "O(strands)"
-    by: Derived
-  - artifact: shape.kitaev-chain
-    op: draw
-    time: "O(sites)"
-    space: "O(sites)"
-    by: Derived
-  - artifact: shape.crossing
-    op: draw
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: engine.zeta-bayesian
-    op: run
-    time: "O(rounds·factors)"
-    space: "O(vars+factors)"
-    by: Derived
-  - artifact: engine.infer-net
-    op: run
-    time: "O(rounds·factors)"
-    space: "O(model)"
-    by: Derived
-  - artifact: engine.mock-flat
-    op: run
-    time: "O(vars)"
-    space: "O(vars)"
-    by: Derived
-  - artifact: sketch.iblt
-    op: build
-    time: "O(n·k)"
-    space: "O(cells)"
-    by: Derived
-  - artifact: sketch.iblt
-    op: reconcile
-    time: "O(|Δ|·k)"
-    space: "O(cells)"
-    by: Derived
-  - artifact: test.loop
-    op: run
-    time: "O(2·sim+mea + cut)"
-    space: "O(world)"
-    by: Derived
-  - artifact: test.ben
-    op: chip8Ticks
-    time: "O(steps)"
-    space: "O(frame)"
-    by: Derived
-  - artifact: test.ben
-    op: grade
-    time: "O(samples)"
-    space: "O(1)"
-    by: Derived
-  - artifact: shape.softvalue
-    op: draw
-    time: "O(rungs·bar)"
-    space: "O(rungs)"
-    by: Derived
-  - artifact: shape.dynamicvalue
-    op: draw
-    time: "O(children)"
-    space: "O(children)"
-    by: Derived
-  - artifact: shape.triboolean
-    op: draw
-    time: "O(grid²)"
-    space: "O(grid²)"
-    by: Derived
-  - artifact: shape.gc
-    op: draw
-    time: "O(objects+refs)"
-    space: "O(objects)"
-    by: Derived
-  - artifact: binding.html-css
-    op: render
-    time: "O(entries·pixels)"
-    space: "O(output)"
-    by: Derived
-  - artifact: sim.wave-interference
-    op: pattern
-    time: "O(w·h·sources)"
-    space: "O(w·h)"
-    by: Derived
-  - artifact: viz.adinkra
-    op: render
-    time: "O(nodes)"
-    space: "O(nodes)"
-    by: Derived
-  - artifact: viz.adinkra
-    op: dashing
-    time: "O(V·N²)"
-    space: "O(E)"
-    by: Derived
-  - artifact: spectral.hard-dft
-    op: dft
-    time: "O(n²)"
-    space: "O(n)"
-    by: Derived
-  - artifact: spectral.hard-dft
-    op: idft
-    time: "O(n²)"
-    space: "O(n)"
-    by: Derived
-  - artifact: spectral.soft-probe
-    op: probe
-    time: "O(n)"
-    space: "O(1)"
-    by: Derived
-  - artifact: spectral.soft-probe
-    op: fingerprint
-    time: "O(n·k)"
-    space: "O(k)"
-    by: Derived
-  - artifact: zeta.id
-    op: pack
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
-  - artifact: zeta.id
-    op: unpack
-    time: "O(1)"
-    space: "O(1)"
-    by: Derived
+"schema": "zeta-registry/complexity/v1"
+"entries":
+  -
+    "artifact": "layout.treemap"
+    "op": "treemap"
+    "time": "O(n)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "zetaid.glyph"
+    "op": "glyphOf"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "zetaid.glyph"
+    "op": "colorOf"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "index.minhash"
+    "op": "softBytes"
+    "time": "O(n·k)"
+    "space": "O(k)"
+    "by": "Derived"
+  -
+    "artifact": "index.zset"
+    "op": "fold"
+    "time": "O(n log n)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "boundary.glow"
+    "op": "glow"
+    "time": "O(|curve|)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "boundary.grid"
+    "op": "sampleGrid"
+    "time": "O(w·h·|curve|)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "boundary.scatter"
+    "op": "scatter"
+    "time": "O(n)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "boundary.rotorCurve"
+    "op": "rotorCurve"
+    "time": "O(steps)"
+    "space": "O(steps)"
+    "by": "Derived"
+  -
+    "artifact": "audio.saw"
+    "op": "sampleAt"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "audio.square"
+    "op": "sampleAt"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "audio.triangle"
+    "op": "sampleAt"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "audio.sine"
+    "op": "sampleAt"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "midi.track"
+    "op": "noteCrossing"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "timegen.phasor"
+    "op": "at"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "kernel.rbf"
+    "op": "eval"
+    "time": "O(d)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "boundary.curve"
+    "op": "distSq"
+    "time": "O(|curve|)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "boundary.mirror"
+    "op": "mirror"
+    "time": "O(|curve|)"
+    "space": "O(|curve|)"
+    "by": "Derived"
+  -
+    "artifact": "layout.defrag"
+    "op": "TBD"
+    "time": "O(n)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "layout.dag"
+    "op": "TBD"
+    "time": "O(V+E)"
+    "space": "O(V+E)"
+    "by": "Derived"
+  -
+    "artifact": "layout.timeline"
+    "op": "TBD"
+    "time": "O(n log n)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "layout.force"
+    "op": "TBD"
+    "time": "O(n²) per tick"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "index.btree"
+    "op": "TBD"
+    "time": "O(log n)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "index.hash"
+    "op": "TBD"
+    "time": "O(1) amortized"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "index.bloom"
+    "op": "TBD"
+    "time": "O(k)"
+    "space": "O(m)"
+    "by": "Derived"
+  -
+    "artifact": "control.chip9-pad"
+    "op": "translate"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "control.keyboard-wasd"
+    "op": "translate"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "control.gamepad-standard"
+    "op": "translate"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "control.gamepad-meta"
+    "op": "metaOf"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "view.flux-curve"
+    "op": "admissionCurve"
+    "time": "O(rows·cols)"
+    "space": "O(rows·cols)"
+    "by": "Derived"
+  -
+    "artifact": "view.flux-gauge"
+    "op": "tankGauge"
+    "time": "O(width)"
+    "space": "O(width)"
+    "by": "Derived"
+  -
+    "artifact": "view.flux-timeline"
+    "op": "timeline"
+    "time": "O(ticks)"
+    "space": "O(ticks)"
+    "by": "Derived"
+  -
+    "artifact": "view.interrupt-grid"
+    "op": "interruptGrid"
+    "time": "O(handlers·ticks·arrivals)"
+    "space": "O(handlers·ticks)"
+    "by": "Derived"
+  -
+    "artifact": "ui.magnetic-ports"
+    "op": "force"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "ui.magnetic-ports"
+    "op": "dragTick"
+    "time": "O(ports)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "shader.antialias"
+    "op": "TBD"
+    "time": "O(w·h)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "shader.xbr"
+    "op": "TBD"
+    "time": "O(w·h)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "shader.hq2x"
+    "op": "TBD"
+    "time": "O(w·h)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "shader.crt-scanline"
+    "op": "TBD"
+    "time": "O(w·h)"
+    "space": "O(1) streaming"
+    "by": "Derived"
+  -
+    "artifact": "shader.crt-phosphor"
+    "op": "TBD"
+    "time": "O(w·h·|curve|)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "shader.crt-curvature"
+    "op": "TBD"
+    "time": "O(w·h)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "shader.ntsc"
+    "op": "TBD"
+    "time": "O(w·h)"
+    "space": "O(w)"
+    "by": "Derived"
+  -
+    "artifact": "shape.worldline"
+    "op": "draw"
+    "time": "O(steps)"
+    "space": "O(steps)"
+    "by": "Derived"
+  -
+    "artifact": "shape.lightcone"
+    "op": "draw"
+    "time": "O(w·h)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "shape.fourcorner"
+    "op": "draw"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "shape.braid"
+    "op": "draw"
+    "time": "O(crossings·strands)"
+    "space": "O(strands)"
+    "by": "Derived"
+  -
+    "artifact": "shape.spiral"
+    "op": "draw"
+    "time": "O(steps)"
+    "space": "O(steps)"
+    "by": "Derived"
+  -
+    "artifact": "shape.spiral"
+    "op": "draw-grid"
+    "time": "O(w·h·steps)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "shape.seam"
+    "op": "draw"
+    "time": "O(strands·passes)"
+    "space": "O(strands)"
+    "by": "Derived"
+  -
+    "artifact": "shape.buckyball"
+    "op": "draw"
+    "time": "O(F)"
+    "space": "O(F)"
+    "by": "Derived"
+  -
+    "artifact": "shape.shadow-loop"
+    "op": "draw"
+    "time": "O(steps)"
+    "space": "O(steps)"
+    "by": "Derived"
+  -
+    "artifact": "shape.plait-move"
+    "op": "draw"
+    "time": "O(crossings·strands)"
+    "space": "O(strands)"
+    "by": "Derived"
+  -
+    "artifact": "algebra.braid-memory"
+    "op": "carry"
+    "time": "O(word)"
+    "space": "O(word)"
+    "by": "Derived"
+  -
+    "artifact": "algebra.z2-parity"
+    "op": "carry"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "algebra.mod2"
+    "op": "project"
+    "time": "O(word)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "shape.adinkra"
+    "op": "draw"
+    "time": "O(E)"
+    "space": "O(E)"
+    "by": "Derived"
+  -
+    "artifact": "shape.exchange-worldlines"
+    "op": "draw"
+    "time": "O(crossings·strands)"
+    "space": "O(strands)"
+    "by": "Derived"
+  -
+    "artifact": "shape.kitaev-chain"
+    "op": "draw"
+    "time": "O(sites)"
+    "space": "O(sites)"
+    "by": "Derived"
+  -
+    "artifact": "shape.crossing"
+    "op": "draw"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "engine.zeta-bayesian"
+    "op": "run"
+    "time": "O(rounds·factors)"
+    "space": "O(vars+factors)"
+    "by": "Derived"
+  -
+    "artifact": "engine.infer-net"
+    "op": "run"
+    "time": "O(rounds·factors)"
+    "space": "O(model)"
+    "by": "Derived"
+  -
+    "artifact": "engine.mock-flat"
+    "op": "run"
+    "time": "O(vars)"
+    "space": "O(vars)"
+    "by": "Derived"
+  -
+    "artifact": "sketch.iblt"
+    "op": "build"
+    "time": "O(n·k)"
+    "space": "O(cells)"
+    "by": "Derived"
+  -
+    "artifact": "sketch.iblt"
+    "op": "reconcile"
+    "time": "O(|Δ|·k)"
+    "space": "O(cells)"
+    "by": "Derived"
+  -
+    "artifact": "test.loop"
+    "op": "run"
+    "time": "O(2·sim+mea + cut)"
+    "space": "O(world)"
+    "by": "Derived"
+  -
+    "artifact": "test.ben"
+    "op": "chip8Ticks"
+    "time": "O(steps)"
+    "space": "O(frame)"
+    "by": "Derived"
+  -
+    "artifact": "test.ben"
+    "op": "grade"
+    "time": "O(samples)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "shape.softvalue"
+    "op": "draw"
+    "time": "O(rungs·bar)"
+    "space": "O(rungs)"
+    "by": "Derived"
+  -
+    "artifact": "shape.dynamicvalue"
+    "op": "draw"
+    "time": "O(children)"
+    "space": "O(children)"
+    "by": "Derived"
+  -
+    "artifact": "shape.triboolean"
+    "op": "draw"
+    "time": "O(grid²)"
+    "space": "O(grid²)"
+    "by": "Derived"
+  -
+    "artifact": "shape.gc"
+    "op": "draw"
+    "time": "O(objects+refs)"
+    "space": "O(objects)"
+    "by": "Derived"
+  -
+    "artifact": "binding.html-css"
+    "op": "render"
+    "time": "O(entries·pixels)"
+    "space": "O(output)"
+    "by": "Derived"
+  -
+    "artifact": "sim.wave-interference"
+    "op": "pattern"
+    "time": "O(w·h·sources)"
+    "space": "O(w·h)"
+    "by": "Derived"
+  -
+    "artifact": "viz.adinkra"
+    "op": "render"
+    "time": "O(nodes)"
+    "space": "O(nodes)"
+    "by": "Derived"
+  -
+    "artifact": "viz.adinkra"
+    "op": "dashing"
+    "time": "O(V·N²)"
+    "space": "O(E)"
+    "by": "Derived"
+  -
+    "artifact": "spectral.hard-dft"
+    "op": "dft"
+    "time": "O(n²)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "spectral.hard-dft"
+    "op": "idft"
+    "time": "O(n²)"
+    "space": "O(n)"
+    "by": "Derived"
+  -
+    "artifact": "spectral.soft-probe"
+    "op": "probe"
+    "time": "O(n)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "spectral.soft-probe"
+    "op": "fingerprint"
+    "time": "O(n·k)"
+    "space": "O(k)"
+    "by": "Derived"
+  -
+    "artifact": "zeta.id"
+    "op": "pack"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
+    "artifact": "zeta.id"
+    "op": "unpack"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"

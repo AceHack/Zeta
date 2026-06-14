@@ -225,7 +225,7 @@ public static class DynamicValues
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (FirstDeferred(value, 0) is EncodeError deferred)
+        if (FirstYamlDeferred(value, 0) is EncodeError deferred)
         {
             return new Result<string, EncodeError>.Err(deferred);
         }
@@ -246,7 +246,7 @@ public static class DynamicValues
             DynamicValue.String s => new YamlValue.YStr(s.Value),
             DynamicValue.Array a => new YamlValue.YSeq(a.Items.Select(ToYamlValue).ToList()),
             DynamicValue.Object o => new YamlValue.YMap(o.Pairs.Select(p => new KeyValuePair<string, YamlValue>(p.Key, ToYamlValue(p.Value))).ToList()),
-            _ => throw new InvalidOperationException("Unreachable: Bytes checked by FirstDeferred")
+            _ => throw new InvalidOperationException("Unreachable: Bytes checked by FirstYamlDeferred")
         };
     }
 
@@ -349,6 +349,26 @@ public static class DynamicValues
                 return a.Items.Select(item => FirstDeferred(item, depth + 1)).FirstOrDefault(e => e is not null);
             case DynamicValue.Object o:
                 return o.Pairs.Select(pair => FirstDeferred(pair.Value, depth + 1)).FirstOrDefault(e => e is not null);
+            default:
+                return null;
+        }
+    }
+
+    private static EncodeError? FirstYamlDeferred(DynamicValue value, int depth)
+    {
+        if (depth > MaxNestingDepth)
+        {
+            return EncodeError.NestingTooDeep;
+        }
+
+        switch (value)
+        {
+            case DynamicValue.Bytes:
+                return EncodeError.BytesDeferred;
+            case DynamicValue.Array a:
+                return a.Items.Select(item => FirstYamlDeferred(item, depth + 1)).FirstOrDefault(e => e is not null);
+            case DynamicValue.Object o:
+                return o.Pairs.Select(pair => FirstYamlDeferred(pair.Value, depth + 1)).FirstOrDefault(e => e is not null);
             default:
                 return null;
         }
