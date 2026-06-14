@@ -60,16 +60,16 @@ function fold(hash: (bytes: Uint8Array) => MerkleHash, level: MerkleHash[]): Mer
 export function rootWith<T>(
   hash: (bytes: Uint8Array) => MerkleHash,
   encodeKey: (key: T) => Uint8Array,
-  z: ZSet<T>
+  z: ZSet<T>,
 ): MerkleHash {
-  const leavesTemp = z.map(e => ({
+  const leavesTemp = z.map((e) => ({
     kb: encodeKey(e.e),
-    w: e.w
+    w: e.w,
   }));
 
   leavesTemp.sort((a, b) => byteCompare(a.kb, b.kb));
 
-  const leaves = leavesTemp.map(e => hash(leafBytes(e.kb, BigInt(e.w))));
+  const leaves = leavesTemp.map((e) => hash(leafBytes(e.kb, BigInt(e.w))));
 
   return fold(hash, leaves);
 }
@@ -77,9 +77,6 @@ export function rootWith<T>(
 /**
  * Canonical Merkle root using the default digest (XxHash128 via MerkleHash).
  */
-export function root<T>(
-  encodeKey: (key: T) => Uint8Array,
-  z: ZSet<T>
-): MerkleHash {
+export function root<T>(encodeKey: (key: T) => Uint8Array, z: ZSet<T>): MerkleHash {
   return rootWith(ofBytes, encodeKey, z);
 }

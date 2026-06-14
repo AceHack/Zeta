@@ -33,6 +33,43 @@ if ! command -v mise >/dev/null 2>&1; then
   exit 0
 fi
 
+repair_codex_service_tier_config() {
+  codex_home="${CODEX_HOME:-$HOME/.codex}"
+  codex_config="$codex_home/config.toml"
+
+  if [ ! -f "$codex_config" ]; then
+    return 0
+  fi
+
+  if ! grep -Eq '^[[:space:]]*service_tier[[:space:]]*=[[:space:]]*"default"[[:space:]]*($|#)' "$codex_config"; then
+    return 0
+  fi
+
+  tmp="$(mktemp "${codex_config}.XXXXXX")"
+  if ! awk '
+    /^[[:space:]]*service_tier[[:space:]]*=[[:space:]]*"default"[[:space:]]*($|#)/ {
+      sub(/"default"/, "\"flex\"")
+    }
+    { print }
+  ' "$codex_config" >"$tmp"; then
+    rm -f "$tmp"
+    echo "warn: could not migrate deprecated Codex service_tier in $codex_config" >&2
+    return 0
+  fi
+
+  mode="$(stat -f %Lp "$codex_config" 2>/dev/null || stat -c %a "$codex_config" 2>/dev/null || echo "")"
+  if [ -n "$mode" ]; then
+    chmod "$mode" "$tmp" 2>/dev/null || true
+  fi
+
+  if mv "$tmp" "$codex_config"; then
+    echo "✓ codex config: migrated deprecated service_tier=\"default\" -> \"flex\" ($codex_config)"
+  else
+    rm -f "$tmp"
+    echo "warn: could not replace migrated Codex config at $codex_config" >&2
+  fi
+}
+
 # Read the manifest directly (NOT via a pipe) so an all-comments file doesn't trip pipefail,
 # and strip inline `#` comments + trim. First token is the package id; later key=value
 # qualifiers are metadata for smoke tests / other OS adapters. `|| [ -n "$line" ]` catches
@@ -50,5 +87,7 @@ while IFS= read -r line || [ -n "$line" ]; do
     echo "warn: 'bun install -g $pkg' failed; continuing (best-effort — auth/login is the operator's)" >&2
   fi
 done <"$MANIFEST"
+
+repair_codex_service_tier_config
 
 echo "✓ agent-clis step complete (login to each CLI separately — install is account-free)"

@@ -1,58 +1,78 @@
-// compare.ts — ZSetMerkle cross-language conformance oracle.
+// ZSetMerkle cross-language conformance oracle.
 //
-// Verifies every PRESENT language output (cs/go/python/ts/fsharp/rust — read
-// relative to this dir, absent ones skipped) against the CANONICAL vectors in
-// vectors.yaml: each impl must produce `expected_hex` for every vector id, with
-// the exact vector key-set (no missing / extra / renamed vectors). Exits non-zero
-// on any mismatch. assert-don't-skip: a primitive dir with no runnable oracle is
-// an unchecked primitive (cross-verify-all flags it), so this file is required.
-//
-// Output shape: { "<vector id>": "<hex hash>" }. Canonical source is
-// vectors.yaml's `expected_hex` per id (stronger than a TS-as-reference
-// cross-check — a value all impls agree on WRONGLY would still fail here).
+// Verifies every present language output against the canonical vectors in
+// vectors.yaml: each implementation must produce expected_hex for every vector
+// id, with the exact vector key-set. Absent implementation outputs are skipped so
+// ports can land independently, but at least one implementation must be present.
 
 import { readFileSync } from "fs";
+import { parse, type YamlValue } from "../../../src/Core.TypeScript/yaml/dom";
 
-// --- canonical expected hashes from vectors.yaml ---
-// Line-scan (not full YAML parse): the fixture is a flat list of `- id:` /
-// `expected_hex:` pairs; `id:` appears only as a vector key (entries use `key:`).
-const expected: Record<string, string> = {};
-{
-  let currentId: string | null = null;
-  for (const line of readFileSync("vectors.yaml", "utf8").split("\n")) {
-    const idMatch = line.match(/^\s*-?\s*id:\s*(\S+)\s*$/);
-    if (idMatch) {
-      currentId = idMatch[1] ?? null;
-      continue;
-    }
-    const hexMatch = line.match(/^\s*expected_hex:\s*"([0-9a-fA-F]+)"\s*$/);
-    if (hexMatch && currentId) {
-      expected[currentId] = (hexMatch[1] ?? "").toLowerCase();
-      currentId = null;
-    }
+type OutputMap = Record<string, string>;
+
+interface Vector {
+  id: string;
+  expectedHex: string;
+}
+
+function asMap(v: YamlValue, ctx: string): Array<[string, YamlValue]> {
+  if (v.t !== "Map") throw new Error(`expected Map at ${ctx}, got ${v.t}`);
+  return v.entries;
+}
+
+function field(entries: Array<[string, YamlValue]>, key: string): YamlValue | undefined {
+  for (const [k, val] of entries) if (k === key) return val;
+  return undefined;
+}
+
+function asStr(v: YamlValue | undefined): string | undefined {
+  return v !== undefined && v.t === "Str" ? v.value : undefined;
+}
+
+function loadOutput(path: string): OutputMap | null {
+  try {
+    return JSON.parse(readFileSync(path, "utf8")) as OutputMap;
+  } catch {
+    return null;
   }
 }
 
+const parsed = parse(readFileSync("vectors.yaml", "utf8"));
+if (!parsed.ok) {
+  console.error(`YAML parse failed: ${JSON.stringify(parsed.feedback)}`);
+  process.exit(1);
+}
+
+const root = asMap(parsed.value, "root");
+const vectorsNode = field(root, "vectors");
+if (vectorsNode === undefined || vectorsNode.t !== "Seq") {
+  console.error("fixture: missing `vectors` sequence");
+  process.exit(1);
+}
+
+const vectors: Vector[] = vectorsNode.items.map((item, i) => {
+  const entries = asMap(item, `vectors[${i}]`);
+  const id = asStr(field(entries, "id"));
+  const expectedHex = asStr(field(entries, "expected_hex"));
+  if (id === undefined || expectedHex === undefined) {
+    throw new Error(`vectors[${i}]: missing id or expected_hex`);
+  }
+  return { id, expectedHex: expectedHex.toLowerCase() };
+});
+
+const expected = Object.fromEntries(vectors.map((v) => [v.id, v.expectedHex])) as OutputMap;
 const expectedKeys = Object.keys(expected);
 if (expectedKeys.length === 0) {
   console.error("zset-merkle: no expected_hex vectors parsed from vectors.yaml");
   process.exit(1);
 }
 
-function loadOutput(file: string): Record<string, string> | null {
-  try {
-    return JSON.parse(readFileSync(file, "utf8")) as Record<string, string>;
-  } catch {
-    return null;
-  }
-}
-
-const impls: ReadonlyArray<readonly [string, string]> = [
+const implementations: ReadonlyArray<readonly [string, string]> = [
   ["TS", "ts-output.json"],
   ["F#", "fsharp-output.json"],
   ["C#", "cs-output.json"],
   ["Rust", "rust-output.json"],
-  ["Py", "python-output.json"],
+  ["Python", "python-output.json"],
   ["Go", "go-output.json"],
 ];
 
@@ -60,28 +80,38 @@ let mismatches = 0;
 let present = 0;
 const expectedKeySet = new Set(expectedKeys);
 
-console.log("ZSetMerkle cross-verification (each impl vs canonical vectors.yaml):");
-for (const [name, file] of impls) {
-  const out = loadOutput(file);
-  if (!out) {
+console.log("ZSetMerkle cross-verification:");
+console.log(`  expected: ${expectedKeys.length} vectors`);
+
+for (const [name, file] of implementations) {
+  const output = loadOutput(file);
+  if (output === null) {
     console.log(`  ${name}: MISSING (skipped)`);
     continue;
   }
-  present++;
-  const outKeys = Object.keys(out);
-  console.log(`  ${name}: ${outKeys.length} vectors`);
 
-  for (const k of outKeys) {
-    if (!expectedKeySet.has(k)) {
-      console.error(`Extra vector in ${name} not in vectors.yaml: ${k}`);
-      mismatches++;
+  present += 1;
+  const outputKeys = Object.keys(output);
+  console.log(`  ${name}: ${outputKeys.length} vectors`);
+
+  for (const key of outputKeys) {
+    if (!expectedKeySet.has(key)) {
+      console.error(`Extra vector in ${name} not present in fixture: ${key}`);
+      mismatches += 1;
     }
   }
-  for (const id of expectedKeys) {
-    const got = (out[id] ?? "").toLowerCase();
-    if (got !== expected[id]) {
-      console.error(`Mismatch ${id}: ${name}=${out[id] ?? "MISSING"} expected=${expected[id]}`);
-      mismatches++;
+
+  for (const key of expectedKeys) {
+    const got = output[key];
+    if (got === undefined) {
+      console.error(`Mismatch ${key}: ${name}=MISSING expected=${expected[key]}`);
+      mismatches += 1;
+      continue;
+    }
+
+    if (got.toLowerCase() !== expected[key]) {
+      console.error(`Mismatch ${key}: ${name}=${got} expected=${expected[key]}`);
+      mismatches += 1;
     }
   }
 }
@@ -92,9 +122,9 @@ if (present === 0) {
 }
 
 if (mismatches === 0) {
-  console.log(`✅ ${present} implementation(s) agree with the canonical ${expectedKeys.length} vectors.`);
+  console.log(`OK: ${present} implementation(s) agree with the canonical ${expectedKeys.length} vectors.`);
   process.exit(0);
-} else {
-  console.log(`❌ ${mismatches} mismatch(es).`);
-  process.exit(1);
 }
+
+console.log(`${mismatches} mismatch(es).`);
+process.exit(1);

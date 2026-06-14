@@ -127,6 +127,20 @@ test("Windows agent CLI install consumes the shared agent-clis manifest", () => 
   expect(installPs1).not.toContain("@google/gemini-cli");
 });
 
+test("Codex CLI setup migrates the deprecated service_tier default value", () => {
+  const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
+  const agentClisSh = readFileSync(join(setupDir, "common", "agent-clis.sh"), "utf8");
+
+  for (const installer of [installPs1, agentClisSh]) {
+    expect(installer).toContain("service_tier");
+    expect(installer).toContain('"default"');
+    expect(installer).toContain("flex");
+  }
+
+  expect(installPs1).toContain("Repair-CodexConfigServiceTier");
+  expect(agentClisSh).toContain("repair_codex_service_tier_config");
+});
+
 test("NixOS install shield validates agent-clis manifest, not one hardcoded CLI", () => {
   const dockerfile = readFileSync(
     join(repoRoot, "src", "Core.TypeScript", "ci", "dockerfiles", "nixos-install-sh-test", "Dockerfile"),

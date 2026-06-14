@@ -48,7 +48,6 @@ WORKDIR C:\workspace
 # avoids invalidating the build cache on unrelated repo changes).
 COPY tools/setup C:/workspace/tools/setup
 COPY src/Core.TypeScript/ci/windows-install-ps1-smoke.ts C:/workspace/src/Core.TypeScript/ci/windows-install-ps1-smoke.ts
-COPY tools/persistence/windows C:/workspace/tools/persistence/windows
 COPY src/Core.TypeScript/persistence/windows C:/workspace/src/Core.TypeScript/persistence/windows
 COPY .mise.toml C:/workspace/.mise.toml
 COPY package.json C:/workspace/package.json

@@ -68,6 +68,27 @@ function Get-ToolVersion {
   $ErrorActionPreference = 'SilentlyContinue'
   try { (& $Cmd 2>&1 | Select-Object -First 1) } finally { $ErrorActionPreference = $prev }
 }
+function Repair-CodexConfigServiceTier {
+  $codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE '.codex' }
+  $codexConfig = Join-Path $codexHome 'config.toml'
+  if (-not (Test-Path -LiteralPath $codexConfig)) { return }
+
+  try {
+    $text = [System.IO.File]::ReadAllText($codexConfig)
+    $updated = [regex]::Replace(
+      $text,
+      '(?m)^(\s*service_tier\s*=\s*)"default"(\s*(?:#.*)?$)',
+      '${1}"flex"$2'
+    )
+    if ($updated -ne $text) {
+      $utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
+      [System.IO.File]::WriteAllText($codexConfig, $updated, $utf8NoBom)
+      Write-Host "ok codex config: migrated deprecated service_tier=`"default`" -> `"flex`" ($codexConfig)"
+    }
+  } catch {
+    Write-Host "warn: could not migrate deprecated Codex service_tier in $codexConfig ($($_.Exception.Message)); continuing"
+  }
+}
 
 Write-Host "=== Zeta install -- Windows user-mode entry (scoop-primary, declarative) ==="
 Write-Host "Repo root: $RepoRoot"
@@ -233,6 +254,7 @@ if (Test-Path $agentCliManifest) {
 } else {
   Write-Host "warn: agent-clis manifest missing; skipping agent CLI install"
 }
+Repair-CodexConfigServiceTier
 
 # 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
 # `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and
