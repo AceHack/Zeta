@@ -25,6 +25,10 @@
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
+import {
+  bootstrapKindClusterInProcess,
+  bootstrapK3dClusterInProcess,
+} from "./harness/bootstrap.ts";
 
 export type Provider = "k3d" | "kind";
 export type Mode = "dry-run" | "preflight" | "run";
@@ -839,31 +843,40 @@ function bootstrapCluster(plan: HarnessPlan, options: CliOptions): Failure | nul
     if (options.existing) {
       return runOrFail("kubectl", ["config", "use-context", `kind-${plan.clusterName}`], "KubectlFailed", 30);
     }
-    return runOrFail(
-      "bun",
-      [
-        "src/Core.TypeScript/cluster/dev-cluster/kind-up.ts",
-        "--config",
-        options.configPath,
-        "--cluster-name",
-        plan.clusterName,
-        "--git-ref",
-        options.gitRef,
-      ],
-      "ClusterBootstrapFailed",
-      options.timeoutSeconds,
-      { ZETA_CONTAINER_RUNTIME: options.runtime },
-    );
+    try {
+      bootstrapKindClusterInProcess({
+        configPath: options.configPath,
+        clusterName: plan.clusterName,
+        gitRef: options.gitRef,
+        containerRuntime: options.runtime,
+      });
+      return null;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      return {
+        kind: "ClusterBootstrapFailed",
+        message: `kind bootstrap failed: ${message}`,
+        detail: { provider: "kind", clusterName: plan.clusterName },
+      };
+    }
   }
   if (options.existing) {
     return runOrFail("kubectl", ["config", "use-context", `k3d-${plan.clusterName}`], "KubectlFailed", 30);
   }
-  return runOrFail(
-    "bun",
-    ["src/Core.TypeScript/cluster/dev-cluster/k3d-up.ts", "--config", options.configPath, "--git-ref", options.gitRef],
-    "ClusterBootstrapFailed",
-    options.timeoutSeconds,
-  );
+  try {
+    bootstrapK3dClusterInProcess({
+      configPath: options.configPath,
+      gitRef: options.gitRef,
+    });
+    return null;
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    return {
+      kind: "ClusterBootstrapFailed",
+      message: `k3d bootstrap failed: ${message}`,
+      detail: { provider: "k3d", clusterName: plan.clusterName },
+    };
+  }
 }
 
 const ZETA_GITHUB_REPO_MARKER = "Lucent-Financial-Group/Zeta";

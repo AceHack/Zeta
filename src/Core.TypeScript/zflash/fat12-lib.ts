@@ -1,4 +1,4 @@
-// full-ai-cluster/tools/fat12-lib.ts
+// src/Core.TypeScript/zflash/fat12-lib.ts
 //
 // Pure FAT12 + VFAT long-filename (LFN) helpers — the byte-level logic behind
 // flash-and-inject.ts's raw key injection, extracted so it is importable and

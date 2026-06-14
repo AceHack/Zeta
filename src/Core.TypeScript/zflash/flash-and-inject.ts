@@ -34,15 +34,20 @@ import {
   closeSync,
   fstatSync,
   fsyncSync,
+  mkdtempSync,
   openSync,
   readFileSync,
   readSync,
+  rmSync,
+  writeFileSync,
   writeSync,
 } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { homedir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
-import { autoDiscoverIso, human, validateIso } from "../../src/Core.TypeScript/zflash/flash-usb-windows.ts";
+import { autoDiscoverIso, human, validateIso } from "./flash-usb-windows.ts";
+import { detectIsohybridEspOffsetBytes } from "./lib.ts";
+import { fat12Get, fat12Set, lfnChecksum, LFN_SLOTS } from "./fat12-lib.ts";
 
 const device = process.argv[2] ?? "\\\\.\\PhysicalDrive3";
 const keyFile = process.argv[3]!;
@@ -64,6 +69,21 @@ function ps(s: string): string {
     encoding: "utf8",
     maxBuffer: 8 * 1024 * 1024,
   });
+}
+
+function runDiskpartScript(script: string): string {
+  const dir = mkdtempSync(join(tmpdir(), "zeta-diskpart-"));
+  try {
+    const scriptPath = join(dir, "script.txt");
+    writeFileSync(scriptPath, script, "ascii");
+    return execFileSync("diskpart", ["/s", scriptPath], { encoding: "utf8" }).trim();
+  } finally {
+    try {
+      rmSync(dir, { recursive: true });
+    } catch {
+      /* best effort */
+    }
+  }
 }
 
 // ── raw aligned device IO ────────────────────────────────────────────
@@ -90,28 +110,6 @@ function writeRegion(fd: number, off: number, buf: Buffer): void {
   if (put !== buf.length) throw new Error(`short write ${put}/${buf.length}@${off}`);
 }
 
-// ── FAT12 helpers ────────────────────────────────────────────────────
-function fat12Get(fat: Buffer, c: number): number {
-  const o = Math.floor((c * 3) / 2);
-  const pair = fat[o]! | (fat[o + 1]! << 8);
-  return c & 1 ? pair >> 4 : pair & 0x0fff;
-}
-function fat12Set(fat: Buffer, c: number, v: number): void {
-  const o = Math.floor((c * 3) / 2);
-  if (c & 1) {
-    fat[o] = (fat[o]! & 0x0f) | ((v << 4) & 0xf0);
-    fat[o + 1] = (v >> 4) & 0xff;
-  } else {
-    fat[o] = v & 0xff;
-    fat[o + 1] = (fat[o + 1]! & 0xf0) | ((v >> 8) & 0x0f);
-  }
-}
-function lfnChecksum(s11: Buffer): number {
-  let sum = 0;
-  for (let i = 0; i < 11; i++) sum = ((((sum & 1) << 7) | (sum >> 1)) + s11[i]!) & 0xff;
-  return sum;
-}
-const LFN_SLOTS = [1, 3, 5, 7, 9, 14, 16, 18, 20, 22, 24, 28, 30];
 function lfnEntry(name: string, base: number, seqByte: number, cksum: number): Buffer {
   const e = Buffer.alloc(32, 0);
   e[0] = seqByte;
@@ -168,9 +166,7 @@ try {
 } catch (e) {
   W(`Clear-Disk failed (${e instanceof Error ? e.message.split("\n")[0] : e}); trying diskpart clean`);
   try {
-    const t = join(process.env.TEMP ?? "C:\\Windows\\Temp", `zclean-${process.pid}.txt`);
-    require("node:fs").writeFileSync(t, `select disk ${diskNum}\r\nclean\r\n`, "ascii");
-    W(execFileSync("diskpart", ["/s", t], { encoding: "utf8" }).trim());
+    W(runDiskpartScript(`select disk ${diskNum}\r\nclean\r\n`));
   } catch (e2) {
     fail(`cannot-blank-disk ${e2 instanceof Error ? e2.message.split("\n")[0] : e2}`);
   }
@@ -223,28 +219,18 @@ try {
     closeSync(isoFd);
   }
 
-  // 4. find the EFI System Partition (type 0xEF) by scanning all 4 MBR slots
-  //    of the IN-MEMORY ISO head (no device read).
+  // 4. locate ESP from in-memory ISO head (no device read).
   const mbr = isoHead.subarray(0, 512);
-  let partOffset = 0;
-  let espLBA = 0;
   for (let p = 0; p < 4; p++) {
     const o = 0x1be + p * 16;
     const type = mbr[o + 4]!;
     const lba = mbr.readUInt32LE(o + 8);
     const cnt = mbr.readUInt32LE(o + 12);
     W(`MBR[${p}]: type=0x${type.toString(16)} startLBA=${lba} sectors=${cnt}`);
-    if (type === 0xef && lba > 0) {
-      espLBA = lba;
-      partOffset = lba * 512;
-    }
   }
-  // Fallback: this ISO's ESP is deterministically at LBA 276 (offset 141312).
-  if (!partOffset) {
-    partOffset = 141312;
-    W(`no 0xEF entry found; falling back to known ESP offset ${partOffset}`);
-  }
-  W(`ESP at offset ${partOffset} (LBA ${espLBA || partOffset / 512})`);
+  const partOffset = detectIsohybridEspOffsetBytes(isoHead);
+  if (partOffset === null) fail("no-esp");
+  W(`ESP at offset ${partOffset} (LBA ${partOffset / 512})`);
   // Confirm it's a FAT BPB before trusting it (from the in-memory head).
   {
     const probe = isoHead.subarray(partOffset, partOffset + 512);
@@ -379,9 +365,7 @@ try {
   /* best effort */
 }
 try {
-  const t = join(process.env.TEMP ?? "C:\\Windows\\Temp", `zrescan-${process.pid}.txt`);
-  require("node:fs").writeFileSync(t, "rescan\r\n", "ascii");
-  execFileSync("diskpart", ["/s", t], { encoding: "utf8" });
+  runDiskpartScript("rescan\r\n");
 } catch {
   /* best effort */
 }

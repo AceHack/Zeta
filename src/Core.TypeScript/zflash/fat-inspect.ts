@@ -1,15 +1,9 @@
 #!/usr/bin/env bun
 /**
  * fat-inspect.ts — read-only inspector for a flashed USB's EFI System
- * Partition (FAT12). Reads the BPB, geometry, root directory, and free
- * cluster count directly from the raw physical drive — no mount required.
+ * Partition (FAT12). Companion verifier for flash-and-inject.ts.
  *
- * Companion / verifier for flash-and-inject.ts: confirms the ESP layout and
- * that the operator pubkey (`zeta-authorized-keys.pub`, 8.3 alias
- * `ZETA-A~1PUB`) actually landed on the FAT, independently of the flasher's
- * own read-back. Run from an ELEVATED shell (raw physical-drive read).
- *
- * argv: <device> <partByteOffset> <log>
+ * Run: bun src/Core.TypeScript/zflash/fat-inspect.ts <device> <partByteOffset> [log]
  */
 import { closeSync, openSync, readSync, appendFileSync } from "node:fs";
 

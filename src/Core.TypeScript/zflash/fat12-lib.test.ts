@@ -1,10 +1,6 @@
-// full-ai-cluster/tools/fat12-lib.test.ts
+// Unit tests for FAT12 + VFAT LFN byte logic behind raw ESP key injection.
 //
-// Unit tests for the FAT12 + VFAT LFN byte logic behind the raw key injection
-// (flash-and-inject.ts). The write/read symmetry pinned here is exactly what
-// the installer relies on to read `zeta-authorized-keys.pub` off the ESP.
-//
-// Run:  cd full-ai-cluster && bun test tools/fat12-lib.test.ts
+// Run: bun test src/Core.TypeScript/zflash/fat12-lib.test.ts
 
 import { test, expect, describe } from "bun:test";
 import {

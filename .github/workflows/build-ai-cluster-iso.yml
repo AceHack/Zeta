@@ -46,7 +46,7 @@ on:
       # filter missed the module changes. Broaden to all nixos/** +
       # tools/** under full-ai-cluster + the source-substrate audit tool.
       - "full-ai-cluster/nixos/**"
-      - "full-ai-cluster/tools/**"
+      - "src/Core.TypeScript/zflash/**"
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/ci/qemu-boot-test.ts"
@@ -62,7 +62,7 @@ on:
       - "full-ai-cluster/flake.lock"
       - "full-ai-cluster/usb-nixos-installer/**"
       - "full-ai-cluster/nixos/**"
-      - "full-ai-cluster/tools/**"
+      - "src/Core.TypeScript/zflash/**"
       - "src/Core.TypeScript/ci/audit-installer-substrate.ts"
       - "src/Core.TypeScript/ci/audit-installer-iso-content.ts"
       - "src/Core.TypeScript/ci/qemu-boot-test.ts"

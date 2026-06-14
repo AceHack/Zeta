@@ -168,12 +168,28 @@ pub fn from_value(value: f64, shape: FloatShape) -> Result<TriFloat, String> {
         return Err("v0 is unsigned + finite".to_string());
     }
     let value_bits = shape.high_width + shape.low_width;
-    let max_mode = (1u64 << shape.decoder_width) - 1;
-    let max_v = 1u64 << value_bits;
-    let bias = 1i32 << (shape.decoder_width as u32 - 1);
-    for mode in 0..=max_mode {
+    let max_mode = if shape.decoder_width >= 62 { u64::MAX } else { (1u64 << shape.decoder_width) - 1 };
+    let max_v = if value_bits >= 62 { u64::MAX } else { 1u64 << value_bits };
+    let bias = if shape.decoder_width >= 62 { i32::MAX } else { 1i32 << (shape.decoder_width as u32 - 1) };
+
+    if value == 0.0 {
+        let bits = vec![Tri::False; value_bits];
+        return Ok(TriFloat {
+            shape,
+            high: bits[..shape.high_width].to_vec(),
+            decoder: int_to_trits(0, shape.decoder_width),
+            low: bits[shape.high_width..].to_vec(),
+        });
+    }
+
+    let start_mode = bias as f64 - value_bits as f64 + value.log2().floor() - 2.0;
+    let start_mode = std::cmp::max(0, start_mode as i64) as u64;
+    for mode in start_mode..=max_mode {
         let exp = mode as i32 - bias;
         let scaled = value / 2f64.powi(exp); // = V
+        if scaled < 1.0 {
+            break;
+        }
         if scaled.fract() == 0.0 && scaled >= 0.0 && scaled < max_v as f64 {
             let v = scaled as u64;
             let bits = int_to_trits(v, value_bits);

@@ -1,6 +1,7 @@
 module Zeta.Cli.Program
 
 open System
+open System.IO
 open LibGit2Sharp
 open Zeta.Core
 open Zeta.Core.FSharp.Git
@@ -63,8 +64,34 @@ let private shapeRender (path: string) (kind: string) : int =
                     eprintfn "zeta: unknown projection '%s' (svg|html)" k
                     2
 
+/// `zeta flash …` — USB/ISO install media router (delegates to Core.TypeScript/zflash).
+let private runFlash (args: string list) : int =
+    match Repository.Discover(Environment.CurrentDirectory) with
+    | null ->
+        eprintfn "zeta: not inside a git repository (needed to locate zflash router)"
+        1
+    | repoPath ->
+        let root = Path.GetDirectoryName(repoPath)
+        let router = Path.Combine(root, "src", "Core.TypeScript", "zflash", "zeta-flash.ts")
+        if not (IO.File.Exists router) then
+            eprintfn "zeta: zflash router not found at %s" router
+            1
+        else
+            use proc = new Diagnostics.Process()
+            proc.StartInfo.FileName <- "bun"
+            proc.StartInfo.WorkingDirectory <- root
+            proc.StartInfo.UseShellExecute <- false
+            proc.StartInfo.ArgumentList.Add(router)
+            for a in args do proc.StartInfo.ArgumentList.Add(a)
+            proc.Start() |> ignore
+            proc.WaitForExit()
+            proc.ExitCode
+
 [<EntryPoint>]
 let main argv =
+    match Array.toList argv with
+    | "flash" :: rest -> runFlash rest
+    | _ ->
     match argv with
     | [| "shape"; "render"; path; kind |] -> shapeRender path kind
     | [| "shape"; "accept"; path |] -> shapeAccept path

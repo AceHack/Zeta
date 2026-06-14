@@ -125,27 +125,34 @@ module Float =
             Error "v0 is unsigned + finite"
         else
             let valueBits = shape.HighWidth + shape.LowWidth
-            let maxMode = (1L <<< shape.DecoderWidth) - 1L
-            let maxV = pown 2L valueBits
-            let bias = pown 2L (shape.DecoderWidth - 1)
+            let maxMode = if shape.DecoderWidth >= 62 then System.Int64.MaxValue else (1L <<< shape.DecoderWidth) - 1L
+            let maxV = if valueBits >= 62 then System.Int64.MaxValue else pown 2L valueBits
+            let bias = if shape.DecoderWidth >= 62 then System.Int64.MaxValue / 2L else pown 2L (shape.DecoderWidth - 1)
 
-            let rec tryMode (mode: int64) =
-                if mode > maxMode then
-                    Error(sprintf "no (mode,V) with mode<=%d and V<%d represents %g" maxMode maxV value)
-                else
-                    // V = value / 2 ^ (mode - bias)
-                    let scaled = value / (2.0 ** float (mode - bias))
-
-                    if System.Double.IsInteger scaled && scaled >= 0.0 && scaled < float maxV then
-                        let v = int64 scaled
-                        let bits = intToTrits v valueBits
-
-                        Ok
-                            { Shape = shape
-                              High = bits |> List.take shape.HighWidth
-                              Decoder = intToTrits mode shape.DecoderWidth
-                              Low = bits |> List.skip shape.HighWidth }
+            if value = 0.0 then
+                let bits = List.init valueBits (fun _ -> Tri.F)
+                Ok { Shape = shape
+                     High = bits |> List.take shape.HighWidth
+                     Decoder = intToTrits 0L shape.DecoderWidth
+                     Low = bits |> List.skip shape.HighWidth }
+            else
+                let log2v = System.Math.Log2 value
+                let startMode = int64 (float bias - float valueBits + System.Math.Floor(log2v) - 2.0)
+                let rec tryMode (mode: int64) =
+                    if mode > maxMode then
+                        Error(sprintf "no (mode,V) with mode<=%d and V<%d represents %g" maxMode maxV value)
                     else
-                        tryMode (mode + 1L)
+                        let scaled = value / (2.0 ** float (mode - bias))
+                        if scaled < 1.0 then
+                            Error(sprintf "no (mode,V) with mode<=%d and V<%d represents %g" maxMode maxV value)
+                        elif System.Double.IsInteger scaled && scaled >= 0.0 && scaled < float maxV then
+                            let v = int64 scaled
+                            let bits = intToTrits v valueBits
+                            Ok { Shape = shape
+                                 High = bits |> List.take shape.HighWidth
+                                 Decoder = intToTrits mode shape.DecoderWidth
+                                 Low = bits |> List.skip shape.HighWidth }
+                        else
+                            tryMode (mode + 1L)
 
-            tryMode 0L
+                tryMode (max 0L startMode)

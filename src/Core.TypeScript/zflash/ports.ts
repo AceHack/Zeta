@@ -73,6 +73,14 @@ export interface FileBackedImageWriteRequest {
   readonly testMode?: boolean;
 }
 
+/** Raw aligned block read/write on a host block device (flash-and-inject seam). */
+export interface AlignedBlockDevice {
+  readRegion(offset: number, length: number): Buffer;
+  writeRegion(offset: number, data: Buffer): void;
+  fsync(): void;
+  close(): void;
+}
+
 /** QEMU/test lane: materialize a bootable raw image without touching real USB. */
 export interface FileBackedImageExecutor {
   execute(request: FileBackedImageWriteRequest): { readonly outputImagePath: string };

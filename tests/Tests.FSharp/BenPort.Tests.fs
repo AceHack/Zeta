@@ -9,6 +9,7 @@ module Zeta.Tests.BenPortTests
 
 open global.Xunit
 open Zeta.Core
+open Zeta.Core.FSharp.ZetaId
 open BenchmarkDotNet.Configs
 open BenchmarkDotNet.Jobs
 open BenchmarkDotNet.Toolchains.InProcess.Emit
@@ -78,3 +79,62 @@ let ``BDN ADAPTER SMOKE (manual): wall meter drives the same case through the sa
                                                   member _.Sizes = [ 64 ]
                                                   member _.Run n = case.Run n }
     Assert.All(samples, fun (_, cost) -> Assert.True(cost > 0L))
+
+[<BenPort.ZetaBen("zeta.id", "pack")>]
+type ZetaIdPackCase() =
+    let obs = {
+        Version = IdVersion.V1
+        Timestamp = 123456789L<ms>
+        Chromosome = Chromosome.MetaCoherence
+        Category = Category.Observation
+        Firefly = Firefly.Off
+        Authority = Authority.Standard
+        Persona = Persona.HumanMaintainer
+        Momentum = Momentum.Normal
+        Location = Location.EastUsVa
+    }
+    interface BenPort.IBenCase with
+        member _.Artifact = "zeta.id"
+        member _.Op = "pack"
+        member _.Sizes = [ 1 ]
+        member _.Run _ =
+            let _ = ZetaIdCodec.pack obs DeterministicEnv.Instance
+            ()
+
+[<BenPort.ZetaBen("zeta.id", "unpack")>]
+type ZetaIdUnpackCase() =
+    let obs = {
+        Version = IdVersion.V1
+        Timestamp = 123456789L<ms>
+        Chromosome = Chromosome.MetaCoherence
+        Category = Category.Observation
+        Firefly = Firefly.Off
+        Authority = Authority.Standard
+        Persona = Persona.HumanMaintainer
+        Momentum = Momentum.Normal
+        Location = Location.EastUsVa
+    }
+    let id = ZetaIdCodec.pack obs DeterministicEnv.Instance
+    interface BenPort.IBenCase with
+        member _.Artifact = "zeta.id"
+        member _.Op = "unpack"
+        member _.Sizes = [ 1 ]
+        member _.Run _ =
+            let _ = ZetaIdCodec.unpack id
+            ()
+
+[<Fact>]
+let ``ZETAID BENCHMARK CASES: discovered, run successfully, and verify exact heap allocation`` () =
+    let pack = ZetaIdPackCase() :> BenPort.IBenCase
+    let unpack = ZetaIdUnpackCase() :> BenPort.IBenCase
+    
+    let packSamples = BenPort.samples BenPort.allocMeter pack
+    let unpackSamples = BenPort.samples BenPort.allocMeter unpack
+    
+    Assert.Equal(pack.Sizes.Length, packSamples.Length)
+    Assert.Equal(unpack.Sizes.Length, unpackSamples.Length)
+    
+    // unpack returns a ZetaObservation record instance (reference type), which allocates exactly 48 bytes on net10.0!
+    Assert.Equal(48L, snd unpackSamples.[0])
+
+

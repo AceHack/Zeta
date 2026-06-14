@@ -114,7 +114,9 @@ module ComplexityRegistry =
               ("spectral.hard-dft", "dft"), c "O(n²)" "O(n)" Derived
               ("spectral.hard-dft", "idft"), c "O(n²)" "O(n)" Derived
               ("spectral.soft-probe", "probe"), c "O(n)" "O(1)" Derived
-              ("spectral.soft-probe", "fingerprint"), c "O(n·k)" "O(k)" Derived ]
+              ("spectral.soft-probe", "fingerprint"), c "O(n·k)" "O(k)" Derived
+              ("zeta.id", "pack"), c "O(1)" "O(1)" Derived
+              ("zeta.id", "unpack"), c "O(1)" "O(1)" Derived ]
 
     /// THE BUDGET LINT: every registered artifact (generators + layouts + indexes + schemes) whose
     /// costs are entirely UNSTATED. Empty list = the requirement holds across the shelf.

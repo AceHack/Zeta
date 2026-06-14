@@ -2,21 +2,23 @@
 id: B-0844
 zetaid: 081KSGS9H0008QG0R001EZKNCB
 priority: P1
-status: open
+status: closed
 title: zflash --agent flag — native agent-driven auto-type challenge implementation closing the docstring-vs-actual-implementation gap; empirical anchor from 2026-05-26 USB-re-flash session (Aaron 2026-05-26)
 effort: S
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-06-11
 depends_on: []
 composes_with:
   - B-0789
 tags: [zflash, agent-driven, auto-type-challenge, pty, child-process-spawn, doc-implementation-gap, substrate-honest-disclosure, ux-improvement, touch-id-pam-preserved]
 ---
 
-## Problem
+## Closure (2026-06-11)
 
-Empirical anchor 2026-05-26 (3rd USB re-flash session): operator authorized agent-driven zflash with Touch ID approval. Agent ran `bun full-ai-cluster/tools/zflash.ts | tail -50` which:
+`--agent` mode implemented in `src/Core.TypeScript/zflash/cli.ts` — spawns `flash-usb` with piped stdin and auto-types `yes <nonce>` while preserving Touch ID PAM. Invoke via `zeta flash --agent` (B-1030 router) or `bun src/Core.TypeScript/zflash/cli.ts --agent`.
+
+## Problem operator authorized agent-driven zflash with Touch ID approval. Agent ran `bun full-ai-cluster/tools/zflash.ts | tail -50` which:
 
 1. Generated random nonce + printed "type: yes 649d" challenge
 2. Touch ID PAM gate fired (operator approved)

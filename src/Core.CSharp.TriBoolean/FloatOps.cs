@@ -132,13 +132,29 @@ public static class FloatOps
         }
 
         var valueBits = shape.HighWidth + shape.LowWidth;
-        var maxMode = (1L << shape.DecoderWidth) - 1;
-        var maxV = 1L << valueBits;
-        var bias = 1L << (shape.DecoderWidth - 1);
+        var maxMode = shape.DecoderWidth >= 62 ? long.MaxValue : (1L << shape.DecoderWidth) - 1;
+        var maxV = valueBits >= 62 ? long.MaxValue : 1L << valueBits;
+        var bias = shape.DecoderWidth >= 62 ? long.MaxValue / 2 : 1L << (shape.DecoderWidth - 1);
 
-        for (long mode = 0; mode <= maxMode; mode++)
+        if (value == 0.0)
+        {
+            var bits = new Tri[valueBits];
+            Array.Fill(bits, Tri.F);
+            return new EncodeResult.Encoded(new TriFloat(
+                shape,
+                bits.Take(shape.HighWidth).ToList(),
+                IntToTrits(0, shape.DecoderWidth),
+                bits.Skip(shape.HighWidth).ToList()));
+        }
+
+        var startMode = bias - valueBits + (long)Math.Floor(Math.Log2(value)) - 2;
+        for (long mode = Math.Max(0L, startMode); mode <= maxMode; mode++)
         {
             var scaled = value / Math.Pow(2, mode - bias); // = V
+            if (scaled < 1.0)
+            {
+                break;
+            }
             if (double.IsInteger(scaled) && scaled >= 0.0 && scaled < maxV)
             {
                 var v = (long)scaled;
