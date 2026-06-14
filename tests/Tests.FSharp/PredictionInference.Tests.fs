@@ -55,6 +55,40 @@ let ``budget backpressure does not rewrite posterior truth`` () =
     Assert.Equal<string list>([ "high"; "low" ], prediction.Budget.Deferred |> List.map _.Label)
 
 [<Fact>]
+let ``attention priority changes boarding order without rewriting posterior truth`` () =
+    let likely = candidate "likely" "A" (PS.rat 3L 4L) PS.one 6L
+    let attended = candidate "attended" "B" (PS.rat 1L 4L) PS.one 6L
+
+    let prediction =
+        [ likely; attended ]
+        |> PI.inferAndPredictWithPriority
+            (fun scored ->
+                if scored.Candidate.Label = "attended" then
+                    { PI.neutralPriority with Attention = PS.rat 10L 1L }
+                else
+                    PI.neutralPriority)
+            (SoftThrottle.tank 6.0 0.0)
+        |> mustOk
+
+    Assert.Equal("likely", prediction.Inference.Best.Candidate.Label)
+    Assert.Equal<string list>([ "attended" ], prediction.Budget.Boarded |> List.map _.Label)
+    Assert.Equal<string list>([ "likely" ], prediction.Budget.Deferred |> List.map _.Label)
+
+[<Fact>]
+let ``negative attention returns feedback instead of changing arithmetic truth`` () =
+    let candidate = candidate "branch" "A" PS.one PS.one 1L
+
+    match
+        [ candidate ]
+        |> PI.inferAndPredictWithPriority
+            (fun _ -> { PI.neutralPriority with Attention = PS.rat -1L 1L })
+            (SoftThrottle.tank 1.0 0.0)
+    with
+    | Error(PI.NegativeAttention("branch", value)) ->
+        Assert.Equal(0, PS.compare value (PS.rat -1L 1L))
+    | other -> Assert.Fail(sprintf "expected NegativeAttention, got %A" other)
+
+[<Fact>]
 let ``exact prediction inference can project to a soft DynamicValue distribution`` () =
     let a = candidate "low" "A" (PS.rat 1L 2L) (PS.rat 1L 3L) 1L
     let b = candidate "high" "B" (PS.rat 1L 2L) (PS.rat 2L 3L) 1L

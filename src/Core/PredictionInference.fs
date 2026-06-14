@@ -34,13 +34,27 @@ module PredictionInference =
         { Inference: Inference<'S>
           Budget: Vision.PredictionReport<'S> }
 
+    type BranchPriority =
+        { Attention: PS.Rational
+          Gravity: PS.Rational }
+
     type Feedback =
         | EmptyCandidates
         | NegativePrior of label: string * value: PS.Rational
         | NegativeLikelihood of label: string * value: PS.Rational
+        | NegativeAttention of label: string * value: PS.Rational
+        | NegativeGravity of label: string * value: PS.Rational
         | AllCandidatesRefuted
         | VisionFeedback of Vision.GrowthFeedback
         | SoftValueRefuted
+
+    type private Prioritized<'S> =
+        { Scored: Scored<'S>
+          BoardingWeight: PS.Rational }
+
+    let neutralPriority: BranchPriority =
+        { Attention = PS.one
+          Gravity = PS.one }
 
     let private nonNegative (r: PS.Rational) =
         PS.compare r PS.zero >= 0
@@ -54,6 +68,13 @@ module PredictionInference =
             byWeight
         else
             String.CompareOrdinal(left.Candidate.Label, right.Candidate.Label)
+
+    let private comparePrioritized (left: Prioritized<'S>) (right: Prioritized<'S>) =
+        let byPriority = PS.compare right.BoardingWeight left.BoardingWeight
+        if byPriority <> 0 then
+            byPriority
+        else
+            compareScored left.Scored right.Scored
 
     let infer (candidates: Candidate<'S> list) : Result<Inference<'S>, Feedback> =
         let rec validate acc total rest =
@@ -96,6 +117,44 @@ module PredictionInference =
             { Inference = inference
               Budget = report })
 
+    let predictWithPriority
+        (priorityOf: Scored<'S> -> BranchPriority)
+        (tank: SoftThrottle.Tank)
+        (inference: Inference<'S>)
+        : Result<Prediction<'S>, Feedback> =
+        let rec collect acc rest =
+            result {
+                match rest with
+                | [] ->
+                    let ordered =
+                        acc
+                        |> List.sortWith comparePrioritized
+                        |> List.map (fun prioritized -> prioritized.Scored.Branch)
+
+                    return!
+                        Vision.predictBranches ordered tank
+                        |> Result.mapError VisionFeedback
+                        |> Result.map (fun report ->
+                            { Inference = inference
+                              Budget = report })
+                | scored :: tail ->
+                    let priority = priorityOf scored
+
+                    if not (nonNegative priority.Attention) then
+                        return! Error(NegativeAttention(scored.Candidate.Label, priority.Attention))
+                    elif not (nonNegative priority.Gravity) then
+                        return! Error(NegativeGravity(scored.Candidate.Label, priority.Gravity))
+                    else
+                        let boardingWeight =
+                            scored.PosteriorWeight
+                            |> PS.mul priority.Attention
+                            |> PS.mul priority.Gravity
+
+                        return! collect ({ Scored = scored; BoardingWeight = boardingWeight } :: acc) tail
+            }
+
+        collect [] inference.Ranked
+
     let inferAndPredict
         (tank: SoftThrottle.Tank)
         (candidates: Candidate<'S> list)
@@ -103,6 +162,16 @@ module PredictionInference =
         result {
             let! inference = infer candidates
             return! predict tank inference
+        }
+
+    let inferAndPredictWithPriority
+        (priorityOf: Scored<'S> -> BranchPriority)
+        (tank: SoftThrottle.Tank)
+        (candidates: Candidate<'S> list)
+        : Result<Prediction<'S>, Feedback> =
+        result {
+            let! inference = infer candidates
+            return! predictWithPriority priorityOf tank inference
         }
 
     let posteriorShare (scored: Scored<'S>) (inference: Inference<'S>) : PS.Rational =
