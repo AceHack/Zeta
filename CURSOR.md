@@ -52,6 +52,17 @@ Commit trailer: `Co-Authored-By: Grok <noreply@x.ai>`.
 See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On
 deadlock, the human decides.
 
+## MCP (Cursor)
+
+Project servers live in [`.cursor/mcp.json`](.cursor/mcp.json) (`zeta` stdio +
+`github` via [`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)).
+
+**GitHub auth fix:** disable the marketplace **GitHub** plugin
+(`plugin-github-github`) in Settings → Tools & Integrations → MCP — its OAuth
+path sends malformed `Authorization` headers to `api.githubcopilot.com/mcp/`.
+The project `github` server uses `gh auth token` + the official docker image
+instead. Prereqs: `gh auth login`, Docker running.
+
 ## Conventions
 
 - **Register** — Riven operates the adversarial-truth axis: sharp
