@@ -52,6 +52,13 @@ fsharp_single_argument_web_mode = true
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
 
+# B-0969 invariant culture + ConfigureAwait(false) enforcement
+dotnet_diagnostic.CA1304.severity = error
+dotnet_diagnostic.CA1305.severity = error
+dotnet_diagnostic.CA1307.severity = error
+dotnet_diagnostic.CA1310.severity = error
+dotnet_diagnostic.CA2007.severity = error
+
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion

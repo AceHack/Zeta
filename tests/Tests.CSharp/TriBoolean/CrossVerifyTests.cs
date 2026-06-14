@@ -239,7 +239,7 @@ public class CrossVerifyTests
         // Write cs-output.json for compare.ts.
         var outputPath = Path.Join(root, "tests", "cross-verification", "tri-boolean", "cs-output.json");
         var json = JsonSerializer.Serialize(results, JsonOptions);
-        var lfJson = json.Replace("\r\n", "\n").Replace("\r", "\n");
+        var lfJson = json.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
         File.WriteAllText(outputPath, lfJson, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
     }
 }

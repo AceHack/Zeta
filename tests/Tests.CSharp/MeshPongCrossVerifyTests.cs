@@ -31,7 +31,7 @@ public sealed class MeshPongCrossVerifyTests
             .Where(l => !l.StartsWith('#') && l.Length > 0)
             .Select(l =>
             {
-                var i1 = l.IndexOf('\t');
+                var i1 = l.IndexOf('\t', StringComparison.Ordinal);
                 var i2 = l.IndexOf('\t', i1 + 1);
                 return (l[..i1], l[(i2 + 1)..]); // kind, rest (skip the tick; replay is order-driven)
             })

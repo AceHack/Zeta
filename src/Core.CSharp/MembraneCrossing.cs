@@ -26,7 +26,10 @@ public sealed record MembraneCrossing(int Tick, string Kind, int? IntArg, string
     private static bool IsStrKind(string k) => Array.IndexOf(StrKinds, k) >= 0;
 
     private static string Esc(string s) =>
-        s.Replace("\\", "\\\\").Replace("\t", "\\t").Replace("\n", "\\n").Replace("\r", "\\r");
+        s.Replace("\\", "\\\\", StringComparison.Ordinal)
+         .Replace("\t", "\\t", StringComparison.Ordinal)
+         .Replace("\n", "\\n", StringComparison.Ordinal)
+         .Replace("\r", "\\r", StringComparison.Ordinal);
 
     private static string Unesc(string s)
     {

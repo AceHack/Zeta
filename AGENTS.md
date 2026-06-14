@@ -446,6 +446,8 @@ role).
 - **Result-over-exception.** Errors flow as values.
 - **No partial functions on the public surface.**
   If a function can fail, its return type says so.
+- **Collation and Culture.** Default to `StringComparison.Ordinal` / `CultureInfo.InvariantCulture` for string comparisons/formatting to ensure bit-identical, culture-invariant determinism. Enforced by `.editorconfig` build error level diagnostics (CA1304, CA1305, CA1307, CA1310).
+- **ConfigureAwait(false).** Explicitly use `ConfigureAwait(false)` on all awaits in library paths. Enforced by `.editorconfig` build error level diagnostics (CA2007).
 - **Immutable by default.** Mutation is a local
   optimisation with a reviewer justification.
 - **Generic by default.** Specialise only with

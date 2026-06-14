@@ -44,6 +44,7 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
 
 - **Agents, not bots** — every AI carries agency; correct "bot" gently (GOVERNANCE.md §3).
 - **Result-over-exception** — errors surface as `Result<_, DbspError>`; no exceptions on hot paths.
+- **Collation and Culture / Async** — Default to `StringComparison.Ordinal` / `CultureInfo.InvariantCulture` for string comparisons/formatting, and explicitly use `ConfigureAwait(false)` on all awaits in library paths. Enforced by `.editorconfig` build error level diagnostics (CA1304, CA1305, CA1307, CA1310, CA2007).
 - **Memory fast-path** — read `~/.claude/projects/<slug>/memory/CURRENT-*.md` before raw
   `feedback_*.md` logs; CURRENT files win on conflict with older raw memories.
 - **`references/prior-art/` — explicit-target searches ONLY; NOT our code.** Gitignored, gigabytes,

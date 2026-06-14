@@ -130,7 +130,7 @@ public static class DynamicValues
         if (firstBracket != 0)
         {
             string keyPart = firstBracket < 0 ? segment : segment[..firstBracket];
-            if (keyPart.Contains(']'))
+            if (keyPart.Contains(']', StringComparison.Ordinal))
             {
                 return false; // stray ']' in the key part
             }

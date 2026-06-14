@@ -6,9 +6,21 @@ Carved sentence:
 > the math, the golden vectors, and all four language oracles.** Never use
 > platform-default string comparison in primitives (`Comparer<string>.Default`,
 > `String.Compare`, `ToLower`/`ToUpper` are culture-SENSITIVE) — use
-> `StringComparer.Ordinal` / `ToLowerInvariant`. NOT `InvariantCulture` either:
-> it's locale-fixed but still *linguistic* — not byte-identical, not codepoint
-> order, not bit-perfect. Use ordinal.
+> `StringComparer.Ordinal` / `ToLowerInvariant` / `StringComparison.Ordinal`.
+> NOT `InvariantCulture` for strings: it's locale-fixed but still *linguistic* —
+> not byte-identical, not codepoint order, not bit-perfect. Use ordinal.
+> For numeric parsing, formatting, and string interpolations, explicitly use
+> `CultureInfo.InvariantCulture` / `FormattableString.Invariant`.
+> Explicitly use `ConfigureAwait(false)` on awaits in library paths.
+
+## Diagnostics and Enforcement
+
+These rules are enforced at compiler/analyzer level for all harnesses in the repository via `.editorconfig` under `[*.{cs,csx}]`:
+- `CA1304` (Specify CultureInfo) ➔ `error`
+- `CA1305` (Specify IFormatProvider) ➔ `error`
+- `CA1307` (Specify StringComparison for clarity of intent) ➔ `error`
+- `CA1310` (Use Ordinal comparison when possible) ➔ `error`
+- `CA2007` (Do not directly await a Task / specify ConfigureAwait) ➔ `error`
 
 ## Bit-perfect caveat: "ordinal" still diverges across languages
 
@@ -27,6 +39,10 @@ low-level byte/order/UoM mismatch must not compound into AI↔human collision �
 Mars Climate Orbiter lesson (lbf vs N) generalized; get the bytes right so the
 morals stand on them. Culture-aware comparison is a UI/display concern, opt in at
 the edge.
+
+Library paths also require non-blocking, execution-context-independent awaits via
+`ConfigureAwait(false)` (CA2007) to prevent deadlocks in UI / synchronization-context
+bound platforms.
 
 ## Pointers
 

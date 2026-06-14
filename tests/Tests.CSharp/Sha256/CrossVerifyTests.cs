@@ -115,7 +115,7 @@ public class CrossVerifyTests
         // Use UTF-8 without BOM, LF line endings (cross-platform consistency).
         var outputPath = Path.Join(root, "tests", "cross-verification", "sha256", "cs-output.json");
         var json = JsonSerializer.Serialize(results, JsonOptions);
-        var lfJson = json.Replace("\r\n", "\n").Replace("\r", "\n");
+        var lfJson = json.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\r", "\n", StringComparison.Ordinal);
         File.WriteAllText(outputPath, lfJson, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
         Assert.Equal(0, mismatches);

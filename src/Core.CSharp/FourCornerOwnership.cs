@@ -33,7 +33,10 @@ public sealed record FourCornerOwnership(
     public bool HasFeedback => TOutFeedback is not null || TInFeedback is not null;
 
     private static string Esc(string s) =>
-        s.Replace("\\", "\\\\").Replace("\t", "\\t").Replace("\n", "\\n").Replace("\r", "\\r");
+        s.Replace("\\", "\\\\", StringComparison.Ordinal)
+         .Replace("\t", "\\t", StringComparison.Ordinal)
+         .Replace("\n", "\\n", StringComparison.Ordinal)
+         .Replace("\r", "\\r", StringComparison.Ordinal);
 
     private static string Unesc(string s)
     {
