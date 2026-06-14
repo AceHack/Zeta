@@ -160,16 +160,19 @@ var BitLayout = struct {
 	Location   BitField
 	Randomness BitField
 }{
-	Version:    BitField{Offset: VersionOffset, Width: VersionWidth},
-	Timestamp:  BitField{Offset: TimestampOffset, Width: TimestampWidth},
-	Chromosome: BitField{Offset: ChromosomeOffset, Width: ChromosomeWidth},
-	Category:   BitField{Offset: CategoryOffset, Width: CategoryWidth},
-	Firefly:    BitField{Offset: FireflyOffset, Width: FireflyWidth},
-	Authority:  BitField{Offset: AuthorityOffset, Width: AuthorityWidth},
-	Persona:    BitField{Offset: PersonaOffset, Width: PersonaWidth},
-	Momentum:   BitField{Offset: MomentumOffset, Width: MomentumWidth},
-	Location:   BitField{Offset: LocationOffset, Width: LocationWidth},
-	Randomness: BitField{Offset: RandomnessOffset, Width: RandomnessWidth},
+	// The generated *Offset/*Width constants are typed `Bits` (uint32);
+	// BitField.Offset/Width are `uint` (they feed big.Int.Lsh/Rsh, which take
+	// uint). Go has no implicit numeric conversion, so convert at the boundary.
+	Version:    BitField{Offset: uint(VersionOffset), Width: uint(VersionWidth)},
+	Timestamp:  BitField{Offset: uint(TimestampOffset), Width: uint(TimestampWidth)},
+	Chromosome: BitField{Offset: uint(ChromosomeOffset), Width: uint(ChromosomeWidth)},
+	Category:   BitField{Offset: uint(CategoryOffset), Width: uint(CategoryWidth)},
+	Firefly:    BitField{Offset: uint(FireflyOffset), Width: uint(FireflyWidth)},
+	Authority:  BitField{Offset: uint(AuthorityOffset), Width: uint(AuthorityWidth)},
+	Persona:    BitField{Offset: uint(PersonaOffset), Width: uint(PersonaWidth)},
+	Momentum:   BitField{Offset: uint(MomentumOffset), Width: uint(MomentumWidth)},
+	Location:   BitField{Offset: uint(LocationOffset), Width: uint(LocationWidth)},
+	Randomness: BitField{Offset: uint(RandomnessOffset), Width: uint(RandomnessWidth)},
 }
 
 func setBits(target *big.Int, field BitField, val uint64) {
