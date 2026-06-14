@@ -20,3 +20,4 @@ pub mod bag;
 pub mod gset;
 pub mod indexed_zset;
 pub mod zset;
+pub mod zset_merkle;

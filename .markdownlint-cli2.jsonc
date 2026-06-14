@@ -8,6 +8,9 @@
 {
   "ignores": [
     ".git/**",
+    "**/.claude/**",
+    "**/.kiro/**",
+    "**/.pytest_cache/**",
     "BenchmarkDotNet.Artifacts/**",
     "TestResults/**",
     "artifacts/**",

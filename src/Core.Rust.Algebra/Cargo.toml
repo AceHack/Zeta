@@ -11,7 +11,12 @@ publish = false
 # test reads the shared NESTED-JSON golden-vectors.json fixture (arrays-of-arrays),
 # for which a real parser is warranted; we match the Core.Rust.Observe pin ("1").
 # The production algebra has no dependencies.
+[features]
+default = ["xxh3"]
+xxh3 = ["zeta-core-merkle/xxh3"]
+
 [dependencies]
+zeta-core-merkle = { path = "../Core.Rust.Merkle", default-features = false }
 
 [dev-dependencies]
 serde_json = "1"
