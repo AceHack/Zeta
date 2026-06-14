@@ -31,9 +31,9 @@ spec:
             recommendations:
               enabled: true
         spire-server:
-          ca_subject:
+          caSubject:
             country: US
-            common_name: zeta-spire-ca
+            commonName: zeta-spire-ca
             organization: Zeta
           persistence:
             type: pvc

@@ -2,6 +2,23 @@
 # (SPIRE chains to Vault as upstream CA), BEFORE Trust Manager
 # (Trust Manager distributes SPIRE's CA bundle).
 
+# SPIRE CRDs (ClusterSPIFFEID, ClusterFederatedTrustDomain, ClusterStaticEntry)
+# MUST be installed before the spire chart — the hardened chart ships them as a
+# SEPARATE spire-crds chart (Helm CRD best-practice), and `spire` renders
+# ClusterSPIFFEID objects that fail "no matches for kind" without them. k3s'
+# helm-controller retries the spire install until these land.
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: spire-crds
+  namespace: kube-system
+spec:
+  chart: spire-crds
+  repo: https://spiffe.github.io/helm-charts-hardened/
+  version: 0.5.0
+  targetNamespace: spire
+  createNamespace: true
+---
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
@@ -21,9 +38,9 @@ spec:
         recommendations:
           enabled: true
     spire-server:
-      ca_subject:
+      caSubject:
         country: US
-        common_name: zeta-spire-ca
+        commonName: zeta-spire-ca
         organization: Zeta
       persistence:
         type: pvc

@@ -19,6 +19,12 @@ spec:
     helm:
       releaseName: longhorn
       valuesObject:
+        # The pre-upgrade checker Job is an UPGRADE-only hook; on a fresh
+        # install it deadlocks (its pod needs the ServiceAccount the blocked
+        # sync would create) and stalls the whole Longhorn sync -> no
+        # `longhorn` StorageClass -> every dependent PVC hangs Pending.
+        preUpgradeChecker:
+          jobEnabled: false
         defaultSettings:
           defaultDataPath: /var/lib/longhorn
           # Single control-plane node today. A replica count > the number of
