@@ -617,7 +617,14 @@ jobs:
     # Zeta-owned post-install repo scripts should not grow new `.sh`
     # entrypoints after Bucket B reached zero. The retained shell surface is
     # setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper only.
-    name: lint (bash retirement inventory)
+    #
+    # ALSO runs the full hygiene unit-test suite (bun test
+    # src/Core.TypeScript/hygiene/). Previously NO gate job ran it — only
+    # two named hygiene tests + the lint scripts ran — so an incomplete
+    # change (source allowlist updated, unit-test snapshot not) merged green
+    # and left a test silently red for ~10 PRs (#8216 fix; this step closes
+    # the gap). bun is already provisioned here, so it adds no extra install.
+    name: lint (bash retirement inventory + hygiene unit tests)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
@@ -669,6 +676,12 @@ jobs:
 
       - name: Run bash-retirement inventory guard
         run: bun run hygiene:check-bash-retirement-inventory
+
+      - name: Hygiene unit-test suite (closes the per-PR coverage gap)
+        # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
+        # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they
+        # are CI-safe. This is what would have caught #8216's stale snapshot.
+        run: bun test src/Core.TypeScript/hygiene/
 
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown
