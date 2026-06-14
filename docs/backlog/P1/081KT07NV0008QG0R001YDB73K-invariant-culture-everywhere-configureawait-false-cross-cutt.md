@@ -2,12 +2,12 @@
 id: B-0969
 zetaid: 081KT07NV0008QG0R001YDB73K
 priority: P1
-status: open
+status: closed
 title: Invariant-culture-everywhere + ConfigureAwait(false) as cross-cutting .NET defaults — never default to culture-sensitive (F# G-Set culture-sensitivity is the first concrete fix)
 effort: M
 ask: aaron 2026-06-01
 created: 2026-06-01
-last_updated: 2026-06-01
+last_updated: 2026-06-14
 depends_on: []
 composes_with:
   - B-0959
