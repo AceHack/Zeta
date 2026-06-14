@@ -1,11 +1,12 @@
 ---
 id: 081KTGYWCTT08QG0R001G96DXY
 type: task
-state: backlog
+state: done
 priority: P1
 slug: b-0969-cross-language-collation-c-rust-ts-ordinal-audit-non
 title: "B-0969 cross-language collation: C#/Rust/TS ordinal audit + non-ASCII golden-vector regen (un-mask the ASCII fixtures)"
 created: 2026-06-07T11:53:23.034Z
+completed: 2026-06-14T02:55:11.663Z
 depends_on: []
 composes_with: ["B-0969"]
 ---
