@@ -1,0 +1,25 @@
+apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: node-f82aa6
+  namespace: zeta-cluster
+  annotations:
+    zeta.lucent-financial-group.com/registered-at: "2026-06-14T17:10:55Z"
+    zeta.lucent-financial-group.com/registered-via: "B-0855.2-postboot"
+  labels:
+    zeta.lucent-financial-group.com/maintainer: "maximdolphin"
+spec:
+  hostname: node-f82aa6
+  registration:
+    maintainer: maximdolphin
+    timestamp: "2026-06-14T17:10:55Z"
+    via: post-boot-self-register
+  hardware:
+    cpu: "Intel(R) Core(TM) Ultra 9 185H"
+    cores: 22
+    memory: "66G"
+    gpu: "Intel Corporation Meteor Lake-P [Intel Arc Graphics] [8086:7d55] (rev 08)"
+    kernel: "6.12.90"
+    network:
+      ip: ""
+      mac: "b0:41:6f:17:87:cc"
