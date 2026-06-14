@@ -12,7 +12,9 @@ This v2 folds in a six-lens specialist review of v1 (Rodney, Soraya, Kira, Ilyan
 
 > **Everything is a declared interface capability. The generator emits exactly what a type's declared interfaces permit. The byte-lock holds because every capability — algebra, collation, scheduling, precision — is explicit and typed, never ambient.**
 
-This is not new, and the dispatch model is precise: it is **multiple dispatch over capabilities** — *not* double dispatch. The runtime/generator is handed several injected participants, each carrying its own declared capabilities, and it resolves the correct combination as a **graph, best-effort**. The human anchor is Aaron's Itron work: meters, network, and impls were each injected with capabilities, and the code mixed them correctly based on what each declared — a capability-resolution graph, not a fixed call chain. (External anchors: CLOS multimethods, Bobrow et al. 1988; Julia's multiple dispatch, Bezanson et al. 2017. Itron is already the repo's cited prior art for the ferry-boat throttle in `async-all-the-way-truthful-signatures`.)
+This is not new, and the dispatch model is precise: it is **multiple dispatch over capabilities** — *not* double dispatch. The runtime/generator is handed several injected participants, each carrying its own declared capabilities, and it resolves the correct combination as a **graph, best-effort**. The human anchor is Aaron's Itron work, whose four canonical injected interfaces were **meters · jobs · networks · identity** (networks spanning multiple mesh and cellular types; "impls" were *versions* of those four). Each was injected with capabilities and the engine mixed them by what each declared — a capability-resolution graph, not a fixed call chain. (External anchors: CLOS multimethods, Bobrow et al. 1988; Julia's multiple dispatch, Bezanson et al. 2017. Itron is already the repo's cited prior art for the ferry-boat throttle in `async-all-the-way-truthful-signatures`.)
+
+**The negative anchor — the WHY.** The Itron collection engine ran those four interfaces for ~15 years and ~a million lines, accreting *multiple versions* of each interface, but **without good composability — so it was plumbing everywhere** (Aaron). That lived failure is the motivation for Zeta: rather than hand-plumb N versions of 4 interfaces across a million lines, you **declare capabilities and the generator composes the mix** (multiple dispatch over the capability graph) — composability by construction, generated and byte-locked, not wired by hand. Zeta is the composable, self-generating answer to the collection engine. (Anchoring a negative — the prior art we are fixing — is as load-bearing as a positive one; `anchor-to-human-prior-art`.)
 
 The factory already runs this multiple dispatch in two layers — *policy* (who may mix with whom) and *mechanism* (how the chosen mix gets a fast path):
 
@@ -31,8 +33,11 @@ graph TD
     Contracts["C# interface contracts (in/out variance)"] --> IR
     FSharp["F# IR authoring + codegen (F# compiler IS the typechecker)"] --> IR["Zeta IR (homoiconic DynamicValue; hex-in-JSON/YAML)"]
     IR -->|capability-gated codegen| Targets["6 targets: TS · F# · C# · Rust · Python · Go"]
-    Targets -.->|north star| Self["gen(gen) == gen in all 6 (self-hosting)"]
+    IR -->|lower| Chip8["CHIP-8 cart (shape + bytecode) — the universal runnable substrate"]
+    Targets -.->|north star| Self["gen(gen) == gen in all 6 + cart (self-hosting)"]
 ```
+
+Every artifact the generator emits is a **cart** (a self-contained, distributable cartridge) carrying its **shape** (its V8-hidden-shape / capability signature) and **runs on CHIP-8** — the no-information-hazard universal substrate `gen/` already targets. The 6 high-level languages are *views*; the CHIP-8 cart is the *runnable lowest common denominator* that makes a generated unit portable and sandbox-safe everywhere. See §4e.
 
 What changed from v1, and why:
 
@@ -107,6 +112,10 @@ Same move closes the determinism gap. The scheduler/clock is **not** the target 
 
 v1's codegen emitted stateful classes (`StandardHasher`) while claiming interfaces-only. Under `interfaces-free-classes-earned`, emitted impls must be **weight-free** (no instance state) or cite the earning rule per target. The generator targets pure interface shapes; the V8 hidden-shape mechanism (§0) is exactly how a weight-free shape gets a fast path *without* capturing mutable state.
 
+### 4e. Every output is a cart + shape on CHIP-8
+
+The generator's emission unit is not just source text — it is a **cart**: a self-contained, distributable cartridge carrying (a) its **shape** (the V8-hidden-shape / capability signature — what the unit declares and therefore what dispatches against it) and (b) **CHIP-8 bytecode** so it runs on the universal substrate `gen/` already targets. The six high-level languages are *views* of a unit; the CHIP-8 cart is the runnable lowest common denominator — portable everywhere and sandbox-safe (CHIP-8 is the no-information-hazard sandbox, [`2026-06-09-chip8-is-the-no-information-hazard-sandbox`](2026-06-09-chip8-is-the-no-information-hazard-sandbox-to-practice-and-learn-the-rules-for-high-stakes-games.md)). This is already how the factory generates: `gen/` emits CHIP-8 assembly + reified types from the F# itself ([`2026-06-10 parser-generator-emits-chip8-assembly-for-the-cut-mea-sim-loop`](2026-06-10-parser-generator-emits-chip8-assembly-for-the-cut-mea-sim-loop-then-interrupts-thats-our-game.md); capacity treaty in [`2026-06-12 softvalue-dynamicvalue-on-the-court … chip8 vs chip9`](2026-06-12-softvalue-dynamicvalue-on-the-court-how-much-fits-chip8-vs-chip9-vs-deep-pixel-and-the-primitive-treaty-list.md)). So a Zeta-generated unit is: one IR → six language views + one CHIP-8 cart, each tagged with the same shape. The shape is what makes the cart dispatchable (§0) and what the byte-lock pins; the CHIP-8 cart is what makes "runs everywhere, including the self-hosting capstone" literal — `gen(gen)` (§5) produces a cart that runs the generator.
+
 ---
 
 ## 5. Self-hosting = the trust substrate (the WHY)
@@ -141,7 +150,8 @@ v1 cited no prior art (an `anchor-to-human-prior-art` debt on a load-bearing sur
 - **PEG** — Bryan Ford (2004). (Now moot — parser pruned — but named for completeness.)
 - **Nanopass compilation** — Sarkar, Waddell, Dybvig (2004). IR-lowering as small passes.
 - **DBSP** — Budiu, McSherry, Ryzhyk, Tannen (2022). The stream-operator algebra; `StreamMap`/`StreamFilter`/`StreamFoldTree` must trace to DBSP operators, not generic Rx. Already the repo's z-set-algebra anchor.
-- **Multiple dispatch / multimethods** — CLOS (Bobrow, DeMichiel, Gabriel, Keene, Kiczales, Moon 1988); Julia (Bezanson, Edelman, Karpinski, Shah 2017). The dispatch model (§0) — capability mixing across N axes, not double dispatch. Human/industrial anchor: Aaron's Itron meter/network/impl capability-injection graph (Itron also anchors the ferry-boat throttle in `async-all-the-way-truthful-signatures`).
+- **Multiple dispatch / multimethods** — CLOS (Bobrow, DeMichiel, Gabriel, Keene, Kiczales, Moon 1988); Julia (Bezanson, Edelman, Karpinski, Shah 2017). The dispatch model (§0) — capability mixing across N axes, not double dispatch. Human/industrial anchor: Aaron's Itron capability-injection graph over four interfaces (meters · jobs · networks · identity), and its **negative anchor** — the ~1M-line, 15-year collection engine whose lack of composability ("plumbing everywhere") is the failure Zeta exists to fix (Itron also anchors the ferry-boat throttle in `async-all-the-way-truthful-signatures`).
+- **CHIP-8 as universal substrate** — the factory's existing `gen/` target (CHIP-8 asm + reified types from the F# itself); the no-information-hazard sandbox. Every generated unit is a cart on it (§4e).
 - **Type classes / principled ad-hoc polymorphism** — Wadler & Blott (1989). The capability ladder (§4a).
 - **Self maps / hidden classes** — Chambers, Ungar, Hölzle (1989) → V8. The mechanism layer (§0).
 - **Futamura projections** — Yoshihiko Futamura (1971), *Partial Computation of Programs*. The self-hosting north star (§5). The 1st projection specializes an interpreter to a program (= a compiled program); the 2nd specializes the specializer to an interpreter (= a compiler); the 3rd specializes the specializer to *itself* (= a compiler-generator — a program that turns interpreters into compilers). Our generator emitting itself across 6 targets is the 3rd-projection fixed point: **a generator that, applied to its own definition, reproduces the generator.**
@@ -161,8 +171,8 @@ The panel was unanimous that v1's ordering (parser/codegen first, spec last) was
 2. **`golden-vectors-zeta-ir.json`** — hex-in-JSON byte-lock of the `ZSetMerkle` example, with a `SHALL` that all targets reproduce identical observable output (DST replay).
 3. **Capability interfaces** — define the algebra (Semigroup/Monoid/CommutativeMonoid…), scheduler (DoP knob), and collation capabilities as C# variance-annotated interfaces; specify which operators each unlocks (§4).
 4. **`tree_fold` obligation** — prove `combine_hashes` is a commutative-associative monoid via Z3/SMT cross-checked with an FsCheck property test (BP-16, ≥2 tools) *for any impl that declares CommutativeMonoid* — the capability gate makes this a per-impl proof obligation, not a global assumption.
-5. **One backend end-to-end** (propose F#, aligning with `gen/` FParsec discipline) behind a green golden-vector gate; then targets 2–6 one at a time, each behind its own CI gate.
-6. **Self-hosting milestone** (north star, §5): the generator emits its own definition; assert `gen(gen) == gen` per target as the capstone golden vector.
+5. **One backend end-to-end** (propose F#, aligning with `gen/` FParsec discipline) behind a green golden-vector gate; then targets 2–6 one at a time, each behind its own CI gate. Each unit also emits a **CHIP-8 cart + shape** (§4e), reusing the existing `gen/` CHIP-8 path.
+6. **Self-hosting milestone** (north star, §5): the generator emits its own definition; assert `gen(gen) == gen` per target *and as a runnable CHIP-8 cart* as the capstone golden vector.
 
 ---
 
