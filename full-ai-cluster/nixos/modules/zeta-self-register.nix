@@ -1,17 +1,19 @@
 # full-ai-cluster/nixos/modules/zeta-self-register.nix
 #
-# B-0855.1: NixOS service surface for post-install self-registration.
-# The service is intentionally disabled by default until B-0855.2 ships
-# the TypeScript implementation at tools/installer/zeta-self-register.ts.
-# Once enabled by a host config, it fires after the installed OS reaches
-# network-online and credential-restore ordering, then keeps retrying
-# until the local marker confirms registration intent was written.
+# B-0855.1 surface + B-0855.2 wiring: post-install first-boot self-registration.
+# Fires once the installed OS reaches network-online AND zeta-creds-restore has
+# put gh auth back (the cred-blob restores creds on first boot — AFTER the
+# installer ran, which is exactly why the install-time Step 6.9 registration was
+# always gated off). The ExecStart script opens a
+# maintainers/<gh-user>/cluster-nodes/<host>/node.yaml PR, then writes a marker so
+# subsequent boots no-op (idempotent; also no-ops if already on main).
+#
+# Enabled cluster-wide in common.nix. Per-host opt-out: zeta.selfRegister.enable = false;
 
 { config, lib, ... }:
 
 let
   cfg = config.zeta.selfRegister;
-  bunShimPath = "${cfg.home}/.local/share/mise/shims/bun";
 in
 {
   options.zeta.selfRegister = {
@@ -20,7 +22,7 @@ in
     user = lib.mkOption {
       type = lib.types.str;
       default = "zeta";
-      description = "User that runs zeta-self-register.service.";
+      description = "User that runs zeta-self-register.service (must hold the restored gh auth).";
     };
 
     group = lib.mkOption {
@@ -32,37 +34,31 @@ in
     home = lib.mkOption {
       type = lib.types.str;
       default = "/home/zeta";
-      description = "Home directory used for credentials and local marker state.";
+      description = "Home directory (carries the restored ~/.config/gh credentials).";
     };
 
     repoRoot = lib.mkOption {
       type = lib.types.str;
-      default = "${cfg.home}/Zeta";
-      description = "Path to the checked-out Zeta repository on the installed node.";
+      default = "/etc/zeta";
+      description = "Checked-out Zeta repo on the installed node (the flake source used by nixos-install).";
     };
 
     scriptPath = lib.mkOption {
       type = lib.types.str;
-      default = "${cfg.repoRoot}/tools/installer/zeta-self-register.ts";
-      description = "Bun TypeScript entrypoint for composing self-registration intent.";
+      default = "${cfg.repoRoot}/tools/installer/zeta-self-register.sh";
+      description = "Registration entrypoint (bash; self-contained, clones fresh, needs only gh+git).";
     };
 
     markerPath = lib.mkOption {
       type = lib.types.str;
-      default = "${cfg.home}/.config/zeta/self-registered.marker";
-      description = "Fast-path local marker written after registration intent exists.";
-    };
-
-    intentDir = lib.mkOption {
-      type = lib.types.str;
-      default = "${cfg.home}/.config/zeta/self-registration-intent";
-      description = "Directory where the service writes registration intent for the local agent steward.";
+      default = "/var/lib/zeta-self-register/self-registered.marker";
+      description = "Marker written after a successful (or already-registered) run; gates re-runs.";
     };
   };
 
   config = lib.mkIf cfg.enable {
     systemd.services.zeta-self-register = {
-      description = "Zeta node self-registration intent writer (B-0855.1)";
+      description = "Zeta node self-registration (B-0855.2): first-boot maintainers/<user>/cluster-nodes/<host> PR";
       wantedBy = [ "multi-user.target" ];
       wants = [ "network-online.target" ];
       after = [
@@ -70,11 +66,11 @@ in
         "zeta-creds-restore.service"
       ];
 
+      # Skip cleanly once the marker exists, and never fire without the script present.
       unitConfig = {
         ConditionPathExists = [
           "!${cfg.markerPath}"
           cfg.scriptPath
-          bunShimPath
         ];
       };
 
@@ -82,16 +78,17 @@ in
         Type = "oneshot";
         User = cfg.user;
         Group = cfg.group;
-        WorkingDirectory = cfg.repoRoot;
+        # systemd creates /var/lib/zeta-self-register owned by the service user, so
+        # the marker write succeeds even though ~/.config may be root-owned (creds).
+        StateDirectory = "zeta-self-register";
+        WorkingDirectory = cfg.home;
         Environment = [
           "HOME=${cfg.home}"
-          "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
-          "BUN_INSTALL=${cfg.home}/.bun"
+          "PATH=/run/current-system/sw/bin:${cfg.home}/.nix-profile/bin"
           "ZETA_SELF_REGISTER_MARKER=${cfg.markerPath}"
-          "ZETA_SELF_REGISTER_INTENT_DIR=${cfg.intentDir}"
-          "ZETA_SELF_REGISTER_REPO=${cfg.repoRoot}"
         ];
-        ExecStart = "${bunShimPath} ${cfg.scriptPath}";
+        ExecStart = "/run/current-system/sw/bin/bash ${cfg.scriptPath}";
+        # gh auth may arrive a beat after boot; retry a few times rather than fail hard.
         Restart = "on-failure";
         RestartSec = "30s";
       };

@@ -79,6 +79,11 @@
     passphraseMode = lib.mkDefault "interactive";
   };
 
+  # B-0855.2: every node self-registers on first boot (opens a
+  # maintainers/<gh-user>/cluster-nodes/<host> PR) once cred-restore has put gh
+  # auth back. Idempotent; per-host opt-out: zeta.selfRegister.enable = false;
+  zeta.selfRegister.enable = lib.mkDefault true;
+
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
