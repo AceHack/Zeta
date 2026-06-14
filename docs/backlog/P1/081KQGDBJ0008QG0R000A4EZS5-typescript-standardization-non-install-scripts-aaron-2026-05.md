@@ -15,6 +15,15 @@ composes_with: [B-0190, B-0194, B-0196]
 type: friction-reducer
 ---
 
+## Superseded (2026-06-13) — Python is now a first-class language
+
+The `.py` half of this policy is **retired**. Python is now a first-class
+cross-verification oracle ("common AI today" anchor, Aaron 2026-06-13), alongside
+F# (db), TS (distribution), C# (2nd distribution), Rust (fast), Go (k8s). The
+`no-python-files` guard (script, allowlist, unit test, and the `lint-no-python-files`
+gate job) was deleted accordingly. The `.sh`→TS half of B-0156 stands; only the
+"no `.py`" constraint is reversed.
+
 ## Resolution (2026-05-17) — substrate-drift close
 
 All six acceptance criteria are satisfied; row remained `open`

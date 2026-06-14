@@ -22,7 +22,7 @@ locally before you push.
 | 7 | **actionlint** | `actionlint -color -ignore 'unknown permission scope "administration"'` | workflow YAML lint |
 | 8 | **markdownlint** | `mise exec -- markdownlint-cli2 "**/*.md"` | markdown lint |
 | 9 | **hygiene** | `bun tools/hygiene/check-no-conflict-markers.ts`; `…/check-tick-history-order.ts`; `…/check-archive-header-section33.ts`; `…/audit-section-33-migration-xrefs.ts --enforce`; `…/audit-backlog-items.ts --enforce-duplicate-ids`; `…/audit-backlog-items.ts --enforce-parent-child-status` | repo-structure invariants |
-| 10 | **lint (files)** | `bun tools/lint/no-empty-dirs.ts`; `bun tools/lint/no-python-files.ts`; `bun run hygiene:check-bash-retirement-inventory` | file-presence invariants |
+| 10 | **lint (files)** | `bun tools/lint/no-empty-dirs.ts`; `bun run hygiene:check-bash-retirement-inventory` | file-presence invariants |
 
 Setup once: `bun install --frozen-lockfile`.
 

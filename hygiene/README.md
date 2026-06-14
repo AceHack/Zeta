@@ -13,7 +13,7 @@ run in `gate`:
 - **bash-retirement inventory** — every retained shell file is declared and categorized (no
   un-accounted shell creeps in).
 - **tsc strict** — `noUncheckedIndexedAccess` / `exactOptionalPropertyTypes` across the tools surface.
-- **markdownlint · actionlint · semgrep · no-empty-dirs · no-conflict-markers · no-python-files** — the
+- **markdownlint · actionlint · semgrep · no-empty-dirs · no-conflict-markers** — the
   lint family.
 - **vocab / glossary drift · AgencySignature audit · backlog parent-child status** — the substrate-state
   guards.
