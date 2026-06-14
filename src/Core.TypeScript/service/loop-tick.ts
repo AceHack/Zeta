@@ -266,7 +266,23 @@ async function runObserveInline(): Promise<string> {
     const { execute } = await import("../observe/execute");
     const { folderSink } = await import("../observe/event-sink-folder");
 
-    const eventDir = join(stateDir, "events");
+    // Event dir: prefer inside the repo's actual .git dir (handles worktrees).
+    // Falls back to stateDir if .git resolution fails.
+    let eventDir: string;
+    try {
+      const { spawnSync: spawn } = await import("node:child_process");
+      const gitDir = spawn("git", ["rev-parse", "--git-dir"], { cwd: worktree, encoding: "utf8" });
+      const resolvedGitDir = gitDir.status === 0 ? gitDir.stdout.trim() : null;
+      if (resolvedGitDir) {
+        const { resolve } = await import("node:path");
+        const absGitDir = resolve(worktree, resolvedGitDir);
+        eventDir = join(absGitDir, "observe-events", personaName);
+      } else {
+        eventDir = join(stateDir, "observe-events");
+      }
+    } catch {
+      eventDir = join(stateDir, "observe-events");
+    }
     mkdirSync(eventDir, { recursive: true });
 
     // 1. Load world from event log + backlog
@@ -279,7 +295,8 @@ async function runObserveInline(): Promise<string> {
     log(`observe-inline: tier=${result.tier} confidence=${result.confidence.toFixed(2)} action=${label}`);
 
     // 3. Execute the action (append to event log + side effects)
-    const sink = folderSink({ eventDir, by: personaName });
+    // No-commit sink: observe events are local per-agent state, not shared substrate (yet).
+    const sink = folderSink({ eventDir, by: personaName, commit: () => ({ ok: true as const }) });
     const execResult = await execute(world, result.action, sink);
 
     const status = execResult.ok ? 0 : 1;
