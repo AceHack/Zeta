@@ -31,8 +31,8 @@ A function `f` from `A` to `B` is a [`set`](set.md) of ordered pairs
 Together these say `∀a ∈ A. ∃! b ∈ B. (a, b) ∈ f`. The uniqueness clause
 is [`equality`](equality.md) (`b₁ = b₂`); the pairs live in a
 [`set`](set.md). An **ordered pair** is itself reducible to sets via
-Kuratowski's encoding `(a, b) := {{a}, {a, b}}`, so a function bottoms out
-entirely in sets and equality.
+Kuratowski's encoding {% raw %}`(a, b) := {{a}, {a, b}}`{% endraw %}, so a
+function bottoms out entirely in sets and equality.
 
 ## Lean4 formalisation
 
@@ -78,7 +78,7 @@ of its seed.
 - **Dirichlet, P. G. L.** (1837) — the modern "arbitrary rule" notion of a
   function, freed from formula.
 - **Kuratowski, Kazimierz.** (1921) — the ordered-pair-as-set encoding
-  `(a,b) = {{a},{a,b}}` used above.
+  {% raw %}`(a,b) = {{a},{a,b}}`{% endraw %} used above.
 - **Bourbaki, Nicolas.** *Théorie des ensembles* (1954) — the function-as-
   graph (set of ordered pairs) standardisation.
 
