@@ -39,3 +39,58 @@ module Chip8Observer =
         let branches = SoftChip8.forkOnInput f
         let i = if List.isEmpty branches then 0 else min idx (List.length branches - 1)
         fst (List.item i branches)
+
+    let private branchLabel (f: Chip8Cow.Frame) (index: int) =
+        if SoftChip8.branchesOnInput f then
+            match index with
+            | 0 -> "key-down"
+            | 1 -> "key-up"
+            | _ -> sprintf "key-branch-%d" index
+        else
+            "deterministic"
+
+    /// CHIP-8 adapter over the source-owned prediction kernel. Belief remains
+    /// exact rational; Vision owns the branch budget; no external inference
+    /// library is needed.
+    let inferenceCandidates
+        (belief: ReflectionEngine.Belief)
+        (costOf: Chip8Cow.Frame -> Vision.BranchCost)
+        (f: Chip8Cow.Frame)
+        : Result<PredictionInference.Candidate<Chip8Cow.Frame> list, PredictionInference.Feedback> =
+        let branches = SoftChip8.forkOnInput f |> List.map fst
+        let observation = forkObservation f
+        if belief.Length <> branches.Length || observation.Length <> branches.Length then
+            Error PredictionInference.EmptyCandidates
+        else
+            branches
+            |> List.mapi (fun i frame ->
+                let candidate: PredictionInference.Candidate<Chip8Cow.Frame> =
+                    { Label = branchLabel f i
+                      State = frame
+                      Prior = belief.[i]
+                      Likelihood = observation.[i]
+                      Cost = costOf frame }
+
+                candidate)
+            |> Ok
+
+    let infer
+        (belief: ReflectionEngine.Belief)
+        (costOf: Chip8Cow.Frame -> Vision.BranchCost)
+        (f: Chip8Cow.Frame)
+        : Result<PredictionInference.Inference<Chip8Cow.Frame>, PredictionInference.Feedback> =
+        result {
+            let! candidates = inferenceCandidates belief costOf f
+            return! PredictionInference.infer candidates
+        }
+
+    let predictBudgeted
+        (belief: ReflectionEngine.Belief)
+        (costOf: Chip8Cow.Frame -> Vision.BranchCost)
+        (tank: SoftThrottle.Tank)
+        (f: Chip8Cow.Frame)
+        : Result<PredictionInference.Prediction<Chip8Cow.Frame>, PredictionInference.Feedback> =
+        result {
+            let! inference = infer belief costOf f
+            return! PredictionInference.predict tank inference
+        }

@@ -140,6 +140,7 @@
     <Compile Include="SoftScheduler.Tests.fs" />
     <Compile Include="SoftThrottle.Tests.fs" />
     <Compile Include="Vision.Tests.fs" />
+    <Compile Include="PredictionInference.Tests.fs" />
     <Compile Include="RecordedSource.Tests.fs" />
     <Compile Include="SoftIsr.Tests.fs" />
     <Compile Include="SimFramework.Tests.fs" />

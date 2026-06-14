@@ -23,6 +23,12 @@ let private inputBranchFrame () =
     |> Chip8Cow.loadRom [| 0x60uy; 0x00uy; 0xE0uy; 0x9Euy |]
     |> Chip8Cow.step
 
+let private branchCost (_: Chip8Cow.Frame) : Vision.BranchCost =
+    { SpaceBytes = 10L
+      TimeTicks = 1
+      BytesPerTick = 0L
+      UncertaintyResolutionBits = 1 }
+
 [<Fact>]
 let ``fork observation is uniform exact-rational over the branch count (2 at an input branch)`` () =
     let f = inputBranchFrame ()
@@ -55,3 +61,20 @@ let ``predicted frame maps the observer's branch back to the committed emu frame
     let predictedUp = Chip8Observer.predictedFrame [| r 1L 3L; r 2L 3L |] f
     let expectedUp = fst (List.item 1 branches)
     Assert.Equal(expectedUp.PC, predictedUp.PC)
+
+[<Fact>]
+let ``CHIP8 observer uses the source-owned prediction kernel under Vision budget`` () =
+    let f = inputBranchFrame ()
+    let branches = SoftChip8.forkOnInput f
+
+    let prediction =
+        f
+        |> Chip8Observer.predictBudgeted [| r 1L 3L; r 2L 3L |] branchCost (SoftThrottle.tank 11.0 0.0)
+        |> function
+            | Ok value -> value
+            | Error feedback -> failwithf "expected Ok, got %A" feedback
+
+    Assert.Equal("key-up", prediction.Inference.Best.Candidate.Label)
+    Assert.Equal(Vision.PartiallyAdmitted, prediction.Budget.Outcome)
+    Assert.Equal<string list>([ "key-up" ], prediction.Budget.Boarded |> List.map _.Label)
+    Assert.Equal(fst (List.item 1 branches), prediction.Budget.Boarded.Head.State)
