@@ -1,11 +1,12 @@
 ---
 id: 081KTWFYCB108QG0R000R6DP13
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: the-ben-verb-benchmark-as-easy-as-measure-timing-memory-inje
 title: "The ben verb — benchmark as easy as measure; timing/memory injected interfaces living with rooms/cartridges; GRADE the ComplexityRegistry's predictions"
 created: 2026-06-11T23:23:00.000Z
+completed: 2026-06-14T02:57:29.823Z
 depends_on: []
 composes_with: []
 ---
