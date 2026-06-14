@@ -1,0 +1,13 @@
+[package]
+name = "zeta-core-mixin"
+version = "0.1.0"
+edition = "2024"
+description = "Weak-keyed side-tables (mixin) for Rust. GC-safe analogous implementation using Arc/Weak pointers and raw pointer addresses."
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

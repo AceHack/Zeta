@@ -57,6 +57,7 @@
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="TriBoolean/CrossVerifyTests.fs" />
     <Compile Include="Core/Result.Tests.fs" />
+    <Compile Include="MixinTests.fs" />
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
     <Compile Include="Bonsai/Resume.Tests.fs" />
     <Compile Include="Bonsai/IntrCtx.Tests.fs" />
@@ -461,6 +462,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
     <ProjectReference Include="..\..\src/Core.FSharp.Blake3/Zeta.Core.FSharp.Blake3.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Metric\Zeta.Core.CSharp.Metric.csproj" />
