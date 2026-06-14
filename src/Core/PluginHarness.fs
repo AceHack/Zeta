@@ -28,6 +28,23 @@ module PluginHarness =
         override _.StepAsync(_ct) = ValueTask.CompletedTask
         member this.Feed(v: 'TIn) = this.SetValue v
 
+    /// Observe a per-tick step result WITHOUT blocking. A synchronous test
+    /// harness requires operators that complete StepAsync/AfterStepAsync
+    /// synchronously; we never do sync-over-async here (`AsTask().GetAwaiter()
+    /// .GetResult()` is DST-hostile — it deadlocks the DoP=1 deterministic pump
+    /// and adds a nondeterministic wait). If the ValueTask already completed we
+    /// observe it inline — success is a no-op, a fault/cancel rethrows
+    /// synchronously (no block). Only a GENUINELY pending step fails loudly:
+    /// this harness is synchronous-only by design.
+    let inline private requireSync (vt: ValueTask) (what: string) : unit =
+        if vt.IsCompletedSuccessfully then ()
+        elif vt.IsCompleted then vt.GetAwaiter().GetResult() // completed-faulted/cancelled: surface synchronously, never blocks
+        else
+            invalidOp (
+                sprintf
+                    "PluginHarness: %s did not complete synchronously. The plugin harness is synchronous-only — it never blocks on a pending step (sync-over-async breaks DST determinism). Operators driven here must complete each step synchronously."
+                    what)
+
     /// Drive a single-input plugin operator through a list of
     /// inputs. `makeOp` receives a mock `Stream<'TIn>` bound to
     /// the harness source and must return the plugin op ready to
@@ -65,9 +82,7 @@ module PluginHarness =
         for input in inputs do
             source.Feed input
             let before = adapter.PublishCount.Value
-            let vt = (adapter :> Op).StepAsync ct
-            if not vt.IsCompletedSuccessfully then
-                vt.AsTask().GetAwaiter().GetResult()
+            requireSync ((adapter :> Op).StepAsync ct) "StepAsync"
             let after = adapter.PublishCount.Value
             let delta = after - before
             if delta <> 1 then
@@ -80,9 +95,7 @@ module PluginHarness =
             // rationale; same fix applies symmetrically to single-
             // input strict plugins (e.g. IStrictOperator-tagged
             // ops exercised via LawRunner.checkLinear).
-            let postVt = (adapter :> Op).AfterStepAsync ct
-            if not postVt.IsCompletedSuccessfully then
-                postVt.AsTask().GetAwaiter().GetResult()
+            requireSync ((adapter :> Op).AfterStepAsync ct) "AfterStepAsync"
             // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
             tick <- tick + 1
         List.ofSeq outputs
@@ -129,9 +142,7 @@ module PluginHarness =
             source1.Feed in1
             source2.Feed in2
             let before = adapter.PublishCount.Value
-            let vt = (adapter :> Op).StepAsync ct
-            if not vt.IsCompletedSuccessfully then
-                vt.AsTask().GetAwaiter().GetResult()
+            requireSync ((adapter :> Op).StepAsync ct) "StepAsync"
             let after = adapter.PublishCount.Value
             let delta = after - before
             if delta <> 1 then
@@ -148,9 +159,7 @@ module PluginHarness =
             // semantics in `runTwoInputs` than in real circuit
             // execution, and `LawRunner.checkBilinear` would
             // validate against incorrect strict-op state.
-            let postVt = (adapter :> Op).AfterStepAsync ct
-            if not postVt.IsCompletedSuccessfully then
-                postVt.AsTask().GetAwaiter().GetResult()
+            requireSync ((adapter :> Op).AfterStepAsync ct) "AfterStepAsync"
             // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
             tick <- tick + 1
         List.ofSeq outputs
