@@ -17,14 +17,15 @@ const MOMENTUM_VALUES: Record<string, number> = {
 };
 
 import { BIT_MASKS } from "./zeta-id.gen";
+import type { Bits } from "./zeta-id.gen";
 
 
-function setBits(value: bigint, offset: bigint, width: bigint, fieldValue: bigint): bigint {
+function setBits(value: bigint, offset: Bits, width: Bits, fieldValue: bigint): bigint {
   const mask = (1n << width) - 1n;
   return value | ((fieldValue & mask) << offset);
 }
 
-function getBits(value: bigint, offset: bigint, width: bigint): bigint {
+function getBits(value: bigint, offset: Bits, width: Bits): bigint {
   const mask = (1n << width) - 1n;
   return (value >> offset) & mask;
 }

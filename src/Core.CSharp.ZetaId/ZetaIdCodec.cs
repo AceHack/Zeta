@@ -30,10 +30,10 @@ public static class ZetaIdCodec
         // compile; without bounds checks the high bits silently truncate and
         // collide. Persona/Location are byte-backed (8-bit) so they max at
         // 255 = their field width; no check needed.
-        ValidateEnumField((byte)obs.Version, 5, nameof(obs.Version));
-        ValidateEnumField((byte)obs.Chromosome, 5, nameof(obs.Chromosome));
-        ValidateEnumField((byte)obs.Category, 4, nameof(obs.Category));
-        ValidateEnumField((byte)obs.Firefly, 1, nameof(obs.Firefly));
+        ValidateEnumField((byte)obs.Version, GeneratedBitLayout.VersionWidth, nameof(obs.Version));
+        ValidateEnumField((byte)obs.Chromosome, GeneratedBitLayout.ChromosomeWidth, nameof(obs.Chromosome));
+        ValidateEnumField((byte)obs.Category, GeneratedBitLayout.CategoryWidth, nameof(obs.Category));
+        ValidateEnumField((byte)obs.Firefly, GeneratedBitLayout.FireflyWidth, nameof(obs.Firefly));
 
         if ((byte)obs.Category >= 9)
             throw new ArgumentOutOfRangeException(nameof(obs), obs.Category, "ZetaObservation.Category must be < 9 (0..8). Categories >= 9 are reserved for special layouts like ContentAddress.");
@@ -144,28 +144,28 @@ public static class ZetaIdCodec
         }
     }
 
-    private static void ValidateEnumField(byte value, int widthBits, string fieldName)
+    private static void ValidateEnumField(byte value, Bits widthBits, string fieldName)
     {
-        int maxValid = (1 << widthBits) - 1;
+        int maxValid = (1 << widthBits.Value) - 1;
         if (value > maxValid)
             throw new ArgumentOutOfRangeException(
                 fieldName, value,
                 $"ZetaObservation.{fieldName} must be 0..{maxValid} ({widthBits}-bit field). Out-of-range enum values would silently truncate and collide.");
     }
 
-    private static UInt128 SetBits(UInt128 value, (int Offset, int Width) field, ulong fieldValue)
+    private static UInt128 SetBits(UInt128 value, (Bits Offset, Bits Width) field, ulong fieldValue)
     {
-        int offset = field.Offset;
-        int width = field.Width;
+        int offset = field.Offset.Value;
+        int width = field.Width.Value;
 
         UInt128 mask = (UInt128.One << width) - UInt128.One;
         return value | (((UInt128)fieldValue & mask) << offset);
     }
 
-    private static ulong GetBits(UInt128 value, (int Offset, int Width) field)
+    private static ulong GetBits(UInt128 value, (Bits Offset, Bits Width) field)
     {
-        int offset = field.Offset;
-        int width = field.Width;
+        int offset = field.Offset.Value;
+        int width = field.Width.Value;
 
         UInt128 mask = (UInt128.One << width) - UInt128.One;
         return (ulong)((value >> offset) & mask);

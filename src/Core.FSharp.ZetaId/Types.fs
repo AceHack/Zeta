@@ -6,6 +6,10 @@ namespace Zeta.Core.FSharp.ZetaId
 [<Measure>]
 type ms
 
+/// Bit measurement unit of measure for layout offsets and widths.
+[<Measure>]
+type bit
+
 /// Version field — 5 bits. Currently V1 only.
 /// Mirrors `src/Core.CSharp.ZetaId/IdVersion.cs`.
 type IdVersion =

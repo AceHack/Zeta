@@ -33,13 +33,13 @@ module BitLayout =
     /// reserved-bit gaps preserved per spec.
     let private createTopDown () : BitLayout =
         // Mutable accumulator — emulates the C# pattern; reset to 128 at top.
-        let mutable offset = 128
+        let mutable offset = 128<bit>
 
-        let next width =
+        let next (width: int<bit>) =
             offset <- offset - width
-            { Offset = offset; Width = width }
+            { Offset = int offset; Width = int width }
 
-        let skip bits = offset <- offset - bits
+        let skip (bits: int<bit>) = offset <- offset - bits
 
         // Spec: docs/zeta-id-v1-layout.yaml reserved_bits — 1 bit at offset 69
         // (between Chromosome and Category), 3 bits at offsets 32-34 (between
@@ -47,7 +47,7 @@ module BitLayout =
         let version    = next GeneratedBitLayout.VersionWidth       // bits 123-127
         let timestamp  = next GeneratedBitLayout.TimestampWidth      // bits 75-122
         let chromosome = next GeneratedBitLayout.ChromosomeWidth     // bits 70-74
-        skip 1                        // reserved bit 69
+        skip 1<bit>                   // reserved bit 69
         let category   = next GeneratedBitLayout.CategoryWidth       // bits 65-68
         let firefly    = next GeneratedBitLayout.FireflyWidth        // bit 64
         let authority  = next GeneratedBitLayout.AuthorityWidth      // bits 59-63
@@ -65,7 +65,7 @@ module BitLayout =
             Persona = persona
             Momentum = momentum
             Location = location
-            Randomness = { Offset = 0; Width = GeneratedBitLayout.RandomnessWidth }
+            Randomness = { Offset = 0; Width = int GeneratedBitLayout.RandomnessWidth }
             TotalBits = 128
         }
 
@@ -74,24 +74,24 @@ module BitLayout =
     /// (V8 cycle catch: independent computation paths surface drift the visual
     /// review missed twice).
     let private createBottomUp () : BitLayout =
-        let mutable offset = 0
+        let mutable offset = 0<bit>
 
-        let next width =
+        let next (width: int<bit>) =
             let start = offset
             offset <- offset + width
-            { Offset = start; Width = width }
+            { Offset = int start; Width = int width }
 
-        let skip bits = offset <- offset + bits
+        let skip (bits: int<bit>) = offset <- offset + bits
 
         let randomness = next GeneratedBitLayout.RandomnessWidth      // bits 0-31
-        skip 3                        // reserved bits 32-34
+        skip 3<bit>                   // reserved bits 32-34
         let location   = next GeneratedBitLayout.LocationWidth       // bits 35-42
         let momentum   = next GeneratedBitLayout.MomentumWidth       // bits 43-50
         let persona    = next GeneratedBitLayout.PersonaWidth       // bits 51-58
         let authority  = next GeneratedBitLayout.AuthorityWidth       // bits 59-63
         let firefly    = next GeneratedBitLayout.FireflyWidth       // bit 64
         let category   = next GeneratedBitLayout.CategoryWidth       // bits 65-68
-        skip 1                        // reserved bit 69
+        skip 1<bit>                   // reserved bit 69
         let chromosome = next GeneratedBitLayout.ChromosomeWidth       // bits 70-74
         let timestamp  = next GeneratedBitLayout.TimestampWidth       // bits 75-122
         let version    = next GeneratedBitLayout.VersionWidth       // bits 123-127
