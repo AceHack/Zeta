@@ -73,7 +73,7 @@ import {
 import {
   composeAuthorizedKeysFileContent,
   parseUuidFromDiskutilInfo,
-  ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
+  resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
@@ -696,8 +696,7 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
 }
 
 function resolveTestInfraPubkeyPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url));
-  return resolve(scriptDir, "../../", ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH);
+  return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
 }
 
 function readAuthorizedKeysContent(pubkeyPath: string, testMode: boolean): string {

@@ -1,7 +1,5 @@
 #!/usr/bin/env bun
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import {
   createNodeFileBackedZflashImageExecutor,
   createNodeFileBackedZflashInlineStagingDirectory,
@@ -11,7 +9,7 @@ import {
   executeFileBackedZflashImageExecutionPlan,
   planFileBackedZflashImage,
   planFileBackedZflashImageExecution,
-  ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
+  resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
 import type {
   FileBackedZflashImageExecution,
@@ -59,8 +57,7 @@ const USAGE =
   "  --inline-staging-dir <path>  optional staging root for inline content files\n";
 
 function resolveTestInfraPubkeyPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url));
-  return resolve(scriptDir, "../../", ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH);
+  return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
 }
 
 function resolveAuthorizedKeysContent(

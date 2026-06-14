@@ -2,6 +2,9 @@
 //
 // Pure-logic library for zflash — unit-testable without I/O.
 
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 /**
  * RFC1123 hostname regex.
  *
@@ -23,6 +26,16 @@ export const VALID_HOSTNAME_REGEX = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])
  */
 export const ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH =
   "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub";
+
+/**
+ * Absolute path to zeta-test-infra.pub from a module file under zflash/
+ * (e.g. cli.ts, file-backed.ts). Joining {@link ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH}
+ * from scriptDir with only `../../` produced `src/src/...` after the tools→src move.
+ */
+export function resolveZetaTestInfraPubkeyFromZflashModule(moduleUrl: string | URL): string {
+  const zflashDir = dirname(fileURLToPath(moduleUrl));
+  return resolve(zflashDir, "test-harness/keys/zeta-test-infra.pub");
+}
 
 /**
  * Structural validator for a single OpenSSH authorized_keys line.

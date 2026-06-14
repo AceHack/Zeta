@@ -15,6 +15,7 @@
 // Run via: bun test src/Core.TypeScript/zflash/lib.test.ts
 // Or as part of the full suite: bun test
 
+import { existsSync } from "node:fs";
 import { describe, expect, test } from "bun:test";
 import {
   composeAuthorizedKeysFileContent,
@@ -28,6 +29,7 @@ import {
   parseUuidFromDiskutilInfo,
   planFileBackedZflashImage,
   planFileBackedZflashImageExecution,
+  resolveZetaTestInfraPubkeyFromZflashModule,
   VALID_HOSTNAME_REGEX,
   ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH,
 } from "./lib.ts";
@@ -37,6 +39,15 @@ describe("ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH", () => {
     expect(ZETA_TEST_INFRA_PUBKEY_REPO_RELATIVE_PATH).toBe(
       "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub",
     );
+  });
+});
+
+describe("resolveZetaTestInfraPubkeyFromZflashModule", () => {
+  test("resolves committed pubkey without double-src prefix", () => {
+    const path = resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
+    expect(path.endsWith("zflash/test-harness/keys/zeta-test-infra.pub")).toBe(true);
+    expect(path).not.toContain("/src/src/");
+    expect(existsSync(path)).toBe(true);
   });
 });
 
