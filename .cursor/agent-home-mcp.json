@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "zeta": {
+      "command": "bun",
+      "args": ["Zeta/src/Core.TypeScript/cursor/zeta-mcp-launch.ts"]
+    },
+    "github": {
+      "command": "bun",
+      "args": ["Zeta/src/Core.TypeScript/cursor/github-mcp.ts"]
+    }
+  }
+}

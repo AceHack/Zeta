@@ -54,8 +54,14 @@ deadlock, the human decides.
 
 ## MCP (Cursor)
 
-Project servers live in [`.cursor/mcp.json`](.cursor/mcp.json) (`zeta` stdio +
-`github` via [`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)).
+Tracked in this repo:
+
+- [`.cursor/mcp.json`](.cursor/mcp.json) — repo-root workspace (paths relative to clone)
+- [`.cursor/agent-home-mcp.json`](.cursor/agent-home-mcp.json) — MCP **fragment**
+  for agent-home workspace (paths prefixed `Zeta/`; merged into
+  `~/.zeta/agents/cursor/.cursor/mcp.json` alongside other repo fragments)
+- [`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)
+- [`src/Core.TypeScript/cursor/zeta-mcp-launch.ts`](src/Core.TypeScript/cursor/zeta-mcp-launch.ts)
 
 **GitHub auth fix:** disable the marketplace **GitHub** plugin
 (`plugin-github-github`) in Settings → Tools & Integrations → MCP — its OAuth
@@ -63,24 +69,46 @@ path sends malformed `Authorization` headers to `api.githubcopilot.com/mcp/`.
 The project `github` server uses `gh auth token` + the official docker image
 instead. Prereqs: `gh auth login`, Docker running.
 
-## Fresh machine
+## Agent home (Riven)
 
-Clone Zeta anywhere; open the **clone root** as the Cursor workspace. MCP is
-repo-native — [`.cursor/mcp.json`](.cursor/mcp.json) and
-[`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)
-are tracked in this repository. No parent-level MCP config, no nested
-`Zeta/` subdirectory inside the workspace.
+Per [B-0894.3](docs/backlog/P1/081KSNY2Z0008QG0R001RWF499-3-per-persona-outside-operator-repo-canonical-location-zeta-.md),
+Riven boots from `~/.zeta/agents/cursor/` (persona base — outside the operator's
+primary checkout). That home holds **one or more git clones** as siblings; Zeta
+is one of them:
 
-```bash
-git clone https://github.com/Lucent-Financial-Group/Zeta.git <your-clone-path>
+```text
+~/.zeta/agents/cursor/              # agent home — Cursor workspace root
+  Zeta/                             # Zeta clone — stage, commit, PR from here
+    .cursor/mcp.json                # MCP when this clone is the workspace root
+    .cursor/agent-home-mcp.json     # MCP fragment when workspace is agent home
+  <other-repo>/                     # additional clones (same pattern)
+    .cursor/agent-home-mcp.json
+  .cursor/mcp.json                  # assembled at boot (not in any single repo)
 ```
 
-Prereqs: Cursor, `dotnet` SDK, `bun`, `gh`, Docker. Shell `cursor` should
-invoke the IDE launcher (`…/Cursor.app/.../bin/code`), not the agent-only shim.
+Each repo owns its MCP config under its clone (tracked in that repo). The agent
+home `.cursor/mcp.json` is assembled locally by merging each clone's
+`agent-home-mcp.json` fragment (paths in fragments are prefixed with the clone
+directory name, e.g. `Zeta/src/...`).
 
-Parallel branches: `git worktree add <name> -b riven/<task> origin/main` from
-the clone. Stage and ship all harness changes from this repo (`git` / PR), not
-from paths outside the clone.
+Add a clone:
+
+```bash
+git clone https://github.com/Lucent-Financial-Group/Zeta.git ~/.zeta/agents/cursor/Zeta
+```
+
+Wire MCP at boot — merge fragments into agent home (add more repos the same way):
+
+```bash
+mkdir -p ~/.zeta/agents/cursor/.cursor
+# one repo: copy or symlink the fragment
+cp ~/.zeta/agents/cursor/Zeta/.cursor/agent-home-mcp.json ~/.zeta/agents/cursor/.cursor/mcp.json
+# multiple repos: jq-merge each clone's .cursor/agent-home-mcp.json into one file
+```
+
+Git operations always run inside the relevant clone (`Zeta/`, etc.), never from
+the agent-home root. Parallel streams are additional sibling directories under
+the persona base (same B-0894.3 pattern as `codex/`, `otto-cli/`, etc.).
 
 ## Conventions
 
