@@ -456,3 +456,79 @@ let ``contextual result throttler threads context and fans aligned results back`
         do! throttler.CompleteAsync()
         results |> should equal [| "1@a"; "2@b" |]
     }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Option-A increment 4 — background-ferry replay via an injected
+// SynchronizationContext. Design:
+// docs/research/2026-06-13-ferrythrottler-background-ferry-replay-injected-synchronizationcontext-increment-4.md
+// ═══════════════════════════════════════════════════════════════════
+
+/// A deterministic, single-threaded, pumpable `SynchronizationContext` — test
+/// scaffolding for the increment-4 seam (4b promotes the Core-resident, earned
+/// sim version). `Post` captures the callback into a FIFO queue; NOTHING runs
+/// ambiently. `PumpToIdle` runs queued callbacks in registration order until none
+/// remain (a callback may post more — those run too). `PostedCount` lets a test
+/// assert the ferry routed its continuations through THIS door, not the threadpool.
+type private DeterministicSyncContext() =
+    inherit SynchronizationContext()
+    let queue = System.Collections.Generic.Queue<SendOrPostCallback * obj>()
+    let mutable posted = 0
+    override _.Post(d, state) =
+        lock queue (fun () ->
+            posted <- posted + 1
+            queue.Enqueue(d, state))
+    // Captured copies must still route to THIS queue, or determinism leaks.
+    override this.CreateCopy() = this :> SynchronizationContext
+    /// Total callbacks posted to this context over its lifetime.
+    member _.PostedCount = lock queue (fun () -> posted)
+    /// Run posted callbacks (FIFO) until the queue is empty.
+    member _.PumpToIdle() =
+        let mutable go = true
+        while go do
+            let next =
+                lock queue (fun () ->
+                    if queue.Count > 0 then ValueSome(queue.Dequeue()) else ValueNone)
+            match next with
+            | ValueSome(d, s) -> d.Invoke s
+            | ValueNone -> go <- false
+
+
+[<Fact>]
+let ``background ferry runs under the injected SynchronizationContext — pump-gated, no threadpool`` () : Task =
+    // With a context injected, the WHOLE background ferry is gated on pumping that
+    // context: it does not start, and processes nothing, until the context is
+    // pumped — proving its scheduling routes through the injected door, never the
+    // ambient threadpool. (A true, narrow 4a claim; full N-ferry seeded-replay is 4b.)
+    task {
+        let processed = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
+            for i in 0 .. boat.Length - 1 do processed.Enqueue(boat.Span.[i])
+            Task.CompletedTask
+        let ctx = DeterministicSyncContext()
+        // DoP=1 background ferry (manual NOT set) bound to the deterministic context.
+        use throttler =
+            new FerryThrottler<int>(FerryThrottlerConfig.deterministic, processBatch, syncContext = ctx)
+
+        // Enqueue synchronously (unbounded channel). The ferry was launched as a
+        // posted callback in the ctor — so it is queued on the door, not running.
+        for x in [ 1; 2; 3; 4; 5 ] do
+            do! throttler.EnqueueAsync(x)
+
+        // BEFORE any pump: nothing processed (race-free — the ferry cannot run
+        // until its launch callback is pumped), yet the door already holds it.
+        List.ofSeq processed |> should equal ([]: int list)
+        ctx.PostedCount |> should be (greaterThanOrEqualTo 1)
+
+        // Pump: the ferry starts, drains every queued item into one boat, then
+        // parks at WaitToReadAsync (queue empty, writer still open).
+        ctx.PumpToIdle()
+        List.ofSeq processed |> should equal [ 1; 2; 3; 4; 5 ]
+
+        // Complete the writer, then pump again so the parked ferry observes
+        // completion and exits — its termination is pump-driven too.
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+        completion.IsCompletedSuccessfully |> should equal true
+    }

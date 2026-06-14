@@ -105,10 +105,19 @@ type FerryThrottler<'TItem>
      // caller drives processing synchronously via `PumpToIdleAsync` on its own
      // thread (deterministic, replayable, zero wall-clock). Intended for the
      // DoP=1 simulation / seed / test path. Default false = production background
-     // ferries. Future enhancement (tracked separately): a SynchronizationContext
-     // / Arrow thread-context capture so the BACKGROUND ferries are themselves
-     // replayable — then manual mode is no longer the only deterministic option.
-     ?manual: bool) =
+     // ferries.
+     ?manual: bool,
+     // DST seam (Option A, increment 4): when provided, the background ferries run
+     // *under* this `SynchronizationContext`, so every `await` in the ferry loop
+     // (`WaitToReadAsync`, `processBatch`) routes its continuation to it. Inject a
+     // deterministic, single-threaded, pumpable context and the BACKGROUND ferries
+     // become replayable — without giving up the production code path (the way
+     // `?manual` does). Default `None` = today's threadpool path, byte-identical
+     // for production. This is the noninterference door (manifesto §13): ferry
+     // scheduling enters only through the injected context, never the ambient
+     // threadpool. Design: docs/research/2026-06-13-ferrythrottler-background-
+     // ferry-replay-injected-synchronizationcontext-increment-4.md.
+     ?syncContext: SynchronizationContext) =
 
     do
         if config.MaxDegreeOfParallelism < 1 then
@@ -186,8 +195,16 @@ type FerryThrottler<'TItem>
             | _ -> draining <- false
         n
 
-    let runFerry () : Task =
-        backgroundTask {
+    let injectedSyncContext = syncContext
+
+    // The ferry loop body — a context-CAPTURING `task` (unlike `backgroundTask`,
+    // its `await`s honour the ambient `SynchronizationContext`). WHERE its
+    // continuations resume is therefore decided by the context in effect when it
+    // is launched: null on the threadpool (production), or the injected context
+    // (Option-A increment 4). The body itself is identical on both paths — the
+    // single source of ferry-loop truth, mirroring `fillBoat` for boat-building.
+    let ferryLoop () : Task =
+        task {
             let reader = inbox.Reader
             let buffer = Array.zeroCreate<'TItem> config.MaxBatchSize
             let ct = cts.Token
@@ -211,6 +228,36 @@ type FerryThrottler<'TItem>
                             Array.Clear(buffer, 0, n)
             with :? OperationCanceledException -> ()
         }
+
+    let runFerry () : Task =
+        match injectedSyncContext with
+        | None ->
+            // Production: run on the threadpool with no captured context — awaits
+            // resume on the threadpool (equivalent to `backgroundTask`). The loop's
+            // synchronous prefix reads no ctor-thread-affine state, so launching it
+            // via `Task.Run` rather than the ctor thread is observationally identical.
+            Task.Run(fun () -> ferryLoop ())
+        | Some sc ->
+            // Option-A increment 4: launch the ENTIRE ferry onto the injected
+            // context. The ferry does not begin until the context is pumped, and —
+            // because `sc` is current when it starts — every `await` re-posts its
+            // continuation back to `sc`. So the whole ferry lifecycle is pump-gated:
+            // no threadpool, no startup race, replayable in the order the context
+            // runs its posted callbacks. Never touches the ctor thread's context.
+            let tcs = TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously)
+            sc.Post(
+                (fun _ ->
+                    SynchronizationContext.SetSynchronizationContext sc
+                    let loop = ferryLoop ()
+                    loop.ContinueWith(
+                        (fun (c: Task) ->
+                            if c.IsFaulted then tcs.TrySetException(c.Exception :> exn) |> ignore
+                            elif c.IsCanceled then tcs.TrySetCanceled() |> ignore
+                            else tcs.TrySetResult() |> ignore),
+                        TaskContinuationOptions.ExecuteSynchronously)
+                    |> ignore),
+                null)
+            tcs.Task
 
     // Production: start `ferries` background ferries now. Manual/DST mode: start
     // none — the caller drives via `PumpToIdleAsync`.
