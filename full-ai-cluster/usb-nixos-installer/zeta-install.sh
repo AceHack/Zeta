@@ -1053,63 +1053,30 @@ echo
 # REQUIREMENT of post-boot fully-operational chain without operator login).
 SELF_REG_OK=0
 SELF_REG_PR_URL=""
-if [ "$GH_AUTH_OK" = 1 ]; then
-  echo "[iter-5.4.1] ── self-registration commit+push (B-0812) ──"
-  echo "[iter-5.4.1] Composing ClusterNode YAML + opening registration PR..."
 
-  # Resolve operator GH user (used for the per-maintainer subtree path).
-  MAINTAINER=$(gh api /user --jq .login 2>/dev/null || echo "")
-  if [ -z "$MAINTAINER" ]; then
-    echo "[iter-5.4.1]   WARN: gh api /user failed; cannot resolve operator GH login; skipping"
+# Shared hostname + ClusterNode YAML compose (B-0812 / B-0813 schema).
+zeta_self_reg_resolve_node_hostname() {
+  if [ -f "$HOSTNAME_DST" ]; then
+    NODE_HOSTNAME=$(cat "$HOSTNAME_DST" | tr -d '[:space:]')
   else
-    # Resolve installed hostname (iter-5.2 substrate writes to
-    # /mnt/etc/zeta/cluster-node-id). Fallback to flake-default $HOST
-    # if the iter-5.2 file is absent (means iter-5.2.2 generation was
-    # skipped or failed — graceful degradation; warn loudly).
-    if [ -f "$HOSTNAME_DST" ]; then
-      NODE_HOSTNAME=$(cat "$HOSTNAME_DST" | tr -d '[:space:]')
-    else
-      NODE_HOSTNAME="$HOST"
-      echo "[iter-5.4.1]   WARN: $HOSTNAME_DST absent; using flake-host '$HOST' as node-name"
-      echo "[iter-5.4.1]          (may produce naming collision if multiple nodes use this flake-host)"
-    fi
-    echo "[iter-5.4.1]   maintainer:  $MAINTAINER"
-    echo "[iter-5.4.1]   node-name:   $NODE_HOSTNAME"
+    NODE_HOSTNAME="$HOST"
+    echo "[iter-5.4.1]   WARN: $HOSTNAME_DST absent; using flake-host '$HOST' as node-name"
+    echo "[iter-5.4.1]          (may produce naming collision if multiple nodes use this flake-host)"
+  fi
+}
 
-    # ── hardware probe ──
-    # Emits the inner fields of the ClusterNode `hardware:` block.
-    # Each field is best-effort; absent fields are omitted from YAML
-    # rather than emitting empty-string values (ArgoCD/k8s consumers
-    # prefer absent over empty).
-    CPU_MODEL=$(grep 'model name' /proc/cpuinfo 2>/dev/null | head -1 | cut -d: -f2- | sed 's/^[[:space:]]*//' | sed 's/"//g' || echo "")
-    MEM_TOTAL=$(free -h --si 2>/dev/null | awk '/Mem:/{print $2}' || echo "")
-    CPU_CORES=$(nproc 2>/dev/null || echo "")
-    GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
-    IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
-    # MAC extraction: parse field after `link/ether` (Copilot finding on #5352
-    # — prior `$(NF-2)` extracted `brd` not the MAC; `link/ether <MAC> brd <BROADCAST>`
-    # is the standard `ip -o link` output shape; the field after `link/ether` is the MAC).
-    MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{for(i=1;i<=NF;i++) if($i=="link/ether"){print $(i+1); exit}}' || echo "")
-    # Storage lines: indented 6 spaces to nest under spec.hardware.storage
-    # (Copilot finding on #5352 — was a sibling of `hardware:` at 4 spaces; the
-    # B-0813 schema places storage under hardware block).
-    # Filter zero-size devices ($2 != "0B"): empty SD card readers, optical
-    # bays, and other placeholder block devices show up in `lsblk -ndo`
-    # output with SIZE=0B and confuse any reconciler that interprets the
-    # storage list as usable. Copilot finding on PR #5380 (Aaron's
-    # 2026-05-27 control-plane registration surfaced `/dev/sda 0B`).
-    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
-    REG_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    FLAKE_COMMIT=$(git -C /mnt/etc/zeta rev-parse HEAD 2>/dev/null | head -c 12 || echo "unknown")
+zeta_self_reg_compose_node_yaml() {
+  CPU_MODEL=$(grep 'model name' /proc/cpuinfo 2>/dev/null | head -1 | cut -d: -f2- | sed 's/^[[:space:]]*//' | sed 's/"//g' || echo "")
+  MEM_TOTAL=$(free -h --si 2>/dev/null | awk '/Mem:/{print $2}' || echo "")
+  CPU_CORES=$(nproc 2>/dev/null || echo "")
+  GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
+  IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
+  MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{for(i=1;i<=NF;i++) if($i=="link/ether"){print $(i+1); exit}}' || echo "")
+  STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
+  REG_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  FLAKE_COMMIT=$(git -C /mnt/etc/zeta rev-parse HEAD 2>/dev/null | head -c 12 || echo "unknown")
 
-    # ── compose node.yaml ──
-    # Schema per B-0813 (ClusterNode CRD) + B-0817 (register-node tool):
-    # - spec.roles is ARRAY (not scalar)
-    # - spec.registration.maintainer (NOT spec.maintainer; K8s ObjectMeta has fixed shape so
-    #   we keep it under spec.registration where ArgoCD reconciler reads it)
-    # - spec.hardware.storage (NOT spec.storage; storage is part of hardware block)
-    # (Copilot findings on #5352 — schema mismatches fixed per B-0813 + B-0817)
-    NODE_YAML="apiVersion: zeta.lucent-financial-group.com/v1
+  NODE_YAML="apiVersion: zeta.lucent-financial-group.com/v1
 kind: ClusterNode
 metadata:
   name: $NODE_HOSTNAME
@@ -1132,25 +1099,40 @@ spec:
     flake-host: \"$HOST\"
     registered-via: \"iter-5.4.1\"
   hardware:"
-    [ -n "$CPU_MODEL" ] && NODE_YAML="$NODE_YAML
+  [ -n "$CPU_MODEL" ] && NODE_YAML="$NODE_YAML
     cpu: \"$CPU_MODEL\""
-    [ -n "$MEM_TOTAL" ] && NODE_YAML="$NODE_YAML
+  [ -n "$MEM_TOTAL" ] && NODE_YAML="$NODE_YAML
     memory: \"$MEM_TOTAL\""
-    [ -n "$CPU_CORES" ] && NODE_YAML="$NODE_YAML
+  [ -n "$CPU_CORES" ] && NODE_YAML="$NODE_YAML
     cores: $CPU_CORES"
-    [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
+  [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
     gpu: \"$GPU_LINE\""
-    [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
+  [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
     storage:
 $STORAGE_LINES"
-    if [ -n "$IP_ADDR" ] || [ -n "$MAC_ADDR" ]; then
-      NODE_YAML="$NODE_YAML
+  if [ -n "$IP_ADDR" ] || [ -n "$MAC_ADDR" ]; then
+    NODE_YAML="$NODE_YAML
     network:"
-      [ -n "$IP_ADDR" ] && NODE_YAML="$NODE_YAML
+    [ -n "$IP_ADDR" ] && NODE_YAML="$NODE_YAML
       ip: \"$IP_ADDR\""
-      [ -n "$MAC_ADDR" ] && NODE_YAML="$NODE_YAML
+    [ -n "$MAC_ADDR" ] && NODE_YAML="$NODE_YAML
       mac: \"$MAC_ADDR\""
-    fi
+  fi
+}
+
+if [ "$GH_AUTH_OK" = 1 ]; then
+  echo "[iter-5.4.1] ── self-registration commit+push (B-0812) ──"
+  echo "[iter-5.4.1] Composing ClusterNode YAML + opening registration PR..."
+
+  # Resolve operator GH user (used for the per-maintainer subtree path).
+  MAINTAINER=$(gh api /user --jq .login 2>/dev/null || echo "")
+  if [ -z "$MAINTAINER" ]; then
+    echo "[iter-5.4.1]   WARN: gh api /user failed; cannot resolve operator GH login; skipping"
+  else
+    zeta_self_reg_resolve_node_hostname
+    echo "[iter-5.4.1]   maintainer:  $MAINTAINER"
+    echo "[iter-5.4.1]   node-name:   $NODE_HOSTNAME"
+    zeta_self_reg_compose_node_yaml
 
     # ── clone repo to temp; write node.yaml; commit + open PR ──
     # CRITICAL: this whole block is wrapped in `|| true` at the subshell
@@ -1264,6 +1246,18 @@ registered-at: ${REG_TIMESTAMP}
 else
   echo "[iter-5.4.1] skipped — iter-5.4.0 gh-auth was skipped or failed; no auth foothold for commit+push"
   echo "[iter-5.4.1] (operator can re-run manually post-install via tools/cluster/register-node.ts when that ships)"
+  # B-0831 slice 2: QEMU/CI dry-run — compose registration YAML without gh push.
+  if [ ! -t 0 ] && [ -f "$HOSTNAME_DST" ]; then
+    MAINTAINER="qemu-ci"
+    zeta_self_reg_resolve_node_hostname
+    zeta_self_reg_compose_node_yaml
+    PREVIEW="/mnt/etc/zeta/cluster-node-registration-preview.yaml"
+    sudo mkdir -p "$(dirname "$PREVIEW")"
+    printf '%s\n' "$NODE_YAML" | sudo tee "$PREVIEW" >/dev/null
+    echo "[iter-5.4.1-ci] composed ClusterNode maintainer=$MAINTAINER node=$NODE_HOSTNAME"
+    echo "[iter-5.4.1-ci] tree-path=maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME/node.yaml"
+    echo "[iter-5.4.1-ci] preview=$PREVIEW"
+  fi
 fi
 echo
 

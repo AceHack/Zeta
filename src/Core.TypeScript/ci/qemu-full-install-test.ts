@@ -6,6 +6,7 @@
  *
  * Phase 1 — boot installer ISO + virtual disk; wait for install completion.
  * Phase 2 — boot installed disk only; verify auto-generated hostname login banner.
+ * Phase 1 also asserts iter-5.4.1-ci dry-run registration (B-0831 slice 2).
  *
  * Composes with qemu-boot-test.ts (cascade #5) and B-0891 scenario 2.
  *
@@ -26,6 +27,9 @@ import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers
 
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
+
+/** B-0831 slice 2 — non-TTY CI dry-run cluster-node registration compose. */
+const SELF_REG_CI_MARKER = "[iter-5.4.1-ci] composed ClusterNode";
 
 /** Mid-install progress — nixos-install reached post-install wifi step. */
 const NIXOS_INSTALL_PROGRESS_MARKER = "[iter-5.1]";
@@ -176,12 +180,21 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
 
     const content = readSerial(serialLogPath);
     if (content.includes(INSTALL_COMPLETE_MARKER)) {
+      if (!content.includes(SELF_REG_CI_MARKER)) {
+        return {
+          exitCode: 1,
+          reason: `phase 1 FAILURE — "${INSTALL_COMPLETE_MARKER}" seen but missing "${SELF_REG_CI_MARKER}" (cluster join dry-run)`,
+          serialLogTail: content.slice(-2000),
+          elapsedSeconds: elapsedSec,
+        };
+      }
+      const resolvedHostname = extractGeneratedHostname(content);
       return {
         exitCode: 0,
-        reason: `phase 1 SUCCESS — "${INSTALL_COMPLETE_MARKER}" observed`,
+        reason: `phase 1 SUCCESS — install complete + ${SELF_REG_CI_MARKER} observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
-        hostname: extractGeneratedHostname(content) ?? undefined,
+        ...(resolvedHostname !== null ? { hostname: resolvedHostname } : {}),
       };
     }
 
@@ -241,7 +254,7 @@ async function waitForInstalledLogin(
         reason: `phase 2 SUCCESS — login prompt "${loginNeedle}" observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
-        hostname: expectedHostname ?? undefined,
+        ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
       };
     }
 
