@@ -1,5 +1,6 @@
-import { MerkleHash, ofBytes } from "../merkle/merkle";
-import { ZSet } from "../z-set/z-set";
+import { ofBytes } from "../merkle/merkle";
+import type { MerkleHash } from "../merkle/merkle";
+import type { ZSet } from "../z-set/z-set";
 
 /** Lexicographic ordinal comparison of two byte arrays. */
 function byteCompare(a: Uint8Array, b: Uint8Array): number {
