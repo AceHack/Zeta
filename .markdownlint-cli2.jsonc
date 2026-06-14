@@ -11,7 +11,7 @@
     "BenchmarkDotNet.Artifacts/**",
     "TestResults/**",
     "artifacts/**",
-    "node_modules/**",
+    "**/node_modules/**",
     "bin/**",
     "obj/**",
     // Upstream reference repos under `../` are not part of Zeta.

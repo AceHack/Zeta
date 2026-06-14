@@ -14,6 +14,8 @@
     "format:check": "prettier --check \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
     "format:write": "prettier --write \"**/*.{json,jsonc,md,markdown,ts,toml,yml,yaml,css}\"",
     "typecheck": "tsc --noEmit",
+    "preflight": "bun ./src/Core.TypeScript/hygiene/preflight.ts",
+    "preflight:quick": "bun ./src/Core.TypeScript/hygiene/preflight.ts --quick",
     "test:typescript": "bun test",
     "hygiene:sort-tick-history": "bun ./tools/hygiene/sort-tick-history-canonical.ts",
     "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts",
