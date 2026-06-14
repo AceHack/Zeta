@@ -2,7 +2,7 @@
 
 from typing import NewType
 
-Bits = NewType('Bits', int)
+Bits = NewType("Bits", int)
 
 VERSION_OFFSET = Bits(123)
 VERSION_WIDTH = Bits(5)

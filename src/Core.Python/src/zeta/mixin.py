@@ -1,15 +1,19 @@
 import weakref
 from typing import TypeVar, Generic, Optional
 
-TKey = TypeVar('TKey')
-TValue = TypeVar('TValue')
+TKey = TypeVar("TKey")
+TValue = TypeVar("TValue")
+
 
 class WeakMap(Generic[TKey, TValue]):
     """
     GC-safe weak-keyed identity table for attaching state to objects.
     """
+
     def __init__(self) -> None:
-        self._dict = weakref.WeakKeyDictionary()
+        self._dict: weakref.WeakKeyDictionary[TKey, TValue] = (
+            weakref.WeakKeyDictionary()
+        )
 
     def set(self, key: TKey, value: TValue) -> None:
         """

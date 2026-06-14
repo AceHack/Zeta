@@ -1,12 +1,14 @@
 import gc
 from zeta.mixin import WeakMap
 
+
 class DummyKey:
     def __init__(self, name: str) -> None:
         self.name = name
 
+
 def test_weak_map_basic() -> None:
-    map_instance = WeakMap()
+    map_instance: WeakMap[DummyKey, int] = WeakMap()
     key1 = DummyKey("k1")
     key2 = DummyKey("k2")
 
@@ -20,9 +22,10 @@ def test_weak_map_basic() -> None:
     assert map_instance.get(key1) is None
     assert map_instance.delete(key1) is False
 
+
 def test_weak_map_gc() -> None:
-    map_instance = WeakMap()
-    
+    map_instance: WeakMap[DummyKey, int] = WeakMap()
+
     def run_gc_scenario() -> None:
         key = DummyKey("collectible")
         map_instance.set(key, 999)

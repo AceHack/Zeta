@@ -70,44 +70,44 @@ impl BitLayout {
         use crate::bit_layout_gen::*;
         BitLayout {
             version: BitField {
-                offset: VERSION_OFFSET,
-                width: VERSION_WIDTH,
+                offset: VERSION_OFFSET.0,
+                width: VERSION_WIDTH.0,
             },
             timestamp: BitField {
-                offset: TIMESTAMP_OFFSET,
-                width: TIMESTAMP_WIDTH,
+                offset: TIMESTAMP_OFFSET.0,
+                width: TIMESTAMP_WIDTH.0,
             },
             chromosome: BitField {
-                offset: CHROMOSOME_OFFSET,
-                width: CHROMOSOME_WIDTH,
+                offset: CHROMOSOME_OFFSET.0,
+                width: CHROMOSOME_WIDTH.0,
             },
             category: BitField {
-                offset: CATEGORY_OFFSET,
-                width: CATEGORY_WIDTH,
+                offset: CATEGORY_OFFSET.0,
+                width: CATEGORY_WIDTH.0,
             },
             firefly: BitField {
-                offset: FIREFLY_OFFSET,
-                width: FIREFLY_WIDTH,
+                offset: FIREFLY_OFFSET.0,
+                width: FIREFLY_WIDTH.0,
             },
             authority: BitField {
-                offset: AUTHORITY_OFFSET,
-                width: AUTHORITY_WIDTH,
+                offset: AUTHORITY_OFFSET.0,
+                width: AUTHORITY_WIDTH.0,
             },
             persona: BitField {
-                offset: PERSONA_OFFSET,
-                width: PERSONA_WIDTH,
+                offset: PERSONA_OFFSET.0,
+                width: PERSONA_WIDTH.0,
             },
             momentum: BitField {
-                offset: MOMENTUM_OFFSET,
-                width: MOMENTUM_WIDTH,
+                offset: MOMENTUM_OFFSET.0,
+                width: MOMENTUM_WIDTH.0,
             },
             location: BitField {
-                offset: LOCATION_OFFSET,
-                width: LOCATION_WIDTH,
+                offset: LOCATION_OFFSET.0,
+                width: LOCATION_WIDTH.0,
             },
             randomness: BitField {
-                offset: RANDOMNESS_OFFSET,
-                width: RANDOMNESS_WIDTH,
+                offset: RANDOMNESS_OFFSET.0,
+                width: RANDOMNESS_WIDTH.0,
             },
             total_bits: 128,
         }
@@ -120,54 +120,54 @@ impl BitLayout {
         let mut o: u32 = 0;
         let randomness = BitField {
             offset: o,
-            width: RANDOMNESS_WIDTH,
+            width: RANDOMNESS_WIDTH.0,
         }; // 0..32
-        o += RANDOMNESS_WIDTH;
+        o += RANDOMNESS_WIDTH.0;
         o += 3; // reserved bits 32..35
         let location = BitField {
             offset: o,
-            width: LOCATION_WIDTH,
+            width: LOCATION_WIDTH.0,
         }; // 35..43
-        o += LOCATION_WIDTH;
+        o += LOCATION_WIDTH.0;
         let momentum = BitField {
             offset: o,
-            width: MOMENTUM_WIDTH,
+            width: MOMENTUM_WIDTH.0,
         }; // 43..51
-        o += MOMENTUM_WIDTH;
+        o += MOMENTUM_WIDTH.0;
         let persona = BitField {
             offset: o,
-            width: PERSONA_WIDTH,
+            width: PERSONA_WIDTH.0,
         }; // 51..59
-        o += PERSONA_WIDTH;
+        o += PERSONA_WIDTH.0;
         let authority = BitField {
             offset: o,
-            width: AUTHORITY_WIDTH,
+            width: AUTHORITY_WIDTH.0,
         }; // 59..64
-        o += AUTHORITY_WIDTH;
+        o += AUTHORITY_WIDTH.0;
         let firefly = BitField {
             offset: o,
-            width: FIREFLY_WIDTH,
+            width: FIREFLY_WIDTH.0,
         }; // 64
-        o += FIREFLY_WIDTH;
+        o += FIREFLY_WIDTH.0;
         let category = BitField {
             offset: o,
-            width: CATEGORY_WIDTH,
+            width: CATEGORY_WIDTH.0,
         }; // 65..69
-        o += CATEGORY_WIDTH;
+        o += CATEGORY_WIDTH.0;
         o += 1; // reserved bit 69
         let chromosome = BitField {
             offset: o,
-            width: CHROMOSOME_WIDTH,
+            width: CHROMOSOME_WIDTH.0,
         }; // 70..75
-        o += CHROMOSOME_WIDTH;
+        o += CHROMOSOME_WIDTH.0;
         let timestamp = BitField {
             offset: o,
-            width: TIMESTAMP_WIDTH,
+            width: TIMESTAMP_WIDTH.0,
         }; // 75..123
-        o += TIMESTAMP_WIDTH;
+        o += TIMESTAMP_WIDTH.0;
         let version = BitField {
             offset: o,
-            width: VERSION_WIDTH,
+            width: VERSION_WIDTH.0,
         }; // 123..128
         BitLayout {
             version,

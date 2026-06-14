@@ -168,9 +168,21 @@ pub fn from_value(value: f64, shape: FloatShape) -> Result<TriFloat, String> {
         return Err("v0 is unsigned + finite".to_string());
     }
     let value_bits = shape.high_width + shape.low_width;
-    let max_mode = if shape.decoder_width >= 62 { u64::MAX } else { (1u64 << shape.decoder_width) - 1 };
-    let max_v = if value_bits >= 62 { u64::MAX } else { 1u64 << value_bits };
-    let bias = if shape.decoder_width >= 62 { i32::MAX } else { 1i32 << (shape.decoder_width as u32 - 1) };
+    let max_mode = if shape.decoder_width >= 62 {
+        u64::MAX
+    } else {
+        (1u64 << shape.decoder_width) - 1
+    };
+    let max_v = if value_bits >= 62 {
+        u64::MAX
+    } else {
+        1u64 << value_bits
+    };
+    let bias = if shape.decoder_width >= 62 {
+        i32::MAX
+    } else {
+        1i32 << (shape.decoder_width as u32 - 1)
+    };
 
     if value == 0.0 {
         let bits = vec![Tri::False; value_bits];
