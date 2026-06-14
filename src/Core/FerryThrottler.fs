@@ -78,6 +78,48 @@ module FerryThrottlerConfig =
         { deterministic with MaxDegreeOfParallelism = max 1 ferries }
 
 
+/// How a ferry loop is launched — the single source of launch truth for every
+/// arity. `None` = production: run on the threadpool with no captured context
+/// (awaits resume on the threadpool, equivalent to `backgroundTask`). `Some sc` =
+/// Option-A increment 4: launch the WHOLE ferry onto the injected
+/// `SynchronizationContext` (via `Post`). It does not begin until the context runs
+/// the posted callback, and because a `SynchronizationContext` is current on its
+/// own thread *while it runs its callbacks* (the standard message-pump contract —
+/// e.g. `DeterministicSyncContext.PumpToIdle` installs itself for the pump's
+/// duration), every `await` in the ferry captures `sc` and re-posts there. So the
+/// entire ferry lifecycle is pump-gated, race-free, and replayable in the context's
+/// run order — the launcher never touches any thread's context itself (which would
+/// leak `sc` onto the caller/pump thread and trap its later awaits). This is the
+/// noninterference door (manifesto §13): ferry scheduling enters only through the
+/// injected context, never the ambient threadpool.
+[<RequireQualifiedAccess>]
+module private FerryLaunch =
+
+    let launch
+        (syncContext: SynchronizationContext option)
+        (ferryLoop: unit -> Task)
+        : Task =
+        match syncContext with
+        | None -> Task.Run(fun () -> ferryLoop ())
+        | Some sc ->
+            let tcs = TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously)
+            sc.Post(
+                (fun _ ->
+                    // Runs inside `sc`'s pump, so `sc` is already current — do NOT
+                    // set it here (setting without restoring leaks it onto the pump
+                    // thread and deadlocks that thread's own later awaits).
+                    let loop = ferryLoop ()
+                    loop.ContinueWith(
+                        (fun (c: Task) ->
+                            if c.IsFaulted then tcs.TrySetException(c.Exception :> exn) |> ignore
+                            elif c.IsCanceled then tcs.TrySetCanceled() |> ignore
+                            else tcs.TrySetResult() |> ignore),
+                        TaskContinuationOptions.ExecuteSynchronously)
+                    |> ignore),
+                null)
+            tcs.Task
+
+
 /// **FerryThrottler** — a degree-of-parallelism-knobbed work queue whose
 /// batching core is the *Flux Capacitor* (Mirror codename): it accumulates
 /// queued items and discharges them as a *boat* (batch) the instant a ferry is
@@ -229,35 +271,7 @@ type FerryThrottler<'TItem>
             with :? OperationCanceledException -> ()
         }
 
-    let runFerry () : Task =
-        match injectedSyncContext with
-        | None ->
-            // Production: run on the threadpool with no captured context — awaits
-            // resume on the threadpool (equivalent to `backgroundTask`). The loop's
-            // synchronous prefix reads no ctor-thread-affine state, so launching it
-            // via `Task.Run` rather than the ctor thread is observationally identical.
-            Task.Run(fun () -> ferryLoop ())
-        | Some sc ->
-            // Option-A increment 4: launch the ENTIRE ferry onto the injected
-            // context. The ferry does not begin until the context is pumped, and —
-            // because `sc` is current when it starts — every `await` re-posts its
-            // continuation back to `sc`. So the whole ferry lifecycle is pump-gated:
-            // no threadpool, no startup race, replayable in the order the context
-            // runs its posted callbacks. Never touches the ctor thread's context.
-            let tcs = TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously)
-            sc.Post(
-                (fun _ ->
-                    SynchronizationContext.SetSynchronizationContext sc
-                    let loop = ferryLoop ()
-                    loop.ContinueWith(
-                        (fun (c: Task) ->
-                            if c.IsFaulted then tcs.TrySetException(c.Exception :> exn) |> ignore
-                            elif c.IsCanceled then tcs.TrySetCanceled() |> ignore
-                            else tcs.TrySetResult() |> ignore),
-                        TaskContinuationOptions.ExecuteSynchronously)
-                    |> ignore),
-                null)
-            tcs.Task
+    let runFerry () : Task = FerryLaunch.launch injectedSyncContext ferryLoop
 
     // Production: start `ferries` background ferries now. Manual/DST mode: start
     // none — the caller drives via `PumpToIdleAsync`.
@@ -326,7 +340,13 @@ type FerryThrottler<'TItem>
 type FerryThrottler<'TItem, 'TResult>
     (config: FerryThrottlerConfig,
      processBatch: ReadOnlyMemory<'TItem> -> CancellationToken -> Task<'TResult array>,
-     ?itemSizeBytes: 'TItem -> int) =
+     ?itemSizeBytes: 'TItem -> int,
+     // DST seam (Option A, increment 4): run the background ferries under this
+     // `SynchronizationContext` so their `await` continuations route to it. Inject
+     // a deterministic pumpable context (`DeterministicSyncContext`) and the
+     // request/response ferries become replayable. Default `None` = today's
+     // threadpool path, byte-identical for production. See the single-arity seam.
+     ?syncContext: SynchronizationContext) =
 
     do
         if config.MaxDegreeOfParallelism < 1 then
@@ -416,8 +436,15 @@ type FerryThrottler<'TItem, 'TResult>
             req.TrySetException ex
             Error()
 
-    let runFerry () : Task =
-        backgroundTask {
+    let injectedSyncContext = syncContext
+
+    // The ferry loop body — a context-CAPTURING `task` (its awaits honour the
+    // ambient `SynchronizationContext`), so WHERE its continuations resume is set
+    // by the context in effect when it is launched: null on the threadpool
+    // (production), or the injected context (Option-A increment 4). Single source
+    // of result-arity ferry-loop truth across both launch paths.
+    let ferryLoop () : Task =
+        task {
             let reader = inbox.Reader
             let items = Array.zeroCreate<'TItem> config.MaxBatchSize
             let requests = Array.zeroCreate<FerryRequest<'TItem, 'TResult>> config.MaxBatchSize
@@ -479,6 +506,8 @@ type FerryThrottler<'TItem, 'TResult>
             with :? OperationCanceledException ->
                 cancelRemaining reader pending ct
         }
+
+    let runFerry () : Task = FerryLaunch.launch injectedSyncContext ferryLoop
 
     let ferryTasks : Task array =
         Array.init ferries (fun _ -> runFerry ())
@@ -546,7 +575,10 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
      // `Activity.Current` / `IntrCtx` / a Zeta `AsyncLocal`) is snapshotted at the
      // door and then threaded as DATA — the boundary is the only place the side
      // channel is touched; nothing ambient flows into the background ferry.
-     ?capture: unit -> 'Ctx) =
+     ?capture: unit -> 'Ctx,
+     // DST seam (Option A, increment 4): forwarded to the composed core throttler
+     // so the BACKGROUND ferries replay under an injected `SynchronizationContext`.
+     ?syncContext: SynchronizationContext) =
 
     // Size the PAYLOAD, not the (payload, ctx) pair — the threaded context is
     // metadata that rides along; it does not count against the byte budget.
@@ -555,7 +587,7 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
 
     let inner =
         new FerryThrottler<struct ('TItem * 'Ctx)>(
-            config, processBatch, ?itemSizeBytes = innerSizer, ?manual = manual)
+            config, processBatch, ?itemSizeBytes = innerSizer, ?manual = manual, ?syncContext = syncContext)
 
     /// Enqueue one item together with an explicit context value to thread to its boat.
     member _.EnqueueAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : ValueTask =
@@ -587,9 +619,9 @@ type ContextualFerryThrottler<'TItem, 'Ctx>
 /// the caller's context — supplied explicitly or captured at the door — threaded as
 /// DATA to the boat processor; the per-item `Task<'TResult>` still fans back to the
 /// caller. Composes `FerryThrottler<struct('TItem*'Ctx), 'TResult>`, mirroring
-/// `ContextualFerryThrottler` for the result arity. (Background ferries: the
-/// synchronous manual-pump is single-arity-only today — result-arity replay is the
-/// later "full background" increment.)
+/// `ContextualFerryThrottler` for the result arity. Background ferries replay via
+/// the forwarded `?syncContext` (Option-A increment 4b); the synchronous
+/// manual-pump (`PumpToIdleAsync`) remains single-arity-only.
 [<Sealed>]
 type ContextualResultFerryThrottler<'TItem, 'Ctx, 'TResult>
     (config: FerryThrottlerConfig,
@@ -597,14 +629,17 @@ type ContextualResultFerryThrottler<'TItem, 'Ctx, 'TResult>
      ?itemSizeBytes: 'TItem -> int,
      // Capture-at-the-boundary reader (see ContextualFerryThrottler): snapshots the
      // ambient on the caller's flow at ProcessCapturedAsync time, threaded as data.
-     ?capture: unit -> 'Ctx) =
+     ?capture: unit -> 'Ctx,
+     // DST seam (Option A, increment 4): forwarded to the composed core throttler
+     // so the request/response BACKGROUND ferries replay under an injected context.
+     ?syncContext: SynchronizationContext) =
 
     let innerSizer =
         itemSizeBytes |> Option.map (fun f -> fun (struct (item, _ctx): struct ('TItem * 'Ctx)) -> f item)
 
     let inner =
         new FerryThrottler<struct ('TItem * 'Ctx), 'TResult>(
-            config, processBatch, ?itemSizeBytes = innerSizer)
+            config, processBatch, ?itemSizeBytes = innerSizer, ?syncContext = syncContext)
 
     /// Submit one item with an explicit context; returns that item's result task.
     member _.ProcessAsync(item: 'TItem, context: 'Ctx, ?cancellationToken: CancellationToken) : Task<'TResult> =

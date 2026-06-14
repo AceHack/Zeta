@@ -92,18 +92,33 @@ the background ferry's scheduling is now under the injected door, not the
 threadpool. This is the load-bearing mechanism; it is *not yet* the full
 "N-ferry deterministic replay across a seeded run" claim.
 
-## Deferred to 4b
+## 4b — LANDED
 
-- **Full N-ferry deterministic-interleaving replay**: a seeded run that asserts
-  the *boat composition* (which items ride which boat) is byte-identical across
-  replays at DoP≥2. Needs the deterministic context promoted into Core as an
-  **earned** sim primitive (a class with state ⇒ weight ⇒ earned under `rules/`,
-  per `interfaces-free-classes-earned-under-rules` — the DST + injected-Source
-  boundary is the earning) and a golden-vector-style replay assertion.
-- Wiring the same `?syncContext` through `ContextualFerryThrottler` /
-  `ContextualResultFerryThrottler` (the increment-1–3 wrappers forward optional
-  args; the addition is mechanical once the core arity is proven).
-- The result arity (`FerryThrottler<'TItem,'TResult>`) ferry loop.
+- **Full N-ferry deterministic-interleaving replay**: `replayScenario` runs a fixed
+  interleaved (enqueue, pump) sequence twice at DoP=2 and DoP=3 and asserts the boat
+  composition (which items ride which boat, in order) is **identical across runs** —
+  the replay claim — plus item conservation. Done.
+- **Deterministic context promoted into Core** as the earned sim primitive
+  `src/Core/DeterministicSyncContext.fs` (class state = the simulated scheduler's
+  run-queue; earned under the DST + injected-`SynchronizationContext` boundary per
+  `interfaces-free-classes-earned-under-rules`). Lock-free (`ConcurrentQueue` +
+  `Interlocked`, discipline #2). The test file now consumes the Core type.
+- **`?syncContext` wired through** the result arity (`FerryThrottler<'TItem,'TResult>`)
+  and both contextual wrappers (`ContextualFerryThrottler` /
+  `ContextualResultFerryThrottler`), forwarding to the composed core throttler.
+- **One launch seam for every arity**: `FerryLaunch.launch` (None → threadpool
+  `Task.Run`; Some → `Post` the whole ferry onto the context). Single source of
+  launch truth.
+
+### Deadlock caught + fixed during 4b (worth recording)
+
+The pump must own the thread's `SynchronizationContext` for the pump's *duration*
+and restore it after. The first cut set the context inside the launch callback
+without restoring it, leaking it onto the pump/caller thread — the caller's own
+later `await`s then captured the (now-idle) context and deadlocked. Fix:
+`PumpToIdle` installs itself as current with a `try/finally` restore (the standard
+message-pump contract); the launcher touches no thread's context. Tests would hang
+silently (no output) — caught via `--blame-hang-timeout`.
 
 ## Anchors (Beacon)
 

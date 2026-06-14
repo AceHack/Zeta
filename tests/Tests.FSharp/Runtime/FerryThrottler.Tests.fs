@@ -464,34 +464,11 @@ let ``contextual result throttler threads context and fans aligned results back`
 // docs/research/2026-06-13-ferrythrottler-background-ferry-replay-injected-synchronizationcontext-increment-4.md
 // ═══════════════════════════════════════════════════════════════════
 
-/// A deterministic, single-threaded, pumpable `SynchronizationContext` — test
-/// scaffolding for the increment-4 seam (4b promotes the Core-resident, earned
-/// sim version). `Post` captures the callback into a FIFO queue; NOTHING runs
-/// ambiently. `PumpToIdle` runs queued callbacks in registration order until none
-/// remain (a callback may post more — those run too). `PostedCount` lets a test
-/// assert the ferry routed its continuations through THIS door, not the threadpool.
-type private DeterministicSyncContext() =
-    inherit SynchronizationContext()
-    let queue = System.Collections.Generic.Queue<SendOrPostCallback * obj>()
-    let mutable posted = 0
-    override _.Post(d, state) =
-        lock queue (fun () ->
-            posted <- posted + 1
-            queue.Enqueue(d, state))
-    // Captured copies must still route to THIS queue, or determinism leaks.
-    override this.CreateCopy() = this :> SynchronizationContext
-    /// Total callbacks posted to this context over its lifetime.
-    member _.PostedCount = lock queue (fun () -> posted)
-    /// Run posted callbacks (FIFO) until the queue is empty.
-    member _.PumpToIdle() =
-        let mutable go = true
-        while go do
-            let next =
-                lock queue (fun () ->
-                    if queue.Count > 0 then ValueSome(queue.Dequeue()) else ValueNone)
-            match next with
-            | ValueSome(d, s) -> d.Invoke s
-            | ValueNone -> go <- false
+// `DeterministicSyncContext` is the earned Core sim primitive (4b promoted it out
+// of this test file): src/Core/DeterministicSyncContext.fs. Resolved via `open
+// Zeta.Core`. A single-threaded, pumpable SynchronizationContext: Post captures
+// continuations FIFO; PumpToIdle runs them in order; PostedCount proves the
+// workload routed through THIS door, not the threadpool.
 
 
 [<Fact>]
@@ -531,4 +508,108 @@ let ``background ferry runs under the injected SynchronizationContext — pump-g
         ctx.PumpToIdle()
         do! completion
         completion.IsCompletedSuccessfully |> should equal true
+    }
+
+
+// ─── 4b: full background-ferry SEEDED REPLAY + result/contextual arities ───
+
+/// Run a fixed interleaved (enqueue, pump) scenario through a background throttler
+/// bound to a fresh `DeterministicSyncContext` at the given DoP, returning the exact
+/// sequence of boats (which items rode which boat, in order). The schedule is a pure
+/// function of (enqueue sequence, pump sequence) — so two runs MUST agree.
+let private replayScenario (dop: int) : Task<int list list> =
+    task {
+        let boats = ResizeArray<int list>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
+            boats.Add([ for i in 0 .. boat.Length - 1 -> boat.Span.[i] ])
+            Task.CompletedTask
+        let ctx = DeterministicSyncContext()
+        let config = { FerryThrottlerConfig.withFerries dop with MaxBatchSize = 2 }
+        use throttler = new FerryThrottler<int>(config, processBatch, syncContext = ctx)
+        // Interleave enqueues with pumps so multiple ferries genuinely park and
+        // resume (not one ferry monopolising a single synchronous sweep).
+        for wave in [ [ 1; 2; 3 ]; [ 4; 5 ]; [ 6; 7; 8; 9 ]; [ 10 ] ] do
+            for x in wave do
+                do! throttler.EnqueueAsync(x)
+            ctx.PumpToIdle()
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+        return List.ofSeq boats
+    }
+
+
+[<Fact>]
+let ``background ferries replay byte-identically under the deterministic context (DoP=2)`` () : Task =
+    // The 4b core claim: with the deterministic context injected, the background
+    // schedule is reproducible — the same inputs yield the same boats every run.
+    task {
+        let! run1 = replayScenario 2
+        let! run2 = replayScenario 2
+        // Replay determinism: identical boat composition across independent runs.
+        run1 |> should equal run2
+        // Correctness: every item processed exactly once, none lost or duplicated.
+        run1 |> List.concat |> List.sort |> should equal [ 1 .. 10 ]
+    }
+
+
+[<Fact>]
+let ``background ferries replay byte-identically under the deterministic context (DoP=3)`` () : Task =
+    // Same claim at a higher DoP — N ferries draining one channel still replay,
+    // because all continuations serialise through the single pumpable context.
+    task {
+        let! run1 = replayScenario 3
+        let! run2 = replayScenario 3
+        run1 |> should equal run2
+        run1 |> List.concat |> List.sort |> should equal [ 1 .. 10 ]
+    }
+
+
+[<Fact>]
+let ``result-arity background ferry replays under the injected context`` () : Task =
+    // 4b(c): the request/response arity now takes ?syncContext, so its background
+    // ferries are pump-gated too — results fan back only when the context is pumped.
+    task {
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<string array> =
+            task { return [| for i in 0 .. boat.Length - 1 -> sprintf "r%d" boat.Span.[i] |] }
+        let ctx = DeterministicSyncContext()
+        use throttler =
+            new FerryThrottler<int, string>(FerryThrottlerConfig.deterministic, processBatch, syncContext = ctx)
+        let t1 = throttler.ProcessAsync(1)
+        let t2 = throttler.ProcessAsync(2)
+        let t3 = throttler.ProcessAsync(3)
+        // Before pumping, no result has resolved — the ferry is gated on the context.
+        t1.IsCompleted |> should equal false
+        ctx.PumpToIdle()
+        let! results = Task.WhenAll [| t1; t2; t3 |]
+        results |> should equal [| "r1"; "r2"; "r3" |]
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``contextual throttler forwards syncContext so background ferries replay`` () : Task =
+    // 4b(c): ContextualFerryThrottler forwards ?syncContext to the composed core
+    // throttler — the threaded context value rides to the boat AND the background
+    // ferry is pump-gated under the injected SynchronizationContext.
+    task {
+        let seen = ConcurrentQueue<struct (int * string)>()
+        let processBatch (boat: ReadOnlyMemory<struct (int * string)>) (_ct: CancellationToken) : Task =
+            for i in 0 .. boat.Length - 1 do seen.Enqueue(boat.Span.[i])
+            Task.CompletedTask
+        let ctx = DeterministicSyncContext()
+        use throttler =
+            new ContextualFerryThrottler<int, string>(
+                FerryThrottlerConfig.deterministic, processBatch, syncContext = ctx)
+        do! throttler.EnqueueAsync(1, "a")
+        do! throttler.EnqueueAsync(2, "b")
+        // Pump-gated: nothing seen until the injected context runs.
+        List.ofSeq seen |> should equal ([]: struct (int * string) list)
+        ctx.PumpToIdle()
+        List.ofSeq seen |> should equal [ struct (1, "a"); struct (2, "b") ]
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
     }
