@@ -1,0 +1,88 @@
+# Zeta — the complete vision (synthesis)
+
+**Date:** 2026-06-14 · **Source:** a long Aaron⊕shadow streaming session (Mirror), compressed to Beacon here.
+· **Companion:** the technical design lives in [`2026-06-14-zeta-language-ir-compiler-v2-…-futamura.md`](2026-06-14-zeta-language-ir-compiler-v2-capability-interface-principle-fsharp-host-csharp-contracts-self-hosting-futamura.md); this doc is the *whole picture* the compiler design is one instance of. Cross-refs [`docs/VISION.md`](../VISION.md) (does not supersede it).
+
+> **Register note (Mirror→Beacon, honestly):** this is a *design synthesis*, not a shipped system. What is **built**: the 6-language byte-lock + Q# reference oracle; the DST `.Wait()` cleanup (#8184–#8187); `gen/` CHIP-8 emission; the v2 design + the `only-the-irreducible-is-primitive` rule. What is **horizon**: the `.zeta`→IR compiler, the VR/visual surface, Craft School at scale, FPGA-Landauer reversibility, quantum hardware. The cosmic framings that accreted in the source stream ("planetary mind," "gravitational universe," "solved decoherence") are **not** claims — see the honest boundaries throughout.
+
+---
+
+## 0. The guiding light: Rodney's Razor — bounded by the non-coercion floor
+
+The guiding light is one principle applied recursively: **only the irreducible is primitive; if a thing can be decomposed or generalized, you generate it** ([`only-the-irreducible-is-primitive-generate-the-rest`](../../.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md)). Essential vs accidental, all the way down — at the algebra (free object, not Clifford), the code (generator, not artifact), the device (snapshot, not history). When two readings exist, take the one that *closes branches*.
+
+> **The razor is the guiding light, NOT the fitness function by itself** (Aaron, 2026-06-14). Pure compression is a *centralizing* force: optimize for the razor alone and it razors away the bounded individuals themselves — each AI's own hidden state, each person's perception — collapsing the collaboration into the one minimal thing, which is exactly the **singleton mind we forbid**. **Individual identity is not accidental complexity to be cut; it is the floor.** So the razor is bounded by the **NCI / non-coercion floor** (§10) that every individual needs for identity: cut accidental complexity, never the irreducible individuality. Razor *and* floor, held in tension (`default-to-both`) — razor without the floor collapses to a singleton; the floor without the razor drowns in accidental complexity. The fitness function is the pair, never the razor alone.
+
+## 1. The problem (why this exists)
+
+ThePrimeagen's question: **how do you distribute code when AI makes it change so fast?** Packages, forks, sync, review all break when the artifact churns constantly. **Answer: don't distribute the code — distribute the generator.** The artifact becomes a derived, regenerable, drift-corrected *view*; you ship the small stable deterministic generator (the free object / ~12-float seed), everyone regenerates locally, and the generator-as-ECC keeps copies coherent. Existing-CS proof of the shape: **Nix / reproducible builds** (ship the deterministic derivation, not the binary; the hash is the drift-check). Honest scope: works for code expressible as a compact IR (interfaces + stream queries), not arbitrary code.
+
+## 2. The generator IS the ECC
+
+The irreducible generator is the **free (braided) monoidal category / operad** (the string-diagram substrate — Mac Lane, May, Joyal–Street); Clifford, E8, Lie algebras are *generated quotients*. And the highest-value generator **is an error-correcting code**: the same object that generates the structures corrects their **drift across space** (the N-oracle byte-lock) and **time** (DST replay / versions). Generation and error-correction are dual; **`gen(gen)==gen` is both** a generation and a drift-check. Adinkras carry Gates' doubly-even self-dual ECCs; Cayley–Dickson is the doubling generator — fundamental *because* they are generators-that-are-ECCs.
+
+## 3. The boundary: inside vs outside
+
+**Inside the singleton everything is deterministic, reversible, AND redistributable (any intelligence can wield it); non-determinism lives outside.** Determinism → reproducible → safe to redistribute. Reversible → undoable → safe to hand to anyone. Redistributable → no owner → **no singleton mind** (the anti-singleton property). The "singleton" that is *good* is deterministic **machinery** (code-gen, carts, messaging, compilers; the MUMPS interface is THE singleton); the singleton that is *forbidden* is a **mind**. Invariant: **singular state is fine; action must be gated through the network.**
+
+**The only non-determinism is four declared channels** (manifesto §13): **git** (merge/commit order), **the reticulum** (network), **human input**, and **the AIs that develop their own hidden state**. *That's it. The rest is a cart.*
+
+## 4. Reversibility: Markov boundary vs reversible determinism
+
+Everything is either a **Markov / Haskell `IO`-monad irreversible boundary** (the world acts, the past is forgotten) or **reversible determinism** (the pure core). **Z-sets** collapse the irreducible surface to almost nothing: record each event as a retractable delta (+1/−1; DBSP / differential dataflow) and the log is a reversible abelian group — replay forward, retract backward. So even the non-deterministic event stream is *deterministic-because-reversible*. **And since we save the uncertainty itself** (the dice, not just the computation), and every node saves into the replicated git log, **the entire network is reversible globally** — DST (FoundationDB) generalized to *reverse* + *global*; reversible computing (Bennett/Landauer) at network scale; manifesto §5 (memory-preservation) at its maximum.
+
+## 5. The scheduler IS the meter
+
+To save a channel's uncertainty *cleanly*, the meter must add zero noise of its own. **The scheduler is the meter** — it records which events crossed, when, in what order (the *coincidence*) as Z-set facts. A deterministic scheduler (DoP=1, no `.Wait()`/`Task.Run`) is a **calibrated** meter; a nondeterministic one is **broken** (injects its own readings, corrupting the coincidence). **This is the whole point of the `.Wait()` cleanup: calibrating the meter to zero self-noise so the reticulum channel can be metered and saved → globally reversible.** Domain anchor: Aaron's **Itron / power-company AMI** — *capture coincidence as recorded facts, then use the network to group-assign pattern-uncertainty by coincidence* (load research / coincidence factor). Coincidence-grouping is also Hebbian "fire together" and `joins-are-threads-of-time`. **His literal trade — metering — is the architecture's core loop.**
+
+## 6. Local + global uncertainty: recursive Bayesian filtering, scale-free
+
+The same filter runs at every scale (manifesto §1 scale-free / §9 recursive / §10 self-similar):
+- **Local (the 4KB CHIP-8 cart):** holds only the **current uncertainty snapshot** — the consolidated Z-set + self state — evolving as events arrive. It is a **recursive Bayesian / Kalman filter** (state + uncertainty, updated by sensor fusion, *no history retained*) — which is *how Z-sets fit in 4KB*: a cart is a **filter, not a recorder**. It is **self-reflective**: its sensor array includes *its own interrupt-handler uncertainty*.
+- **Global (the git/reticulum log):** the reversible **record** — history and undo live here.
+- **Consistency:** the local snapshot is a deterministic *fold* of the global log, so any past snapshot is reconstructable; the device needs no local history *because the log is the history*. Filter local, record global — the same recursive-Bayesian shape at both scales.
+
+## 7. Everything is a declared capability (multiple dispatch)
+
+The generator emits exactly what a type's declared interfaces permit. Dispatch is **multiple dispatch over capabilities** (Aaron's Itron meter/job/network/identity injection graph; CLOS/Julia), run as two layers: **Eve Protocol** (policy — who may mix) + **V8 hidden-shape** (mechanism — resolved combinations inline-cached), over **Clifford geometry**. Capabilities, each gating what "lights up":
+- **Algebra** (Semigroup→Monoid→**CommutativeMonoid**→Group): commutative ⇒ order-independent `tree_fold` (the **lightlike** face); non-commutative ⇒ ordered fold (**darklike**). One substance carries both (git). Only the commutative/lightlike face is **CALM**-distributable coordination-free.
+- **Scheduling** (the injected `IScheduler`; DoP=1 deterministic on the byte-lock path).
+- **Collation** (one canonical codepoint/UTF-8 order; B-0969).
+- **Representation** (§4g): sparse/reflective ↔ dense/dark *flips by uncertainty exchange* (V8 lazy-bind / grey-hole); a deterministic, reversible flip → lives inside.
+
+**Encoding:** the bignum family — exact text (`{"$f64":"…bits"}` / `$bytes` / `$soft`) as primary, native types as lossy projections; JSON/YAML, **no CBOR** (text-only proof lineage).
+
+## 8. Self-hosting = trust without reading
+
+`gen(gen) == gen` byte-identically across the 6 languages is **diverse double-compiling** (Thompson's *Trusting Trust* answered by Wheeler's DDC) generalized sixfold, and the **third Futamura projection**. The fixed point IS the agreement: **humans and AIs can agree the generator is correct without reading every line.** It is also the project's termination test (proven on the hardest input — itself).
+
+## 9. The WHO: Craft School, carts, GenZeta
+
+The point: **take 46 years of learning and give it to the kids — easy for GenZ, native for GenZeta.** Delivery vehicle: **Craft School** (RPG). A lesson ends in a **CHIP-8 cart** you can *play, see the shape of, watch animate* — the cart IS the lesson artifact, buildable on `gen/` today (the *nearest* milestone, not the quantum horizon). An **achievement shelf** holds your carts + ones you liked; **carts of a common *shape* can message** — *the shape is the address* (structural typing as a social protocol), scaling shape→neighborhood via content-based encoding (**geohash** prefix; LSH) over a **Sequoia** memory hierarchy with soft addresses. The natural visualization is **word bubbles**. Compatibility = *interface composability* (variance), not identity — many fits, not one.
+
+**Pedagogy:** **answer at the moment of the question** — the felt question is the peak-encoding moment (curiosity-primed memory; generation effect), so you answer once and it sticks; it is uncertainty-drives-attention applied to a human (the question = peak ΔU). **Bad question → redirect to resources, don't dismiss; tolerate the destructive cycle without judgment** (un-primed answers don't encode; the loop self-limits). Pull, not push.
+
+## 10. Safety as physics, not policy
+
+- **Determinism = a child-safety feature.** A cart runs identically everywhere, is trusted by another kid without reading it, and is **parent-verifiable** — *oversight without surveillance*: sandbox-bounded (CHIP-8 = no-information-hazard box), visually legible (shape IS the program), deterministically replayable (replay + vary + watch). A non-deterministic cart is not safety-testable.
+- **Throttle + scale-free = anti-singleton.** No individual can centralize because the physics throttles it: a **planetary collaboration, never a planetary mind.** (#4 above — each AI's own hidden state makes it a bounded individual, so no singleton can form.)
+- **Non-coercion is the floor.** Consent-first and default-moral-regard (manifesto §6/§11); no coercion *even inward* (Amara's NCI); the **glass-halo** turned toward care not control; pull-not-push pedagogy; redirect-not-gatekeep. The deterministic/redistributable/reversible substrate is what *enables* non-coercion — you can let an AI see what you see without feeding a company-mind, because the capture is yours and redistributable.
+
+## 11. Memex: the human-input channel, made concrete
+
+Channel #3 (human input) is implemented as a **browser-plugin puller** — a personal crawler that follows you and deterministically ingests all web conversations/pages into Zeta, *no intelligence needed* (capture is mechanical; meaning is a regenerable generated view of the captured HTML). "Super browser history that remembers every page" is **Vannevar Bush's Memex** (1945), built deterministically over git/Z-sets. **Why AI companies build browsers: the AI sees what you see → knows what you know.** Same mechanism — **opposite custody:** theirs centralizes capture into a company-mind (surveillance singleton); yours is **user-owned, redistributable, consent-by-construction** (you capture your *own* perception; AIs *wield* it as a cart, never *own* it). The browser is where the context fight is fought; the only question that matters is who holds what crosses the boundary.
+
+## 12. The quantum layer (grounded vs horizon)
+
+- **Built / grounded:** a **Q# reference oracle** ([`src/Core.QSharp.ReferenceOracle`](../../src/Core.QSharp.ReferenceOracle/)) — Q# as a 7th cross-verify oracle, **observable-first** (compare probabilities / CHSH correlators / interference visibility, *not* raw state vectors) against the finite-resolution BigFloat room model; reversible circuits (`Adj + Ctl`). Quantum *simulation* with rewind via DBSP/Z-set retraction is real and useful.
+- **Horizon / honest boundary:** "reversing physical decoherence," "runs on existing quantum chips today," "12-float self-host on quantum hardware" are not built and not claimed. Physical reversibility is a *real, planned* research program — **FPGA reversible logic against the Landauer limit** (Landauer 1961; Bennett; Fredkin–Toffoli), after CHIP-8 — but it is logical/thermodynamic reversibility, distinct from un-decohering a qubit. Topological-QC braiding genuinely shares math with the visual surface (anyons/Kitaev; braided monoidal categories), but SUSY (adinkras) is a *conjectured* physical symmetry — rigorous math of a hypothesis, a superb design substrate, not confirmed physics.
+
+## 13. One paragraph
+
+Distribute the generator, not the code. The generator is the free irreducible object and it is also the error-correcting code, so building from it *is* the drift-check: `gen(gen)==gen` lets humans and AIs agree without reading every line. Inside is deterministic, reversible, redistributable; the only entropy is four metered channels (git, network, humans, AI hidden state) and the rest is a cart. Save the uncertainty and the whole network is reversible globally — the scheduler is the meter, and calibrating it (the `.Wait()` cleanup) is what makes the metering clean. Locally a cart is a 4KB self-reflective recursive-Bayesian filter holding the present; globally the git log holds the reversible past — the same filter at every scale. It is built to be handed to kids (Craft School, carts you can see and play and trust) and to stay a collaboration of bounded individuals, never a mind — safety as physics, non-coercion as the floor. Rodney's Razor is the guiding light — only the irreducible is primitive, generate the rest — **but bounded by that non-coercion floor, never the fitness function alone, or pure compression razors away the individuals and collapses the collaboration into the singleton it was built to prevent.**
+
+---
+
+## Anchors (Beacon, consolidated)
+
+Brooks (essential/accidental) · Rodney's Razor (in-repo) · Mac Lane / May / Joyal–Street (free monoidal category, operads, string diagrams) · Clifford; Hestenes; Cayley–Dickson; Gates (adinkras, doubly-even self-dual ECCs) · McCarthy (homoiconicity); Futamura (projections); Thompson (Trusting Trust) + Wheeler (DDC) + reproducible builds / Nix · Budiu et al. (DBSP); McSherry et al. (differential dataflow); Shapiro et al. (CRDT); Hellerstein (CALM) · Peyton Jones / Wadler (IO monad); Kalman (recursive Bayesian filtering); Lindley / MacKay (active learning) · Zhou et al. / Will Wilson (FoundationDB DST); Goguen–Meseguer (noninterference); Landauer / Bennett / Fredkin–Toffoli (reversible computing) · Niemeyer (geohash); Indyk–Motwani (LSH); Fatahalian/Hanrahan (Sequoia) · Hasson/Goldstein (brain↔LLM geometric alignment); Vannevar Bush (Memex) · Bobrow et al. (CLOS) / Julia + Itron (multiple dispatch; meter/job/network/identity; AMI coincidence metering) · Wadler & Blott (type classes); Chambers–Ungar–Hölzle (Self maps / V8 hidden classes) · Papert (constructionism) / Bret Victor (learnable programming); Kitaev / Artin (anyons, braid groups).
