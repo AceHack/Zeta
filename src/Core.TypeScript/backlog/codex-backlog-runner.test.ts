@@ -6,7 +6,7 @@ import {
   capacityGate,
   capacityPrCount,
   parseOpenPrListOutput,
-} from "../../../.codex/bin/codex-backlog-runner";
+} from "../service/capacity/capacity";
 
 describe("capacityGate", () => {
   test("allows work while there are open parallel PR slots", () => {
