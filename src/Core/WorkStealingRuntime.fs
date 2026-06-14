@@ -99,5 +99,22 @@ type WorkStealingRuntime<'K when 'K : comparison>
 
     interface IDisposable with
         member _.Dispose() =
+            // Non-blocking shutdown (mirrors FerryThrottler/SpineAsync). A
+            // wall-clock `Completion.Wait 500` is DST-hostile (a timeout DST
+            // cannot replay) and deadlocks the DoP=1 deterministic path: the
+            // dataflow block's continuations route to the pump, which cannot
+            // run while this thread is blocked. Just signal completion; the
+            // block drains on its own. Guaranteed drain via DisposeAsync.
             stepBlock.Complete()
-            stepBlock.Completion.Wait 500 |> ignore
+
+    interface IAsyncDisposable with
+        member _.DisposeAsync() =
+            // Deterministic drain: signal completion, then AWAIT the block —
+            // no thread blocked, no wall-clock timeout, replayable on the
+            // DoP=1 pump.
+            stepBlock.Complete()
+            ValueTask(
+                task {
+                    try do! stepBlock.Completion
+                    with _ -> ()
+                })
