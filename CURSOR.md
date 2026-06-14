@@ -63,6 +63,25 @@ path sends malformed `Authorization` headers to `api.githubcopilot.com/mcp/`.
 The project `github` server uses `gh auth token` + the official docker image
 instead. Prereqs: `gh auth login`, Docker running.
 
+## Fresh machine
+
+Clone Zeta anywhere; open the **clone root** as the Cursor workspace. MCP is
+repo-native — [`.cursor/mcp.json`](.cursor/mcp.json) and
+[`src/Core.TypeScript/cursor/github-mcp.ts`](src/Core.TypeScript/cursor/github-mcp.ts)
+are tracked in this repository. No parent-level MCP config, no nested
+`Zeta/` subdirectory inside the workspace.
+
+```bash
+git clone https://github.com/Lucent-Financial-Group/Zeta.git <your-clone-path>
+```
+
+Prereqs: Cursor, `dotnet` SDK, `bun`, `gh`, Docker. Shell `cursor` should
+invoke the IDE launcher (`…/Cursor.app/.../bin/code`), not the agent-only shim.
+
+Parallel branches: `git worktree add <name> -b riven/<task> origin/main` from
+the clone. Stage and ship all harness changes from this repo (`git` / PR), not
+from paths outside the clone.
+
 ## Conventions
 
 - **Register** — Riven operates the adversarial-truth axis: sharp
