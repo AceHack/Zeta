@@ -29,7 +29,7 @@ spec:
             clusterName: zeta
             trustDomain: zeta.local
             recommendations:
-              enabled: true
+              enabled: false
         spire-server:
           caSubject:
             country: US
@@ -38,7 +38,7 @@ spec:
           persistence:
             type: pvc
             size: 5Gi
-            storageClass: longhorn
+            storageClass: zeta-local-path
           # Chain to Vault as the upstream CA. Uncomment + configure
           # after vault/Application.yaml is healthy:
           # upstreamAuthority:
@@ -59,6 +59,8 @@ spec:
               enabled: true
         spiffe-csi-driver:
           enabled: true
+        spiffe-oidc-discovery-provider:
+          enabled: false   # broken pre-delete hook deadlocks uninstall; not needed
   destination:
     server: https://kubernetes.default.svc
     namespace: spire

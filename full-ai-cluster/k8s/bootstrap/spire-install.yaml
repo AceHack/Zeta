@@ -36,7 +36,7 @@ spec:
         clusterName: zeta
         trustDomain: zeta.local
         recommendations:
-          enabled: true
+          enabled: false
     spire-server:
       caSubject:
         country: US
@@ -45,10 +45,12 @@ spec:
       persistence:
         type: pvc
         size: 5Gi
-        storageClass: longhorn
+        storageClass: zeta-local-path
     spire-agent:
       workloadAttestors:
         k8s: { enabled: true, skipKubeletVerification: false }
         unix: { enabled: true }
     spiffe-csi-driver:
       enabled: true
+    spiffe-oidc-discovery-provider:
+      enabled: false   # broken pre-delete hook deadlocks uninstall; not needed
