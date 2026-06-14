@@ -134,6 +134,20 @@ The goal Aaron states: **everything the language expresses can be seen — a 5-y
 
 So the surface stack is: **manipulate shapes (pictures/animations) → the shapes ARE the IR (Clifford objects) → capability multiple-dispatch (§0–§4) → 6 language views + a CHIP-8 cart (§4e).** The visual surface and the dispatch shape and the byte-locked artifact are the *same geometric object* seen at three registers — which is why a child's braid and a generated, byte-locked, self-hosting cart are the same thing at different magnifications (manifesto §9 recursive / §10 self-similar).
 
+### 4g. Representation is a capability — uncertainty drives the dark↔sparse flip and attention
+
+> Register note (Aaron: *"this is code, catch the plot"*): "dark/sparse tensors" and "gravity" below are a **code** architecture (sparse vs dense tensor representations), not astrophysics. "Gravity" = organizing weight; the metaphor maps onto real reps. The cosmic wrapping ("gravitational universe / planetary mind") is *not* the claim — see §5 (collaboration, not a mind).
+
+A value's **representation is itself a capability**, declared and *dynamic* — not fixed:
+
+- **Sparse = reflective / lightlike.** Self-describing (coordinates + values), addressable, introspectable — the crystallized, low-uncertainty form (the §4a lightlike face; `DynamicValue`'s self-description).
+- **Dense / dark = gravity / darklike.** An opaque bulk of numbers, structure implicit — high-uncertainty mass that *organizes* the field but is reached only *through* the sparse addressable connections ("dark tensors are the gravity, connected via sparse").
+- **They flip by uncertainty exchange.** Measuring *reduces* uncertainty → crystallize dark→sparse (addressable); accumulating uncertainty → de-crystallize sparse→dark (back to bulk). This is the **V8-hidden-shape lazy-bind** (dynamic→static on demand; `DynamicValue`) and the **grey-hole membrane** (ferries 11/19): a representation's density is just *where it currently sits on the uncertainty ledger*, and the flip is a **deterministic, reversible** function of the uncertainty budget — so it lives **inside** the singleton (det/reversible/redistributable, `inside-singleton-det-reversible-redistributable`); the uncertainty that *drives* it enters from **outside** through the declared metered channel (§13 noninterference).
+
+**Uncertainty drives attention and focus** (Aaron). Attention/focus concentrates where the **expected uncertainty-reduction (ΔU / information gain)** is highest — i.e. attention is the **throttle pointed at the highest-ΔU region**. This is not new vocabulary; it is the factory's existing economy: `every-bug-has-economic-value` (a bug is reducible uncertainty; a fix banks ΔU), the FerryThrottler **breadth budget**, and SoftEmu **capping width by weight** are all "spend the crystallization budget where ΔU is greatest." Anchor: **active learning / Bayesian experimental design** (Lindley 1956 information-gain; MacKay 1992) and bandit exploration (look where you are most uncertain).
+
+**Geo-distribution falls out of §4a.** Only the **commutative / lightlike** uncertainty is geo-distributable coordination-free — the **CALM theorem** (Hellerstein; Consistency As Logical Monotonicity: a computation has a coordination-free distributed implementation iff it is monotone/commutative). So "distribute the commutative uncertainty across the globe" is exactly what CALM licenses: the lightlike face replicates worldwide (CRDT), the **darklike / non-commutative** face needs coordination and stays causal/local. No central authority forms — the anti-singleton property (§5) at the representation layer.
+
 ## 5. Self-hosting = the trust substrate (the WHY)
 
 The north star: **the generator eventually generates itself in all 6 languages.** This is the **third Futamura projection** (Yoshihiko Futamura, 1971 — see §7) and it is the deepest *why* of the whole project, in Aaron's words:
@@ -206,6 +220,9 @@ v1 cited no prior art (an `anchor-to-human-prior-art` debt on a load-bearing sur
 - **Content-addressed / neighborhood addressing** — geohash (Niemeyer 2008; nearby points share an address prefix → message a neighborhood by prefix); LSH (Indyk–Motwani 1998); content-addressable storage. The address-space scale-up of shape-as-address (§5). (A Strange Loop talk on content-addressed hashing is the maintainer's anchor here — to be added to `docs/PRIOR-ART-LIST.md`.)
 - **Sequoia memory hierarchy** — Fatahalian, Knight, Houston, Hanrahan et al. (Stanford, 2006). Machine modelled as a tree of memory levels; the memory the addressing indexes, with soft/approximate (uncertainty-of-location) addresses (§5).
 - **Brain ↔ LLM geometric alignment** — Hasson, Goldstein et al. (Princeton/Google). Measured geometric alignment between language-region brain activity and LLM contextual embeddings — the evidence under "a shape can mean the same thing to a human and an AI" (§5); real representational alignment, *not* a solved universal translator.
+- **CALM theorem** — Hellerstein (CIDR 2010); Alvaro et al. A computation has a coordination-free distributed implementation **iff** it is monotone/commutative — the theorem under "geo-distribute the commutative uncertainty" (§4g): the lightlike/commutative face replicates without coordination, the darklike face needs it. With CRDTs (Shapiro et al.).
+- **Active learning / Bayesian experimental design** — Lindley (1956, information-gain); MacKay (1992); bandit exploration. Uncertainty drives attention (§4g): spend the budget where expected ΔU is highest — the factory's `every-bug-has-economic-value` economy.
+- **Sparse / dense tensor representations** — sparse formats (COO/CSR; the Minkowski-Engine / sparse-tensor-core lineage). The "representation is a capability" dark↔sparse flip (§4g) is over real reps, not metaphor.
 - **Reflexivity (in-repo):** Eve Protocol (B-0638, B-1002), `DynamicValue` (PRIMITIVE-REGISTRY), ferries 11 & 19, the Clifford six-correspondences ferry — the factory's own prior art this design instantiates.
 
 ---
