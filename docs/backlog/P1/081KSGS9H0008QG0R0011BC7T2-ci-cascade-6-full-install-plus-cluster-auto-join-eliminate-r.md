@@ -7,7 +7,7 @@ title: CI cascade #6 — full-install-and-cluster-auto-join (post-boot install c
 effort: L
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-06-14
 depends_on:
   - B-0812
   - B-0813
@@ -16,6 +16,16 @@ composes_with:
   - B-0816
 tags: [ci, qemu, cluster-bringup, auto-install, cluster-join, eliminates-human-physical-test, cascade-6]
 ---
+
+## Progress (2026-06-14)
+
+- **Slice 1** landed #8126 — full-install-in-QEMU (B-0891 scenario 2 step)
+- **Slice 2** landed #8129 — cluster-auto-join payload verification
+- **Slice 3** landed #8139 — ArgoCD reconciliation shape verification
+- **Pubkey path fix** #8155 — unblocked scenario 2 green on build-iso run 27486800503
+- **Scenario 2 hard gate** — `continue-on-error: true` removed (scenario 1 already blocking)
+
+Row stays **open**: overall acceptance (physical USB no longer routine gate; periodic hardware-support sanity-checks) not fully met until B-0835 installer bugs addressed and scenarios 3/4 promoted.
 
 ## Problem
 

@@ -1,11 +1,11 @@
 # Trajectory - USB / zflash Installer
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
-Last refreshed: 2026-05-29
+Last refreshed: 2026-06-14
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: none operationally; WiFi reproducibility (nixos.org closure-fetch timeouts) is the live edge; **build-iso** run queued on GitHub Actions (scenario 1 blocking, scenario 2 advisory)
-Next concrete action: B-0831 slice 3 (ArgoCD reconcile-shape CI) in PR; flip scenario 2 to hard gate once build-iso scenario 2 is stable
+Current blocker: WiFi reproducibility edge (nixos.org closure-fetch timeouts on physical hardware); CI scenarios 1+2 green on build-iso run 27486800503 after pubkey path fix #8155
+Next concrete action: B-0835 installer config bugs (hostname-not-unique, gh-auth, banner) OR promote B-0891 scenarios 3/4 from workflow_dispatch-only to hard gates
 
 ## Why This Exists
 
@@ -40,7 +40,7 @@ Grounding backlog:
 
 - [`B-0844`](../../backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-impleme.md) — zflash agent-mode native implementation (**closed** — `--agent` in `cli.ts`)
 - Workitem `081KV1PY2H308QG0R00347547K` — `zeta flash` MCP router (**done** #8104)
-- [`B-0831`](../../backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md) — CI cascade-6: slices 1–2 landed (#8126, #8129); slice 3 (ArgoCD reconcile-shape) in progress
+- [`B-0831`](../../backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md) — CI cascade-6: slices 1–3 landed (#8126, #8129, #8139); scenario 2 now hard gate (this PR)
 - [`B-0835`](../../backlog/P1/B-0835-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer config bugs (hostname-not-unique, gh-auth, banner)
 - [`B-0792`](../../backlog/P1/B-0792-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md) — iter-5 WiFi-credentials injection via USB ESP (zero-typing bringup without ethernet)
 - [`B-0789`](../../backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md) — iter-4 SSH-key + hashedPassword substrate (shared seam with encryption)
@@ -59,4 +59,4 @@ bringup.
 
 ## Current Next Action
 
-Report B-1030 MCP follow-on, then sequence B-0831 (CI full-install) as the path to retire physical-USB testing. Operator's call on priority vs the sibling workstreams.
+B-0835 installer config bugs (hostname-not-unique, gh-auth, banner) OR promote B-0891 scenarios 3/4 (reformat-with-retention, path-fork migrate vs fresh) from workflow_dispatch-only advisory steps to hard gates once stable.

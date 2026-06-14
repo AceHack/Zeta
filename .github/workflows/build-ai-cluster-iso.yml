@@ -269,24 +269,19 @@ jobs:
           echo "B-0891 initial-format ISO: $iso_abs"
           bun ../src/Core.TypeScript/zflash/test-harness/run.ts --scenario initial-format "$iso_abs"
 
-      # QEMU full-install test (cascade #6 Slice 1 — B-0831 starter):
+      # QEMU full-install test (cascade #6 Slice 1 — B-0831):
       # Extends boot-test by attaching virtual hard disk + NAT internet,
       # waits for `[iter-5.3]` marker in serial log to verify nixos-install
       # + iter-4.2 + iter-5.2 substrate completed.
       #
-      # Gated to push-to-main + workflow_dispatch for STARTER (longer
-      # runtime; TCG fallback may exceed PR-build expectations). Once
-      # B-0831 Slice 1 proves reliable + runs <10min consistently, can
-      # be enabled on every PR per B-0831 acceptance criteria.
-      #
-      # continue-on-error: true for STARTER so initial flakiness doesn't
-      # block merges while we tune the test. Remove once stable.
+      # Hard gate on push-to-main + workflow_dispatch (scenario 1 already
+      # blocking). Scenario 2 promoted from advisory after #8155 pubkey fix
+      # and green build-iso run 27486800503 (2026-06-14).
       #
       # Security: no github.event.* interpolation; ISO path comes from
       # prior workflow step's filesystem find.
       - name: B-0891 scenario 2 — boot + install substrate (B-0831 Slice 1)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        continue-on-error: true
         working-directory: full-ai-cluster
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-full-install-serial.log
