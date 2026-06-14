@@ -29,7 +29,9 @@ pub mod bit_layout;
 pub mod bit_layout_gen;
 pub mod zeta_id;
 
-pub use zeta_id::{PackError, pack, to_hex, unpack, format_b32, parse_b32, is_canonical, ZETAID_BASE32_LEN};
+pub use zeta_id::{
+    PackError, ZETAID_BASE32_LEN, format_b32, is_canonical, pack, parse_b32, to_hex, unpack,
+};
 
 /// Version field value for V1 (5-bit field; the only version today).
 pub const VERSION_V1: u8 = 1;

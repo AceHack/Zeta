@@ -187,7 +187,10 @@ fn decode_char(c: u8) -> Result<u8, String> {
         b'v'..=b'z' => Ok(c - b'v' + 27),
         b'I' | b'i' | b'L' | b'l' => Ok(1),
         b'O' | b'o' => Ok(0),
-        _ => Err(format!("invalid Crockford base32 character '{}'", c as char)),
+        _ => Err(format!(
+            "invalid Crockford base32 character '{}'",
+            c as char
+        )),
     }
 }
 

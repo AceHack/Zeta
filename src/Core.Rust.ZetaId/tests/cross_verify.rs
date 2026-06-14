@@ -16,8 +16,8 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use zeta_core_zeta_id::{
-    Authority, DeterministicEnv, Momentum, ZetaObservation, pack, to_hex, unpack,
-    format_b32, parse_b32, is_canonical,
+    Authority, DeterministicEnv, Momentum, ZetaObservation, format_b32, is_canonical, pack,
+    parse_b32, to_hex, unpack,
 };
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel), matching the
@@ -200,9 +200,17 @@ fn cross_verify_matches_shared_vectors() {
         }
         if !crockford_matches {
             crockford_mismatches += 1;
-            eprintln!("Crockford MISMATCH for {id}: got {crockford}, expected {expected_crockford}");
+            eprintln!(
+                "Crockford MISMATCH for {id}: got {crockford}, expected {expected_crockford}"
+            );
         }
-        results.push((id, hex, crockford, roundtrip_ok, matches_expected && crockford_matches));
+        results.push((
+            id,
+            hex,
+            crockford,
+            roundtrip_ok,
+            matches_expected && crockford_matches,
+        ));
     }
 
     // Emit rust-output.json in the shared shape: { id: { hex, crockford, roundtripOk, matchesExpected } }.
@@ -248,5 +256,8 @@ fn cross_verify_matches_shared_vectors() {
         "{roundtrip_mismatches} roundtrip mismatch(es)"
     );
     assert_eq!(hex_mismatches, 0, "{hex_mismatches} hex mismatch(es)");
-    assert_eq!(crockford_mismatches, 0, "{crockford_mismatches} crockford mismatch(es)");
+    assert_eq!(
+        crockford_mismatches, 0,
+        "{crockford_mismatches} crockford mismatch(es)"
+    );
 }
