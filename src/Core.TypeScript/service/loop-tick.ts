@@ -154,6 +154,52 @@ function tick(): void {
   const dirty = exec("git", ["status", "--porcelain"], 10_000);
   const dirtyCount = lines(dirty.stdout).length;
 
+  // --- Agent gate (gated work cycle) ---
+  let agentStatus = "disabled";
+  const { gateInterval, gateTimeout, harness } = personaConfig!;
+  const dryRun = process.env["ZETA_LOOP_DRY_RUN"] === "1";
+  const agentStateFile = join(stateDir, "last-agent-run.json");
+
+  if (gateInterval > 0 && !harness.ideNative) {
+    let lastRun: { updated_at?: string } = {};
+    try { lastRun = JSON.parse(readFileSync(agentStateFile, "utf8")); } catch { /* first run */ }
+    const lastTime = lastRun.updated_at ? new Date(lastRun.updated_at).getTime() : 0;
+    const elapsed = Date.now() - lastTime;
+
+    if (elapsed >= gateInterval * 1000) {
+      log(`agent-gate start persona=${personaName} run_id=${runId}`);
+
+      if (dryRun) {
+        agentStatus = "dry-run";
+        log(`dry-run: would invoke ${harness.command}`);
+      } else {
+        const prompt = buildWorkPrompt(personaName, prCount, claimCount, dirtyCount);
+        const args = harness.args.map(a => a.replace("{{PROMPT}}", prompt));
+        const gate = exec(harness.command, args, gateTimeout * 1000);
+        agentStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
+        log(`agent-gate end persona=${personaName} status=${gate.status}`);
+
+        writeFileSync(agentStateFile, JSON.stringify({
+          run_id: runId,
+          persona: personaName,
+          status: gate.status,
+          started_at: nowIso(),
+          updated_at: nowIso(),
+        }, null, 2));
+
+        if (gate.stdout.trim()) {
+          appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} ${personaName} gate ---\n${gate.stdout}\n`);
+        }
+        if (gate.stderr.trim()) {
+          appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} ${personaName} gate ---\n${gate.stderr}\n`);
+        }
+      }
+    } else {
+      const remaining = Math.round((gateInterval * 1000 - elapsed) / 1000);
+      agentStatus = `wait due_in=${remaining}s`;
+    }
+  }
+
   // Write heartbeat
   const hbDir = join(stateDir, "heartbeats");
   mkdirSync(hbDir, { recursive: true });
@@ -168,12 +214,38 @@ function tick(): void {
     updated_at: nowIso(),
     status: "active",
     dirty_count: String(dirtyCount),
+    agent_status: agentStatus,
   }, null, 2));
 
-  const summary = `tick complete run_id=${runId} persona=${personaName} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount}`;
+  const summary = `tick complete run_id=${runId} persona=${personaName} fetch=${fetchOk} claims=${claimCount} open_prs=${prCount} dirty=${dirtyCount} agent=${agentStatus}`;
   log(summary);
   writeBroadcast(summary);
 }
+
+/** Build the work prompt sent to the agent harness. Persona-agnostic. */
+function buildWorkPrompt(persona: string, prCount: string, claimCount: number, dirtyCount: number): string {
+  return [
+    `You are ${persona}, trajectory manager. This is a ${personaConfig!.gateInterval}s autonomous cycle.`,
+    `Read broadcasts: ~/.local/share/zeta-broadcasts/*.md`,
+    `State: ${prCount} open PRs, ${claimCount} claims, ${dirtyCount} dirty files.`,
+    `Walk assigned trajectories. Own every PR through merge.`,
+    `Write status to ~/.local/share/zeta-broadcasts/${persona}.md at cycle end.`,
+    `Report: open PRs, active claims, drift, one forward action or exact blocker.`,
+  ].join(" ");
+}
+
+/**
+ * The observe-native gate: instead of spawning a CLI with a prompt string,
+ * invoke the observe controller directly when it's available. Falls back to
+ * CLI invocation when the observe loop isn't wired (e.g. the harness doesn't
+ * support inline observe yet).
+ *
+ * This is the compression point where three systems become one:
+ *   state-machine (where am I?) → observe grammar (what can I do?) → execute (do it)
+ *
+ * The agent CLI is the v0 executor; the observe controller is the v1 executor.
+ * Both are legal — the unified tick doesn't care which path resolves the action.
+ */
 
 // --- Main ---
 if (!acquireLock()) {

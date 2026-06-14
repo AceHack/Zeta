@@ -2,6 +2,64 @@ namespace Zeta.Core
 
 open System
 open System.Collections.Generic
+open System.Text
+
+/// A StringComparer that orders strings ordinally by Unicode code point (Rune) value (B-0969).
+/// Matches TS's true Unicode code point comparison, resolving the UTF-16 surrogate pair discrepancy.
+type UnicodeCodePointComparer(ignoreCase: bool) =
+    inherit StringComparer()
+    
+    static member Ordinal = UnicodeCodePointComparer(false)
+    static member OrdinalIgnoreCase = UnicodeCodePointComparer(true)
+
+    override this.Compare(x: string, y: string) =
+        if obj.ReferenceEquals(x, y) then 0
+        elif isNull x then -1
+        elif isNull y then 1
+        else
+            let mutable enumX = x.EnumerateRunes()
+            let mutable enumY = y.EnumerateRunes()
+            let mutable result = 0
+            let mutable loop = true
+            while loop do
+                let hasX = enumX.MoveNext()
+                let hasY = enumY.MoveNext()
+                if not hasX && not hasY then
+                    result <- 0
+                    loop <- false
+                elif not hasX then
+                    result <- -1
+                    loop <- false
+                elif not hasY then
+                    result <- 1
+                    loop <- false
+                else
+                    let mutable runeX = enumX.Current
+                    let mutable runeY = enumY.Current
+                    if ignoreCase then
+                        runeX <- Rune.ToLowerInvariant(runeX)
+                        runeY <- Rune.ToLowerInvariant(runeY)
+                    if runeX.Value < runeY.Value then
+                        result <- -1
+                        loop <- false
+                    elif runeX.Value > runeY.Value then
+                        result <- 1
+                        loop <- false
+            result
+
+    override this.Equals(x: string, y: string) =
+        if obj.ReferenceEquals(x, y) then true
+        elif isNull x || isNull y then false
+        else
+            let comp = if ignoreCase then StringComparison.OrdinalIgnoreCase else StringComparison.Ordinal
+            String.Equals(x, y, comp)
+
+    override this.GetHashCode(obj: string) =
+        if isNull obj then raise (ArgumentNullException("obj"))
+        let comp = if ignoreCase then StringComparison.OrdinalIgnoreCase else StringComparison.Ordinal
+        obj.GetHashCode(comp)
+
+
 
 /// **Database-style collation selection** (B-0969). A collation is a *named, selectable ordering* — modeled
 /// the way databases do it (SQL / Postgres `COLLATE`, ICU locales), NOT a raw `IComparer` knob exposed as
@@ -23,7 +81,7 @@ module Collation =
     /// All four oracles coincide on this order for the golden vectors (F# ordinal, C#
     /// `StringComparer.Ordinal`, TS UTF-16 code-unit, Rust byte `Ord`); the astral/UTF-16 caveat is
     /// resolved by the treaty picking codepoint ≡ UTF-8 byte order.
-    let binary: StringComparer = StringComparer.Ordinal
+    let binary: StringComparer = UnicodeCodePointComparer.Ordinal :> StringComparer
 
     /// The default collation name we ship with.
     [<Literal>]
@@ -33,11 +91,32 @@ module Collation =
     /// are opt-in. Case-insensitive + invariant are *linguistic* — selectable, never the default.
     let catalog: IReadOnlyDictionary<string, StringComparer> =
         let d = Dictionary<string, StringComparer>(StringComparer.OrdinalIgnoreCase)
-        d.["binary"] <- StringComparer.Ordinal
-        d.["ordinal"] <- StringComparer.Ordinal
-        d.["ordinal-ci"] <- StringComparer.OrdinalIgnoreCase
+        d.["binary"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        d.["ordinal"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        d.["ordinal-ci"] <- UnicodeCodePointComparer.OrdinalIgnoreCase :> StringComparer
         d.["invariant"] <- StringComparer.InvariantCulture
         d.["invariant-ci"] <- StringComparer.InvariantCultureIgnoreCase
+        
+        // Postgres / Standard SQL aliases
+        d.["C"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        d.["POSIX"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        d.["utf8_bin"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        d.["utf8mb4_bin"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        
+        // SQLite alias
+        d.["NOCASE"] <- UnicodeCodePointComparer.OrdinalIgnoreCase :> StringComparer
+        
+        // MySQL aliases
+        d.["utf8_general_ci"] <- UnicodeCodePointComparer.OrdinalIgnoreCase :> StringComparer
+        d.["utf8mb4_general_ci"] <- UnicodeCodePointComparer.OrdinalIgnoreCase :> StringComparer
+        d.["utf8_unicode_ci"] <- StringComparer.InvariantCultureIgnoreCase
+        d.["utf8mb4_unicode_ci"] <- StringComparer.InvariantCultureIgnoreCase
+        
+        // SQL Server aliases
+        d.["Latin1_General_BIN"] <- UnicodeCodePointComparer.Ordinal :> StringComparer
+        d.["Latin1_General_CI_AS"] <- StringComparer.InvariantCultureIgnoreCase
+        d.["Latin1_General_CS_AS"] <- StringComparer.InvariantCulture
+        
         d :> IReadOnlyDictionary<string, StringComparer>
 
     /// Resolve a named collation from the catalog, or `None` if unknown (the caller decides the fallback —
@@ -59,6 +138,10 @@ module Collation =
     /// ordinal-equivalent, so the BCL default is correct + fast there).
     let forKey<'T> () : IComparer<'T> =
         if typeof<'T> = typeof<string> then
-            unbox<IComparer<'T>> (box (StringComparer.Ordinal :> IComparer<string>))
+            unbox<IComparer<'T>> (box (UnicodeCodePointComparer.Ordinal :> IComparer<string>))
         else
             Comparer<'T>.Default
+
+[<AbstractClass; Sealed>]
+type internal KeyComparerCache<'T when 'T : comparison> =
+    static member val Instance: IComparer<'T> = Collation.forKey<'T> ()

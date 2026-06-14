@@ -21,9 +21,7 @@ type ZEntry<'K> =
 /// is ordinal (never culture-sensitive `Comparer<string>.Default`), every other `'K` keeps the BCL default.
 /// `static member val` on a generic type → one instance per closed `'K`, resolved once in the type's static
 /// ctor, so the hot per-element comparator pays no `forKey` type-check per call (Naledi: hoist out of loops).
-[<AbstractClass; Sealed>]
-type internal KeyComparerCache<'K when 'K : comparison>() =
-    static member val Instance: IComparer<'K> = Collation.forKey<'K> ()
+
 
 /// Struct comparer for sorting `ZEntry<'K>` by key ascending — monomorphized
 /// per `'K` by `MemoryExtensions.Sort<T, TComparer>`; zero heap allocation.

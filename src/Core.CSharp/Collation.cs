@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Zeta.Core.CSharp;
 
@@ -9,6 +10,92 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public static class Collation
 {
+    /// <summary>
+    /// A StringComparer that orders strings ordinally by Unicode code point (Rune) value (B-0969).
+    /// Matches TS's true Unicode code point comparison, resolving the UTF-16 surrogate pair discrepancy.
+    /// </summary>
+    public sealed class UnicodeCodePointComparer : StringComparer
+    {
+        /// <summary>
+        /// Gets a UnicodeCodePointComparer that performs a case-sensitive ordinal comparison.
+        /// </summary>
+        public static new UnicodeCodePointComparer Ordinal { get; } = new(false);
+
+        /// <summary>
+        /// Gets a UnicodeCodePointComparer that performs a case-insensitive ordinal comparison.
+        /// </summary>
+        public static new UnicodeCodePointComparer OrdinalIgnoreCase { get; } = new(true);
+
+        private readonly bool _ignoreCase;
+
+        private UnicodeCodePointComparer(bool ignoreCase)
+        {
+            _ignoreCase = ignoreCase;
+        }
+
+        /// <summary>
+        /// Compares two strings ordinally by Unicode code points.
+        /// </summary>
+        /// <param name="x">The first string to compare.</param>
+        /// <param name="y">The second string to compare.</param>
+        /// <returns>A signed integer indicating the relative values of x and y.</returns>
+        public override int Compare(string? x, string? y)
+        {
+            if (ReferenceEquals(x, y)) return 0;
+            if (x == null) return -1;
+            if (y == null) return 1;
+
+            var enumX = x.EnumerateRunes();
+            var enumY = y.EnumerateRunes();
+
+            while (true)
+            {
+                var hasX = enumX.MoveNext();
+                var hasY = enumY.MoveNext();
+
+                if (!hasX && !hasY) return 0;
+                if (!hasX) return -1;
+                if (!hasY) return 1;
+
+                var runeX = enumX.Current;
+                var runeY = enumY.Current;
+
+                if (_ignoreCase)
+                {
+                    runeX = Rune.ToLowerInvariant(runeX);
+                    runeY = Rune.ToLowerInvariant(runeY);
+                }
+
+                if (runeX.Value < runeY.Value) return -1;
+                if (runeX.Value > runeY.Value) return 1;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether two strings are equal based on ordinal comparison.
+        /// </summary>
+        /// <param name="x">The first string to compare.</param>
+        /// <param name="y">The second string to compare.</param>
+        /// <returns>true if the strings are equal; otherwise, false.</returns>
+        public override bool Equals(string? x, string? y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+            if (x == null || y == null) return false;
+            return string.Equals(x, y, _ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Serves as the default hash function.
+        /// </summary>
+        /// <param name="obj">The string for which a hash code is to be returned.</param>
+        /// <returns>A hash code for the specified string.</returns>
+        public override int GetHashCode(string obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return string.GetHashCode(obj, _ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+        }
+    }
+
     /// <summary>
     /// The default collation name we ship with.
     /// </summary>
@@ -20,29 +107,29 @@ public static class Collation
     public static IReadOnlyDictionary<string, StringComparer> Catalog { get; } =
         new Dictionary<string, StringComparer>(StringComparer.OrdinalIgnoreCase)
         {
-            ["binary"] = StringComparer.Ordinal,
-            ["ordinal"] = StringComparer.Ordinal,
-            ["ordinal-ci"] = StringComparer.OrdinalIgnoreCase,
+            ["binary"] = UnicodeCodePointComparer.Ordinal,
+            ["ordinal"] = UnicodeCodePointComparer.Ordinal,
+            ["ordinal-ci"] = UnicodeCodePointComparer.OrdinalIgnoreCase,
             ["invariant"] = StringComparer.InvariantCulture,
             ["invariant-ci"] = StringComparer.InvariantCultureIgnoreCase,
 
             // Postgres / Standard SQL aliases
-            ["C"] = StringComparer.Ordinal,
-            ["POSIX"] = StringComparer.Ordinal,
-            ["utf8_bin"] = StringComparer.Ordinal,
-            ["utf8mb4_bin"] = StringComparer.Ordinal,
+            ["C"] = UnicodeCodePointComparer.Ordinal,
+            ["POSIX"] = UnicodeCodePointComparer.Ordinal,
+            ["utf8_bin"] = UnicodeCodePointComparer.Ordinal,
+            ["utf8mb4_bin"] = UnicodeCodePointComparer.Ordinal,
 
             // SQLite alias
-            ["NOCASE"] = StringComparer.OrdinalIgnoreCase,
+            ["NOCASE"] = UnicodeCodePointComparer.OrdinalIgnoreCase,
 
             // MySQL aliases
-            ["utf8_general_ci"] = StringComparer.OrdinalIgnoreCase,
-            ["utf8mb4_general_ci"] = StringComparer.OrdinalIgnoreCase,
+            ["utf8_general_ci"] = UnicodeCodePointComparer.OrdinalIgnoreCase,
+            ["utf8mb4_general_ci"] = UnicodeCodePointComparer.OrdinalIgnoreCase,
             ["utf8_unicode_ci"] = StringComparer.InvariantCultureIgnoreCase,
             ["utf8mb4_unicode_ci"] = StringComparer.InvariantCultureIgnoreCase,
 
             // SQL Server aliases
-            ["Latin1_General_BIN"] = StringComparer.Ordinal,
+            ["Latin1_General_BIN"] = UnicodeCodePointComparer.Ordinal,
             ["Latin1_General_CI_AS"] = StringComparer.InvariantCultureIgnoreCase,
             ["Latin1_General_CS_AS"] = StringComparer.InvariantCulture
         };
@@ -66,7 +153,7 @@ public static class Collation
     public static StringComparer ByNameOrDefault(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
-        return TryByName(name) ?? StringComparer.Ordinal;
+        return TryByName(name) ?? UnicodeCodePointComparer.Ordinal;
     }
 
     /// <summary>
@@ -81,7 +168,7 @@ public static class Collation
         ArgumentNullException.ThrowIfNull(collationName);
         if (typeof(T) == typeof(string))
         {
-            return (IComparer<T>)(TryByName(collationName) ?? StringComparer.Ordinal);
+            return (IComparer<T>)(TryByName(collationName) ?? UnicodeCodePointComparer.Ordinal);
         }
         return Comparer<T>.Default;
     }

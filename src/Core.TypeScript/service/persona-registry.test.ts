@@ -17,6 +17,8 @@ describe("persona-registry", () => {
     expect(kiro!.name).toBe("kiro");
     expect(kiro!.label).toContain("kiro");
     expect(kiro!.scheduleInterval).toBe(60);
+    expect(kiro!.gateInterval).toBeGreaterThan(0);
+    expect(kiro!.harness.command).toBe("kiro-cli");
   });
 
   test("getPersona returns undefined for unknown name", () => {
