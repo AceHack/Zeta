@@ -1108,17 +1108,23 @@ jobs:
         # Type check and lint checks for TypeScript files via dedicated orchestrator
         run: bun src/Core.TypeScript/lint/lint-typescript.ts
 
-  lint-go-python:
-    # Run formatter, linter, and type checker for F#, C#, Go, Python, and Rust
-    # implementation files to prevent syntax, lint, and formatting regressions.
-    name: lint (F#, C#, Go, Python, Rust)
+  # Per-language lint jobs (split from the former single sequential
+  # "lint (F#, C#, Go, Python, Rust)" job, 2026-06-13). The combined job ran the
+  # five lint scripts in sequence and SHORT-CIRCUITED at the first failure, so a
+  # multi-language change surfaced one red per CI cycle (the 2026-06-13 rollout
+  # took several PRs to clear breakage CI revealed one language at a time). Five
+  # parallel jobs run independently: CI surfaces ALL language reds in one run, and
+  # each shows as its own status check. Setup is replicated per-job (the gate's
+  # established pattern — 20 jobs inline `install.sh`; no composite action in repo).
+  # `bun run preflight` is the local mirror.
+
+  lint-fsharp:
+    name: lint (F#)
     timeout-minutes: 15
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
@@ -1130,7 +1136,6 @@ jobs:
             ~/.elan
             ~/.config/zeta
           key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
-
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: |
           set -euo pipefail
@@ -1146,19 +1151,150 @@ jobs:
             echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
             sleep "$backoff"
           done
-
       - name: Run F# Lint Script
         run: bun src/Core.TypeScript/lint/lint-fsharp.ts
 
+  lint-csharp:
+    name: lint (C#)
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
       - name: Run C# Lint Script
         run: bun src/Core.TypeScript/lint/lint-csharp.ts
 
+  lint-go:
+    name: lint (Go)
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
       - name: Run Go Lint Script
         run: bun src/Core.TypeScript/lint/lint-go.ts
 
+  lint-python:
+    name: lint (Python)
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
       - name: Run Python Lint Script
         run: bun src/Core.TypeScript/lint/lint-python.ts
 
+  lint-rust:
+    name: lint (Rust)
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
       - name: Run Rust Lint Script
         run: bun src/Core.TypeScript/lint/lint-rust.ts
 
