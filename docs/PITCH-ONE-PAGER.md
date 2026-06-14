@@ -1,6 +1,8 @@
 # Zeta — distribute the generator, not the code
 
-**One line:** AI writes code faster than teams can keep it in sync. Zeta ships the *generator*, not the output — so every copy regenerates locally and **self-heals** instead of drifting.
+**One line:** It began as a kids' storybook flashlight that kept the picture steady on the wall no matter how you moved it. The same invariant — *keep the output consistent no matter how fast it changes* — is now the answer to AI writing code faster than teams can keep it in sync: Zeta ships the *generator*, not the output, so every copy regenerates locally and **self-heals** instead of drifting.
+
+> Audience-tuned variants: `docs/pitch/pitch-investor.md` ($1M pre-seed) · `docs/pitch/pitch-design-partner.md` · `docs/pitch/pitch-role.md`.
 
 ---
 

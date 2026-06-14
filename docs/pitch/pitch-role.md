@@ -1,6 +1,6 @@
 # Zeta — "here's what I build" · role / founder one-pager
 
-**One line:** I built a self-healing code-distribution substrate — solo, in the open, end to end. The repo is the portfolio; this is what I ship.
+**It started as a flashlight I built so my kids could see steady storybook pictures on the wall** — my first sensor-fusion and uncertainty-ledger project. Fifteen years later it's a self-healing code-distribution substrate, built solo and in the open, end to end. Same core idea — keep the output consistent no matter how it moves/changes. The repo is the portfolio; this is what I ship.
 
 ---
 
@@ -17,11 +17,11 @@
 
 ## How I work
 
-Distributed systems + **15 years of utility-grade metering (Itron-class AMI)** — the metering/uncertainty substrate *is* this architecture's core loop, so this isn't a side project; it's the through-line of my career. I design for determinism, reversibility, and no-central-point-of-failure by default, and I write it so a new contributor (or a child) can read it.
+Distributed systems + **15 years of utility-grade metering (Itron-class AMI)** — the metering/uncertainty substrate *is* this architecture's core loop, so this isn't a side project; it's the through-line of my career, straight from that first flashlight (built while in Microsoft BizSpark, in licensing talks with the Kinect team). I design for determinism, reversibility, and no-central-point-of-failure by default, and I write it so a new contributor (or a child) can read it.
 
 ## The arc
 
-I **self-funded ~$1M** of my own capital into this and kept building it in the open through a **wrongful prosecution** — from which I was **fully exonerated, all charges dismissed.** I came out and kept shipping. The complete arc is in the project record. If you want a founder/principal who builds hard infrastructure, in the open, and does not stop, that's the evidence.
+Fifteen years, a team of **~20 people**, across the names RizeIdol → Bombrock → AlephZ → Zeta. I **self-funded ~$1M** of my own capital and **never missed a beat** — through two divorces, a **wrongful imprisonment over a legal product** from which I was **fully exonerated, all charges dismissed** (it cost me a year, ~$1M, and put my family through hell), and being **fired from my job for open-sourcing this work.** I came out and kept shipping; the commit history shows it never even slowed. If you want someone who builds hard infrastructure, in the open, and does not stop, that's the evidence — and it's all on the record.
 
 ## The ask
 

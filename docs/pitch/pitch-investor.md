@@ -1,6 +1,6 @@
 # Zeta — pre-seed ($1M) · investor one-pager
 
-**One line:** AI writes code faster than teams can keep it in sync. Zeta ships the *generator*, not the output — so every copy regenerates locally and **self-heals** instead of drifting. We're raising **$1M pre-seed** to take the self-healing distribution layer from open-source proof to a deployable product.
+**Zeta started as a kids' storybook flashlight** — a spatially-aware light that kept the picture *steady on the wall no matter how you moved it*, using sensor fusion and an uncertainty ledger. Fifteen years later, that exact invariant — **keep the output consistent no matter how fast it changes** — is the answer to the problem every engineering team now has: **AI writes code faster than they can keep it in sync.** Zeta ships the *generator*, not the output, so every copy regenerates locally and **self-heals** instead of drifting. We're raising **$1M pre-seed**.
 
 ---
 
@@ -27,11 +27,13 @@ AI changed the *rate* of code change; it did not change how code is *distributed
 
 ## Market
 
-Wedge: **AI dev-tooling** (every team shipping AI-generated code). Expansions: **regulated / safety-critical** (deterministic+auditable+reversible), **education** (Craft School — a new programming on-ramp), **personal-data ownership** (user-owned Memex). Land on the dev-tooling pain; expand into assurance and education.
+Wedge: **AI dev-tooling** (every team shipping AI-generated code). Expansions: **regulated / safety-critical** (deterministic+auditable+reversible), **education** (Craft School — a new programming on-ramp, descended directly from the storybook flashlight), **personal-data ownership** (user-owned Memex). Land on the dev-tooling pain; expand into assurance and education.
 
 ## Founder
 
-Distributed systems + 15 years utility-grade metering (Itron-class AMI) — the metering/uncertainty substrate *is* the architecture's core loop. **Self-funded ~$1M of personal capital into this.** Built it in the open, through significant adversity, and emerged fully vindicated. <!-- founder story (self-funded $1M; wrongful prosecution → fully exonerated, all charges dismissed; built in the open, kept building) — wording is Aaron's to set; verbal in the room may be stronger than in print. -->
+This isn't a 2-year pivot — it's a **15-year through-line.** It began (~2010) as the storybook flashlight above, Aaron's first sensor-fusion + uncertainty-ledger project, while in **Microsoft BizSpark** and in **licensing talks with the Kinect team** for their sensor tech. The same two ideas in that flashlight — *kids-first* and an *uncertainty ledger* — are the core of Zeta today. Background: distributed systems + **15 years utility-grade metering (Itron-class AMI)** — the metering/uncertainty substrate *is* the architecture's core loop.
+
+Across those years (and the names RizeIdol → Bombrock → AlephZ → Zeta), with a team of **~20 people**, Aaron **self-funded ~$1M** of his own capital and **never stopped building** — through two divorces, a **wrongful imprisonment over a legal product** (fully exonerated, all charges dismissed, ~$1M and a year lost, a heavy toll on his family), and being **fired for open-sourcing this work.** The commit history shows it didn't even slow down. Proven right, proven unstoppable, building in the open the entire time.
 
 ## The ask — $1M pre-seed
 

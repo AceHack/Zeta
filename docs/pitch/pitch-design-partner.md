@@ -29,4 +29,6 @@ The end-to-end `.zeta` → IR compiler and the deploy tooling are in active buil
 
 Pick one concrete drift pain (a service whose AI-generated code keeps diverging across copies/CI). We pilot the self-healing distribution layer on it, measure drift caught before production, and shape the product together. Low risk: open-source, you own the output, no lock-in.
 
-*Technical deep-dive: `docs/research/2026-06-14-zeta-complete-vision-synthesis-*.md`. Founder: distributed systems + 15 years utility-grade metering (Itron-class AMI).*
+---
+
+*Why we'll see this through: Zeta is a 15-year through-line — it began as a spatially-aware kids' storybook flashlight (the founder's first sensor-fusion + uncertainty-ledger project, built in Microsoft BizSpark with a Kinect-team licensing talk in motion), and has been built ever since by a ~20-person team and a self-funded founder who has never stopped shipping — through serious personal adversity, fully vindicated. Background: distributed systems + 15 years utility-grade metering (Itron-class AMI). Deep-dive: `docs/research/2026-06-14-zeta-complete-vision-synthesis-*.md`.*
