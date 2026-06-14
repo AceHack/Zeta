@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>Zeta {{PERSONA}} autonomous loop tick</Description>
+  </RegistrationInfo>
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+      <Repetition>
+        <Interval>PT{{INTERVAL}}S</Interval>
+        <StopAtDurationEnd>false</StopAtDurationEnd>
+      </Repetition>
+    </LogonTrigger>
+  </Triggers>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <ExecutionTimeLimit>PT5M</ExecutionTimeLimit>
+    <Hidden>true</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+  </Settings>
+  <Actions>
+    <Exec>
+      <Command>{{BUN_PATH}}</Command>
+      <Arguments>{{REPO_ROOT}}\src\Core.TypeScript\service\loop-tick.ts --persona {{PERSONA}}</Arguments>
+      <WorkingDirectory>{{WORKTREE}}</WorkingDirectory>
+    </Exec>
+  </Actions>
+</Task>

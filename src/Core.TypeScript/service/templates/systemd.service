@@ -1,0 +1,18 @@
+[Unit]
+Description=Zeta {{PERSONA}} autonomous loop tick
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart={{BUN_PATH}} {{REPO_ROOT}}/src/Core.TypeScript/service/loop-tick.ts --persona {{PERSONA}}
+WorkingDirectory={{WORKTREE}}
+Environment=ZETA_LOOP_PERSONA={{PERSONA}}
+Environment=ZETA_LOOP_WORKTREE={{WORKTREE}}
+Environment=ZETA_LOOP_STATE_DIR={{STATE_DIR}}
+Environment=ZETA_LOOP_LOG_DIR={{LOG_DIR}}
+Environment=ZETA_LOOP_REF={{REF}}
+Environment=PATH=/usr/local/bin:/usr/bin:/bin:%h/.bun/bin
+
+[Install]
+WantedBy=default.target

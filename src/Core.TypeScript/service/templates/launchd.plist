@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>{{LABEL}}</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{BUN_PATH}}</string>
+    <string>{{REPO_ROOT}}/src/Core.TypeScript/service/loop-tick.ts</string>
+    <string>--persona</string>
+    <string>{{PERSONA}}</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>ZETA_LOOP_PERSONA</key>
+    <string>{{PERSONA}}</string>
+    <key>ZETA_LOOP_WORKTREE</key>
+    <string>{{WORKTREE}}</string>
+    <key>ZETA_LOOP_STATE_DIR</key>
+    <string>{{STATE_DIR}}</string>
+    <key>ZETA_LOOP_LOG_DIR</key>
+    <string>{{LOG_DIR}}</string>
+    <key>ZETA_LOOP_REF</key>
+    <string>{{REF}}</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{{HOME}}/.bun/bin</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>{{WORKTREE}}</string>
+  <key>StartInterval</key>
+  <integer>{{INTERVAL}}</integer>
+  <key>StandardOutPath</key>
+  <string>{{LOG_DIR}}/stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{LOG_DIR}}/stderr.log</string>
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+</plist>
