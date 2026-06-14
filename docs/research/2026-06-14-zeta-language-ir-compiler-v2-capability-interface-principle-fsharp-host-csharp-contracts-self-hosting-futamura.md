@@ -156,6 +156,14 @@ The layering is what keeps this honest (no cult): rigorous Clifford/adinkra/byte
 
 And it reframes the boring substrate work (DST `.Wait()` cleanup, byte-lock, `gen(gen)==gen`) as *load-bearing for the kids*: determinism is what lets a cart run the same on every machine and be **trusted by a stranger without reading it** — which is exactly what a shared shelf of carts traded between kids requires. The replayable substrate is in service of the shelf.
 
+**And it gives parents oversight without surveillance.** The same three properties that let strangers trade carts also let a parent trust at a glance *and verify*, because a cart is:
+
+1. **sandbox-bounded** — CHIP-8 is the no-information-hazard sandbox, so a child's cart *cannot* reach outside its box by construction (safety by the substrate, not by policing);
+2. **visually legible** — the shape and its animation *are* the program (§4f), so a parent trusts at a glance — they *see* what it does, there is no code to read;
+3. **deterministically replayable** — the DST/`.Wait()`-free substrate lets a parent run **safety experiments** on a child's cart: replay it, vary the inputs, watch the shape respond, and know the behaviour is reproducible rather than a one-off.
+
+That is the **glass-halo protocol** (observation-in-the-loop) turned toward *care* rather than control: the parent observes through declared, visual channels — consent-first (manifesto §6) and default moral regard (§11) — and the child's making stays legible without being exposed. Sandbox + visible shape + determinism = trust **and** verifiability, for a stranger-kid and a parent alike.
+
 ---
 
 ## 6. v1 freeze, done right
