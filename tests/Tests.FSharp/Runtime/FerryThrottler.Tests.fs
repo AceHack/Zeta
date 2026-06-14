@@ -613,3 +613,121 @@ let ``contextual throttler forwards syncContext so background ferries replay`` (
         ctx.PumpToIdle()
         do! completion
     }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 4c — SEEDED DST replay (FoundationDB "same seed ⇒ same interleaving").
+// The 4b tests above prove a FIXED scenario replays. These strengthen that
+// to the canonical DST claim: the enqueue/pump SCHEDULE is itself driven by
+// a PRNG seed, so the run is a pure function of the seed — same seed ⇒
+// byte-identical boats (replay), different seeds ⇒ a different schedule
+// (the seed genuinely drives it, not a constant). Within-process replay is
+// guaranteed regardless of Random's cross-version stability: both runs draw
+// from the same seeded sequence in the same process.
+// Anchors: Zhou et al. (FoundationDB SIGMOD 2021); Will Wilson (deterministic
+// simulation, Strange Loop 2014).
+// ═══════════════════════════════════════════════════════════════════
+
+
+/// Manual (Option B, DoP=1) — the strongest determinism: no background ferry,
+/// no injected context, pumped synchronously on this thread. The seed drives a
+/// sequence of waves; each wave enqueues a seed-chosen count of contiguous ints
+/// then pumps, so the boat composition is a pure function of the seed.
+let private seededManualBoats (seed: int) : Task<int list list> =
+    task {
+        let boats = ResizeArray<int list>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
+            boats.Add([ for i in 0 .. boat.Length - 1 -> boat.Span.[i] ])
+            Task.CompletedTask
+        let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 4 }
+        use throttler = new FerryThrottler<int>(config, processBatch, manual = true)
+        let rng = Random(seed)
+        let mutable next = 1
+        for _wave in 1 .. 8 do
+            let count = rng.Next(0, 6) // 0..5 items this wave
+            for _ in 1 .. count do
+                do! throttler.EnqueueAsync(next)
+                next <- next + 1
+            do! throttler.PumpToIdleAsync() // drain whatever this wave queued, now
+        do! throttler.CompleteAsync()
+        return List.ofSeq boats
+    }
+
+
+/// Injected context (Option A, DoP=N) — background ferries gated on a single
+/// pumpable `DeterministicSyncContext`; the seed drives the enqueue/pump waves.
+let private seededContextBoats (seed: int) (dop: int) : Task<int list list> =
+    task {
+        let boats = ResizeArray<int list>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task =
+            boats.Add([ for i in 0 .. boat.Length - 1 -> boat.Span.[i] ])
+            Task.CompletedTask
+        let ctx = DeterministicSyncContext()
+        let config = { FerryThrottlerConfig.withFerries dop with MaxBatchSize = 2 }
+        use throttler = new FerryThrottler<int>(config, processBatch, syncContext = ctx)
+        let rng = Random(seed)
+        let mutable next = 1
+        for _wave in 1 .. 8 do
+            let count = rng.Next(1, 5) // 1..4 items this wave
+            for _ in 1 .. count do
+                do! throttler.EnqueueAsync(next)
+                next <- next + 1
+            ctx.PumpToIdle()
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+        return List.ofSeq boats
+    }
+
+
+[<Fact>]
+let ``manual DoP=1 seeded schedule replays byte-identically (same seed)`` () : Task =
+    task {
+        let! a = seededManualBoats 1234
+        let! b = seededManualBoats 1234
+        // Replay: the seed fully determines the boat composition.
+        a |> should equal b
+        // Correctness: DoP=1 is FIFO, so the flattened boats are exactly the
+        // contiguous items enqueued, in order, each exactly once.
+        let total = a |> List.concat |> List.length
+        a |> List.concat |> should equal [ 1 .. total ]
+    }
+
+
+[<Fact>]
+let ``manual seeded schedule differs by seed (the seed drives the interleaving)`` () : Task =
+    // Proves the schedule is a function OF the seed, not a constant: two
+    // different seeds produce different boat compositions (same items, though).
+    task {
+        let! a = seededManualBoats 1
+        let! b = seededManualBoats 7
+        a |> should not' (equal b)
+        // Both are still internally valid (no item lost or duplicated).
+        a |> List.concat |> should equal [ 1 .. (a |> List.concat |> List.length) ]
+        b |> List.concat |> should equal [ 1 .. (b |> List.concat |> List.length) ]
+    }
+
+
+[<Fact>]
+let ``injected-context background ferries replay a seeded schedule byte-identically (DoP=2)`` () : Task =
+    task {
+        let! a = seededContextBoats 777 2
+        let! b = seededContextBoats 777 2
+        // Replay: identical boats across independent runs of the same seed.
+        a |> should equal b
+        // Correctness: every item processed exactly once (order across N ferries
+        // is not guaranteed, so compare as a sorted set).
+        let total = a |> List.concat |> List.length
+        a |> List.concat |> List.sort |> should equal [ 1 .. total ]
+    }
+
+
+[<Fact>]
+let ``injected-context background ferries replay a seeded schedule byte-identically (DoP=3)`` () : Task =
+    task {
+        let! a = seededContextBoats 90909 3
+        let! b = seededContextBoats 90909 3
+        a |> should equal b
+        let total = a |> List.concat |> List.length
+        a |> List.concat |> List.sort |> should equal [ 1 .. total ]
+    }
