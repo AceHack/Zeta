@@ -34,3 +34,7 @@ src/Core.Python/src/zeta/zeta_id_gen.py
 src/Core.Python/src/zeta/canonical_json.py
 src/Core.Python/src/zeta/yaml.py
 src/Core.Python/tests/test_cross_verify.py
+
+# GC-safe weak-keyed mixin tables, Python oracle (6-language mixin rollout, #8115)
+src/Core.Python/src/zeta/mixin.py
+src/Core.Python/tests/test_mixin.py

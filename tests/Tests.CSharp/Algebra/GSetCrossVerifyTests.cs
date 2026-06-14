@@ -15,8 +15,10 @@ namespace Zeta.Tests.CSharp.Algebra;
 /// <c>expectedReplayStates[i]</c> (after op i) AND <c>expectedFinalState</c>. The
 /// fixture embeds the canonical expected states (no per-language output file), so
 /// passing == agreeing with the TS/F#/Rust oracles. Read with
-/// <see cref="StringComparer.Ordinal"/> to match the fixture's stated ordinal/code-point
-/// order (not culture-sensitive <see cref="System.Collections.Generic.Comparer{T}.Default"/>).
+/// <see cref="Collation.UnicodeCodePointComparer"/> (ascending Unicode code-point /
+/// UTF-8 byte order) to match the fixture's stated comparator — NOT
+/// <see cref="StringComparer.Ordinal"/>, which is UTF-16 code-unit order and diverges
+/// from code-point order on astral (non-BMP) keys such as U+2070E (𠜎).
 /// </summary>
 public class GSetCrossVerifyTests
 {
