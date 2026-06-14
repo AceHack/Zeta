@@ -63,7 +63,7 @@ interface InstallResult {
   readonly reason: string;
   readonly serialLogTail?: string;
   readonly elapsedSeconds?: number;
-  readonly hostname?: string;
+  readonly hostname?: string | undefined;
 }
 
 /** Exported for unit tests. */
