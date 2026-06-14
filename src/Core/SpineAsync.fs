@@ -77,7 +77,29 @@ type SpineAsync<'K when 'K : comparison>() =
 
     interface IDisposable with
         member _.Dispose() =
+            // Non-blocking shutdown (mirrors FerryThrottler). A wall-clock
+            // `worker.Wait 500` is DST-hostile (a timeout DST cannot replay)
+            // AND deadlocks the DoP=1 deterministic path: the worker's awaited
+            // continuations route to the pump, which cannot run while this
+            // thread is blocked, so the worker never completes and 500ms
+            // abandons it. Cancel + complete; dispose the CTS only after the
+            // worker actually finishes, via an inline continuation. Callers
+            // wanting a guaranteed drain use DisposeAsync.
             inbox.Writer.TryComplete() |> ignore
             cts.Cancel()
-            try worker.Wait 500 |> ignore with _ -> ()
-            cts.Dispose()
+            worker.ContinueWith(
+                (fun (_: Task) -> cts.Dispose()),
+                TaskContinuationOptions.ExecuteSynchronously) |> ignore
+
+    interface IAsyncDisposable with
+        member _.DisposeAsync() =
+            // Deterministic drain: cancel, then AWAIT the worker — no thread
+            // blocked, no wall-clock timeout, replayable on the DoP=1 pump.
+            inbox.Writer.TryComplete() |> ignore
+            cts.Cancel()
+            ValueTask(
+                task {
+                    try do! worker
+                    with _ -> ()
+                    cts.Dispose()
+                })
