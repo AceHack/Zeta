@@ -396,7 +396,18 @@ jobs:
 
       - name: Test
         if: needs.path-filter.outputs.code == 'true'
-        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
+        # --blame-crash / --blame-hang-timeout: when the test host crashes or
+        # hangs (the silent "MSB4181: VSTestTask returned false but did not log
+        # an error" class — seen once on windows-11-arm), collect a crash dump
+        # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
+        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
+
+      - name: Name the crashed/hung test (on failure)
+        # Surface the blame Sequence_*.xml into the CI log so a host crash/hang
+        # is diagnosable without artifact plumbing — turns "VSTestTask returned
+        # false" into "test X was running when the host died". Cross-platform (bun).
+        if: failure() && needs.path-filter.outputs.code == 'true'
+        run: bun src/Core.TypeScript/ci/print-blame-sequences.ts
 
       - name: Skipped (docs-only PR)
         # Status-check passthrough: when the path filter said code=false,
