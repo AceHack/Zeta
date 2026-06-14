@@ -11,8 +11,8 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 [DebuggerDisplay("Count = {DebuggerCount}")]
 [DebuggerTypeProxy(typeof(WeakMapDebugView<,>))]
-public sealed class WeakMap<TKey, TValue> 
-    where TKey : class 
+public sealed class WeakMap<TKey, TValue>
+    where TKey : class
     where TValue : class
 {
     private readonly ConditionalWeakTable<TKey, TValue> _table = new();
@@ -65,8 +65,8 @@ public sealed class WeakMap<TKey, TValue>
     }
 }
 
-internal sealed class WeakMapDebugView<TKey, TValue> 
-    where TKey : class 
+internal sealed class WeakMapDebugView<TKey, TValue>
+    where TKey : class
     where TValue : class
 {
     private readonly WeakMap<TKey, TValue> _weakMap;
