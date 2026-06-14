@@ -25,6 +25,10 @@ export function getPersona(name: string): PersonaConfig | undefined {
   return PERSONAS.find((p) => p.name === name);
 }
 
-export function listPersonas(): readonly string[] {
+export function listPersonas(): readonly PersonaConfig[] {
+  return PERSONAS;
+}
+
+export function listPersonaNames(): readonly string[] {
   return PERSONAS.map((p) => p.name);
 }

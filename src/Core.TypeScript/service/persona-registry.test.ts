@@ -3,11 +3,12 @@ import { getPersona, listPersonas, PERSONAS } from "./persona-registry";
 
 describe("persona-registry", () => {
   test("lists all personas", () => {
-    const names = listPersonas();
+    const personas = listPersonas();
+    const names = personas.map(p => p.name);
     expect(names).toContain("kiro");
     expect(names).toContain("otto");
     expect(names).toContain("riven");
-    expect(names.length).toBeGreaterThanOrEqual(6);
+    expect(personas.length).toBeGreaterThanOrEqual(6);
   });
 
   test("getPersona returns config for valid name", () => {
