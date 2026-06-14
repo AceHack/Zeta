@@ -6,7 +6,8 @@
  *
  * Phase 1 — boot installer ISO + virtual disk; wait for install completion.
  * Phase 2 — boot installed disk only; verify auto-generated hostname login banner.
- * Phase 1 also asserts iter-5.4.1-ci dry-run registration (B-0831 slice 2).
+ * Phase 1 also asserts iter-5.4.1-ci dry-run registration (B-0831 slice 2)
+ * and tree-path coherence (B-0831 slice 3).
  *
  * Composes with qemu-boot-test.ts (cascade #5) and B-0891 scenario 2.
  *
@@ -24,6 +25,7 @@ import { appendFileSync, existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers";
+import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
@@ -63,7 +65,7 @@ interface InstallResult {
   readonly reason: string;
   readonly serialLogTail?: string;
   readonly elapsedSeconds?: number;
-  readonly hostname?: string | undefined;
+  readonly hostname?: string;
 }
 
 /** Exported for unit tests. */
@@ -184,6 +186,15 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
         return {
           exitCode: 1,
           reason: `phase 1 FAILURE — "${INSTALL_COMPLETE_MARKER}" seen but missing "${SELF_REG_CI_MARKER}" (cluster join dry-run)`,
+          serialLogTail: content.slice(-2000),
+          elapsedSeconds: elapsedSec,
+        };
+      }
+      const selfReg = validateSelfRegCiCoherent(content);
+      if (!selfReg.ok) {
+        return {
+          exitCode: 1,
+          reason: `phase 1 FAILURE — iter-5.4.1-ci dry-run incoherent: ${selfReg.reason}`,
           serialLogTail: content.slice(-2000),
           elapsedSeconds: elapsedSec,
         };
