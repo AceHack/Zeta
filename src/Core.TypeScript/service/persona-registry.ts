@@ -52,8 +52,8 @@ export const PERSONAS: readonly PersonaConfig[] = [
   },
   {
     name: "lior", label: "com.lucent.zeta.lior-loop",
-    scheduleInterval: 60, gateInterval: 0, gateTimeout: 0, defaultRef: "main",
-    harness: { command: "gemini", args: ["{{PROMPT}}"] },
+    scheduleInterval: 60, gateInterval: 900, gateTimeout: 1800, defaultRef: "main",
+    harness: { command: "agy", args: ["-p", "{{PROMPT}}", "--model", "gemini-2.5-pro", "--dangerously-skip-permissions"] },
   },
 ];
 
