@@ -1,0 +1,99 @@
+module Zeta.Tests.RoomHorizonTests
+
+open global.Xunit
+open Zeta.Core
+
+module PS = ProbabilitySemiring
+module RH = RoomHorizon
+
+let private mustOk =
+    function
+    | Ok value -> value
+    | Error feedback -> failwithf "expected Ok, got %A" feedback
+
+let private config capacity retention =
+    { Capacity = capacity
+      Retention = retention }
+
+let private cost bytes : Vision.BranchCost =
+    { SpaceBytes = bytes
+      TimeTicks = 0
+      BytesPerTick = 0L
+      UncertaintyResolutionBits = 0 }
+
+let private candidate key label state attention gravity bytes : RH.Candidate<int, string> =
+    { Key = key
+      Branch =
+        { Label = label
+          State = state
+          Cost = cost bytes }
+      Priority =
+        { Attention = PS.rat attention 1L
+          Gravity = PS.rat gravity 1L } }
+
+[<Fact>]
+let ``attention and gravity change boarding order while byte cost stays honest`` () =
+    let report =
+        [ candidate 1 "likely" "A" 1L 1L 6L
+          candidate 2 "attended" "B" 10L 2L 6L ]
+        |> RH.admit (config 2 BoundedGSetRetention.KeepHighest) (SoftThrottle.tank 6.0 0.0)
+        |> mustOk
+
+    Assert.Equal<string list>([ "attended"; "likely" ], report.Ordered |> List.map _.Branch.Label)
+    Assert.Equal<string list>([ "attended" ], report.Boarded |> List.map _.Branch.Label)
+    Assert.Equal<string list>([ "likely" ], report.Deferred |> List.map _.Branch.Label)
+    Assert.Equal(Vision.PartiallyAdmitted, report.Prediction.Outcome)
+    Assert.Equal(12L, report.Prediction.RequestedBytes)
+    Assert.Equal(6L, report.Prediction.BoardedBytes)
+    Assert.Equal(6L, report.Prediction.DeferredBytes)
+    Assert.Equal<int list>([ 2 ], report.RetainedKeys |> GSet.toList)
+    Assert.Equal<int list>([ 2 ], report.HorizonAfter |> BoundedGSet.toList)
+
+[<Fact>]
+let ``rolling horizon reports finite-view evictions separately from byte admission`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 2 BoundedGSetRetention.KeepHighest) [ 1; 2 ]
+        |> mustOk
+
+    let report =
+        [ candidate 3 "newer" "C" 1L 1L 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    Assert.Equal(Vision.Admitted, report.Prediction.Outcome)
+    Assert.Equal<string list>([ "newer" ], report.Boarded |> List.map _.Branch.Label)
+    Assert.Equal<int list>([ 2; 3 ], report.HorizonAfter |> BoundedGSet.toList)
+    Assert.Equal<int list>([ 3 ], report.RetainedKeys |> GSet.toList)
+    Assert.Equal<int list>([ 1 ], report.EvictedByHorizon |> GSet.toList)
+    Assert.Empty(report.RejectedByHorizon |> GSet.toList)
+
+[<Fact>]
+let ``paid branch can still be rejected by the finite horizon projection`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 2 BoundedGSetRetention.KeepHighest) [ 2; 3 ]
+        |> mustOk
+
+    let report =
+        [ candidate 1 "older" "A" 1L 1L 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    Assert.Equal(Vision.Admitted, report.Prediction.Outcome)
+    Assert.Equal<string list>([ "older" ], report.Boarded |> List.map _.Branch.Label)
+    Assert.Equal<int list>([ 2; 3 ], report.HorizonAfter |> BoundedGSet.toList)
+    Assert.Empty(report.RetainedKeys |> GSet.toList)
+    Assert.Equal<int list>([ 1 ], report.RejectedByHorizon |> GSet.toList)
+    Assert.Empty(report.EvictedByHorizon |> GSet.toList)
+
+[<Fact>]
+let ``negative attention is feedback not an ordering trick`` () =
+    let bad =
+        { candidate 1 "bad" "A" 1L 1L 1L with
+            Priority =
+                { Attention = PS.rat -1L 1L
+                  Gravity = PS.one } }
+
+    match RH.admit (config 2 BoundedGSetRetention.KeepHighest) (SoftThrottle.tank 1.0 0.0) [ bad ] with
+    | Error(RH.NegativeAttention("bad", value)) ->
+        Assert.Equal(0, PS.compare value (PS.rat -1L 1L))
+    | other -> Assert.Fail(sprintf "expected NegativeAttention feedback, got %A" other)

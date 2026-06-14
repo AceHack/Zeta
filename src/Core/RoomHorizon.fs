@@ -1,0 +1,151 @@
+namespace Zeta.Core
+
+open System
+
+/// A finite room-facing horizon over Vision predictions.
+///
+/// The soft tank answers "which futures can we honestly pay for in bytes?"
+/// The bounded G-set answers "which paid future keys fit in this room-sized
+/// exterior view?" Keeping the two reports separate prevents attention from
+/// rewriting arithmetic truth: attention/gravity may reorder boarding, but
+/// byte cost and finite capacity still backpressure.
+[<RequireQualifiedAccess>]
+module RoomHorizon =
+
+    module PS = ProbabilitySemiring
+
+    type Candidate<'K, 'S when 'K : comparison> =
+        { Key: 'K
+          Branch: Vision.FutureBranch<'S>
+          Priority: PredictionInference.BranchPriority }
+
+    type Feedback =
+        | NegativeAttention of label: string * value: PS.Rational
+        | NegativeGravity of label: string * value: PS.Rational
+        | VisionFeedback of Vision.GrowthFeedback
+        | HorizonFeedback of BoundedGSetError
+
+    type Report<'K, 'S when 'K : comparison> =
+        { HorizonBefore: BoundedGSet<'K>
+          HorizonAfter: BoundedGSet<'K>
+          Ordered: Candidate<'K, 'S> list
+          Boarded: Candidate<'K, 'S> list
+          Deferred: Candidate<'K, 'S> list
+          RetainedKeys: GSet<'K>
+          RejectedByHorizon: GSet<'K>
+          EvictedByHorizon: GSet<'K>
+          Prediction: Vision.PredictionReport<'S> }
+
+    let private nonNegative (r: PS.Rational) : bool =
+        PS.compare r PS.zero >= 0
+
+    let private priorityWeight (candidate: Candidate<'K, 'S>) : PS.Rational =
+        candidate.Priority.Attention
+        |> PS.mul candidate.Priority.Gravity
+
+    let private compareCandidates (left: Candidate<'K, 'S>) (right: Candidate<'K, 'S>) : int =
+        let byPriority = PS.compare (priorityWeight right) (priorityWeight left)
+
+        if byPriority <> 0 then
+            byPriority
+        else
+            let byKey = (Collation.forKey<'K>()).Compare(left.Key, right.Key)
+
+            if byKey <> 0 then
+                byKey
+            else
+                StringComparer.Ordinal.Compare(left.Branch.Label, right.Branch.Label)
+
+    let ordered (candidates: Candidate<'K, 'S> list) : Result<Candidate<'K, 'S> list, Feedback> =
+        let rec loop acc rest =
+            result {
+                match rest with
+                | [] -> return List.sortWith compareCandidates acc
+                | candidate :: tail ->
+                    if not (nonNegative candidate.Priority.Attention) then
+                        return! Error(NegativeAttention(candidate.Branch.Label, candidate.Priority.Attention))
+                    elif not (nonNegative candidate.Priority.Gravity) then
+                        return! Error(NegativeGravity(candidate.Branch.Label, candidate.Priority.Gravity))
+                    else
+                        return! loop (candidate :: acc) tail
+            }
+
+        loop [] candidates
+
+    let private applyVisible
+        (current: BoundedGSet<'K>)
+        (boarded: Candidate<'K, 'S> list)
+        : Result<BoundedGSet<'K> * GSet<'K> * GSet<'K> * GSet<'K>, Feedback> =
+        let rec loop state retained rejected evicted rest =
+            result {
+                match rest with
+                | [] -> return state, retained, rejected, evicted
+                | candidate :: tail ->
+                    let! addResult =
+                        BoundedGSet.add candidate.Key state
+                        |> Result.mapError HorizonFeedback
+
+                    let retained' =
+                        match addResult.Admission with
+                        | BoundedGSetAdmission.RejectedByBound -> retained
+                        | BoundedGSetAdmission.Admitted
+                        | BoundedGSetAdmission.AlreadyPresent -> GSet.add candidate.Key retained
+
+                    let rejected' =
+                        match addResult.Admission with
+                        | BoundedGSetAdmission.RejectedByBound -> GSet.add candidate.Key rejected
+                        | BoundedGSetAdmission.Admitted
+                        | BoundedGSetAdmission.AlreadyPresent -> rejected
+
+                    let evicted' = GSet.union evicted addResult.Evicted
+                    return! loop addResult.State retained' rejected' evicted' tail
+            }
+
+        loop current GSet.empty GSet.empty GSet.empty boarded
+
+    /// Update an existing finite horizon with a newly ordered, byte-budgeted
+    /// set of candidate futures.
+    let update
+        (current: BoundedGSet<'K>)
+        (tank: SoftThrottle.Tank)
+        (candidates: Candidate<'K, 'S> list)
+        : Result<Report<'K, 'S>, Feedback> =
+        result {
+            let! orderedCandidates = ordered candidates
+
+            let! prediction =
+                orderedCandidates
+                |> List.map _.Branch
+                |> fun branches -> Vision.predictBranches branches tank
+                |> Result.mapError VisionFeedback
+
+            let boarded = orderedCandidates |> List.truncate prediction.Boarded.Length
+            let deferred = orderedCandidates |> List.skip prediction.Boarded.Length
+            let! horizonAfter, retained, rejected, evicted = applyVisible current boarded
+
+            return
+                { HorizonBefore = current
+                  HorizonAfter = horizonAfter
+                  Ordered = orderedCandidates
+                  Boarded = boarded
+                  Deferred = deferred
+                  RetainedKeys = retained
+                  RejectedByHorizon = rejected
+                  EvictedByHorizon = evicted
+                  Prediction = prediction }
+        }
+
+    /// Start from an empty bounded horizon and admit the affordable visible
+    /// prefix of candidates.
+    let admit
+        (config: BoundedGSetConfig)
+        (tank: SoftThrottle.Tank)
+        (candidates: Candidate<'K, 'S> list)
+        : Result<Report<'K, 'S>, Feedback> =
+        result {
+            let! empty =
+                BoundedGSet.empty<'K> config
+                |> Result.mapError HorizonFeedback
+
+            return! update empty tank candidates
+        }
