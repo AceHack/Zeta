@@ -150,4 +150,12 @@ public class GSetCrossVerifyTests
         var ordinal = GSet.OfSeq(["a", "b"], Collation.UnicodeCodePointComparer.Ordinal);
         Assert.Throws<ArgumentException>(() => ordinal + custom);
     }
+
+    [Fact]
+    public void TempCompareTest()
+    {
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
+        var r = cmp.Compare("", "𠜎");
+        throw new InvalidOperationException($"Comparison result: {r}");
+    }
 }

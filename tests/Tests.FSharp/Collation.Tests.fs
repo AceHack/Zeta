@@ -9,21 +9,21 @@ open Zeta.Core
 
 [<Fact>]
 let ``binary default is ordinal and is the shipped default name`` () =
-    Assert.Same(StringComparer.Ordinal, Collation.binary)
+    Assert.Same(UnicodeCodePointComparer.Ordinal, Collation.binary)
     Assert.Equal("binary", Collation.defaultName)
-    Assert.Same(StringComparer.Ordinal, Collation.byNameOrDefault Collation.defaultName)
+    Assert.Same(UnicodeCodePointComparer.Ordinal, Collation.byNameOrDefault Collation.defaultName)
 
 [<Fact>]
 let ``catalog resolves named collations; unknown falls back to binary`` () =
-    Assert.Same(StringComparer.Ordinal, Collation.byNameOrDefault "ordinal")
-    Assert.Same(StringComparer.OrdinalIgnoreCase, Collation.byNameOrDefault "ordinal-ci")
+    Assert.Same(UnicodeCodePointComparer.Ordinal, Collation.byNameOrDefault "ordinal")
+    Assert.Same(UnicodeCodePointComparer.OrdinalIgnoreCase, Collation.byNameOrDefault "ordinal-ci")
     Assert.Equal(None, Collation.tryByName "no-such-collation")
-    Assert.Same(StringComparer.Ordinal, Collation.byNameOrDefault "no-such-collation") // fallback
+    Assert.Same(UnicodeCodePointComparer.Ordinal, Collation.byNameOrDefault "no-such-collation") // fallback
 
 [<Fact>]
 let ``catalog name lookup is itself case-insensitive`` () =
     // selecting a collation by name shouldn't be culture/case-fragile
-    Assert.Same(StringComparer.Ordinal, Collation.byNameOrDefault "BINARY")
+    Assert.Same(UnicodeCodePointComparer.Ordinal, Collation.byNameOrDefault "BINARY")
 
 [<Fact>]
 let ``forKey string is ORDINAL, not culture-sensitive (the B-0969 fix)`` () =

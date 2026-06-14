@@ -263,28 +263,44 @@ async function runObserveInline(): Promise<string> {
     const { choose } = await import("../observe/chooser");
     const { loadWorld } = await import("../observe/load-world");
     const { renderAction } = await import("../observe/observe");
+    const { execute } = await import("../observe/execute");
+    const { folderSink } = await import("../observe/event-sink-folder");
 
     const eventDir = join(stateDir, "events");
     mkdirSync(eventDir, { recursive: true });
-    const world = loadWorld({ eventDir, repoRoot: worktree });
-    const result = await choose(world);
 
+    // 1. Load world from event log + backlog
+    const world = loadWorld({ eventDir, repoRoot: worktree });
+
+    // 2. Choose action (tiered cascade — cheapest tier where confidence suffices)
+    const result = await choose(world);
     const label = renderAction(result.action);
     log(`observe-inline: tier=${result.tier} confidence=${result.confidence.toFixed(2)} action=${label}`);
 
-    // For now, log the decision. Full execute() wiring is the next step.
+    // 3. Execute the action (append to event log + side effects)
+    const sink = folderSink({ eventDir, by: personaName });
+    const execResult = await execute(world, result.action, sink);
+
+    const status = execResult.ok ? 0 : 1;
+    const execNote = execResult.ok
+      ? `executed:${result.action.kind}`
+      : `failed:${execResult.feedback?.kind ?? "unknown"}`;
+
+    log(`observe-inline execute: ${execNote}`);
+
     writeFileSync(join(stateDir, "last-agent-run.json"), JSON.stringify({
       run_id: runId,
       persona: personaName,
-      status: 0,
+      status,
       tier: result.tier,
       confidence: result.confidence,
       action_kind: result.action.kind,
+      executed: execResult.ok,
       started_at: nowIso(),
       updated_at: nowIso(),
     }, null, 2));
 
-    return `observe-inline:${result.tier}:${result.action.kind}`;
+    return `observe-inline:${result.tier}:${execNote}`;
   } catch (err) {
     log(`observe-inline failed: ${err instanceof Error ? err.message : String(err)}`);
     return "observe-inline:error";
