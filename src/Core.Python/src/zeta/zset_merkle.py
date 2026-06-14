@@ -2,6 +2,7 @@ import struct
 import xxhash
 from typing import List, Tuple, Dict
 
+
 class MerkleHash:
     def __init__(self, hi: int, lo: int):
         self.hi = hi
@@ -30,12 +31,14 @@ class MerkleHash:
     def to_hex(self) -> str:
         return f"{self.hi:016x}{self.lo:016x}"
 
+
 def leaf_bytes(key_bytes: bytes, weight: int) -> bytes:
     buf = bytearray(4 + len(key_bytes) + 8)
     struct.pack_into("<I", buf, 0, len(key_bytes))
     buf[4 : 4 + len(key_bytes)] = key_bytes
     struct.pack_into("<q", buf, 4 + len(key_bytes), weight)
     return bytes(buf)
+
 
 def fold(level: List[MerkleHash]) -> MerkleHash:
     n = len(level)
@@ -49,6 +52,7 @@ def fold(level: List[MerkleHash]) -> MerkleHash:
         b = level[2 * i + 1] if 2 * i + 1 < n else a
         parents.append(MerkleHash.combine(a, b))
     return fold(parents)
+
 
 def root(entries: List[Tuple[str, int]]) -> MerkleHash:
     # 1. Group by key and sum weights

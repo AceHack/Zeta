@@ -21,7 +21,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-
 func findRepoRoot() string {
 	dir, err := os.Getwd()
 	if err != nil {
