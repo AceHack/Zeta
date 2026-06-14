@@ -1,5 +1,9 @@
 # Shared checkout is a view, not a workspace
 
+> **Cross-harness:** this is the Claude-side surface of `GOVERNANCE.md §35`
+> (canonical, all harnesses) and `AGENTS.md` §"Shared checkout is VIEW-ONLY"
+> (the on-load surface every harness reads). Same rule, three surfaces.
+
 Carved sentence:
 
 > The shared checkout `/Users/acehack/Documents/src/repos/Zeta` is everyone's

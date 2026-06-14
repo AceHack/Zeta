@@ -22,6 +22,22 @@ the form `GOVERNANCE.md §N`.
 
 Every contributor decision flows from that.
 
+## Shared checkout is VIEW-ONLY — work in your own clone (ALL harnesses)
+
+The operator's primary checkout (e.g.
+`/Users/acehack/Documents/src/repos/Zeta`) is everyone's **read-only VIEW** of
+`origin/main` — **never a workspace**, for **any** harness (Claude, Codex,
+Gemini, Kiro/Qwen, Cursor, Copilot, …). Work in your **OWN clone** (one per
+writer / loop / ticksource) and push to `origin/main` from there. In the shared
+checkout: **never edit, commit, branch, or `git stash`** — `git pull` to refresh
+the view, nothing else. Two harnesses writing the same checkout race and churn
+each other's work (the fleet has been bitten repeatedly — concurrent stashes;
+branches left behind in the shared checkout). **A bus/routing address is not
+identity.** Canonical numbered rule: `GOVERNANCE.md §35`. Full model:
+[`docs/writer-actor-routing-model.md`](docs/writer-actor-routing-model.md)
+(clone-per-writer). Claude-specific surface of the same rule:
+`.claude/rules/shared-checkout-is-view-only.md`.
+
 ## The vibe-coded hypothesis
 
 The human maintainer has written **zero lines of code**

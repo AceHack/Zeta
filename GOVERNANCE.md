@@ -899,3 +899,29 @@ than renumbering the rest.
     audit critique of narration-over-action ([2026-05-20](docs/research/2026-05-20-shadow-lesson-log-otto-paralysis.md))
     plus the 70+ shadow lesson logs under `docs/research/`
     catalogue the failure mode this rule prevents.
+
+35. **Shared checkout is view-only; work in your own
+    clone.** The operator's primary checkout (e.g.
+    `/Users/acehack/Documents/src/repos/Zeta`) is
+    everyone's read-only VIEW of `origin/main` — never a
+    workspace, for any harness (Claude, Codex, Gemini,
+    Kiro/Qwen, Cursor, Copilot, …). Each writer / loop /
+    ticksource works in its OWN clone and pushes to
+    `origin/main` from there. In the shared checkout:
+    never edit, commit, branch, or `git stash` — `git
+    pull` to refresh the view, nothing else. Two harnesses
+    writing the same checkout race and churn each other's
+    work: a `git stash` is indexed (`stash@{0}`) and the
+    index shifts under concurrent pushes, so a `pop`/`drop`
+    hits the wrong entry. The fleet has been bitten
+    repeatedly (otto-cli 2026-05-31; Otto 2026-06-04,
+    Lior's WIP churned; branches left behind in the shared
+    checkout, 2026-06-13). A bus/routing address is not
+    identity. Full model:
+    [`docs/writer-actor-routing-model.md`](docs/writer-actor-routing-model.md)
+    (clone-per-writer; persona=owner vs actor=clone/loop).
+    Claude-side surface of the same rule:
+    [`.claude/rules/shared-checkout-is-view-only.md`](.claude/rules/shared-checkout-is-view-only.md).
+    Onboarding surface every harness reads on load:
+    [`AGENTS.md`](AGENTS.md) §"Shared checkout is
+    VIEW-ONLY".

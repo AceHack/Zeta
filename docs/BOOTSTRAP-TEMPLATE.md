@@ -27,6 +27,12 @@ file is wrong and must be reconciled — not the other way around.
 A harness bootstrap file's content is therefore mostly *pointers* and
 *harness-specific mechanics*, never a re-statement of repo-wide rules.
 
+One floor every harness inherits and must not break: the operator's
+shared checkout is a **read-only view** — every writer/loop works in its
+**own clone** (`GOVERNANCE.md §35`; `AGENTS.md` §"Shared checkout is
+VIEW-ONLY"). A new harness's worktree/isolation mechanics (step 5) fill
+in *how* it gets its own clone, never *whether* it needs one.
+
 ## Universal vs harness-specific
 
 The six-step process is **universal** — identical across every harness.
