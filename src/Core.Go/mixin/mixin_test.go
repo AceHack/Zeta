@@ -41,7 +41,7 @@ func TestWeakMapBasic(t *testing.T) {
 
 func TestWeakMapGC(t *testing.T) {
 	wm := NewWeakMap[DummyKey, int]()
-	
+
 	// Create key inside local scope/helper so it gets collected
 	runGCScenario(wm)
 

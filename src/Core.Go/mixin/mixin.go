@@ -6,7 +6,7 @@ import (
 	"weak"
 )
 
-/// Thread-safe and GC-safe weak-keyed identity table for attaching state to objects.
+// / Thread-safe and GC-safe weak-keyed identity table for attaching state to objects.
 type WeakMap[K any, V any] struct {
 	mu sync.RWMutex
 	m  map[weak.Pointer[K]]V
@@ -18,7 +18,7 @@ func NewWeakMap[K any, V any]() *WeakMap[K, V] {
 	}
 }
 
-/// Attach a state value to the key pointer. Overwrites if it already exists.
+// / Attach a state value to the key pointer. Overwrites if it already exists.
 func (wm *WeakMap[K, V]) Set(key *K, val V) {
 	if key == nil {
 		return
@@ -37,7 +37,7 @@ func (wm *WeakMap[K, V]) Set(key *K, val V) {
 	}, wp)
 }
 
-/// Try to get the state value associated with the key pointer.
+// / Try to get the state value associated with the key pointer.
 func (wm *WeakMap[K, V]) Get(key *K) (V, bool) {
 	var zero V
 	if key == nil {
@@ -51,7 +51,7 @@ func (wm *WeakMap[K, V]) Get(key *K) (V, bool) {
 	return val, ok
 }
 
-/// Delete the entry associated with the key pointer. Returns true if removed, false otherwise.
+// / Delete the entry associated with the key pointer. Returns true if removed, false otherwise.
 func (wm *WeakMap[K, V]) Delete(key *K) bool {
 	if key == nil {
 		return false
