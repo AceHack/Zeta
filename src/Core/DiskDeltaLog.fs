@@ -272,3 +272,9 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
     interface IDisposable with
         member _.Dispose() = (throttler :> IDisposable).Dispose()
+
+    // Deterministic, non-blocking disposal — forwards to the throttler's awaited
+    // drain. Prefer this over `Dispose` wherever an async disposal scope exists
+    // (`use!` in a task/async), so the group-commit ferries flush replayably.
+    interface IAsyncDisposable with
+        member _.DisposeAsync() = (throttler :> IAsyncDisposable).DisposeAsync()

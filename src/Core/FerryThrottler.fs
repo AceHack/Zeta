@@ -322,10 +322,36 @@ type FerryThrottler<'TItem>
 
     interface IDisposable with
         member _.Dispose() =
+            // Best-effort, NON-BLOCKING shutdown. Signal completion + cancel; the
+            // ferries observe cancellation and exit on their own. We deliberately
+            // do NOT block on the ferry tasks here: a wall-clock
+            // `Task.WaitAll(_, 500)` is DST-hostile (a nondeterministic timeout
+            // DST cannot replay) AND deadlocks the DoP=1 deterministic path — the
+            // injected pump can't run while this thread is blocked, so the ferries
+            // never complete and the 500ms timeout abandons them. The CTS is
+            // disposed only after the ferries actually finish, via an inline
+            // continuation. Callers needing a guaranteed drain use `DisposeAsync`
+            // (deterministic) or `CompleteAsync`.
             inbox.Writer.TryComplete() |> ignore
             cts.Cancel()
-            try Task.WaitAll(ferryTasks, 500) |> ignore with _ -> ()
-            cts.Dispose()
+            (Task.WhenAll ferryTasks).ContinueWith(
+                (fun (_: Task) -> cts.Dispose()),
+                TaskContinuationOptions.ExecuteSynchronously) |> ignore
+
+    interface IAsyncDisposable with
+        member _.DisposeAsync() =
+            // Deterministic drain: signal completion, cancel, then AWAIT every
+            // ferry to finish — no thread blocked, no wall-clock timeout, fully
+            // DST-replayable (on the DoP=1 path the awaited continuations route
+            // through the injected pump). This is the preferred disposal path.
+            inbox.Writer.TryComplete() |> ignore
+            cts.Cancel()
+            ValueTask(
+                task {
+                    try do! Task.WhenAll ferryTasks
+                    with _ -> ()
+                    cts.Dispose()
+                })
 
 
 /// Request/response FerryThrottler arity. Producers submit one item and receive
@@ -546,10 +572,36 @@ type FerryThrottler<'TItem, 'TResult>
 
     interface IDisposable with
         member _.Dispose() =
+            // Best-effort, NON-BLOCKING shutdown. Signal completion + cancel; the
+            // ferries observe cancellation and exit on their own. We deliberately
+            // do NOT block on the ferry tasks here: a wall-clock
+            // `Task.WaitAll(_, 500)` is DST-hostile (a nondeterministic timeout
+            // DST cannot replay) AND deadlocks the DoP=1 deterministic path — the
+            // injected pump can't run while this thread is blocked, so the ferries
+            // never complete and the 500ms timeout abandons them. The CTS is
+            // disposed only after the ferries actually finish, via an inline
+            // continuation. Callers needing a guaranteed drain use `DisposeAsync`
+            // (deterministic) or `CompleteAsync`.
             inbox.Writer.TryComplete() |> ignore
             cts.Cancel()
-            try Task.WaitAll(ferryTasks, 500) |> ignore with _ -> ()
-            cts.Dispose()
+            (Task.WhenAll ferryTasks).ContinueWith(
+                (fun (_: Task) -> cts.Dispose()),
+                TaskContinuationOptions.ExecuteSynchronously) |> ignore
+
+    interface IAsyncDisposable with
+        member _.DisposeAsync() =
+            // Deterministic drain: signal completion, cancel, then AWAIT every
+            // ferry to finish — no thread blocked, no wall-clock timeout, fully
+            // DST-replayable (on the DoP=1 path the awaited continuations route
+            // through the injected pump). This is the preferred disposal path.
+            inbox.Writer.TryComplete() |> ignore
+            cts.Cancel()
+            ValueTask(
+                task {
+                    try do! Task.WhenAll ferryTasks
+                    with _ -> ()
+                    cts.Dispose()
+                })
 
 
 /// **ContextualFerryThrottler** — explicit context threading, the Kleisli-Arrow
