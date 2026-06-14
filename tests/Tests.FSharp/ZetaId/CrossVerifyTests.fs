@@ -27,6 +27,7 @@ type FlatVector = {
     MomentumRaw: Nullable<int>
     Location: int
     ExpectedHex: string
+    ExpectedCrockford: string
 }
 
 // --- YamlValue → FlatVector list navigation. The fixture is a top-level VMap with a
@@ -80,6 +81,7 @@ let private toFlatVector (idx: int) (item: YamlValue) : FlatVector =
         MomentumRaw   = asIntOrNull (field m "momentum_raw" ctx)  (ctx + ".momentum_raw")
         Location      = asInt     (field m "location" ctx)       (ctx + ".location")
         ExpectedHex   = asStr     (field m "expected_hex" ctx)   (ctx + ".expected_hex")
+        ExpectedCrockford = asStr (field m "expected_crockford" ctx) (ctx + ".expected_crockford")
     }
 
 let private yamlValueToFlatVectors (root: YamlValue) : FlatVector list =
@@ -148,13 +150,9 @@ let private repoRoot () : string =
 [<Fact>]
 let ``cross-verify twelve vectors match TS+C# bootstrap hex`` () =
     let root = repoRoot ()
-    // Path.Join (not Path.Combine) — Path.Join always concatenates segments;
-    // Path.Combine silently drops earlier args if a later arg looks rooted.
     let yamlPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "vectors.yaml")
     let yamlText = File.ReadAllText(yamlPath)
 
-    // Own-the-interface: parse through our YAML port (Zeta.Core.FSharp.Yaml.Dom.parse),
-    // not YamlDotNet directly. Decline surfaces as a YamlFeedback, not an exception.
     let vectors =
         match parse yamlText with
         | Ok value -> yamlValueToFlatVectors value
@@ -163,21 +161,29 @@ let ``cross-verify twelve vectors match TS+C# bootstrap hex`` () =
 
     let results = System.Collections.Generic.Dictionary<string, obj>(StringComparer.Ordinal)
     let mutable hexMismatches = 0
+    let mutable crockfordMismatches = 0
     let mutable roundtripMismatches = 0
 
     for v in vectors do
         let obs = toObservation v
         let id = ZetaIdCodec.pack obs DeterministicEnv.Instance
         let hex = id.ToString("x32", CultureInfo.InvariantCulture)
+        let crockford = ZetaIdCodec.format id
 
         let unpacked = ZetaIdCodec.unpack id
         let roundtripOk = unpacked = obs
+        let parsedId = ZetaIdCodec.parse crockford
+        let parseOk = parsedId = id
+        let isCanonical = ZetaIdCodec.isCanonical crockford
+
         let matchesExpected = String.Equals(hex, v.ExpectedHex, StringComparison.Ordinal)
+        let crockfordMatches = String.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal)
 
-        results.[v.Id] <- box {| hex = hex; roundtripOk = roundtripOk; matchesExpected = matchesExpected |}
+        results.[v.Id] <- box {| hex = hex; crockford = crockford; roundtripOk = (roundtripOk && parseOk && isCanonical); matchesExpected = (matchesExpected && crockfordMatches) |}
 
-        if not roundtripOk then roundtripMismatches <- roundtripMismatches + 1
+        if not (roundtripOk && parseOk && isCanonical) then roundtripMismatches <- roundtripMismatches + 1
         if not matchesExpected then hexMismatches <- hexMismatches + 1
+        if not crockfordMatches then crockfordMismatches <- crockfordMismatches + 1
 
     // compare.ts reads `fsharp-output.json` (not `fs-output.json`) — match per Copilot #4548 thread
     let outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "fsharp-output.json")
@@ -187,3 +193,5 @@ let ``cross-verify twelve vectors match TS+C# bootstrap hex`` () =
 
     Assert.Equal(0, roundtripMismatches)
     Assert.Equal(0, hexMismatches)
+    Assert.Equal(0, crockfordMismatches)
+

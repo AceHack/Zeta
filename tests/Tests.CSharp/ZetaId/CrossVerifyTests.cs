@@ -70,6 +70,7 @@ public class CrossVerifyTests
             MomentumRaw = AsIntOrNull(Field(m, "momentum_raw", ctx), $"{ctx}.momentum_raw"),
             Location = AsInt(Field(m, "location", ctx), $"{ctx}.location"),
             ExpectedHex = AsStr(Field(m, "expected_hex", ctx), $"{ctx}.expected_hex"),
+            ExpectedCrockford = AsStr(Field(m, "expected_crockford", ctx), $"{ctx}.expected_crockford"),
         };
     }
 
@@ -169,6 +170,7 @@ public class CrossVerifyTests
 
         var results = new Dictionary<string, object>(StringComparer.Ordinal);
         int hexMismatches = 0;
+        int crockfordMismatches = 0;
         int roundtripMismatches = 0;
 
         foreach (var v in vectors)
@@ -176,15 +178,22 @@ public class CrossVerifyTests
             var obs = ToObservation(v);
             var id = ZetaIdCodec.Pack(obs, DeterministicEnv.Instance);
             var hex = id.ToString("x32", CultureInfo.InvariantCulture);
+            var crockford = ZetaIdCodec.Format(id);
 
             var unpacked = ZetaIdCodec.Unpack(id);
             var roundtripOk = unpacked == obs;
+            var parsedId = ZetaIdCodec.Parse(crockford);
+            var parseOk = parsedId == id;
+            var isCanonical = ZetaIdCodec.IsCanonical(crockford);
+
             var matchesExpected = string.Equals(hex, v.ExpectedHex, StringComparison.Ordinal);
+            var crockfordMatches = string.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal);
 
-            results[v.Id] = new { hex, roundtripOk, matchesExpected };
+            results[v.Id] = new { hex, crockford, roundtripOk = roundtripOk && parseOk && isCanonical, matchesExpected = matchesExpected && crockfordMatches };
 
-            if (!roundtripOk) roundtripMismatches++;
+            if (!roundtripOk || !parseOk || !isCanonical) roundtripMismatches++;
             if (!matchesExpected) hexMismatches++;
+            if (!crockfordMatches) crockfordMismatches++;
         }
 
         var outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "cs-output.json");
@@ -193,5 +202,6 @@ public class CrossVerifyTests
 
         Assert.Equal(0, roundtripMismatches);
         Assert.Equal(0, hexMismatches);
+        Assert.Equal(0, crockfordMismatches);
     }
 }

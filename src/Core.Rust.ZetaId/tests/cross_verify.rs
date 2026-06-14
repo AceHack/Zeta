@@ -17,6 +17,7 @@ use std::path::PathBuf;
 
 use zeta_core_zeta_id::{
     Authority, DeterministicEnv, Momentum, ZetaObservation, pack, to_hex, unpack,
+    format_b32, parse_b32, is_canonical,
 };
 
 /// Walk up from the crate dir to the repo root (`Zeta.sln` sentinel), matching the
@@ -150,10 +151,11 @@ fn cross_verify_matches_shared_vectors() {
     let records = parse_vectors(&text);
     assert!(!records.is_empty(), "no vectors parsed");
 
-    // (id, hex, roundtrip_ok, matches_expected) in fixture order.
-    let mut results: Vec<(String, String, bool, bool)> = Vec::with_capacity(records.len());
+    // (id, hex, crockford, roundtrip_ok, matches_expected) in fixture order.
+    let mut results: Vec<(String, String, String, bool, bool)> = Vec::with_capacity(records.len());
     let mut roundtrip_mismatches = 0usize;
     let mut hex_mismatches = 0usize;
+    let mut crockford_mismatches = 0usize;
 
     for rec in &records {
         let id = field(rec, "id").to_string();
@@ -177,28 +179,40 @@ fn cross_verify_matches_shared_vectors() {
 
         let id_value = pack(&obs, &DeterministicEnv).expect("pack");
         let hex = to_hex(id_value);
-        let roundtrip_ok = unpack(id_value) == obs;
+        let crockford = format_b32(id_value);
+        let parsed_id = parse_b32(&crockford);
+        let parse_ok = parsed_id == Ok(id_value);
+        let canonical = is_canonical(&crockford);
+
+        let roundtrip_ok = unpack(id_value) == obs && parse_ok && canonical;
         let expected_hex = field(rec, "expected_hex");
+        let expected_crockford = field(rec, "expected_crockford");
         let matches_expected = hex == expected_hex;
+        let crockford_matches = crockford == expected_crockford;
 
         if !roundtrip_ok {
             roundtrip_mismatches += 1;
-            eprintln!("Roundtrip MISMATCH for {id}");
+            eprintln!("Roundtrip/CrockfordParse/Canonical MISMATCH for {id}");
         }
         if !matches_expected {
             hex_mismatches += 1;
             eprintln!("Hex MISMATCH for {id}: got {hex}, expected {expected_hex}");
         }
-        results.push((id, hex, roundtrip_ok, matches_expected));
+        if !crockford_matches {
+            crockford_mismatches += 1;
+            eprintln!("Crockford MISMATCH for {id}: got {crockford}, expected {expected_crockford}");
+        }
+        results.push((id, hex, crockford, roundtrip_ok, matches_expected && crockford_matches));
     }
 
-    // Emit rust-output.json in the shared shape: { id: { hex, roundtripOk, matchesExpected } }.
+    // Emit rust-output.json in the shared shape: { id: { hex, crockford, roundtripOk, matchesExpected } }.
     let mut out = String::from("{\n");
-    for (i, (id, hex, rt, me)) in results.iter().enumerate() {
+    for (i, (id, hex, crockford, rt, me)) in results.iter().enumerate() {
         out.push_str(&format!(
-            "  {}: {{\n    \"hex\": {},\n    \"roundtripOk\": {},\n    \"matchesExpected\": {}\n  }}",
+            "  {}: {{\n    \"hex\": {},\n    \"crockford\": {},\n    \"roundtripOk\": {},\n    \"matchesExpected\": {}\n  }}",
             json_str(id),
             json_str(hex),
+            json_str(crockford),
             rt,
             me,
         ));
@@ -223,9 +237,10 @@ fn cross_verify_matches_shared_vectors() {
 
     let n = results.len();
     println!(
-        "Cross-verify: {n} vectors. Roundtrip {}/{n} OK. Hex matches expected {}/{n}.",
+        "Cross-verify: {n} vectors. Roundtrip {}/{n} OK. Hex matches expected {}/{n}. Crockford matches expected {}/{n}.",
         n - roundtrip_mismatches,
         n - hex_mismatches,
+        n - crockford_mismatches,
     );
 
     assert_eq!(
@@ -233,4 +248,5 @@ fn cross_verify_matches_shared_vectors() {
         "{roundtrip_mismatches} roundtrip mismatch(es)"
     );
     assert_eq!(hex_mismatches, 0, "{hex_mismatches} hex mismatch(es)");
+    assert_eq!(crockford_mismatches, 0, "{crockford_mismatches} crockford mismatch(es)");
 }

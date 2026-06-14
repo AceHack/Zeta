@@ -29,4 +29,6 @@ public sealed class FlatVector
     public int Location { get; set; }
 
     public string ExpectedHex { get; set; } = string.Empty;
+
+    public string ExpectedCrockford { get; set; } = string.Empty;
 }

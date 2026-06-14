@@ -15,6 +15,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1f80b000800000000"
+    expected_crockford: "081JVQXNCD370ZG2R010000000"
 
   - id: authority-trusted-agent
     version: 1
@@ -29,6 +30,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1a00b000800000000"
+    expected_crockford: "081JVQXNCD370T02R010000000"
 
   - id: authority-standard
     version: 1
@@ -43,6 +45,7 @@ vectors:
     momentum_raw: null
     location: 2
     expected_hex: "080cb77ed58d18017815001000000000"
+    expected_crockford: "081JVQXNCD300QG58020000000"
 
   - id: authority-best-effort
     version: 1
@@ -57,6 +60,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d18074017000800000000"
+    expected_crockford: "081JVQXNCD303M05R010000000"
 
   - id: authority-simulated
     version: 1
@@ -71,6 +75,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d18071817c00800000000"
+    expected_crockford: "081JVQXNCD303HG5Y010000000"
 
   - id: momentum-background
     version: 1
@@ -85,6 +90,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1f809000800000000"
+    expected_crockford: "081JVQXNCD370ZG28010000000"
 
   - id: momentum-normal
     version: 1
@@ -99,6 +105,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1f80b000800000000"
+    expected_crockford: "081JVQXNCD370ZG2R010000000"
 
   - id: momentum-elevated
     version: 1
@@ -113,6 +120,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1a00d000800000000"
+    expected_crockford: "081JVQXNCD370T038010000000"
 
   - id: momentum-high
     version: 1
@@ -127,6 +135,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1f80f000800000000"
+    expected_crockford: "081JVQXNCD370ZG3R010000000"
 
   - id: momentum-critical
     version: 1
@@ -141,6 +150,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "080cb77ed58d19c1f80fc00800000000"
+    expected_crockford: "081JVQXNCD370ZG3Y010000000"
 
   - id: authority-raw-0
     version: 1
@@ -155,6 +165,7 @@ vectors:
     momentum_raw: null
     location: 1
     expected_hex: "0800000000000001000b000800000000"
+    expected_crockford: "0800000000000G02R010000000"
 
   - id: momentum-raw-255
     version: 1
@@ -169,3 +180,4 @@ vectors:
     momentum_raw: 255
     location: 1
     expected_hex: "0ffffffffffff9c1f80ff80800000000"
+    expected_crockford: "0FZZZZZZZZZ70ZG3ZR10000000"

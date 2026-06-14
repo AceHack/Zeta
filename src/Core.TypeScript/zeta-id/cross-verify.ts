@@ -1,4 +1,5 @@
 import { pack, unpack, DETERMINISTIC_ENV } from "./zeta-id";
+import { format as formatB32, parse as parseB32, isCanonical } from "./encoding";
 import type { ZetaObservation, Authority, Momentum } from "./types";
 import { parse } from "../yaml/dom";
 import type { YamlValue } from "../yaml/dom";
@@ -17,6 +18,7 @@ interface FlatVector {
   momentum_raw: number | null;
   location: number;
   expected_hex: string;
+  expected_crockford: string;
 }
 
 // --- YamlValue → FlatVector[] navigation (own-the-interface: route through our port,
@@ -72,6 +74,7 @@ function yamlValueToFlatVectors(root: YamlValue): FlatVector[] {
       momentum_raw: asNumOrNull(field(m, "momentum_raw", ctx), `${ctx}.momentum_raw`),
       location: asNum(field(m, "location", ctx), `${ctx}.location`),
       expected_hex: asStr(field(m, "expected_hex", ctx), `${ctx}.expected_hex`),
+      expected_crockford: asStr(field(m, "expected_crockford", ctx), `${ctx}.expected_crockford`),
     };
   });
 }
@@ -107,40 +110,55 @@ if (!parsed.ok) {
 }
 const vectors = yamlValueToFlatVectors(parsed.value);
 
-const results: Record<string, { hex: string; roundtripOk: boolean; matchesExpected: boolean }> = {};
+const results: Record<
+  string,
+  { hex: string; crockford: string; roundtripOk: boolean; matchesExpected: boolean }
+> = {};
 let unpackMismatches = 0;
 let hexMismatches = 0;
+let crockfordMismatches = 0;
 
 for (const v of vectors) {
   const obs = toObservation(v);
   const packed = pack(obs, DETERMINISTIC_ENV);
   const hex = packed.toString(16).padStart(32, "0");
+  const crockford = formatB32(packed);
 
   const unpacked = unpack(packed);
   const roundtripOk = Bun.deepEquals(unpacked, obs);
   const matchesExpected = hex === v.expected_hex;
+  const parsedId = parseB32(crockford);
+  const parseOk = parsedId === packed;
+  const canonicalOk = isCanonical(crockford);
+  const crockfordMatches = crockford === v.expected_crockford;
 
-  results[v.id] = { hex, roundtripOk, matchesExpected };
+  results[v.id] = {
+    hex,
+    crockford,
+    roundtripOk: roundtripOk && parseOk && canonicalOk,
+    matchesExpected: matchesExpected && crockfordMatches,
+  };
 
-  if (!roundtripOk) {
+  if (!roundtripOk || !parseOk || !canonicalOk) {
     unpackMismatches++;
-    console.error(`Roundtrip MISMATCH for ${v.id}`);
+    console.error(`Roundtrip/CrockfordParse/Canonical MISMATCH for ${v.id}`);
   }
   if (!matchesExpected) {
     hexMismatches++;
     console.error(`Hex MISMATCH for ${v.id}: got ${hex}, expected ${v.expected_hex}`);
   }
+  if (!crockfordMatches) {
+    crockfordMismatches++;
+    console.error(`Crockford MISMATCH for ${v.id}: got ${crockford}, expected ${v.expected_crockford}`);
+  }
 }
 
 await Bun.write("ts-output.json", JSON.stringify(results, null, 2));
 console.log(
-  `Cross-verify: ${vectors.length} vectors. Roundtrip ${vectors.length - unpackMismatches}/${vectors.length} OK. Hex matches expected ${vectors.length - hexMismatches}/${vectors.length}.`,
+  `Cross-verify: ${vectors.length} vectors. Roundtrip ${vectors.length - unpackMismatches}/${vectors.length} OK. Hex matches expected ${vectors.length - hexMismatches}/${vectors.length}. Crockford matches expected ${vectors.length - crockfordMismatches}/${vectors.length}.`,
 );
 
-// Enforce: non-zero exit on any mismatch so CI / automation catches regressions.
-// Per Codex P1 finding (PR #4517 cross-verify.ts:72) — silent-non-enforcing
-// harness is a known antipattern.
-if (unpackMismatches > 0 || hexMismatches > 0) {
-  console.error(`FAIL: ${unpackMismatches} roundtrip mismatch + ${hexMismatches} hex mismatch`);
+if (unpackMismatches > 0 || hexMismatches > 0 || crockfordMismatches > 0) {
+  console.error(`FAIL: ${unpackMismatches} roundtrip mismatch + ${hexMismatches} hex mismatch + ${crockfordMismatches} crockford mismatch`);
   process.exit(1);
 }

@@ -170,5 +170,92 @@ public static class ZetaIdCodec
         UInt128 mask = (UInt128.One << width) - UInt128.One;
         return (ulong)((value >> offset) & mask);
     }
+
+    private const string CrockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    private const int Base32Length = 26;
+
+    private static readonly sbyte[] DecodeMap = CreateDecodeMap();
+
+    private static sbyte[] CreateDecodeMap()
+    {
+        var map = new sbyte[128];
+        System.Array.Fill(map, (sbyte)-1);
+        for (int i = 0; i < CrockfordAlphabet.Length; i++)
+        {
+            char c = CrockfordAlphabet[i];
+            map[c] = (sbyte)i;
+            map[System.Char.ToLowerInvariant(c)] = (sbyte)i;
+        }
+        // Lenient aliases:
+        map['I'] = 1; map['i'] = 1;
+        map['L'] = 1; map['l'] = 1;
+        map['O'] = 0; map['o'] = 0;
+        return map;
+    }
+
+    public static string Format(UInt128 id)
+    {
+        UInt128 v = id;
+        char[] chars = new char[Base32Length];
+        for (int i = Base32Length - 1; i >= 0; i--)
+        {
+            chars[i] = CrockfordAlphabet[(int)(v & 31)];
+            v >>= 5;
+        }
+        return new string(chars);
+    }
+
+    public static UInt128 Parse(string s)
+    {
+        System.ArgumentNullException.ThrowIfNull(s);
+        if (s.Length != Base32Length)
+            throw new System.ArgumentException($"Expected exactly {Base32Length} characters, got {s.Length}", nameof(s));
+
+        char firstChar = s[0];
+        if (firstChar >= 128 || DecodeMap[firstChar] >= 8)
+            throw new System.ArgumentException("Value exceeds 128 bits (leading pad bits must be zero)", nameof(s));
+
+        UInt128 result = 0;
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i];
+            if (c >= 128)
+                throw new System.ArgumentException($"Invalid Crockford base32 character '{c}' at index {i}", nameof(s));
+            sbyte val = DecodeMap[c];
+            if (val < 0)
+                throw new System.ArgumentException($"Invalid Crockford base32 character '{c}' at index {i}", nameof(s));
+
+            result = (result << 5) | (byte)val;
+        }
+
+        return result;
+    }
+
+    public static bool IsCanonical(string s)
+    {
+        if (s == null || s.Length != Base32Length)
+            return false;
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i];
+            if (CrockfordAlphabet.IndexOf(c, System.StringComparison.Ordinal) < 0)
+                return false;
+        }
+
+        char firstChar = s[0];
+        sbyte firstVal = DecodeMap[firstChar];
+        if (firstVal < 0 || firstVal >= 8)
+            return false;
+
+        try
+        {
+            return string.Equals(Format(Parse(s)), s, System.StringComparison.Ordinal);
+        }
+        catch (System.ArgumentException)
+        {
+            return false;
+        }
+    }
 }
 

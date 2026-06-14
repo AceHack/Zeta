@@ -215,13 +215,23 @@ def test_cross_verify_zeta_id():
 
         packed = zeta_id.pack(obs, zeta_id.DETERMINISTIC_ENV)
         hex_val = zeta_id.to_hex(packed)
+        crockford_val = zeta_id.format_b32(packed)
 
         unpacked = zeta_id.unpack(packed)
         roundtrip_ok = obs_equal(obs, unpacked)
+        parsed_id = zeta_id.parse_b32(crockford_val)
+        parse_ok = parsed_id == packed
+        is_canonical = zeta_id.is_canonical(crockford_val)
+
         matches_expected = hex_val == v["expected_hex"]
+        crockford_matches = crockford_val == v["expected_crockford"]
+
+        roundtrip_ok = roundtrip_ok and parse_ok and is_canonical
+        matches_expected = matches_expected and crockford_matches
 
         out_map[v_id] = {
             "hex": hex_val,
+            "crockford": crockford_val,
             "roundtripOk": roundtrip_ok,
             "matchesExpected": matches_expected,
         }

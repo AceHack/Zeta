@@ -168,6 +168,96 @@ pub fn to_hex(id: u128) -> String {
     format!("{id:032x}")
 }
 
+const CROCKFORD_ALPHABET: &[u8] = b"0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+/// Length of the canonical Crockford base32 representation.
+pub const ZETAID_BASE32_LEN: usize = 26;
+
+fn decode_char(c: u8) -> Result<u8, String> {
+    match c {
+        b'0'..=b'9' => Ok(c - b'0'),
+        b'A'..=b'H' => Ok(c - b'A' + 10),
+        b'a'..=b'h' => Ok(c - b'a' + 10),
+        b'J'..=b'K' => Ok(c - b'J' + 18),
+        b'j'..=b'k' => Ok(c - b'j' + 18),
+        b'M'..=b'N' => Ok(c - b'M' + 20),
+        b'm'..=b'n' => Ok(c - b'm' + 20),
+        b'P'..=b'T' => Ok(c - b'P' + 22),
+        b'p'..=b't' => Ok(c - b'p' + 22),
+        b'V'..=b'Z' => Ok(c - b'V' + 27),
+        b'v'..=b'z' => Ok(c - b'v' + 27),
+        b'I' | b'i' | b'L' | b'l' => Ok(1),
+        b'O' | b'o' => Ok(0),
+        _ => Err(format!("invalid Crockford base32 character '{}'", c as char)),
+    }
+}
+
+/// Encode a 128-bit ZetaId as the canonical 26-char Crockford base32 string.
+#[must_use]
+pub fn format_b32(id: u128) -> String {
+    let mut v = id;
+    let mut out = [0u8; ZETAID_BASE32_LEN];
+    for i in (0..ZETAID_BASE32_LEN).rev() {
+        out[i] = CROCKFORD_ALPHABET[(v & 31) as usize];
+        v >>= 5;
+    }
+    std::str::from_utf8(&out).unwrap().to_string()
+}
+
+/// Parse a canonical (or Crockford-lenient) base32 string back to a 128-bit ZetaId.
+///
+/// # Errors
+/// Returns an error message string if the string is of wrong length, contains
+/// invalid characters, or overflows 128 bits.
+pub fn parse_b32(s: &str) -> Result<u128, String> {
+    if s.len() != ZETAID_BASE32_LEN {
+        return Err(format!(
+            "expected exactly {} Crockford base32 characters, got {}",
+            ZETAID_BASE32_LEN,
+            s.len()
+        ));
+    }
+    let bytes = s.as_bytes();
+    let first_val = decode_char(bytes[0])?;
+    if first_val >= 8 {
+        return Err("value exceeds 128 bits (leading pad bits must be zero)".to_string());
+    }
+
+    let mut result = 0u128;
+    for &b in bytes {
+        let val = decode_char(b)?;
+        result = (result << 5) | u128::from(val);
+    }
+    Ok(result)
+}
+
+/// True iff `s` is the strict canonical Crockford form (exactly what `format_b32`
+/// emits) — 26 chars, uppercase, only the strict alphabet, no lenient aliases,
+/// and round-trips.
+#[must_use]
+pub fn is_canonical(s: &str) -> bool {
+    if s.len() != ZETAID_BASE32_LEN {
+        return false;
+    }
+    for &b in s.as_bytes() {
+        if !CROCKFORD_ALPHABET.contains(&b) {
+            return false;
+        }
+    }
+    if let Some(&first) = s.as_bytes().first() {
+        if let Ok(val) = decode_char(first) {
+            if val >= 8 {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    match parse_b32(s) {
+        Ok(id) => format_b32(id) == s,
+        Err(_) => false,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

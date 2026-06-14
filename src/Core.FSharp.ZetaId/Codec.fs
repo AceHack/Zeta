@@ -172,3 +172,76 @@ module ZetaIdCodec =
         else
             ZetaIdPayload.Generic (ver, cat, pay)
 
+    let private crockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+    let private base32Length = 26
+
+    let private decodeMap =
+        let arr = Array.create 128 -1y
+        for i = 0 to crockfordAlphabet.Length - 1 do
+            let c = crockfordAlphabet.[i]
+            let v = sbyte i
+            arr.[int c] <- v
+            arr.[int (System.Char.ToLowerInvariant c)] <- v
+        arr.[int 'I'] <- 1y
+        arr.[int 'i'] <- 1y
+        arr.[int 'L'] <- 1y
+        arr.[int 'l'] <- 1y
+        arr.[int 'O'] <- 0y
+        arr.[int 'o'] <- 0y
+        arr
+
+    /// Encode a 128-bit ZetaId as the canonical 26-char Crockford base32 string.
+    let format (id: System.UInt128) : string =
+        let chars = Array.zeroCreate base32Length
+        let mutable v = id
+        for i = base32Length - 1 downto 0 do
+            let idx = int (v &&& System.UInt128(0UL, 31UL))
+            chars.[i] <- crockfordAlphabet.[idx]
+            v <- v >>> 5
+        System.String(chars)
+
+    /// Parse a canonical (or Crockford-lenient) base32 string back to a ZetaId.
+    let parse (s: string) : System.UInt128 =
+        if isNull s then
+            raise (System.ArgumentNullException("s"))
+        if s.Length <> base32Length then
+            raise (System.ArgumentException(sprintf "Expected exactly %d characters, got %d" base32Length s.Length, "s"))
+        
+        let firstChar = s.[0]
+        if int firstChar >= 128 || decodeMap.[int firstChar] >= 8y then
+            raise (System.ArgumentException("Value exceeds 128 bits (leading pad bits must be zero)", "s"))
+
+        let mutable result = System.UInt128.Zero
+        for i = 0 to s.Length - 1 do
+            let c = s.[i]
+            if int c >= 128 then
+                raise (System.ArgumentException(sprintf "Invalid Crockford base32 character '%c' at index %d" c i, "s"))
+            let valByte = decodeMap.[int c]
+            if valByte < 0y then
+                raise (System.ArgumentException(sprintf "Invalid Crockford base32 character '%c' at index %d" c i, "s"))
+            result <- (result <<< 5) ||| System.UInt128(0UL, uint64 valByte)
+        result
+
+    /// True iff s is the strict canonical Crockford form (26 chars, uppercase, strict alphabet, no aliases, round-trips).
+    let isCanonical (s: string) : bool =
+        if isNull s || s.Length <> base32Length then
+            false
+        else
+            let mutable ok = true
+            for i = 0 to s.Length - 1 do
+                if crockfordAlphabet.IndexOf(s.[i]) < 0 then
+                    ok <- false
+            if ok then
+                let firstChar = s.[0]
+                let firstVal = decodeMap.[int firstChar]
+                if firstVal < 0y || firstVal >= 8y then
+                    false
+                else
+                    try
+                        format (parse s) = s
+                    with _ ->
+                        false
+            else
+                false
+
+

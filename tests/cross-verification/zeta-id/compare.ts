@@ -76,38 +76,60 @@ for (const [name, impl] of [
 
 for (const key of keys) {
   const tsHex = typeof ts[key] === "string" ? ts[key] : ts[key].hex;
+  const tsCrockford = typeof ts[key] === "string" ? undefined : ts[key].crockford;
+
   if (fsExists) {
     const fsHex = typeof fsExists[key] === "string" ? fsExists[key] : fsExists[key]?.hex;
     if (tsHex !== fsHex) {
-      console.error(`Mismatch ${key}: TS=${tsHex} F#=${fsHex ?? "MISSING"}`);
+      console.error(`Mismatch ${key} hex: TS=${tsHex} F#=${fsHex ?? "MISSING"}`);
+      mismatches++;
+    }
+    const fsCrockford = fsExists[key]?.crockford;
+    if (tsCrockford !== fsCrockford) {
+      console.error(`Mismatch ${key} crockford: TS=${tsCrockford} F#=${fsCrockford ?? "MISSING"}`);
       mismatches++;
     }
   }
   if (csExists) {
     const csHex = typeof csExists[key] === "string" ? csExists[key] : csExists[key]?.hex;
     if (tsHex !== csHex) {
-      console.error(`Mismatch ${key}: TS=${tsHex} C#=${csHex ?? "MISSING"}`);
+      console.error(`Mismatch ${key} hex: TS=${tsHex} C#=${csHex ?? "MISSING"}`);
+      mismatches++;
+    }
+    const csCrockford = csExists[key]?.crockford;
+    if (tsCrockford !== csCrockford) {
+      console.error(`Mismatch ${key} crockford: TS=${tsCrockford} C#=${csCrockford ?? "MISSING"}`);
       mismatches++;
     }
   }
   if (rustExists) {
     const rustHex = typeof rustExists[key] === "string" ? rustExists[key] : rustExists[key]?.hex;
     if (tsHex !== rustHex) {
-      console.error(`Mismatch ${key}: TS=${tsHex} Rust=${rustHex ?? "MISSING"}`);
+      console.error(`Mismatch ${key} hex: TS=${tsHex} Rust=${rustHex ?? "MISSING"}`);
+      mismatches++;
+    }
+    const rustCrockford = rustExists[key]?.crockford;
+    if (tsCrockford !== rustCrockford) {
+      console.error(`Mismatch ${key} crockford: TS=${tsCrockford} Rust=${rustCrockford ?? "MISSING"}`);
       mismatches++;
     }
   }
   if (pyExists) {
     const pyHex = typeof pyExists[key] === "string" ? pyExists[key] : pyExists[key]?.hex;
     if (tsHex !== pyHex) {
-      console.error(`Mismatch ${key}: TS=${tsHex} Py=${pyHex ?? "MISSING"}`);
+      console.error(`Mismatch ${key} hex: TS=${tsHex} Py=${pyHex ?? "MISSING"}`);
+      mismatches++;
+    }
+    const pyCrockford = pyExists[key]?.crockford;
+    if (tsCrockford !== pyCrockford) {
+      console.error(`Mismatch ${key} crockford: TS=${tsCrockford} Py=${pyCrockford ?? "MISSING"}`);
       mismatches++;
     }
   }
   if (goExists) {
     const goHex = typeof goExists[key] === "string" ? goExists[key] : goExists[key]?.hex;
     if (tsHex !== goHex) {
-      console.error(`Mismatch ${key}: TS=${tsHex} Go=${goHex ?? "MISSING"}`);
+      console.error(`Mismatch ${key} hex: TS=${tsHex} Go=${goHex ?? "MISSING"}`);
       mismatches++;
     }
   }

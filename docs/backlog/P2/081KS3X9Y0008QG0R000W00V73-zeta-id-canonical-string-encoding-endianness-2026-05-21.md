@@ -2,13 +2,14 @@
 id: B-0682
 zetaid: 081KS3X9Y0008QG0R000W00V73
 priority: P1
-status: in-progress
+status: closed
 title: ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec
 tier: research-grade
 effort: S
 ask: maintainer Aaron + Kestrel-claude.ai 2026-05-21
 created: 2026-05-21
-last_updated: 2026-06-06
+last_updated: 2026-06-13
+completed: 2026-06-13
 depends_on: []
 composes_with: [B-0635, B-0679, B-0680, B-0681]
 tags: [zeta-id, cross-language, git-filename]
@@ -111,3 +112,12 @@ Add to `tests/cross-verification/zeta-id/`:
 - B-0681 (v2 spec hardening) — these fields may shift bit positions
 - B-0679 / B-0680 (Rust + Python) — implementations adopt the encoding
 - Git-filename-first deployment per Aaron (B-0517 substrate)
+
+## Resolution
+
+The Crockford Base32 canonical string encoding for the 128-bit `ZetaId` has been fully implemented and verified.
+
+1. **Specification**: Documented in [zeta-id-canonical-string-encoding.md](file:///Users/acehack/Documents/src/repos/Zeta/docs/zeta-id-canonical-string-encoding.md).
+2. **Implementation**: Added formatting, parsing, lenient alias mapping, and 128-bit overflow checks in C#, F#, Rust, and TypeScript.
+3. **Consensus**: Updated [compare.ts](file:///Users/acehack/Documents/src/repos/Zeta/tests/cross-verification/zeta-id/compare.ts) to compare both `hex` and `crockford` string outputs across the 5 language implementations, passing with 100% agreement on all 12 test vectors.
+4. **Pull Request**: Submitted Pull Request [PR #8141](https://github.com/Lucent-Financial-Group/Zeta/pull/8141).
