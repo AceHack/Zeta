@@ -14,22 +14,22 @@
  *
  * PoC scope: declarative scenario definitions + dispatcher contract +
  * status field for partial implementation. Scenarios 1 + 2 can compose
- * with existing `tools/ci/qemu-full-install-test.ts` (B-0831 Slice 1)
+ * with existing `src/Core.TypeScript/ci/qemu-full-install-test.ts` (B-0831 Slice 1)
  * substrate today; scenarios 3-5 require state-preservation between QEMU
  * boots which the existing harness does not have — marked as
  * "scaffolded" pending implementation.
  *
  * Composes with:
- *   - tools/ci/qemu-full-install-test.ts (existing QEMU full-install starter)
- *   - tools/ci/qemu-boot-test.ts (cascade #5 boot smoke-test)
- *   - tools/ci/audit-installer-iso-content.ts (cascade #4 ISO content audit)
+ *   - src/Core.TypeScript/ci/qemu-full-install-test.ts (existing QEMU full-install starter)
+ *   - src/Core.TypeScript/ci/qemu-boot-test.ts (cascade #5 boot smoke-test)
+ *   - src/Core.TypeScript/ci/audit-installer-iso-content.ts (cascade #4 ISO content audit)
  *   - src/Core.TypeScript/zflash/lib.ts (the zflash library under test)
  *   - docs/runbooks/zflash-end-to-end.md (operator-facing runbook)
  *   - docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md (CP-1..CP-6)
  *
  * Per .claude/rules/rule-0-no-sh-files.md (TS-first for cross-platform DST)
  * + .claude/rules/verify-existing-substrate-before-authoring.md (composes
- * with existing tools/ci/ substrate; does not duplicate).
+ * with existing src/Core.TypeScript/ci/ substrate; does not duplicate).
  */
 
 export type ScenarioId =
@@ -64,12 +64,12 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     acceptanceCriteria: [
       "zflash script runs cleanly to completion",
       "produces bootable USB image with operator-chosen credentials baked in",
-      "passes ISO content audit (tools/ci/audit-installer-iso-content.ts)",
+      "passes ISO content audit (src/Core.TypeScript/ci/audit-installer-iso-content.ts)",
       "QEMU boots the produced image to a usable state",
     ],
     composesWith: [
-      "tools/ci/audit-installer-iso-content.ts",
-      "tools/ci/qemu-boot-test.ts",
+      "src/Core.TypeScript/ci/audit-installer-iso-content.ts",
+      "src/Core.TypeScript/ci/qemu-boot-test.ts",
       "src/Core.TypeScript/zflash/cli.ts",
       "src/Core.TypeScript/zflash/lib.ts",
     ],
@@ -89,7 +89,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
       "Kubernetes and ArgoCD health are covered by separate cluster integration tests, not this USB/ISO harness",
     ],
     composesWith: [
-      "tools/ci/qemu-full-install-test.ts",
+      "src/Core.TypeScript/ci/qemu-full-install-test.ts",
       "B-0831 (CI cascade-6 cluster-auto-join)",
       "B-0590 (fleet replication 20 machines)",
     ],
@@ -254,20 +254,20 @@ export function determineRunnability(
       if (scenario.id === "initial-format") {
         return {
           kind: "can-run-now",
-          harnessEntry: "tools/ci/qemu-boot-test.ts + tools/ci/audit-installer-iso-content.ts",
+          harnessEntry: "src/Core.TypeScript/ci/qemu-boot-test.ts + src/Core.TypeScript/ci/audit-installer-iso-content.ts",
         };
       }
       if (scenario.id === "boot-cluster-up") {
         return {
           kind: "can-run-now",
-          harnessEntry: "tools/ci/qemu-full-install-test.ts",
+          harnessEntry: "src/Core.TypeScript/ci/qemu-full-install-test.ts",
         };
       }
       // Future composes-with-existing scenarios fall through to a
       // generic harness-entry; explicit mapping preferred when added.
       return {
         kind: "can-run-now",
-        harnessEntry: "tools/ci/qemu-full-install-test.ts",
+        harnessEntry: "src/Core.TypeScript/ci/qemu-full-install-test.ts",
       };
     }
     case "scaffolded": {

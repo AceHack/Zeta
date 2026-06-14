@@ -56,12 +56,14 @@ describe("B-0891 scenarios.ts invariants", () => {
     }
   });
 
-  it("composes-with-existing scenarios cite tools/ci/ paths", () => {
+  it("composes-with-existing scenarios cite src/Core.TypeScript/ci/ paths", () => {
     const composers = SCENARIOS.filter((s) => s.status === "composes-with-existing");
     expect(composers.length).toBeGreaterThan(0);
     for (const s of composers) {
-      const hasToolsCi = s.composesWith.some((dep) => dep.startsWith("tools/ci/"));
-      expect(hasToolsCi).toBe(true);
+      const hasCiHarness = s.composesWith.some((dep) =>
+        dep.startsWith("src/Core.TypeScript/ci/"),
+      );
+      expect(hasCiHarness).toBe(true);
     }
   });
 

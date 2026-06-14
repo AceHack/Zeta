@@ -111,6 +111,10 @@ export interface PathForkRuntimeOptions {
 }
 
 const REPO_ROOT = resolve(import.meta.dir, "../../../..");
+const CI_DIR = "src/Core.TypeScript/ci";
+const AUDIT_INSTALLER_ISO = `${CI_DIR}/audit-installer-iso-content.ts`;
+const QEMU_BOOT_TEST = `${CI_DIR}/qemu-boot-test.ts`;
+const QEMU_FULL_INSTALL_TEST = `${CI_DIR}/qemu-full-install-test.ts`;
 const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
 const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
 const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
@@ -254,7 +258,7 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
   const absIso = resolve(isoPath);
   const steps: string[] = [];
 
-  const audit = runHarnessScript("tools/ci/audit-installer-iso-content.ts", ["--iso", absIso]);
+  const audit = runHarnessScript(AUDIT_INSTALLER_ISO, ["--iso", absIso]);
   steps.push("audit-installer-iso-content");
   if (!audit.ok) {
     return {
@@ -286,7 +290,7 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
     };
   }
 
-  const boot = runHarnessScript("tools/ci/qemu-boot-test.ts", ["--usb-image", prepared.outputImagePath]);
+  const boot = runHarnessScript(QEMU_BOOT_TEST, ["--usb-image", prepared.outputImagePath]);
   steps.push("qemu-boot-test");
   const durationMs = Date.now() - start;
   if (!boot.ok) {
@@ -310,7 +314,7 @@ function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResu
   if (scenario.id === "initial-format") {
     return runInitialFormatScenario(isoPath);
   }
-  const harnessPath = "tools/ci/qemu-full-install-test.ts";
+  const harnessPath = QEMU_FULL_INSTALL_TEST;
   const absHarnessPath = resolve(REPO_ROOT, harnessPath);
   if (!existsSync(absHarnessPath)) {
     return {
