@@ -20,6 +20,7 @@ zeta-core-merkle = { path = "../Core.Rust.Merkle", default-features = false }
 
 [dev-dependencies]
 serde_json = "1"
+zeta-core-yaml = { path = "../Core.Rust.Yaml" }
 
 [lints.rust]
 unsafe_code = "forbid"
