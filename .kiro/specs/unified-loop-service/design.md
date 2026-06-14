@@ -1,6 +1,7 @@
 # Design: Unified Loop Service
 
 All under src/Core.TypeScript/service/:
+
 - persona-registry.ts
 - env-schema.ts
 - service-manager.ts (IServiceManager)
