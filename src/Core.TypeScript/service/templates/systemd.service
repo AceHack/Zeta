@@ -12,6 +12,7 @@ Environment=ZETA_LOOP_WORKTREE={{WORKTREE}}
 Environment=ZETA_LOOP_STATE_DIR={{STATE_DIR}}
 Environment=ZETA_LOOP_LOG_DIR={{LOG_DIR}}
 Environment=ZETA_LOOP_REF={{REF}}
+Environment=ZETA_LOOP_OBSERVE_INLINE=1
 Environment=PATH=/usr/local/bin:/usr/bin:/bin:%h/.bun/bin
 
 [Install]
