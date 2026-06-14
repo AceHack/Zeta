@@ -929,7 +929,12 @@ echo "[iter-5.4.0] Default is YES (recommended); press Enter to proceed"
 echo "[iter-5.4.0] OR type 'n' to skip (fallback to iter-4.2 static keys"
 echo "[iter-5.4.0] if injected, OR manual config-edit per the iter-4 v1 flow)."
 echo
-read -r -p "[iter-5.4.0] Run gh auth login now? [Y/n]: " GH_AUTH_REPLY
+if [ -t 0 ]; then
+  read -r -p "[iter-5.4.0] Run gh auth login now? [Y/n]: " GH_AUTH_REPLY
+else
+  echo "[iter-5.4.0] non-TTY stdin (QEMU serial CI); skipping gh auth"
+  GH_AUTH_REPLY=n
+fi
 GH_AUTH_REPLY="${GH_AUTH_REPLY:-Y}"
 if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
   if ! command -v gh >/dev/null 2>&1; then
@@ -1579,7 +1584,12 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0]   - Opens a code prompt; visit URL on this Mac browser; approve."
     echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/claude/ and survive reboot."
     echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
-    read -r -p "[iter-5.5.0] Run claude login now? [Y/n]: " CLAUDE_AUTH_REPLY
+    if [ -t 0 ]; then
+      read -r -p "[iter-5.5.0] Run claude login now? [Y/n]: " CLAUDE_AUTH_REPLY
+    else
+      echo "[iter-5.5.0] non-TTY stdin (QEMU serial CI); skipping claude login"
+      CLAUDE_AUTH_REPLY=n
+    fi
     case "${CLAUDE_AUTH_REPLY:-y}" in
       [Yy]*|"")
         echo "[iter-5.5.0]   running 'claude login' (interactive)..."
@@ -1619,7 +1629,12 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0]   - ChatGPT Plus/Pro/Business/Edu/Enterprise plans include Codex access."
     echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.codex/auth.json (NOT ~/.config/codex)."
     echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
-    read -r -p "[iter-5.5.0] Run codex login --device-auth now? [Y/n]: " CODEX_AUTH_REPLY
+    if [ -t 0 ]; then
+      read -r -p "[iter-5.5.0] Run codex login --device-auth now? [Y/n]: " CODEX_AUTH_REPLY
+    else
+      echo "[iter-5.5.0] non-TTY stdin (QEMU serial CI); skipping codex login"
+      CODEX_AUTH_REPLY=n
+    fi
     case "${CODEX_AUTH_REPLY:-y}" in
       [Yy]*|"")
         echo "[iter-5.5.0]   running 'codex login --device-auth' (interactive)..."
