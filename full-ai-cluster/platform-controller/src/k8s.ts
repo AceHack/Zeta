@@ -118,6 +118,8 @@ export const KIND_PLURAL: Record<string, string> = {
   StatefulSet: "statefulsets",
   Service: "services",
   PersistentVolumeClaim: "persistentvolumeclaims",
+  Secret: "secrets",
+  ConfigMap: "configmaps",
   Certificate: "certificates",
   HTTPRoute: "httproutes",
   Blueprint: "blueprints",

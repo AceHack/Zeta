@@ -41,6 +41,16 @@ spec:
                   type: object
                   additionalProperties: { type: string }
                   description: "templated with ${VAR}"
+                envFrom:
+                  type: array
+                  description: "env vars sourced from Secret keys (credentials); appended after the plaintext env"
+                  items:
+                    type: object
+                    required: [name, secret, key]
+                    properties:
+                      name: { type: string, description: "the env var name set on the container" }
+                      secret: { type: string, description: "the Secret object's name" }
+                      key: { type: string, description: "the key within the Secret" }
                 ports:
                   type: array
                   items:
@@ -57,11 +67,24 @@ spec:
                   properties:
                     size: { type: string }
                     mountPath: { type: string }
+                storageClassName: { type: string, description: "StorageClass for the persistent volume; defaults to longhorn" }
                 resources:
                   type: object
                   properties:
                     cpu: { type: string }
                     memory: { type: string }
+                probe:
+                  type: object
+                  description: "health checks on the main container (readiness gates traffic; liveness restarts the pod)"
+                  properties:
+                    readiness:
+                      type: object
+                      description: "{ httpGet|tcpSocket|exec, initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold }"
+                      x-kubernetes-preserve-unknown-fields: true
+                    liveness:
+                      type: object
+                      description: "{ httpGet|tcpSocket|exec, initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold }"
+                      x-kubernetes-preserve-unknown-fields: true
                 variables:
                   type: array
                   items:

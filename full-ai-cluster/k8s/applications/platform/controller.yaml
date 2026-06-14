@@ -36,6 +36,9 @@ rules:
   - apiGroups: [""]
     resources: ["services", "persistentvolumeclaims"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]   # read Secret/ConfigMap referenced by a Deployable's envFrom — read-only, never create
+    resources: ["secrets", "configmaps"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: [""]   # tenant provisioning: namespace + quota + limits
     resources: ["namespaces", "resourcequotas", "limitranges"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]

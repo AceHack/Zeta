@@ -37,6 +37,16 @@ spec:
                   type: object
                   additionalProperties: { type: string }
                   description: "variable values; override the blueprint defaults"
+                envFrom:
+                  type: array
+                  description: "additional Secret-sourced env vars (appended after the blueprint's env/envFrom)"
+                  items:
+                    type: object
+                    required: [name, secret, key]
+                    properties:
+                      name: { type: string, description: "the env var name set on the container" }
+                      secret: { type: string, description: "the Secret object's name" }
+                      key: { type: string, description: "the key within the Secret" }
                 replicas: { type: integer, minimum: 0 }
                 size:
                   type: object

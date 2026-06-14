@@ -212,6 +212,139 @@ describe("database blueprint (stateful, TCP, storage, cluster expose)", () => {
   });
 });
 
+// ── 5. production-grade fields: env-from-Secret, probes, storageClassName ──
+// Phase 2: credentialed, production deployables — additive + backward-compatible.
+describe("production fields: envFrom (Secret), probes, storageClassName", () => {
+  // (a) envFrom on the blueprint renders a secretKeyRef env entry.
+  describe("envFrom sources env from a Secret (not plaintext)", () => {
+    const api: Blueprint = {
+      name: "api",
+      stateful: false,
+      image: "ghcr.io/example/api:1",
+      env: { LOG_LEVEL: "info" },
+      envFrom: [{ name: "DATABASE_URL", secret: "api-db", key: "url" }],
+    };
+    const objs = renderDeployable(api, instance("orders-api", { blueprint: "api" }));
+    const main = () => (one(objs, "Deployment").spec as any).template.spec.containers[0];
+
+    test("a container env entry uses valueFrom.secretKeyRef with the right name + key", () => {
+      expect(main().env).toContainEqual({
+        name: "DATABASE_URL",
+        valueFrom: { secretKeyRef: { name: "api-db", key: "url" } },
+      });
+    });
+    test("plaintext env still renders, and comes before the Secret-sourced env", () => {
+      const env = main().env;
+      expect(env[0]).toEqual({ name: "LOG_LEVEL", value: "info" });
+      expect(env[1]).toEqual({ name: "DATABASE_URL", valueFrom: { secretKeyRef: { name: "api-db", key: "url" } } });
+    });
+    test("the instance may append additional Secret-sourced env (flows like values)", () => {
+      const objs2 = renderDeployable(api, instance("orders-api", {
+        blueprint: "api",
+        envFrom: [{ name: "API_TOKEN", secret: "api-token", key: "token" }],
+      }));
+      const env = (one(objs2, "Deployment").spec as any).template.spec.containers[0].env;
+      expect(env).toContainEqual({ name: "DATABASE_URL", valueFrom: { secretKeyRef: { name: "api-db", key: "url" } } });
+      expect(env).toContainEqual({ name: "API_TOKEN", valueFrom: { secretKeyRef: { name: "api-token", key: "token" } } });
+    });
+  });
+
+  // (b) probe.readiness.httpGet renders a readinessProbe.
+  describe("probe renders readinessProbe / livenessProbe on the main container", () => {
+    const web: Blueprint = {
+      name: "web",
+      stateful: false,
+      image: "nginx:1.27",
+      ports: [{ name: "http", port: 8080 }],
+      probe: {
+        readiness: { httpGet: { path: "/healthz", port: 8080 }, initialDelaySeconds: 5, periodSeconds: 10 },
+        liveness: { tcpSocket: { port: 8080 }, failureThreshold: 3 },
+      },
+    };
+    const main = () => {
+      const objs = renderDeployable(web, instance("frontend", { blueprint: "web" }));
+      return (one(objs, "Deployment").spec as any).template.spec.containers[0];
+    };
+
+    test("readiness httpGet + timing fields land on readinessProbe", () => {
+      const rp = main().readinessProbe;
+      expect(rp.httpGet).toEqual({ path: "/healthz", port: 8080 });
+      expect(rp.initialDelaySeconds).toBe(5);
+      expect(rp.periodSeconds).toBe(10);
+      expect(rp.timeoutSeconds).toBeUndefined(); // omitted fields stay omitted
+    });
+    test("liveness tcpSocket lands on livenessProbe", () => {
+      const lp = main().livenessProbe;
+      expect(lp.tcpSocket).toEqual({ port: 8080 });
+      expect(lp.failureThreshold).toBe(3);
+    });
+    test("exec-handler probes render their command", () => {
+      const dbBp: Blueprint = {
+        name: "db",
+        stateful: false,
+        image: "postgres:16",
+        probe: { readiness: { exec: { command: ["pg_isready", "-U", "app"] } } },
+      };
+      const m = (one(renderDeployable(dbBp, instance("db1", { blueprint: "db" })), "Deployment").spec as any)
+        .template.spec.containers[0];
+      expect(m.readinessProbe.exec).toEqual({ command: ["pg_isready", "-U", "app"] });
+    });
+  });
+
+  // (c) storageClassName overrides the longhorn default on the PVC / volumeClaimTemplate.
+  describe("storageClassName overrides the longhorn default", () => {
+    test("StatefulSet volumeClaimTemplate uses the named class", () => {
+      const db: Blueprint = {
+        name: "pg",
+        stateful: true,
+        image: "postgres:16",
+        storage: { size: "50Gi", mountPath: "/var/lib/postgresql/data" },
+        storageClassName: "zeta-local-path",
+      };
+      const ss = one(renderDeployable(db, instance("fast-db", { blueprint: "pg" })), "StatefulSet");
+      expect((ss.spec as any).volumeClaimTemplates[0].spec.storageClassName).toBe("zeta-local-path");
+    });
+    test("stateless PVC also honors the named class", () => {
+      const cache: Blueprint = {
+        name: "cache",
+        stateful: false,
+        image: "redis:7",
+        storage: { size: "5Gi", mountPath: "/data" },
+        storageClassName: "zeta-local-path",
+      };
+      const pvc = one(renderDeployable(cache, instance("kv", { blueprint: "cache" })), "PersistentVolumeClaim");
+      expect((pvc.spec as any).storageClassName).toBe("zeta-local-path");
+    });
+  });
+
+  // (d) a blueprint WITHOUT any of the new fields renders exactly as before.
+  describe("backward-compatibility: no new fields -> identical render", () => {
+    const legacy: Blueprint = {
+      name: "legacy-db",
+      stateful: true,
+      image: "postgres:16",
+      env: { POSTGRES_DB: "app" },
+      storage: { size: "10Gi", mountPath: "/var/lib/postgresql/data" },
+      defaultExpose: "cluster",
+    };
+    const objs = renderDeployable(legacy, instance("plain-db", { blueprint: "legacy-db" }));
+    const main = () => (one(objs, "StatefulSet").spec as any).template.spec.containers[0];
+
+    test("longhorn stays the default storageClassName", () => {
+      const vct = (one(objs, "StatefulSet").spec as any).volumeClaimTemplates;
+      expect(vct[0].spec.storageClassName).toBe("longhorn");
+    });
+    test("no probes are rendered", () => {
+      expect(main().readinessProbe).toBeUndefined();
+      expect(main().livenessProbe).toBeUndefined();
+    });
+    test("env has no secretKeyRef entries (plaintext only)", () => {
+      for (const e of main().env) expect(e.valueFrom).toBeUndefined();
+      expect(main().env).toEqual([{ name: "POSTGRES_DB", value: "app" }]);
+    });
+  });
+});
+
 // ── ownership + labels (shared across all archetypes) ─────────────────
 describe("ownership + AI labels are stamped on every child", () => {
   const bp: Blueprint = { name: "x", image: "img", ports: [{ name: "p", port: 80 }], defaultExpose: "cluster" };

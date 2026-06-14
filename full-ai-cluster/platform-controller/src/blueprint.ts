@@ -29,6 +29,24 @@ export interface BlueprintVariable {
   description?: string;
 }
 
+/** A single env var sourced from a Kubernetes Secret (credentialed, not plaintext). */
+export interface BlueprintEnvFrom {
+  name: string; // the env var name set on the container
+  secret: string; // the Secret object's name
+  key: string; // the key within the Secret
+}
+
+/** A health/readiness probe. One handler (httpGet | tcpSocket | exec) + optional timing. */
+export interface Probe {
+  httpGet?: { path: string; port: number };
+  tcpSocket?: { port: number };
+  exec?: { command: string[] };
+  initialDelaySeconds?: number;
+  periodSeconds?: number;
+  timeoutSeconds?: number;
+  failureThreshold?: number;
+}
+
 export interface BlueprintSidecar {
   name: string;
   image: string;
@@ -47,9 +65,12 @@ export interface Blueprint {
   command?: string[];
   args?: string[]; // templated with ${VAR}
   env?: Record<string, string>; // templated with ${VAR}
+  envFrom?: BlueprintEnvFrom[]; // env vars sourced from Secret keys (credentials)
   ports?: BlueprintPort[];
   storage?: { size: string; mountPath: string }; // optional persistent volume (Longhorn)
+  storageClassName?: string; // StorageClass for the volume; default "longhorn"
   resources?: { cpu?: string; memory?: string };
+  probe?: { readiness?: Probe; liveness?: Probe }; // health checks on the main container
   variables?: BlueprintVariable[];
   sidecars?: BlueprintSidecar[];
   defaultExpose?: Expose; // how ports are exposed unless the instance overrides
@@ -58,6 +79,7 @@ export interface Blueprint {
 export interface DeployableSpec {
   blueprint: string; // name of the Blueprint to render
   values?: Record<string, string>; // variable values (override the blueprint defaults)
+  envFrom?: BlueprintEnvFrom[]; // additional Secret-sourced env vars (appended to the blueprint's)
   replicas?: number;
   size?: { cpu?: string; memory?: string; storage?: string }; // override blueprint resources/storage
   expose?: Expose; // override the blueprint's defaultExpose
@@ -86,6 +108,24 @@ export function resolveValues(bp: Blueprint, cr: Deployable): Record<string, str
   return out;
 }
 
+/** A Secret-sourced env entry -> a Kubernetes container env entry with secretKeyRef. */
+function secretEnv(e: BlueprintEnvFrom): Record<string, unknown> {
+  return { name: e.name, valueFrom: { secretKeyRef: { name: e.secret, key: e.key } } };
+}
+
+/** Shape a Probe into a Kubernetes probe object, dropping the absent timing fields. */
+function renderProbe(p: Probe): Record<string, unknown> {
+  return {
+    ...(p.httpGet ? { httpGet: { path: p.httpGet.path, port: p.httpGet.port } } : {}),
+    ...(p.tcpSocket ? { tcpSocket: { port: p.tcpSocket.port } } : {}),
+    ...(p.exec ? { exec: { command: p.exec.command } } : {}),
+    ...(p.initialDelaySeconds !== undefined ? { initialDelaySeconds: p.initialDelaySeconds } : {}),
+    ...(p.periodSeconds !== undefined ? { periodSeconds: p.periodSeconds } : {}),
+    ...(p.timeoutSeconds !== undefined ? { timeoutSeconds: p.timeoutSeconds } : {}),
+    ...(p.failureThreshold !== undefined ? { failureThreshold: p.failureThreshold } : {}),
+  };
+}
+
 /** Render a Deployable (given its Blueprint) into Kubernetes objects. */
 export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   const name = cr.metadata.name;
@@ -98,10 +138,16 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   const expose: Expose = cr.spec.expose ?? bp.defaultExpose ?? "none";
   const stateful = isTrue(bp.stateful) || (!!bp.storage && stableNeeded(bp));
   const storageSize = cr.spec.size?.storage ?? bp.storage?.size;
+  const storageClassName = bp.storageClassName ?? "longhorn";
   const out: K8sObject[] = [];
 
   // ── primary container ──────────────────────────────────────────────
-  const env = Object.entries(bp.env ?? {}).map(([k, v]) => ({ name: k, value: sub(v) }));
+  // plaintext env first, then Secret-sourced env (blueprint, then instance) — credentials never inline.
+  const env = [
+    ...Object.entries(bp.env ?? {}).map(([k, v]) => ({ name: k, value: sub(v) })),
+    ...(bp.envFrom ?? []).map(secretEnv),
+    ...(cr.spec.envFrom ?? []).map(secretEnv),
+  ];
   const ports = (bp.ports ?? []).map((p) => ({ name: p.name, containerPort: p.port, protocol: p.protocol ?? "TCP" }));
   const volumeMounts = bp.storage ? [{ name: "data", mountPath: bp.storage.mountPath }] : [];
   const mainContainer: Record<string, unknown> = {
@@ -112,6 +158,8 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
     ...(env.length ? { env } : {}),
     ...(ports.length ? { ports } : {}),
     ...(volumeMounts.length ? { volumeMounts } : {}),
+    ...(bp.probe?.readiness ? { readinessProbe: renderProbe(bp.probe.readiness) } : {}),
+    ...(bp.probe?.liveness ? { livenessProbe: renderProbe(bp.probe.liveness) } : {}),
     resources: {
       requests: { cpu: "100m", memory: "128Mi" },
       limits: { cpu: cr.spec.size?.cpu ?? bp.resources?.cpu ?? "1", memory: cr.spec.size?.memory ?? bp.resources?.memory ?? "512Mi" },
@@ -158,7 +206,7 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
               volumeClaimTemplates: [
                 {
                   metadata: { name: "data" },
-                  spec: { accessModes: ["ReadWriteOnce"], storageClassName: "longhorn", resources: { requests: { storage: storageSize } } },
+                  spec: { accessModes: ["ReadWriteOnce"], storageClassName, resources: { requests: { storage: storageSize } } },
                 },
               ],
             }
@@ -171,7 +219,7 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
         apiVersion: "v1",
         kind: "PersistentVolumeClaim",
         metadata: { name: `${name}-data`, namespace: ns, labels: lbls, ownerReferences: [owner] },
-        spec: { accessModes: ["ReadWriteOnce"], storageClassName: "longhorn", resources: { requests: { storage: storageSize } } },
+        spec: { accessModes: ["ReadWriteOnce"], storageClassName, resources: { requests: { storage: storageSize } } },
       });
       podSpec.volumes = [{ name: "data", persistentVolumeClaim: { claimName: `${name}-data` } }];
     }
