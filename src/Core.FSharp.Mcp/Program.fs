@@ -1,6 +1,8 @@
 module Zeta.Mcp.Program
 
 open System
+open System.Diagnostics
+open System.IO
 open System.Text.Json.Nodes
 open LibGit2Sharp
 open Zeta.Core.FSharp.Git
@@ -40,6 +42,7 @@ let private toolList () : JsonArray =
     arr.Add(tool "zeta_commit" "Stage all + commit (replaces git commit)" [ "message", "string" ] [ "message" ])
     arr.Add(tool "zeta_push" "Push a branch to a remote (replaces git push); creds via GH_TOKEN/GITHUB_TOKEN" [ "remote", "string"; "branch", "string" ] [])
     arr.Add(tool "zeta_fetch" "Fetch from a remote (replaces git fetch); creds via GH_TOKEN/GITHUB_TOKEN" [ "remote", "string" ] [])
+    arr.Add(tool "zeta_flash" "Run zeta flash USB/ISO router (usb|inject|inspect|…). `args` is a JSON string array, e.g. [\"usb\",\"--help\"]." [ "args", "string" ] [ "args" ])
     arr.Add(tool "zeta_db_append" "Append a delta and captured map to the delta log" [ "zset", "string"; "captured", "string" ] [ "zset" ])
     arr.Add(tool "zeta_db_history" "Replay delta log entries starting after from_seq" [ "from_seq", "integer" ] [])
     arr.Add(tool "zeta_db_get" "Retrieve a single delta log entry by sequence number" [ "seq", "integer" ] [ "seq" ])
@@ -50,98 +53,142 @@ let private argStr (args: JsonObject) (k: string) : string =
     let v = args[k]
     if isNull v then "" else v.GetValue<string>()
 
-let private runTool (name: string) (args: JsonObject) : string =
-    let cmd =
-        match name with
-        | "zeta_status" -> Some (Choice1Of2 GitCommand.Status)
-        | "zeta_log" ->
-            let cv = args["count"]
-            let n = if isNull cv then 20 else cv.GetValue<int>()
-            Some(Choice1Of2(GitCommand.Log n))
-        | "zeta_branch" -> Some(Choice1Of2(GitCommand.Branch(argStr args "name")))
-        | "zeta_checkout" -> Some(Choice1Of2(GitCommand.Checkout(argStr args "ref")))
-        | "zeta_commit" -> Some(Choice1Of2(GitCommand.Commit(argStr args "message")))
-        | "zeta_push" ->
-            let remote = match argStr args "remote" with "" -> "origin" | r -> r
-            let branch = match argStr args "branch" with "" -> None | b -> Some b
-            Some(Choice1Of2(GitCommand.Push(remote, branch)))
-        | "zeta_fetch" ->
-            let remote = match argStr args "remote" with "" -> "origin" | r -> r
-            Some(Choice1Of2(GitCommand.Fetch remote))
-        | "zeta_db_status" -> Some (Choice2Of2 DbCommand.Status)
-        | "zeta_db_history" ->
-            let fv = args["from_seq"]
-            let fromSeq = if isNull fv then -1L else int64 (fv.GetValue<int>())
-            Some (Choice2Of2 (DbCommand.History fromSeq))
-        | "zeta_db_get" ->
-            let seq = int64 (args["seq"].GetValue<int>())
-            Some (Choice2Of2 (DbCommand.Get seq))
-        | "zeta_db_append" ->
-            let zsetJson = argStr args "zset"
-            let capturedJson = argStr args "captured"
-            match DynamicValue.fromCanonicalJson zsetJson with
-            | Ok dv ->
-                try
-                    let zset = ZSetDynamic.ofDynamicValue DvKey.ofValue dv
-                    let captured =
-                        if String.IsNullOrEmpty capturedJson then
-                            Map.empty
-                        else
-                            match DynamicValue.fromCanonicalJson capturedJson with
-                            | Ok (DynamicValue.Object kvs) ->
-                                kvs |> List.choose (fun (k, v) ->
-                                    match v with
-                                    | DynamicValue.String s -> Some (k, s)
-                                    | _ -> None)
-                                |> Map.ofList
-                            | _ -> Map.empty
-                    Some (Choice2Of2 (DbCommand.Append(zset, captured)))
-                with ex ->
-                    None
-            | Error _ -> None
-        | _ -> None
-    match cmd with
-    | None -> sprintf "unknown tool or invalid arguments: %s" name
-    | Some c ->
-        match Repository.Discover(Environment.CurrentDirectory) with
-        | null -> "not inside a git repository"
-        | path ->
-            let credSource = Some(EnvTokenCredentialSource() :> CredentialSource)
-            use repo = new Repository(path)
+let private parseStringArrayJson (json: string) : string list option =
+    if String.IsNullOrWhiteSpace json then Some []
+    else
+        try
+            match JsonNode.Parse(json) with
+            | :? JsonArray as arr ->
+                arr |> Seq.map (fun n -> n.GetValue<string>()) |> Seq.toList |> Some
+            | _ -> None
+        with _ -> None
+
+let private runFlash (flashArgs: string list) : string =
+    match Repository.Discover(Environment.CurrentDirectory) with
+    | null -> "not inside a git repository"
+    | repoPath ->
+        let root = Path.GetDirectoryName(repoPath)
+        let router = Path.Combine(root, "src", "Core.TypeScript", "zflash", "zeta-flash.ts")
+        if not (File.Exists router) then sprintf "zflash router not found: %s" router
+        else
             try
-                match c with
-                | Choice1Of2 gitCmd ->
-                    match GitCommand.run repo now credSource gitCmd with
-                    | Branched n -> sprintf "branched %s" n
-                    | CheckedOut n -> sprintf "checked out %s" n
-                    | Committed sha -> sprintf "committed %s" sha
-                    | Logged es -> es |> Array.map (fun (s, m) -> sprintf "%s %s" (s.Substring(0, min 9 s.Length)) m) |> String.concat "\n"
-                    | Statused(clean, pending) ->
-                        if clean then "clean"
-                        else sprintf "dirty (%d pending):\n%s" pending.Length (String.concat "\n" pending)
-                    | Pushed(remote, refspec) -> sprintf "pushed %s -> %s" refspec remote
-                    | Fetched remote -> sprintf "fetched %s" remote
-                | Choice2Of2 dbCmd ->
-                    let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
-                    let log = GitDeltaLog<DvKey>(repo, codec)
-                    let res = DbCommand.run log Threading.CancellationToken.None dbCmd |> Async.AwaitTask |> Async.RunSynchronously
-                    match res with
-                    | DbCommandResult.Appended seq -> sprintf "appended seq: %d" seq
-                    | DbCommandResult.History entries ->
-                        entries |> Array.map (fun entry ->
+                use proc = new Process()
+                proc.StartInfo.FileName <- "bun"
+                proc.StartInfo.WorkingDirectory <- root
+                proc.StartInfo.UseShellExecute <- false
+                proc.StartInfo.RedirectStandardOutput <- true
+                proc.StartInfo.RedirectStandardError <- true
+                proc.StartInfo.ArgumentList.Add(router)
+                for a in flashArgs do proc.StartInfo.ArgumentList.Add(a)
+                proc.Start() |> ignore
+                let stdout = proc.StandardOutput.ReadToEnd()
+                let stderr = proc.StandardError.ReadToEnd()
+                proc.WaitForExit()
+                let combined =
+                    if String.IsNullOrWhiteSpace stderr then stdout
+                    elif String.IsNullOrWhiteSpace stdout then stderr
+                    else stdout + Environment.NewLine + stderr
+                if proc.ExitCode = 0 then combined
+                else sprintf "exit %d%s%s" proc.ExitCode Environment.NewLine combined
+            with ex -> sprintf "error: %s" ex.Message
+
+let private runTool (name: string) (args: JsonObject) : string =
+    if name = "zeta_flash" then
+        match parseStringArrayJson (argStr args "args") with
+        | None -> "invalid args: expected JSON string array, e.g. [\"usb\",\"--help\"]"
+        | Some flashArgs -> runFlash flashArgs
+    else
+        let cmd =
+            match name with
+            | "zeta_status" -> Some (Choice1Of2 GitCommand.Status)
+            | "zeta_log" ->
+                let cv = args["count"]
+                let n = if isNull cv then 20 else cv.GetValue<int>()
+                Some(Choice1Of2(GitCommand.Log n))
+            | "zeta_branch" -> Some(Choice1Of2(GitCommand.Branch(argStr args "name")))
+            | "zeta_checkout" -> Some(Choice1Of2(GitCommand.Checkout(argStr args "ref")))
+            | "zeta_commit" -> Some(Choice1Of2(GitCommand.Commit(argStr args "message")))
+            | "zeta_push" ->
+                let remote = match argStr args "remote" with "" -> "origin" | r -> r
+                let branch = match argStr args "branch" with "" -> None | b -> Some b
+                Some(Choice1Of2(GitCommand.Push(remote, branch)))
+            | "zeta_fetch" ->
+                let remote = match argStr args "remote" with "" -> "origin" | r -> r
+                Some(Choice1Of2(GitCommand.Fetch remote))
+            | "zeta_db_status" -> Some (Choice2Of2 DbCommand.Status)
+            | "zeta_db_history" ->
+                let fv = args["from_seq"]
+                let fromSeq = if isNull fv then -1L else int64 (fv.GetValue<int>())
+                Some (Choice2Of2 (DbCommand.History fromSeq))
+            | "zeta_db_get" ->
+                let seq = int64 (args["seq"].GetValue<int>())
+                Some (Choice2Of2 (DbCommand.Get seq))
+            | "zeta_db_append" ->
+                let zsetJson = argStr args "zset"
+                let capturedJson = argStr args "captured"
+                match DynamicValue.fromCanonicalJson zsetJson with
+                | Ok dv ->
+                    try
+                        let zset = ZSetDynamic.ofDynamicValue DvKey.ofValue dv
+                        let captured =
+                            if String.IsNullOrEmpty capturedJson then
+                                Map.empty
+                            else
+                                match DynamicValue.fromCanonicalJson capturedJson with
+                                | Ok (DynamicValue.Object kvs) ->
+                                    kvs |> List.choose (fun (k, v) ->
+                                        match v with
+                                        | DynamicValue.String s -> Some (k, s)
+                                        | _ -> None)
+                                    |> Map.ofList
+                                | _ -> Map.empty
+                        Some (Choice2Of2 (DbCommand.Append(zset, captured)))
+                    with ex ->
+                        None
+                | Error _ -> None
+            | _ -> None
+        match cmd with
+        | None -> sprintf "unknown tool or invalid arguments: %s" name
+        | Some c ->
+            match Repository.Discover(Environment.CurrentDirectory) with
+            | null -> "not inside a git repository"
+            | path ->
+                let credSource = Some(EnvTokenCredentialSource() :> CredentialSource)
+                use repo = new Repository(path)
+                try
+                    match c with
+                    | Choice1Of2 gitCmd ->
+                        match GitCommand.run repo now credSource gitCmd with
+                        | Branched n -> sprintf "branched %s" n
+                        | CheckedOut n -> sprintf "checked out %s" n
+                        | Committed sha -> sprintf "committed %s" sha
+                        | Logged es -> es |> Array.map (fun (s, m) -> sprintf "%s %s" (s.Substring(0, min 9 s.Length)) m) |> String.concat "\n"
+                        | Statused(clean, pending) ->
+                            if clean then "clean"
+                            else sprintf "dirty (%d pending):\n%s" pending.Length (String.concat "\n" pending)
+                        | Pushed(remote, refspec) -> sprintf "pushed %s -> %s" refspec remote
+                        | Fetched remote -> sprintf "fetched %s" remote
+                    | Choice2Of2 dbCmd ->
+                        let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+                        let log = GitDeltaLog<DvKey>(repo, codec)
+                        let res = DbCommand.run log Threading.CancellationToken.None dbCmd |> Async.AwaitTask |> Async.RunSynchronously
+                        match res with
+                        | DbCommandResult.Appended seq -> sprintf "appended seq: %d" seq
+                        | DbCommandResult.History entries ->
+                            entries |> Array.map (fun entry ->
+                                let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
+                                match DynamicValue.toCanonicalJson dv with
+                                | Ok json -> json
+                                | Error e -> sprintf "error formatting: %A" e
+                            ) |> String.concat "\n"
+                        | DbCommandResult.Got (Some entry) ->
                             let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
                             match DynamicValue.toCanonicalJson dv with
                             | Ok json -> json
                             | Error e -> sprintf "error formatting: %A" e
-                        ) |> String.concat "\n"
-                    | DbCommandResult.Got (Some entry) ->
-                        let dv = DeltaLogEntryDynamic.toDynamicValue DvKey.value entry
-                        match DynamicValue.toCanonicalJson dv with
-                        | Ok json -> json
-                        | Error e -> sprintf "error formatting: %A" e
-                    | DbCommandResult.Got None -> "not found"
-                    | DbCommandResult.Status highWater -> sprintf "highwater: %d" highWater
-            with ex -> sprintf "error: %s" ex.Message
+                        | DbCommandResult.Got None -> "not found"
+                        | DbCommandResult.Status highWater -> sprintf "highwater: %d" highWater
+                with ex -> sprintf "error: %s" ex.Message
 
 [<EntryPoint>]
 let main _ =

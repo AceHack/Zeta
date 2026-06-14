@@ -19,12 +19,13 @@ Capability skill. No persona. Wear this hat when:
 
 ## What zflash IS
 
-`bun full-ai-cluster/tools/zflash.ts` is the ultra-short wrapper around `flash-usb.ts` for the AI-cluster installer.
+`zeta flash usb` (F# shell) or `bun src/Core.TypeScript/zflash/zeta-flash.ts usb` routes to the platform zflash CLI (`cli.ts` on macOS, `flash-usb-windows.ts` on Windows).
 
 **Canonical end-to-end (after first-time setup)**:
 
 ```bash
-$ bun full-ai-cluster/tools/zflash.ts
+$ zeta flash usb
+# or: bun src/Core.TypeScript/zflash/zeta-flash.ts usb
 ISO: ~/Downloads/zeta-installer-25.11.iso (1.70 GiB)
 USB: /dev/disk6 (115 GiB, USB 3.2.1 FD)
 *** ALL DATA ON /dev/disk6 WILL BE DESTROYED ***
@@ -36,16 +37,16 @@ type: yes a3f9
 ## First-time setup
 
 ```bash
-# Once per machine:
-bun full-ai-cluster/tools/zflash-setup.ts
-# Installs sudo PAM Touch ID hook so zflash can dd without typed password
+# Once per machine (macOS Touch ID + PAM for passwordless dd):
+bun src/Core.TypeScript/zflash/cli.ts --setup
+# MCP: zeta_flash tool with args ["usb","--help"]
 ```
 
 ## End-to-end runbook (flash → boot → install → SSH)
 
 1. **Pre-flight**: ensure ISO downloaded (auto-discovers newest `~/Downloads/zeta-installer-*.iso`)
 2. **Insert USB**: any 8GB+ USB stick; auto-detects newest plugged-in device
-3. **Run zflash**: `bun full-ai-cluster/tools/zflash.ts`
+3. **Run zflash**: `zeta flash usb` (or `bun src/Core.TypeScript/zflash/cli.ts`)
 4. **Confirm challenge**: type `yes <4-char-code>` (short challenge format per B-0737)
 5. **Touch ID**: PAM gates the dd command via Touch ID
 6. **dd runs**: ISO written to USB
@@ -79,10 +80,10 @@ When wearing this hat, may compose with:
 
 ## Substrate-anchors
 
-- `full-ai-cluster/tools/zflash.ts` — canonical implementation
-- `full-ai-cluster/tools/zflash-lib.ts` — substrate-engineering substrate-engineering substrate library
-- `full-ai-cluster/tools/zflash-setup.ts` — first-time PAM substrate setup
-- `tools/zflash/test-harness/` — QEMU 5-scenario test harness (B-0891)
+- `src/Core.TypeScript/zflash/zeta-flash.ts` — unified router (`zeta flash`, MCP `zeta_flash`)
+- `src/Core.TypeScript/zflash/cli.ts` — macOS zflash CLI
+- `src/Core.TypeScript/zflash/flash-usb-windows.ts` — Windows USB flash
+- `src/Core.TypeScript/zflash/test-harness/` — QEMU 5-scenario test harness (B-0891)
 - `docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md` — substrate-engineering substrate-engineering substrate next-steps plan
 
 ## When this skill does NOT apply
