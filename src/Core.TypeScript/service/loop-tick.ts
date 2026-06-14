@@ -272,8 +272,9 @@ async function runObserveInline(): Promise<string> {
     // 1. Load world from event log + backlog
     const world = loadWorld({ eventDir, repoRoot: worktree });
 
-    // 2. Choose action (tiered cascade — cheapest tier where confidence suffices)
-    const result = await choose(world);
+    const { defaultComposer } = await import("../observe/composer");
+    // 2. Choose action (tiered cascade)
+    const result = await choose(world, { composer: defaultComposer });
     const label = renderAction(result.action);
     log(`observe-inline: tier=${result.tier} confidence=${result.confidence.toFixed(2)} action=${label}`);
 
