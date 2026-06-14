@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-net/master/docs/stryker-config.schema.json",
   "stryker-config": {
-    "project": "src/Core.CSharp/Core.CSharp.csproj",
+    "project": "Core.CSharp.csproj",
     "test-projects": [
-      "tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj"
+      "Core.CSharp.Tests.csproj"
     ],
     "mutate": [
       "Variance.cs",

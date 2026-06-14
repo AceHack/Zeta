@@ -132,7 +132,11 @@ jobs:
         run: dotnet build Zeta.sln -c Release
 
       - name: Run Stryker
-        run: dotnet stryker
+        # Run from the C# test project so Stryker stays in project mode.
+        # Root solution discovery currently walks unrelated F# test projects and
+        # crashes while reading generated AssemblyInfo paths.
+        working-directory: tests/Core.CSharp.Tests
+        run: dotnet stryker --config-file ../../stryker-config.json --configuration Release --output ../../StrykerOutput
 
       - name: Upload Stryker reports
         if: always()
