@@ -44,15 +44,6 @@ tempted to ship.
 - **Fix:** implement Go `Format`/`Parse`/`IsCanonical` matching the alphabet+algorithm, emit `crockford` in go-output.json, add the Go crockford comparison to compare.ts.
 - **Who:** architect (Kenji) → 6-language-oracle owner
 
-### Autonomous-loop reads collapse API failure into "no work" (error == empty)
-
-- **Site:** `src/Core.TypeScript/observe/world-infra.ts:93,102-104,117-119` (also `:39,58-65`)
-- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
-- **Severity:** P0
-- **Symptom:** `readPRState`/`readPRStateAsync` return `{open:[],clean:[]}` on `gh`/forge failure (auth, rate-limit, network, parse) — identical to a healthy empty repo; `result.error`/`stderr` discarded, nothing logged. The observe loop then sees `cleanPrCount:0` and goes quiet while PRs rot. "I failed to look" and "no work" must never share a return value.
-- **Fix:** return a discriminated `{ok}|{failed,stderr}` (or at minimum log stderr before the empty fallback) at all four read sites; a shared helper closes the class.
-- **Who:** architect (Kenji)
-
 ### Expert/skill split half-done — onboarding confusion
 
 **STATUS (triage 2026-06-12): FIXED.** `.claude/agents/` holds all 20 experts; EXPERT-REGISTRY describes the split as the standing convention. Registry and reality agree.
@@ -104,15 +95,6 @@ tempted to ship.
 ---
 
 ## P1 — serious
-
-### Failed loop-tick exits 0 — monitoring blind to a fully-failed tick
-
-- **Site:** `src/Core.TypeScript/service/loop-tick.ts:318-324`
-- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
-- **Severity:** P1
-- **Symptom:** top-level `tick()` throw is caught, logged to a per-persona file nobody tails, then the script exits 0 — launchd/cron sees success; failure backoff never triggers.
-- **Fix:** set `process.exitCode = 1` in the catch (after `releaseLock`).
-- **Who:** architect (Kenji) → service/loop owner
 
 ### observe-inline catch-all swallows + gate timer never advances (infinite re-fail)
 

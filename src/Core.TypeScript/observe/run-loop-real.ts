@@ -73,12 +73,23 @@ async function main(): Promise<number> {
   let forgeState: import("./observe").ForgeState | undefined;
   if (forgeResult.ok) {
     const prState = await readPRStateAsync(forgeResult.value);
-    forgeState = {
-      openPrCount: prState.open.length,
-      cleanPrCount: prState.clean.length,
-      cleanPrNumbers: prState.clean.map((pr) => pr.number),
-    };
-    console.log(`[forge:${forgeResult.value.forgeName}] ${forgeState.openPrCount} open PRs, ${forgeState.cleanPrCount} clean`);
+    if (prState.ok) {
+      forgeState = {
+        openPrCount: prState.open.length,
+        cleanPrCount: prState.clean.length,
+        cleanPrNumbers: prState.clean.map((pr) => pr.number),
+      };
+      console.log(`[forge:${forgeResult.value.forgeName}] ${forgeState.openPrCount} open PRs, ${forgeState.cleanPrCount} clean`);
+    } else {
+      // PR read FAILED (auth / rate-limit / network). Do NOT fall through to a
+      // zero-PR forgeState — that would read as "no PR work" and the loop would
+      // go quiet. Leave forgeState undefined (same as forge-not-resolved): the
+      // loop proceeds without PR data rather than on FALSE PR data.
+      console.error(
+        `[forge] PR state read FAILED: ${prState.error instanceof Error ? prState.error.message : String(prState.error)} ` +
+          `— continuing WITHOUT PR state (NOT treating as zero PRs)`,
+      );
+    }
   } else {
     console.log(`[forge] not resolved: ${forgeResult.error.message} (continuing without PR state)`);
   }

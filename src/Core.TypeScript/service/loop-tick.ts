@@ -317,7 +317,10 @@ if (!acquireLock()) {
 try {
   await tick();
 } catch (err) {
-  log(`error: ${err instanceof Error ? err.message : String(err)}`);
+  log(`error: ${err instanceof Error ? (err.stack ?? err.message) : String(err)}`);
+  // A failed tick MUST be a failed process — otherwise launchd/cron sees exit 0
+  // and failure-backoff/monitoring is blind. (Set after logging; releaseLock still runs.)
+  process.exitCode = 1;
 } finally {
   releaseLock();
 }

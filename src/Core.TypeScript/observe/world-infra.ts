@@ -90,7 +90,13 @@ export function readPRState(_forge?: { listOpenPullRequests: (opts?: { limit?: n
     { encoding: "utf8", timeout: 30000 },
   );
 
-  if (result.status !== 0) return { open: [], clean: [] };
+  if (result.status !== 0) {
+    // gh failure (auth, rate-limit, not installed) — make it LOUD, never a silent
+    // empty that reads as "no PRs". (Caller can't yet distinguish; at minimum the
+    // quiet is now explainable in the log.)
+    console.error(`[forge] gh pr list failed (status ${result.status ?? "signal"}): ${(result.stderr ?? "").trim()}`);
+    return { open: [], clean: [] };
+  }
 
   let prs: PRInfo[] = [];
   try {
@@ -99,8 +105,8 @@ export function readPRState(_forge?: { listOpenPullRequests: (opts?: { limit?: n
       title: p.title,
       mergeState: p.mergeStateStatus,
     }));
-  } catch {
-    /* parse failure → empty */
+  } catch (err) {
+    console.error(`[forge] gh pr list JSON parse failed: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   return {
@@ -113,10 +119,17 @@ export function readPRState(_forge?: { listOpenPullRequests: (opts?: { limit?: n
  * Async variant of readPRState that delegates to a ForgeHost adapter.
  * Use this when the observe loop goes fully async (follow-up to the
  * synchronous legacy path above).
+ *
+ * Returns a DISCRIMINATED result: an API failure (auth, rate-limit, network)
+ * must be distinguishable from a healthy-empty repo. Collapsing the two into
+ * `{ open:[], clean:[] }` makes the loop read a forge outage as "no PR work" and
+ * go quiet while PRs rot — "I failed to look" must never equal "there is no work".
  */
-export async function readPRStateAsync(forge: import("../forge-host/forge-host").ForgeHost): Promise<{ open: readonly PRInfo[]; clean: readonly PRInfo[] }> {
+export async function readPRStateAsync(
+  forge: import("../forge-host/forge-host").ForgeHost,
+): Promise<{ ok: true; open: readonly PRInfo[]; clean: readonly PRInfo[] } | { ok: false; error: unknown }> {
   const result = await forge.listOpenPullRequests({ limit: 20 });
-  if (!result.ok) return { open: [], clean: [] };
+  if (!result.ok) return { ok: false, error: result.error };
 
   const prs: PRInfo[] = result.value.map((pr) => ({
     number: pr.number,
@@ -125,6 +138,7 @@ export async function readPRStateAsync(forge: import("../forge-host/forge-host")
   }));
 
   return {
+    ok: true,
     open: prs,
     clean: prs.filter((p) => p.mergeState === "clean"),
   };
