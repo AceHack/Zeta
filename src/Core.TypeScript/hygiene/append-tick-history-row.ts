@@ -17,11 +17,29 @@
 //   0   appended successfully
 //   1   row malformed OR timestamp out of order
 //   2   wrong number of arguments
+//   3   row body is a repeated-token RUT (degenerate output) — NOT appended.
+//       A rut tick must not be silently logged as a heartbeat; this is the
+//       "artifact trips its own alarm" wiring (Aaron shadow*, 2026-06-14).
+//       Healthy short bodies ("Green. Holding.") never trip it.
 
 import { appendFileSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
-type ExitCode = 0 | 1 | 2;
+import { detectRepeatedTokenRut } from "./detect-repeated-token-rut";
+
+type ExitCode = 0 | 1 | 2 | 3;
+
+// Pipe-row schema: | ts | model | cron | BODY | PR | observation |
+// split("|") → ["", ts, model, cron, body, pr, obs, ""] → body is index 4.
+const BODY_FIELD_INDEX = 4;
+
+/** Extract the trimmed body field from a full pipe-row, or null if the row
+ *  has too few fields to carry a body. Pure; no I/O. */
+export function extractBody(row: string): string | null {
+  const fields = row.split("|");
+  if (fields.length <= BODY_FIELD_INDEX) return null;
+  return (fields[BODY_FIELD_INDEX] ?? "").trim();
+}
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -94,6 +112,26 @@ export function main(argv: readonly string[]): ExitCode {
     process.stderr.write("  (b) file an ADR explaining the back-dated correction\n");
     process.stderr.write("      and use a correction-row pattern per Otto-229.\n");
     return 1;
+  }
+
+  // Rut guard: refuse to log a tick whose body has collapsed into degenerate
+  // repetition (the "court court court…" failure mode). The body is the loop
+  // output; a rut there is attention with no entropy to attend to, and must
+  // not be recorded as a heartbeat. Healthy terse bodies do not trip it
+  // (short streams + no run >= maxRun). See ./detect-repeated-token-rut.
+  const body = extractBody(row);
+  if (body !== null) {
+    const verdict = detectRepeatedTokenRut(body);
+    if (verdict.isRut) {
+      process.stderr.write(`ERROR: row body is a repeated-token rut — not appended.\n`);
+      process.stderr.write(`  ${verdict.reason}\n`);
+      process.stderr.write(`  body: ${body.slice(0, 120)}\n`);
+      process.stderr.write(
+        "A degenerate-output tick must not be logged as a heartbeat. Fix the\n" +
+          "output (real signal or a named dependency), then re-append.\n",
+      );
+      return 3;
+    }
   }
 
   appendFileSync(tickFile, `${row}\n`);
