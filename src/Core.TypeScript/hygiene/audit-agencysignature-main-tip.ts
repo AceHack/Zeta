@@ -34,7 +34,16 @@ const SPEC_DOC =
 
 const POSITIVE_INT_RE = /^[1-9]\d*$/;
 const V1_TRAILER_RE = /^Agency-Signature-Version:\s*1/im;
-const COAUTHOR_RE = /^Co-authored-by:\s*Claude/im;
+const AGENT_COAUTHOR_RE =
+  /^Co-authored-by:\s*(?:(?:Claude|Codex|Grok|Gemini|Kiro)\b|.*<noreply@(?:anthropic\.com|openai\.com|x\.ai|google\.com|kiro\.dev)>)/im;
+
+export function hasAgentCoauthorTrailer(trailers: string): boolean {
+  return AGENT_COAUTHOR_RE.test(trailers);
+}
+
+export function hasAgencySignatureV1(text: string): boolean {
+  return V1_TRAILER_RE.test(text);
+}
 
 interface ParsedArgs {
   readonly mode: Mode;
@@ -137,6 +146,10 @@ function commitTrailers(sha: string): string {
   return gitOutput(["log", "-1", "--pretty=%(trailers)", sha]).stdout;
 }
 
+function commitMessage(sha: string): string {
+  return gitOutput(["log", "-1", "--pretty=%B", sha]).stdout;
+}
+
 interface V1Ship {
   readonly sha: string;
   readonly date: string;
@@ -158,7 +171,7 @@ function detectV1Ship(targetRev: string): V1Ship | null {
     if (sp < 0) continue;
     const sha = line.slice(0, sp);
     const cdate = line.slice(sp + 1);
-    if (V1_TRAILER_RE.test(commitTrailers(sha))) {
+    if (hasAgencySignatureV1(commitTrailers(sha))) {
       return { sha, date: cdate };
     }
   }
@@ -197,8 +210,9 @@ function classifyCommit(
   ship: ShipState | null,
 ): { status: Status; reason: string } | null {
   const trailers = commitTrailers(sha);
-  const hasV1 = V1_TRAILER_RE.test(trailers);
-  const hasCoauthor = COAUTHOR_RE.test(trailers);
+  const hasV1Trailer = hasAgencySignatureV1(trailers);
+  const hasV1Message = hasV1Trailer || hasAgencySignatureV1(commitMessage(sha));
+  const hasCoauthor = hasAgentCoauthorTrailer(trailers);
 
   if (ship === null) {
     return { status: "LEGACY", reason: "v1 not yet shipped on this branch" };
@@ -225,7 +239,13 @@ function classifyCommit(
       reason: `pre-v1-ship-date (${commitIsoDate(sha)} < ${ship.date})`,
     };
   }
-  if (hasV1) return { status: "CORRECT", reason: "trailer present" };
+  if (hasV1Trailer) return { status: "CORRECT", reason: "trailer present" };
+  if (hasV1Message) {
+    return {
+      status: "CORRECT",
+      reason: "AgencySignature block present in commit message",
+    };
+  }
   if (hasCoauthor) {
     return {
       status: "REGRESSION",
