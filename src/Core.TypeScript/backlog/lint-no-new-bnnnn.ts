@@ -31,7 +31,7 @@ function repoRoot(): string {
 
 function main(): number {
   const root = repoRoot();
-  const frozenPath = join(root, "tools", "backlog", "frozen-bnnnn-ids.json");
+  const frozenPath = join(root, "src", "Core.TypeScript", "backlog", "frozen-bnnnn-ids.json");
   if (!existsSync(frozenPath)) {
     process.stderr.write(`ERROR: frozen snapshot missing: ${frozenPath}\n`);
     return 1;

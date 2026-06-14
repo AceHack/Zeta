@@ -132,7 +132,12 @@ jobs:
         run: bun test src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts
 
       - name: Install Nix
+        # Upstream Nix only — no Determinate/FlakeHub login. Public flakes + cache.nixos.org
+        # are sufficient; FlakeHub OIDC login flakes with "Transient authentication mechanism
+        # error" and blocked build-iso on PR #8095 (2026-06-14).
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        with:
+          determinate: false
 
       - name: Show flake metadata
         working-directory: full-ai-cluster
@@ -533,7 +538,12 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: Install Nix
+        # Upstream Nix only — no Determinate/FlakeHub login. Public flakes + cache.nixos.org
+        # are sufficient; FlakeHub OIDC login flakes with "Transient authentication mechanism
+        # error" and blocked build-iso on PR #8095 (2026-06-14).
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        with:
+          determinate: false
 
       - name: Check flake evaluates
         working-directory: full-ai-cluster

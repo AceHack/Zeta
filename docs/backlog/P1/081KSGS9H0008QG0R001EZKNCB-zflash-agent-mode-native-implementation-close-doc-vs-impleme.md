@@ -18,7 +18,7 @@ tags: [zflash, agent-driven, auto-type-challenge, pty, child-process-spawn, doc-
 
 `--agent` mode implemented in `src/Core.TypeScript/zflash/cli.ts` — spawns `flash-usb` with piped stdin and auto-types `yes <nonce>` while preserving Touch ID PAM. Invoke via `zeta flash --agent` (B-1030 router) or `bun src/Core.TypeScript/zflash/cli.ts --agent`.
 
-## Problem operator authorized agent-driven zflash with Touch ID approval. Agent ran `bun full-ai-cluster/tools/zflash.ts | tail -50` which:
+## Problem operator authorized agent-driven zflash with Touch ID approval. Agent ran `bun full-ai-cluster/tools/zflash.ts | tail -50` which
 
 1. Generated random nonce + printed "type: yes 649d" challenge
 2. Touch ID PAM gate fired (operator approved)

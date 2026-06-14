@@ -5,7 +5,7 @@ Last refreshed: 2026-05-29
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; WiFi reproducibility (nixos.org closure-fetch timeouts) is the live edge; B-0844 agent-mode landed in `cli.ts --agent`
-Next concrete action: land B-0831 CI full-install + cluster-auto-join to retire routine human physical-USB testing; finish B-1030 MCP surface for `zeta flash`
+Next concrete action: land B-0831 CI full-install + cluster-auto-join to retire routine human physical-USB testing; finish zeta flash MCP workitem 081KV1PY2H308QG0R00347547K
 
 ## Why This Exists
 
@@ -39,7 +39,7 @@ Shipped artifacts:
 Grounding backlog:
 
 - [`B-0844`](../../backlog/P1/081KSGS9H0008QG0R001EZKNCB-zflash-agent-mode-native-implementation-close-doc-vs-impleme.md) — zflash agent-mode native implementation (**closed** — `--agent` in `cli.ts`)
-- [`B-1030`](../../backlog/P1/081KT2T2J0008QG0R003ZFLASH1-zeta-flash-noun-verb-cli-mcp-unified-usb-iso-router.md) — `zeta flash` noun-verb CLI + MCP router
+- Workitem `081KV1PY2H308QG0R00347547K` — `zeta flash` noun-verb CLI + MCP router (follow-on after #8095)
 - [`B-0831`](../../backlog/P1/B-0831-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-routine-human-physical-usb-test-aaron-2026-05-26.md) — CI cascade-6 full-install + cluster auto-join (eliminate routine human physical-USB test)
 - [`B-0835`](../../backlog/P1/B-0835-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md) — installer config bugs (hostname-not-unique, gh-auth, banner)
 - [`B-0792`](../../backlog/P1/B-0792-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md) — iter-5 WiFi-credentials injection via USB ESP (zero-typing bringup without ethernet)
