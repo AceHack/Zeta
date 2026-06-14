@@ -16,9 +16,11 @@ import (
 	"zeta/tri_boolean"
 	zetayaml "zeta/yaml"
 	"zeta/zeta_id"
+	"zeta/zset_merkle"
 
 	"gopkg.in/yaml.v3"
 )
+
 
 func findRepoRoot() string {
 	dir, err := os.Getwd()
@@ -754,6 +756,62 @@ func TestCrossVerifyYaml(t *testing.T) {
 			t.Fatalf("yaml:%s: unexpected error: %v", v.Id, err)
 		}
 		outMap[v.Id] = events
+	}
+
+	jsonData, err := json.MarshalIndent(outMap, "", "  ")
+	if err != nil {
+		t.Fatalf("failed to marshal JSON: %v", err)
+	}
+
+	jsonStr := string(jsonData) + "\n"
+
+	outputPath := filepath.Join(fixtureDir, "go-output.json")
+	if err := os.WriteFile(outputPath, []byte(jsonStr), 0644); err != nil {
+		t.Fatalf("failed to write go-output.json: %v", err)
+	}
+}
+
+type ZSetMerkleVectorEntry struct {
+	Key    string `yaml:"key"`
+	Weight int64  `yaml:"weight"`
+}
+
+type ZSetMerkleVector struct {
+	Id          string                  `yaml:"id"`
+	Entries     []ZSetMerkleVectorEntry `yaml:"entries"`
+	ExpectedHex string                  `yaml:"expected_hex"`
+}
+
+type ZSetMerkleYaml struct {
+	Vectors []ZSetMerkleVector `yaml:"vectors"`
+}
+
+func TestCrossVerifyZSetMerkle(t *testing.T) {
+	repoRoot := findRepoRoot()
+	fixtureDir := filepath.Join(repoRoot, "tests", "cross-verification", "zset-merkle")
+	vectorsPath := filepath.Join(fixtureDir, "vectors.yaml")
+
+	data, err := os.ReadFile(vectorsPath)
+	if err != nil {
+		t.Fatalf("failed to read vectors.yaml: %v", err)
+	}
+
+	var y ZSetMerkleYaml
+	if err := yaml.Unmarshal(data, &y); err != nil {
+		t.Fatalf("failed to unmarshal vectors.yaml: %v", err)
+	}
+
+	outMap := make(map[string]string)
+	for _, v := range y.Vectors {
+		var entries []zset_merkle.Entry
+		for _, e := range v.Entries {
+			entries = append(entries, zset_merkle.Entry{
+				Key:    e.Key,
+				Weight: e.Weight,
+			})
+		}
+		rootHash := zset_merkle.Root(entries)
+		outMap[v.Id] = rootHash.ToHex()
 	}
 
 	jsonData, err := json.MarshalIndent(outMap, "", "  ")

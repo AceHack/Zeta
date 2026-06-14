@@ -5,6 +5,7 @@ from zeta import sha256
 from zeta import tri_boolean
 from zeta import zeta_id
 from zeta import yaml as zeta_yaml
+from zeta import zset_merkle
 
 
 def find_repo_root() -> Path:
@@ -331,6 +332,27 @@ def test_cross_verify_yaml():
     for v in fixture["vectors"]:
         events = zeta_yaml.read_events(v["yaml"])
         out_map[v["id"]] = events
+
+    output_path = fixture_dir / "python-output.json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(out_map, f, indent=2, sort_keys=True)
+        f.write("\n")
+
+
+def test_cross_verify_zset_merkle():
+    repo_root = find_repo_root()
+    fixture_dir = repo_root / "tests" / "cross-verification" / "zset-merkle"
+    vectors_path = fixture_dir / "vectors.yaml"
+
+    with open(vectors_path, "r", encoding="utf-8") as f:
+        y = yaml.safe_load(f)
+
+    out_map = {}
+    for v in y["vectors"]:
+        v_id = v["id"]
+        entries = [(e["key"], e["weight"]) for e in v["entries"]]
+        root_hash = zset_merkle.root(entries)
+        out_map[v_id] = root_hash.to_hex()
 
     output_path = fixture_dir / "python-output.json"
     with open(output_path, "w", encoding="utf-8") as f:

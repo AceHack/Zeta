@@ -1,0 +1,50 @@
+description: "ZSetMerkle cross-language conformance vectors."
+vectors:
+  - id: empty
+    entries: []
+    expected_hex: "7f498d4624c30160d8984701d306aa99"
+  - id: singleton-ascii
+    entries:
+      - key: "a"
+        weight: 1
+    expected_hex: "4283b95b5ff11f1ecfc840240b884da4"
+  - id: multi-signed-net
+    entries:
+      - key: "z-002"
+        weight: 1
+      - key: "z-005"
+        weight: 2
+      - key: "z-005"
+        weight: -2
+      - key: "z-003"
+        weight: -3
+    expected_hex: "c3e434ea00f34c29fa1ac852a7212b1b"
+  - id: non-ascii-ordinal-bytes
+    entries:
+      - key: "é"
+        weight: 1
+      - key: "e"
+        weight: 2
+      - key: "Ω"
+        weight: -4
+      - key: "中"
+        weight: 7
+    expected_hex: "06a104fe8b7a53a323eb23760bfe3e9a"
+  - id: order-independence-forward
+    entries:
+      - key: "b"
+        weight: 2
+      - key: "a"
+        weight: 1
+      - key: "c"
+        weight: -1
+    expected_hex: "77ccbf36f76b4e46bd8575fd93131ddd"
+  - id: order-independence-reverse
+    entries:
+      - key: "c"
+        weight: -1
+      - key: "a"
+        weight: 1
+      - key: "b"
+        weight: 2
+    expected_hex: "77ccbf36f76b4e46bd8575fd93131ddd"
