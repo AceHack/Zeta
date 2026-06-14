@@ -102,22 +102,27 @@ public static class Collation
     public const string DefaultName = "binary";
 
     /// <summary>
+    /// The canonical default for string keys: Unicode code-point / UTF-8 byte order.
+    /// </summary>
+    public static StringComparer Binary { get; } = UnicodeCodePointComparer.Ordinal;
+
+    /// <summary>
     /// The named string-collation catalog (DB-style).
     /// </summary>
     public static IReadOnlyDictionary<string, StringComparer> Catalog { get; } =
         new Dictionary<string, StringComparer>(StringComparer.OrdinalIgnoreCase)
         {
-            ["binary"] = UnicodeCodePointComparer.Ordinal,
-            ["ordinal"] = UnicodeCodePointComparer.Ordinal,
+            ["binary"] = Binary,
+            ["ordinal"] = Binary,
             ["ordinal-ci"] = UnicodeCodePointComparer.OrdinalIgnoreCase,
             ["invariant"] = StringComparer.InvariantCulture,
             ["invariant-ci"] = StringComparer.InvariantCultureIgnoreCase,
 
             // Postgres / Standard SQL aliases
-            ["C"] = UnicodeCodePointComparer.Ordinal,
-            ["POSIX"] = UnicodeCodePointComparer.Ordinal,
-            ["utf8_bin"] = UnicodeCodePointComparer.Ordinal,
-            ["utf8mb4_bin"] = UnicodeCodePointComparer.Ordinal,
+            ["C"] = Binary,
+            ["POSIX"] = Binary,
+            ["utf8_bin"] = Binary,
+            ["utf8mb4_bin"] = Binary,
 
             // SQLite alias
             ["NOCASE"] = UnicodeCodePointComparer.OrdinalIgnoreCase,
@@ -129,7 +134,7 @@ public static class Collation
             ["utf8mb4_unicode_ci"] = StringComparer.InvariantCultureIgnoreCase,
 
             // SQL Server aliases
-            ["Latin1_General_BIN"] = UnicodeCodePointComparer.Ordinal,
+            ["Latin1_General_BIN"] = Binary,
             ["Latin1_General_CI_AS"] = StringComparer.InvariantCultureIgnoreCase,
             ["Latin1_General_CS_AS"] = StringComparer.InvariantCulture
         };
@@ -153,7 +158,7 @@ public static class Collation
     public static StringComparer ByNameOrDefault(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
-        return TryByName(name) ?? UnicodeCodePointComparer.Ordinal;
+        return TryByName(name) ?? Binary;
     }
 
     /// <summary>
@@ -168,7 +173,7 @@ public static class Collation
         ArgumentNullException.ThrowIfNull(collationName);
         if (typeof(T) == typeof(string))
         {
-            return (IComparer<T>)(TryByName(collationName) ?? UnicodeCodePointComparer.Ordinal);
+            return (IComparer<T>)(TryByName(collationName) ?? Binary);
         }
         return Comparer<T>.Default;
     }

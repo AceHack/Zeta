@@ -25,8 +25,22 @@ module DeterministicTestPath =
         let root = Path.Combine(Path.GetTempPath(), "zeta-test-paths")
         let dir = Path.Combine(root, sprintf "%s-%04d" (sanitize prefix) id)
 
-        if Directory.Exists dir then
-            Directory.Delete(dir, true)
+        let rec deleteExisting attempts =
+            if Directory.Exists dir then
+                try
+                    Directory.Delete(dir, true)
+                with
+                | :? DirectoryNotFoundException when attempts > 0 ->
+                    Thread.Sleep 10
+                    deleteExisting (attempts - 1)
+                | :? IOException when attempts > 0 ->
+                    Thread.Sleep 10
+                    deleteExisting (attempts - 1)
+                | :? UnauthorizedAccessException when attempts > 0 ->
+                    Thread.Sleep 10
+                    deleteExisting (attempts - 1)
+
+        deleteExisting 5
 
         Directory.CreateDirectory dir |> ignore
         dir

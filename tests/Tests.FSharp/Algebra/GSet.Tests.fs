@@ -139,10 +139,10 @@ let private loadVector () : string list * GsOp list * string list list * string 
     let final = strList (root.GetProperty("expectedFinalState"))
     initial, ops, replay, final
 
-// ─── B-0969: string ordering is ORDINAL (binary collation), not culture-sensitive ───
-// Default collation = Collation.binary (ordinal). 'B'(0x42) < 'a'(0x61) ordinally, so "B" sorts BEFORE
-// "a"; a culture-sensitive sort (the old Comparer<string>.Default) would put "a" first. This is the
-// cross-language byte-consensus order the other three oracles (C#/Rust/TS) already produce.
+// ─── B-0969: string ordering is BINARY code-point order, not culture-sensitive ───
+// Default collation = Collation.binary. 'B'(0x42) < 'a'(0x61), so "B" sorts BEFORE "a";
+// a culture-sensitive sort (the old Comparer<string>.Default) would put "a" first.
+// This is the cross-language byte-consensus order the other three oracles produce.
 [<Fact>]
 let ``ofSeq sorts strings ordinally (B-0969 binary collation, not culture-sensitive)`` () =
     let g = GSet.ofSeq [ "a"; "B"; "C"; "b" ]
@@ -165,5 +165,5 @@ let ``F# replays the shared golden vector to expectedReplayStates + expectedFina
                   | Add x -> GSet.add x state
                   | Union xs -> GSet.union state (GSet.ofSeq xs)
               yield GSet.toList state ]
-    actual |> should equal expectedReplay
-    GSet.toList state |> should equal expectedFinal
+    Assert.Equal<string list list>(expectedReplay, actual)
+    Assert.Equal<string list>(expectedFinal, GSet.toList state)

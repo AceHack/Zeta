@@ -9,8 +9,8 @@ open System.Text
 type UnicodeCodePointComparer(ignoreCase: bool) =
     inherit StringComparer()
     
-    static member Ordinal = UnicodeCodePointComparer(false)
-    static member OrdinalIgnoreCase = UnicodeCodePointComparer(true)
+    static member val Ordinal = UnicodeCodePointComparer(false)
+    static member val OrdinalIgnoreCase = UnicodeCodePointComparer(true)
 
     override this.Compare(x: string, y: string) =
         if obj.ReferenceEquals(x, y) then 0
@@ -77,10 +77,9 @@ type UnicodeCodePointComparer(ignoreCase: bool) =
 [<RequireQualifiedAccess>]
 module Collation =
 
-    /// The canonical default for STRING keys: ordinal (codepoint / byte order) = DB "binary collation".
-    /// All four oracles coincide on this order for the golden vectors (F# ordinal, C#
-    /// `StringComparer.Ordinal`, TS UTF-16 code-unit, Rust byte `Ord`); the astral/UTF-16 caveat is
-    /// resolved by the treaty picking codepoint ≡ UTF-8 byte order.
+    /// The canonical default for STRING keys: codepoint / UTF-8 byte order = DB "binary collation".
+    /// This differs from .NET `StringComparer.Ordinal` for non-BMP characters because ordinal compares
+    /// UTF-16 code units. The treaty comparator compares Unicode scalar values.
     let binary: StringComparer = UnicodeCodePointComparer.Ordinal :> StringComparer
 
     /// The default collation name we ship with.

@@ -49,7 +49,7 @@ public class GSetCrossVerifyTests
         var path = Path.Join(root, "src", "Core.TypeScript", "g-set", "golden-vectors.json");
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         var r = doc.RootElement;
-        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
+        var cmp = Collation.ForKey<string>();
 
         var state = GSet.OfSeq(Strings(r.GetProperty("initialSet")), cmp);
         var ops = r.GetProperty("ops");
@@ -151,13 +151,5 @@ public class GSetCrossVerifyTests
         // (the comparer-identity guard for real merges is preserved).
         var ordinal = GSet.OfSeq(["a", "b"], Collation.UnicodeCodePointComparer.Ordinal);
         Assert.Throws<ArgumentException>(() => ordinal + custom);
-    }
-
-    [Fact]
-    public void TempCompareTest()
-    {
-        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
-        var r = cmp.Compare("", "𠜎");
-        throw new InvalidOperationException($"Comparison result: {r}");
     }
 }

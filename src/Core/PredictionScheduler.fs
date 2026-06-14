@@ -111,6 +111,18 @@ module PredictionScheduler =
         : SoftScheduler.HandlerK<Planned<'Inner, 'BranchState>> =
         policyHandlerWithPriority name estimate (fun _ -> PredictionInference.neutralPriority)
 
+    let liftHandlerK
+        (handler: SoftScheduler.HandlerK<'Inner>)
+        : SoftScheduler.HandlerK<Planned<'Inner, 'BranchState>> =
+        SoftScheduler.handlerK
+            handler.Name
+            handler.Matches
+            (fun intr ctx state ->
+                task {
+                    let! inner = handler.RunK intr ctx state.Inner
+                    return inner |> Result.map (fun next -> { state with Inner = next })
+                })
+
     let wrapHandlerKWithPriority
         (estimate: CandidateEstimator<'Inner, 'BranchState>)
         (priorityOf: PriorityEstimator<'BranchState>)

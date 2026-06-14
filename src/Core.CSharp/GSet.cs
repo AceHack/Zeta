@@ -132,9 +132,8 @@ public static class GSet
 /// <remarks>
 /// The comparer is explicit (like the TS <c>compare</c> parameter) rather than baked to
 /// <see cref="Comparer{T}.Default"/>: for <see cref="string"/> the default is
-/// culture-sensitive, but the cross-language wire (TS UTF-16 code-unit order, Rust UTF-8
-/// byte order) needs <see cref="StringComparer.Ordinal"/>. Pass it explicitly for
-/// cross-language parity.
+/// culture-sensitive, but the cross-language wire needs the project binary collation
+/// (Unicode code-point / UTF-8 byte order). Pass it explicitly for cross-language parity.
 /// </remarks>
 /// <typeparam name="T">The element type.</typeparam>
 public sealed class GSet<T> :

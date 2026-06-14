@@ -151,13 +151,23 @@ public class IndexedZSetCrossVerifyTests
         IComparer<string> vc,
         params (string K, string V, long W)[] triples)
     {
+        return BuildIxz(kc, "custom", vc, "custom", triples);
+    }
+
+    private static IndexedZSet<string, string> BuildIxz(
+        IComparer<string> kc,
+        string keyCollation,
+        IComparer<string> vc,
+        string valueCollation,
+        params (string K, string V, long W)[] triples)
+    {
         var pairCmp = Comparer<(string, string)>.Create((x, y) =>
         {
             var c = kc.Compare(x.Item1, y.Item1);
             return c != 0 ? c : vc.Compare(x.Item2, y.Item2);
         });
         var source = ZSet.OfEntries(triples.Select(t => ((t.K, t.V), t.W)), pairCmp);
-        return IndexedZSet.IndexWith(source, p => p.Item1, p => p.Item2, kc, vc);
+        return IndexedZSet.IndexWith(source, p => p.Item1, p => p.Item2, kc, keyCollation, vc, valueCollation);
     }
 
     private static IndexedZSet<string, string> Ixz(params (string K, string V, long W)[] triples) =>
@@ -205,7 +215,7 @@ public class IndexedZSetCrossVerifyTests
         // empty must absorb under ANY comparers (the identity law); (+)/(-) short-circuit empty
         // BEFORE Add's RequireSameComparers. Two NON-empty operands with mismatched comparers throw.
         var rev = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
-        var custom = BuildIxz(rev, rev, ("x", "p", 1L));
+        var custom = BuildIxz(rev, "reverse", rev, "reverse", ("x", "p", 1L));
         var id = IndexedZSet<string, string>.AdditiveIdentity;
         Assert.Equal(custom, custom + id); // a + empty = a (no throw)
         Assert.Equal(custom, id + custom); // empty + a = a (no throw)

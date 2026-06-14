@@ -261,6 +261,7 @@
     <Compile Include="SimLoop.fs" />
     <Compile Include="WheelRoom.fs" />
     <Compile Include="Chip8Observer.fs" />
+    <Compile Include="Chip8PredictionRoom.fs" />
     <Compile Include="SoftController.fs" />
     <Compile Include="ActionGrammar.fs" />
     <Compile Include="WorkflowEngine.fs" />
