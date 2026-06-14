@@ -45,6 +45,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop-detect-response-rut.ts"
+          }
+        ]
+      }
     ]
   },
   "permissions": {
