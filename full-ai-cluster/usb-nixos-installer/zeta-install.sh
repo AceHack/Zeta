@@ -634,16 +634,20 @@ echo "[iter-5.3] iter-4.x default ('zeta-change-me')."
 echo
 INJECTED_PW=""
 INJECTED_PW_CONFIRM=""
-# -s = silent (hidden); -p = inline prompt
-read -r -s -p "[iter-5.3] Password (or Enter to skip): " INJECTED_PW
-echo
-if [ -n "$INJECTED_PW" ]; then
-  read -r -s -p "[iter-5.3] Confirm:                       " INJECTED_PW_CONFIRM
+if [ -t 0 ]; then
+  # -s = silent (hidden); -p = inline prompt
+  read -r -s -p "[iter-5.3] Password (or Enter to skip): " INJECTED_PW
   echo
-  if [ "$INJECTED_PW" != "$INJECTED_PW_CONFIRM" ]; then
-    echo "[iter-5.3]   WARN: passwords don't match; skipping (keeps default)"
-    INJECTED_PW=""
+  if [ -n "$INJECTED_PW" ]; then
+    read -r -s -p "[iter-5.3] Confirm:                       " INJECTED_PW_CONFIRM
+    echo
+    if [ "$INJECTED_PW" != "$INJECTED_PW_CONFIRM" ]; then
+      echo "[iter-5.3]   WARN: passwords don't match; skipping (keeps default)"
+      INJECTED_PW=""
+    fi
   fi
+else
+  echo "[iter-5.3] non-TTY stdin (QEMU serial CI); skipping password prompt"
 fi
 if [ -n "$INJECTED_PW" ]; then
   # mkpasswd from nixpkgs `mkpasswd` package. -m sha-512 selects
@@ -718,16 +722,20 @@ echo "[B-0852.3b] keeps current per-reboot re-entry behavior)."
 echo
 ZETA_CREDS_PASSPHRASE_INPUT=""
 ZETA_CREDS_PASSPHRASE_CONFIRM=""
-# -s = silent (hidden); -p = inline prompt
-read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
-echo
-if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
-  read -r -s -p "[B-0852.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
+if [ -t 0 ]; then
+  # -s = silent (hidden); -p = inline prompt
+  read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
   echo
-  if [ "$ZETA_CREDS_PASSPHRASE_INPUT" != "$ZETA_CREDS_PASSPHRASE_CONFIRM" ]; then
-    echo "[B-0852.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
-    ZETA_CREDS_PASSPHRASE_INPUT=""
+  if [ -n "$ZETA_CREDS_PASSPHRASE_INPUT" ]; then
+    read -r -s -p "[B-0852.3b] Confirm:                          " ZETA_CREDS_PASSPHRASE_CONFIRM
+    echo
+    if [ "$ZETA_CREDS_PASSPHRASE_INPUT" != "$ZETA_CREDS_PASSPHRASE_CONFIRM" ]; then
+      echo "[B-0852.3b]   WARN: passphrases don't match; skipping (no cred-blob persistence)"
+      ZETA_CREDS_PASSPHRASE_INPUT=""
+    fi
   fi
+else
+  echo "[B-0852.3b] non-TTY stdin (QEMU serial CI); skipping cred-blob passphrase prompt"
 fi
 unset ZETA_CREDS_PASSPHRASE_CONFIRM
 # Initialize ZETA_CREDS_PASSPHRASE_VAL to empty unconditionally so the
