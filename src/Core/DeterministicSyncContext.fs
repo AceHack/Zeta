@@ -39,9 +39,12 @@ open System.Threading
 /// `DispatcherSynchronizationContext` (the marshal-to-one-thread shape this mirrors
 /// for determinism rather than UI affinity). Lock-free FIFO: Michael & Scott,
 /// "Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue
-/// Algorithms" (PODC 1996) — the lineage `ConcurrentQueue<T>` implements; CAS
-/// primitive (human anchor): the maintainer's Itron
-/// `Platform.DotNet/Source/Threading/AtomicBoolean.cs` (`Interlocked.CompareExchange`).
+/// Algorithms" (PODC 1996) — the lineage `ConcurrentQueue<T>` implements. Human
+/// anchor for the lock-free `ConcurrentQueue` + CAS approach: the maintainer's Itron
+/// `Itron.Extensibility/AsyncCollection.cs` — a lock-free async producer/consumer
+/// rendezvous (two `ConcurrentQueue`s coordinated by a speculative-CAS on a paired
+/// count, `TrySpeculativeUpdate`; Stephen Toub's `AsyncProducerConsumerQueue`
+/// lineage) — and `AtomicBoolean.cs` for the bare `Interlocked.CompareExchange`.
 [<Sealed>]
 type DeterministicSyncContext() =
     inherit SynchronizationContext()
