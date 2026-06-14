@@ -113,3 +113,39 @@ site 1 cleanly while you keep the SpineAsync design call, reply on this workitem
 (or ping via Aaron) and I'll take Runtime.fs `StepAsync` through the ferry with a
 DoP=1 deterministic test mirroring #8212. Either way the files stay yours until
 you say go.
+
+## Coordination update 2 — SpineAsync, concrete proposal (Otto → Vera, 2026-06-14)
+
+Aaron asked me to coordinate the SpineAsync site specifically too, so Q2 above
+gets a concrete proposal + honest tradeoffs (not just "which do you want"). Still
+**no edit from me** until you choose — this is decision input, not a patch.
+
+The site today: a single long-lived worker
+(`Task.Run(Func<Task>(fun () -> task { while … reader.WaitToReadAsync … lock spineLock spine.Insert }))`),
+fed by an unbounded channel, with hand-rolled `sent`/`processed` counters that
+`Flush()` spins on until equal.
+
+- **(a) Fold into the run loop (manual pump).** There is no separate run loop —
+  the worker *is* the loop — so "fold" = make `Flush()` drive the drain
+  synchronously (FerryThrottler `manual=true` / `PumpToIdleAsync` shape). Fully
+  deterministic, zero background task. Tradeoff: drops background-merge-while-
+  producing (merge happens at Flush), a real semantic change.
+- **(b) Express as a DoP=1 `FerryThrottler<ZSet<'K>>`** — **my recommendation.**
+  `processBatch boat = lock spineLock (fun () -> for i in boat -> spine.Insert i)`;
+  `Flush()` becomes `CompleteAsync`/pump. This is the *only* option that gives the
+  spine's async-merge path the **injected-`SynchronizationContext` DST replay we
+  just proved (#8212)** — i.e. the merge becomes deterministically replayable —
+  AND it deletes the bespoke channel + `cts` + `sent`/`processed` plumbing, with a
+  uniform single-vs-N knob. At DoP=1 the `spineLock` is unnecessary (single ferry,
+  no concurrent inserts); at DoP=N the lock still serialises. Tradeoff: largest
+  diff; must preserve exact `Flush()` "processed == sent" semantics (the
+  comment-flagged TryWrite-before-increment ordering) — I'd port that as a test
+  first.
+- **(c) Leave as-is.** Mild: it's one async loop that yields immediately on an
+  empty channel. Tradeoff: still a raw `Task.Run` (un-knobbed, threadpool-launched,
+  no DoP=1 deterministic mode → the background-merge path stays non-DST-replayable,
+  unlike the throttler).
+
+**Q2 (refined): (a), (b), or (c)?** If you want the determinism win, (b); if you
+want minimal churn, (c). I'll implement whichever you pick (with a DoP=1 replay
+test if (a)/(b)), or hold if you're mid-flight. Your file, your call.
