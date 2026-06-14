@@ -18,30 +18,85 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public static class GSet
 {
+    /// <summary>The empty G-Set (the <see cref="GSet{T}.Union"/> identity) with a named collation.</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>An empty set.</returns>
+    public static GSet<T> Empty<T>(string collation) =>
+        new(ImmutableArray<T>.Empty, Collation.ForKey<T>(collation), collation);
+
     /// <summary>The empty G-Set (the <see cref="GSet{T}.Union"/> identity).</summary>
     /// <typeparam name="T">The element type.</typeparam>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to default collation.</param>
     /// <returns>An empty set.</returns>
     public static GSet<T> Empty<T>(IComparer<T>? comparer = null) =>
-        new(ImmutableArray<T>.Empty, comparer ?? Comparer<T>.Default);
+        new(ImmutableArray<T>.Empty, comparer ?? Collation.ForKey<T>(), comparer == null ? Collation.DefaultName : "custom");
+
+    /// <summary>The empty G-Set with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>An empty set.</returns>
+    public static GSet<T> Empty<T>(IComparer<T> comparer, string collation) =>
+        new(ImmutableArray<T>.Empty, comparer ?? Collation.ForKey<T>(), collation);
+
+    /// <summary>A one-element G-Set with a named collation.</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="x">The single element.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>A set containing exactly <paramref name="x"/>.</returns>
+    public static GSet<T> Singleton<T>(T x, string collation) =>
+        new(ImmutableArray.Create(x), Collation.ForKey<T>(collation), collation);
 
     /// <summary>A one-element G-Set.</summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="x">The single element.</param>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to default collation.</param>
     /// <returns>A set containing exactly <paramref name="x"/>.</returns>
     public static GSet<T> Singleton<T>(T x, IComparer<T>? comparer = null) =>
-        new(ImmutableArray.Create(x), comparer ?? Comparer<T>.Default);
+        new(ImmutableArray.Create(x), comparer ?? Collation.ForKey<T>(), comparer == null ? Collation.DefaultName : "custom");
 
-    /// <summary>Canonicalize arbitrary input: sort ascending + drop duplicates.</summary>
+    /// <summary>A one-element G-Set with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="x">The single element.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>A set containing exactly <paramref name="x"/>.</returns>
+    public static GSet<T> Singleton<T>(T x, IComparer<T> comparer, string collation) =>
+        new(ImmutableArray.Create(x), comparer ?? Collation.ForKey<T>(), collation);
+
+    /// <summary>Canonicalize arbitrary input with a named collation.</summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="xs">The elements.</param>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical G-Set of the distinct elements.</returns>
+    public static GSet<T> OfSeq<T>(IEnumerable<T> xs, string collation)
+    {
+        var cmp = Collation.ForKey<T>(collation);
+        return new GSet<T>(Canonicalize(xs, cmp), cmp, collation);
+    }
+
+    /// <summary>Canonicalize arbitrary input.</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="xs">The elements.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to default collation.</param>
     /// <returns>The canonical G-Set of the distinct elements.</returns>
     public static GSet<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T>? comparer = null)
     {
-        var cmp = comparer ?? Comparer<T>.Default;
-        return new GSet<T>(Canonicalize(xs, cmp), cmp);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return new GSet<T>(Canonicalize(xs, cmp), cmp, comparer == null ? Collation.DefaultName : "custom");
+    }
+
+    /// <summary>Canonicalize arbitrary input with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="xs">The elements.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical G-Set of the distinct elements.</returns>
+    public static GSet<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T> comparer, string collation)
+    {
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return new GSet<T>(Canonicalize(xs, cmp), cmp, collation);
     }
 
     /// <summary>Sort ascending + drop duplicates under <paramref name="cmp"/> (the canonical run).</summary>
@@ -90,10 +145,14 @@ public sealed class GSet<T> :
     private readonly ImmutableArray<T> _items;
     private readonly IComparer<T> _comparer;
 
-    internal GSet(ImmutableArray<T> items, IComparer<T> comparer)
+    /// <summary>Gets the name of the collation used by this set.</summary>
+    public string CollationName { get; }
+
+    internal GSet(ImmutableArray<T> items, IComparer<T> comparer, string collationName)
     {
         _items = items.IsDefault ? ImmutableArray<T>.Empty : items;
         _comparer = comparer;
+        CollationName = collationName;
     }
 
     /// <summary>The number of elements.</summary>
@@ -193,7 +252,7 @@ public sealed class GSet<T> :
             j++;
         }
 
-        return new GSet<T>(builder.ToImmutable(), _comparer);
+        return new GSet<T>(builder.ToImmutable(), _comparer, CollationName);
     }
 
     /// <summary>
@@ -244,16 +303,17 @@ public sealed class GSet<T> :
     /// <param name="x">The element to add.</param>
     /// <returns>The set with <paramref name="x"/> present.</returns>
     public GSet<T> Add(T x) =>
-        Contains(x) ? this : Union(new GSet<T>(ImmutableArray.Create(x), _comparer));
+        Contains(x) ? this : Union(new GSet<T>(ImmutableArray.Create(x), _comparer, CollationName));
 
-    /// <summary>Throw if <paramref name="other"/> uses a different comparer (the comparer is part of the set's identity).</summary>
-    /// <param name="other">The set being combined.</param>
     private void RequireSameComparer(GSet<T> other)
     {
-        if (!_comparer.Equals(other._comparer))
+        var sameCollation = !string.Equals(CollationName, "custom", StringComparison.Ordinal) &&
+                            string.Equals(CollationName, other.CollationName, StringComparison.Ordinal);
+
+        if (!sameCollation && !_comparer.Equals(other._comparer))
         {
             throw new ArgumentException(
-                "GSet.Union requires both sets to use the same comparer (the comparer is part of the set's identity).",
+                $"GSet.Union requires both sets to use the same collation name or equivalent comparer (this: '{CollationName}', other: '{other.CollationName}').",
                 nameof(other));
         }
     }
@@ -284,10 +344,10 @@ public sealed class GSet<T> :
             return true;
         }
 
-        // The comparer is part of the set's identity: sets with different comparers are
-        // not equal. Keeps Equals symmetric (a.Equals(b) == b.Equals(a)) and keeps
-        // GetHashCode consistent. (PR review 2026-06-01.)
-        if (!_comparer.Equals(other._comparer))
+        var sameCollation = !string.Equals(CollationName, "custom", StringComparison.Ordinal) &&
+                            string.Equals(CollationName, other.CollationName, StringComparison.Ordinal);
+
+        if (!sameCollation && !_comparer.Equals(other._comparer))
         {
             return false;
         }
@@ -320,6 +380,7 @@ public sealed class GSet<T> :
         // alike; otherwise count-only for the element part (still consistent with the
         // comparer-based Equals). (PR review 2026-06-01.)
         var hash = default(HashCode);
+        hash.Add(CollationName);
         hash.Add(_comparer);
         hash.Add(_items.Length);
         if (_comparer is IEqualityComparer<T> eq)

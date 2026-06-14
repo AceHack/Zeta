@@ -6,6 +6,12 @@
  *
  * Replaces all per-persona tick scripts (kiro-loop-tick.ts, riven-loop-tick.ts, etc.).
  * Persona determines paths, harness CLI, and broadcast identity — NOT code paths.
+ *
+ * Two execution modes for the agent gate:
+ *   v0 (CLI): spawn the persona's harness CLI with a work prompt (otto→claude, kiro→kiro-cli)
+ *   v1 (observe-inline): loadWorld() → observe() → execute() — no LLM for deterministic picks
+ *
+ * Set ZETA_LOOP_OBSERVE_INLINE=1 to use v1. Default is v0 (CLI shelling).
  */
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -41,6 +47,7 @@ const lockDir = join(stateDir, "lock");
 const runId = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
 const lockTtlMs = Number(process.env["ZETA_LOOP_LOCK_TTL_SECONDS"] ?? "120") * 1000;
 const fetchTimeoutMs = Number(process.env["ZETA_LOOP_FETCH_TIMEOUT_SECONDS"] ?? "45") * 1000;
+const useObserveInline = process.env["ZETA_LOOP_OBSERVE_INLINE"] === "1";
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -137,7 +144,7 @@ function writeBroadcast(summary: string): void {
 }
 
 // --- Heartbeat tick ---
-function tick(): void {
+async function tick(): Promise<void> {
   readBroadcasts();
 
   // Fetch
@@ -172,7 +179,11 @@ function tick(): void {
       if (dryRun) {
         agentStatus = "dry-run";
         log(`dry-run: would invoke ${harness.command}`);
+      } else if (useObserveInline) {
+        // v1: observe-inline — load world, pick action, execute directly
+        agentStatus = await runObserveInline();
       } else {
+        // v0: CLI shelling — spawn the persona's harness with a prompt
         const prompt = buildWorkPrompt(personaName, prCount, claimCount, dirtyCount);
         const args = harness.args.map(a => a.replace("{{PROMPT}}", prompt));
         const gate = exec(harness.command, args, gateTimeout * 1000);
@@ -247,6 +258,39 @@ function buildWorkPrompt(persona: string, prCount: string, claimCount: number, d
  * Both are legal — the unified tick doesn't care which path resolves the action.
  */
 
+async function runObserveInline(): Promise<string> {
+  try {
+    const { choose } = await import("../observe/chooser");
+    const { loadWorld } = await import("../observe/load-world");
+    const { renderAction } = await import("../observe/observe");
+
+    const eventDir = join(stateDir, "events");
+    mkdirSync(eventDir, { recursive: true });
+    const world = loadWorld({ eventDir, repoRoot: worktree });
+    const result = await choose(world);
+
+    const label = renderAction(result.action);
+    log(`observe-inline: tier=${result.tier} confidence=${result.confidence.toFixed(2)} action=${label}`);
+
+    // For now, log the decision. Full execute() wiring is the next step.
+    writeFileSync(join(stateDir, "last-agent-run.json"), JSON.stringify({
+      run_id: runId,
+      persona: personaName,
+      status: 0,
+      tier: result.tier,
+      confidence: result.confidence,
+      action_kind: result.action.kind,
+      started_at: nowIso(),
+      updated_at: nowIso(),
+    }, null, 2));
+
+    return `observe-inline:${result.tier}:${result.action.kind}`;
+  } catch (err) {
+    log(`observe-inline failed: ${err instanceof Error ? err.message : String(err)}`);
+    return "observe-inline:error";
+  }
+}
+
 // --- Main ---
 if (!acquireLock()) {
   log(`skip: lock held by another tick run_id=${runId}`);
@@ -254,7 +298,7 @@ if (!acquireLock()) {
 }
 
 try {
-  tick();
+  await tick();
 } catch (err) {
   log(`error: ${err instanceof Error ? err.message : String(err)}`);
 } finally {

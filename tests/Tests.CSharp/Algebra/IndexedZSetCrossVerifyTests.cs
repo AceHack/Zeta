@@ -19,7 +19,7 @@ namespace Zeta.Tests.CSharp.Algebra;
 /// </summary>
 public class IndexedZSetCrossVerifyTests
 {
-    private static readonly StringComparer Ord = StringComparer.Ordinal;
+    private static readonly StringComparer Ord = Collation.UnicodeCodePointComparer.Ordinal;
 
     private static string RepoRoot()
     {
@@ -70,8 +70,8 @@ public class IndexedZSetCrossVerifyTests
     {
         var pairCmp = Comparer<(string K, string V)>.Create((x, y) =>
         {
-            var c = string.CompareOrdinal(x.K, y.K);
-            return c != 0 ? c : string.CompareOrdinal(x.V, y.V);
+            var c = Collation.UnicodeCodePointComparer.Ordinal.Compare(x.K, y.K);
+            return c != 0 ? c : Collation.UnicodeCodePointComparer.Ordinal.Compare(x.V, y.V);
         });
 
         var entries = r.GetProperty("indexInput").EnumerateArray().Select(item =>

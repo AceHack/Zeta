@@ -47,7 +47,7 @@ public class GSetCrossVerifyTests
         var path = Path.Join(root, "src", "Core.TypeScript", "g-set", "golden-vectors.json");
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         var r = doc.RootElement;
-        var cmp = StringComparer.Ordinal;
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
 
         var state = GSet.OfSeq(Strings(r.GetProperty("initialSet")), cmp);
         var ops = r.GetProperty("ops");
@@ -74,7 +74,7 @@ public class GSetCrossVerifyTests
     [Fact]
     public void UnionObeysCrdtLaws()
     {
-        var cmp = StringComparer.Ordinal;
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
         static GSet<string> G(StringComparer cmp, params string[] xs) => GSet.OfSeq(xs, cmp);
 
         var a = G(cmp, "a", "c");
@@ -95,7 +95,7 @@ public class GSetCrossVerifyTests
         // The comparer is part of a set's identity; unioning across different comparers is
         // a programming error (it would break commutativity), surfaced loudly rather than
         // silently recanonicalized (PR review 2026-06-01).
-        var ordinal = StringComparer.Ordinal;
+        var ordinal = Collation.UnicodeCodePointComparer.Ordinal;
         var reverse = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
 
         string[] aItems = ["a", "b"];
@@ -118,7 +118,7 @@ public class GSetCrossVerifyTests
         // G-Set is an additive, commutative + idempotent monoid, so it surfaces the
         // generic-math IAdditiveIdentity + IAdditionOperators (NOT INumber — no inverse /
         // order / product). (+) == Union for same-comparer operands; AdditiveIdentity is empty.
-        var cmp = StringComparer.Ordinal;
+        var cmp = Collation.UnicodeCodePointComparer.Ordinal;
         static GSet<string> G(StringComparer cmp, params string[] xs) => GSet.OfSeq(xs, cmp);
 
         var a = G(cmp, "a", "c");
@@ -147,7 +147,7 @@ public class GSetCrossVerifyTests
 
         // But two NON-empty operands with different comparers still delegate to Union → throw
         // (the comparer-identity guard for real merges is preserved).
-        var ordinal = GSet.OfSeq(["a", "b"], StringComparer.Ordinal);
+        var ordinal = GSet.OfSeq(["a", "b"], Collation.UnicodeCodePointComparer.Ordinal);
         Assert.Throws<ArgumentException>(() => ordinal + custom);
     }
 }

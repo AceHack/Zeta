@@ -27,19 +27,75 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public static class IndexedZSet
 {
+    /// <summary>The empty indexed Z-set with named collations.</summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="keyCollation">The named collation for keys.</param>
+    /// <param name="valCollation">The named collation for values.</param>
+    /// <returns>An empty indexed Z-set.</returns>
+    public static IndexedZSet<TKey, TValue> Empty<TKey, TValue>(
+        string keyCollation,
+        string valCollation) =>
+        new(
+            ImmutableArray<KeyGroup<TKey, TValue>>.Empty,
+            Collation.ForKey<TKey>(keyCollation),
+            Collation.ForKey<TValue>(valCollation),
+            keyCollation,
+            valCollation);
+
     /// <summary>The empty indexed Z-set (the <see cref="IndexedZSet{TKey, TValue}.Add"/> identity).</summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
-    /// <param name="compareK">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
-    /// <param name="compareV">Order on the value; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="compareK">Order on the key; defaults to default collation.</param>
+    /// <param name="compareV">Order on the value; defaults to default collation.</param>
     /// <returns>An empty indexed Z-set.</returns>
     public static IndexedZSet<TKey, TValue> Empty<TKey, TValue>(
         IComparer<TKey>? compareK = null,
         IComparer<TValue>? compareV = null) =>
         new(
             ImmutableArray<KeyGroup<TKey, TValue>>.Empty,
-            compareK ?? Comparer<TKey>.Default,
-            compareV ?? Comparer<TValue>.Default);
+            compareK ?? Collation.ForKey<TKey>(),
+            compareV ?? Collation.ForKey<TValue>(),
+            compareK == null ? Collation.DefaultName : "custom",
+            compareV == null ? Collation.DefaultName : "custom");
+
+    /// <summary>The empty indexed Z-set with custom comparers and collation names.</summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="compareK">Order on the key.</param>
+    /// <param name="keyCollation">The key collation name.</param>
+    /// <param name="compareV">Order on the value.</param>
+    /// <param name="valCollation">The value collation name.</param>
+    /// <returns>An empty indexed Z-set.</returns>
+    public static IndexedZSet<TKey, TValue> Empty<TKey, TValue>(
+        IComparer<TKey> compareK,
+        string keyCollation,
+        IComparer<TValue> compareV,
+        string valCollation) =>
+        new(
+            ImmutableArray<KeyGroup<TKey, TValue>>.Empty,
+            compareK ?? Collation.ForKey<TKey>(),
+            compareV ?? Collation.ForKey<TValue>(),
+            keyCollation,
+            valCollation);
+
+    /// <summary>Build the canonical form from arbitrary groups with named collations.</summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="groups">The groups.</param>
+    /// <param name="keyCollation">The key collation name.</param>
+    /// <param name="valCollation">The value collation name.</param>
+    /// <returns>The canonical indexed Z-set.</returns>
+    public static IndexedZSet<TKey, TValue> OfGroups<TKey, TValue>(
+        IEnumerable<KeyGroup<TKey, TValue>> groups,
+        string keyCollation,
+        string valCollation)
+    {
+        ArgumentNullException.ThrowIfNull(groups);
+        var ck = Collation.ForKey<TKey>(keyCollation);
+        var cv = Collation.ForKey<TValue>(valCollation);
+        return OfGroupsInternal(groups, ck, cv, keyCollation, valCollation);
+    }
 
     /// <summary>
     /// Build the canonical form from arbitrary groups: merge duplicate keys (per-key
@@ -49,8 +105,8 @@ public static class IndexedZSet
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="groups">The groups (any order; duplicate keys merged).</param>
-    /// <param name="compareK">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
-    /// <param name="compareV">Order on the value; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="compareK">Order on the key; defaults to default collation.</param>
+    /// <param name="compareV">Order on the value; defaults to default collation.</param>
     /// <returns>The canonical indexed Z-set.</returns>
     public static IndexedZSet<TKey, TValue> OfGroups<TKey, TValue>(
         IEnumerable<KeyGroup<TKey, TValue>> groups,
@@ -58,12 +114,43 @@ public static class IndexedZSet
         IComparer<TValue>? compareV = null)
     {
         ArgumentNullException.ThrowIfNull(groups);
-        var ck = compareK ?? Comparer<TKey>.Default;
-        var cv = compareV ?? Comparer<TValue>.Default;
+        var ck = compareK ?? Collation.ForKey<TKey>();
+        var cv = compareV ?? Collation.ForKey<TValue>();
+        return OfGroupsInternal(
+            groups, ck, cv,
+            compareK == null ? Collation.DefaultName : "custom",
+            compareV == null ? Collation.DefaultName : "custom");
+    }
 
-        // Sort + merge adjacent equal-by-COMPARER keys (mirrors ZSet.Canonicalize) — never key by
-        // TKey.Equals/GetHashCode, so the merge respects ck even when ck-equivalence differs from
-        // the type's default equality (Copilot P0, #6404).
+    /// <summary>Build the canonical form from arbitrary groups with custom comparers and collation names.</summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="groups">The groups.</param>
+    /// <param name="compareK">Order on the key.</param>
+    /// <param name="keyCollation">The key collation name.</param>
+    /// <param name="compareV">Order on the value.</param>
+    /// <param name="valCollation">The value collation name.</param>
+    /// <returns>The canonical indexed Z-set.</returns>
+    public static IndexedZSet<TKey, TValue> OfGroups<TKey, TValue>(
+        IEnumerable<KeyGroup<TKey, TValue>> groups,
+        IComparer<TKey> compareK,
+        string keyCollation,
+        IComparer<TValue> compareV,
+        string valCollation)
+    {
+        ArgumentNullException.ThrowIfNull(groups);
+        var ck = compareK ?? Collation.ForKey<TKey>();
+        var cv = compareV ?? Collation.ForKey<TValue>();
+        return OfGroupsInternal(groups, ck, cv, keyCollation, valCollation);
+    }
+
+    private static IndexedZSet<TKey, TValue> OfGroupsInternal<TKey, TValue>(
+        IEnumerable<KeyGroup<TKey, TValue>> groups,
+        IComparer<TKey> ck,
+        IComparer<TValue> cv,
+        string keyCollation,
+        string valCollation)
+    {
         var sorted = new List<KeyGroup<TKey, TValue>>(groups);
         sorted.Sort((a, b) => ck.Compare(a.Key, b.Key));
         var live = new List<KeyGroup<TKey, TValue>>(sorted.Count);
@@ -79,16 +166,39 @@ public static class IndexedZSet
             }
         }
 
-        // Drop any group whose values are empty (a supplied-empty group, or one cancelled by merge)
-        // — explicit Where filter, mirroring ZSet.Canonicalize's drop-zero (CodeQL quality, #6404).
         return new IndexedZSet<TKey, TValue>(
-            live.Where(g => !g.Values.IsEmpty).ToImmutableArray(), ck, cv);
+            live.Where(g => !g.Values.IsEmpty).ToImmutableArray(), ck, cv, keyCollation, valCollation);
+    }
+
+    /// <summary>Index a flat ZSet with named collations.</summary>
+    /// <typeparam name="TSource">The source element type.</typeparam>
+    /// <typeparam name="TKey">The extracted key type.</typeparam>
+    /// <typeparam name="TValue">The extracted value type.</typeparam>
+    /// <param name="source">The flat Z-set to index.</param>
+    /// <param name="keyOf">Extract key.</param>
+    /// <param name="valOf">Extract value.</param>
+    /// <param name="keyCollation">The key collation name.</param>
+    /// <param name="valCollation">The value collation name.</param>
+    /// <returns>The canonical indexed Z-set.</returns>
+    public static IndexedZSet<TKey, TValue> IndexWith<TSource, TKey, TValue>(
+        ZSet<TSource> source,
+        Func<TSource, TKey> keyOf,
+        Func<TSource, TValue> valOf,
+        string keyCollation,
+        string valCollation)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(keyOf);
+        ArgumentNullException.ThrowIfNull(valOf);
+        var ck = Collation.ForKey<TKey>(keyCollation);
+        var cv = Collation.ForKey<TValue>(valCollation);
+        return IndexWithInternal(source, keyOf, valOf, ck, cv, keyCollation, valCollation);
     }
 
     /// <summary>
     /// Index a flat <see cref="ZSet{TSource}"/> by extracting a key and a value from each entry,
     /// carrying that entry's weight onto the <c>(key, value)</c> tuple. A tuple's weight is the SUM
-    /// over all source entries that map to it (canonicalized through <see cref="ZSet.OfEntries{T}"/>).
+    /// over all source entries that map to it (canonicalized through ZSet.OfEntries).
     /// </summary>
     /// <typeparam name="TSource">The source element type.</typeparam>
     /// <typeparam name="TKey">The extracted key type.</typeparam>
@@ -96,8 +206,8 @@ public static class IndexedZSet
     /// <param name="source">The flat Z-set to index.</param>
     /// <param name="keyOf">Extract the key from a source element.</param>
     /// <param name="valOf">Extract the value from a source element.</param>
-    /// <param name="compareK">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
-    /// <param name="compareV">Order on the value; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="compareK">Order on the key; defaults to default collation.</param>
+    /// <param name="compareV">Order on the value; defaults to default collation.</param>
     /// <returns>The canonical indexed Z-set.</returns>
     public static IndexedZSet<TKey, TValue> IndexWith<TSource, TKey, TValue>(
         ZSet<TSource> source,
@@ -109,11 +219,52 @@ public static class IndexedZSet
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(keyOf);
         ArgumentNullException.ThrowIfNull(valOf);
-        var ck = compareK ?? Comparer<TKey>.Default;
-        var cv = compareV ?? Comparer<TValue>.Default;
+        var ck = compareK ?? Collation.ForKey<TKey>();
+        var cv = compareV ?? Collation.ForKey<TValue>();
+        return IndexWithInternal(
+            source, keyOf, valOf, ck, cv,
+            compareK == null ? Collation.DefaultName : "custom",
+            compareV == null ? Collation.DefaultName : "custom");
+    }
 
-        // Extract (key, value, weight) triples, sort by COMPARER, then group adjacent equal-by-ck
-        // runs — never bucket by TKey.Equals/GetHashCode, so grouping respects ck (Copilot P0, #6404).
+    /// <summary>Index a flat ZSet with custom comparers and collation names.</summary>
+    /// <typeparam name="TSource">The source element type.</typeparam>
+    /// <typeparam name="TKey">The extracted key type.</typeparam>
+    /// <typeparam name="TValue">The extracted value type.</typeparam>
+    /// <param name="source">The flat Z-set to index.</param>
+    /// <param name="keyOf">Extract key.</param>
+    /// <param name="valOf">Extract value.</param>
+    /// <param name="compareK">Order on key.</param>
+    /// <param name="keyCollation">The key collation name.</param>
+    /// <param name="compareV">Order on value.</param>
+    /// <param name="valCollation">The value collation name.</param>
+    /// <returns>The canonical indexed Z-set.</returns>
+    public static IndexedZSet<TKey, TValue> IndexWith<TSource, TKey, TValue>(
+        ZSet<TSource> source,
+        Func<TSource, TKey> keyOf,
+        Func<TSource, TValue> valOf,
+        IComparer<TKey> compareK,
+        string keyCollation,
+        IComparer<TValue> compareV,
+        string valCollation)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(keyOf);
+        ArgumentNullException.ThrowIfNull(valOf);
+        var ck = compareK ?? Collation.ForKey<TKey>();
+        var cv = compareV ?? Collation.ForKey<TValue>();
+        return IndexWithInternal(source, keyOf, valOf, ck, cv, keyCollation, valCollation);
+    }
+
+    private static IndexedZSet<TKey, TValue> IndexWithInternal<TSource, TKey, TValue>(
+        ZSet<TSource> source,
+        Func<TSource, TKey> keyOf,
+        Func<TSource, TValue> valOf,
+        IComparer<TKey> ck,
+        IComparer<TValue> cv,
+        string keyCollation,
+        string valCollation)
+    {
         var triples = new List<(TKey Key, TValue Value, long Weight)>();
         foreach (var entry in source.ToImmutableArray())
         {
@@ -134,7 +285,7 @@ public static class IndexedZSet
                 j++;
             }
 
-            var values = ZSet.OfEntries(bucket, cv); // per-key sum + drop-zero by cv
+            var values = ZSet.OfEntries(bucket, cv, valCollation);
             if (!values.IsEmpty)
             {
                 live.Add(new KeyGroup<TKey, TValue>(key, values));
@@ -143,7 +294,7 @@ public static class IndexedZSet
             i = j;
         }
 
-        return new IndexedZSet<TKey, TValue>(live.ToImmutable(), ck, cv);
+        return new IndexedZSet<TKey, TValue>(live.ToImmutable(), ck, cv, keyCollation, valCollation);
     }
 }
 
@@ -169,14 +320,24 @@ public sealed class IndexedZSet<TKey, TValue> :
     private readonly IComparer<TKey> _compareK;
     private readonly IComparer<TValue> _compareV;
 
+    /// <summary>Gets the name of the collation used for the keys of this indexed Z-set.</summary>
+    public string KeyCollationName { get; }
+
+    /// <summary>Gets the name of the collation used for the values of this indexed Z-set.</summary>
+    public string ValueCollationName { get; }
+
     internal IndexedZSet(
         ImmutableArray<KeyGroup<TKey, TValue>> groups,
         IComparer<TKey> compareK,
-        IComparer<TValue> compareV)
+        IComparer<TValue> compareV,
+        string keyCollationName,
+        string valueCollationName)
     {
         _groups = groups;
         _compareK = compareK;
         _compareV = compareV;
+        KeyCollationName = keyCollationName;
+        ValueCollationName = valueCollationName;
     }
 
     /// <summary>The number of distinct keys (groups).</summary>
@@ -312,7 +473,7 @@ public sealed class IndexedZSet<TKey, TValue> :
             j++;
         }
 
-        return new IndexedZSet<TKey, TValue>(builder.ToImmutable(), _compareK, _compareV);
+        return new IndexedZSet<TKey, TValue>(builder.ToImmutable(), _compareK, _compareV, KeyCollationName, ValueCollationName);
     }
 
     /// <summary>The abelian-group inverse: negate every weight (per-group <see cref="ZSet{T}.Negate"/>).</summary>
@@ -325,7 +486,7 @@ public sealed class IndexedZSet<TKey, TValue> :
             builder.Add(new KeyGroup<TKey, TValue>(g.Key, g.Values.Negate()));
         }
 
-        return new IndexedZSet<TKey, TValue>(builder.ToImmutable(), _compareK, _compareV);
+        return new IndexedZSet<TKey, TValue>(builder.ToImmutable(), _compareK, _compareV, KeyCollationName, ValueCollationName);
     }
 
     /// <summary><c>a − b</c> = <c>Add(b.Negate())</c>. Negatives persist (the ℤ widening).</summary>
@@ -513,9 +674,13 @@ public sealed class IndexedZSet<TKey, TValue> :
             return true;
         }
 
-        // The comparers are part of identity (mirrors ZSet/Bag/GSet; keeps Equals symmetric +
-        // consistent with RequireSameComparers/Join, and with GetHashCode) — Copilot P0, #6404.
-        if (!_compareK.Equals(other._compareK) || !_compareV.Equals(other._compareV))
+        var sameKeyCollation = !string.Equals(KeyCollationName, "custom", StringComparison.Ordinal) &&
+                               string.Equals(KeyCollationName, other.KeyCollationName, StringComparison.Ordinal);
+        var sameValCollation = !string.Equals(ValueCollationName, "custom", StringComparison.Ordinal) &&
+                               string.Equals(ValueCollationName, other.ValueCollationName, StringComparison.Ordinal);
+
+        if ((!sameKeyCollation && !_compareK.Equals(other._compareK)) ||
+            (!sameValCollation && !_compareV.Equals(other._compareV)))
         {
             return false;
         }
@@ -548,6 +713,8 @@ public sealed class IndexedZSet<TKey, TValue> :
     {
         // Consistent with Equals: comparers are part of identity, so fold them in (Copilot P0, #6404).
         var hash = default(HashCode);
+        hash.Add(KeyCollationName);
+        hash.Add(ValueCollationName);
         hash.Add(_compareK);
         hash.Add(_compareV);
         hash.Add(_groups.Length);
@@ -569,14 +736,13 @@ public sealed class IndexedZSet<TKey, TValue> :
         return hash.ToHashCode();
     }
 
-    /// <summary>Throw if <paramref name="other"/> uses different comparers (comparers are part of identity).</summary>
-    /// <param name="other">The indexed Z-set being combined.</param>
     private void RequireSameComparers(IndexedZSet<TKey, TValue> other)
     {
-        if (!_compareK.Equals(other._compareK) || !_compareV.Equals(other._compareV))
+        if ((!string.Equals(KeyCollationName, other.KeyCollationName, StringComparison.Ordinal) && !_compareK.Equals(other._compareK)) ||
+            (!string.Equals(ValueCollationName, other.ValueCollationName, StringComparison.Ordinal) && !_compareV.Equals(other._compareV)))
         {
             throw new ArgumentException(
-                "IndexedZSet ops require both operands to use the same comparers (the comparers are part of identity).",
+                $"IndexedZSet ops require both operands to use the same collation name or equivalent comparers (this key: '{KeyCollationName}', other key: '{other.KeyCollationName}'; this value: '{ValueCollationName}', other value: '{other.ValueCollationName}').",
                 nameof(other));
         }
     }

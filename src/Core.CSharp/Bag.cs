@@ -19,72 +19,152 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public static class Bag
 {
+    /// <summary>The empty Bag (the <see cref="Bag{T}.Union"/> identity) with a named collation.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>An empty bag.</returns>
+    public static Bag<T> Empty<T>(string collation) =>
+        new(ImmutableArray<BagEntry<T>>.Empty, Collation.ForKey<T>(collation), collation);
+
     /// <summary>The empty Bag (the <see cref="Bag{T}.Union"/> identity).</summary>
     /// <typeparam name="T">The key type.</typeparam>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to default collation.</param>
     /// <returns>An empty bag.</returns>
     public static Bag<T> Empty<T>(IComparer<T>? comparer = null) =>
-        new(ImmutableArray<BagEntry<T>>.Empty, comparer ?? Comparer<T>.Default);
+        new(ImmutableArray<BagEntry<T>>.Empty, comparer ?? Collation.ForKey<T>(), comparer == null ? Collation.DefaultName : "custom");
 
-    /// <summary>A one-key Bag at count <paramref name="n"/>; <paramref name="n"/> &lt;= 0 yields the empty Bag.</summary>
+    /// <summary>The empty Bag with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>An empty bag.</returns>
+    public static Bag<T> Empty<T>(IComparer<T> comparer, string collation) =>
+        new(ImmutableArray<BagEntry<T>>.Empty, comparer ?? Collation.ForKey<T>(), collation);
+
+    /// <summary>A one-key Bag at count <paramref name="n"/>; <paramref name="n"/> &lt;= 0 yields the empty Bag with a named collation.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="x">The single key.</param>
     /// <param name="n">The multiplicity (a no-op if &lt;= 0).</param>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
     /// <returns>A bag containing exactly <paramref name="x"/> at count <paramref name="n"/> (or empty).</returns>
-    public static Bag<T> Singleton<T>(T x, long n = 1, IComparer<T>? comparer = null)
+    public static Bag<T> Singleton<T>(T x, long n = 1, string collation = Collation.DefaultName)
     {
-        var cmp = comparer ?? Comparer<T>.Default;
+        var cmp = Collation.ForKey<T>(collation);
         return n > 0
-            ? new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, n)), cmp)
-            : new Bag<T>(ImmutableArray<BagEntry<T>>.Empty, cmp);
+            ? new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, n)), cmp, collation)
+            : new Bag<T>(ImmutableArray<BagEntry<T>>.Empty, cmp, collation);
     }
 
-    /// <summary>
-    /// Canonicalize arbitrary <c>(key, count)</c> entries: sum counts per key, drop any whose
-    /// summed count is &lt;= 0, sort ascending by key.
-    /// </summary>
+    /// <summary>A one-key Bag with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="x">The single key.</param>
+    /// <param name="n">The multiplicity (a no-op if &lt;= 0).</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>A bag containing exactly <paramref name="x"/> at count <paramref name="n"/> (or empty).</returns>
+    public static Bag<T> Singleton<T>(T x, long n, IComparer<T> comparer, string collation = "custom")
+    {
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return n > 0
+            ? new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, n)), cmp, collation)
+            : new Bag<T>(ImmutableArray<BagEntry<T>>.Empty, cmp, collation);
+    }
+
+    /// <summary>Canonicalize arbitrary entries with a named collation.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="entries">The entries.</param>
-    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical Bag.</returns>
+    public static Bag<T> OfEntries<T>(IEnumerable<(T Key, long Count)> entries, string collation)
+    {
+        var cmp = Collation.ForKey<T>(collation);
+        return new Bag<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Canonicalize arbitrary entries.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="entries">The entries.</param>
+    /// <param name="comparer">Order on the key; defaults to default collation.</param>
     /// <returns>The canonical Bag.</returns>
     public static Bag<T> OfEntries<T>(IEnumerable<(T Key, long Count)> entries, IComparer<T>? comparer = null)
     {
-        var cmp = comparer ?? Comparer<T>.Default;
-        return new Bag<T>(Canonicalize(entries, cmp), cmp);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return new Bag<T>(Canonicalize(entries, cmp), cmp, comparer == null ? Collation.DefaultName : "custom");
     }
 
-    /// <summary>
-    /// Build a Bag by counting occurrences in a sequence — each occurrence adds 1. The ladder
-    /// sibling of <see cref="GSet.OfSeq"/> (both take a general <see cref="IEnumerable{T}"/>).
-    /// </summary>
+    /// <summary>Canonicalize arbitrary entries with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="entries">The entries.</param>
+    /// <param name="comparer">Order on the key.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical Bag.</returns>
+    public static Bag<T> OfEntries<T>(IEnumerable<(T Key, long Count)> entries, IComparer<T> comparer, string collation)
+    {
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return new Bag<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Build a Bag by counting occurrences in a sequence with a named collation.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="xs">The keys.</param>
-    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical Bag of occurrence counts.</returns>
+    public static Bag<T> OfSeq<T>(IEnumerable<T> xs, string collation)
+    {
+        ArgumentNullException.ThrowIfNull(xs);
+        var cmp = Collation.ForKey<T>(collation);
+        var entries = xs.Select(x => (x, 1L));
+        return new Bag<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Build a Bag by counting occurrences in a sequence.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key; defaults to default collation.</param>
     /// <returns>The canonical Bag of occurrence counts.</returns>
     public static Bag<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T>? comparer = null)
     {
         ArgumentNullException.ThrowIfNull(xs);
-        var cmp = comparer ?? Comparer<T>.Default;
-        var entries = new List<(T, long)>();
-        foreach (var x in xs)
-        {
-            entries.Add((x, 1L));
-        }
-
-        return new Bag<T>(Canonicalize(entries, cmp), cmp);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        var entries = xs.Select(x => (x, 1L));
+        return new Bag<T>(Canonicalize(entries, cmp), cmp, comparer == null ? Collation.DefaultName : "custom");
     }
 
-    /// <summary>
-    /// Build a Bag by counting occurrences in an array — the C# parity twin of the TypeScript
-    /// oracle's <c>ofArray(compare, readonly T[])</c>. Takes a concrete <c>T[]</c> (not a general
-    /// enumerable) to match the TS golden-source shape; forwards to <see cref="OfSeq{T}"/>.
-    /// </summary>
+    /// <summary>Build a Bag by counting occurrences in a sequence with a custom comparer and collation name.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="xs">The keys.</param>
-    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="comparer">Order on the key.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical Bag of occurrence counts.</returns>
+    public static Bag<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T> comparer, string collation)
+    {
+        ArgumentNullException.ThrowIfNull(xs);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        var entries = xs.Select(x => (x, 1L));
+        return new Bag<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Build a Bag by counting occurrences in an array with a named collation.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical Bag of occurrence counts.</returns>
+    public static Bag<T> OfArray<T>(T[] xs, string collation) => OfSeq(xs, collation);
+
+    /// <summary>Build a Bag by counting occurrences in an array.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key; defaults to default collation.</param>
     /// <returns>The canonical Bag of occurrence counts.</returns>
     public static Bag<T> OfArray<T>(T[] xs, IComparer<T>? comparer = null) => OfSeq(xs, comparer);
+
+    /// <summary>Build a Bag by counting occurrences in an array with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical Bag of occurrence counts.</returns>
+    public static Bag<T> OfArray<T>(T[] xs, IComparer<T> comparer, string collation) => OfSeq(xs, comparer, collation);
 
     /// <summary>
     /// Sum per key, drop non-positive summed counts, sort ascending under <paramref name="cmp"/>
@@ -142,10 +222,14 @@ public sealed class Bag<T> :
     private readonly ImmutableArray<BagEntry<T>> _items;
     private readonly IComparer<T> _comparer;
 
-    internal Bag(ImmutableArray<BagEntry<T>> items, IComparer<T> comparer)
+    /// <summary>Gets the name of the collation used by this bag.</summary>
+    public string CollationName { get; }
+
+    internal Bag(ImmutableArray<BagEntry<T>> items, IComparer<T> comparer, string collationName)
     {
         _items = items.IsDefault ? ImmutableArray<BagEntry<T>>.Empty : items;
         _comparer = comparer;
+        CollationName = collationName;
     }
 
     /// <summary>The number of DISTINCT keys (the support size).</summary>
@@ -263,7 +347,7 @@ public sealed class Bag<T> :
             j++;
         }
 
-        return new Bag<T>(builder.ToImmutable(), _comparer);
+        return new Bag<T>(builder.ToImmutable(), _comparer, CollationName);
     }
 
     /// <summary>
@@ -316,23 +400,26 @@ public sealed class Bag<T> :
     /// <param name="x">The key to increment.</param>
     /// <returns>The bag with <paramref name="x"/>'s count raised by 1.</returns>
     public Bag<T> Add(T x) =>
-        Union(new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, 1L)), _comparer));
+        Union(new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, 1L)), _comparer, CollationName));
 
     /// <summary>Increment <paramref name="x"/>'s count by <paramref name="n"/>; <paramref name="n"/> &lt;= 0 is a no-op (grow-only over ℕ).</summary>
     /// <param name="x">The key to increment.</param>
     /// <param name="n">The amount to add (no-op if &lt;= 0).</param>
     /// <returns>The bag with <paramref name="x"/>'s count raised by <paramref name="n"/> (or unchanged).</returns>
     public Bag<T> AddN(T x, long n) =>
-        n > 0 ? Union(new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, n)), _comparer)) : this;
+        n > 0 ? Union(new Bag<T>(ImmutableArray.Create(new BagEntry<T>(x, n)), _comparer, CollationName)) : this;
 
     /// <summary>Throw if <paramref name="other"/> uses a different comparer (the comparer is part of the bag's identity).</summary>
     /// <param name="other">The bag being combined.</param>
     private void RequireSameComparer(Bag<T> other)
     {
-        if (!_comparer.Equals(other._comparer))
+        var sameCollation = !string.Equals(CollationName, "custom", StringComparison.Ordinal) &&
+                            string.Equals(CollationName, other.CollationName, StringComparison.Ordinal);
+
+        if (!sameCollation && !_comparer.Equals(other._comparer))
         {
             throw new ArgumentException(
-                "Bag.Union requires both bags to use the same comparer (the comparer is part of the bag's identity).",
+                $"Bag.Union requires both bags to use the same collation name or equivalent comparer (this: '{CollationName}', other: '{other.CollationName}').",
                 nameof(other));
         }
     }
@@ -363,9 +450,10 @@ public sealed class Bag<T> :
             return true;
         }
 
-        // The comparer is part of the bag's identity (keeps Equals symmetric + GetHashCode
-        // consistent — mirrors GSet, PR review 2026-06-01).
-        if (!_comparer.Equals(other._comparer))
+        var sameCollation = !string.Equals(CollationName, "custom", StringComparison.Ordinal) &&
+                            string.Equals(CollationName, other.CollationName, StringComparison.Ordinal);
+
+        if (!sameCollation && !_comparer.Equals(other._comparer))
         {
             return false;
         }
@@ -397,6 +485,7 @@ public sealed class Bag<T> :
         // When the comparer is also an equality comparer (e.g. StringComparer.Ordinal) hash each
         // key through it so Compare==0 keys hash alike; always fold the count. (Mirrors GSet.)
         var hash = default(HashCode);
+        hash.Add(CollationName);
         hash.Add(_comparer);
         hash.Add(_items.Length);
         var eq = _comparer as IEqualityComparer<T>;

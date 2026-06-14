@@ -19,73 +19,152 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 public static class ZSet
 {
+    /// <summary>The empty Z-set (the <see cref="ZSet{T}.Union"/> identity) with a named collation.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>An empty Z-set.</returns>
+    public static ZSet<T> Empty<T>(string collation) =>
+        new(ImmutableArray<ZSetEntry<T>>.Empty, Collation.ForKey<T>(collation), collation);
+
     /// <summary>The empty Z-set (the <see cref="ZSet{T}.Union"/> identity).</summary>
     /// <typeparam name="T">The key type.</typeparam>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to default collation.</param>
     /// <returns>An empty Z-set.</returns>
     public static ZSet<T> Empty<T>(IComparer<T>? comparer = null) =>
-        new(ImmutableArray<ZSetEntry<T>>.Empty, comparer ?? Comparer<T>.Default);
+        new(ImmutableArray<ZSetEntry<T>>.Empty, comparer ?? Collation.ForKey<T>(), comparer == null ? Collation.DefaultName : "custom");
 
-    /// <summary>A one-key Z-set at weight <paramref name="w"/>; <paramref name="w"/> == 0 yields the empty Z-set. <paramref name="w"/> may be negative.</summary>
+    /// <summary>The empty Z-set with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>An empty Z-set.</returns>
+    public static ZSet<T> Empty<T>(IComparer<T> comparer, string collation) =>
+        new(ImmutableArray<ZSetEntry<T>>.Empty, comparer ?? Collation.ForKey<T>(), collation);
+
+    /// <summary>A one-key Z-set at weight <paramref name="w"/>; <paramref name="w"/> == 0 yields the empty Z-set with a named collation.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="x">The single key.</param>
     /// <param name="w">The signed weight (a no-op if 0).</param>
-    /// <param name="comparer">Order on <typeparamref name="T"/>; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
     /// <returns>A Z-set containing exactly <paramref name="x"/> at weight <paramref name="w"/> (or empty).</returns>
-    public static ZSet<T> Singleton<T>(T x, long w = 1, IComparer<T>? comparer = null)
+    public static ZSet<T> Singleton<T>(T x, long w = 1, string collation = Collation.DefaultName)
     {
-        var cmp = comparer ?? Comparer<T>.Default;
+        var cmp = Collation.ForKey<T>(collation);
         return w != 0
-            ? new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, w)), cmp)
-            : new ZSet<T>(ImmutableArray<ZSetEntry<T>>.Empty, cmp);
+            ? new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, w)), cmp, collation)
+            : new ZSet<T>(ImmutableArray<ZSetEntry<T>>.Empty, cmp, collation);
     }
 
-    /// <summary>
-    /// Canonicalize arbitrary <c>(key, weight)</c> entries: sum weights per key, drop any whose
-    /// summed weight is == 0 (retraction), sort ascending by key. Unlike the Bag (which drops
-    /// &lt;= 0), the Z-set KEEPS negatives — the ℕ→ℤ widening.
-    /// </summary>
+    /// <summary>A one-key Z-set with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="x">The single key.</param>
+    /// <param name="w">The signed weight (a no-op if 0).</param>
+    /// <param name="comparer">Order on <typeparamref name="T"/>.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>A Z-set containing exactly <paramref name="x"/> at weight <paramref name="w"/> (or empty).</returns>
+    public static ZSet<T> Singleton<T>(T x, long w, IComparer<T> comparer, string collation = "custom")
+    {
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return w != 0
+            ? new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, w)), cmp, collation)
+            : new ZSet<T>(ImmutableArray<ZSetEntry<T>>.Empty, cmp, collation);
+    }
+
+    /// <summary>Canonicalize arbitrary entries with a named collation.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="entries">The entries.</param>
-    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical Z-set.</returns>
+    public static ZSet<T> OfEntries<T>(IEnumerable<(T Key, long Weight)> entries, string collation)
+    {
+        var cmp = Collation.ForKey<T>(collation);
+        return new ZSet<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Canonicalize arbitrary entries.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="entries">The entries.</param>
+    /// <param name="comparer">Order on the key; defaults to default collation.</param>
     /// <returns>The canonical Z-set.</returns>
     public static ZSet<T> OfEntries<T>(IEnumerable<(T Key, long Weight)> entries, IComparer<T>? comparer = null)
     {
-        var cmp = comparer ?? Comparer<T>.Default;
-        return new ZSet<T>(Canonicalize(entries, cmp), cmp);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return new ZSet<T>(Canonicalize(entries, cmp), cmp, comparer == null ? Collation.DefaultName : "custom");
     }
 
-    /// <summary>
-    /// Build a Z-set by counting occurrences in a sequence — each occurrence adds weight 1. The
-    /// ladder sibling of <see cref="GSet.OfSeq"/> / <see cref="Bag.OfSeq"/>.
-    /// </summary>
+    /// <summary>Canonicalize arbitrary entries with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="entries">The entries.</param>
+    /// <param name="comparer">Order on the key.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical Z-set.</returns>
+    public static ZSet<T> OfEntries<T>(IEnumerable<(T Key, long Weight)> entries, IComparer<T> comparer, string collation)
+    {
+        var cmp = comparer ?? Collation.ForKey<T>();
+        return new ZSet<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Build a Z-set by counting occurrences in a sequence with a named collation.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="xs">The keys.</param>
-    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical Z-set of occurrence weights.</returns>
+    public static ZSet<T> OfSeq<T>(IEnumerable<T> xs, string collation)
+    {
+        ArgumentNullException.ThrowIfNull(xs);
+        var cmp = Collation.ForKey<T>(collation);
+        var entries = xs.Select(x => (x, 1L));
+        return new ZSet<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Build a Z-set by counting occurrences in a sequence.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key; defaults to default collation.</param>
     /// <returns>The canonical Z-set of occurrence weights.</returns>
     public static ZSet<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T>? comparer = null)
     {
         ArgumentNullException.ThrowIfNull(xs);
-        var cmp = comparer ?? Comparer<T>.Default;
-        var entries = new List<(T, long)>();
-        foreach (var x in xs)
-        {
-            entries.Add((x, 1L));
-        }
-
-        return new ZSet<T>(Canonicalize(entries, cmp), cmp);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        var entries = xs.Select(x => (x, 1L));
+        return new ZSet<T>(Canonicalize(entries, cmp), cmp, comparer == null ? Collation.DefaultName : "custom");
     }
 
-    /// <summary>
-    /// Build a Z-set by counting occurrences in an array — the C# parity twin of the TypeScript
-    /// oracle's <c>ofArray(compare, readonly T[])</c>. Takes a concrete <c>T[]</c> to match the TS
-    /// golden-source shape; forwards to <see cref="OfSeq{T}"/>.
-    /// </summary>
+    /// <summary>Build a Z-set by counting occurrences in a sequence with a custom comparer and collation name.</summary>
     /// <typeparam name="T">The key type.</typeparam>
     /// <param name="xs">The keys.</param>
-    /// <param name="comparer">Order on the key; defaults to <see cref="Comparer{T}.Default"/>.</param>
+    /// <param name="comparer">Order on the key.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical Z-set of occurrence weights.</returns>
+    public static ZSet<T> OfSeq<T>(IEnumerable<T> xs, IComparer<T> comparer, string collation)
+    {
+        ArgumentNullException.ThrowIfNull(xs);
+        var cmp = comparer ?? Collation.ForKey<T>();
+        var entries = xs.Select(x => (x, 1L));
+        return new ZSet<T>(Canonicalize(entries, cmp), cmp, collation);
+    }
+
+    /// <summary>Build a Z-set by counting occurrences in an array with a named collation.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="collation">The named collation to use.</param>
+    /// <returns>The canonical Z-set of occurrence weights.</returns>
+    public static ZSet<T> OfArray<T>(T[] xs, string collation) => OfSeq(xs, collation);
+
+    /// <summary>Build a Z-set by counting occurrences in an array.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key; defaults to default collation.</param>
     /// <returns>The canonical Z-set of occurrence weights.</returns>
     public static ZSet<T> OfArray<T>(T[] xs, IComparer<T>? comparer = null) => OfSeq(xs, comparer);
+
+    /// <summary>Build a Z-set by counting occurrences in an array with a custom comparer and collation name.</summary>
+    /// <typeparam name="T">The key type.</typeparam>
+    /// <param name="xs">The keys.</param>
+    /// <param name="comparer">Order on the key.</param>
+    /// <param name="collation">The name of the collation.</param>
+    /// <returns>The canonical Z-set of occurrence weights.</returns>
+    public static ZSet<T> OfArray<T>(T[] xs, IComparer<T> comparer, string collation) => OfSeq(xs, comparer, collation);
 
     /// <summary>
     /// Sum per key, drop keys whose summed weight is == 0 (retraction — KEEP negatives), sort
@@ -147,10 +226,14 @@ public sealed class ZSet<T> :
     private readonly ImmutableArray<ZSetEntry<T>> _items;
     private readonly IComparer<T> _comparer;
 
-    internal ZSet(ImmutableArray<ZSetEntry<T>> items, IComparer<T> comparer)
+    /// <summary>Gets the name of the collation used by this Z-set.</summary>
+    public string CollationName { get; }
+
+    internal ZSet(ImmutableArray<ZSetEntry<T>> items, IComparer<T> comparer, string collationName)
     {
         _items = items.IsDefault ? ImmutableArray<ZSetEntry<T>>.Empty : items;
         _comparer = comparer;
+        CollationName = collationName;
     }
 
     /// <summary>The number of DISTINCT keys with nonzero weight (the support size).</summary>
@@ -271,21 +354,21 @@ public sealed class ZSet<T> :
             j++;
         }
 
-        return new ZSet<T>(builder.ToImmutable(), _comparer);
+        return new ZSet<T>(builder.ToImmutable(), _comparer, CollationName);
     }
 
     /// <summary>Increment <paramref name="x"/>'s weight by 1 (<see cref="Union"/> with a singleton). NOT idempotent.</summary>
     /// <param name="x">The key to increment.</param>
     /// <returns>The Z-set with <paramref name="x"/>'s weight raised by 1.</returns>
     public ZSet<T> Add(T x) =>
-        Union(new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, 1L)), _comparer));
+        Union(new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, 1L)), _comparer, CollationName));
 
     /// <summary>Add signed weight <paramref name="w"/> to <paramref name="x"/>; <paramref name="w"/> == 0 is a no-op, and a key driven to net 0 is retracted.</summary>
     /// <param name="x">The key to adjust.</param>
     /// <param name="w">The signed weight to add (may be negative; no-op if 0).</param>
     /// <returns>The Z-set with <paramref name="x"/>'s weight adjusted by <paramref name="w"/>.</returns>
     public ZSet<T> AddW(T x, long w) =>
-        w != 0 ? Union(new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, w)), _comparer)) : this;
+        w != 0 ? Union(new ZSet<T>(ImmutableArray.Create(new ZSetEntry<T>(x, w)), _comparer, CollationName)) : this;
 
     /// <summary>
     /// The abelian-group inverse: flip the sign of every weight. <c>Union(a, a.Negate())</c> is
@@ -302,7 +385,7 @@ public sealed class ZSet<T> :
             builder.Add(new ZSetEntry<T>(e.Key, checked(0L - e.Weight)));
         }
 
-        return new ZSet<T>(builder.ToImmutable(), _comparer);
+        return new ZSet<T>(builder.ToImmutable(), _comparer, CollationName);
     }
 
     // ─── generic-math abelian-group surface (System.Numerics IWSAM) ──────────
@@ -392,10 +475,13 @@ public sealed class ZSet<T> :
     /// <param name="other">The Z-set being combined.</param>
     private void RequireSameComparer(ZSet<T> other)
     {
-        if (!_comparer.Equals(other._comparer))
+        var sameCollation = !string.Equals(CollationName, "custom", StringComparison.Ordinal) &&
+                            string.Equals(CollationName, other.CollationName, StringComparison.Ordinal);
+
+        if (!sameCollation && !_comparer.Equals(other._comparer))
         {
             throw new ArgumentException(
-                "ZSet.Union requires both Z-sets to use the same comparer (the comparer is part of the Z-set's identity).",
+                $"ZSet.Union requires both Z-sets to use the same collation name or equivalent comparer (this: '{CollationName}', other: '{other.CollationName}').",
                 nameof(other));
         }
     }
@@ -426,9 +512,10 @@ public sealed class ZSet<T> :
             return true;
         }
 
-        // The comparer is part of the Z-set's identity (keeps Equals symmetric + GetHashCode
-        // consistent — mirrors GSet/Bag, PR review 2026-06-01).
-        if (!_comparer.Equals(other._comparer))
+        var sameCollation = !string.Equals(CollationName, "custom", StringComparison.Ordinal) &&
+                            string.Equals(CollationName, other.CollationName, StringComparison.Ordinal);
+
+        if (!sameCollation && !_comparer.Equals(other._comparer))
         {
             return false;
         }
@@ -460,6 +547,7 @@ public sealed class ZSet<T> :
         // When the comparer is also an equality comparer (e.g. StringComparer.Ordinal) hash each
         // key through it so Compare==0 keys hash alike; always fold the weight. (Mirrors GSet/Bag.)
         var hash = default(HashCode);
+        hash.Add(CollationName);
         hash.Add(_comparer);
         hash.Add(_items.Length);
         var eq = _comparer as IEqualityComparer<T>;
