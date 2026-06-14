@@ -17,7 +17,7 @@ namespace Zeta.Tests.CSharp.Algebra;
 /// </summary>
 public class ZSetMerkleCrossVerifyTests
 {
-    private class ZSetMerkleVector
+    private sealed class ZSetMerkleVector
     {
         public string Id { get; set; } = "";
         public List<(string Key, long Weight)> Entries { get; set; } = new();
@@ -35,6 +35,8 @@ public class ZSetMerkleCrossVerifyTests
         return dir?.FullName
             ?? throw new InvalidOperationException("Could not locate repo root (Zeta.sln) from test assembly location.");
     }
+
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     private static YamlValue GetField(IReadOnlyList<KeyValuePair<string, YamlValue>> entries, string key)
     {
@@ -62,8 +64,13 @@ public class ZSetMerkleCrossVerifyTests
             var m = item as YamlValue.YMap;
             if (m == null) throw new InvalidOperationException("Expected Vector Map");
 
-            var id = (GetField(m.Entries, "id") as YamlValue.YStr).Value;
-            var expectedHex = (GetField(m.Entries, "expected_hex") as YamlValue.YStr).Value;
+            var idStrObj = GetField(m.Entries, "id") as YamlValue.YStr;
+            if (idStrObj == null) throw new InvalidOperationException("Expected string 'id'");
+            var id = idStrObj.Value;
+
+            var expectedHexObj = GetField(m.Entries, "expected_hex") as YamlValue.YStr;
+            if (expectedHexObj == null) throw new InvalidOperationException("Expected string 'expected_hex'");
+            var expectedHex = expectedHexObj.Value;
 
             var entriesSeq = GetField(m.Entries, "entries") as YamlValue.YSeq;
             var entries = new List<(string Key, long Weight)>();
@@ -72,9 +79,12 @@ public class ZSetMerkleCrossVerifyTests
                 foreach (var entryItem in entriesSeq.Items)
                 {
                     var em = entryItem as YamlValue.YMap;
-                    var k = (GetField(em.Entries, "key") as YamlValue.YStr).Value;
-                    var w = (GetField(em.Entries, "weight") as YamlValue.YInt).Value;
-                    entries.Add((k, w));
+                    if (em == null) throw new InvalidOperationException("Expected entry Map");
+                    var keyStrObj = GetField(em.Entries, "key") as YamlValue.YStr;
+                    if (keyStrObj == null) throw new InvalidOperationException("Expected string 'key'");
+                    var weightIntObj = GetField(em.Entries, "weight") as YamlValue.YInt;
+                    if (weightIntObj == null) throw new InvalidOperationException("Expected int 'weight'");
+                    entries.Add((keyStrObj.Value, weightIntObj.Value));
                 }
             }
             list.Add(new ZSetMerkleVector { Id = id, Entries = entries, ExpectedHex = expectedHex });
@@ -104,7 +114,7 @@ public class ZSetMerkleCrossVerifyTests
         }
 
         var outputPath = Path.Join(root, "tests", "cross-verification", "zset-merkle", "cs-output.json");
-        var json = JsonSerializer.Serialize(results, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(results, JsonOptions);
         File.WriteAllText(outputPath, json + "\n");
     }
 }
