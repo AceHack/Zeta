@@ -30,12 +30,15 @@ So the codegen of §4 is multiple dispatch resolved at generation time: each inj
 
 ```mermaid
 graph TD
+    Visual["Visual/geometric surface (shapes · pictures · animations — §4f)"] --> IR
     Contracts["C# interface contracts (in/out variance)"] --> IR
-    FSharp["F# IR authoring + codegen (F# compiler IS the typechecker)"] --> IR["Zeta IR (homoiconic DynamicValue; hex-in-JSON/YAML)"]
+    FSharp["F# IR authoring + codegen (F# compiler IS the typechecker)"] --> IR["Zeta IR (homoiconic DynamicValue = Clifford shapes; hex-in-JSON/YAML)"]
     IR -->|capability-gated codegen| Targets["6 targets: TS · F# · C# · Rust · Python · Go"]
     IR -->|lower| Chip8["CHIP-8 cart (shape + bytecode) — the universal runnable substrate"]
     Targets -.->|north star| Self["gen(gen) == gen in all 6 + cart (self-hosting)"]
 ```
+
+The IR has three co-equal authoring faces onto the *same* geometric object: a **visual/geometric surface** (§4f — manipulate shapes; a child can use it), the **C# interface contracts**, and **F# IR/codegen**. They are not competing source-of-truth — they are the picture, the contract, and the machinery views of one Clifford shape.
 
 Every artifact the generator emits is a **cart** (a self-contained, distributable cartridge) carrying its **shape** (its V8-hidden-shape / capability signature) and **runs on CHIP-8** — the no-information-hazard universal substrate `gen/` already targets. The 6 high-level languages are *views*; the CHIP-8 cart is the *runnable lowest common denominator* that makes a generated unit portable and sandbox-safe everywhere. See §4e.
 
@@ -118,6 +121,17 @@ The generator's emission unit is not just source text — it is a **cart**: a se
 
 ---
 
+### 4f. The shape is the surface — geometry as code (the pedagogy pillar)
+
+v1 proposed a `.zeta` *text* surface language + PEG parser; §1 pruned it as accidental complexity. The essential surface that replaces it is **visual and geometric**, and it is not a reintroduction of the pruned thing — it is the opposite. Because the IR's shapes are *already* Clifford geometric-algebra objects (§0), they are **directly renderable**: there is no text to parse: the picture *is* the program, the shape *is* the data, homoiconicity made visual.
+
+The goal Aaron states: **everything the language expresses can be seen — a 5-year-old can visualize it, and a 10-year-old can compose quantum braids with just pictures and understand what they are doing through animations.** This is not decoration; it is the accessibility payload and it has rigorous backing:
+
+- **Pictures that are proofs.** "Quantum braids by pictures" is the **string-diagram calculus of a braided monoidal category** (Joyal & Street 1991/1993): morphisms *are* diagrams, and diagram manipulation *is* valid computation/proof. Composing braids visually is therefore not a toy view of "real" code underneath — the diagram is the rigorous object. Over **braid groups** (Artin 1925) and **anyons / topological quantum computation** (Kitaev 2003; Freedman–Kitaev–Larsen–Wang), this is literally how quantum braids are written. The factory's categorical / GPU-lowerable substrate already lives here ([`2026-06-08 memetic-quantum-observer-categorical-gpu-lowerable`](2026-06-08-the-memetic-quantum-observer-categorical-built-gpu-lowerable-honest-registers.md)); the renderer treaty is in flight ([`2026-06-12 renderer-acceptance-suite … shapes-parametrized-over-O`](2026-06-12-renderer-acceptance-suite-bidirectional-strict-dialect-svg-html-addisons-buckyball-and-shapes-parametrized-over-o.md)).
+- **Constructionist lineage.** A child programming by direct manipulation with immediate animated feedback is Papert's constructionism (Mindstorms / LOGO, 1980) and Bret Victor's learnable programming ("see what you're doing, as you do it"). It is the same WHY-before-HOW / choice-architecture pedagogy the factory was built on.
+
+So the surface stack is: **manipulate shapes (pictures/animations) → the shapes ARE the IR (Clifford objects) → capability multiple-dispatch (§0–§4) → 6 language views + a CHIP-8 cart (§4e).** The visual surface and the dispatch shape and the byte-locked artifact are the *same geometric object* seen at three registers — which is why a child's braid and a generated, byte-locked, self-hosting cart are the same thing at different magnifications (manifesto §9 recursive / §10 self-similar).
+
 ## 5. Self-hosting = the trust substrate (the WHY)
 
 The north star: **the generator eventually generates itself in all 6 languages.** This is the **third Futamura projection** (Yoshihiko Futamura, 1971 — see §7) and it is the deepest *why* of the whole project, in Aaron's words:
@@ -158,6 +172,9 @@ v1 cited no prior art (an `anchor-to-human-prior-art` debt on a load-bearing sur
 - **Trusting Trust / Diverse Double-Compiling** — Thompson (1984), Wheeler (2009). Why `gen(gen)==gen` is the agreement/trust mechanism (§5).
 - **Noninterference** — Goguen & Meseguer (1982). Scheduler-as-injected-capability (§4b).
 - **Clifford / geometric algebra** — W. K. Clifford (1878); David Hestenes (spacetime algebra, 1966). The geometry the shapes optimize over (§0); the HKT substrate.
+- **String diagrams / braided monoidal categories** — Joyal & Street (1991, 1993). The visual surface (§4f) where the picture *is* the proof; the formal basis for "quantum braids by pictures."
+- **Braid groups** — Emil Artin (1925); **anyons / topological quantum computation** — Kitaev (2003), Freedman–Kitaev–Larsen–Wang. What a "quantum braid" rigorously is.
+- **Constructionism / learnable programming** — Seymour Papert (Mindstorms / LOGO, 1980); Bret Victor. A child programming by direct manipulation with immediate animated feedback (§4f); the WHY-before-HOW pedagogy.
 - **Reflexivity (in-repo):** Eve Protocol (B-0638, B-1002), `DynamicValue` (PRIMITIVE-REGISTRY), ferries 11 & 19, the Clifford six-correspondences ferry — the factory's own prior art this design instantiates.
 
 ---
