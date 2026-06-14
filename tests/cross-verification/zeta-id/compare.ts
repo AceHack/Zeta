@@ -132,6 +132,11 @@ for (const key of keys) {
       console.error(`Mismatch ${key} hex: TS=${tsHex} Go=${goHex ?? "MISSING"}`);
       mismatches++;
     }
+    const goCrockford = goExists[key]?.crockford;
+    if (tsCrockford !== goCrockford) {
+      console.error(`Mismatch ${key} crockford: TS=${tsCrockford} Go=${goCrockford ?? "MISSING"}`);
+      mismatches++;
+    }
   }
 }
 

@@ -255,19 +255,20 @@ func TestCrossVerifyTriBoolean(t *testing.T) {
 }
 
 type ZetaIdVector struct {
-	Id            string `yaml:"id"`
-	Version       uint8  `yaml:"version"`
-	Timestamp     uint64 `yaml:"timestamp"`
-	Chromosome    uint8  `yaml:"chromosome"`
-	Category      uint8  `yaml:"category"`
-	Firefly       uint8  `yaml:"firefly"`
-	AuthorityType string `yaml:"authority_type"`
-	AuthorityRaw  *uint8 `yaml:"authority_raw"`
-	Persona       uint8  `yaml:"persona"`
-	MomentumType  string `yaml:"momentum_type"`
-	MomentumRaw   *uint8 `yaml:"momentum_raw"`
-	Location      uint8  `yaml:"location"`
-	ExpectedHex   string `yaml:"expected_hex"`
+	Id                string `yaml:"id"`
+	Version           uint8  `yaml:"version"`
+	Timestamp         uint64 `yaml:"timestamp"`
+	Chromosome        uint8  `yaml:"chromosome"`
+	Category          uint8  `yaml:"category"`
+	Firefly           uint8  `yaml:"firefly"`
+	AuthorityType     string `yaml:"authority_type"`
+	AuthorityRaw      *uint8 `yaml:"authority_raw"`
+	Persona           uint8  `yaml:"persona"`
+	MomentumType      string `yaml:"momentum_type"`
+	MomentumRaw       *uint8 `yaml:"momentum_raw"`
+	Location          uint8  `yaml:"location"`
+	ExpectedHex       string `yaml:"expected_hex"`
+	ExpectedCrockford string `yaml:"expected_crockford"`
 }
 
 type ZetaIdYaml struct {
@@ -276,6 +277,7 @@ type ZetaIdYaml struct {
 
 type ZetaIdOutput struct {
 	Hex             string `json:"hex"`
+	Crockford       string `json:"crockford"`
 	RoundtripOk     bool   `json:"roundtripOk"`
 	MatchesExpected bool   `json:"matchesExpected"`
 }
@@ -341,13 +343,22 @@ func TestCrossVerifyZetaId(t *testing.T) {
 			t.Fatalf("failed to pack observation for %s: %v", v.Id, err)
 		}
 		hexVal := zeta_id.ToHex(packed)
+		crockfordVal := zeta_id.Format(packed)
 
 		unpacked := zeta_id.Unpack(packed)
-		roundtripOk := observationsEqual(obs, unpacked)
-		matchesExpected := hexVal == v.ExpectedHex
+		parsedID, parseErr := zeta_id.Parse(crockfordVal)
+		parseOk := parseErr == nil && parsedID.Cmp(packed) == 0
+		isCanonical := zeta_id.IsCanonical(crockfordVal)
+
+		// Match the canonical (TS/Rust/Python) semantics exactly: roundtripOk
+		// folds in the base32 round-trip + canonical check; matchesExpected folds
+		// in the expected_crockford comparison alongside expected_hex.
+		roundtripOk := observationsEqual(obs, unpacked) && parseOk && isCanonical
+		matchesExpected := hexVal == v.ExpectedHex && crockfordVal == v.ExpectedCrockford
 
 		outMap[v.Id] = ZetaIdOutput{
 			Hex:             hexVal,
+			Crockford:       crockfordVal,
 			RoundtripOk:     roundtripOk,
 			MatchesExpected: matchesExpected,
 		}

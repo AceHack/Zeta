@@ -37,6 +37,15 @@ tempted to ship.
 
 ### ZetaId Crockford base32 is 5-language, not 6 — Go absent, harness hides it
 
+**STATUS (fixed 2026-06-14, Otto): FIXED.** Added `src/Core.Go/zeta_id/encoding.go`
+with `Format`/`Parse`/`IsCanonical` matching the canonical TS `encoding.ts`
+alphabet+algorithm (lenient I/L→1, O→0 decode; 26-char MSB-first; 128-bit overflow
+reject). `cross_verify_test.go` now emits `crockford` + the canonical
+`roundtripOk`/`matchesExpected` booleans (parse round-trip + isCanonical +
+expected_crockford), and `compare.ts` now asserts the Go `crockford` field. All 6
+oracles agree on 12 vectors. The treaty is now genuinely 6-language and the harness
+can no longer pass with Go silent.
+
 - **Site:** `src/Core.Go/zeta_id/zeta_id.go` (no `Format`/`Parse`/base32) + `tests/cross-verification/zeta-id/compare.ts:130-136` (Go branch compares only hex)
 - **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
 - **Severity:** P0
