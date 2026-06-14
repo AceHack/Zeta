@@ -438,6 +438,26 @@ public-API review gate (see
 `docs/REVIEW-AGENTS.md` — the `public-api-designer`
 role).
 
+**Run the whole gate locally before you open a PR — `preflight`:**
+
+```bash
+bun run preflight          # all dimensions: lints + tsc + build + full test
+bun run preflight:quick    # lints + tsc only (skip the slow dotnet build + test)
+```
+
+`preflight` runs every code-correctness check CI runs — the
+F#/C#/Go/Python/Rust lints, tsc, markdownlint, the
+file-presence lints, and (full mode) build + test — and
+**reports every failure at once**. This matters because the CI
+lint job runs the per-language lints sequentially and
+*short-circuits at the first failure*, so a multi-language
+change can surface only one red per CI cycle (one 2026-06-13
+rollout took 7 PRs to clear breakage CI revealed one language
+at a time). Running `preflight` before you push catches them
+all in one pass. Tools absent locally (e.g. `golangci-lint`)
+report SKIP, not failure — they still run in CI. Source:
+`src/Core.TypeScript/hygiene/preflight.ts`.
+
 ## Code style and conventions (short form)
 
 - **F# first for data-plane code, C# wrapper where

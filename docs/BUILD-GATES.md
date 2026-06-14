@@ -9,6 +9,13 @@ locally before you push.
 > build IS the gate (every agent is the build machine). See
 > `memory/project_sovereign_no_pr_mode_local_prepush_build_gate_*`.
 
+**One command for all of it:** `bun run preflight` runs every code-correctness
+gate below (lints + tsc + build + full test) and reports **every** failure at
+once — unlike CI's lint job, which short-circuits at the first failing language.
+Use `bun run preflight:quick` to skip the slow dotnet build + test. Tools absent
+locally report SKIP (they still run in CI). Source:
+`src/Core.TypeScript/hygiene/preflight.ts`.
+
 ## The gates (run all; all must be clean)
 
 | # | Gate | Local command | Checks |

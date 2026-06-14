@@ -26,6 +26,10 @@ dotnet build Zeta.sln -c Release
 # Test
 dotnet test Zeta.sln -c Release --no-build
 
+# Before opening a PR: run every gate dimension locally, all failures at once
+# (lints + tsc + build + test; --quick skips the slow build + test)
+bun run preflight
+
 # Health check (optional, diagnose a broken toolchain)
 tools/setup/doctor.sh
 ```
@@ -152,6 +156,7 @@ full branch model.
 
 **PR checklist (self):**
 
+- [ ] `bun run preflight` — all gate dimensions green (covers the two below + every language lint).
 - [ ] `dotnet build -c Release` — 0 W / 0 E.
 - [ ] `dotnet test -c Release` — all green.
 - [ ] Any new claim has a test.
