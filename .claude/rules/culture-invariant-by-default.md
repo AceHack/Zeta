@@ -16,6 +16,7 @@ Carved sentence:
 ## Diagnostics and Enforcement
 
 These rules are enforced at compiler/analyzer level for all harnesses in the repository via `.editorconfig` under `[*.{cs,csx}]`:
+
 - `CA1304` (Specify CultureInfo) ➔ `error`
 - `CA1305` (Specify IFormatProvider) ➔ `error`
 - `CA1307` (Specify StringComparison for clarity of intent) ➔ `error`
