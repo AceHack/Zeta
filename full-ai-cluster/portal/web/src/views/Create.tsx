@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft, ArrowRight, Check, CircleCheck, Copy, Loader2, Rocket, Server, Sliders, Sparkles,
+  ArrowLeft, ArrowRight, Check, CircleCheck, Copy, Loader2, Rocket, Server, Sliders, Sparkles, TriangleAlert,
 } from "lucide-react";
-import type { CatalogEntryVM } from "@/lib/api";
+import { api, type CatalogEntryVM, type ResourceVM } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,24 @@ const EXPOSE: Array<{ v: string; label: string; help: string }> = [
   { v: "public", label: "Public HTTPS", help: "Published on a public hostname over TLS via the Gateway. For web apps." },
 ];
 
-type Form = { name: string; namespace: string; expose: string; replicas: string; host: string; values: Record<string, string> };
+type Form = { name: string; namespace: string; expose: string; replicas: string; host: string; size: { cpu: string; memory: string }; values: Record<string, string> };
+
+/** The Deployable `spec` the controller renders — built straight from the form. */
+function buildSpec(bp: CatalogEntryVM, f: Form): Record<string, unknown> {
+  const spec: Record<string, unknown> = { blueprint: bp.blueprint };
+  if (f.expose !== bp.defaultExpose) spec.expose = f.expose;
+  const replicas = Number(f.replicas);
+  if (f.replicas !== "1" && Number.isFinite(replicas)) spec.replicas = replicas;
+  if (f.host) spec.host = f.host;
+  const size: Record<string, string> = {};
+  if (f.size.cpu) size.cpu = f.size.cpu;
+  if (f.size.memory) size.memory = f.size.memory;
+  if (Object.keys(size).length) spec.size = size;
+  const vals = Object.fromEntries(Object.entries(f.values).filter(([, v]) => v !== ""));
+  if (Object.keys(vals).length) spec.values = vals;
+  spec.ai = { admin: "otto", policy: "default", room: "enabled" };
+  return spec;
+}
 
 function buildManifest(bp: CatalogEntryVM, f: Form): string {
   const lines = [
@@ -34,6 +51,7 @@ function buildManifest(bp: CatalogEntryVM, f: Form): string {
   if (f.expose !== bp.defaultExpose) lines.push(`  expose: ${f.expose}`);
   if (f.replicas !== "1") lines.push(`  replicas: ${f.replicas}`);
   if (f.host) lines.push(`  host: ${f.host}`);
+  if (f.size.cpu || f.size.memory) lines.push(`  size: { ${[f.size.cpu && `cpu: ${f.size.cpu}`, f.size.memory && `memory: ${f.size.memory}`].filter(Boolean).join(", ")} }`);
   const vals = Object.entries(f.values).filter(([, v]) => v !== "");
   if (vals.length) { lines.push("  values:"); for (const [k, v] of vals) lines.push(`    ${k}: ${JSON.stringify(v)}`); }
   lines.push("  ai:", "    admin: otto", "    policy: default", "    room: enabled");
@@ -45,7 +63,7 @@ export function Create({ catalog, onChanged }: { catalog: CatalogEntryVM[]; onCh
   const [picked, setPicked] = useState<CatalogEntryVM | null>(null);
   const [building, setBuilding] = useState(false);
   if (building) return <BlueprintBuilder onExit={() => setBuilding(false)} onSaved={() => { setBuilding(false); onChanged?.(); }} />;
-  if (picked) return <DeployWizard bp={picked} onExit={() => setPicked(null)} />;
+  if (picked) return <DeployWizard bp={picked} onExit={() => { setPicked(null); onChanged?.(); }} />;
   return (
     <div>
       <div className="mb-6 flex items-end justify-between gap-4">
@@ -91,7 +109,7 @@ const STEPS: Array<{ id: StepId; label: string; icon: typeof Server }> = [
 function DeployWizard({ bp, onExit }: { bp: CatalogEntryVM; onExit: () => void }) {
   const [step, setStep] = useState<StepId>("basics");
   const [form, setForm] = useState<Form>({
-    name: "", namespace: "default", expose: bp.defaultExpose, replicas: "1", host: "",
+    name: "", namespace: "default", expose: bp.defaultExpose, replicas: "1", host: "", size: { cpu: "500m", memory: "1Gi" },
     values: Object.fromEntries(bp.variables.map((v) => [v.name, v.default ?? ""])),
   });
   const set = (p: Partial<Form>) => setForm((f) => ({ ...f, ...p }));
@@ -140,7 +158,7 @@ function DeployWizard({ bp, onExit }: { bp: CatalogEntryVM; onExit: () => void }
           )}
 
           {step === "options" && (
-            <Step title="Configuration" desc="How this resource is exposed, how many replicas it runs, and its blueprint-specific settings.">
+            <Step title="Configuration" desc="How this resource is exposed, how many replicas it runs, how much CPU/memory it gets, and its blueprint-specific settings.">
               <Field label="Exposure" help={EXPOSE.find((x) => x.v === form.expose)?.help}>
                 <Select value={form.expose} onChange={(e) => set({ expose: e.target.value })}>
                   {EXPOSE.map((x) => <option key={x.v} value={x.v}>{x.label}</option>)}
@@ -154,6 +172,14 @@ function DeployWizard({ bp, onExit }: { bp: CatalogEntryVM; onExit: () => void }
               <Field label="Replicas" help="How many copies to run. Stateful resources (databases, game servers) usually run one.">
                 <Input type="number" min={0} value={form.replicas} onChange={(e) => set({ replicas: e.target.value })} className="w-32" />
               </Field>
+              <div className="flex gap-4">
+                <Field label="CPU" help="Kubernetes CPU request (e.g. 500m = half a core, 1 = one core).">
+                  <Input value={form.size.cpu} onChange={(e) => set({ size: { ...form.size, cpu: e.target.value } })} placeholder="500m" className="w-32" />
+                </Field>
+                <Field label="Memory" help="Kubernetes memory request (e.g. 1Gi, 512Mi).">
+                  <Input value={form.size.memory} onChange={(e) => set({ size: { ...form.size, memory: e.target.value } })} placeholder="1Gi" className="w-32" />
+                </Field>
+              </div>
               {bp.variables.length > 0 && (
                 <div className="pt-2">
                   <div className="mb-1 text-sm font-medium">Blueprint settings</div>
@@ -179,6 +205,7 @@ function DeployWizard({ bp, onExit }: { bp: CatalogEntryVM; onExit: () => void }
                 <Row k="Exposure" v={EXPOSE.find((x) => x.v === form.expose)?.label ?? form.expose} />
                 {form.expose === "public" && form.host && <Row k="Host" v={form.host} />}
                 <Row k="Replicas" v={form.replicas} />
+                <Row k="Size" v={`${form.size.cpu || "—"} CPU · ${form.size.memory || "—"} memory`} />
               </div>
               <ManifestBlock manifest={manifest} />
             </Step>
@@ -190,7 +217,7 @@ function DeployWizard({ bp, onExit }: { bp: CatalogEntryVM; onExit: () => void }
               <ArrowLeft className="size-4" /> {stepIdx === 0 ? "Cancel" : "Back"}
             </Button>
             {step === "review" ? (
-              <Button variant="success" onClick={() => setStep("provision")}><Rocket className="size-4" /> Deploy</Button>
+              <Button variant="success" disabled={!form.name || !nameValid} onClick={() => setStep("provision")}><Rocket className="size-4" /> Deploy</Button>
             ) : (
               <Button disabled={step === "basics" && (!form.name || !nameValid)} onClick={() => setStep(STEPS[stepIdx + 1]!.id)}>
                 Continue <ArrowRight className="size-4" />
@@ -203,71 +230,115 @@ function DeployWizard({ bp, onExit }: { bp: CatalogEntryVM; onExit: () => void }
   );
 }
 
-// ── provisioning (staged progress) ─────────────────────────────────────
-const STAGES = [
-  "Validating the Deployable spec",
-  "Resolving the blueprint",
-  "Creating Kubernetes objects",
-  "Provisioning storage (Longhorn)",
-  "Scheduling pods",
-  "Pulling the container image",
-  "Starting the workload",
-  "Opening the collaboration room",
-];
+// ── provisioning (REAL: create the Deployable, then poll until it's ready) ──
+type ProvState =
+  | { kind: "submitting" }
+  | { kind: "waiting"; phase: string }
+  | { kind: "ready" }
+  | { kind: "error"; message: string };
 
-function Provisioning({ bp, form, onDone }: { bp: CatalogEntryVM; form: Form; onDone: () => void; onBack: () => void }) {
+const READY_TIMEOUT_MS = 120_000; // honest ceiling — past this we surface an error, not a fake success
+const POLL_MS = 2_000;
+
+function Provisioning({ bp, form, onDone, onBack }: { bp: CatalogEntryVM; form: Form; onDone: () => void; onBack: () => void }) {
   const name = form.name || `my-${bp.blueprint}`;
-  const [done, setDone] = useState(0);
-  const [finished, setFinished] = useState(false);
+  const ns = form.namespace || "default";
+  const [state, setState] = useState<ProvState>({ kind: "submitting" });
+  // one-shot guard: React StrictMode double-invokes effects in dev — don't deploy twice
+  const started = useRef(false);
 
   useEffect(() => {
-    let i = 0;
-    let timer: ReturnType<typeof setTimeout>;
-    const tick = () => {
-      i += 1;
-      setDone(i);
-      if (i < STAGES.length) timer = setTimeout(tick, 420 + (i % 3) * 220);
-      else { setFinished(true); toast.success(`${name} provisioned`, { description: "The resource is running and an agent is operating it." }); }
+    if (started.current) return;
+    started.current = true;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const find = (groups: Awaited<ReturnType<typeof api.resources>>): ResourceVM | undefined =>
+      groups.flatMap((g) => g.resources).find((r) => r.name === name && r.namespace === ns);
+
+    const run = async () => {
+      // 1) create the Deployable (the real write)
+      try {
+        const r = await api.createDeployable({ name, namespace: ns, spec: buildSpec(bp, form) });
+        if (!r.ok) { if (!cancelled) setState({ kind: "error", message: r.message }); return; }
+      } catch (e) {
+        if (!cancelled) setState({ kind: "error", message: (e as Error).message });
+        return;
+      }
+      if (cancelled) return;
+      setState({ kind: "waiting", phase: "Pending" });
+
+      // 2) poll the real resource list until it reports ready (or errors / times out)
+      const deadline = Date.now() + READY_TIMEOUT_MS;
+      const poll = async () => {
+        if (cancelled) return;
+        try {
+          const res = find(await api.resources());
+          if (cancelled) return;
+          if (res?.health === "ready") { setState({ kind: "ready" }); toast.success(`${name} is live`, { description: "The resource is running and an agent is operating it." }); return; }
+          if (res?.health === "error") { setState({ kind: "error", message: res.message ?? `${name} failed to start (${res.phase}).` }); return; }
+          if (Date.now() > deadline) { setState({ kind: "error", message: `${name} is still ${res?.phase ?? "starting"} after ${READY_TIMEOUT_MS / 1000}s — check the resource console.` }); return; }
+          setState({ kind: "waiting", phase: res?.phase ?? "Pending" });
+        } catch (e) {
+          if (!cancelled) setState({ kind: "error", message: (e as Error).message });
+          return;
+        }
+        timer = setTimeout(poll, POLL_MS);
+      };
+      void poll();
     };
-    timer = setTimeout(tick, 400);
-    return () => clearTimeout(timer);
+
+    void run();
+    return () => { cancelled = true; if (timer) clearTimeout(timer); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const ready = state.kind === "ready";
+  const failed = state.kind === "error";
+  const title = ready ? "Provisioned" : failed ? "Couldn't deploy" : "Provisioning";
+  const sub = ready ? "Your resource is live." : failed ? "The deploy did not complete." : "Creating the Deployable and waiting for it to come up…";
 
   return (
     <div className="mx-auto max-w-xl">
       <div className="mb-6 flex items-center gap-3">
-        <div className={cn("flex size-10 items-center justify-center rounded-lg border", finished ? "border-success/40 bg-success/10" : "border-border bg-muted/50")}>
-          {finished ? <CircleCheck className="size-5 text-success" /> : <Loader2 className="size-5 animate-spin text-primary" />}
+        <div className={cn("flex size-10 items-center justify-center rounded-lg border", ready ? "border-success/40 bg-success/10" : failed ? "border-destructive/40 bg-destructive/10" : "border-border bg-muted/50")}>
+          {ready ? <CircleCheck className="size-5 text-success" /> : failed ? <TriangleAlert className="size-5 text-destructive" /> : <Loader2 className="size-5 animate-spin text-primary" />}
         </div>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">{finished ? "Provisioned" : "Provisioning"} {name}</h1>
-          <p className="text-sm text-muted-foreground">{finished ? "Your resource is live." : "Creating and starting your resource…"}</p>
+          <h1 className="text-xl font-semibold tracking-tight">{title} {name}</h1>
+          <p className="text-sm text-muted-foreground">{sub}</p>
         </div>
       </div>
 
-      <ol className="space-y-1">
-        {STAGES.map((s, i) => {
-          const isDone = i < done, current = i === done && !finished;
-          return (
-            <li key={s} className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm", current && "bg-accent/50")}>
-              <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-full border", isDone ? "border-success bg-success/15 text-success" : current ? "border-primary text-primary" : "border-border text-muted-foreground")}>
-                {isDone ? <Check className="size-3" /> : current ? <Loader2 className="size-3 animate-spin" /> : <span className="text-[10px]">{i + 1}</span>}
-              </span>
-              <span className={cn(isDone ? "text-foreground" : current ? "text-foreground" : "text-muted-foreground")}>{s}</span>
-            </li>
-          );
-        })}
-      </ol>
+      <div className="rounded-lg border border-border bg-card/40 p-4 text-sm">
+        <StatusRow done={state.kind !== "submitting"} active={state.kind === "submitting"} label="Submitting the Deployable to the cluster" />
+        <StatusRow
+          done={ready}
+          active={state.kind === "waiting"}
+          failed={failed}
+          label={state.kind === "waiting" ? `Waiting for the controller — ${state.phase}` : "Controller renders and starts the workload"}
+        />
+        <StatusRow done={ready} active={false} label="Resource ready, agent operating it" last />
+      </div>
 
-      {finished && (
-        <div className="mt-6 flex gap-2">
-          <Button onClick={onDone}><Sparkles className="size-4" /> Done</Button>
-        </div>
-      )}
+      {failed && state.kind === "error" && <p className="mt-3 text-sm text-destructive">{state.message}</p>}
+
+      <div className="mt-6 flex gap-2">
+        {ready && <Button onClick={onDone}><Sparkles className="size-4" /> Done</Button>}
+        {failed && <Button variant="outline" onClick={onBack}><ArrowLeft className="size-4" /> Back to review</Button>}
+      </div>
     </div>
   );
 }
+
+const StatusRow = ({ done, active, failed, label, last }: { done: boolean; active: boolean; failed?: boolean; label: string; last?: boolean }) => (
+  <div className={cn("flex items-center gap-3 py-1.5", !last && "border-b border-border/50")}>
+    <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-full border", done ? "border-success bg-success/15 text-success" : failed ? "border-destructive text-destructive" : active ? "border-primary text-primary" : "border-border text-muted-foreground")}>
+      {done ? <Check className="size-3" /> : failed ? <TriangleAlert className="size-3" /> : active ? <Loader2 className="size-3 animate-spin" /> : null}
+    </span>
+    <span className={cn(done || active ? "text-foreground" : "text-muted-foreground")}>{label}</span>
+  </div>
+);
 
 // ── small presentational helpers ───────────────────────────────────────
 const Step = ({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) => (

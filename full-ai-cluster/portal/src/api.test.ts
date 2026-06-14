@@ -1,8 +1,9 @@
 // full-ai-cluster/portal/src/api.test.ts
 //
 // The BFF endpoints over the in-memory platform: resource view, catalog,
-// needs-me board, a single Room, and the human grant write (which clears the
-// pending item). Non-/api paths pass through (null) for static serving.
+// needs-me board, a single Room, the human grant write (which clears the
+// pending item), and the deploy write path (create a Deployable). Non-/api
+// paths pass through (null) for static serving.
 
 import { beforeEach, describe, expect, test } from "bun:test";
 import { encodeResource, handle } from "./api.ts";
@@ -107,5 +108,43 @@ describe("append events (controller / personas write the room log)", () => {
   test("a missing/invalid body → 400", async () => {
     const r = await post(`/api/rooms/${encodeResource("tenant-a", "clan")}/events`, { by: "otto", body: { type: "bogus" } });
     expect(r!.status).toBe(400);
+  });
+});
+
+describe("create Deployable (the deploy write path — a human deploys a service)", () => {
+  const post = (p: string, b: unknown) => handle(new Request(`http://x${p}`, { method: "POST", body: JSON.stringify(b) }), data);
+
+  test("a valid create returns ok and the resource appears, Running (ready)", async () => {
+    const r = await post("/api/deployables", { name: "billing", namespace: "tenant-a", spec: { blueprint: "web", expose: "public", size: { cpu: "500m", memory: "1Gi" }, ai: { admin: "otto", policy: "default", room: "enabled" } } });
+    expect(r!.status).toBe(200);
+    const j = (await body(r)) as any;
+    expect(j.ok).toBe(true);
+
+    // the new resource shows up in the top-down list, healthy/ready (status phase Running)
+    const groups = ((await body(await get("/api/resources"))) as any).groups as Array<{ category: string; resources: any[] }>;
+    const all = groups.flatMap((g) => g.resources);
+    const billing = all.find((res) => res.name === "billing" && res.namespace === "tenant-a");
+    expect(billing).toBeDefined();
+    expect(billing.health).toBe("ready");
+    expect(billing.blueprint).toBe("web");
+  });
+
+  test("missing name or spec.blueprint → 400", async () => {
+    expect((await post("/api/deployables", { namespace: "tenant-a", spec: { blueprint: "web" } }))!.status).toBe(400);
+    expect((await post("/api/deployables", { name: "x", spec: { expose: "public" } }))!.status).toBe(400);
+  });
+
+  test("create is idempotent — same ns/name upserts, not duplicates", async () => {
+    await post("/api/deployables", { name: "dup", namespace: "tenant-a", spec: { blueprint: "web" } });
+    await post("/api/deployables", { name: "dup", namespace: "tenant-a", spec: { blueprint: "web" } });
+    const groups = ((await body(await get("/api/resources"))) as any).groups as Array<{ resources: any[] }>;
+    const dups = groups.flatMap((g) => g.resources).filter((res) => res.name === "dup" && res.namespace === "tenant-a");
+    expect(dups.length).toBe(1);
+  });
+
+  test("405 when the backend has no createDeployable", async () => {
+    const noWrite = { listDeployables: async () => [], listBlueprints: async () => [], listRooms: async () => [], getRoom: async () => undefined, grant: async () => false };
+    const r = await handle(new Request("http://x/api/deployables", { method: "POST", body: JSON.stringify({ name: "z", spec: { blueprint: "web" } }) }), noWrite as any);
+    expect(r!.status).toBe(405);
   });
 });

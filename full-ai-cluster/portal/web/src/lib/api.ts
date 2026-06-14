@@ -159,6 +159,9 @@ export const api = {
   buildBlueprint: (message: string, draft?: BlueprintProposal) => j<{ reply: string; spec?: BlueprintProposal }>("/api/blueprints/build", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ message, draft }) }),
   saveBlueprint: (name: string, spec: Omit<BlueprintProposal, "name">) => post("/api/blueprints", { name, spec }),
 
+  // deploy: create a Deployable instance (the deploy write path)
+  createDeployable: (body: { name: string; namespace?: string; spec: Record<string, unknown> }) => post("/api/deployables", body),
+
   // admin plane
   cluster: () => j<ClusterCapacity>("/api/admin/cluster"),
   tenants: () => j<{ tenants: TenantUsage[] }>("/api/admin/tenants").then((d) => d.tenants),

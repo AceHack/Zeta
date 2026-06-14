@@ -3,8 +3,8 @@
 // The BFF (backend-for-frontend) — pure request routing over an injected data
 // source, so the whole API is unit-tested without a live cluster. The server
 // (server.ts) wires a real K8s/Room-backed PlatformData into `handle`; tests
-// wire an in-memory one. Read endpoints render view models; the single write
-// endpoint is the human authorization grant (no-directives: only a human grants).
+// wire an in-memory one. Read endpoints render view models; the write endpoints
+// are the deploy path (create a Deployable) + the human authorization grant.
 
 import {
   type BlueprintCR,
@@ -54,6 +54,8 @@ export interface PlatformData {
   admin?: AdminData;
   /** Create/save a Blueprint (the builder). Optional. */
   createBlueprint?(bp: { name: string; namespace?: string; spec: Omit<BlueprintProposal, "name"> }): Promise<{ ok: boolean; message: string }>;
+  /** Create a Deployable instance — the deploy write path (a human deploys a service). Optional. */
+  createDeployable?(d: { name: string; namespace?: string; spec: Record<string, unknown> }): Promise<{ ok: boolean; message: string }>;
 }
 
 /** The typed Event bodies the write endpoint accepts (mirrors the Room substrate). */
@@ -100,6 +102,14 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
       const b = (await req.json().catch(() => ({}))) as { name?: string; namespace?: string; spec?: Omit<BlueprintProposal, "name"> };
       if (!b.name || !b.spec?.image) return json({ error: "name + spec.image required" }, 400);
       return json(await data.createBlueprint({ name: b.name, ...(b.namespace ? { namespace: b.namespace } : {}), spec: b.spec }));
+    }
+
+    // POST /api/deployables — create a Deployable instance (the deploy write path)
+    if (path === "/api/deployables" && req.method === "POST") {
+      if (!data.createDeployable) return json({ error: "deployable creation not available on this backend" }, 405);
+      const b = (await req.json().catch(() => ({}))) as { name?: string; namespace?: string; spec?: Record<string, unknown> };
+      if (!b.name || !b.spec?.blueprint) return json({ error: "name + spec.blueprint required" }, 400);
+      return json(await data.createDeployable({ name: b.name, ...(b.namespace ? { namespace: b.namespace } : {}), spec: b.spec }));
     }
 
     // GET /api/needs-me — pending authorizations across all rooms (the human queue)

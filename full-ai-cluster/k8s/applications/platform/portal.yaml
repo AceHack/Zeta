@@ -13,8 +13,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
 ---
-# Read-only on the platform resources it renders. No write — the only state the
-# portal mutates is its own Room log on the PVC.
+# Reads + operates the platform resources it renders. The deploy wizard creates
+# Deployables and the builder creates Blueprints; the resource console edits
+# config/lifecycle. The durable Room log lives on the PVC, not the API.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -22,9 +23,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
 rules:
-  - apiGroups: ["platform.zeta.io"]   # the resource console: read + edit config/lifecycle
+  - apiGroups: ["platform.zeta.io"]   # the deploy wizard creates; console edits config/lifecycle
     resources: ["deployables"]
-    verbs: ["get", "list", "watch", "update", "patch", "delete"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: ["platform.zeta.io"]   # the Blueprint Builder saves blueprints
     resources: ["blueprints"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]

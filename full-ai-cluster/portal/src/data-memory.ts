@@ -37,6 +37,23 @@ export class InMemoryPlatform implements PlatformData {
     return { ok: true, message: `Blueprint "${bp.name}" saved — it's now in the catalog and ready to deploy.` };
   }
 
+  /**
+   * Create a Deployable instance (the deploy write path). Upserts by ns/name and
+   * lands it Running so the wizard's resource poll sees it become ready at once —
+   * the demo stand-in for the controller rendering + reconciling the CR.
+   */
+  async createDeployable(d: { name: string; namespace?: string; spec: Record<string, unknown> }): Promise<{ ok: boolean; message: string }> {
+    const ns = d.namespace ?? "zeta-platform";
+    const s = d.spec as { blueprint?: string; expose?: string; host?: string; ai?: { admin?: string; policy?: string; room?: string } };
+    const cr: DeployableCR = {
+      metadata: { name: d.name, namespace: ns },
+      spec: { blueprint: String(s.blueprint ?? ""), ...(s.expose ? { expose: s.expose } : {}), ...(s.host ? { host: s.host } : {}), ...(s.ai ? { ai: s.ai } : {}) },
+      status: { phase: "Running" },
+    };
+    this.deployables = [...this.deployables.filter((x) => !(x.metadata.name === d.name && x.metadata.namespace === ns)), cr];
+    return { ok: true, message: `Deployable "${d.name}" created in ${ns} — it's running and an agent is operating it.` };
+  }
+
   async listDeployables(): Promise<DeployableCR[]> {
     return this.deployables;
   }

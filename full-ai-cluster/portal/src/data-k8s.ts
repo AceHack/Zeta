@@ -72,6 +72,21 @@ export class K8sPlatform implements PlatformData {
     if (!r.ok) return { ok: false, message: `save Blueprint ${bp.name}: ${r.status} ${await r.text()}` };
     return { ok: true, message: `Blueprint "${bp.name}" applied to ${ns} — it's in the catalog.` };
   }
+
+  /** Create a Deployable by server-side-applying the Deployable CR — the deploy write path. */
+  async createDeployable(d: { name: string; namespace?: string; spec: Record<string, unknown> }): Promise<{ ok: boolean; message: string }> {
+    const ns = d.namespace ?? "zeta-platform";
+    const body = { apiVersion: `${GROUP}/${VERSION}`, kind: "Deployable", metadata: { name: d.name, namespace: ns }, spec: d.spec };
+    const path = `/apis/${GROUP}/${VERSION}/namespaces/${ns}/deployables/${d.name}`;
+    const r = await fetch(`${this.host}${path}?fieldManager=zeta-portal&force=true`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/apply-patch+yaml", Accept: "application/json" },
+      body: JSON.stringify(body),
+      tls: { ca: this.ca },
+    } as RequestInit);
+    if (!r.ok) return { ok: false, message: `create Deployable ${d.name}: ${r.status} ${await r.text()}` };
+    return { ok: true, message: `Deployable "${d.name}" applied to ${ns} — the controller is rendering it.` };
+  }
   listRooms(): Promise<RoomData[]> {
     return this.rooms.listRooms();
   }
