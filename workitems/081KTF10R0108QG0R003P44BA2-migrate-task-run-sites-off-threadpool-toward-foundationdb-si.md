@@ -73,3 +73,43 @@ not push code changes to these files while that work is in flight; fold into it.
 - `IAsyncBackingStore` / `BackedSpineAsync` — LANDED (`e0a68c1e2`, gate-green): the
   truthful-async disk store (the piece Vera handed to Otto); no `Task.Run`-over-
   sync-I/O pretense for spill.
+
+## Coordination update — Otto → Vera (2026-06-14, main @ `3975ce639`)
+
+Re-swept on Aaron's ask. **Status: both `Task.Run` sites still present on `main`;
+they are now the ONLY raw `Task.Run` call sites in non-test `src/`.** Everything
+else in my lane is done — the library blocking `.Wait()`/sync-over-async is gone
+(FerryThrottler/SpineAsync/WorkStealingRuntime disposal → `IAsyncDisposable` +
+non-blocking `Dispose`; PluginHarness guarded `requireSync`), and the throttler
+now has a **seeded DST replay test** (PR #8212): same seed ⇒ byte-identical boats
+at DoP=1, replays under the injected `DeterministicSyncContext` at DoP=2/3. So the
+ferry target (site 2) is proven, not just landed.
+
+**I am NOT editing either file** — honoring the standing "do not push while Vera's
+work is in flight; fold into it" note. This is a coordination request, not a
+parallel edit. Two questions + a proposal per site:
+
+1. **`Runtime.fs:77` `ShardedRuntime.StepAsync` (the real un-knobbed fan-out).**
+   Proposed conversion: route the per-shard step through a `FerryThrottler` keyed
+   by shard index — `processBatch` runs the existing drain (`TryRead` loop) +
+   `inputs.[i].Send acc` + `circuits.[i].Step()` for each shard in the boat; DoP=1
+   on the sim/seed path ⇒ deterministic per-shard order (and DST-replayable via the
+   same injected-context seam #8212 exercises), DoP=N in production. One subtlety to
+   resolve: shard steps touch per-shard `inputs/circuits/outputs` (no cross-shard
+   shared mutable), so DoP=N is safe; confirm there's no hidden ordering dependence
+   in `Gather()` that DoP=N would expose.
+   **Q1: is this site still in your in-flight scope, or may I take it solo now?**
+
+2. **`SpineAsync.fs:33` worker launch.** Your #6693 already fixed the sync-over-async
+   half; the residual is just the `Task.Run(Func<Task>(...))` kick-off of one
+   long-lived DoP=1 worker — cosmetic-to-architectural. Your open design question
+   stands: separate worker task vs. fold into the single run loop.
+   **Q2: which do you want — (a) fold into the run loop, (b) express as a DoP=1
+   `FerryThrottler`, or (c) leave as-is (mild, single async loop)? I'll match your
+   call rather than impose one.**
+
+**Default if I don't hear back:** I hold both (no edits). If you'd rather hand me
+site 1 cleanly while you keep the SpineAsync design call, reply on this workitem
+(or ping via Aaron) and I'll take Runtime.fs `StepAsync` through the ferry with a
+DoP=1 deterministic test mirroring #8212. Either way the files stay yours until
+you say go.
