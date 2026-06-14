@@ -167,6 +167,7 @@ describe("buildInventoryReport", () => {
         files: [
           "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
           "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+          "tools/installer/zeta-self-register.sh",
         ],
       },
     ]);
