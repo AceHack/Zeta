@@ -1043,9 +1043,10 @@ jobs:
       - name: Run markdownlint
         run: mise exec -- markdownlint-cli2 "**/*.md"
 
-  lint-tsc-tools:
-    # Strict typecheck on every TypeScript file via `tsc --noEmit -p
-    # tsconfig.json`. Round 35 static-analysis expansion per B-0106:
+  lint-typescript:
+    # The TypeScript member of the per-language lint family (lint (F#) / (C#) /
+    # (Go) / (Python) / (Rust) / (TS)). Strict typecheck on every TypeScript file
+    # via `tsc --noEmit -p tsconfig.json`. Round 35 static-analysis expansion per B-0106:
     # ESLint with typed-linting catches *most* TS issues but not all
     # assignability narrowings. Slice 9 (PR #882) shipped a real
     # TS2322 (`Type 'string' is not assignable to type "head" | ...`)
@@ -1054,7 +1055,7 @@ jobs:
     # job is the missing gate that prevents the class. Same shape as
     # round-30 semgrep elevation: codified rules (tsconfig strict mode)
     # without a gate aren't a control.
-    name: lint (tsc TypeScript)
+    name: lint (TS)
     timeout-minutes: 5
     runs-on: ubuntu-24.04
 
@@ -1300,7 +1301,7 @@ jobs:
 
   cross-verify:
     # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
-    # package-manager suite. Previously only `lint (tsc TypeScript)` type-checked these, so a
+    # package-manager suite. Previously only `lint (TS)` type-checked these, so a
     # regression to a committed golden vector, or a 4-language disagreement, could merge green.
     # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
     # oracle via src/Core.TypeScript/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
@@ -1334,7 +1335,7 @@ jobs:
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise (.mise.toml pin); shellenv wires BASH_ENV so later run: steps
-        # have bun on PATH. Retry rationale per lint-tsc-tools (mise+bun CDN 502 flake class).
+        # have bun on PATH. Retry rationale per lint-typescript (mise+bun CDN 502 flake class).
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1353,7 +1354,7 @@ jobs:
       - name: Install npm devDependencies (z3-solver for the ace solver Z3 differential, etc.)
         # The ace suite's solver.z3.test.ts spawns node to require('z3-solver') (assert-dont-skip:
         # it FAILS rather than skips if the dep is absent). --frozen-lockfile fails if the lockfile
-        # is stale vs package.json (same discipline as lint-tsc-tools).
+        # is stale vs package.json (same discipline as lint-typescript).
         run: bun install --frozen-lockfile
 
       - name: Ace package-manager suite
