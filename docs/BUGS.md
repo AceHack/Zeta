@@ -16,6 +16,7 @@ fix shows up in `docs/ROUND-HISTORY.md`; this file reads clean.
 Each entry:
 ```markdown
 ### <short title>
+
 - **Site:** `file:line` (the authoritative location)
 - **Found:** <round> by <reviewer expert name>
 - **Severity:** P0 | P1 | P2
@@ -33,6 +34,24 @@ tempted to ship.
 ---
 
 ## P0 — ship-blockers
+
+### ZetaId Crockford base32 is 5-language, not 6 — Go absent, harness hides it
+
+- **Site:** `src/Core.Go/zeta_id/zeta_id.go` (no `Format`/`Parse`/base32) + `tests/cross-verification/zeta-id/compare.ts:130-136` (Go branch compares only hex)
+- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
+- **Severity:** P0
+- **Symptom:** #8141 added "6-language Crockford base32" but Go has zero base32 (verified: TS/Rust/Py have it, Go 0); compare.ts compares `crockford` for F#/C#/Rust/Python but NOT Go — so the cross-verify treaty is unenforced on Go and the harness is written not to notice.
+- **Fix:** implement Go `Format`/`Parse`/`IsCanonical` matching the alphabet+algorithm, emit `crockford` in go-output.json, add the Go crockford comparison to compare.ts.
+- **Who:** architect (Kenji) → 6-language-oracle owner
+
+### Autonomous-loop reads collapse API failure into "no work" (error == empty)
+
+- **Site:** `src/Core.TypeScript/observe/world-infra.ts:93,102-104,117-119` (also `:39,58-65`)
+- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
+- **Severity:** P0
+- **Symptom:** `readPRState`/`readPRStateAsync` return `{open:[],clean:[]}` on `gh`/forge failure (auth, rate-limit, network, parse) — identical to a healthy empty repo; `result.error`/`stderr` discarded, nothing logged. The observe loop then sees `cleanPrCount:0` and goes quiet while PRs rot. "I failed to look" and "no work" must never share a return value.
+- **Fix:** return a discriminated `{ok}|{failed,stderr}` (or at minimum log stderr before the empty fallback) at all four read sites; a shared helper closes the class.
+- **Who:** architect (Kenji)
 
 ### Expert/skill split half-done — onboarding confusion
 
@@ -85,6 +104,42 @@ tempted to ship.
 ---
 
 ## P1 — serious
+
+### Failed loop-tick exits 0 — monitoring blind to a fully-failed tick
+
+- **Site:** `src/Core.TypeScript/service/loop-tick.ts:318-324`
+- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
+- **Severity:** P1
+- **Symptom:** top-level `tick()` throw is caught, logged to a per-persona file nobody tails, then the script exits 0 — launchd/cron sees success; failure backoff never triggers.
+- **Fix:** set `process.exitCode = 1` in the catch (after `releaseLock`).
+- **Who:** architect (Kenji) → service/loop owner
+
+### observe-inline catch-all swallows + gate timer never advances (infinite re-fail)
+
+- **Site:** `src/Core.TypeScript/service/loop-tick.ts:262-309`
+- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
+- **Severity:** P1
+- **Symptom:** a broad `try` wraps 5 dynamic imports + load/choose/execute; on throw `last-agent-run.json` is never written, so the gate-interval timer never advances → every tick re-attempts and re-fails forever, no backoff/escalation; only `.message` logged (not `.stack`).
+- **Fix:** narrow the try, or write `last-agent-run.json` with status:1 in the catch so the timer advances; log `err.stack`.
+- **Who:** architect (Kenji)
+
+### PR mergeState casing mismatch — one reader silently always "0 clean"
+
+- **Site:** `src/Core.TypeScript/observe/world-infra.ts:108` (`=== "CLEAN"`) vs `:129` (`=== "clean"`)
+- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
+- **Severity:** P1
+- **Symptom:** sync reader matches raw-gh upper-case `"CLEAN"`; async reader (via ForgeHost, which lower-cases) matches `"clean"`. Routing the sync reader through a forge yields a silent "0 clean" that looks like a real answer. Dead `_forge` param implies behavior it doesn't have.
+- **Fix:** normalize once (`.toLowerCase() === "clean"`) in both / share one classifier; remove or wire the dead `_forge` param.
+- **Who:** architect (Kenji)
+
+### ZetaId base32 cross-verify lacks edge vectors + has two overflow algorithms
+
+- **Site:** `tests/cross-verification/zeta-id/vectors.yaml` (12 happy-path only); `parse` in TS/Py (bigint, post-check `>MASK_128`) vs C#/F#/Rust (u128, pre-guard `firstVal>=8`)
+- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
+- **Severity:** P1
+- **Symptom:** no all-zero / max-128 / first-char-overflow (parse-reject) / lenient-alias vectors — the exact boundaries base32 breaks at, and the only place cross-language divergence would show. The overflow-reject contract is two different algorithms that agree today but are pinned only by reading, not a vector.
+- **Fix:** add all-zero, all-ones-128, first-char-overflow-reject, and lenient-alias round-trip vectors asserting uniform accept/reject across all oracles.
+- **Who:** architect (Kenji) → falsifier/vector design
 
 ### Checkpoint corruption is indistinguishable from absence (round-2 hunt, 2026-06-12)
 
@@ -244,6 +299,24 @@ tempted to ship.
 ---
 
 ## P2 — nice to have
+
+### Cluster/loop spawn helpers discard signal + stderr on failure (Otto sweep, 2026-06-13)
+
+- **Site:** `src/Core.TypeScript/cluster/adapters/spawn-process-runner.ts:34-63` (`assertCommandSucceeded`, `captureOrNull`); `service/loop-tick.ts:80-84` (exec); `loop-tick.ts:98-114` (`acquireLock`)
+- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
+- **Severity:** P2
+- **Symptom:** (a) signal-killed child (`status:null`) printed as generic "command failed", child stderr dropped → cluster-provision failures undiagnosable; (b) `captureOrNull` returns `null` on failure with stderr discarded, so `list()` accessors equate "command failed" with "zero results"; (c) exec folds timeout→124 and spawn-ENOENT→1 into the child's own exit-code space (a missing harness binary looks like a normal agent failure); (d) `acquireLock` inner catch swallows readFile/rm/mkdir errors → a corrupt lock never self-heals, persona tick wedged forever.
+- **Fix:** include `result.signal` + stderr tail in failure messages; distinguish spawn-failure (127) from child exit; distinguish "lock held" from "lock-op failed" with a logged error.
+- **Who:** architect (Kenji) → cluster/loop owner
+
+### ZetaId isCanonical first-char guard inconsistent across oracles (Otto sweep, 2026-06-13)
+
+- **Site:** `isCanonical` in C#/F#/Rust (explicit `firstVal>=8→false`) vs TS/Python (rely on `format(parse(s))===s`)
+- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
+- **Severity:** P2
+- **Symptom:** same result today, but a divergence-in-waiting: relaxing the bigint parse pre-guard would make TS/Py `isCanonical` silently accept 130-bit-encoding strings the u128 trio rejects. Lenient-alias decode is also untested for round-trip.
+- **Fix:** collapse to one canonicality rule; add a lenient-input round-trip vector.
+- **Who:** architect (Kenji)
 
 ### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
 
