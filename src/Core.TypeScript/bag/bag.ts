@@ -89,22 +89,12 @@ function addCounts(a: number, b: number): number {
   return sum;
 }
 
+import { stringCompare as collationStringCompare } from "../collation/collation";
+
 /**
- * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings — matching
- * C# `StringComparer.Ordinal` and a byte-ordered Rust `Ord`. NOTE the F# G-Set
- * oracle currently sorts via `Comparer<'T>.Default` (`src/Core/GSet.fs`), which
- * for `string` is CULTURE-SENSITIVE, not ordinal; it coincides with ordinal for
- * the ASCII `b-XXX` fixture keys (where ordinal also equals code-point order),
- * so all four oracles agree on those vectors — but moving F# to ordinal for true
- * non-ASCII parity is a known gap. Astral-plane keys (UTF-16 code-unit
- * vs Unicode code-point divergence) are out of scope for the v1 contract; pass
- * an explicit code-point comparator if you need them.
+ * Ascending Unicode code-point order.
  */
-export const stringCompare: Compare<string> = (a, b) => {
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
-};
+export const stringCompare: Compare<string> = collationStringCompare;
 
 /** The empty Bag (the `union` identity). */
 export function empty<T>(): Bag<T> {

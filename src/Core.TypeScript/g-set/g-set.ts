@@ -31,12 +31,10 @@ export type Compare<T> = (a: T, b: T) => number;
  */
 export type GSet<T> = readonly T[];
 
+import { stringCompare as collationStringCompare } from "../collation/collation";
+
 /** Ascending Unicode code-point order — the canonical comparator for the bus. */
-export const stringCompare: Compare<string> = (a, b) => {
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
-};
+export const stringCompare: Compare<string> = collationStringCompare;
 
 /** The empty G-Set (the `union` identity). */
 export function empty<T>(): GSet<T> {

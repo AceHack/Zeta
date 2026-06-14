@@ -92,18 +92,12 @@ function addWeights(a: number, b: number): number {
   return sum;
 }
 
+import { stringCompare as collationStringCompare } from "../collation/collation";
+
 /**
- * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings — matching
- * C# `StringComparer.Ordinal` and a byte-ordered Rust `Ord`. (Same ordinal note
- * as the Bag/G-Set twins: the F# oracle's `Comparer<'K>.Default` is
- * culture-sensitive for `string` but coincides with ordinal for the ASCII
- * `z-XXX` fixture keys; astral-plane keys are out of scope for the v1 contract.)
+ * Ascending Unicode code-point order.
  */
-export const stringCompare: Compare<string> = (a, b) => {
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
-};
+export const stringCompare: Compare<string> = collationStringCompare;
 
 /** The empty Z-set (the `union` identity, and `negate(empty) == empty`). */
 export function empty<T>(): ZSet<T> {
