@@ -35,6 +35,7 @@
     <Compile Include="Reconcile.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="GSet.fs" />
+    <Compile Include="BoundedGSet.fs" />
     <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
     <Compile Include="FusionReconstruction.fs" />

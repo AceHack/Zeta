@@ -22,6 +22,7 @@
     <Compile Include="Algebra/HexCore.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/GSet.Tests.fs" />
+    <Compile Include="Algebra/BoundedGSet.Tests.fs" />
     <Compile Include="Algebra/Bag.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/FusionReconstruction.Tests.fs" />
