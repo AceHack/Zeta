@@ -11,13 +11,15 @@ At session start:
 
 1. Read `AGENTS.md`.
 2. Read `docs/ALIGNMENT.md`.
-3. Read `.codex/README.md`.
-4. Read `.codex/CURRENT-codex.md`.
-5. For Codex host-loop mechanics, read
+3. Read `docs/SEED-VOCABULARY.md` for the cold-boot core and carved
+   Zeta-specific vocabulary; use `docs/GLOSSARY.md` only on demand.
+4. Read `.codex/README.md`.
+5. Read `.codex/CURRENT-codex.md`.
+6. For Codex host-loop mechanics, read
    `docs/CODEX-HARNESS-NOTES.md`.
-6. For autonomous-loop work, read `docs/CODEX-LOOP-HANDOFF.md`
+7. For autonomous-loop work, read `docs/CODEX-LOOP-HANDOFF.md`
    and `docs/AUTONOMOUS-LOOP.md`.
-7. For write work, read `docs/AGENT-CLAIM-PROTOCOL.md` and
+8. For write work, read `docs/AGENT-CLAIM-PROTOCOL.md` and
    follow its shared-machine / shared-folder mode when other
    agents are active on the same machine.
 

@@ -12,8 +12,9 @@ tree into the same six-step process.
 ## 1. Orient
 
 Read: [`AGENTS.md`](AGENTS.md) → [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md) →
-[`docs/GLOSSARY.md`](docs/GLOSSARY.md) → [`GOVERNANCE.md`](GOVERNANCE.md)
-(scan when §N cited).
+[`docs/SEED-VOCABULARY.md`](docs/SEED-VOCABULARY.md) (cold-boot core +
+vocabulary kernel; [`docs/GLOSSARY.md`](docs/GLOSSARY.md) is on-demand) →
+[`GOVERNANCE.md`](GOVERNANCE.md) (scan when §N cited).
 Then read the Codex addendum + state file:
 [`.codex/AGENTS.md`](.codex/AGENTS.md) → [`.codex/CURRENT-codex.md`](.codex/CURRENT-codex.md).
 

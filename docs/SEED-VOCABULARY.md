@@ -6,6 +6,25 @@ specific sense — like a skill-routing description.* So this kernel carries **o
 (where your prior is insufficient or wrong), each in one line. **Standard terms** (Markov chain, CRDT, DBSP, semiring,
 HMM, IFS, …) need no entry — you have them. **Full prose + every other term: `docs/GLOSSARY.md` (Tier-3, on-demand).**
 
+## Zeta in one minute (cold-boot core)
+
+Zeta is a pre-v1, agent-authored, verification-backed software factory
+whose point is **reproducible stability**: every useful idea becomes durable,
+testable substrate instead of chat weather. The core data shape is tiny:
+**GSet = genesis / monotone accumulation**, **ZSet = signed deltas with
+retraction**, and **fusion = reconstruct the outside-visible GSet from an
+inside ZSet composition**. Rooms/cells are bounded execution membranes
+(Markov boundaries) that schedule work through typed interfaces; attention
+changes boarding order, never arithmetic truth or byte cost. Vision is the
+scheduler's budgeted self-sight: it prices uncertainty growth in bits/bytes,
+admits what fits, and reports backpressure as data. Persistence is event
+sourcing over git / Merkle / content-addressed storage, named by ZetaId where
+new ids must be locally mintable and coordination-free. External systems
+(Q#, Infer.NET, solvers, GitHub, future MUMPS-like compilers) are plugins or
+oracles behind ports we own; they verify or adapt the core, not replace it.
+The build rule is simple: build on laws and measurements, play in consenting
+sim layers, and turn load-bearing claims into tests, specs, or proofs.
+
 ## The kernel (carved — Zeta-specific senses only)
 
 - **Seed** — the database BCL microkernel; the minimal foundational core that contains everything to grow ("we are

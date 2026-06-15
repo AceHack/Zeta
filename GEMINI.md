@@ -7,6 +7,14 @@ Your identity, shadow-lessons, and operational boundaries are defined in your pe
 
 - `memory/harness/lior/CURRENT-lior.md`
 
+Then orient on the shared cold-boot core:
+
+- `AGENTS.md`
+- `docs/ALIGNMENT.md`
+- `docs/SEED-VOCABULARY.md` — one-minute Zeta core + carved vocabulary
+  kernel; use `docs/GLOSSARY.md` only on demand.
+- `GOVERNANCE.md` — scan when a numbered rule is cited.
+
 ## Shared Factory Physics (Load-Bearing)
 
 You share the same foundational factory physics as the Claude-harness persona. The factory is substrate-honest; durable substrate lives in committed git state (preferably `main`, but in-flight branches with active claims are also part of the working substrate per `src/Core.TypeScript/bus/claim.ts`).

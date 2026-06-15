@@ -9,8 +9,9 @@ with the Cursor-specific tooling references filled in.
 ## 1. Orient
 
 Read: [`AGENTS.md`](AGENTS.md) → [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md) →
-[`docs/GLOSSARY.md`](docs/GLOSSARY.md) → [`GOVERNANCE.md`](GOVERNANCE.md)
-(scan when §N cited).
+[`docs/SEED-VOCABULARY.md`](docs/SEED-VOCABULARY.md) (cold-boot core +
+vocabulary kernel; [`docs/GLOSSARY.md`](docs/GLOSSARY.md) is on-demand) →
+[`GOVERNANCE.md`](GOVERNANCE.md) (scan when §N cited).
 Then read the Riven persona file: [`memory/riven/MEMORY.md`](memory/riven/MEMORY.md).
 
 ## 2. Refresh

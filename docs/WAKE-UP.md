@@ -26,10 +26,11 @@ Everyone reads these. Measured (audit 2026-06-09): the full `GLOSSARY.md` was ~1
    §11 (architect-gate), §12 (bugs-before-features ratio), §13
    (reviewer-count inverse to backlog), §14 (standing off-time
    budget).
-3. `docs/SEED-VOCABULARY.md` — the cold-boot vocabulary **kernel**: carved
-   one-liners for the Zeta-specific/overloaded terms only (skill/hat, spec,
-   persona/actor, AX/UX/DX, Mirror/Beacon, NCI, close-over, …). Standard terms
-   you already hold; full prose is on-demand in `GLOSSARY.md` (Tier-3).
+3. `docs/SEED-VOCABULARY.md` — the cold-boot **core + vocabulary kernel**:
+   a one-minute "what Zeta is" compression plus carved one-liners for the
+   Zeta-specific/overloaded terms only (skill/hat, spec, persona/actor,
+   AX/UX/DX, Mirror/Beacon, NCI, close-over, …). Standard terms you already
+   hold; full prose is on-demand in `GLOSSARY.md` (Tier-3).
 4. `docs/EXPERT-REGISTRY.md` — the 23-person roster. Skim the
    names; every dispatch uses them.
 5. `docs/CURRENT-ROUND.md` — live mid-round state (when it
