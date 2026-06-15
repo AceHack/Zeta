@@ -6,8 +6,9 @@
 // paths pass through (null) for static serving.
 
 import { beforeEach, describe, expect, test } from "bun:test";
-import { encodeResource, handle } from "./api.ts";
+import { encodeResource, handle, type PlatformData } from "./api.ts";
 import { InMemoryPlatform } from "./data-memory.ts";
+import type { LogLine, ResourceOps } from "./ops.ts";
 import type { BlueprintCR, DeployableCR, RoomData } from "./viewmodel.ts";
 
 const BLUEPRINTS: BlueprintCR[] = [
@@ -146,5 +147,62 @@ describe("create Deployable (the deploy write path — a human deploys a service
     const noWrite = { listDeployables: async () => [], listBlueprints: async () => [], listRooms: async () => [], getRoom: async () => undefined, grant: async () => false };
     const r = await handle(new Request("http://x/api/deployables", { method: "POST", body: JSON.stringify({ name: "z", spec: { blueprint: "web" } }) }), noWrite as any);
     expect(r!.status).toBe(405);
+  });
+});
+
+describe("management plane: the :resource path segment is URL-decoded", () => {
+  // Regression for the live Logs/Events breakage: the web client builds the
+  // management URL by percent-encoding the resource id's slash (`ns/name` →
+  // `ns%2Fname`). URL.pathname keeps `%2F` literal, so the server MUST decode
+  // it before the ops layer — otherwise `K8sOps.split`'s `resource.split("/")`
+  // never splits and it builds `/namespaces/ns%2Fname/pods` → 403 → 500.
+
+  // A spy ops layer that captures the exact `resource` string each op receives,
+  // so we can assert the decoded `namespace/name` reaches the ops call.
+  const makeSpy = () => {
+    const seen: { logs?: string; events?: string } = {};
+    const ops = {
+      logs: async (resource: string): Promise<LogLine[]> => {
+        seen.logs = resource;
+        return [{ ts: "t", level: "info", text: "ok" }];
+      },
+      events: async (resource: string) => {
+        seen.events = resource;
+        return [];
+      },
+    } as unknown as ResourceOps;
+    const platform: PlatformData = {
+      listDeployables: async () => [],
+      listBlueprints: async () => [],
+      listRooms: async () => [],
+      getRoom: async () => undefined,
+      grant: async () => false,
+      ops,
+    };
+    return { platform, seen };
+  };
+
+  test("GET /api/resources/flowdent%2Fflowdent-webapp/logs → ns=flowdent name=flowdent-webapp", async () => {
+    const { platform, seen } = makeSpy();
+    const r = await handle(new Request("http://x/api/resources/flowdent%2Fflowdent-webapp/logs"), platform);
+    expect(r!.status).toBe(200);
+    // the decoded `namespace/name` (NOT the still-encoded `%2F`) reaches data.ops.logs,
+    // which is exactly what K8sOps.split needs to yield ["flowdent","flowdent-webapp"].
+    expect(seen.logs).toBe("flowdent/flowdent-webapp");
+    expect((seen.logs ?? "").split("/")).toEqual(["flowdent", "flowdent-webapp"]);
+  });
+
+  test("GET /api/resources/flowdent%2Fflowdent-webapp/events also decodes", async () => {
+    const { platform, seen } = makeSpy();
+    const r = await handle(new Request("http://x/api/resources/flowdent%2Fflowdent-webapp/events"), platform);
+    expect(r!.status).toBe(200);
+    expect(seen.events).toBe("flowdent/flowdent-webapp");
+  });
+
+  test("the canonical `~` separator still resolves (no double-decode regression)", async () => {
+    const { platform, seen } = makeSpy();
+    const r = await handle(new Request("http://x/api/resources/flowdent~flowdent-webapp/logs"), platform);
+    expect(r!.status).toBe(200);
+    expect(seen.logs).toBe("flowdent/flowdent-webapp");
   });
 });

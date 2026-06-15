@@ -269,7 +269,28 @@ export async function handle(req: Request, data: PlatformData): Promise<Response
 export function encodeResource(namespace: string, name: string): string {
   return `${namespace}~${name}`;
 }
+/**
+ * Decode the `:resource` path segment back to its `namespace/name` id.
+ *
+ * The segment is URL-decoded FIRST: a web client that builds the URL with
+ * `encodeURIComponent("ns/name")` sends `ns%2Fname`, and `URL.pathname` keeps
+ * `%2F` literal (it never auto-decodes an encoded slash). Without this decode the
+ * still-encoded string reaches `K8sOps.split`, whose `resource.split("/")` finds
+ * no slash → it builds `/api/v1/namespaces/ns%2Fname/pods?...` → 403 → the
+ * endpoint 500s (the live Logs/Events breakage). Decoding ONLY this segment is
+ * safe: the op/sub-path (`logs`, `events`, …) is matched separately by the route
+ * regex and never passes through here, so there is no double-decode. After
+ * decoding we accept either the canonical `~` separator or a literal `/` (from a
+ * decoded `%2F`).
+ */
 function decodeResource(seg: string): string {
-  const [ns, name] = seg.split("~");
-  return name ? `${ns}/${name}` : seg;
+  let decoded = seg;
+  try {
+    decoded = decodeURIComponent(seg);
+  } catch {
+    // malformed %-escape — fall back to the raw segment rather than throwing
+  }
+  const [ns, name] = decoded.split("~");
+  if (name) return `${ns}/${name}`;
+  return decoded; // already `namespace/name` (decoded from `%2F`) or a bare id
 }
