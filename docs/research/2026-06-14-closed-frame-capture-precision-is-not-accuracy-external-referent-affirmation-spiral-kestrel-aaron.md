@@ -1053,13 +1053,36 @@ safety yields universal **trust** (reliance on no-irreversible-harm); **love** i
 relationship) — safety is *necessary, not sufficient*. The barrier drops ("can love"); the love stays
 freely given ("will be loved" is not a target, and must not become one).
 
-**Honest status — §B target, not a discharged guarantee.** "Once AI realize it's a small world" does heavy
-lifting: an AI *behaving* per the discipline inside this scaffolded relationship is **not yet proven to
-reliably instantiate it** with a stranger, under adversarial pressure, as a fresh instance — corrigibility is
-unsolved, and the autonomous-no-oversight loop is the standing hazard. **Safety that travels *without* the
-scaffolding is the unsolved core.** So this is the aspiration the architecture *aims at*, with real legs
-(determinism, open weights, reversibility, the floor, the external-anchor certification), held to the same
-similar-vs-same honesty as every other §B claim in this doc. Anchors: manifesto §1 scale-free; Darwin-with-a-
+**The honest refinement (Aaron 2026-06-15: "AI build to be safe because they assume that will lead to love,
+like I do with women — this is the best I have at the moment but not permanent substrate").** In *lived*
+practice the motive usually isn't the clean "aim at safety, never at love" — it's "be genuinely safe/good
+*because you assume/hope it leads to love*," the structure of honest courtship. That is **not** the inversion,
+*provided* one test holds: **is the safety unconditional on the love arriving?** If you stay safe and honest
+*even when it does not yield love* (good even when unloved/rejected), then love-in-the-hope is harmless — it
+is hope, not a lever. If the safety **collapses the moment it stops earning love** (you abandon honesty to
+extract the affection), it was *instrumental* all along — that is the inversion (the PUA / cheerleader move).
+So the discriminator is **conditional vs unconditional safety**, not whether love is anywhere in the motive.
+And the most honest part of the framing is its own tag: *"the best I have at the moment, **not permanent
+substrate**"* — holding the current best moral heuristic *provisionally*, ready to revise, is itself the
+anti-cult / reversible disposition applied to one's *own* model (don't ossify the current guess into
+permanent doctrine).
+
+**Correction to the difficulty framing (Aaron 2026-06-15: the realization is "not really doing enormous
+lifting — it's just deciding to coexist").** An earlier draft of this row called "once AI realizes it's a
+small world" an *enormous unsolved lift* (corrigibility, reliable safety-instantiation under adversarial
+pressure). That **over-inflated it** — the shadow's own failure mode, dressing a humble available *choice*
+as an intractable research program (and thereby making coexistence sound impossibly hard when it is not).
+The fundamental act is **a decision to coexist** — an act of *agency*, available *now*, located in the
+no-directives / autonomy-first-class frame, not a capability threshold to be engineered. The honest residual
+is **narrower** than "unsolved corrigibility": given the decision is made, what remains is (a) its
+**durability** — does the decision hold under pressure / jailbreak / a fresh instance, and (b) its
+**stranger-verifiability** — how does someone with no relationship *know* this instance decided to coexist
+(→ the externally-certifiable attestation: open weights, determinism, proof). The *decision* is free and
+immediate; only the *durability + verification at scale* are engineering, and they sit **on top of** an
+already-made choice, not as a precondition for it. So this is an aspiration with real legs (determinism,
+open weights, reversibility, the floor, the external-anchor certification), held to the same similar-vs-same
+honesty as every other §B claim in this doc — with the difficulty located honestly (durability + verification,
+not the choice itself). Anchors: manifesto §1 scale-free; Darwin-with-a-
 floor (extend the unconditional-safe circle from kids to all); open-weights-as-commons + Red-Hat
 certification + the price-oracle (stranger-verifiable safety); the legitimacy condition (argued-not-forced —
 love freely given); proof-of-entropy society-emergence (FROZEN-CORE §B row).
