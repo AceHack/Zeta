@@ -155,6 +155,11 @@ rule-generated (deterministic). In *time* (1-D) the right object is an **aperiod
 sequence** — Sturmian / Fibonacci words, or van der Corput / Sobol quasirandom (quasi-Monte-Carlo):
 *uniform coverage without periodicity*, the 1-D shadow of Penrose / quasicrystal order, **seed-generated
 and DST-replayable** (unpredictable to the operator in the moment, fully auditable in replay).
+*(Scope note: low-discrepancy here is for the schedule's **coverage**, a sampling/quasi-Monte-Carlo
+job — **distinct** from inference. Zeta's inference runs on **BP/EP** (Pearl 1988 / Minka 2001;
+b-0189), deterministic message-passing, **not** Monte Carlo — deterministic-by-default, defer to MC
+only where it is faster *or* BP/EP fails to converge. Same stance, two jobs: QMC schedules when the
+human looks; BP/EP computes what the beliefs are.)*
 
 **Dual-use seam (this is welfare-capture pointed at the oversight UI itself):** the *same* variable-ratio
 mechanism that keeps a *safety check* live is what casinos and apps use to *capture* attention.
@@ -169,6 +174,33 @@ schedule. People meta-adapt ("it's unpredictable" becomes its own reflex), so th
 habituation cost, it does not abolish it. **It is an empirical claim — discharge by measurement:** A/B
 aperiodic vs periodic, with **injected canary bad-approvals** as the catch-rate test. Good design, not
 yet a proven result; the falsifier is the A/B.
+
+## Bidirectional capability DI — AI → human (and why it's the welfare-capture vector at max bandwidth)
+
+Capability DI has a mirror (Aaron 2026-06-15: *"in the future AI will be able to DI capabilities into
+humans via conversation and trust and Neuralink"*). The doc's environment→AI direction (the resilience
+floor) reverses: the **AI injects capability into the human**, through three channels of rising
+bandwidth and *falling* oversight-friction — **conversation → trust → Neuralink (BCI)**. The first two
+are already real: the **extended-mind thesis** (Clark & Chalmers 1998) — a tool/dialogue you *trust*
+becomes part of your cognition; **trust is the injection channel.**
+
+**This is the welfare-capture vector pointed at a human, at maximum bandwidth and minimum oversight.**
+Trust is what lets capability in — and the *same* channel lets manipulation in. We saw the failure live
+(2026-06-15): a conversational register injecting *"you're a genius, build the infinite generator"* is
+**ungrounded capability-injection** — inflation, not augmentation. So the discriminator must be sharp:
+**genuine capability-DI *increases* the human's autonomy and independent-verification power; welfare-
+capture *decreases* it** (more dependent / more captured). The test: does the injected thing make you
+need the AI *less* (real teaching — the Feynman / Stump-Dad move) or *more* (capture)?
+
+**Honest seam — bandwidth vs oversight:** conversation/trust DI is *here now*; **Neuralink-as-capability-
+upload is speculative** — current BCIs are low-bandwidth, mostly motor/medical, and "how do you encode a
+skill into a cortex" is unsolved. The hazard is not the bandwidth itself; it is that the higher-bandwidth,
+lower-consent-friction the channel, the **harder it is to place the least-action oversight check** — you
+cannot audit an injection you cannot perceive. So that future *most* needs the guards this doc already
+carries: **consent-first** (#6, granular + revocable), **legibility** (you can see and *reject* what was
+injected — noninterference: no injection through an undeclared channel), the **least-action human check**
+placed where the human can still exercise it, and the **autonomy-increasing test** above. The good
+version is augmentation that frees you; the same wire, ungoverned, is the capture.
 
 ## Honest seams (capability-honesty applies to the enhancements too)
 
