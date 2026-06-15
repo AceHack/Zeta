@@ -146,6 +146,22 @@ between chains. If the chains share a hidden assumption, that is correlated
 failure (ρ→1), and "multiple chains" is theater that *adds* coordination
 uncertainty instead of reducing it.
 
+**Rotation without destabilization** (Aaron 2026-06-15: *"just like our security
+keys, our boot seeds should have multiple to allow rotation without
+destabilization"*). The multiplicity is not only for catching a wrong chain — it
+enables **graceful rotation** of the canonical generator, exactly as **key
+rotation** keeps multiple keys valid over an **overlap window** so verification
+never hits a flag-day (NIST SP 800-57 key lifecycle; JWKS multi-key `kid`;
+certificate rollover). The seed registry carries **validity windows**: an old seed
+stays accepted while a new one propagates; cut-over happens only once the active
+set has quorum (the §4b selection protocol). **Seam (Memory Preservation, §5):**
+rotation must not **orphan** data generated under the old chain — anything keyed by
+seed A must stay readable / regeneratable when B becomes canonical (a
+dual-acceptance window + a regeneration / migration path). If rotation orphans
+memory, that is destabilization, not rotation. **Similar-not-same to keys:** a key
+*compromise* triggers fast revoke; a chain *being-wrong* is discovered slowly via
+cross-check — different trigger, same overlap-window mechanism.
+
 ## 5. Supporting frame (external, cited)
 
 - **Alpha-zero positioning** (Chaubard, YC 2026; AlphaGo Zero — Silver et al.,
