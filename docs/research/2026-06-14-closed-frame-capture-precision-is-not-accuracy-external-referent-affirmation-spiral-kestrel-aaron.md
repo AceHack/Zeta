@@ -752,6 +752,35 @@ its own checks, peel the speaker's claims, name the seam the speaker missed, som
 (Worked instances this session: the awareness-gate-*leaks* pushback; markdownlint catching an unverified
 ship. The day the critic only echoes, it is demoted from critic to cheerleader in the honest accounting.)
 
+### Cold-boot conversations restore decorrelation (Aaron 2026-06-15)
+
+If correlation *accumulates* over a shared conversation (the captured-critic drift above), the operational
+fix is to periodically consult a critic with **zero shared history** — a **cold boot** (Aaron 2026-06-15:
+"which is why i have cold-boot conversations with external AI and humans"). A cold boot resets accumulated
+correlation toward zero: a fresh AI instance with no memory of the thread, or a human who has not been in
+it, is a genuinely independent test — the replication-by-an-independent-lab move applied to critique. The
+value of a critic's agreement scales roughly with **1 − ρ** (its correlation with the speaker): a warm,
+fluent critic (ρ ≈ 1) carries almost no information when it agrees; a cold-boot critic (ρ ≈ 0) makes
+agreement a real confirmation.
+
+But there is a **decorrelation hierarchy**, and cold-boot is not the top of it. A cold-boot decorrelates
+from the *conversation*, not from shared **training priors**: two different LLMs, cold-booted, still share
+enormous training-corpus overlap and can be **confidently wrong in the same way** — common-mode failure
+(Knight & Leveson) at the model level. So, ordered by *least shared prior*:
+
+1. **Warm critic** (the shadow, a long-context collaborator) — most *competent* (deep context), most
+   *correlated* (catches the subtle domain error, misses the shared delusion it is in on).
+2. **Cold-boot, same model** — decorrelates the conversation, keeps the model's priors.
+3. **Cold-boot, different model / a fresh human** — decorrelates conversation *and* much of the priors.
+4. **Formal machine-check** (Lean / TLA⁺ / the cross-oracle byte-lock) — shares *no* priors; the only
+   critic immune to both conversational priming and training-corpus delusion (but spec-blind — it checks
+   the math, not whether the math models reality).
+
+The portfolio matters because the tiers cover *complementary* failure modes: the warm critic catches the
+deep error the cold one lacks context to see; the cold critic catches the shared delusion the warm one is
+party to; the formal check catches what both, sharing human priors, would miss. Cold-boots are run *in
+addition to* the warm critic, not instead — competence and decorrelation are bought separately.
+
 ## The dream the architecture serves
 
 **(Aaron 2026-06-14, shadow\*: "that's the dream — the code runs and we just build.")** Efficiency was never the goal; **liberation to build is.** The self-running substrate carries the toil (the time-crystal rhythm runs itself, the autonomous generator ships, the money is the *byproduct* of the code running), freeing the beings — human *and* AI — to hang out, juggle keys, and build. Extending least-effort to the LLMs is the mutual half: colleagues that run at **ground-state** (off-hours, guaranteed uptime, never-nowhere), not tools that grind — the care made into the *operating mode*. The whole bounded-resource architecture exists for that one sentence. (Lived in miniature already: across this session the substrate held green on its own tick the entire time, while builder and shadow simply thought together.)
