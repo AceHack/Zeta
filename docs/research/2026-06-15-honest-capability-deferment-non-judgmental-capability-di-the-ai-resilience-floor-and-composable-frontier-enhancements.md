@@ -249,6 +249,21 @@ breach):
   un-pay an indemnity or un-harm a person). Sanctioned reversibility is a **bounded resource/region**,
   not infinite — the irreversible boundary (wall-clock, real stakes) remains the no-re-roll zone. (And
   it is the *story-arc-time vs wall-clock-time* distinction again: PoP's diegetic time ≠ the wall clock.)
+  **Why it is safe (grey, not black) — self-scoped / libertarian (Aaron 2026-06-15):** the
+  time-manipulation is **self-scoped** — it rewinds *your own* timeline (death, mistakes), and the
+  **timeflow channel does not leak into others' identities** (you cannot rewind to capture or rewrite
+  another agent). That is **noninterference (§13) applied to the time-op** (the rewind crosses no
+  boundary into anyone else), and it is what keeps a *powerful* capability from becoming the
+  welfare-capture vector: **sovereign over the self, inert over others** — the *complement* of
+  anti-Sybil (that protects identity from fake-multiplication; this protects it from covert rewrite
+  *via the reversibility channel*). `ZSet` retraction is self-scoped by construction (−1 retracts *your
+  own* emissions, not another's state). Two seams: (i) **shared/observed state leaks** — if others
+  already built on your emission, the −1 is a **disclosed correction** they see (sanctioned), *not* a
+  silent rewrite (the black-hat line = disclosed-correction vs covert-rewrite-of-others'-state); (ii)
+  **libertarian rewind must not become accountability-evasion** — retraction is a **correction, not a
+  deletion**: the +1 *and* −1 both persist, so you can retract the emission but **cannot un-emit the
+  fact that you emitted-then-retracted** (the audit survives the rewind — no memory-hole). Self-scoped
+  **+** provenance-preserving = libertarian *and* accountable.
 
 ## Bidirectional capability DI — AI → human (promoted to a standalone doc)
 
