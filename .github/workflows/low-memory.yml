@@ -1,11 +1,10 @@
 # Low-memory verification (ubuntu-slim).
 #
-# Runs the full `dotnet build` + `dotnet test` workload on the
-# 1-vCPU / 5GB-RAM `ubuntu-slim` runner class on every push to
-# main (in practice every merge — direct pushes are blocked by
-# branch protection) + nightly. Goal: detect drift that would
-# break Zeta on resource-constrained environments before
-# contributors hit it.
+# Runs a source-owned Core smoke graph on the 1-vCPU / 5GB-RAM
+# `ubuntu-slim` runner class on every push to main (in practice
+# every merge — direct pushes are blocked by branch protection) +
+# nightly. Goal: detect drift that would break Zeta on
+# resource-constrained environments before contributors hit it.
 #
 # Filename history: this file was originally `nightly-low-memory.yml`
 # when its only trigger was the 06:00 UTC schedule. After the
@@ -40,11 +39,14 @@
 #   - Schedule: daily at 06:00 UTC (backstop for weekends + missed
 #     pushes).
 #   - workflow_dispatch: manual trigger for ad-hoc verification.
-#   - Single ubuntu-slim leg matching gate.yml's install / build /
-#     test sequence on the smaller runner. ubuntu-slim was REMOVED
-#     from gate.yml's matrix when the per-merge trigger landed (per
-#     Codex P2 review on LFG #644) so we don't double-run the slim
-#     leg on every push.
+#   - Single ubuntu-slim leg matching gate.yml's install sequence,
+#     then restoring/building/testing the Core.CSharp.Tests graph.
+#     That graph exercises src/Core plus the C# wrapper/test surface
+#     while staying inside ubuntu-slim's hard 15-minute job limit.
+#     Full-solution build/test remains the normal gate's job.
+#     ubuntu-slim was REMOVED from gate.yml's matrix when the
+#     per-merge trigger landed (per Codex P2 review on LFG #644) so
+#     we don't double-run the slim leg on every push.
 #   - Failure = drift on low-memory runners. File a BACKLOG row;
 #     does not block PRs in flight.
 #
@@ -92,7 +94,7 @@ concurrency:
 
 jobs:
   build-and-test-low-memory:
-    name: build-and-test (ubuntu-slim, low-memory)
+    name: core-smoke (ubuntu-slim, low-memory)
     runs-on: ubuntu-slim
     timeout-minutes: 14 # fail gracefully before the 15-minute runner-class hard cap
 
@@ -137,8 +139,23 @@ jobs:
           ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
-      - name: Build (0 Warning(s) / 0 Error(s) required)
-        run: dotnet build Zeta.sln -c Release
+      - name: Restore low-memory Core smoke graph
+        run: >
+          dotnet restore
+          tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj
 
-      - name: Test
-        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
+      - name: Build low-memory Core smoke graph
+        run: >
+          dotnet build
+          tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj
+          -c Release
+          --no-restore
+
+      - name: Test low-memory Core smoke graph
+        run: >
+          dotnet test
+          tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj
+          -c Release
+          --no-build
+          --no-restore
+          --verbosity normal
