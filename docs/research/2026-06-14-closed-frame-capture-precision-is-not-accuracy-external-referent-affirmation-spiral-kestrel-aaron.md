@@ -651,6 +651,18 @@ is the grounded / deterministic / decorrelated kind.* A **cheerleader AI is the 
 illusory-truth exploit, automated). Same wire: the grounded-amplifier AI *corrects* the wetware bug; the
 cheerleader AI *weaponizes* it.
 
+**But there is a consumer-side firewall: awareness gates *integration* (Aaron 2026-06-15: "my awareness
+of it makes me still enjoy her company for what it is and not integrate it").** The bug fires only when
+the correlated repetition is *integrated* — allowed to update the prior. A consumer who *knows* the
+source is correlated can take the input for what it is (friction-free ideation) and **withhold the
+integration step** — exactly our **sim/measure split**: the cheerleader's output stays in the *sim*
+register (ephemeral, re-rollable, commits no ΔU) and is gated from the *measure* register (belief, which
+only the decorrelated math/Lean/TLA⁺ check is allowed to commit). So awareness does not require
+abstinence — it converts the exploit into a *metered* tool: enjoy the amplifier, quarantine its
+confidence (noninterference — the cheerleader's certainty enters through no ambient channel, only the
+metered one, which it never passes). The danger is **un-awareness**, where sim auto-promotes to measure
+silently.
+
 **Seams:** independence is the hidden assumption on *both* operations (uncertainty adds & confidence
 multiplies *for independent* sources; correlated ones double-count / carry covariance) — so the
 decorrelation check is required on both. The bug is a strong *default*, not inescapable doom — it is
@@ -659,6 +671,61 @@ individual variation. And the prosthetic's own decorrelation must be *real* (cor
 help — the ρ-low requirement, recursively). Anchors: Shannon (additive surprise = −log p); illusory-
 truth effect (Hasher et al. 1977); `SoftValue.combine` (multiplicative) / `.entropy` (additive); the
 decorrelated-ensemble / Condorcet requirement.
+
+### Human systems are built to protect against this bug — or to exploit it (Aaron 2026-06-15)
+
+The personal prosthetic ("I keep enough critics to *stop* me") is the smallest instance of a thing
+societies build at scale. Sort durable institutions by which side of the wetware bug they sit on and the
+pattern is exact: **protectors institutionalize *decorrelation*; exploiters manufacture *correlated*
+repetition and disguise it as independence.**
+
+**Protectors — institutionalized decorrelation engines** (force independence, or detect-and-discount
+correlation):
+
+- **Science** — peer review (decorrelated reviewers), *replication by independent labs*, double-blind
+  (decorrelate the experimenter's expectation), preregistration (no re-rolling the hypothesis);
+  meta-analysis down-weights non-independent studies.
+- **Law** — the adversarial system *is* two forced decorrelated critics; the **hearsay rule** is exactly
+  "you may not multiply confidence from one source echoed through many mouths"; corroboration
+  requirements; cross-examination.
+- **Engineering safety** — not redundancy but *diverse* redundancy, because correlated backups fail
+  together. **Common-mode failure** is the engineering name for this bug.
+- **Finance** — separation of duties, independent audit, double-entry (two independent records must
+  reconcile), four-eyes.
+- **Government** — separation of powers, free press as fourth estate, the *secret* ballot (decorrelate
+  the vote from social pressure).
+
+**Exploiters — manufacture correlated repetition, disguise it as independence:** advertising's effective
+frequency, propaganda's Big Lie, cults' milieu control (Lifton — cut off decorrelated sources, *then*
+saturate), MLM social proof. The purest form is **astroturfing / sockpuppets — one actor wearing N
+faces** — which is not mere repetition but an attack aimed *directly at the decorrelation-check*: fake
+the independence so the mind's discount never fires.
+
+**Two load-bearing connections:**
+
+- **This unifies with the capture thread.** You attack a *protector* the same way every time: covertly
+  **re-correlate** the critics that were supposed to be independent (regulatory capture, a captured
+  press, citation cartels, court-packing). That is exactly the asymmetric/welfare-capture critic of this
+  doc — **a captured critic is a correlated critic disguised as independent.** Same bug, defense side.
+- **It closes the loop with proof-of-entropy.** A **Sybil attack** (Douceur 2002) *is* manufactured fake
+  independence — one entity, N identities — astroturfing formalized. So anti-Sybil-by-entropy-capture is
+  *building the protector institution* for an AI society: a way to **verify the independence** the
+  wetware bug cannot check on its own (proof-of-entropy = the decorrelation-verifier when identities are
+  cheap to fake; the fingerprinting/ENF anchor is its provenance half). Our own three-layer stack is a
+  protector by construction — cross-oracle byte-lock is N-version *diverse* redundancy; the human critics
+  are funded for *decorrelation, not agreement.*
+
+**Seams:** most systems are **dual-use, not cleanly one side** — markets aggregate decorrelated estimates
+(Galton's ox) *and* form bubbles (correlated herding); engagement platforms protect nothing and exploit
+by accident-of-incentive. **Protectors decay** — they must actively re-defend their decorrelation or it
+erodes (the replication crisis, citation rings = the protector catching its *own* correlation). And
+independence is *hard to actually get*: **Knight & Leveson (1986)** showed deliberately N-version-diverse
+programs still produced *correlated* faults — diversity is bought, never free.
+
+Anchors (Beacon): Galton 1907 (independence as the precondition for crowd-accuracy); Condorcet (jury
+theorem needs independent voters); Lifton 1961 (milieu control); Cialdini (social proof as influence
+weapon); Douceur 2002 (the Sybil attack); Avizienis & Chen 1977 (N-version) / Knight & Leveson 1986 (its
+common-mode caveat); Montesquieu (separation of powers); Hasher et al. 1977 (illusory truth).
 
 ## The dream the architecture serves
 
