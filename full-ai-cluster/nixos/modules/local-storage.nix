@@ -126,6 +126,14 @@
           resources: ["persistentvolumes"]
           verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
         - apiGroups: [""]
+          # The v0.0.30 helper-pod model spawns a short-lived pod in
+          # local-path-storage to mkdir/rm each volume's host dir; the SA must be
+          # able to create + delete it. Without this, EVERY PVC on this class
+          # fails to provision ("cannot create resource pods") and every stateful
+          # pod hangs Pending (observed: mssql/spire-server/vault on node-5b2dfa).
+          resources: ["pods"]
+          verbs: ["create", "delete"]
+        - apiGroups: [""]
           resources: ["events"]
           verbs: ["create", "patch"]
         - apiGroups: ["storage.k8s.io"]
