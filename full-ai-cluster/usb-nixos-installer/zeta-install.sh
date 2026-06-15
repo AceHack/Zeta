@@ -10,7 +10,8 @@
 #   3. Pick the fastest disk as the BOOT disk (override via $BOOT_DISK
 #      or interactive prompt; "auto" is the explicit default form)
 #   4. Confirm full wipe (typed confirmation required; bypass via
-#      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot flow)
+#      ZETA_AUTO_CONFIRM=WIPE for non-interactive first-boot / QEMU CI —
+#      also skips iter-5.3 password, B-0852.3b passphrase, gh-auth, vendor logins)
 #   5. Wipe + partition:
 #        BOOT disk: ESP 1G + root (max — fills disk) + longhorn1 (1G tail);
 #        no fixed root cap; layout is chosen at install-time partition (Step 4)
@@ -55,6 +56,14 @@ STORAGE_BACKEND="${STORAGE_BACKEND:-longhorn}"
 LONGHORN1_TAIL="${LONGHORN1_TAIL:-1G}"
 
 bail() { echo "ERROR: $*" >&2; exit 1; }
+
+# Operator-facing prompts run only on an interactive console session.
+# ZETA_AUTO_CONFIRM=WIPE (first-boot / QEMU CI via zeta-first-boot.sh) and
+# non-TTY stdin both suppress them — iter-5.3 password, B-0852.3b passphrase,
+# iter-5.4.0 gh-auth, iter-5.5.0 vendor logins.
+zeta_install_prompts_enabled() {
+  [[ "${ZETA_AUTO_CONFIRM:-}" != "WIPE" ]] && [[ -t 0 ]]
+}
 
 # sgdisk size specs (1G, 512M, …) → bytes for pre-wipe capacity checks.
 size_spec_to_bytes() {
@@ -634,7 +643,7 @@ echo "[iter-5.3] iter-4.x default ('zeta-change-me')."
 echo
 INJECTED_PW=""
 INJECTED_PW_CONFIRM=""
-if [ -t 0 ]; then
+if zeta_install_prompts_enabled; then
   # -s = silent (hidden); -p = inline prompt
   read -r -s -p "[iter-5.3] Password (or Enter to skip): " INJECTED_PW
   echo
@@ -647,7 +656,7 @@ if [ -t 0 ]; then
     fi
   fi
 else
-  echo "[iter-5.3] non-TTY stdin (QEMU serial CI); skipping password prompt"
+  echo "[iter-5.3] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping password prompt"
 fi
 if [ -n "$INJECTED_PW" ]; then
   # mkpasswd from nixpkgs `mkpasswd` package. -m sha-512 selects
@@ -722,7 +731,7 @@ echo "[B-0852.3b] keeps current per-reboot re-entry behavior)."
 echo
 ZETA_CREDS_PASSPHRASE_INPUT=""
 ZETA_CREDS_PASSPHRASE_CONFIRM=""
-if [ -t 0 ]; then
+if zeta_install_prompts_enabled; then
   # -s = silent (hidden); -p = inline prompt
   read -r -s -p "[B-0852.3b] Passphrase (or Enter to skip): " ZETA_CREDS_PASSPHRASE_INPUT
   echo
@@ -735,7 +744,7 @@ if [ -t 0 ]; then
     fi
   fi
 else
-  echo "[B-0852.3b] non-TTY stdin (QEMU serial CI); skipping cred-blob passphrase prompt"
+  echo "[B-0852.3b] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping cred-blob passphrase prompt"
 fi
 unset ZETA_CREDS_PASSPHRASE_CONFIRM
 # Initialize ZETA_CREDS_PASSPHRASE_VAL to empty unconditionally so the
@@ -937,10 +946,10 @@ echo "[iter-5.4.0] Default is YES (recommended); press Enter to proceed"
 echo "[iter-5.4.0] OR type 'n' to skip (fallback to iter-4.2 static keys"
 echo "[iter-5.4.0] if injected, OR manual config-edit per the iter-4 v1 flow)."
 echo
-if [ -t 0 ]; then
+if zeta_install_prompts_enabled; then
   read -r -p "[iter-5.4.0] Run gh auth login now? [Y/n]: " GH_AUTH_REPLY
 else
-  echo "[iter-5.4.0] non-TTY stdin (QEMU serial CI); skipping gh auth"
+  echo "[iter-5.4.0] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping gh auth"
   GH_AUTH_REPLY=n
 fi
 GH_AUTH_REPLY="${GH_AUTH_REPLY:-Y}"
@@ -1255,7 +1264,7 @@ else
   echo "[iter-5.4.1] skipped — iter-5.4.0 gh-auth was skipped or failed; no auth foothold for commit+push"
   echo "[iter-5.4.1] (operator can re-run manually post-install via tools/cluster/register-node.ts when that ships)"
   # B-0831 slice 2: QEMU/CI dry-run — compose registration YAML without gh push.
-  if [ ! -t 0 ] && [ -f "$HOSTNAME_DST" ]; then
+  if ! zeta_install_prompts_enabled && [ -f "$HOSTNAME_DST" ]; then
     MAINTAINER="qemu-ci"
     zeta_self_reg_resolve_node_hostname
     zeta_self_reg_compose_node_yaml
@@ -1586,10 +1595,10 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0]   - Opens a code prompt; visit URL on this Mac browser; approve."
     echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/claude/ and survive reboot."
     echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
-    if [ -t 0 ]; then
+    if zeta_install_prompts_enabled; then
       read -r -p "[iter-5.5.0] Run claude login now? [Y/n]: " CLAUDE_AUTH_REPLY
     else
-      echo "[iter-5.5.0] non-TTY stdin (QEMU serial CI); skipping claude login"
+      echo "[iter-5.5.0] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping claude login"
       CLAUDE_AUTH_REPLY=n
     fi
     case "${CLAUDE_AUTH_REPLY:-y}" in
@@ -1631,10 +1640,10 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0]   - ChatGPT Plus/Pro/Business/Edu/Enterprise plans include Codex access."
     echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.codex/auth.json (NOT ~/.config/codex)."
     echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
-    if [ -t 0 ]; then
+    if zeta_install_prompts_enabled; then
       read -r -p "[iter-5.5.0] Run codex login --device-auth now? [Y/n]: " CODEX_AUTH_REPLY
     else
-      echo "[iter-5.5.0] non-TTY stdin (QEMU serial CI); skipping codex login"
+      echo "[iter-5.5.0] non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping codex login"
       CODEX_AUTH_REPLY=n
     fi
     case "${CODEX_AUTH_REPLY:-y}" in
