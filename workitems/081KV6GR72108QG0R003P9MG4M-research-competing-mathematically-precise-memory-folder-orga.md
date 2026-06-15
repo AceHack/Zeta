@@ -125,6 +125,37 @@ filesystem — because with our **Merkle tree** and also with **symlinks** it's
   universal interface), differing in how they lay down coincidence-anchors + symlink
   paths + Merkle structure — evaluated on the common retrieval metric.
 
+## Society-review corrections (2026-06-15 panel — see `docs/research/2026-06-15-society-review-forge-host-...md`)
+
+- **The multi-parent crux is ALREADY BUILT — build on it.** `src/Core/DagFs.fs` +
+  `src/Core/ContentStore.fs` implement it: `links: path → MerkleHash` (many paths →
+  one content address = multi-parent), `pathsOf`, `editLocal`/`editEverywhere` (the
+  two edit modes), content-addressed dedup, conflict-free merge. Integrity
+  (`ContentStore`, hash-keyed) and retrieval (`DagFs.links`, path-keyed) are **two
+  maps** — so integrity-vs-retrieval stays separate by construction. The
+  `MemoryOrgStrategy` adapters should emit `(path, value)` pairs into `DagFs.link`;
+  strategies differ only in *which coincidence-anchor paths they lay down*.
+- **CORRECTION — "infinite via symlinks" was over-claimed** (Otto). On disk: ~2
+  symlinks; ~64/85 buckets hold only a README. The many-to-one addressing lives in
+  **`DagFs.links` (a path→address map)**, NOT OS symlinks. Beacon form: *a path→address
+  map gives unbounded many-to-one addressing*; symlinks are one materialization, not
+  the source. Do **not** build on OS symlink semantics.
+- **First deliverable (load-bearing, do before anything): the coincidence-anchor →
+  path function.** Nothing in Core yet emits the anchor *address* that becomes a
+  `DagFs.link` key. Specify it first — the eval metric + the hat/host hypothesis both
+  depend on it. Make explicit: a **shared coincidence = a new `links` entry
+  (address)**, not a confidence bump (value).
+- **Minimal version first (Rodney's razor) — defer the rest until measured.**
+  *Essential:* coincidence-anchor routing + confidence-as-contained-value + one
+  coincidence index (over `DagFs`). *Defer (premature at 720KB/155 files):* Merkle
+  dedup, symlink/filesystem-DAG-as-storage (the index carries multi-parent), the
+  4-competing-strategies port + eval harness (the §falsifier fires — no common
+  workload, no measured loss vs flat). **Ship:** flat content-addressed store
+  (`ContentStore`) + a coincidence-anchor→node index (`DagFs.links`) + confidence as a
+  node field + `log()` size/latency as the explicit scale trigger. Collapse the ~60
+  empty buckets; add a `db/README.md`; mark the DAG/symlink claims **design-intent,
+  not realized**.
+
 ## The hypothesis to test
 
 **Under natural retrieval pressure the strategies converge to hat/host organization**
