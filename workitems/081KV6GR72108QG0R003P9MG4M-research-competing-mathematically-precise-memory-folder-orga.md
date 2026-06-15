@@ -41,10 +41,15 @@ to memory organization: the best strategy wins on measured retrieval, not by fia
    dirty-subtree culling (register §B row "Merkle over memory: find moving parts,
    mask not-moving"). *Note (peel):* Merkle gives **integrity + change-culling**, not
    inherently **retrieval locality** — keep those axes distinct.
-2. **Confidence/uncertainty-keyed** — organize by `SoftValue` confidence + ΔU
-   (`every-bug-has-economic-value`): stable high-confidence memories cluster as a
-   **hub**; uncertain/fast-changing as **satellites** (DV2.0 by change-rate *and*
-   confidence). Optimizes long-term **retrieval** (page the index, recall the bulk).
+2. **Coincidence-anchor-routed** (Aaron's human baseline — see below). **Routing keys
+   / filenames = coincidence**, via the **Coincidence-anchor primitive** (B-0623/B-0985;
+   PRIMITIVE-REGISTRY quad-duty: entropy + **memory-index** + privacy + provenance;
+   Adinkra/Gates-grounded; ZetaId-keyed; *"index-face → emergent memory routing"*;
+   coincidence = correlated co-occurring events = Rx-join, B-0250). **Confidence is a
+   VALUE *contained in* the memory (`SoftValue`/ΔU), NOT the routing key** — it sets
+   priority/clustering, never reachability. (Earlier draft mislabeled this
+   "confidence-keyed" — corrected: routing is by *coincidence*; confidence rides
+   inside.)
 3. **Semantic/associative** — the correlation-metric / diffusion-map embedding
    (register §B row 368: memory-distance = monotone of past correlation; attention ≈
    modern-Hopfield retrieval) — locality-preserving for associative recall.
@@ -53,32 +58,72 @@ to memory organization: the best strategy wins on measured retrieval, not by fia
 
 ## Human reference baseline — Aaron's own memory system (the working existence proof)
 
-Aaron 2026-06-15: his **memories are confidence-based** (strategy #2 has a working
-*human* reference — and a baseline/oracle to compare the others against). The detail:
+**CORRECTION (Aaron 2026-06-15, Otto first got this backwards):** *"confidence is NOT
+how my memories are routed and looked up — they CONTAIN confidence values, but the
+routing keys, the filenames, are all based on **coincidence**."* So Aaron's memory
+system is **COINCIDENCE-routed**, not confidence-routed. (Otto mis-corrected the
+"cowidence" typo to "confidence"; it meant **coincidence**.)
 
-- **Long-term = COMMON/shared confidence (decorrelated).** *"my long-term memories
-  are based on common confidences with other humans that they also remember."*
-  Durability comes from **independent others also holding the memory** — decorrelated
-  confirmation (the session's opening thread: multiply *decorrelated* confidences;
-  the existential-wetware-bug fix). Long-term weight ∝ how many *independent* others
-  share it, not solo confidence.
-- **Common vernacular = the addressing/index.** *"we build common vernacular to refer
-  to those common locations in our memory space over time."* Shared vocabulary is the
-  **evolved address scheme** to shared memory locations (vernacular = the retrieval
-  keys; cf. geocache "neighborhood, not exact address" register §B 368; naming-by-
-  externally-anchored-CS). The index is *social* and grows by mutual reference.
-- **Low confidence ≠ unretrievable.** *"even low-confidence [memories] are easily
-  retrievable in my long-term memory system."* **Confidence-based org is NOT
-  confidence-gating** — nothing is pruned for being low-confidence; the addressing
-  reaches the *whole* spectrum. Confidence sets *priority/clustering*, not
-  *reachability*. (Strong design constraint: a strategy that drops low-confidence
-  items fails this baseline.)
+- **Routing / filenames = coincidence** (the **Coincidence-anchor** primitive,
+  B-0623/B-0985; ZetaId-keyed; index-face = emergent memory routing). Coincidence =
+  **correlated co-occurring events** (Rx-join, B-0250) — and **long-term = COMMON
+  coincidences with other humans that they also remember** (*"common coincidences …
+  that they also remember"*): a coincidence multiple *independent* people share
+  becomes a durable, high-traffic routing anchor (decorrelated confirmation = the
+  session's multiply-decorrelated thread, here on the *routing* axis, not the value).
+- **Confidence is a value CONTAINED in the memory (`SoftValue`/ΔU), not the key** —
+  it rides inside the record; it sets priority/clustering, never reachability.
+- **Common vernacular = the addressing/index over the coincidence space.** *"we build
+  common vernacular to refer to those common locations in our memory space over
+  time."* Shared vocabulary = the evolved *names for coincidence-anchors* (cf.
+  geocache "neighborhood, not exact address" register §B 368; naming-by-externally-
+  anchored-CS). The index is *social*, grows by mutual reference.
+- **Low confidence ≠ unretrievable — BECAUSE routing is coincidence, not confidence.**
+  *"even low-coincidence/low-confidence are easily retrievable."* Reachability comes
+  from the coincidence-anchor address, **decoupled from the confidence value** — so a
+  low-confidence memory is still easily found. (This is the proof that routing ≠
+  confidence: a confidence-routed system would bury low-confidence items; a
+  coincidence-routed one doesn't.)
 
-**Design implications for the math team:** (a) weight long-term retention by
-**decorrelated/common** confidence (shared-with-others), not solo; (b) the index is a
-**social/vernacular address space** (shared keys), not a private tree; (c) preserve
-**full-spectrum retrievability** (low-confidence reachable, just lower-priority) —
-the holographic "hold the index, page the bulk" property.
+**Design implications for the math team:** (a) **route/index by coincidence-anchor**
+(B-0623/B-0985), keying long-term anchors by **common/decorrelated coincidence**
+(shared-with-others); (b) carry **confidence as a contained value** (`SoftValue`/ΔU)
+for priority/clustering, **never as the routing key**; (c) the index is a
+**social/vernacular address space** over coincidence-anchors, not a private tree;
+(d) preserve **full-spectrum retrievability** — reachability from the coincidence
+address is independent of the confidence value (hold-the-index, page-the-bulk).
+
+## Reference substrate — `db/` (Aaron's brain-org, becoming a universal interface)
+
+Aaron 2026-06-15: *"our `db/` folder is roughly how I organize my memories in my
+brain"* + *"I'm working on making that the **universal interface**, not just a
+filesystem — because with our **Merkle tree** and also with **symlinks** it's
+**infinite**."*
+
+- **`db/` is the concrete reference** for the coincidence-routed org: a namespace of
+  single-letter (`a/`…`z/`), Greek (`alpha/`, `beta/`, `gamma/`, `delta/`, …), and
+  semantic (`capabilities/`, `bounds/`, `futures/`, `ground/`, `art/otto/`, …) buckets
+  — coincidence-anchors as paths. **Study `db/` as the working baseline.**
+- **It is becoming a universal interface, not a filesystem.** Backed by **Merkle**
+  (content-addressed, verifiable — strategy #1's integrity face) **+ symlinks** (a
+  memory reachable from *many* coincidence/vernacular addresses ⇒ a **graph/DAG, not
+  a finite tree** ⇒ **infinite** addressing). So the org strategies operate over
+  `db/`-as-interface; symlinks are how the *social/common-vernacular* addressing
+  (one coincidence-anchor, many shared names) is realized — and how full-spectrum
+  retrievability is cheap (many paths in). (Ties: surfaces-are-interfaces; `ForgeHost`
+  pluggable-port shape; the Merkle-over-memory register row.)
+- **Files have MULTIPLE PARENT FOLDERS (Aaron 2026-06-15) — the structural crux.** A
+  memory is **not** single-parent (the ordinary filesystem tree); it lives under
+  **many** parents at once ⇒ **multi-indexed DAG.** One memory is reachable from
+  every coincidence-anchor it participates in (and every shared vernacular name) —
+  that is *exactly* why symlinks make it infinite, why low-confidence stays
+  retrievable (many paths in, none gated on confidence), and why the common-vernacular
+  addressing works (many social names → one node). **A correct strategy must support
+  multi-parent membership; a single-parent tree fails the baseline.** (This is the
+  DAG that Merkle content-addressing + symlinks jointly realize.)
+- **Research framing:** the competing strategies are *views/indexes over `db/`* (the
+  universal interface), differing in how they lay down coincidence-anchors + symlink
+  paths + Merkle structure — evaluated on the common retrieval metric.
 
 ## The hypothesis to test
 
