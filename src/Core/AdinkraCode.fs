@@ -87,3 +87,18 @@ module AdinkraCode =
     /// Futamura `mix(mix,mix)=cogen` reflective fixpoint — remain in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B).
     let isSelfDual : bool =
         isSelfOrthogonal && (2 * dimension = length)
+
+    /// **Codespace projector** Π onto the code C — Face 2 of `gen(gen)===gen` as an honest endomorphism
+    /// (`Π∘Π = Π`). Because the generator is systematic (`[I₄ | A]`), the projector onto C along the
+    /// parity complement `D = {(0,p)}` is simply **re-encode the message coordinates**:
+    /// `Π(v) = encode(v[0 .. k-1])`. It is linear, **idempotent (Π² = Π)**, fixes every codeword, and has
+    /// image = C — the decode→re-encode "snap to the nearest codeword on the systematic split" operation,
+    /// so re-running the generator on an already-generated word changes nothing.
+    ///
+    /// Honest scope (peel): this is the projector along the *parity* complement, **not** the orthogonal
+    /// projector. Over GF(2) the code is self-orthogonal (`G·Gᵀ = 0`, singular), so the orthogonal
+    /// projector `Gᵀ(GGᵀ)⁻¹G` is undefined; Π depends on the chosen complement (here, the systematic
+    /// split). Idempotence and image = C hold for any complement. (Face 3 — the Futamura
+    /// `mix(mix,mix)=cogen` reflective fixpoint — remains open in §B.)
+    let project (v: int[]) : int[] =
+        encode (Array.sub v 0 dimension)

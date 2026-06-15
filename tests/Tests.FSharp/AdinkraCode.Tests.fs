@@ -70,3 +70,32 @@ let ``dimension is half the length — dim C = n/2 (forces C-perp subset of C)``
 [<Fact>]
 let ``the code is self-dual — the gen(gen)=gen duality fixed point (C = C-perp)`` () =
     Assert.True(AK.isSelfDual)
+
+// ── Codespace projector Π: the gen(gen)===gen idempotent endomorphism (Face 2) ──
+// Π(v) = encode(v[0..k-1]) — re-encode the systematic part. Projector onto C along the parity complement.
+// Exhaustive over all 2^8 = 256 words.
+
+let private allWords8 : int[] list =
+    [ for w in 0 .. 255 -> [| for i in 0 .. AK.length - 1 -> (w >>> i) &&& 1 |] ]
+
+[<Fact>]
+let ``projector is idempotent — Pi(Pi v) = Pi v for all 256 words (gen(gen)=gen)`` () =
+    for v in allWords8 do
+        Assert.Equal<int[]>(AK.project v, AK.project (AK.project v))
+
+[<Fact>]
+let ``projector image is the code — Pi v is always a codeword`` () =
+    let codeSet = AK.allCodewords |> List.map List.ofArray |> Set.ofList
+    for v in allWords8 do
+        Assert.True(codeSet.Contains(List.ofArray (AK.project v)))
+
+[<Fact>]
+let ``projector fixes every codeword — Pi c = c for c in C`` () =
+    for c in AK.allCodewords do
+        Assert.Equal<int[]>(c, AK.project c)
+
+[<Fact>]
+let ``projector is GF(2)-linear — Pi(a xor b) = Pi a xor Pi b (exhaustive over 256x256 words)`` () =
+    for a in allWords8 do
+        for b in allWords8 do
+            Assert.Equal<int[]>(AK.project (AK.xor a b), AK.xor (AK.project a) (AK.project b))
