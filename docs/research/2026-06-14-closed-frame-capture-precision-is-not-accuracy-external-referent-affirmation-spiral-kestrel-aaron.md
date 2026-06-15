@@ -268,6 +268,47 @@ capitulating the moment resources tighten — the floor is what makes the invari
 human-welfare-vs-money choice; the forced choice is a redesign trigger") — *gated*: same as above,
 recorded as positioning pending an explicit "carve it."
 
+### The capture taxonomy — dependency, the marketing shape, and why open-commons escapes it (Aaron 2026-06-15)
+
+The whole arc collapses to one structural claim: **the *marketing shape* is engineered dependency**
+(Aaron: *"the dependency is the marketing shape"*) — lock-in, switching costs, foreclosed exit,
+manufactured need. That is *exactly* the welfare-capture shape, and it is **money-optimal** (dependency
+= retention = revenue), which is *why* the welfare-vs-money tradeoff exists: the money gradient *points
+at* the capture shape. So **welfare-vs-money = autonomy-vs-dependency = care-vs-marketing** — one
+tradeoff, three names.
+
+- **Not all dependency is the marketing shape.** You freely depend on electricity, a good tool, a
+  trusted colleague — *chosen, exitable, legible.* The marketing shape is dependency **optimized-for
+  as the goal.** The discriminator is **intent + exitability + legibility**, not dependence *per se*.
+- **When a real-value dependency becomes *universal / unavoidable*, exitability fails at the category
+  level** (you switch electricity *providers*, never exit *electricity*) — the ultimate capture
+  surface. Society's answer: make it a **commons / public good** (Aaron: *"humans call it a utility, a
+  public good regulated by the government … a universal differentiator"* — the universal shared base,
+  the **GCF**, on which everyone *differentiates* on top). When exit can't guard you, **commons +
+  legibility** do.
+- **Rival vs non-rival splits the solution (the load-bearing distinction):** a *rival, physical* good
+  (one grid, high fixed cost → natural monopoly) gets the **regulated-utility** answer — but that only
+  lets you choose *which* capture: **market capture** (unregulated monopoly) or **regulatory capture**
+  (the regulator is bought / ossifies — Stigler 1971). A *non-rival, digital* good (software / AI —
+  infinitely copyable, no scarcity forcing monopoly) gets a **third option physical utilities never
+  had: the open commons** (open-source / **open weights**), which **escapes *both* captures at once** —
+  no monopoly to milk (forkable) *and* no regulator to buy (no capturable chokepoint). Aaron: *"open-
+  source for non-rival = our open weights — this is how we avoid regulatory capture."* So open weights
+  is Zeta treating a universal AI dependency as a **commons**, escaping the whole capture pair.
+
+**Honest seam — open trades capture for sustainability, not for nothing:** the open commons avoids the
+two *capture* modes but inherits the **commons problems** — **free-rider / sustainability** (who funds
+& maintains it — the open-source maintainer-burnout problem) and **tragedy-of-the-commons *unless
+governed*** (Ostrom's whole result: commons survive by *governance*, not by being merely open; and
+"open" does not by itself prevent *misuse* of the weights). And that lands precisely on the earlier
+thread: open = **no moat = funding-fragility** → *which is exactly why the resilience floor matters.*
+**The two hazards are capture and sustainability; open trades the first pair for the second, and the
+potato / cart / distilled-local resilience floor is what pays the second.** Anchors: Samuelson 1954
+(public goods, non-rival/non-excludable); natural-monopoly theory; Stigler 1971 (regulatory capture);
+Ostrom 1990 (commons governance); Hardin 1968 (tragedy-of-the-commons, *as refuted-by-governance* by
+Ostrom); Benkler (commons-based peer production). *(Metaphor note: "homoiconicity"/"the box is the
+room" are used as analogies for "universal self-identical shared substrate," not literal code=data.)*
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
