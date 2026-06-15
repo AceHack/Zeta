@@ -70,6 +70,16 @@ observe-loop `FreeMode = "explore" | "play" | "self_reflect" | "free_time"`
 (`observe.ts`) — `play` is already a first-class mode; `IPlay` formalizes it as the
 new-agent onboarding form of `ISociety`. *(Reframe/design, like `ISociety`.)*
 
+**The arity ladder — interfaces parameterized by player/hat count (Aaron 2026-06-15):**
+`IPlay` (reduced / new-agent) → **`IPlayDate` = the 2-player mode** → special
+**3- and 4-player** modes (`IPlay3`/`IPlay4`) → … → **`ISociety`** (N). One scale-free
+family, same shape at every arity. **Rooms inherit the base interface by how many
+HATS the room requires:** a 2-hat room inherits `IPlayDate`, a 3-hat room the 3-mode,
+an N-hat room `ISociety`. So a room (a Markov-boundary / membrane; the no-roles
+surfaces-hats-personas model) is *typed by its required hat-count* and gets the
+matching play-arity interface for free. (Ties: scale-free §1; the room=Markov-blanket
++ hats model; the 1000-brains cells; multiplayer-game arity.)
+
 ## 5. The game — executing society's promises in scheduled order
 
 Society makes **promises** (goals / `db/futures`, Eve-fused to GSet consensus); the
