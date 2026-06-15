@@ -100,7 +100,7 @@ export class K8sOps implements ResourceOps {
     const pod = list.items[0]?.metadata?.name;
     if (!pod) return [];
     const tail = opts?.tail ?? 200;
-    const r = await this.req("GET", `/api/v1/namespaces/${ns}/pods/${pod}/log?timestamps=true&tailLines=${tail}`, { accept: "text/plain" });
+    const r = await this.req("GET", `/api/v1/namespaces/${ns}/pods/${pod}/log?timestamps=true&tailLines=${tail}`, { accept: "*/*" });
     if (!r.ok) return [{ ts: "", level: "warn", text: `could not read logs: ${r.status}` }];
     return parseLogs(await r.text(), tail);
   }
