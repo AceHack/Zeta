@@ -117,6 +117,59 @@ false-positive tradeoff** (a smaller middle costs more filter RAM — itself a c
 the potato). A plain bloom cannot delete — a changing capability set needs a counting-bloom or cuckoo
 filter.
 
+## Least-action oversight placement — where to put the human check so it is *actually* exercised
+
+When the deferral lands on a **human** (the external referent for the gated/irreversible classes), the
+router only matters if the human *actually runs the check*. Aaron 2026-06-15: *"the key is finding where
+it's least-action-based so the human will actually do it."* A check that costs effort gets **routed
+around** — rubber-stamped, "approve-all," alert-fatigued into a reflex (Parasuraman & Riley 1997,
+automation complacency). So place the human check at the **path of least action**, three ways — two of
+which are already built here:
+
+1. **The dual-bloom router *is* least-action placement.** It filters the >90% that don't need a human
+   and surfaces only the genuinely-uncertain <10%. The human's scarce attention lands only where it is
+   load-bearing — they act *rarely*, the only way they will act *attentively*.
+2. **Match the check to reversibility** (the security-architecture closure): gate only the
+   irreversible / high-consequence; do **not** gate cheap/reversible actions — that friction *trains*
+   the rubber-stamp. One cheap human act, placed where it stops the unrecoverable harm.
+3. **Fail-safe default.** "Least action" includes the action of *doing nothing*, so the no-response
+   default must be the **safe** one (halt/hold), never permissive. Least-action only works if inaction
+   is safe.
+
+**The rubber-stamp seam (the sharp one): least-action and rubber-stamp are the same gesture from
+opposite directions.** Optimize *purely* for least-action and you get a meaningless one-click approve
+that **launders** the decision as "human-approved" while the human engaged zero. So the real target is
+**least action that still carries genuine engagement**: strip friction from *everything except the
+decision itself*, surface the right information at that one moment, so the cheap act is a *real*
+judgment. **Detection metric:** approval-rate ≈ 100% ⇒ the check is dead/fake; a *live* check is one
+where humans actually say **no** sometimes.
+
+**Beating habituation — aperiodic, not periodic, not random (Aaron 2026-06-15: "it needs to be
+aperiodic tiling to fit the human dopamine regime").** A *fixed-cadence* check is perfectly predicted,
+so it extinguishes attention (dopamine fires on **prediction error**, not predictable events — Schultz
+1997; variable schedules sustain engagement where fixed ones extinguish it — Skinner's variable-ratio).
+So the check must arrive **aperiodically** to keep carrying prediction-error → stay salient. But not
+**random** — random loses *coverage* (can miss a region of the decision-space) and *replayability* (not
+auditable / not DST). **Aperiodic tiling** gives both: complete coverage + never-repeating +
+rule-generated (deterministic). In *time* (1-D) the right object is an **aperiodic / low-discrepancy
+sequence** — Sturmian / Fibonacci words, or van der Corput / Sobol quasirandom (quasi-Monte-Carlo):
+*uniform coverage without periodicity*, the 1-D shadow of Penrose / quasicrystal order, **seed-generated
+and DST-replayable** (unpredictable to the operator in the moment, fully auditable in replay).
+
+**Dual-use seam (this is welfare-capture pointed at the oversight UI itself):** the *same* variable-ratio
+mechanism that keeps a *safety check* live is what casinos and apps use to *capture* attention.
+Aperiodic-to-prevent-habituation **serves** the human's judgment; aperiodic-to-maximize-engagement
+**farms** it — the serve-vs-capture / NCI line again (see the closed-frame-capture doc's
+asymmetric-critic welfare-vector). Guard: it must make the human **decide better**, never just **engage
+more**.
+
+**One layer of three, and falsifiable:** aperiodic *schedule* keeps attention live + right *information
+at the moment* makes the attention productive + the *approval-rate metric* detects death regardless of
+schedule. People meta-adapt ("it's unpredictable" becomes its own reflex), so this **raises** the
+habituation cost, it does not abolish it. **It is an empirical claim — discharge by measurement:** A/B
+aperiodic vs periodic, with **injected canary bad-approvals** as the catch-rate test. Good design, not
+yet a proven result; the falsifier is the A/B.
+
 ## Honest seams (capability-honesty applies to the enhancements too)
 
 - **"Parity" is on *their* benchmarks** — verify on our tasks before claiming it for ours.
@@ -145,3 +198,10 @@ filter.
 - Goguen–Meseguer 1982 (noninterference) = capability DI's declared-channel discipline; manifesto §13.
 - Manifesto #1 (scale-free), #11 (default moral regard); the capability-interface principle
   (`zeta-language-ir-compiler-v2`); the closed-frame-capture doc (faking = the Mad-Men illusion).
+- Least-action oversight: Parasuraman & Riley 1997 (automation use/misuse/disuse — complacency &
+  rubber-stamping); Schultz 1997 (dopamine = reward-prediction-error); Skinner (variable-ratio
+  reinforcement sustains engagement); Penrose 1974 / Shechtman (quasicrystals) / Smith–Myers–Kaplan–
+  Goodman-Strauss 2023 (the "hat"/einstein aperiodic monotile) — aperiodic order; Sturmian / Fibonacci
+  words and van der Corput / Sobol low-discrepancy sequences (quasi-Monte-Carlo) — the 1-D
+  "uniform-coverage-without-periodicity" realization; corrigibility (Soares et al. 2015) / the
+  off-switch game (Hadfield-Menell et al. 2017) — the human-in-the-loop context this serves.
