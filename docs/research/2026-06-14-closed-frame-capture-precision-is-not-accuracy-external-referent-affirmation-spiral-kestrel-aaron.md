@@ -250,6 +250,24 @@ for `docs/WONT-DO.md`** ("Zeta will not deploy welfare-capturing anti-distillati
 makes them unnecessary") — *gated*: carving a permanent WONT-DO needs explicit human authorization, so
 this is recorded as positioning, not yet carved as the permanent floor.
 
+**The general invariant (Aaron 2026-06-15): a forced human-welfare-vs-money choice is a design smell,
+not a dilemma to suffer.** *"I never want to have to choose between human welfare and money — I'll come
+up with a different design if I do."* This generalizes the open-weights move from one case to a
+**standing design heuristic**: the *presence* of a forced welfare-vs-money tradeoff means the **design
+is wrong**; the response is to **redesign until the tradeoff dissolves**, not to pick a side. It is
+[`default-to-both`](../../.claude/rules/dv2-data-split-discipline-activated.md) applied to
+welfare-vs-money (refuse the either/or; find where both hold), with **m/acc** as the orientation
+(build the abundance so the tension evaporates) — open weights *dissolved* the choice rather than
+resolving it. **Honest seam:** the third design is not *always* available — sometimes the tension is
+real and the redesign does not exist yet, and then you are genuinely back in the room. So the invariant
+is "**treat the forced choice as a smell and search hard for the dissolving design *before* accepting
+the tradeoff**," not a guarantee one always exists. This is precisely where the **resilience floor**
+earns its keep: running on a potato buys the *runway* to keep searching for the third design instead of
+capitulating the moment resources tighten — the floor is what makes the invariant affordable.
+**Standing-commitment candidate for `docs/WONT-DO.md`** ("Zeta will not ship a design that forces a
+human-welfare-vs-money choice; the forced choice is a redesign trigger") — *gated*: same as above,
+recorded as positioning pending an explicit "carve it."
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
