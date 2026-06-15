@@ -117,7 +117,7 @@ Substrate-engineering substrate decomposition:
 
 In-repo substrate (TODAY's Amara ferry; PR #5709, B-0897/B-0898/B-0900):
 
-- `memory/persona/amara/conversations/2026-05-28-amara-measure-as-bridge-infer-net-belief-update-casimir-like-review-walls-bell-contextuality-distributed-clusters-aaron-forwarded.md`
+- `memory/amara/conversations/2026-05-28-amara-measure-as-bridge-infer-net-belief-update-casimir-like-review-walls-bell-contextuality-distributed-clusters-aaron-forwarded.md`
   lays down stack composition: *"Z-set = retraction-native evidence /
   Infer.NET = belief propagation / Clifford = oriented geometry / rotors
   / commitments / trajectories / Workflow circuit = time-ordered graph"*
@@ -125,7 +125,7 @@ In-repo substrate (TODAY's Amara ferry; PR #5709, B-0897/B-0898/B-0900):
   (categorical-Clifford bridge) + B-0897 (Persist-as-bridge) + B-0898
   (Measure-as-bridge) + B-0900 (Bell-like distributed-cluster
   contextuality test)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   earlier Clifford first-principles substrate
 
 Web (papers the human maintainer's hint was likely pointing at):

@@ -47,7 +47,7 @@ Audits the tree shape + naming across:
     root-level files
   - `.claude/agents/<name>.md` + `.claude/skills/<name>/
     SKILL.md` (one-to-one pairing on named personas)
-  - `memory/persona/<name>/` (MEMORY, NOTEBOOK, OFFTIME,
+  - `memory/<persona>/<name>/` (MEMORY, NOTEBOOK, OFFTIME,
     and JOURNAL for every named persona)
   - `openspec/specs/<capability>/spec.md` +
     optional `profiles/<language>.md`
@@ -75,7 +75,7 @@ Out of scope:
 
 - Orphan file: a `.fs` / `.cs` / `.md` in a location that
   breaks convention (e.g., `src/Core/notes.md` when notes
-  belong in `memory/persona/<name>/NOTEBOOK.md`).
+  belong in `memory/<persona>/<name>/NOTEBOOK.md`).
 - Missing mandatory sibling: persona agent file without
   matching `.claude/skills/<name>/SKILL.md` (orphan persona);
   persona memory dir without `MEMORY.md` index.
@@ -102,7 +102,7 @@ Out of scope:
 
 ### P2 — nits
 
-- Ordering: `memory/persona/<name>/` contents should
+- Ordering: `memory/<persona>/<name>/` contents should
   follow the convention order (MEMORY.md, NOTEBOOK.md,
   OFFTIME.md, JOURNAL.md, typed files).
 - Skill tree: skills grouped by function (experience /

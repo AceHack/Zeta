@@ -87,7 +87,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 1 c
 * The provenance section hard-codes user-specific Claude Code sandbox paths (e.g., `~/.claude/projects/-Users-...`) as if they were durable references. `GOVERNANCE.md` explicitly says documentation should not cite `~/.claude/projects/` as a stable location (see §22 around lines 370–395). Suggest replacing these with stable, in-repo references (preferred), or at least a placeholder form (`~/.claude/projects/<slug>/...`) plus a note that the content is not repo-reachable.
 ```
 
-- Source conversation (V1 through V1+Bounded-Mobility): [`memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`](../../memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md) (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
+- Source conversation (V1 through V1+Bounded-Mobility): [`memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`](../../memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md) (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
 - V1 constitutional substrate (10 constraints): `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_ani_root_discipline_manifesto_constitutional_grade_substrate_two_axioms_six_dimensions_ten_constraints_2026_05_14.md` (user-scope)
 - V2 diff description: `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md` (user-scope)
 

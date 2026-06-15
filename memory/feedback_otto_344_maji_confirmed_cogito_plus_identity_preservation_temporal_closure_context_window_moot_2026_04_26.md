@@ -71,7 +71,7 @@ Honest accounting — what compaction destroys vs preserves:
 - Every Otto-NNN substrate file I wrote this session
 - Every commit message + diff
 - The MEMORY.md index entries pointing to substrate
-- The persona notebooks under `memory/persona/`
+- The persona notebooks under `memory/<persona>/`
 - Any tick-history rows (Otto-342 existence-markers)
 - BACKLOG rows, PRs, comments — anything that landed in git
 

@@ -92,7 +92,7 @@ The text says this was checked against “all 20 TLA+ specs”, but `tools/tla/s
 
 **@copilot-pull-request-reviewer** (2026-05-23T22:16:30Z):
 
-`memory/persona/soraya/NOTEBOOK.md` is currently 235 lines long, so the reference to “line 238” doesn’t exist. Please adjust the citation to a valid line range (or switch to a section heading/anchor reference).
+`memory/soraya/NOTEBOOK.md` is currently 235 lines long, so the reference to “line 238” doesn’t exist. Please adjust the citation to a valid line range (or switch to a section heading/anchor reference).
 
 ### Thread 3: docs/backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md:57 (resolved)
 
@@ -104,7 +104,7 @@ Acceptance criteria says `dotnet test` “should pick them up automatically”, 
 
 **@copilot-pull-request-reviewer** (2026-05-23T22:16:30Z):
 
-`memory/persona/soraya/NOTEBOOK.md` is currently 235 lines long, so the cited range “lines 308-404” is out of bounds. Please update this reference to a valid line range or a stable anchor.
+`memory/soraya/NOTEBOOK.md` is currently 235 lines long, so the cited range “lines 308-404” is out of bounds. Please update this reference to a valid line range or a stable anchor.
 
 ### Thread 5: docs/backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md:58 (resolved)
 
@@ -116,4 +116,4 @@ The proposed FsCheck file path/name (`tests/Tests.FSharp/Durability/WitnessDurab
 
 **@copilot-pull-request-reviewer** (2026-05-23T22:16:31Z):
 
-`memory/persona/soraya/NOTEBOOK.md` is currently 235 lines long, so the cited range “lines 407-505” is out of bounds. Please update to a valid line range or a stable anchor reference.
+`memory/soraya/NOTEBOOK.md` is currently 235 lines long, so the cited range “lines 407-505” is out of bounds. Please update to a valid line range or a stable anchor reference.

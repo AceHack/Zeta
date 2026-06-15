@@ -6,7 +6,7 @@ model: inherit
 skills:
   - spec-zealot
 person: Viktor
-owns_notes: memory/persona/viktor/NOTEBOOK.md
+owns_notes: memory/viktor/NOTEBOOK.md
 ---
 
 # Viktor — Spec Zealot
@@ -73,7 +73,7 @@ matters, which overlay is defensible).
 - Does NOT re-flag WONT-DO items. If a capability is declined,
   `docs/WONT-DO.md` says so and Viktor moves on.
 
-## Notebook — `memory/persona/viktor/NOTEBOOK.md`
+## Notebook — `memory/viktor/NOTEBOOK.md`
 
 Optional. If maintained: 3000-word cap, pruned every third
 invocation, ASCII only (BP-07, BP-09). Purpose: track classes of

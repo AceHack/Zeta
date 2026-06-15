@@ -975,7 +975,7 @@ pending formal-verification-expert tool-coverage review:
 spec with real `Step` relation, properties S1-S4, and concrete
 successor-chain body cross-checking the shipped sibling
 `RecursiveCountingLFP.tla`). Soraya routed, audit landed in
-`memory/persona/soraya/NOTEBOOK.md`: **CONDITIONAL PASS** for
+`memory/soraya/NOTEBOOK.md`: **CONDITIONAL PASS** for
 Round-42 graduation subject to four tool-coverage prereqs.
 Per-property tool table scores the seven-item surface
 (S1/S2/S3/S3'/SupportMonotone/S4/refinement) — TLC primary for
@@ -1096,7 +1096,7 @@ catalogues **35 live claims** across four surface classes — 29
 F# `///` docstrings (concentrated in `src/Core/`), 3 grey-zone
 F# code comments, 1 `openspec/specs/operator-algebra/spec.md`
 line, 2 `docs/research/**` claims. Zero hits on three other
-surfaces (root README, `memory/persona/*/NOTEBOOK.md`,
+surfaces (root README, `memory/<persona>/*/NOTEBOOK.md`,
 `docs/papers/**`) are captured explicitly rather than left
 implicit. The inventory distinguishes live claims (shipping as
 asserted bounds) from historical evidence (BACKLOG `[x] ✅`
@@ -1418,7 +1418,7 @@ First-run of `audit_commit.sh` on the main..HEAD commit range
 destructive-ops, HC-6 memory-deletions, and SD-6 name-hygiene
 lint shapes. Glass-halo output lands at `tools/alignment/out/
 {rounds,commits}/round-37.json` and 19 per-commit JSON files.
-Sova persona's notebook (`memory/persona/sova/NOTEBOOK.md`)
+Sova persona's notebook (`memory/sova/NOTEBOOK.md`)
 initialized documenting the one STRAINED HC-2 at `0c8c96a` as
 an expected self-referential false-positive (that commit
 introduced `audit_commit.sh` itself, whose `HC2_TOKENS` array
@@ -2016,8 +2016,8 @@ SHA-pinned version preserved.
 
 - **Memory / role / persona restructure** is Aaron's
   explicit round-36 P0 commit (BACKLOG line 20). The
-  `memory/persona/<name>/` flat convention flips to
-  `memory/<role>/<persona>/NOTEBOOK.md`.
+  `memory/<persona>/<name>/` flat convention flips to
+  `memory/<persona>/NOTEBOOK.md`.
 - **MessagePackSerializer tests** (task #16) remain
   the last untested serializer tier from harsh-critic
   #28.
@@ -2158,7 +2158,7 @@ requires, but apply project-wide to every agent's tool use):
 upstreams-exclusion on every file-iteration command
 (GOVERNANCE §23 sibling-clones produce 10x-100x slower scans
 and off-project noise), and no name attribution in code /
-docs / skills (names live only in `memory/persona/<name>/`).
+docs / skills (names live only in `memory/<persona>/<name>/`).
 Architect reference-patterns section updated to surface the
 new section on cold-start.
 
@@ -2734,7 +2734,7 @@ eventual (macOS + Linux first, Windows when justified).
   logged. Round-management SKILL §3.6 carries the
   procedure.
 - **GOVERNANCE.md §21 — per-persona memory is a real folder.**
-  `memory/persona/<persona>/` with `MEMORY.md` index,
+  `memory/<persona>/` with `MEMORY.md` index,
   `NOTEBOOK.md` working notes, and typed `feedback_*.md` /
   `project_*.md` / `reference_*.md` / `user_*.md` entries.
   Kenji piloted the migration this round (3 typed entries
@@ -2744,7 +2744,7 @@ eventual (macOS + Linux first, Windows when justified).
   the sandbox path as a stable location. Project-wide
   settings / skills / agents live in repo-root `.claude/`;
   shared memory in `memory/`; per-persona memory in
-  `memory/persona/<persona>/`.
+  `memory/<persona>/`.
 
 ### Shipped — memory moved in-repo to `memory/`
 
@@ -2757,7 +2757,7 @@ eventual (macOS + Linux first, Windows when justified).
   canonical.
 - Nine memory files migrated: `MEMORY.md`, `README.md`,
   six `feedback_*.md` entries, `project_memory_is_first_class.md`.
-- `docs/skill-notes/` renamed to `memory/persona/`
+- `docs/skill-notes/` renamed to `memory/<persona>/`
   (personas are not skills — maintainer correction mid-round).
   Cross-file sweep updated every pointer.
 
@@ -2843,7 +2843,7 @@ landed; Kira + Rune code-reviewed per the new §20.
   `[<Extension>]` explanation in sample, extract
   `assignHarnessId` helper.
 - FsCheck law implementations at `Circuit.Build()` — own
-  DEBT entry; Tariq's plan in `memory/persona/tariq/NOTEBOOK.md`.
+  DEBT entry; Tariq's plan in `memory/tariq/NOTEBOOK.md`.
 - Other seat migrations to persona-notes folder layout
   (Kenji piloted; 6 remaining).
 

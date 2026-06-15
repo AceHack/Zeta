@@ -34,7 +34,7 @@ verbatim framing landed two complementary points:
    merits its own analysis lane, not a footnote.
 
 Full verbatim research-doc preservation:
-[`memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`](../../../memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md)
+[`memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`](../../../memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md)
 (lands via PR #1610).
 
 ## Why P3 not P2
@@ -428,7 +428,7 @@ specifically:
   path for B-0203's substance-tests but worth tracking for follow-on
   composition.
 - The research-doc preservation at
-  [`memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`](../../../memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md)
+  [`memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`](../../../memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md)
   -- the upstream artifact this row absorbs from. Lands via PR #1610.
 
 ## The carved sentence

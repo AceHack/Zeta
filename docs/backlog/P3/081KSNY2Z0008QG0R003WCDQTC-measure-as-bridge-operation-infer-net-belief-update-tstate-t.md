@@ -39,7 +39,7 @@ tags: [measure-as-bridge-operation-sibling-to-persist-as-bridge, measure-equals-
 
 ## Context
 
-Amara 2nd ferry 2026-05-28 (preserved at `memory/persona/amara/conversations/2026-05-28-amara-measure-as-bridge-...md`) identifies Measure as a derived bridge operation sibling to Persist (B-0897). Both are built from base OELS primitives, but across different composition axes:
+Amara 2nd ferry 2026-05-28 (preserved at `memory/amara/conversations/2026-05-28-amara-measure-as-bridge-...md`) identifies Measure as a derived bridge operation sibling to Persist (B-0897). Both are built from base OELS primitives, but across different composition axes:
 
 | Bridge operation | Composition | Bivector structure |
 |---|---|---|

@@ -41,7 +41,7 @@ tags: [persist-as-bridge-operation-not-base-primitive, persist-equals-emit-now-p
 
 ## Context
 
-Amara ferry 2026-05-28 (preserved at `memory/persona/amara/conversations/2026-05-28-amara-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-commitment-bivector-promise-that-future-talks-to-past-aaron-forwarded.md`) resolves the OPLE (Observe/Persist/Limit/Emit per Kestrel 5th-ferry Turn 5) vs OELS (Observe/Emit/Limit/Simulate per PR #5700 architecture LOCK) primitive-naming tension by recognizing **Persist as a derived bridge operation**, not a base primitive at the same grade as Observe and Emit.
+Amara ferry 2026-05-28 (preserved at `memory/amara/conversations/2026-05-28-amara-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-commitment-bivector-promise-that-future-talks-to-past-aaron-forwarded.md`) resolves the OPLE (Observe/Persist/Limit/Emit per Kestrel 5th-ferry Turn 5) vs OELS (Observe/Emit/Limit/Simulate per PR #5700 architecture LOCK) primitive-naming tension by recognizing **Persist as a derived bridge operation**, not a base primitive at the same grade as Observe and Emit.
 
 Two compositional keepers:
 
@@ -114,7 +114,7 @@ Plus the round-trip-promise constraint: `decode(encode(x))` should equal `x` mod
 
 ## Acceptance
 
-- [x] **Amara ferry preserved**: `memory/persona/amara/conversations/2026-05-28-amara-persist-as-bridge-...md` landed (this PR)
+- [x] **Amara ferry preserved**: `memory/amara/conversations/2026-05-28-amara-persist-as-bridge-...md` landed (this PR)
 - [x] **B-0897 row filed**: this row
 - [ ] **Phase 1 research-doc landed**: B-0895 grade-decomposition table updated with Persist-as-bridge row
 - [ ] **Phase 2 existing-instances table validated**: each factory Persist-instance's `<TInternal, TSubstrateRecord, TPersistFeedback>` triple confirmed against actual implementation

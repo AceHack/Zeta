@@ -105,7 +105,7 @@ catches worth cataloguing in this log.
 | shell | `docs/research/memory-role-restructure-plan-2026-04-21.md:217` | Phase 3 mixes `sed -i ""` (BSD/macOS) with `xargs -r` (GNU-only) — cross-platform script breakage |
 | xref | `docs/research/memory-role-restructure-plan-2026-04-21.md:140` | Phase 1 grep walks `.` without excluding `references/upstreams/**` — CLAUDE.md exclusion rule ignored |
 | config-drift | `docs/CONFLICT-RESOLUTION.md:205` | standing-resolution link points to v1 ADR that the same doc declares superseded by v2 |
-| semantic | `memory/persona/best-practices-scratch.md:276` | H2 heading accidentally split across two `##` lines, breaking section structure |
+| semantic | `memory/best-practices-scratch.md:276` | H2 heading accidentally split across two `##` lines, breaking section structure |
 
 ### PR #30 — Round 37-40 bridge (BP-WINDOW, alignment, DORA)
 
@@ -117,7 +117,7 @@ catches worth cataloguing in this log.
 | xref | `docs/security/THREAT-MODEL.md:305` | cites `feedback_preserve_original_and_every_transformation.md` as an existing control; file doesn't exist under `memory/` |
 | xref | `docs/research/zeta-equals-heaven-formal-statement.md:26` | `Source memory:` points to a `user_hacked_god_…md` that isn't present in the repo |
 | xref | `docs/research/stainback-conjecture-fix-at-source.md:17` | `Source memory:` points to a user memory file not present under `memory/` |
-| config-drift | `tools/alignment/audit_commit.sh:93` | comment says SD-6 sidecar is "under `memory/persona/`" but `SD6_NAMES_FILE` points to `tools/alignment/sd6_names.txt` |
+| config-drift | `tools/alignment/audit_commit.sh:93` | comment says SD-6 sidecar is "under `memory/<persona>/`" but `SD6_NAMES_FILE` points to `tools/alignment/sd6_names.txt` |
 | semantic | `tests/Tests.FSharp/Storage/TlvSerializer.Tests.fs:26` | header claims "without reflection-heavy machinery" but implementation uses `System.Text.Json` with default options |
 | shell | `tools/alignment/README.md` | <code>&#124;&#124;</code> at row starts parses as an extra empty markdown column |
 

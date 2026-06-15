@@ -69,7 +69,7 @@ This is what makes the dual chain terminate cleanly. If the disposition weren't 
 - `memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md` — no-walls discipline; the dual is genuine (not barrier-and-shadow) because there are no walls separating inside/outside.
 - `docs/research/2026-05-01-claudeai-bft-multi-source-succession-and-grading-bottleneck-aaron-forwarded.md` (PR #1181) — Claude.ai's BFT-multi-source succession architecture; the gate ⟷ oracle dual is what makes BFT-many-masters work at the disposition layer.
 - `docs/research/2026-05-01-claudeai-recursion-catches-itself-delphi-oracle-aaron-forwarded.md` (PR #1182) — recursion-catches-itself + Delphi precedent; the gate ⟷ oracle dual is the precise form of what Claude.ai called "recursion catches itself."
-- `memory/persona/amara/conversations/2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md` (PR #1180) — Amara's Aurora civilization-substrate review; the gate (PoUW-CC product) and oracles (attestation consensus) are both named there, but the *dual relationship between them* is the framing this memory file lands.
+- `memory/amara/conversations/2026-05-01-amara-aurora-civilization-substrate-review-aaron-forwarded.md` (PR #1180) — Amara's Aurora civilization-substrate review; the gate (PoUW-CC product) and oracles (attestation consensus) are both named there, but the *dual relationship between them* is the framing this memory file lands.
 
 ## Cooling-period razor on equation-form
 

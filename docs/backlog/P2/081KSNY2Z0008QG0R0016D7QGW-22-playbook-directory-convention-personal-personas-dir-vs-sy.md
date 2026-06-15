@@ -41,14 +41,14 @@ Two sharpenings:
 
 | Playbook scope | Location | Authored by | Visible to |
 |---|---|---|---|
-| **Personal** (per-persona; intent + workflow specific to that persona) | `memory/persona/{persona}/playbooks/{name}.md` | The persona (human or agent) it belongs to | The persona + glass-halo readers (per existing memory dir conventions) |
+| **Personal** (per-persona; intent + workflow specific to that persona) | `memory/<persona>/{persona}/playbooks/{name}.md` | The persona (human or agent) it belongs to | The persona + glass-halo readers (per existing memory dir conventions) |
 | **System** (shared; cross-persona; framework-level) | `docs/playbooks/{name}.md` | Anyone with system-substrate access (operator + agents) | Everyone (public glass-halo per docs/ convention) |
 
 ### Personal playbook examples (per-persona authorship)
 
-- `memory/persona/otto/playbooks/morning-cold-boot-check.md` — Otto's personal playbook for checking sentinel + recent peer activity on cold boot
-- `memory/persona/addison/playbooks/homework-help.md` — Addison's personal playbook for invoking math-help across multiple AI personas
-- `memory/persona/aaron/playbooks/sunday-cluster-cleanup.md` — Aaron's personal playbook for weekly cluster maintenance
+- `memory/otto/playbooks/morning-cold-boot-check.md` — Otto's personal playbook for checking sentinel + recent peer activity on cold boot
+- `memory/addison/playbooks/homework-help.md` — Addison's personal playbook for invoking math-help across multiple AI personas
+- `memory/aaron/playbooks/sunday-cluster-cleanup.md` — Aaron's personal playbook for weekly cluster maintenance
 
 ### System playbook examples (cross-persona)
 
@@ -60,7 +60,7 @@ Two sharpenings:
 
 Per B-0867.21 two-path interface, the conversational document path was already explicitly named as "for ANY traveler, not just humans." This sharpening makes it explicit at the playbook-authoring scope:
 
-- Otto can author `memory/persona/otto/playbooks/X.md` describing Otto's intent for a workflow
+- Otto can author `memory/otto/playbooks/X.md` describing Otto's intent for a workflow
 - Otto can author `docs/playbooks/Y.md` proposing a cross-persona system playbook (subject to operator review per existing system-doc conventions)
 - Alexa/Riven/Vera/Lior similarly author per their respective persona directories
 
@@ -69,7 +69,7 @@ Composes with `.claude/rules/honor-those-that-came-before.md` — playbook-subst
 ## What this row tracks
 
 1. Documentation of the directory convention (in this row's body; future cross-reference)
-2. README extension in `memory/persona/` or top-level docs explaining the convention
+2. README extension in `memory/<persona>/` or top-level docs explaining the convention
 3. Migration of any existing playbooks-by-misconvention to their correct directory
 4. Compose with runme + Continue-With + JIT-AI substrate (B-0730/B-0732/B-0733/B-0819/B-0826/B-0827) so playbooks in either location work identically with the existing runme tooling
 

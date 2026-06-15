@@ -123,7 +123,7 @@ item is *validated* (tested) or *hypothesized* (asserted) — never canonical.
 
 - **B-1000** (the engine being proven) · **B-1006** (registry entries to re-tier + the Tick gate this unblocks) · **B-1004** (minimal vocabulary) · **B-0997** (referee principle / say-do-gap) · **B-0998** (4×4 / vectors-before-trajectories — the lineage target) · **B-0999** (hex core Cl(1,3) — the lineage target) · **B-0428** (F# HKT)
 - `references/notes/2026-06-02-infer-net-lineage-cleanroom-spec-sources-formal-proof-first.md` (the proof sources: Minka-2005 unified math + Ścibior-2018 denotational validation)
-- `memory/persona/soraya/NOTEBOOK.md` round-70 (Soraya's seed; advisory, local branch `otto-cli/soraya-b1000-formal-coverage-audit-2026-06-02` commit `fa528917a`, unpushed — Kenji integrates)
+- `memory/soraya/NOTEBOOK.md` round-70 (Soraya's seed; advisory, local branch `otto-cli/soraya-b1000-formal-coverage-audit-2026-06-02` commit `fa528917a`, unpushed — Kenji integrates)
 - rules: `fsharp-anchor-dotnet-build-sanity-check` (compiler = asymmetric critic), `razor-discipline`, `premise-flagged-unverified-stays-unverified-downstream`, `labeling-confidence-...` (the canonical-tier bar this raises), `algebra-first-admission-...` (the registry gate)
 - `docs/TECH-RADAR.md` (FsCheck/Z3/TLA+ Adopt; Lean Assess; LiquidF# Hold) — the tool-ring constraints
 

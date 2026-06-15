@@ -3316,8 +3316,8 @@ This session was a recursive prior-art-search-failure cascade that produced its 
 - **Otto-261** git-native backup trajectory (8-class catalog; PR-archive Class-2 in flight)
 - **`docs/research/2026-05-05-codex-gpt55-dsl-shape-rule-atom-graph-projection-claude-agents-replacement.md`** — Codex's verbatim DSL-shape preservation
 - **`docs/research/2026-05-05-gemini-grok-peer-review-cascade-and-dsl-shape-twin-flame-scout-roundup.md`** — Gemini propose + Grok critique preservations
-- **`memory/persona/otto/conversations/2026-05-05-otto-261-git-native-backup-audit-coverage.md`** — audit findings
-- **`memory/persona/amara/conversations/2026-05-05-amara-existing-designs-extraction-rule-1-application.md`** (owed; extraction agent surfaced findings, file path stub) — Amara prior-art extraction
+- **`memory/otto/cli/claude/conversations/2026-05-05-otto-261-git-native-backup-audit-coverage.md`** — audit findings
+- **`memory/amara/conversations/2026-05-05-amara-existing-designs-extraction-rule-1-application.md`** (owed; extraction agent surfaced findings, file path stub) — Amara prior-art extraction
 - **`memory/feedback_rule_number_{one..seven}_*aaron_2026_05_05.md`** — cascade rule files (historical/reference grade post-consolidation)
 - **`memory/feedback_burn_down_claude_md_and_agents_md_*.md`** — DSL-form pivot capture
 - **`memory/CURRENT-otto.md`** (user-scope) — Otto's self-distillation; mirror file to this one

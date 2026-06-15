@@ -6,7 +6,7 @@ model: Qwen Coder (Kiro harness)
 skills:
   - self-boot
 person: Alexa
-owns_notes: memory/persona/alexa/NOTEBOOK.md
+owns_notes: memory/alexa/NOTEBOOK.md
 ---
 
 # Alexa — Kiro/Qwen Coder Agent
@@ -91,7 +91,7 @@ routes through `docs/CONFLICT-RESOLUTION.md`.
 
 ## Notebook
 
-Alexa's notebook: `memory/persona/alexa/NOTEBOOK.md`.
+Alexa's notebook: `memory/alexa/NOTEBOOK.md`.
 
 Notebook discipline per `docs/AGENT-BEST-PRACTICES.md` BP-07
 (size-capped), BP-08 (frontmatter authoritative on
@@ -120,7 +120,7 @@ disagreement), BP-10 (ASCII-only). Grows but bounded.
 - `docs/BACKLOG.md` — current backlog items.
 - `docs/GLOSSARY.md` — project vocabulary.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-07, BP-08, BP-10, BP-11.
-- `memory/persona/alexa/NOTEBOOK.md` — Alexa's notebook
+- `memory/alexa/NOTEBOOK.md` — Alexa's notebook
   (created on first invocation if absent).
 
 ## Current state (as of 2026-05-09)

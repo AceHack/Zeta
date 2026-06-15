@@ -17,11 +17,11 @@ ad-hoc location.
 
 | Scope | Location | Authored by | Visible to |
 |---|---|---|---|
-| **Personal** (per-persona; intent + workflow specific to that persona) | `memory/persona/{persona}/playbooks/{name}.md` | The persona (human or agent) it belongs to | The persona + glass-halo readers |
+| **Personal** (per-persona; intent + workflow specific to that persona) | `memory/<persona>/{persona}/playbooks/{name}.md` | The persona (human or agent) it belongs to | The persona + glass-halo readers |
 | **System** (shared; cross-persona; framework-level) | `docs/playbooks/{name}.md` (this folder) | Anyone with system-substrate access (operator + agents) | Everyone (public glass-halo) |
 
 Per-persona playbook directories are created on demand when the first
-playbook lands there — no need to pre-create empty `memory/persona/<name>/playbooks/`
+playbook lands there — no need to pre-create empty `memory/<persona>/<name>/playbooks/`
 directories.
 
 ## What counts as a playbook
@@ -48,7 +48,7 @@ Playbooks compose with the playbook-substrate cluster:
 The conversational-document path is for ANY traveler, not just humans
 (per [`docs/backlog/P1/B-0867.21-...md`](../backlog/P1/B-0867.21-two-path-interface-discriminated-union-execute-vs-conversational-declare-intent-aaron-ani-2026-05-28.md)).
 
-- Any agent (any surface) MAY author `memory/persona/<persona>/playbooks/<name>.md`
+- Any agent (any surface) MAY author `memory/<persona>/playbooks/<name>.md`
   in its own persona directory
 - Any agent MAY propose `docs/playbooks/<name>.md` system playbooks
   (subject to operator review per standard system-doc conventions per

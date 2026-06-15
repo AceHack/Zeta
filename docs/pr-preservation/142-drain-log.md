@@ -21,7 +21,7 @@ commits were already upstream (dropped automatically).
 
 ### Original comment (verbatim)
 
-> P1: The standing "no name attribution" rule says contributor names belong only under `memory/persona/<name>/` (and optionally `docs/BACKLOG.md`). This new memory entry uses the maintainer's personal name in narrative/frontmatter; please convert narrative references to role-refs (keeping verbatim quotes intact) or move name-specific content under `memory/persona/` (docs/AGENT-BEST-PRACTICES.md:284-292).
+> P1: The standing "no name attribution" rule says contributor names belong only under `memory/<persona>/<name>/` (and optionally `docs/BACKLOG.md`). This new memory entry uses the maintainer's personal name in narrative/frontmatter; please convert narrative references to role-refs (keeping verbatim quotes intact) or move name-specific content under `memory/<persona>/` (docs/AGENT-BEST-PRACTICES.md:284-292).
 
 ### Outcome
 
@@ -222,15 +222,15 @@ FIX — same rewrite batch as Thread 4; the parenthetical maintainer-name in the
 
 ### Original comment (verbatim)
 
-> This doc uses direct contributor-name attribution (e.g., "Origin: Aaron" and the leaderboard row). `docs/AGENT-BEST-PRACTICES.md`'s operational standing rule says names should appear only in `memory/persona/**` (and optionally `docs/BACKLOG.md`); please switch narrative prose to role references (e.g., "human maintainer") or move name-bearing tracking to an allowed carve-out file.
+> This doc uses direct contributor-name attribution (e.g., "Origin: Aaron" and the leaderboard row). `docs/AGENT-BEST-PRACTICES.md`'s operational standing rule says names should appear only in `memory/<persona>/**` (and optionally `docs/BACKLOG.md`); please switch narrative prose to role references (e.g., "human maintainer") or move name-bearing tracking to an allowed carve-out file.
 
 ### Outcome
 
-DEFER+RESOLVE — structural conflict: the doc's explicit design (`NOT anonymous. Maintainer name is the leaderboard key.`) is incompatible with the no-name rule. Resolving under the comms-hygiene-sweep BACKLOG row so the design conflict gets a proper decision (either reshape the leaderboard around role-keyed aggregation, or add this file to the `memory/persona/**`-style carve-out).
+DEFER+RESOLVE — structural conflict: the doc's explicit design (`NOT anonymous. Maintainer name is the leaderboard key.`) is incompatible with the no-name rule. Resolving under the comms-hygiene-sweep BACKLOG row so the design conflict gets a proper decision (either reshape the leaderboard around role-keyed aggregation, or add this file to the `memory/<persona>/**`-style carve-out).
 
 ### Reply (verbatim)
 
-> Deferring to `docs/BACKLOG.md` "Comms-hygiene sweep: strip name attribution" (line 2398). This doc is structurally name-keyed (`NOT anonymous. Maintainer name is the leaderboard key`) — the sweep needs to choose between (a) reshape to role-keyed aggregation, (b) add the file to the carve-out list, or (c) split the leaderboard out to a `memory/persona/` home. Outside Stream A+C scope.
+> Deferring to `docs/BACKLOG.md` "Comms-hygiene sweep: strip name attribution" (line 2398). This doc is structurally name-keyed (`NOT anonymous. Maintainer name is the leaderboard key`) — the sweep needs to choose between (a) reshape to role-keyed aggregation, (b) add the file to the carve-out list, or (c) split the leaderboard out to a `memory/<persona>/` home. Outside Stream A+C scope.
 
 ---
 
@@ -242,7 +242,7 @@ DEFER+RESOLVE — structural conflict: the doc's explicit design (`NOT anonymous
 
 ### Original comment (verbatim)
 
-> This index entry includes direct maintainer name attribution in narrative prose (multiple "Aaron …" phrases). `docs/AGENT-BEST-PRACTICES.md`'s operational rule restricts contributor names to `memory/persona/**` (and optionally `docs/BACKLOG.md`); please change these to role references (e.g., "human maintainer") and keep personal names only in the allowed locations.
+> This index entry includes direct maintainer name attribution in narrative prose (multiple "Aaron …" phrases). `docs/AGENT-BEST-PRACTICES.md`'s operational rule restricts contributor names to `memory/<persona>/**` (and optionally `docs/BACKLOG.md`); please change these to role references (e.g., "human maintainer") and keep personal names only in the allowed locations.
 
 ### Outcome
 
@@ -250,7 +250,7 @@ DEFER+RESOLVE — the MEMORY.md index is a memory-file surface (the rule's scope
 
 ### Reply (verbatim)
 
-> Deferring to `docs/BACKLOG.md` "Comms-hygiene sweep" (line 2398). `memory/MEMORY.md` is auto-memory-index territory, scope-adjacent to `memory/persona/**`; whether the rule covers index entries is a sweep-owner decision (documentation-agent lane). Preserving the entry as-authored for now; thread resolved.
+> Deferring to `docs/BACKLOG.md` "Comms-hygiene sweep" (line 2398). `memory/MEMORY.md` is auto-memory-index territory, scope-adjacent to `memory/<persona>/**`; whether the rule covers index entries is a sweep-owner decision (documentation-agent lane). Preserving the entry as-authored for now; thread resolved.
 
 ---
 

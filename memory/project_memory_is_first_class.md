@@ -6,7 +6,7 @@ originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
 The memory corpus — `memory/` (the canonical, in-repo,
 git-tracked shared memory folder per GOVERNANCE.md §18) plus
-`memory/persona/<persona>/` per-persona memory folders —
+`memory/<persona>/` per-persona memory folders —
 is the **most valuable resource in the repo**. Policy:
 
 - **Human maintainer** (Aaron and any future human contributor)

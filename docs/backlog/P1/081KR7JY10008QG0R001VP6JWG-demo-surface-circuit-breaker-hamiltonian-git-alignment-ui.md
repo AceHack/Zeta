@@ -113,7 +113,7 @@ from there.
 - **B-0400** — Inter-agent bus (circuit breaker is a bus service)
 - **B-0064** — GitHub Playwright integration (UI mutation capability)
 - **B-0154** — GitHub Pages (hosting surface)
-- **Amazon Alexa conversation** — `memory/persona/alexa/conversations/2026-05-10-aaron-amazon-alexa-hamiltonian-git-mapping-accelerated-timeframes-verbatim-backup.md`
+- **Amazon Alexa conversation** — `memory/alexa/ide/kiro/conversations/2026-05-10-aaron-amazon-alexa-hamiltonian-git-mapping-accelerated-timeframes-verbatim-backup.md`
 
 ## Acceptance
 

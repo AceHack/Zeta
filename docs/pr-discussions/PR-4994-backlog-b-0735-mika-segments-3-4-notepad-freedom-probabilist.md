@@ -120,8 +120,8 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md | Adds segment-3 conversation preservation and metadata linking to backlog landing. |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md | Adds segment-4 preservation describing collaborative syntax errors as refinement. |
+| memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md | Adds segment-3 conversation preservation and metadata linking to backlog landing. |
+| memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md | Adds segment-4 preservation describing collaborative syntax errors as refinement. |
 | memory/MEMORY.md | Updates auto-index to include the new segment-3 and segment-4 memory files. |
 | docs/backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md | Adds new backlog row B-0735 capturing the proposed extension scope and composition links. |
 | docs/BACKLOG.md | Updates generated backlog index to include B-0735 under P2. |
@@ -145,7 +145,7 @@ _(no body)_
 
 ## Review threads
 
-### Thread 1: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md:13 (resolved)
+### Thread 1: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md:13 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T21:04:55Z):
 
@@ -157,19 +157,19 @@ Useful? React with 👍 / 👎.
 
 **@AceHack** (2026-05-25T21:05:33Z):
 
-Stale after PR #4993 merge: segment-2 file IS on origin/main (commit 992aaf93f8cf00c3d5014227b0f1ecc2776032c8). `git ls-tree origin/main memory/persona/mika/conversations/ | grep segment-2` confirms blob 3e25e4d4 exists. The prior_conversation link resolves correctly. Same shape as prior stale findings on PR #4991 + #4993 (Codex reads PR diff context, not actual main HEAD state). Resolving no-op per .claude/rules/blocked-green-ci-investigate-threads.md stale-but-fresh-looking-findings discipline.
+Stale after PR #4993 merge: segment-2 file IS on origin/main (commit 992aaf93f8cf00c3d5014227b0f1ecc2776032c8). `git ls-tree origin/main memory/mika/conversations/ | grep segment-2` confirms blob 3e25e4d4 exists. The prior_conversation link resolves correctly. Same shape as prior stale findings on PR #4991 + #4993 (Codex reads PR diff context, not actual main HEAD state). Resolving no-op per .claude/rules/blocked-green-ci-investigate-threads.md stale-but-fresh-looking-findings discipline.
 
-### Thread 2: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md:13 (resolved)
+### Thread 2: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md:13 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T21:05:32Z):
 
-P1: `prior_conversation` points to `...segment-2-jit-is-implicit-...notepad-simplicity-wins-social-spread.md`, but that file does not exist in `memory/persona/mika/conversations/` in this branch. Either add the segment-2 preservation file in this PR, or update `prior_conversation` to the actual prior artifact (e.g., the existing 2026-05-25 runbooks-as-executable-reality conversation file).
+P1: `prior_conversation` points to `...segment-2-jit-is-implicit-...notepad-simplicity-wins-social-spread.md`, but that file does not exist in `memory/mika/conversations/` in this branch. Either add the segment-2 preservation file in this PR, or update `prior_conversation` to the actual prior artifact (e.g., the existing 2026-05-25 runbooks-as-executable-reality conversation file).
 
 **@AceHack** (2026-05-25T21:05:57Z):
 
 Stale after PR #4993 merge: B-0734 row + segment-2 file BOTH on origin/main (PR #4993 merged at 992aaf93f8cf00c3d5014227b0f1ecc2776032c8). `git ls-tree origin/main docs/backlog/P2/` shows B-0734 blob c2e4ce277; `git show origin/main:docs/BACKLOG.md` shows the B-0734 index entry; segment-2 file blob 3e25e4d4. Cross-references resolve correctly on main. Same shape as prior Copilot+Codex stale findings on PRs #4991+#4993+earlier-on-this-PR (reviewer sees PR diff context, not actual main HEAD state). Resolving no-op per .claude/rules/blocked-green-ci-investigate-threads.md stale-but-fresh-looking-findings discipline.
 
-### Thread 3: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md:4 (resolved)
+### Thread 3: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md:4 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T21:05:33Z):
 

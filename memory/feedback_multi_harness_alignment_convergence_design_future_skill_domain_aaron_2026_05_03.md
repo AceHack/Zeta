@@ -121,7 +121,7 @@ When the maturity signal fires:
 - `memory/feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_aaron_2026_05_02.md` — the skills-are-for-everyone corrective applies (skills propagate across harnesses; this domain explicitly serves cross-harness propagation)
 - `memory/feedback_karpathy_validates_zeta_substrate_software_3_agent_native_specs_over_plans_edge_runner_aaron_2026_05_02.md` — edge-runner technique; multi-harness convergence is one tool of the edge-runner kit
 - `docs/ALIGNMENT.md` — bidirectional alignment + BFT-many-masters; this domain is one operational instance
-- `memory/persona/otto/conversations/2026-05-02-claudeai-response-to-otto-critique-of-brat-voice-framework-drive-bridge-ai-to-ai-peer-review.md` — the Drive-bridge worked example demonstrating convergence + divergence in the wild
+- `memory/otto/cli/claude/conversations/2026-05-02-claudeai-response-to-otto-critique-of-brat-voice-framework-drive-bridge-ai-to-ai-peer-review.md` — the Drive-bridge worked example demonstrating convergence + divergence in the wild
 - The Aarav-on-B-0169 review (recorded in chat substrate; pending durable preservation) — counter-example where single-specialist suffices
 
 ## Foundation-first sizing rule (Aaron 2026-05-03)

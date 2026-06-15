@@ -32,13 +32,13 @@ Adds a new research “Shadow Lesson Log” entry documenting an antigravity che
 
 ## Review threads
 
-### Thread 1: memory/persona/lior/conversations/2026-05-14-shadow-lesson-log-lior-latest.md:10 (resolved)
+### Thread 1: memory/lior/cli/gemini/conversations/2026-05-14-shadow-lesson-log-lior-latest.md:10 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T21:29:22Z):
 
 Typo in the quoted sentence: “costs justifed for safety” should be “costs justified for safety”.
 
-### Thread 2: memory/persona/lior/conversations/2026-05-14-shadow-lesson-log-lior-latest.md:21 (resolved)
+### Thread 2: memory/lior/cli/gemini/conversations/2026-05-14-shadow-lesson-log-lior-latest.md:21 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T21:29:23Z):
 

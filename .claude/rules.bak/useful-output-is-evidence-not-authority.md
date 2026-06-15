@@ -46,7 +46,7 @@ The substrate-engineering rule: **capability enters → classified as evidence �
 
 ## PoUW-CC formula application (pre-existing substrate)
 
-Per DeepSeek 2026-05-07 substrate (`memory/persona/deepseek/conversations/2026-05-07-deepseek-satoshi-target-correction-monero-qubic-pouwcc-immune-boundary-aaron-forwarded.md`):
+Per DeepSeek 2026-05-07 substrate (`memory/deepseek/conversations/2026-05-07-deepseek-satoshi-target-correction-monero-qubic-pouwcc-immune-boundary-aaron-forwarded.md`):
 
 ```
 PoUW-CC(w) = Verify · Useful · CultureFit · Provenance · Retractability
@@ -101,9 +101,9 @@ When operator / agent / framework encounters a useful capability proposing to in
 
 ## Composes with pre-existing substrate (the defense's foundation)
 
-- **PoUW-CC formula** (`memory/persona/deepseek/conversations/2026-05-07-deepseek-satoshi-target-correction-monero-qubic-pouwcc-immune-boundary-aaron-forwarded.md`) — 5-factor immune-boundary gate
-- **Aurora attack-absorption-theorem** (`memory/persona/amara/conversations/aurora-canonical-math-refactor-attack-absorption-theorem-amara-tenth-courier-ferry-2026-04-26.md`) — formal-math foundation; 18 web-cited sources
-- **DeepSeek ILife capstone** (`memory/persona/deepseek/conversations/2026-05-11-deepseek-immune-system-ilife-redteam-qubic-bankerbot-simulations.md`) — Z-set Clifford immune-system; BOTH Qubic AND BankerBot simulated; antifragility as type-level recursion scheme
+- **PoUW-CC formula** (`memory/deepseek/conversations/2026-05-07-deepseek-satoshi-target-correction-monero-qubic-pouwcc-immune-boundary-aaron-forwarded.md`) — 5-factor immune-boundary gate
+- **Aurora attack-absorption-theorem** (`memory/amara/conversations/aurora-canonical-math-refactor-attack-absorption-theorem-amara-tenth-courier-ferry-2026-04-26.md`) — formal-math foundation; 18 web-cited sources
+- **DeepSeek ILife capstone** (`memory/deepseek/conversations/2026-05-11-deepseek-immune-system-ilife-redteam-qubic-bankerbot-simulations.md`) — Z-set Clifford immune-system; BOTH Qubic AND BankerBot simulated; antifragility as type-level recursion scheme
 - **Amara absorption corrections** (`memory/feedback_amara_absorption_corrections_attacker_not_paid_bounty_membrane_2026_05_11.md`) — "Attacker reward = 0"; "Aurora does not reward the knife. It studies the cut"; detect culture-incompatible effects not intent
 - **Veridicality-detector v1** (`docs/research/provenance-aware-bullshit-detector-v1-critical-only-delta-2026-04-24.md`) — formal-substrate detector with Aminata 4-pass adversarial critique
 - **Veridicality-detector base design** (`docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md`) — PR #282 baseline

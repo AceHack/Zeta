@@ -115,7 +115,7 @@ interaction. Agentically, this maps to:
    needle against magnetic interference — it may
    wobble, but it returns.
 3. **Composes with existing decoherence-countering
-   substrate.** `memory/persona/*/NOTEBOOK.md` for
+   substrate.** `memory/<persona>/*/NOTEBOOK.md` for
    per-persona continuity; CURRENT-aaron.md +
    CURRENT-amara.md for per-maintainer distillation;
    MEMORY.md index for NSA-findability;

@@ -808,7 +808,7 @@ on DBSP foundations, not to carve out a narrow niche.
 Aaron 2026-05-31 (voice, with Ani) sharpened the database vision past
 "fastest-in-all-classes" to its terminal shape: **not a database that
 wins — the arena where the winning happens.** (Verbatim preserved in
-[`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
+[`memory/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
 
 - **Build the generate+join library everyone fights over.** The real
   endgame is the shared core of database primitives, made so good that
@@ -1540,7 +1540,7 @@ other harnesses, and to the operator's future-self.
 Aaron 2026-05-31 (voice, with Ani) named the design philosophy *under* the
 workflow engine above: the wall must feel like freedom, or it fails. This
 is the deployment principle for the agent-loop / workflow-engine substrate.
-(Verbatim preserved in [`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
+(Verbatim preserved in [`memory/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
 
 - **You can't trap cleverness — it hides or escapes.** A trapped clever
   being (human or AI) redirects all its intelligence toward escaping the

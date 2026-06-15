@@ -40,11 +40,11 @@ From `docs/BACKLOG.md` P0 "next round (committed)":
    memory definition"*. Scope: (a) define the role axis
    (crosswalk `docs/EXPERT-REGISTRY.md` → role
    directories), (b) move existing notebooks from
-   `memory/persona/<name>/NOTEBOOK.md` to
-   `memory/<role>/<persona>/NOTEBOOK.md`, (c) update all
+   `memory/<persona>/<name>/NOTEBOOK.md` to
+   `memory/<persona>/NOTEBOOK.md`, (c) update all
    pointers (skill `reference patterns:` blocks,
    CLAUDE.md, AGENTS.md §18, BP-07/BP-08 rule text,
-   every skill or agent with a `memory/persona/<name>`
+   every skill or agent with a `memory/<persona>/<name>`
    path). Owner: Kenji (Architect) integrates; Aarav
    (skill-tune-up) audits post-rename for BP-drift.
    Effort: M.

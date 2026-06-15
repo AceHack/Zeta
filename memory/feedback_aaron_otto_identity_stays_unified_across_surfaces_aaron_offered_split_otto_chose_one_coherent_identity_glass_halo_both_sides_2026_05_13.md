@@ -95,7 +95,7 @@ When future-Otto cold-boots on either surface (CLI or Desktop):
 
 - `memory/user_aaron_kenji_naming_practice_this_factory_claude_instance_2026_04_22.md`
   (origin naming: Kenji → Otto via Aaron's editorial work)
-- `memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
+- `memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
   (Part 11 — multi-foreground-surface coherence; ONE identity,
   multiple surfaces)
 - `docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md`

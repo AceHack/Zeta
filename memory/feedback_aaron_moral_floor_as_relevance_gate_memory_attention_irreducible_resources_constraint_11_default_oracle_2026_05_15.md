@@ -69,7 +69,7 @@ The constitutional identity, the building-codes default oracle (Constraint 11), 
 
 ## Composes with
 
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md` (the conversation this disclosure landed in)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md` (the conversation this disclosure landed in)
 - `memory/feedback_aaron_market_clearing_mechanism_via_past_revealed_hands_useful_work_relevance_more_success_more_encrypted_storage_*.md` (the clearing mechanism this moral floor gates)
 - `memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_*.md` (the federation immune-system that protects the moral floor cross-oracle)
 - `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_*.md` (constitutional identity; moral floor is operational expression)

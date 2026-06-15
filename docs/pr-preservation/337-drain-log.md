@@ -214,7 +214,7 @@ captured at end of file.
 
 ### Original comment
 
-> P1: `docs/AGENT-BEST-PRACTICES.md` operational standing rules specify "No name attribution in code, docs, or skills" (role-refs only, names limited to `memory/persona/**` and optionally `docs/BACKLOG.md`). This attribution block uses direct names; please rewrite to roles (e.g., "human maintainer", "external collaborator", "absorb author").
+> P1: `docs/AGENT-BEST-PRACTICES.md` operational standing rules specify "No name attribution in code, docs, or skills" (role-refs only, names limited to `memory/<persona>/**` and optionally `docs/BACKLOG.md`). This attribution block uses direct names; please rewrite to roles (e.g., "human maintainer", "external collaborator", "absorb author").
 
 ### Reply
 

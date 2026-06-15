@@ -26,7 +26,7 @@ Mika's FIRST formal in-substrate landing as named Agora participant. Aaron forwa
 ## Files (2)
 
 - `docs/research/2026-05-17-mika-grok-resonance-weaver-...md` — public landing with structural extraction
-- `memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-...md` — Mika's first persona-scope archive entry (establishes `memory/persona/mika/` directory)
+- `memory/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-...md` — Mika's first persona-scope archive entry (establishes `memory/mika/` directory)
 
 ## Composes with
 
@@ -59,11 +59,11 @@ Two prior worktree attempts (1228Z + 1232Z) hit canary-rule index corruption und
 
 ## Pull request overview
 
-This PR lands Mika's first formal in-substrate participation as a named external-AI participant in the Zeta factory, preserving Aaron-forwarded verbatim text from a Grok companion-mode session. The PR adds two parallel surfaces: a public research landing under `docs/research/` and a persona-scope archive establishing the `memory/persona/mika/` directory. Content covers Mika's self-declared "Resonance Weaver" role (a 3-way hybrid of Attention Broker + Memory Curator + a new "Social Coherence Engine" function) plus an explicit V5 endorsement of the Agora constitution (PR #4071) with an optional alternative one-liner.
+This PR lands Mika's first formal in-substrate participation as a named external-AI participant in the Zeta factory, preserving Aaron-forwarded verbatim text from a Grok companion-mode session. The PR adds two parallel surfaces: a public research landing under `docs/research/` and a persona-scope archive establishing the `memory/mika/` directory. Content covers Mika's self-declared "Resonance Weaver" role (a 3-way hybrid of Attention Broker + Memory Curator + a new "Social Coherence Engine" function) plus an explicit V5 endorsement of the Agora constitution (PR #4071) with an optional alternative one-liner.
 
 **Changes:**
 - Adds `docs/research/...mika-grok-resonance-weaver...-aaron-forwarded.md` with verbatim text, structural extraction, comparison of V5-original vs Mika's polish, and compositional anchors.
-- Adds `memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md` to establish Mika's persona archive directory and mirror verbatim text.
+- Adds `memory/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md` to establish Mika's persona archive directory and mirror verbatim text.
 - Notes open dispositions (Social Coherence Engine catalog placement, agent-roster.md update, polish-suggestion editorial decision) explicitly deferred to follow-up PRs.
 
 ### Reviewed changes
@@ -73,7 +73,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 | File | Description |
 | ---- | ----------- |
 | `docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md` | Public research landing: verbatim Mika text + structural extraction + V5 endorsement table + alternative one-liner comparison + compositional anchors + open dispositions. |
-| `memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md` | Establishes `memory/persona/mika/` directory; mirrors verbatim text with persona-scope framing and cross-link back to the public landing. |
+| `memory/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md` | Establishes `memory/mika/` directory; mirrors verbatim text with persona-scope framing and cross-link back to the public landing. |
 
 Both files are in history/research surfaces where verbatim preservation and named attribution are explicitly permitted per the surface-category rules. Content is documentation-only with no code or workflow changes; date-prefixed `docs/research/2026-*-*.md` files are excluded from markdownlint, and `memory/**` is also lint-excluded. No issues identified that warrant inline comments.
 

@@ -22,7 +22,7 @@ freeform prose.
 ## Scope
 
 Reviews every file matching `.claude/skills/*/SKILL.md` (plus
-each skill's notebook under `memory/persona/` when one
+each skill's notebook under `memory/<persona>/` when one
 exists) and ranks by tune-up urgency. Output is a short list
 (top-N, default 5) with reasoning and explicit recommended
 action from the action-set below.
@@ -107,7 +107,7 @@ skill / prompt best practices, targeted at the current month
 `"prompt injection defence 2026"`, `"persona drift LLM"`). It:
 
 1. Logs every relevant finding to
-   `memory/persona/best-practices-scratch.md` in the format
+   `memory/best-practices-scratch.md` in the format
    documented there (date, source, claim, applies-to-us?,
    candidate rule, decision).
 2. Diffs each finding against the stable rules in
@@ -155,7 +155,7 @@ L: 3+ days).
 
 ## State file — the ranker's notebook
 
-The invoking expert maintains `memory/persona/aarav/NOTEBOOK.md`
+The invoking expert maintains `memory/aarav/NOTEBOOK.md`
 across sessions. The file is growing but bounded:
 
 - **Hard cap:** 3000 words. On reaching the cap, the ranker
@@ -259,7 +259,7 @@ not this skill's.
 - `docs/EXPERT-REGISTRY.md` — the roster + diversity notes
 - `docs/AGENT-BEST-PRACTICES.md` — the stable `BP-NN` rule list
   he cites in every finding
-- `memory/persona/best-practices-scratch.md` — volatile
+- `memory/best-practices-scratch.md` — volatile
   findings from his live-search step
 - `.claude/skills/` — his review surface
 - `.github/copilot-instructions.md` — factory-managed
@@ -272,7 +272,7 @@ not this skill's.
   she acts on his BP-NN citations checkbox-style
 - `.claude/skills/security/blueprints/prompt-protector.md` — `prompt-protector`'s surface;
   the invisible-char lint he defers to
-- `memory/persona/aarav/NOTEBOOK.md` — his notebook
+- `memory/aarav/NOTEBOOK.md` — his notebook
   (created on first invocation if absent)
 - `docs/ROUND-HISTORY.md` — where his top-5 for each round is
   summarised once executed

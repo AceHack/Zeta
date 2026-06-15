@@ -37,7 +37,7 @@ him.
 3. **Preserve direction entries in the scratchpad.** When
    Aaron riffs on a vision (axiomatic system, gap-radar,
    "brain download"), log it as a direction in
-   `memory/persona/best-practices-scratch.md` — not a skill
+   `memory/best-practices-scratch.md` — not a skill
    file, not an ADR. Direction entries mature into ADRs when
    the mechanism is clear enough to commission. Don't
    prematurely canonicalise, and don't discard as speculation.

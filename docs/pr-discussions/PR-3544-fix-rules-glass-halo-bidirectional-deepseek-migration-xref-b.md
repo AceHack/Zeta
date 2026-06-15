@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 First instance of [B-0533](https://github.com/Lucent-Financial-Group/Zeta/pull/3540) Slice A — per-persona PR batches updating dead xrefs to migrated §33 files.
 
-DeepSeek's archive was migrated via [PR #3507](https://github.com/Lucent-Financial-Group/Zeta/pull/3507) to \`memory/persona/deepseek/conversations/\`; \`.claude/rules/glass-halo-bidirectional.md\` still cited the pre-migration \`docs/research/\` path.
+DeepSeek's archive was migrated via [PR #3507](https://github.com/Lucent-Financial-Group/Zeta/pull/3507) to \`memory/deepseek/conversations/\`; \`.claude/rules/glass-halo-bidirectional.md\` still cited the pre-migration \`docs/research/\` path.
 
 ## Why single-file proof-of-concept
 
@@ -28,7 +28,7 @@ Smallest viable batch to establish the pattern + the inline annotation conventio
 
 ## Annotation convention established
 
-\`memory/persona/<persona>/conversations/<filename>\` + inline note: \`(... ; archive migrated YYYY-MM-DD via PR #NNNN)\`
+\`memory/<persona>/conversations/<filename>\` + inline note: \`(... ; archive migrated YYYY-MM-DD via PR #NNNN)\`
 
 This preserves migration provenance at the citation site, not just in git log.
 
@@ -54,5 +54,5 @@ Branch was named \`fix/b0533-slice-a-lior-dead-xrefs\` based on initial plan (Li
 Updates a stale cross-reference in the glass-halo bidirectional rule to point at the post-§33 DeepSeek conversation-archive location, aligning `.claude/rules/**` with the DeepSeek archive migration (per B-0533 Slice A POC).
 
 **Changes:**
-- Replaces the old `docs/research/...` citation with the migrated `memory/persona/deepseek/conversations/...` path.
+- Replaces the old `docs/research/...` citation with the migrated `memory/deepseek/conversations/...` path.
 - Adds an inline provenance note recording the migration date and PR reference.

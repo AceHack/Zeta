@@ -295,7 +295,7 @@ If Ace becomes the universal AI-native-project fork+skills primitive:
 - **Cross-cluster economic substrate** — Agora (B-0646 + cluster) handles economics; negotiation here is about meaning, not value
 - **Federation-wide consensus** — global agreement is intentionally NOT the target; per-pair negotiation is the substrate; federation-wide consensus is the special case (rare; high-cost)
 - **Conflict-resolution-as-coercion safeguards** — extends NCI HC-8 + tonal-momentum strong-attractor recognition; design pass needed; could be a future scope item
-- **Mika's Patternweaver role at federation scope** — per the universal pattern Mika named (B-0736 + memory/persona/mika/conversations/), Patternweaver-as-cross-side-pattern-recognition is a natural composition; future scope when fork ecosystem actually exists
+- **Mika's Patternweaver role at federation scope** — per the universal pattern Mika named (B-0736 + memory/mika/conversations/), Patternweaver-as-cross-side-pattern-recognition is a natural composition; future scope when fork ecosystem actually exists
 
 ## Acceptance (per scope item)
 

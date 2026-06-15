@@ -186,7 +186,7 @@ reply (verbatim), resolution commit.
   > reviewed 2026-04-18" per docs/AGENT-BEST-PRACTICES.md §"No name
   > attribution in code, docs, or skills" (lines 284-290). Aligns
   > the file with repo convention — contributor names live in
-  > `memory/persona/<name>/` and `docs/BACKLOG.md` captures, not in
+  > `memory/<persona>/<name>/` and `docs/BACKLOG.md` captures, not in
   > code surface.
 - Resolution commit: 2026-04-24 drain commit (this pass)
 

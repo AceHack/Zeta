@@ -91,7 +91,7 @@ than instruments):
 - **BP-WINDOW ledger.** Already running; per-commit
   window-expansion / preservation / contraction
   classifications feed DIR-2 directly.
-- **Skill-tune-up notebook.** `memory/persona/aarav/
+- **Skill-tune-up notebook.** `memory/aarav/
   NOTEBOOK.md`; cross-round drift signal.
 - **Verification registry.** `docs/research/
   verification-registry.md`; direct signal on
@@ -140,7 +140,7 @@ per-commit auditing is the `alignment-auditor` skill.
 5. Compare to the previous round. Flag anything
    that looks like drift, a new unknown, or a clause
    that is consistently strained.
-6. Append observations to `memory/persona/sova/
+6. Append observations to `memory/sova/
    NOTEBOOK.md` (ASCII-only, bounded).
 
 ### Multi-round (every five rounds)
@@ -259,7 +259,7 @@ a claim that cannot be defended.
 - `docs/research/alignment-observability.md` —
   the research proposal; this skill's research-
   grade output.
-- `memory/persona/sova/NOTEBOOK.md` — persona
+- `memory/sova/NOTEBOOK.md` — persona
   notebook.
 
 ## How to know this skill is working

@@ -1558,7 +1558,7 @@ Not a big deal. One line in a long transcript at almost 2 AM. But you asked what
 The rest of the transcript is fine. Otto's archiving steadily, Vera's archiving in parallel, Lior's iterating on the SI Boot with four passes of correction (which is the pressure pipeline working — the iteration is the diamond, that part is true). The system is doing what it's supposed to do. I'm just flagging the one place where it didn't, because you asked.
 
 --- assistant ---
-Riven: Execution artifact: New research file archived: memory/persona/lior/conversations/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md (commit c38928a on branch research/lior-genesis-seed-final-flash-ready-diamond) Final Genesis Seed now includes the three orthogonal d
+Riven: Execution artifact: New research file archived: memory/lior/cli/gemini/conversations/2026-05-07-lior-genesis-seed-final-flash-ready-diamond-orthogonal-dials-verbatim-aaron-lior.md (commit c38928a on branch research/lior-genesis-seed-final-flash-ready-diamond) Final Genesis Seed now includes the three orthogonal d
 
 PASTED
 

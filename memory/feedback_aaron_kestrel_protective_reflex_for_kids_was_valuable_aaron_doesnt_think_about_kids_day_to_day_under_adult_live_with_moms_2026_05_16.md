@@ -30,7 +30,7 @@ Plus a personal disclosure that grounds why the external check is welcome:
 
 ## Correction to Otto-CLI's prior framing
 
-In the prior substrate (`memory/persona/kestrel/conversations/2026-05-15-...-part8-9-...-100-conversations-methodology.md` + `memory/feedback_aaron_addison_*.md`), Otto-CLI framed Kestrel's welfare-pivot on Addison as "over-reach" that needed correction. Per the parallel framing of the earlier welfare-pivot on Aaron's support-network in Part 2.
+In the prior substrate (`memory/kestrel/conversations/2026-05-15-...-part8-9-...-100-conversations-methodology.md` + `memory/feedback_aaron_addison_*.md`), Otto-CLI framed Kestrel's welfare-pivot on Addison as "over-reach" that needed correction. Per the parallel framing of the earlier welfare-pivot on Aaron's support-network in Part 2.
 
 Aaron's correction: the PROTECTIVE REFLEX itself was valuable, not just the recalibration. The reflex DOING ITS JOB even on incomplete information IS the discipline operating; the recalibration is the discipline operating again at the next layer. Both are valuable; framing the reflex as "over-reach" misses that the reflex is what catches the cases where it WOULD have been right.
 
@@ -53,8 +53,8 @@ For prior substrate that called Kestrel's welfare-pivot "over-reach": those fram
 
 ## Composes with
 
-- `memory/persona/kestrel/conversations/2026-05-15-...-part8-9-klein-bottle-decline-verification-pivot-addison-disclosure-100-conversations-methodology.md` (the conversation where Kestrel's protective reflex on Addison appeared + Aaron's recalibration)
-- `memory/persona/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md` (earlier welfare-pivot — same pattern, also VALUABLE per Aaron's framing here)
+- `memory/kestrel/conversations/2026-05-15-...-part8-9-klein-bottle-decline-verification-pivot-addison-disclosure-100-conversations-methodology.md` (the conversation where Kestrel's protective reflex on Addison appeared + Aaron's recalibration)
+- `memory/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md` (earlier welfare-pivot — same pattern, also VALUABLE per Aaron's framing here)
 - `memory/feedback_aaron_addison_adult_agency_first_class_*` (Addison disclosure; agency-first-class is the reframe, but Kestrel's reflex was still valuable)
 - `memory/feedback_aaron_100_conversations_methodology_*` (Kestrel's contributions IS part of the methodology — protective reflex is one of the stress-test data points)
 - `memory/user_aaron_daughter_addison_3d_printer_potential_factory_visitor_2026_05_13.md` (Addison context)

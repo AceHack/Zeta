@@ -76,7 +76,7 @@ not. Composes with:
 - `docs/CONTRIBUTOR-CONFLICTS.md` (PR #174 merged) where
   named-agent vs unnamed-default disagreements land if
   they arise
-- Per-persona memory folders (`memory/persona/<name>/`)
+- Per-persona memory folders (`memory/<persona>/<name>/`)
   where persona-specific picks get their own paper trail
 
 **Critical attribution correction.** Prior versions of

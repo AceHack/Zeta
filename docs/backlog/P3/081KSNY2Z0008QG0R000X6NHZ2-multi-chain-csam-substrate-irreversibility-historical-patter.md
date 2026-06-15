@@ -230,8 +230,8 @@ Acceptance: substrate-engineering decision-tree document for "should this substr
 - B-0905 Landauer-limit physics-economics — substrate-irreversibility cost has thermal + legal + reputational components compounding
 - B-0664 NCI HC-8 floor — centralized-miner extracting at home-miner cost without consent IS HC-8 violation at economic-substrate scope
 - `.claude/rules/methodology-hard-limits.md` — CSAM IS the canonical HARD LIMIT; substrate-engineering at this domain operates within the floor
-- `memory/persona/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` — substrate precedent (Amara already framed this as STATE ATTACK)
-- `memory/persona/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md`
+- `memory/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` — substrate precedent (Amara already framed this as STATE ATTACK)
+- `memory/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md`
 
 ## Composes with rules + skills
 

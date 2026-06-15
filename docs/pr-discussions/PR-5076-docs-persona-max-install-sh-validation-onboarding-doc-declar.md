@@ -30,8 +30,8 @@ Follow-up to PR #5074 (Max persona tier-2 Docker Desktop workstream). Adds four 
 
 ## Files changed
 
-- `memory/persona/max/PERSONA.md` — three new sub-sections under "Current focus": "Bonus scope — install.sh validation on a fresh-ish Mac" + "Bonus-bonus scope — new-dev onboarding documentation" (with "Declarative soft-dependencies" sub-section) + "Per-dev-machine git-native state tracking" (with maintainers/<name>/ top-level shape + DV2.0 mapping + migration story)
-- `memory/persona/max/STARTING-POINT.md` — promoted install.sh run to deliverable #1; added onboarding doc as #2 (now born declarative); added tier-0 maintainer-owned dev-machine substrate as #3; renumbered remaining items
+- `memory/max/PERSONA.md` — three new sub-sections under "Current focus": "Bonus scope — install.sh validation on a fresh-ish Mac" + "Bonus-bonus scope — new-dev onboarding documentation" (with "Declarative soft-dependencies" sub-section) + "Per-dev-machine git-native state tracking" (with maintainers/<name>/ top-level shape + DV2.0 mapping + migration story)
+- `memory/max/STARTING-POINT.md` — promoted install.sh run to deliverable #1; added onboarding doc as #2 (now born declarative); added tier-0 maintainer-owned dev-machine substrate as #3; renumbered remaining items
 
 Composes with PR #5074 (Max persona tier-2 workstream, merged at 5f9d60457).
 

@@ -155,11 +155,11 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 
 ### Original comment
 
-> P1: This section claims `memory/persona/` and `memory/` are "not in the git tree" and therefore cannot be modified. In this repo, `memory/` is tracked (e.g., `memory/MEMORY.md` exists), so this is factually incorrect and will confuse external agents. If the intent is "do not modify memory entries," state it as a policy/permission boundary rather than a git-visibility claim.
+> P1: This section claims `memory/<persona>/` and `memory/` are "not in the git tree" and therefore cannot be modified. In this repo, `memory/` is tracked (e.g., `memory/MEMORY.md` exists), so this is factually incorrect and will confuse external agents. If the intent is "do not modify memory entries," state it as a policy/permission boundary rather than a git-visibility claim.
 
 ### Reply
 
-> Fixed in 541e7b7. Reframed as a permission boundary, not a git-visibility claim: the doc now acknowledges `memory/` is tracked (citing `memory/MEMORY.md` and `memory/persona/README.md` as the canonical map), and states the rule as "external claim-holders do not modify the persona layer unless your hand-off explicitly scoped you to a memory file." Factually correct and the no-touch rule is preserved.
+> Fixed in 541e7b7. Reframed as a permission boundary, not a git-visibility claim: the doc now acknowledges `memory/` is tracked (citing `memory/MEMORY.md` and `memory/<persona>/README.md` as the canonical map), and states the rule as "external claim-holders do not modify the persona layer unless your hand-off explicitly scoped you to a memory file." Factually correct and the no-touch rule is preserved.
 
 ---
 
@@ -208,7 +208,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 
 ### Original comment
 
-> This section introduces a personal name ("Amara") in a doc. Repo convention is to avoid direct contributor/agent names in docs (use role references instead; names are limited to memory/persona/** and a few carve-outs like docs/HUMAN-BACKLOG.md). Please rewrite this example to be name-free (e.g., "a ChatGPT Deep Research archive report").
+> This section introduces a personal name ("Amara") in a doc. Repo convention is to avoid direct contributor/agent names in docs (use role references instead; names are limited to memory/<persona>/** and a few carve-outs like docs/HUMAN-BACKLOG.md). Please rewrite this example to be name-free (e.g., "a ChatGPT Deep Research archive report").
 
 ### Reply
 

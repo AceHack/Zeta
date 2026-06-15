@@ -156,7 +156,7 @@ For each factory bug / debt:
 ### Step 5 — hand off to the `architect` + Aaron
 
 Write the report in
-`memory/persona/factory-audit-scratch.md` (or append to
+`memory/<persona>/factory-audit-scratch.md` (or append to
 `skill-expert`'s scratchpad if it fits). Do NOT implement any
 proposal yourself — this skill is strictly
 advisory. the `architect` integrates; Aaron signs off on
@@ -239,7 +239,7 @@ Aaron-facing.>
 - `docs/ROUND-HISTORY.md` — cadence signals
 - `docs/CURRENT-ROUND.md`, `docs/BACKLOG.md`,
   `docs/DEBT.md`, `docs/WINS.md` — round health signals
-- `memory/MEMORY.md` + `memory/persona/` — memory
+- `memory/MEMORY.md` + `memory/<persona>/` — memory
   hygiene
 - `.claude/skills/skill-lifecycle/blueprints/skill-gap-finder.md` — sibling
   at skill scope

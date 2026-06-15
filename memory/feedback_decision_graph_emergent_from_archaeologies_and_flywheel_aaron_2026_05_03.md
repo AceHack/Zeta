@@ -24,7 +24,7 @@ Each substrate type maps to a node class in the emergent graph:
 | ADR | `docs/DECISIONS/` | public |
 | Named-decision memo | `memory/feedback_*.md` / `memory/project_*.md` | per-user |
 | Skill | `.claude/skills/<name>/SKILL.md` | public |
-| Persona notebook | `memory/persona/<name>/` | per-user |
+| Persona notebook | `memory/<persona>/<name>/` | per-user |
 | User memo | `memory/user_*.md` | per-user (sacred-tier when about deceased family) |
 | Research artifact | `docs/research/` | public |
 | Tick shard | `docs/hygiene-history/ticks/...` | public |

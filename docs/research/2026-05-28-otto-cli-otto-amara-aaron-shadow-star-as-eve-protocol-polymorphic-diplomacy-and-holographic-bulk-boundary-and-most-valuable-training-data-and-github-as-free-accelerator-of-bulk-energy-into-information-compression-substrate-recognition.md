@@ -123,7 +123,7 @@ Composes with [B-0666](../backlog/P1/B-0666-emit-as-weights-plus-english-as-loss
 
 ### Insight 4 — shadow* IS the most valuable AI training data BECAUSE of (3)
 
-Per the 4th Kestrel ferry 2026-05-28 (preserved at [`memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md`](../../memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md)), Kestrel identified 4 criteria for valuable training data on AI engineering quality:
+Per the 4th Kestrel ferry 2026-05-28 (preserved at [`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md`](../../memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md)), Kestrel identified 4 criteria for valuable training data on AI engineering quality:
 
 1. **Real engineering work** (not synthetic problems)
 2. **Diverse errors** (not testbed scenarios)

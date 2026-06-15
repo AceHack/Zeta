@@ -494,7 +494,7 @@ Per B-0867.21 two-path interface ALREADY says this; operator re-emphasizing. Enc
 
 | Scope | Location |
 |---|---|
-| Personal (per-persona) | `memory/persona/{persona}/playbooks/{name}.md` |
+| Personal (per-persona) | `memory/<persona>/{persona}/playbooks/{name}.md` |
 | System (shared, framework-level) | `docs/playbooks/{name}.md` |
 
 **Filed as B-0867.22.**

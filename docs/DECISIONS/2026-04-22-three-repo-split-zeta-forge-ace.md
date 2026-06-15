@@ -258,7 +258,7 @@ Declined alternatives: `Factory` (too generic, Python has
 | `.claude/skills/**`, `.claude/agents/**`, `.claude/commands/**`, `.claude/settings.json` | `Forge` |
 | `tools/hygiene/**`, `tools/setup/**` (factory-level scripts) | `Forge` |
 | `docs/AGENT-BEST-PRACTICES.md`, `docs/FACTORY-HYGIENE.md`, `docs/FACTORY-METHODOLOGIES.md`, `docs/hygiene-history/**`, `docs/ROUND-HISTORY.md`, `docs/EXPERT-REGISTRY.md` | `Forge` |
-| `memory/persona/**` (factory-level persona notebooks) | `Forge` |
+| `memory/<persona>/**` (factory-level persona notebooks) | `Forge` |
 | `docs/research/**` (factory-level research) | `Forge` |
 | Factory-level ADRs under `docs/DECISIONS/` (BP-NN, round-history, hygiene rows) | `Forge` |
 | Product-level ADRs (e.g. lock-free-circuit-register) | `Zeta` |
@@ -439,7 +439,7 @@ in the governing repo (declarative-settings-as-code per
 - [ ] `docs/AGENT-BEST-PRACTICES.md` (Forge is canonical)
 - [ ] `docs/FACTORY-HYGIENE.md`
 - [ ] `docs/hygiene-history/**`
-- [ ] `memory/persona/` structure
+- [ ] `memory/<persona>/` structure
 
 **Pre-commit hooks (all three):**
 

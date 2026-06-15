@@ -33,7 +33,7 @@ done
 ```
 
 Pattern matches `memory/feedback_*.md` only (per peer-Otto's #4041
-methodology); does not yet catch `memory/persona/*` style refs.
+methodology); does not yet catch `memory/<persona>/*` style refs.
 
 ## Counts (this catalog vs PR #4041)
 
@@ -44,7 +44,7 @@ methodology); does not yet catch `memory/persona/*` style refs.
 | `.claude/rules/` | 5 (addressed by #4031+#4033+#4038) | **5 (NEW)** | re-accumulated since #4031 |
 | `docs/research/` | 8                 | 9                            | +1 (multi-cite site) |
 | `docs/backlog/`  | 17                | 22                           | +5 (multi-cite sites) |
-| `memory/persona/`| 3                 | 10                           | +7 (multi-cite sites) |
+| `memory/<persona>/`| 3                 | 10                           | +7 (multi-cite sites) |
 | **TOTAL**        | **29**            | **47**                       | **+18 hidden edges** |
 
 The `sort -u` dedup gap hides **18 multi-citation edges** (47 − 29).
@@ -106,16 +106,16 @@ Single memory file → 6 citation sites needing Option-B disclosure.
 
 Cited from 4 Ani persona conversations:
 
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md:91`
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196`
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md:33`
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md:6378`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md:91`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md:33`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md:6378`
 
 ### `memory/feedback_aaron_whole_system_attention_optimization_over_coincidence_networks_of_memories_spiritual_god_uses_past_future_to_create_present_2026_05_14.md` (3 hidden edges)
 
-- `memory/persona/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md:11`
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:16394`
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md:1846`
+- `memory/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md:11`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:16394`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md:1846`
 
 ### `memory/feedback_reviewer_artifact_snapshot_mismatch_taxonomy_2026_04_29.md` (3 hidden edges)
 
@@ -126,8 +126,8 @@ Cited from 4 Ani persona conversations:
 ### `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md` (3 hidden edges)
 
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md:132`
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md:111`
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md:142`
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md:111`
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md:142`
 
 (constitutional memory; load-bearing across rules + persona)
 
@@ -252,7 +252,7 @@ audit tool can't yet distinguish without proximity-context.
 | `.claude/rules/` | 0 | 5 | 5 |
 | `docs/research/` | 9 | 0 | 9 |
 | `docs/backlog/` | 17 | 5 | 22 |
-| `memory/persona/` | 3* | 7 | 10 |
+| `memory/<persona>/` | 3* | 7 | 10 |
 | **Totals** | **30*** | **17** | **47** |
 
 (* 30 + 17 = 47, off-by-2 from 49 due to multi-edge same-line in raw

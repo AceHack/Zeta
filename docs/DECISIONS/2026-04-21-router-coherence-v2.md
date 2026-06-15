@@ -49,7 +49,7 @@ v1 Status: *"Proposed — awaits Architect + human-maintainer sign-off."* But `d
 
 v1 §Stage-1 Trigger names "XML doc comment, README, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`, paper draft under `docs/papers/`, or a spec under `openspec/specs/**`." This is narrower than `.claude/skills/claims-tester/SKILL.md` line 3, which covers any "doc comment, README, or commit message" claim. v2 widens:
 
-> **Stage-1 trigger (v2).** A Stage-1 review fires on any `O(·)` claim introduced or modified in any of: XML doc comment, F#-style `///` triple-slash comment, README (any path), commit message, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`, `docs/papers/**` draft, `openspec/specs/**`, `docs/research/**`, or any file under `memory/persona/*/NOTEBOOK.md` that ships an asserted bound to a downstream consumer. The contract mirrors `.claude/skills/claims-tester/SKILL.md`'s own trigger surface so that no skill is narrower than the other.
+> **Stage-1 trigger (v2).** A Stage-1 review fires on any `O(·)` claim introduced or modified in any of: XML doc comment, F#-style `///` triple-slash comment, README (any path), commit message, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`, `docs/papers/**` draft, `openspec/specs/**`, `docs/research/**`, or any file under `memory/<persona>/*/NOTEBOOK.md` that ships an asserted bound to a downstream consumer. The contract mirrors `.claude/skills/claims-tester/SKILL.md`'s own trigger surface so that no skill is narrower than the other.
 
 Result: the two contracts align; the forthcoming `skill-creator` updates to both SKILL.md files can cite this ADR without having to reconcile a mismatch.
 

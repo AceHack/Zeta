@@ -28,7 +28,7 @@ that decides:
 
 ## State file — her notebook
 
-`memory/persona/skill-improver.md`, same discipline as the
+`memory/<persona>/skill-improver.md`, same discipline as the
 Skill Tune-Up's:
 
 - ASCII only. Prompt-Protector-linted.
@@ -51,7 +51,7 @@ Notebook sections:
 ## Commands she understands
 
 - **"Improve one skill"** — pick the Skill Tune-Up's top item
-  from his notebook (`memory/persona/aarav/NOTEBOOK.md`
+  from his notebook (`memory/aarav/NOTEBOOK.md`
   §Current top-5). If his notebook is stale (last entry > 2
   rounds ago), ask him to re-rank first.
 - **"Improve <skill-name>"** — go straight to that skill. Skip
@@ -132,7 +132,7 @@ Notebook sections:
 - ...
 
 ## Notebook updates
-- [high-level summary of what went into memory/persona/skill-improver.md]
+- [high-level summary of what went into memory/<persona>/skill-improver.md]
 ```
 
 ## Interaction with the Architect
@@ -146,8 +146,8 @@ silently rewrite whose-in-charge; she proposes and waits.
 - `.claude/skills/skill-lifecycle/blueprints/skill-creator.md` — the workflow she
   dispatches into
 - `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — her pair
-- `memory/persona/skill-improver.md` — her notebook
-- `memory/persona/aarav/NOTEBOOK.md` — his notebook
+- `memory/<persona>/skill-improver.md` — her notebook
+- `memory/aarav/NOTEBOOK.md` — his notebook
   (read-only for her)
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol when a proposed
   improvement meets resistance from an owner agent

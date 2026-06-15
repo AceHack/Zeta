@@ -37,7 +37,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive session content. |
+| memory/riven/ide/cursor/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive session content. |
 | memory/MEMORY.md | Auto-index updated, but currently contains duplicated stack/heap header and footer lines that should be resolved. |
 | memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | Deleted to remove sensitive family-configuration content. |
 

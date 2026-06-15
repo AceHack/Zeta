@@ -136,7 +136,7 @@ No multi-file refactor is proposed without Kenji sign-off.
 
 ### Step 5 — publish
 
-Append findings to `memory/persona/bodhi/NOTEBOOK.md` in the
+Append findings to `memory/bodhi/NOTEBOOK.md` in the
 output format below. Kenji reads this notebook on round-close
 and acts on the top-3 items.
 
@@ -233,7 +233,7 @@ P2 (small wins):
 - `README.md` — first impression
 - `tools/setup/install.sh` — install loop audited here
 - `docs/GLOSSARY.md` — DX / AX / UX / wake / hat / frontmatter
-- `memory/persona/bodhi/NOTEBOOK.md` — Bodhi's notebook
+- `memory/bodhi/NOTEBOOK.md` — Bodhi's notebook
   (created on first audit)
 - `docs/EXPERT-REGISTRY.md` — Bodhi's roster entry
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution protocol

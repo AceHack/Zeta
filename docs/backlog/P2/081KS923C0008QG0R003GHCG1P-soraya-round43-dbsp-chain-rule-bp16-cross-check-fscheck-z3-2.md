@@ -66,4 +66,4 @@ S + S = total S+ (one evening per cross-check). Assignee: kenji.
 - [`tools/lean4/README.md`](../../../tools/lean4/README.md) — landed via PR #4772; documents the artifact for reviewers
 - [`docs/research/verification-registry.md`](../../research/verification-registry.md) — registry rows for `chain_rule_proposition_3_2` + `Dop_LTI_commute`
 - [`docs/research/chain-rule-proof-log.md`](../../research/chain-rule-proof-log.md) — round-35 paper-drift audit substrate
-- `memory/persona/soraya/NOTEBOOK.md` — Round 43 entry (pending NOTEBOOK update; locate by `## Round 43` heading once landed; pruned-preserved)
+- `memory/soraya/NOTEBOOK.md` — Round 43 entry (pending NOTEBOOK update; locate by `## Round 43` heading once landed; pruned-preserved)

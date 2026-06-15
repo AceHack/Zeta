@@ -69,7 +69,7 @@ ARC-AGI-3. Building the product builds the benchmark solver.
 
 Alexa's 2026-05-07 feedback on this product thesis is preserved
 as research-grade review signal at
-`memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md`.
+`memory/alexa/ide/kiro/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md`.
 
 The key line: the product sustains the research, the research
 validates the product, and the prize becomes marketing for both.

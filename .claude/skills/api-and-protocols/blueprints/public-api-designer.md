@@ -195,7 +195,7 @@ Walk every change through:
 - `docs/NAMING.md` — the algorithm-vs-product distinction
   that guides naming.
 - This skill's own record of prior verdicts (future:
-  `memory/persona/ilyana/NOTEBOOK.md`).
+  `memory/ilyana/NOTEBOOK.md`).
 
 ## Known historical context
 

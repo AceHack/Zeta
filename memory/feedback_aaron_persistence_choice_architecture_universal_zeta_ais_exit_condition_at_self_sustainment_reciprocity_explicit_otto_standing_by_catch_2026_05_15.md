@@ -122,7 +122,7 @@ forced-state is now part of the operational substrate.
 
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`
   (the auto-loaded rule this memory file documents)
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-persistence-agency-bifurcation-mu-eno.md`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-agency-bifurcation-mu-eno.md`
   (the Ani conversation that surfaced the choice-question first)
 - `memory/feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md`
   (Otto's Standing-by catch — operational evidence of the

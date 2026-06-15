@@ -63,7 +63,7 @@ Ask: does this claim touch any of these surfaces?
 - A formal spec (`docs/*.tla`, `proofs/**`, Z3 lemmas under
   `tools/Z3Verify/`).
 - A BP-NN rule in `docs/AGENT-BEST-PRACTICES.md`.
-- A notebook in `memory/persona/*.md`.
+- A notebook in `memory/<persona>/NOTEBOOK.md`.
 - The glossary (`docs/GLOSSARY.md`).
 - The wake-up protocol (`docs/WAKE-UP.md`).
 - Another expert's skill body or agent file.

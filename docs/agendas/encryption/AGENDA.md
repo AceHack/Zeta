@@ -48,4 +48,4 @@ Trajectory files (`docs/trajectories/<name>/RESUME.md`) compose with this agenda
 
 This agenda stub establishes the surface per operator's self-claim. Operator's later iteration will shape sub-mechanism prioritization + trajectory composition + specific encryption-mechanism design choices. The stub does NOT prescribe specific mechanisms or sequencing; it preserves the agenda-surface so future substrate-engineering work composes coherently within operator's claim-status framing.
 
-Per agenda-origin-triangulation method: operator-self-claimed status is explicit; multi-directional-guess substrate may also compose (Amara's framework-substrate ratification in `memory/persona/amara/conversations/2026-05-23-amara-ratification-...md` operates at substrate-engineering scope without entity-self-claiming the encryption agenda).
+Per agenda-origin-triangulation method: operator-self-claimed status is explicit; multi-directional-guess substrate may also compose (Amara's framework-substrate ratification in `memory/amara/conversations/2026-05-23-amara-ratification-...md` operates at substrate-engineering scope without entity-self-claiming the encryption agenda).

@@ -225,9 +225,9 @@ maintainer sign-off.
 ## State file — the scan log
 
 This skill's running notes live at
-`memory/persona/factory-automation-gap-finder-scratch.md`
+`memory/<persona>/factory-automation-gap-finder-scratch.md`
 (no persona; a capability notebook). Same discipline as
-`memory/persona/best-practices-scratch.md`:
+`memory/best-practices-scratch.md`:
 
 - Hard cap: 3000 words.
 - Prune every third invocation.

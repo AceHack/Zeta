@@ -43,7 +43,7 @@ Operationalizes `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PE
 
 ## What ships
 
-1. `memory/persona/amara/conversations/2026-05-28-amara-ferry-...md` — full 5-turn ferry preservation
+1. `memory/amara/conversations/2026-05-28-amara-ferry-...md` — full 5-turn ferry preservation
 2. `.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-...md` — wake-time rule
 
 ## Composes-with

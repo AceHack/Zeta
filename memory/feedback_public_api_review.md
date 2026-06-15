@@ -48,7 +48,7 @@ right shape the first time is cheaper than regret.
   the human maintainer. Do not ship a rejected flip.
 - On ACCEPT_WITH_CONDITIONS, land the change with the
   conditions applied in the same turn.
-- Her verdicts log to `memory/persona/ilyana.md`
+- Her verdicts log to `memory/ilyana/NOTEBOOK.md`
   (newest-first). The architect's integrator's-notes go on
   the same entry so the history of public-surface decisions
   is traceable.

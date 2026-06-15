@@ -196,7 +196,7 @@ Each carries an effort label matching `next-steps`:
 
 This skill cites rules from `docs/AGENT-BEST-PRACTICES.md`
 and the candidate rules in
-`memory/persona/best-practices-scratch.md` awaiting promotion:
+`memory/best-practices-scratch.md` awaiting promotion:
 
 - **BP-CF (candidate)** — cognitive-firewall rule: expert and
   research skills stay split even when thin, to prevent
@@ -304,5 +304,5 @@ per `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` §live-search.
 - `.claude/skills/skill-lifecycle/blueprints/skill-improver.md` — acts on BP-NN
   citations checkbox-style.
 - `docs/AGENT-BEST-PRACTICES.md` — stable BP-NN rules.
-- `memory/persona/best-practices-scratch.md` — candidate
+- `memory/best-practices-scratch.md` — candidate
   rules (BP-CF, BP-SPLIT, BP-FACET) awaiting promotion.

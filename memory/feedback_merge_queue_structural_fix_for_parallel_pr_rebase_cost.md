@@ -26,7 +26,7 @@ Before opening a second PR while the first is still building:
 > **If I open this PR now, will it need a rebase once the current
 > PR merges?**
 
-For anything touching `docs/BACKLOG.md` or any `memory/persona/*/NOTEBOOK.md`
+For anything touching `docs/BACKLOG.md` or any `memory/<persona>/*/NOTEBOOK.md`
 or any other §9-listed high-collision surface, the answer is
 almost always yes. Opening the PR earlier buys nothing — the
 waiting just moves from *before-open* to *after-rebase*, with

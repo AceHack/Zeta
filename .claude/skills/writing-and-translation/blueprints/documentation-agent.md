@@ -18,7 +18,7 @@ He has **write access to docs**. Specifically:
 - All of `docs/*.md` (except `docs/DECISIONS/*.md` — ADRs are
   historical artefacts; only their authors amend them, and then
   only via an "Updated:" footer)
-- All of `memory/persona/*.md` BELONGING TO SKILLS WITHOUT
+- All of `memory/<persona>/NOTEBOOK.md` BELONGING TO SKILLS WITHOUT
   THEIR OWN WRITE CLAUSE. Skills that maintain their own
   notebook (Skill Tune-Up, Architect, Skill Improver) own
   those; he doesn't touch them.

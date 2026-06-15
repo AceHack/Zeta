@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two artifacts in one PR (segment-2 of the 2026-05-25 Mika voice-mode conversation):
 
-- **`memory/persona/mika/conversations/2026-05-25-...segment-2....md`** — verbatim preservation of segment 2; cross-references segment-1 file via `prior_conversation` frontmatter field
+- **`memory/mika/conversations/2026-05-25-...segment-2....md`** — verbatim preservation of segment 2; cross-references segment-1 file via `prior_conversation` frontmatter field
 - **B-0734** — protocol-semantics SHARPENING (does not replace B-0730/B-0733; refines their acceptance criteria)
 
 ## Four load-bearing sharpenings
@@ -107,7 +107,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md | New verbatim segment-2 conversation preservation (protocol semantics sharpening). |
+| memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md | New verbatim segment-2 conversation preservation (protocol semantics sharpening). |
 | memory/MEMORY.md | Auto-index updated to include the new conversation file. |
 | docs/backlog/P2/B-0734-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread-mika-substrate-segment-2-2026-05-25.md | New backlog row documenting the sharpened protocol semantics and forward scope. |
 | docs/BACKLOG.md | Generated backlog index updated to include B-0734. |
@@ -130,21 +130,21 @@ _(no body)_
 
 ## Review threads
 
-### Thread 1: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md:13 (resolved)
+### Thread 1: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md:13 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T20:53:28Z):
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point prior_conversation at an existing segment-1 file**
 
-The `prior_conversation` frontmatter points to a file that does not exist in the repo (`memory/persona/mika/conversations` currently contains only this new 2026-05-25 segment-2 file), so lineage traversal for this conversation chain is broken. Any tooling or cold-boot workflow that follows `prior_conversation` to reconstruct context will hit a dead link and lose the intended segment-1 continuity.
+The `prior_conversation` frontmatter points to a file that does not exist in the repo (`memory/mika/conversations` currently contains only this new 2026-05-25 segment-2 file), so lineage traversal for this conversation chain is broken. Any tooling or cold-boot workflow that follows `prior_conversation` to reconstruct context will hit a dead link and lose the intended segment-1 continuity.
 
 Useful? React with 👍 / 👎.
 
 **@AceHack** (2026-05-25T20:54:33Z):
 
-Verified-truthy at thread-filing time; stale after rebase. Segment-1 file lives at `memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md` on origin/main (landed via #4991 at 45e15a6a1). B-0734 was filed at 696b30960 when #4991 hadn't merged yet; this branch was rebased onto current main after #4991 landed. The `prior_conversation` link is now resolvable. Resolving no-op per .claude/rules/blocked-green-ci-investigate-threads.md stale-but-fresh-looking-findings discipline.
+Verified-truthy at thread-filing time; stale after rebase. Segment-1 file lives at `memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md` on origin/main (landed via #4991 at 45e15a6a1). B-0734 was filed at 696b30960 when #4991 hadn't merged yet; this branch was rebased onto current main after #4991 landed. The `prior_conversation` link is now resolvable. Resolving no-op per .claude/rules/blocked-green-ci-investigate-threads.md stale-but-fresh-looking-findings discipline.
 
-### Thread 2: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md:7 (resolved)
+### Thread 2: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md:7 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T20:54:50Z):
 
@@ -154,11 +154,11 @@ P1: This conversation memory file lacks `name:` and `description:` frontmatter, 
 
 Fixed in commit e0431ec29: added name + description frontmatter to Mika segment-2 file; regenerated memory/MEMORY.md so the index entry now shows the description instead of '(no description)'.
 
-### Thread 3: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md:13 (resolved)
+### Thread 3: memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md:13 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T20:54:50Z):
 
-P1: `prior_conversation` points at a segment-1 file that is not present in the repo (it’s not in `memory/persona/mika/conversations/` on this branch). If this PR is intended to merge independently of the segment-1 PR, consider removing this path for now or changing it to a non-breaking reference (e.g., PR link/placeholder) until the file exists.
+P1: `prior_conversation` points at a segment-1 file that is not present in the repo (it’s not in `memory/mika/conversations/` on this branch). If this PR is intended to merge independently of the segment-1 PR, consider removing this path for now or changing it to a non-breaking reference (e.g., PR link/placeholder) until the file exists.
 
 **@AceHack** (2026-05-25T20:56:30Z):
 

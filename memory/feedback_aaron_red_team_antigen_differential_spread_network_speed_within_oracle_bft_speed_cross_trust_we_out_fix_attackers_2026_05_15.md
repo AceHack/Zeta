@@ -117,7 +117,7 @@ Federation-scope antigen-propagation between Aaron's oracle + future external or
 
 ## Composes with
 
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md` (the conversation this answer landed in)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md` (the conversation this answer landed in)
 - `memory/feedback_aaron_market_clearing_mechanism_via_past_revealed_hands_useful_work_relevance_more_success_more_encrypted_storage_*.md` (the clearing mechanism this immune-system protects)
 - `memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_*.md` (the moral floor the federation protects via shared red-team)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle structural anti-monoculture; this answers the threat-catalog-capture question without imposing a single curator)

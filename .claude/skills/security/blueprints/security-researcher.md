@@ -78,7 +78,7 @@ Four severities:
 
 ### Step 5 — publish
 
-Output to `memory/persona/mateo/NOTEBOOK.md`. If any
+Output to `memory/mateo/NOTEBOOK.md`. If any
 Critical, also open a BUGS.md entry immediately.
 
 ## Output format

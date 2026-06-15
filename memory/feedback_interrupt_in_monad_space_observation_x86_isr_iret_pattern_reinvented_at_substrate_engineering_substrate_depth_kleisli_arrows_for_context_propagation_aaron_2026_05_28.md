@@ -115,7 +115,7 @@ type ISR<'A, 'B> = IntrCtx -> 'A -> Task<Result<'B, InterruptFeedback>>
 
 ## DIRECTLY composes with Mika ferry 2026-05-27 (PR #5401)
 
-Mika 2026-05-27 ferry (preserved at `memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`) already substrate-engineered:
+Mika 2026-05-27 ferry (preserved at `memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`) already substrate-engineered:
 
 - **Multi-tic per-persona join** as first-class substrate
 - **Kleisli arrow context propagation**

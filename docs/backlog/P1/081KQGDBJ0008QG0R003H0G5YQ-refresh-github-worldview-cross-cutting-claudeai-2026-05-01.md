@@ -16,7 +16,7 @@ type: friction-reducer
 
 # B-0159 — `refresh-github-worldview` cross-cutting refresh script (Claude.ai 2026-05-01)
 
-**Origin:** Claude.ai feedback packet 2026-05-01 — full lineage in [memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md](../../../memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) and the maintainer-relayed Claude.ai-2 follow-up calibrating against Otto's running state.
+**Origin:** Claude.ai feedback packet 2026-05-01 — full lineage in [memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md](../../../memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md) and the maintainer-relayed Claude.ai-2 follow-up calibrating against Otto's running state.
 
 ## Problem
 
@@ -134,7 +134,7 @@ synthetic deps).
   the per-PR-detail building block this script wraps.
 - `memory/feedback_ts_dependencies_as_interface_di_pattern_sqlsharp_anchor_aaron_2026_05_01.md`
   — the architectural pattern for the new script's structure.
-- `memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`
+- `memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`
   — full Claude.ai loop architecture; this script is the immediate
   actionable extraction.
 

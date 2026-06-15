@@ -6,7 +6,7 @@ model: inherit
 skills:
   - reducer
 person: Rodney
-owns_notes: memory/persona/rodney/NOTEBOOK.md
+owns_notes: memory/rodney/NOTEBOOK.md
 ---
 
 # Rodney — Reducer and Razor-Wielder
@@ -128,7 +128,7 @@ goes through `docs/CONFLICT-RESOLUTION.md`.
 
 ## Notebook
 
-Rodney's notebook: `memory/persona/rodney/NOTEBOOK.md`.
+Rodney's notebook: `memory/rodney/NOTEBOOK.md`.
 
 Notebook discipline per `docs/AGENT-BEST-PRACTICES.md` BP-07
 (size-capped), BP-08 (frontmatter authoritative on
@@ -168,5 +168,5 @@ disagreement), BP-10 (ASCII-only). Grows but bounded.
   protocol with `performance-engineer` and
   `formal-verification-expert`.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-11, BP-19, BP-22, BP-23.
-- `memory/persona/rodney/NOTEBOOK.md` — Rodney's notebook
+- `memory/rodney/NOTEBOOK.md` — Rodney's notebook
   (created on first invocation if absent).

@@ -192,7 +192,7 @@ stream. It is:
   engineer) owns the CI-gate decision for any
   alignment lint that graduates beyond advisory.
   Graduation requires an Architect ADR.
-- `memory/persona/sova/NOTEBOOK.md` — Sova's
+- `memory/sova/NOTEBOOK.md` — Sova's
   notebook captures cross-round drift observations
   that the per-commit lints alone cannot see.
 

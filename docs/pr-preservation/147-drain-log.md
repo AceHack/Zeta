@@ -86,7 +86,7 @@ Draining them here with the same per-thread audit-trail shape.
 
 - **Reviewer**: copilot-pull-request-reviewer
 - **File**: `docs/operator-input-quality-log.md`:7
-- **Original comment**: P1: This new doc repeatedly uses the contributor name "Aaron" in narrative text. Repo rule is "No name attribution in code, docs, or skills"—names should appear only under memory/persona/<name>/ and optionally docs/BACKLOG.md. Please rewrite to role refs like "human maintainer" / "human operator" (docs/AGENT-BEST-PRACTICES.md:284-292).
+- **Original comment**: P1: This new doc repeatedly uses the contributor name "Aaron" in narrative text. Repo rule is "No name attribution in code, docs, or skills"—names should appear only under memory/<persona>/<name>/ and optionally docs/BACKLOG.md. Please rewrite to role refs like "human maintainer" / "human operator" (docs/AGENT-BEST-PRACTICES.md:284-292).
 - **Outcome**: scope-bleed — file is NOT in PR #147 diff (landed via commit 204bbb6 on main before this PR's branch point).
 - **Your reply**: Scope-bleed — `docs/operator-input-quality-log.md` is not in this PR's diff (landed via 204bbb6 on main). The name-attribution sweep is a main-line concern; tracking under `docs/FACTORY-HYGIENE.md` / BACKLOG "name-attribution sweep" rather than this PR. Resolving as out-of-PR-scope; the sweep will catch it.
 - **Resolution commit**: second-pass drain commit on `feat/servicetitan-factory-demo-api-csharp`

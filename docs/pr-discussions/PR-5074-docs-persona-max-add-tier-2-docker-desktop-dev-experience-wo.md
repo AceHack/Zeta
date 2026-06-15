@@ -32,8 +32,8 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 
 ## Files changed
 
-- `memory/persona/max/PERSONA.md` — new "Current focus" section with workstream contract + 5 sub-scopes + topology substrate + Touch ID integration + skills-and-scripts contract + composes-with cluster
-- `memory/persona/max/STARTING-POINT.md` — new "Current focus" section with 8-file cold-boot reading list + applicable disciplines + 5 concrete first deliverables + updated 30-day success metrics
+- `memory/max/PERSONA.md` — new "Current focus" section with workstream contract + 5 sub-scopes + topology substrate + Touch ID integration + skills-and-scripts contract + composes-with cluster
+- `memory/max/STARTING-POINT.md` — new "Current focus" section with 8-file cold-boot reading list + applicable disciplines + 5 concrete first deliverables + updated 30-day success metrics
 
 `NOTEBOOK.md` not modified — Max's own running notes surface.
 
@@ -52,7 +52,7 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 
 ## Pull request overview
 
-Documentation-only PR adding Max's near-term workstream (tier-2 Docker Desktop + Kubernetes dev-experience) to his persona files under `memory/persona/max/`. Both files are on the history-surface allowlist (`memory/**`), so persona name attribution is in-policy.
+Documentation-only PR adding Max's near-term workstream (tier-2 Docker Desktop + Kubernetes dev-experience) to his persona files under `memory/max/`. Both files are on the history-surface allowlist (`memory/**`), so persona name attribution is in-policy.
 
 **Changes:**
 - Adds "Current focus" section to `PERSONA.md` describing the tier-2 workstream, sub-scopes, topology, Touch ID integration, and skills/scripts encoding contract
@@ -64,8 +64,8 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/max/PERSONA.md | New "Current focus — tier-2 Docker Desktop dev-experience workstream" section with tier table, sub-scopes, topology, Touch ID pattern, encoding contract, and composes-with links |
-| memory/persona/max/STARTING-POINT.md | New "Current focus" section with cold-boot reading list, disciplines, concrete first deliverables, and 30-day success metrics |
+| memory/max/PERSONA.md | New "Current focus — tier-2 Docker Desktop dev-experience workstream" section with tier table, sub-scopes, topology, Touch ID pattern, encoding contract, and composes-with links |
+| memory/max/STARTING-POINT.md | New "Current focus" section with cold-boot reading list, disciplines, concrete first deliverables, and 30-day success metrics |
 
 ## General comments
 

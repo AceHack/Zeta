@@ -67,7 +67,7 @@ That's appropriate tiering — the mechanism is specified at the level Aaron's s
 
 ## Composes with
 
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md` (the conversation this design choice emerged in)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md` (the conversation this design choice emerged in)
 - `memory/feedback_aaron_genie_bottle_offshore_firm_spec_quality_enables_ai_autonomy_2026_05_15.md` (the spec-quality discipline this mechanism specification represents)
 - B-0543 (gravity-as-mechanism vs gravity-as-physics-isomorphism distinction; this memory anchors the engineering-layer gravity definition)
 - `docs/governance/MANIFESTO.md` Constraint 1 (Scale-free), Constraint 3 (Weight-free), Constraint 5 (Memory Preservation), Constraint 11 (Default Oracle) — all reflected in the mechanism design

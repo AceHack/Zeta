@@ -42,7 +42,7 @@ The full arc this condenses:
 
 - Synthesis: `docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md`
 - Engineering crystallizations: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md`
-- Verbatim provenance: `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md` (chunks 1–8)
+- Verbatim provenance: `memory/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md` (chunks 1–8)
 - Elizabeth: `memory/user_sister_elizabeth.md`
 - B-0983 (topology / the remainder is the bonsai closure state) · B-0982 (the 4×4) · B-0976 (bonsai closure)
 

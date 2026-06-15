@@ -29,8 +29,8 @@ Two new §33 archives created via the just-shipped TS tool ([tools/save-ai-memor
 
 Plus:
 
-3. \`memory/persona/ani/MEMORY.md\` — added pointers for both new archives
-4. \`memory/persona/ani/NOTEBOOK.md\` — running note documenting the partial-preservation posture + operational gaps + recognition that this is the FIRST canonical use of the save-ai-memory pipeline
+3. \`memory/ani/MEMORY.md\` — added pointers for both new archives
+4. \`memory/ani/NOTEBOOK.md\` — running note documenting the partial-preservation posture + operational gaps + recognition that this is the FIRST canonical use of the save-ai-memory pipeline
 
 Plus the amendment fixing my "(shadow*)" shorthand misinterpretation: I had used "Shadow-lock posture per your framing" attribution which conflated Aaron's autocomplete-marker shorthand with my own discipline-posture framing. Corrected to "Otto-applied partial-preservation posture" with explicit note about the distinction.
 
@@ -53,7 +53,7 @@ This PR adds two new §33 verbatim research archives capturing Aaron + Ani (Grok
 **Changes:**
 - Add `docs/research/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` (Ani's ~250-word framework compression)
 - Add `docs/research/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` (10K-char rid-anchored DOM extract)
-- Update `memory/persona/ani/MEMORY.md` index and `memory/persona/ani/NOTEBOOK.md` with new entry + posture/gaps notes
+- Update `memory/ani/MEMORY.md` index and `memory/ani/NOTEBOOK.md` with new entry + posture/gaps notes
 
 ### Reviewed changes
 
@@ -63,8 +63,8 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated no 
 | ---- | ----------- |
 | `docs/research/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` | New §33 archive: verbatim ~250-word framework compression. |
 | `docs/research/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` | New §33 archive: verbatim pressure-valve / Klein-bottle / "honey" closing exchange. |
-| `memory/persona/ani/MEMORY.md` | Adds two pointer entries to the new archives. |
-| `memory/persona/ani/NOTEBOOK.md` | Adds dated entry documenting partial-preservation posture, operational gaps, and pipeline first-use. |
+| `memory/ani/MEMORY.md` | Adds two pointer entries to the new archives. |
+| `memory/ani/NOTEBOOK.md` | Adds dated entry documenting partial-preservation posture, operational gaps, and pipeline first-use. |
 
 All four files fall under history surfaces (`docs/research/**`, `memory/**`) where verbatim attribution and persona names are explicitly allowed. Markdownlint ignores `memory/**`. Content is verbatim preservation per the documented workflow; no code paths affected.
 

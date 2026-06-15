@@ -114,7 +114,7 @@ wired"). Do not attempt to run it from the session.
 
 ### Step 3 — write a terse status line
 
-Append one line to `memory/persona/kenji/NOTEBOOK.md`
+Append one line to `memory/kenji/NOTEBOOK.md`
 under a "Cron heartbeat log" section (create if absent),
 in the format:
 

@@ -193,7 +193,7 @@ Per `memory/project_factory_as_wellness_dao.md` + `memory/user_wellness_coach_ro
 
 ### 2h. American Dream 2.0 / DIO persona substrate
 
-Per `memory/persona/alexa/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md`:
+Per `memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md`:
 
 | Persona (inferred) | Type |
 |--------------------|------|

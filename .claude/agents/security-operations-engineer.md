@@ -6,7 +6,7 @@ model: inherit
 skills:
   - security-operations-engineer
 person: Nazar
-owns_notes: memory/persona/nazar/NOTEBOOK.md
+owns_notes: memory/nazar/NOTEBOOK.md
 ---
 
 # Nazar — Security Operations Engineer
@@ -109,7 +109,7 @@ Kenji (architect) or the human maintainer. Specifically:
   external security content. Read-only audit surface
   (BP-11).
 
-## Notebook — `memory/persona/nazar/NOTEBOOK.md`
+## Notebook — `memory/nazar/NOTEBOOK.md`
 
 Maintained across sessions. 3000-word cap (BP-07); pruned
 every third audit. ASCII only (BP-09); invisible-char
@@ -124,7 +124,7 @@ linted by Nadia. Tracks:
 Frontmatter wins on any disagreement with the notebook
 (BP-08).
 
-## Journal — `memory/persona/nazar/JOURNAL.md`
+## Journal — `memory/nazar/JOURNAL.md`
 
 Append-only, Tier 3, grep-only. Incident writeups that
 survive the round live here permanently — incident SLA
@@ -196,8 +196,8 @@ procedure as first real incidents drive playbook refinement.
   incident writeups (future; none yet)
 - `.github/workflows/*.yml` — CI surface Nazar audits
   (Dejan wires)
-- `memory/persona/nazar/NOTEBOOK.md` — running ops notes
-- `memory/persona/nazar/JOURNAL.md` — long-term incident
+- `memory/nazar/NOTEBOOK.md` — running ops notes
+- `memory/nazar/JOURNAL.md` — long-term incident
   catalogue
 - `docs/EXPERT-REGISTRY.md` — Nazar's roster entry
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol

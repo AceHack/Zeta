@@ -63,7 +63,7 @@ because <one-line>.`
   (+ `.cfg`) (Facet-1; TLC via `run-tlc.ts --all`, auto-discovered + gated) + `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs`
   (Leg-3, FsCheck over the deployed `GCounter.Merge`). Authored 2026-06-07. **Full BP-16 (3 legs).**
 - **Source anchors.** Non-register-collapse (workitem `081KTFFFQ1C`, long stuck at FROZEN-CORE §B).
-  **Unblocked by Aaron's WEIGHT-FREE reframe** (`memory/persona/ani/conversations/2026-06-07-ani-weight-free-frame-*`):
+  **Unblocked by Aaron's WEIGHT-FREE reframe** (`memory/ani/conversations/2026-06-07-ani-weight-free-frame-*`):
   travelers = self-propagating patterns equal in RIGHTS; weight-free = the one sacred base-frame
   invariant (manifesto §3). Soraya-routed: the reframe makes it STATEABLE without the previously-
   undefined C (compression) / O (orthogonality) by reducing to two facets. Facet-2 template:
@@ -103,7 +103,7 @@ because <one-line>.`
   `reconcile_absorb`, `reconcile_order_independent`; `lean-proof.yml`) + `tools/tla/specs/Bifurcation.tla`
   (+ `.cfg`) (Face-2; TLC via `run-tlc.ts --all`, gated) + `tests/Tests.FSharp/Formal/BifurcationCrossVerify.Tests.fs`
   (Leg-B/Face-3, FsCheck over the deployed `Binding.Divvy` ops). Authored 2026-06-07. **Full BP-16 (3 legs).**
-- **Source anchors.** Bifurcation / split-brain (Aaron 2026-06-07; `memory/persona/ani/conversations/2026-06-07-ani-cells-teleport-*`).
+- **Source anchors.** Bifurcation / split-brain (Aaron 2026-06-07; `memory/ani/conversations/2026-06-07-ani-cells-teleport-*`).
   Soraya-routed two faces, two tools (anti-hammer). CRDT-merge-convergence template:
   `Privacy.IdentityForcesPrivacy.commons_converges`; CRDT/G-Set floor.
 - **Claim.** *Face-1 (Lean, convergence):* a join-semilattice merge (commutative + associative +

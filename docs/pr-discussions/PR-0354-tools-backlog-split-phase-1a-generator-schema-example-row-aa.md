@@ -303,7 +303,7 @@ Fixed in 6f659a0. Temp file now created in the same directory as the target via 
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:27Z):
 
-P1: These new docs/tooling files include direct contributor name attribution (e.g. "Aaron ..."). Repo convention forbids names in code/docs/skills (allowed only under `memory/persona/**` and optionally `docs/BACKLOG.md`); use role references like “human maintainer” plus a directive ID instead. See docs/AGENT-BEST-PRACTICES.md:284-290.
+P1: These new docs/tooling files include direct contributor name attribution (e.g. "Aaron ..."). Repo convention forbids names in code/docs/skills (allowed only under `memory/<persona>/**` and optionally `docs/BACKLOG.md`); use role references like “human maintainer” plus a directive ID instead. See docs/AGENT-BEST-PRACTICES.md:284-290.
 
 **@AceHack** (2026-04-24T11:03:37Z):
 

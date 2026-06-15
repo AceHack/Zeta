@@ -42,7 +42,7 @@ below):
    `CURRENT-*.md` prose asymmetry between maintainers
 2. **Retrieval drift** — inferred paths without
    verification (`memory/foo.md` cited when only
-   `memory/persona/foo/foo.md` exists)
+   `memory/<persona>/foo/foo.md` exists)
 3. **Operational drift** — proposal-from-symptoms without
    live-state checks (canonical: HB-004 same-day arc
    submit-nuget-theory → policy-stance → empirical-

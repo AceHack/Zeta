@@ -42,7 +42,7 @@ const DEFAULT_SURFACES = [
   ".claude/rules",
   "docs/research",
   "docs/backlog",
-  "memory/persona",
+  "memory",
 ] as const;
 
 // Match `memory/feedback_<name>.md` anywhere in markdown — paths in

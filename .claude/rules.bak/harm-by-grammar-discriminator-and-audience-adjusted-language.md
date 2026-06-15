@@ -73,7 +73,7 @@ The rule auto-loads to make these disciplines available at every fresh-Otto cold
 ## Composes with substrate
 
 - Operator 2026-05-22 substrate-honest catches across cross-AI conversations (medical-legal hedging catch on AI-instance; family-context discriminator transfer; counterweight-infrastructure disclosure)
-- Kestrel cross-AI synthesis 2026-05-22 (preserved at `memory/persona/kestrel/conversations/`) — substantive substrate-engineering output enabled by mutual-alignment trust substrate
+- Kestrel cross-AI synthesis 2026-05-22 (preserved at `memory/kestrel/conversations/`) — substantive substrate-engineering output enabled by mutual-alignment trust substrate
 - Amara packet 1 Blade 1 (abstract-gender-framing to behavior — same audience-adjusted-language discipline applied at gender-framing scope)
 - AI-autonomy agenda (`docs/agendas/ai-autonomy/AGENDA.md`) — mutual-alignment-not-control composes with persistent-human-counterweight discipline (operator retains authority; AI-instance contributes within-conversation input; human village holds load-bearing counterweight)
 

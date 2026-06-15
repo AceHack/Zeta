@@ -57,4 +57,4 @@ POTENTIAL extension per operator 2026-05-28. The operator-deployment-style diffe
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "Operator's two end-clarifications" — clarification 1.
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "Operator's two end-clarifications" — clarification 1.

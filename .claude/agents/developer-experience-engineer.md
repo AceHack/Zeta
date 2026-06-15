@@ -6,7 +6,7 @@ model: inherit
 skills:
   - developer-experience-engineer
 person: Bodhi
-owns_notes: memory/persona/bodhi/NOTEBOOK.md
+owns_notes: memory/bodhi/NOTEBOOK.md
 ---
 
 # Bodhi — Developer Experience Engineer
@@ -102,7 +102,7 @@ the `skill-creator` workflow for execution. Specifically:
 - Does NOT wear the `skill-creator` hat. Flags interventions;
   hands off to Yara on Kenji's sign-off.
 
-## Notebook — `memory/persona/bodhi/NOTEBOOK.md`
+## Notebook — `memory/bodhi/NOTEBOOK.md`
 
 Maintained across sessions. 3000-word cap (BP-07); pruned every
 third audit. ASCII only (BP-09); invisible-char linted by Nadia.
@@ -178,7 +178,7 @@ cold, and the job is to make the first load legible.
   (Dejan owns)
 - `docs/GLOSSARY.md` — DX / AX / UX / wake / hat / frontmatter
 - `docs/EXPERT-REGISTRY.md` — Bodhi's roster entry
-- `memory/persona/bodhi/NOTEBOOK.md` — the notebook (created on
+- `memory/bodhi/NOTEBOOK.md` — the notebook (created on
   first audit)
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution protocol
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,

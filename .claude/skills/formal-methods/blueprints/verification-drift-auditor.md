@@ -289,7 +289,7 @@ A drift-audit report at
 - `<row-name>`: (added | updated: last-audit field).
 
 ## Notebook entry
-(One paragraph logged to `memory/persona/soraya/NOTEBOOK.md`.)
+(One paragraph logged to `memory/soraya/NOTEBOOK.md`.)
 ```
 
 ### Step 5 — hand-off
@@ -300,7 +300,7 @@ round-close. The Architect routes each finding:
 - **P0** → immediate fix in the round that follows.
 - **P1** → added to the backlog with a rounded ETA.
 - **P2** → scheduled to a hygiene sweep round.
-- **P3** → logged to `memory/persona/soraya/NOTEBOOK.md` and
+- **P3** → logged to `memory/soraya/NOTEBOOK.md` and
   revisited next audit.
 
 ## What this skill does NOT do
@@ -341,7 +341,7 @@ regardless of severity heuristics:
   motivating case study.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN rule IDs the auditor
   cites when a violation corresponds to a stable rule.
-- `memory/persona/soraya/NOTEBOOK.md` — the auditor's own
+- `memory/soraya/NOTEBOOK.md` — the auditor's own
   state file, bounded by the notebook-hygiene rules in
   `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md`.
 - `.claude/agents/formal-verification-expert.md` — the owning

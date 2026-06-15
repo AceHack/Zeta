@@ -89,4 +89,4 @@ POTENTIAL research direction per operator standing direction. P3 because Kestrel
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "Where this composes with what you're building" + § "A pragmatic decomposition" + § "The honest meta-observation"
+`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "Where this composes with what you're building" + § "A pragmatic decomposition" + § "The honest meta-observation"

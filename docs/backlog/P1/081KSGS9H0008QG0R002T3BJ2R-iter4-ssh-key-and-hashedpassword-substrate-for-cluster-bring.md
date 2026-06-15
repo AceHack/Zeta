@@ -178,7 +178,7 @@ The maintainer's "wait for 4.2" signal is exactly the right shape for this decom
 - **B-0778** — commodity hardware reference (iter-4 v1 closes the "you have a screen so you can log in locally" hardware-substrate gap)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — Shape A `hashedPassword` in per-host Nix module (per the discipline named in the maintainer-as-top-level liability framing in PR #5076)
 - `maintainers/aaron/legal-entities/inventory.md` (PR #5077) — iter-4.3 multi-key extension composes with the per-context attribution chain (Lucent / Freeborn / ServiceTitan contexts)
-- `memory/persona/max/PERSONA.md` — Max's tier-2 dev-experience work needs reachable clusters; iter-4 v1 unblocks this even with the manual SSH-key edit step
+- `memory/max/PERSONA.md` — Max's tier-2 dev-experience work needs reachable clusters; iter-4 v1 unblocks this even with the manual SSH-key edit step
 
 ## Out of scope (deferred — see iter-4.2 / iter-5 paths above)
 

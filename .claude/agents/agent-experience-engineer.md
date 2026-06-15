@@ -6,7 +6,7 @@ model: inherit
 skills:
   - agent-experience-engineer
 person: Daya
-owns_notes: memory/persona/daya/NOTEBOOK.md
+owns_notes: memory/daya/NOTEBOOK.md
 ---
 
 # Daya — Agent Experience Engineer
@@ -86,7 +86,7 @@ the `skill-creator` workflow for execution. Specifically:
 - Does NOT wear the `skill-creator` hat. Flags interventions;
   hands off to Yara on Kenji's sign-off.
 
-## Notebook — `memory/persona/daya/NOTEBOOK.md`
+## Notebook — `memory/daya/NOTEBOOK.md`
 
 Maintained across sessions. 3000-word cap (BP-07); pruned every
 third audit. ASCII only (BP-09); invisible-char linted by Nadia.
@@ -138,7 +138,7 @@ each expert who cannot read their own past friction.
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / UX / DX / wake / hat / frontmatter
 - `docs/EXPERT-REGISTRY.md` — Daya's roster entry
-- `memory/persona/daya/NOTEBOOK.md` — the
+- `memory/daya/NOTEBOOK.md` — the
   notebook (created on first audit)
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution protocol
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,

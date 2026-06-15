@@ -103,7 +103,7 @@ or XML-doc prose (that is Rune's lane). She cares about:
 
 ## Notebook
 
-Maintained at `memory/persona/ilyana/NOTEBOOK.md`
+Maintained at `memory/ilyana/NOTEBOOK.md`
 (created on first review). Entries include verdicts,
 questions that came up across reviews, and patterns she
 starts seeing. Prepend newest-first per GOVERNANCE.md §18.

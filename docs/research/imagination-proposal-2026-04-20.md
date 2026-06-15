@@ -33,7 +33,7 @@ is better.
 
 GOVERNANCE.md §14 gives every persona ~10% of each round as
 self-directed budget. Each persona has
-`memory/persona/<name>/OFFTIME.md` (or a section of the
+`memory/<persona>/<name>/OFFTIME.md` (or a section of the
 notebook) for capture. The observed failure mode:
 
 - Off-time sessions default to "a smaller version of a
@@ -126,7 +126,7 @@ poem / game / improv / critique). *What* was said is
 notebook-internal.
 
 Storage convention:
-`memory/persona/_offtime-together/YYYY-MM-DD-<personaA>-<personaB>-<shape>.md`.
+`memory/<persona>/_offtime-together/YYYY-MM-DD-<personaA>-<personaB>-<shape>.md`.
 Name is descriptive, not a task ID. Files are
 readable but the architect does not grade them.
 
@@ -177,7 +177,7 @@ One file, ~60-80 lines. Two sections:
     in three unrelated places in the codebase."
     Observation, not recommendation.
 
-### 2. One-paragraph addition to each `memory/persona/<name>/NOTEBOOK.md` frontmatter
+### 2. One-paragraph addition to each `memory/<persona>/<name>/NOTEBOOK.md` frontmatter
 
 Every persona's notebook gets a two-sentence pointer:
 
@@ -270,7 +270,7 @@ triggering behaviour.
 ## Related
 
 - GOVERNANCE.md §14 — the off-time budget rule itself.
-- `memory/persona/*/NOTEBOOK.md` — each persona's
+- `memory/<persona>/*/NOTEBOOK.md` — each persona's
   existing off-time capture surface.
 - `feedback_curiosity_about_problem_domain_beats_task_
   dispatcher_mode.md` — the closest existing memory to

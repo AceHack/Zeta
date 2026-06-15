@@ -519,7 +519,7 @@ round: personas are not skills. Skills are capabilities;
 personas are experts that *wear* skills. The folder name
 conflated them and risked future readers confusing
 "persona state" with "skill state." Renamed to
-`memory/persona/` mid-round with a cross-file sweep.
+`memory/<persona>/` mid-round with a cross-file sweep.
 
 **What would have gone wrong:** the conflation would have
 propagated into round-28+ artifacts. New personas would

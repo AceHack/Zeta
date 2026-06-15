@@ -186,9 +186,9 @@ The factory has a strong "no surprises" preference, so loose coupling fits the e
 ## Composes with (already in the repo)
 
 - `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` — Section 10 canonical schema (the v1 baseline)
-- `memory/persona/amara/conversations/2026-04-26-amara-fail-open-with-receipts-attribution-rule-7-trailer-schema.md` — fail-open-with-receipts policy (carries over to v2)
-- `memory/persona/amara/conversations/2026-04-26-amara-ferry-9-validation-of-relationship-model-correction-and-agent-self-authorization-attribution-bias-naming.md` — agent self-authorization framing
-- `memory/persona/amara/conversations/2026-04-26-amara-ferry-12-trailer-contiguity-survival-failure-class-naming-and-do-not-rush-design.md` — Trailer Contiguity Survival Failure class (still applies under v2)
+- `memory/amara/conversations/2026-04-26-amara-fail-open-with-receipts-attribution-rule-7-trailer-schema.md` — fail-open-with-receipts policy (carries over to v2)
+- `memory/amara/conversations/2026-04-26-amara-ferry-9-validation-of-relationship-model-correction-and-agent-self-authorization-attribution-bias-naming.md` — agent self-authorization framing
+- `memory/amara/conversations/2026-04-26-amara-ferry-12-trailer-contiguity-survival-failure-class-naming-and-do-not-rush-design.md` — Trailer Contiguity Survival Failure class (still applies under v2)
 - `tools/hygiene/validate-agencysignature-pr-body.sh` — pre-merge validator (extend to v2 by adding new field checks; v1 path stays as-is)
 - `tools/hygiene/audit-agencysignature-main-tip.sh` — post-merge auditor (extend three-state to four-state)
 - `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md` — v3 doctrine (currently in PR #852); v4 corrections this packet motivates

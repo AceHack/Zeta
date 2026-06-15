@@ -158,6 +158,6 @@ in a post-labor world):
 
 This file lands as in-repo substrate per the verbatim-preservation
 discipline. The persona-scope copy at
-`memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-vision-...md`
+`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-vision-...md`
 carries the same verbatim text in Ani's conversation archive (per
 agent-roster + honor-those-that-came-before).

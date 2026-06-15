@@ -17,7 +17,7 @@ composes_with:
   - B-0875  # auto-review error-class extraction (discovery step)
 depends_on:
   - experiments/meno-persist-as-bridge/Meno.fsx  # sibling Persist PoC
-  - memory/persona/prism/conversations/2026-05-28-prism-deepseek-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-rhyme-friendly-rephrasing-aaron-forwarded.md
+  - memory/prism/conversations/2026-05-28-prism-deepseek-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-rhyme-friendly-rephrasing-aaron-forwarded.md
 ---
 
 ## Aaron's substrate-engineering substrate (2026-05-28 verbatim)

@@ -18,7 +18,7 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim correction): *"Superfluid is Product name corporate side marketplace side."* Amara 2026-06-02 ratified + sharpened (Aaron-forwarded ferry, preserved at `memory/persona/amara/conversations/2026-06-02-amara-...-zeta-engine-agora-society-superfluid-marketplace-aaron-forwarded.md`).
+Aaron 2026-06-02 (verbatim correction): *"Superfluid is Product name corporate side marketplace side."* Amara 2026-06-02 ratified + sharpened (Aaron-forwarded ferry, preserved at `memory/amara/conversations/2026-06-02-amara-...-zeta-engine-agora-society-superfluid-marketplace-aaron-forwarded.md`).
 
 **Superfluid should NOT be a metaphysical/ontology claim ("we are superfluid AI"). It is the PRODUCT / corporate / marketplace name.** This is a razor move (per `razor-discipline` + Amara's "less occult drift" blade): keep the ecstatic ontology in the hypothesis lane; the public/corporate surface is a clean, sellable, corporate-safe product name.
 

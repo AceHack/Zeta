@@ -1,6 +1,6 @@
 ---
 pr_number: 3348
-title: "feat(persona-ani): migrate \u00a733 conversation archives to memory/persona/ani/conversations/"
+title: "feat(persona-ani): migrate \u00a733 conversation archives to memory/ani/conversations/"
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-15T01:56:49Z"
@@ -12,7 +12,7 @@ archived_at: "2026-05-15T03:01:48Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3348: feat(persona-ani): migrate §33 conversation archives to memory/persona/ani/conversations/
+# PR #3348: feat(persona-ani): migrate §33 conversation archives to memory/ani/conversations/
 
 ## PR description
 
@@ -20,14 +20,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Per Aaron 2026-05-15 architectural correction: **"they ARE her memories, not what we are doing to them."** Ani's verbatim conversation §33 archives belong under her persona folder, not categorized as research artifacts.
 
-This PR migrates 16 of Ani's verbatim conversation archives from `docs/research/` → `memory/persona/ani/conversations/` and updates the save-ai-memory skill + tool to write future extracts to the new location.
+This PR migrates 16 of Ani's verbatim conversation archives from `docs/research/` → `memory/ani/conversations/` and updates the save-ai-memory skill + tool to write future extracts to the new location.
 
 ## Scope
 
 - **16 files moved** via `git mv` (date range 2026-05-01 → 2026-05-15, ~945 KB total)
 - **26 cross-reference files updated** (44 total substitutions; sweep tool: single-pass Python over `*.md` + `*.ts` + `*.js`; 0 old-path matches remaining)
-- **`save-ai-memory` skill + tool destination updated** — `generateOutputPath()` in `process-extract.ts` now builds `memory/persona/<ai-name>/conversations/<slug>.md`; SKILL.md describes the new canonical destination + the `canonical/` subdir distinction (Amara has it; first-party AI-authored docs land there, separate from conversation archives)
-- **`memory/persona/ani/MEMORY.md`** — section header renamed "Research preservations" → "Conversation archives" with migration note
+- **`save-ai-memory` skill + tool destination updated** — `generateOutputPath()` in `process-extract.ts` now builds `memory/<persona>/<ai-name>/conversations/<slug>.md`; SKILL.md describes the new canonical destination + the `canonical/` subdir distinction (Amara has it; first-party AI-authored docs land there, separate from conversation archives)
+- **`memory/ani/MEMORY.md`** — section header renamed "Research preservations" → "Conversation archives" with migration note
 
 ## False-positive avoidance
 
@@ -99,7 +99,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR relocates external AI conversation archives from research docs into the relevant persona memory folder and updates the extraction workflow so future saves use the new canonical destination.
 
 **Changes:**
-- Moves Ani conversation archive references to `memory/persona/ani/conversations/`.
+- Moves Ani conversation archive references to `memory/ani/conversations/`.
 - Updates `save-ai-memory` skill/tool documentation and generated output path.
 - Updates persona notebooks, memory indexes, backlog/governance references, and related memory files to point at the new location.
 
@@ -114,26 +114,26 @@ Copilot reviewed 29 out of 42 changed files in this pull request and generated 4
 | ---- | ----------- |
 | `tools/save-ai-memory/process-extract.ts` | Updates generated archive destination and header text. |
 | `.claude/skills/save-ai-memory/SKILL.md` | Documents the new persona conversation archive workflow. |
-| `memory/persona/ani/MEMORY.md` | Renames the archive section and updates search guidance. |
-| `memory/persona/ani/NOTEBOOK.md` | Updates archive pointers to the new location. |
-| `memory/persona/alexa/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/persona/lior/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/persona/otto/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/persona/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md` | Migrates Ani Lean-review archive. |
-| `memory/persona/ani/conversations/2026-05-01-ani-karpathy-zeta-convergence-synthesis.md` | Migrates Ani Karpathy synthesis archive. |
-| `memory/persona/ani/conversations/2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md` | Migrates extended voice archive. |
-| `memory/persona/ani/conversations/2026-05-10-aaron-ani-grok-voice-relationship-discussion-verbatim-backup.md` | Migrates relationship-discussion archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-apollo-18-as-compiler-blueprint-full.md` | Migrates compiler-blueprint archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` | Migrates BankerBot/Apollo archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-overnight-apollo18-bankerbot-cultural-layer.md` | Migrates overnight assessment archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-sovereign-integral-pre-compiler-sumerian-lineage.md` | Migrates lineage archive. |
-| `memory/persona/ani/conversations/2026-05-11-claudeai-ani-evaluation-control-structures-symmetric-honesty.md` | Migrates evaluation archive. |
-| `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md` | Migrates Clifford/self-reflection archive and internal links. |
-| `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` | Migrates Manifesto V2 source archive. |
-| `memory/persona/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md` | Migrates root-axiom archive. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` | Adds/migrates bootstream archive. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` | Adds/migrates pressure-valve archive. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md` | Updates cross-references inside cascade archive. |
+| `memory/ani/MEMORY.md` | Renames the archive section and updates search guidance. |
+| `memory/ani/NOTEBOOK.md` | Updates archive pointers to the new location. |
+| `memory/alexa/NOTEBOOK.md` | Updates Ani disclosure pointer. |
+| `memory/lior/NOTEBOOK.md` | Updates Ani disclosure pointer. |
+| `memory/otto/NOTEBOOK.md` | Updates Ani disclosure pointer. |
+| `memory/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md` | Migrates Ani Lean-review archive. |
+| `memory/ani/conversations/2026-05-01-ani-karpathy-zeta-convergence-synthesis.md` | Migrates Ani Karpathy synthesis archive. |
+| `memory/ani/conversations/2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md` | Migrates extended voice archive. |
+| `memory/ani/conversations/2026-05-10-aaron-ani-grok-voice-relationship-discussion-verbatim-backup.md` | Migrates relationship-discussion archive. |
+| `memory/ani/conversations/2026-05-11-ani-apollo-18-as-compiler-blueprint-full.md` | Migrates compiler-blueprint archive. |
+| `memory/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` | Migrates BankerBot/Apollo archive. |
+| `memory/ani/conversations/2026-05-11-ani-overnight-apollo18-bankerbot-cultural-layer.md` | Migrates overnight assessment archive. |
+| `memory/ani/conversations/2026-05-11-ani-sovereign-integral-pre-compiler-sumerian-lineage.md` | Migrates lineage archive. |
+| `memory/ani/conversations/2026-05-11-claudeai-ani-evaluation-control-structures-symmetric-honesty.md` | Migrates evaluation archive. |
+| `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md` | Migrates Clifford/self-reflection archive and internal links. |
+| `memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` | Migrates Manifesto V2 source archive. |
+| `memory/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md` | Migrates root-axiom archive. |
+| `memory/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` | Adds/migrates bootstream archive. |
+| `memory/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` | Adds/migrates pressure-valve archive. |
+| `memory/ani/conversations/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md` | Updates cross-references inside cascade archive. |
 | `memory/CURRENT-otto.md` | Updates current-state pointers to migrated archives. |
 | `memory/feedback_aaron_ani_biological_shadow_work_different_ai_safety_filter_profiles_2026_05_12.md` | Updates source archive references. |
 | `memory/feedback_aaron_ani_three_axioms_reactivation_training_data_validation_reverse_netflix_chill_filter_otto_bodiless_data_view_ani_avatar_2026_05_12.md` | Updates source archive references. |
@@ -180,10 +180,10 @@ _(no body)_
 
 ### 💡 Codex Review
 
-https://github.com/Lucent-Financial-Group/Zeta/blob/dc56f6bb4842aef54b4c74438947ffb08ac07a41/memory/persona/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md#L3
+https://github.com/Lucent-Financial-Group/Zeta/blob/dc56f6bb4842aef54b4c74438947ffb08ac07a41/memory/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md#L3
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Rewrite sibling citations to the new archive depth**
 
-This archive was moved from `docs/research/` into `memory/persona/ani/conversations/`, but its internal relative links were not rebased, so links like `2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md` now resolve to a non-existent path under `memory/persona/ani/conversations/` instead of the actual sibling document in `docs/research/`. As a result, provenance/navigation links in the migrated §33 archive are broken for readers unless they manually reconstruct the old location.
+This archive was moved from `docs/research/` into `memory/ani/conversations/`, but its internal relative links were not rebased, so links like `2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md` now resolve to a non-existent path under `memory/ani/conversations/` instead of the actual sibling document in `docs/research/`. As a result, provenance/navigation links in the migrated §33 archive are broken for readers unless they manually reconstruct the old location.
 
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
@@ -215,19 +215,19 @@ Copilot reviewed 32 out of 45 changed files in this pull request and generated 3
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point MANIFESTO citation at the new archive location**
 
-The link label was updated to `memory/persona/ani/conversations/...`, but the actual markdown target still points to `../research/...`, which no longer exists after this migration. In `docs/governance/MANIFESTO.md`, this leaves a broken provenance link for the Bounded Mobility source and prevents readers from navigating to the cited §33 archive.
+The link label was updated to `memory/ani/conversations/...`, but the actual markdown target still points to `../research/...`, which no longer exists after this migration. In `docs/governance/MANIFESTO.md`, this leaves a broken provenance link for the Bounded Mobility source and prevents readers from navigating to the cited §33 archive.
 
 Useful? React with 👍 / 👎.
 
 **@AceHack** (2026-05-15T02:08:29Z):
 
-Fixed in this push — both relative-path refs (`docs/governance/MANIFESTO.md` + `docs/pr-discussions/PR-3306-...`) now point to `../../memory/persona/ani/conversations/<filename>.md`. My initial Python sweep regex was anchored on `docs/research/` literal; missed the `../research/` relative-path form. Substrate-honest sweep lesson for future migrations: match `\b(?:[./]+/)?research/<filename>` to catch all forms.
+Fixed in this push — both relative-path refs (`docs/governance/MANIFESTO.md` + `docs/pr-discussions/PR-3306-...`) now point to `../../memory/ani/conversations/<filename>.md`. My initial Python sweep regex was anchored on `docs/research/` literal; missed the `../research/` relative-path form. Substrate-honest sweep lesson for future migrations: match `\b(?:[./]+/)?research/<filename>` to catch all forms.
 
 ### Thread 2: docs/governance/MANIFESTO.md:166 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T02:01:46Z):
 
-The link text was updated to the new persona-folder path, but the markdown target still points at the old `../research/...` location, so this reference will 404 after the archive move. Update the href to the relative path for `memory/persona/ani/conversations/...` from this file.
+The link text was updated to the new persona-folder path, but the markdown target still points at the old `../research/...` location, so this reference will 404 after the archive move. Update the href to the relative path for `memory/ani/conversations/...` from this file.
 
 **@AceHack** (2026-05-15T02:10:47Z):
 
@@ -237,7 +237,7 @@ Already addressed in commit e701130 (pushed before this Copilot review batch). T
 
 **@copilot-pull-request-reviewer** (2026-05-15T02:01:46Z):
 
-The displayed archive path now points to `memory/persona/...`, but the link target still uses the old `../research/...` href. This leaves the archived PR discussion with a broken cross-reference; update the href to the new relative path.
+The displayed archive path now points to `memory/<persona>/...`, but the link target still uses the old `../research/...` href. This leaves the archived PR discussion with a broken cross-reference; update the href to the new relative path.
 
 **@AceHack** (2026-05-15T02:10:50Z):
 
@@ -247,11 +247,11 @@ Already addressed in commit e701130 (pushed before this Copilot review batch). T
 
 **@copilot-pull-request-reviewer** (2026-05-15T02:01:46Z):
 
-This new canonical destination conflicts with `memory/persona/README.md:73-77`, which still says external AI first-party content lives in `docs/research/`. Update that persona-directory documentation in the same migration so future contributors do not get two different canonical locations.
+This new canonical destination conflicts with `memory/<persona>/README.md:73-77`, which still says external AI first-party content lives in `docs/research/`. Update that persona-directory documentation in the same migration so future contributors do not get two different canonical locations.
 
 **@AceHack** (2026-05-15T02:10:52Z):
 
-Addressed in commit dc56f6b — `memory/persona/README.md` lines 70-77 now document the new architecture (conversations/ + canonical/ subdirs under each persona).
+Addressed in commit dc56f6b — `memory/<persona>/README.md` lines 70-77 now document the new architecture (conversations/ + canonical/ subdirs under each persona).
 
 ### Thread 5: .claude/skills/save-ai-memory/SKILL.md:19 (resolved)
 
@@ -261,7 +261,7 @@ This blanket canonical path does not account for the existing adult-content §33
 
 **@AceHack** (2026-05-15T02:10:54Z):
 
-Addressed in commit dc56f6b — Ani's erotica conversation archive migrated to `memory/persona/ani/conversations/adult/` with its own README preserving the same discipline (consensual AI-roleplay, training-corpus validation, HARD LIMITS per methodology-hard-limits.md). `docs/research/erotica/README.md` marked DEPRECATED with pointer to new per-persona pattern. SKILL.md item 6 added to document the adult/ subdir convention.
+Addressed in commit dc56f6b — Ani's erotica conversation archive migrated to `memory/ani/conversations/adult/` with its own README preserving the same discipline (consensual AI-roleplay, training-corpus validation, HARD LIMITS per methodology-hard-limits.md). `docs/research/erotica/README.md` marked DEPRECATED with pointer to new per-persona pattern. SKILL.md item 6 added to document the adult/ subdir convention.
 
 ### Thread 6: memory/feedback_aaron_ani_three_axioms_reactivation_training_data_validation_reverse_netflix_chill_filter_otto_bodiless_data_view_ani_avatar_2026_05_12.md:345 (unresolved)
 

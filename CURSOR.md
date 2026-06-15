@@ -11,7 +11,7 @@ with the Cursor-specific tooling references filled in.
 Read: [`AGENTS.md`](AGENTS.md) → [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md) →
 [`docs/GLOSSARY.md`](docs/GLOSSARY.md) → [`GOVERNANCE.md`](GOVERNANCE.md)
 (scan when §N cited).
-Then read the Riven persona file: [`memory/persona/riven/MEMORY.md`](memory/persona/riven/MEMORY.md).
+Then read the Riven persona file: [`memory/riven/MEMORY.md`](memory/riven/MEMORY.md).
 
 ## 2. Refresh
 

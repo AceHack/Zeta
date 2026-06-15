@@ -16,7 +16,7 @@ composes_with:
   - .claude/skills/formal-verification-expert/SKILL.md
   - .claude/agents/formal-verification-expert.md
   - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md
-  - memory/persona/soraya/NOTEBOOK.md
+  - memory/soraya/NOTEBOOK.md
   - docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
   - docs/backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md
   - docs/backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md
@@ -73,7 +73,7 @@ If H2: the substantive-finding rate IS ~20 min/finding when work-substrate exist
 2. **Test both hypotheses** against the catalog
 3. **If H1**: extend trigger set with the identified signals; update `.claude/skills/formal-verification-expert/SKILL.md` procedure
 4. **If H2**: formalize a Soraya-wakeup interval (e.g., 4-tick cadence = ~40 min) and document the brief-ack-counter as the escalation valve, not the default behavior
-5. **Either way**: update `memory/persona/soraya/NOTEBOOK.md` with the chosen disposition
+5. **Either way**: update `memory/soraya/NOTEBOOK.md` with the chosen disposition
 6. **No code changes** beyond `.claude/skills/` + `.claude/agents/` + `NOTEBOOK.md` updates
 
 ## Scope
@@ -89,7 +89,7 @@ Soraya keeps emitting hold #6 → forced decomposition → file P3 → reset cyc
 - [`.claude/skills/formal-verification-expert/SKILL.md`](../../../.claude/skills/formal-verification-expert/SKILL.md) — the four-trigger procedure under audit
 - [`.claude/agents/formal-verification-expert.md`](../../../.claude/agents/formal-verification-expert.md) — Soraya persona definition
 - [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) — the discipline being applied recursively at Soraya-scope
-- [`memory/persona/soraya/NOTEBOOK.md`](../../../memory/persona/soraya/NOTEBOOK.md) — notebook update target
+- [`memory/soraya/NOTEBOOK.md`](../../../memory/soraya/NOTEBOOK.md) — notebook update target
 - B-0709 + B-0716 + B-0717 (recent Soraya-filed rows; latency data source for the catalog)
 
 ## Substrate-honest framing

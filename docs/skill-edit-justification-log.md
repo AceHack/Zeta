@@ -104,7 +104,7 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
 - **BP-03 self-check:** `wc -l .claude/skills/skill-
   tune-up/SKILL.md` → 282. Under cap. Self-breach
   closed.
-- **Hand-off:** Aarav's notebook (`memory/persona/
+- **Hand-off:** Aarav's notebook (`memory/<persona>/
   aarav/NOTEBOOK.md`) updates next invocation: self-
   rank drops off top-5 as resolved; top-5 rotates one
   up.

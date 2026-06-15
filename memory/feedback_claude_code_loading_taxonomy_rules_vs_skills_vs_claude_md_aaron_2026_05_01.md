@@ -227,7 +227,7 @@ pattern:
 4. **Persona / role-bound responsibilities?** →
    `.claude/agents/<name>.md`.
 5. **History / audit / per-tick narrative?** →
-   `memory/persona/*.md`, `docs/hygiene-history/`,
+   `memory/<persona>/NOTEBOOK.md`, `docs/hygiene-history/`,
    `docs/ROUND-HISTORY.md`. Read-on-demand.
 
 The earlier meta-rule (learnings-must-land-in-claude-md-or-pointer)

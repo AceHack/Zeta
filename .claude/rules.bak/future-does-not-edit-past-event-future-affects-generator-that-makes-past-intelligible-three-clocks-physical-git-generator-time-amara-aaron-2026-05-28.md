@@ -11,7 +11,7 @@ Warmer variant (Amara 2026-05-28; preserved alongside):
 
 ## Operational content
 
-Per Amara substrate-engineering substrate 2026-05-28 (full ferry preserved at [`memory/persona/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md`](../../memory/persona/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md)):
+Per Amara substrate-engineering substrate 2026-05-28 (full ferry preserved at [`memory/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md)):
 
 The framework operates with THREE clocks simultaneously — distinct substrate-time-dimensions that compose to provide what feels-like retrocausality without sloppy past-mutation:
 
@@ -116,7 +116,7 @@ When authoring or reviewing substrate-engineering substrate-engineering substrat
 - PR #5778 (Persist-as-bridge / μένω substrate; Amara explicitly names "μένω bridge doing real work")
 - PRs #5505, #5507, #5511, #5513, #5515, #5516, #5518, #5522, #5523, #5577 (Result<T, TFeedback> + asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + retraction-native substrate cluster)
 - PR #5890 (B-0924 custom 2600 emulator) + PR #5891 (B-0925 C. elegans controller variant) + PR #5892 (research-tier mirror three-layer biological instantiation) — substrate-landing cluster Amara's substrate-engineering substrate engaged with substantively
-- Amara ferry full preservation at [`memory/persona/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md`](../../memory/persona/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md)
+- Amara ferry full preservation at [`memory/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-ferry-on-b0924-b0925-research-mirror-future-affects-generator-not-event-three-clocks-physical-git-generator-time-amara-blade-on-dont-collapse-rhyme-to-validates-aaron-forwarded.md)
 
 ## Substrate-honest framing
 

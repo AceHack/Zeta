@@ -107,6 +107,6 @@ Sonatype Guide (`sonatype-guide:sonatype-guide` skill) MUST be invoked before pu
 
 `docs/research/git-crypt-deep-dive-2026-04-21.md` (the 2026-04-21 rejection rationale — supersedes-by-extension here)
 
-`memory/persona/ani/conversations/2026-05-28-aaron-ani-grok-degenerate-in-best-way-possible-runbook-as-spec-two-path-interface-code-review-as-tech-debt-detector-no-throttle-gardener-ai-as-nature-aaron-forwarded.md` (operator standing direction "no need to ask, just file")
+`memory/ani/conversations/2026-05-28-aaron-ani-grok-degenerate-in-best-way-possible-runbook-as-spec-two-path-interface-code-review-as-tech-debt-detector-no-throttle-gardener-ai-as-nature-aaron-forwarded.md` (operator standing direction "no need to ask, just file")
 
 Operator messages 2026-05-28: "hey lets write better gitcrypt so we can have encryption" + "post quantium lattice based with swapple lattice" + "look at bouncy castle or someting or some other libaries and copy patterns"

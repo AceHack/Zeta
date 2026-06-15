@@ -65,7 +65,7 @@ Propagation-mode evolution: **broadcast (one-to-many, TV/Radio) → interactive 
 
 - `docs/research/2026-06-02-planck-length-hexagonal-...-the-foundation-the-4x4-build-off-aaron.md` (#6560) — the six reservoir walls (authoritative enumeration + attribution)
 - `docs/research/2026-06-02-hexagonal-six-is-zetas-universal-action-grammar-...-kabbalah-leonardo-xbox-zeta-lineage-...-aaron.md` (#6561) — the Cube-of-Space table + the lineage
-- `memory/persona/alexa/conversations/2026-06-02-alexa-website-universal-action-grammar-full-lineage-...-aaron-forwarded.md` (#6562) — the full 9-rung lineage
+- `memory/alexa/ide/kiro/conversations/2026-06-02-alexa-website-universal-action-grammar-full-lineage-...-aaron-forwarded.md` (#6562) — the full 9-rung lineage
 - `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...six-primitives-...md` — the six reservoir walls source (#13)
 - `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` — the imaginary-stack cube + Adinkra/Cayley-Dickson
 

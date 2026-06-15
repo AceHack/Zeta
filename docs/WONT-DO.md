@@ -265,7 +265,7 @@ precision about the reason shape.
 - **Proposal:** Let skills rewrite their own `SKILL.md` freely.
 - **Why not:** A skill that edits its own prompt is effectively
   editing itself. That needs to be visible in git diffs, not
-  silent. Skill-notebook files (`memory/persona/*.md`) are the
+  silent. Skill-notebook files (`memory/<persona>/NOTEBOOK.md`) are the
   approved form of self-modification — they're append-dated,
   pruned, and git-visible. Direct `SKILL.md` edits go through
   the `skill-creator` workflow, which is a reviewable commit.
@@ -284,7 +284,7 @@ precision about the reason shape.
   the *threat class* without fetching the payload.
 - **Revisit when:** A pen-test is genuinely needed. Then it runs
   in an isolated single-turn sub-agent with no memory carryover
-  and no write access to `.claude/` or `memory/persona/`.
+  and no write access to `.claude/` or `memory/<persona>/`.
 
 ---
 

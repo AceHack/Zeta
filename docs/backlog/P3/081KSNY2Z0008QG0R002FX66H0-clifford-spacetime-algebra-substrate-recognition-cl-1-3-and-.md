@@ -108,7 +108,7 @@ Each yes-and item gets its own follow-up backlog row when activated:
 ## Acceptance
 
 - [x] **Phase 1 deliverable**: companion research-doc `docs/research/2026-05-28-otto-cli-extension-to-4th-kestrel-ferry-...-aaron-2026-05-28.md` landed (this PR)
-- [x] **5th Kestrel ferry preserved verbatim**: `memory/persona/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...-aaron-forwarded.md` landed (this PR)
+- [x] **5th Kestrel ferry preserved verbatim**: `memory/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...-aaron-forwarded.md` landed (this PR)
 - [x] **Backlog row filed**: this row (B-0895)
 - [x] **Sibling backlog row filed**: B-0896 (category-theory ↔ Clifford self-similarity)
 - [ ] **Phase 2 acceptance**: TypeScript interface skeleton + 2 implementations + generator DSL prototype + tests pass `bun test`

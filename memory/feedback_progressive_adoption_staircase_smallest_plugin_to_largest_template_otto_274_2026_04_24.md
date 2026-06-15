@@ -82,7 +82,7 @@ adopter's context; wire into their repo).
 - Factory-governance template: GOVERNANCE.md
   section-header template + AGENTS.md + CLAUDE.md
   + hygiene-history + round-history structure
-- Personas template: `memory/persona/**` structure
+- Personas template: `memory/<persona>/**` structure
   + canonical agent frontmatter schema
 
 **Value prop**: adopter gets the factory's governance

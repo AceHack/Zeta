@@ -30,7 +30,7 @@
 //   1  Stale-gate tripped (when --gate N given and any friction >= N)
 //   2  Script error / missing dependency / bad args
 
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   spawnSync,
@@ -76,7 +76,7 @@ interface AuditResult {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const ROUND_RE = /^## Round (\d+)/gm;
-const OWNER_RE = /memory\/persona\/([a-z0-9_-]+)\/NOTEBOOK\.md/;
+const OWNER_RE = /memory\/([a-z0-9_-]+)\/NOTEBOOK\.md/;
 
 function classifyFailure(
   cmd: string,
@@ -242,21 +242,46 @@ function maxRoundIn(notebook: string): number {
   return max;
 }
 
-function listPersonas(): readonly string[] {
-  let entries: readonly import("node:fs").Dirent[];
+interface PersonaInfo {
+  readonly name: string;
+  readonly path: string;
+}
+
+function listPersonas(): readonly PersonaInfo[] {
+  const memoryDir = "memory";
+  const out: PersonaInfo[] = [];
   try {
-    entries = readdirSync("memory/persona", { withFileTypes: true });
+    const items = readdirSync(memoryDir, { withFileTypes: true });
+    for (const item of items) {
+      if (item.isDirectory()) {
+        const personaPath = join(memoryDir, item.name);
+        if (item.name === "observed-phenomena" || item.name === "architectural-intent-guesses") {
+          continue;
+        }
+        
+        const hasNotebook =
+          existsSync(join(personaPath, "NOTEBOOK.md")) ||
+          existsSync(join(personaPath, "MEMORY.md")) ||
+          existsSync(join(personaPath, "PERSONA.md"));
+        if (hasNotebook) {
+          out.push({ name: item.name, path: personaPath });
+        }
+      }
+    }
   } catch {
     return [];
   }
-  return entries.filter((e) => e.isDirectory()).map((e) => e.name);
+  out.sort((a, b) => byteCompare(a.name, b.name));
+  return out;
 }
 
-function currentRound(): number {
+function currentRound(personas: readonly PersonaInfo[]): number {
   let max = 0;
-  for (const p of listPersonas()) {
-    const r = maxRoundIn(`memory/persona/${p}/NOTEBOOK.md`);
-    if (r > max) max = r;
+  for (const p of personas) {
+    for (const f of ["NOTEBOOK.md", "MEMORY.md", "PERSONA.md"]) {
+      const r = maxRoundIn(join(p.path, f));
+      if (r > max) max = r;
+    }
   }
   return max;
 }
@@ -304,31 +329,39 @@ function fileChurnForSkill(skill: string, range: string): number {
   return result.stdout.split("\n").filter((s) => s.length > 0).length;
 }
 
-function notebookMentionsForSkill(skill: string): number {
-  const personas = listPersonas();
+function notebookMentionsForSkill(skill: string, personas: readonly PersonaInfo[]): number {
   let total = 0;
   const re = new RegExp(`\\b${skill}\\b`, "g");
   for (const p of personas) {
     let content: string;
-    try {
-      content = readFileSync(`memory/persona/${p}/NOTEBOOK.md`, "utf8");
-    } catch {
-      continue;
-    }
-    for (const line of content.split("\n")) {
-      if (re.test(line)) total += 1;
-      re.lastIndex = 0;
+    for (const f of ["NOTEBOOK.md", "MEMORY.md", "PERSONA.md"]) {
+      try {
+        content = readFileSync(join(p.path, f), "utf8");
+      } catch {
+        continue;
+      }
+      for (const line of content.split("\n")) {
+        if (re.test(line)) total += 1;
+        re.lastIndex = 0;
+      }
     }
   }
   return total;
 }
 
-function buildRow(skill: string, cr: number, range: string): SkillRow {
+function buildRow(skill: string, cr: number, range: string, personas: readonly PersonaInfo[]): SkillRow {
   const owner = skillOwner(skill);
-  const ownerLastRound = owner === "" ? 0 : maxRoundIn(`memory/persona/${owner}/NOTEBOOK.md`);
+  const ownerPersona = personas.find((p) => p.name === owner);
+  let ownerLastRound = 0;
+  if (ownerPersona !== undefined) {
+    for (const f of ["NOTEBOOK.md", "MEMORY.md", "PERSONA.md"]) {
+      const r = maxRoundIn(join(ownerPersona.path, f));
+      if (r > ownerLastRound) ownerLastRound = r;
+    }
+  }
   const friction = ownerLastRound === 0 ? "-" : String(cr - ownerLastRound);
   const mentions = commitMentionsForSkill(skill, range);
-  const nbMentions = notebookMentionsForSkill(skill);
+  const nbMentions = notebookMentionsForSkill(skill, personas);
   const churn = fileChurnForSkill(skill, range);
   const throughput = mentions + nbMentions;
   const effectiveness = throughput > 0 && churn === 0 ? 1 : 0;
@@ -351,13 +384,14 @@ function applyStaleFilter(rows: readonly SkillRow[], staleMin: number): readonly
 }
 
 export function audit(args: Args): AuditResult {
+  const personas = listPersonas();
   const skills = listSkills();
   const cr =
     args.roundLabel !== null && /^\d+$/.test(args.roundLabel)
       ? Number(args.roundLabel)
-      : currentRound();
+      : currentRound(personas);
   const roundLabel = args.roundLabel ?? String(cr);
-  const allRows = skills.map((s) => buildRow(s, cr, args.range));
+  const allRows = skills.map((s) => buildRow(s, cr, args.range, personas));
   const rows = applyStaleFilter(allRows, args.staleMin);
   const rosterTotal = allRows.length;
   const rosterTouched = allRows.filter((r) => r.touched).length;
@@ -421,7 +455,7 @@ function emitMd(r: AuditResult): string {
   lines.push("Source of truth:");
   lines.push("");
   lines.push("- `.claude/skills/<skill>/SKILL.md` for roster + owner mapping;");
-  lines.push("- `memory/persona/<owner>/NOTEBOOK.md` for owner-last-round;");
+  lines.push("- `memory/<persona>/<owner>/NOTEBOOK.md` for owner-last-round;");
   lines.push(`- \`git log ${r.range}\` for commit mentions and file-churn.`);
   lines.push("");
   lines.push("No external DB. Replaces no existing skill-audit surface;");

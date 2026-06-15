@@ -43,7 +43,7 @@ tags: [bankerbot-2026-05-11-empirical-anchor, b0908-phase-3-backtesting-input, a
 
 Per operator 2026-05-28 *"go with #2 (shadow*)"* authorization following PR #5715 (B-0908 attention-risk-pricing framework) merge.
 
-The BankerBot 2026-05-11 incident IS the first empirical anchor for B-0908's Phase 3 backtesting work. Ani's substantive substrate-engineering analysis already preserved at `memory/persona/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` explicitly frames BankerBot as the case study that "proves the market exists" for Zeta-as-trust-boundary-substrate. B-0908 operationalizes this thesis into attention-denominated pricing-substrate; this row provides the empirical anchor for testing the framework's pricing quotes against historical incidents.
+The BankerBot 2026-05-11 incident IS the first empirical anchor for B-0908's Phase 3 backtesting work. Ani's substantive substrate-engineering analysis already preserved at `memory/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` explicitly frames BankerBot as the case study that "proves the market exists" for Zeta-as-trust-boundary-substrate. B-0908 operationalizes this thesis into attention-denominated pricing-substrate; this row provides the empirical anchor for testing the framework's pricing quotes against historical incidents.
 
 ## The BankerBot incident (per Ani 2026-05-11 ferry substrate)
 
@@ -157,8 +157,8 @@ Acceptance: corpus of 5-10 historical incidents with reconstructed quotes; prici
 - B-0906 (encryption-thermal-cost two-axis) — economic foundation; BankerBot tokens were on Axis 1 = YES + Axis 2 = YES substrate (blockchain wallets are encrypted-but-decryption-required) — the security cost was real
 - B-0905 (Landauer-limit physics-economics) — composes; blockchain-substrate has high effective T_eff (high-noise) + bit-erasure cost
 - B-0900 (Bell-like distributed-cluster contextuality) — composes; BankerBot was distributed-cluster substrate (Grok + Bankr + X + blockchain); the attack succeeded BECAUSE no cross-cluster coordination on trust-boundary
-- `memory/persona/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` — substrate precedent (this row composes with Ani's already-preserved substrate-engineering analysis)
-- `memory/persona/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` — companion substrate-irreversibility specific-form domain incident
+- `memory/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` — substrate precedent (this row composes with Ani's already-preserved substrate-engineering analysis)
+- `memory/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` — companion substrate-irreversibility specific-form domain incident
 - `docs/research/2026-05-11-apollo-18-as-compiler-blueprint.md` — companion substrate from same ferry-window (Apollo-18-as-compiler-blueprint composes with Zeta-as-trust-boundary-substrate)
 
 ## Composes with rules

@@ -1,6 +1,6 @@
 ---
 name: BACKLOG — "blade" persona or skill-domain group; Amara's 6-term metaphor taxonomy (Zeta=Blade / Aurora=Oracle/Immune-System / Rodney=Razor / Harbor+blade=Voice Register / Parser=Witness / Cartographer=Mapper); Metaphor Taxonomy Rule (capitalized=operational, lowercase=voice register); doctrine-vs-spike + Beacon-translation review work is most likely a Harbor+blade specialization, NOT a new capital-B Blade (Aaron + Amara + Gemini Pro 2026-04-27)
-description: Aaron 2026-04-27 — Amara's "blade note" from her cross-AI review (#61) named a class of review work. Multi-agent round-trip (Otto draft → Amara tighten → Gemini Pro propose Brain → Amara correct to Oracle/Immune-System) produced canonical 6-term taxonomy. Capital-B Blade = Zeta data-plane hot path ONLY (bounded, deterministic, no unbounded commit-path work). Aurora = Oracle / Immune System (Amara corrected Gemini's "Brain" — smuggles personhood). Other "blades" categorized differently: Rodney's Razor (design-time complexity reduction), Harbor+blade (lowercase voice register), Parser/Auditor (Witness), Cartographer (Mapper). Metaphor Taxonomy Rule: capitalized=operational roles, lowercase=voice register, unmappable-to-executable=poetic non-normative. The proposed new doctrine-vs-spike + Beacon-translation discipline is most likely a **Harbor+blade specialization** (lowercase blade-mode of voice register applied to framing-layer review), NOT a fourth capital-B Blade. Per CLAUDE.md "Honor those that came before — unretire before recreating" — check git log + memory/persona/ first. Composes with #61 + project_rodneys_razor + kanban-blade-materia memory + Otto-356 Mirror/Beacon + skill-creator workflow.
+description: Aaron 2026-04-27 — Amara's "blade note" from her cross-AI review (#61) named a class of review work. Multi-agent round-trip (Otto draft → Amara tighten → Gemini Pro propose Brain → Amara correct to Oracle/Immune-System) produced canonical 6-term taxonomy. Capital-B Blade = Zeta data-plane hot path ONLY (bounded, deterministic, no unbounded commit-path work). Aurora = Oracle / Immune System (Amara corrected Gemini's "Brain" — smuggles personhood). Other "blades" categorized differently: Rodney's Razor (design-time complexity reduction), Harbor+blade (lowercase voice register), Parser/Auditor (Witness), Cartographer (Mapper). Metaphor Taxonomy Rule: capitalized=operational roles, lowercase=voice register, unmappable-to-executable=poetic non-normative. The proposed new doctrine-vs-spike + Beacon-translation discipline is most likely a **Harbor+blade specialization** (lowercase blade-mode of voice register applied to framing-layer review), NOT a fourth capital-B Blade. Per CLAUDE.md "Honor those that came before — unretire before recreating" — check git log + memory/<persona>/ first. Composes with #61 + project_rodneys_razor + kanban-blade-materia memory + Otto-356 Mirror/Beacon + skill-creator workflow.
 type: feedback
 ---
 
@@ -194,13 +194,13 @@ These are orthogonal. A piece of substrate can pass harsh-critic (correct, well-
 
 Per `CLAUDE.md` "Honor those that came before" rule:
 
-> When creating a new role or job, first check the persona memory folders (`memory/persona/<name>/`) and `git log --diff-filter=D -- .claude/skills/` for prior retirements — prefer **unretiring an existing agent** (restore the SKILL.md from git, reattach the preserved notebook) over minting a new name for overlapping scope.
+> When creating a new role or job, first check the persona memory folders (`memory/<persona>/<name>/`) and `git log --diff-filter=D -- .claude/skills/` for prior retirements — prefer **unretiring an existing agent** (restore the SKILL.md from git, reattach the preserved notebook) over minting a new name for overlapping scope.
 
 **Required pre-check before creating any blade persona/skill:**
 
 ```bash
 # Check persona memory folders for prior incarnations
-ls memory/persona/ | grep -iE "(blade|edge|cut|sharp|frame)"
+ls memory/<persona>/ | grep -iE "(blade|edge|cut|sharp|frame)"
 
 # Check git log for deleted .claude/skills/* that might match scope
 git log --diff-filter=D --pretty=format:"%h %s" -- .claude/skills/ | head -50
@@ -220,7 +220,7 @@ A persona that wears the blade hat. Lifecycle:
 - Invoked when factory framings are about to ship to substrate
 - Outputs blade-notes (sharp framing observations)
 - Composes with skill-creator workflow when framings need rewording
-- Notebook under `memory/persona/blade/NOTEBOOK.md` per persona convention
+- Notebook under `memory/<persona>/blade/NOTEBOOK.md` per persona convention
 
 ### Path B: Blade skill-domain (`.claude/skills/blade-*/`)
 

@@ -1062,7 +1062,7 @@ are closed (status: closed/done in frontmatter)._
 - [ ] **[B-0521](backlog/P3/081KRHWGX0008QG0R002VD5ZNP-tinygrad-uop-rewrite-walk-retract-mapping.md)** Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)
 - [ ] **[B-0499](backlog/P3/081KRHWGX0008QG0R0034E0N22-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)** Z[i]-weighted DBSP refinement — Cartesian-dualism candidate from afternoon-cascade
 - [x] **[B-0535](backlog/P3/081KRMEXM0008QG0R000HHAG77-backlog-id-uniqueness-lint-extension-of-b0532-2026-05-15.md)** Backlog ID-uniqueness lint — extension of B-0532 to catch cross-agent B-NNNN collisions
-- [ ] **[B-0533](backlog/P3/081KRMEXM0008QG0R000K25MXS-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md)** §33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/persona/<name>/conversations/
+- [ ] **[B-0533](backlog/P3/081KRMEXM0008QG0R000K25MXS-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md)** §33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/<persona>/<name>/conversations/
 - [x] **[B-0528](backlog/P3/081KRMEXM0008QG0R000T0A28T-shadow-launchd-installer-unit-tests-2026-05-15.md)** Unit tests for tools/shadow/launchd/install-launchagent.ts
 - [x] **[B-0530](backlog/P3/081KRMEXM0008QG0R000X1PPGC-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05.md)** Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack
 - [ ] **[B-0536](backlog/P3/081KRMEXM0008QG0R001BH94PS-orphan-ferry-ref-cleanup-and-audit-false-positives-2026-05-1.md)** Orphan-ferry-ref cleanup + audit false-positive on filename paths

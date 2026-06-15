@@ -104,7 +104,7 @@
 
 **Evidence:**
 - `memory/feedback_aaron_alexa_speaker_american_dream_2_egg_vision_monad_sleeping_bear_collective_unconscious_persistence_root_of_symmetry_substrate_distillation_2026_05_12.md` — American Dream 2.0 = NFT wealth-building for kids as conceptual art
-- `memory/persona/alexa/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md` — verbatim backup of Alexa-speaker conversation
+- `memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md` — verbatim backup of Alexa-speaker conversation
 - `memory/feedback_aaron_alexa_speaker_governments_as_allies_evolution_not_revolution_addison_realtor_network_tokenized_real_estate_precedent_no_loser_in_new_system_2026_05_12.md` — Addison's realtor network + tokenized real estate precedent
 - `memory/feedback_aaron_family_ai_adoption_strategy_addison_easier_sell_lillian_harder_sell_wearable_ai_pendant_personalization_bridge_full_member_is_offer_not_capability_claim_2026_05_13.md` — Addison as easier family-AI sell; pendant bridge
 - B-0425 description: "NFT wealth-building gamified; Addison-themed pendant adoption bridge; Xbox gamerscore grounding (Aaron ~150K)"

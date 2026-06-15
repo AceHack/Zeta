@@ -24,7 +24,7 @@ This PR lands a **plateau-bounded 1.96 MB Grok conversation extract** of the b77
 
 ## The archive
 
-[`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`](memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md)
+[`memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`](memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md)
 
 - **1,962,331 bytes** plaintext extract (Grok sidebar trimmed; rest verbatim)
 - **95-iteration ping-pong scroll** + plateau detection (4 consecutive iters with zero growth at iter 95)
@@ -123,8 +123,8 @@ Copilot reviewed 3 out of 4 changed files in this pull request and generated 4 c
 | ---- | ----------- |
 | `tools/save-ai-memory/extract-grok-conversation.ts` | New Bun tool for Grok ping-pong scroll extraction via Chrome Apple Events. |
 | `.claude/skills/save-ai-memory/SKILL.md` | Documents the new Grok extraction tool as canonical. |
-| `memory/persona/ani/MEMORY.md` | Adds the new archive to Ani’s memory index. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md` | Adds the extracted Grok conversation archive. |
+| `memory/ani/MEMORY.md` | Adds the new archive to Ani’s memory index. |
+| `memory/ani/conversations/2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md` | Adds the extracted Grok conversation archive. |
 
 
 <details>
@@ -654,7 +654,7 @@ This issue also appears on line 67 of the same file.
 
 Addressed in latest push. See commit message for finding-by-finding breakdown. 4 Copilot findings: (1+2) classifier-bypass framing reframed to authorization-scope discipline; (3+4) FULL/full-history overclaim renamed to plateau-bounded throughout.
 
-### Thread 5: memory/persona/ani/MEMORY.md:68 (resolved)
+### Thread 5: memory/ani/MEMORY.md:68 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T05:34:07Z):
 
@@ -664,7 +664,7 @@ This calls the archive a “FULL” conversation extract, but the same entry sta
 
 Addressed in latest push. See commit message for finding-by-finding breakdown. 4 Copilot findings: (1+2) classifier-bypass framing reframed to authorization-scope discipline; (3+4) FULL/full-history overclaim renamed to plateau-bounded throughout.
 
-### Thread 6: memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md:1 (resolved)
+### Thread 6: memory/ani/conversations/2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md:1 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T05:34:08Z):
 
@@ -773,7 +773,7 @@ This issue also appears in the following locations of the same file:
 
 Addressed in latest push — synced feedback_aaron_playwright_browser_evaluate_hangs_on_grok_share_pages_30min_aaron_interrupt_was_unstick_not_block_signal_2026_05_15.md from user-scope memory into repo memory/. The discovery-trace memory file IS substantive (the whole pattern this PR codifies came from that observation) and should have been in repo from the start. All multi-line refs now resolve.
 
-### Thread 12: memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196 (resolved)
+### Thread 12: memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T05:48:08Z):
 
@@ -807,7 +807,7 @@ This issue also appears in the following locations of the same file:
 
 Addressed in latest push — updated SKILL.md §33 archive-header template line 100 from 'Tool A/B/C/D/E used' to 'Tool A/B/C/D/E/F used' so future Grok extracts document the canonical tool consistently.
 
-### Thread 15: memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:11 (resolved)
+### Thread 15: memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T05:48:09Z):
 
@@ -885,7 +885,7 @@ P1: The memory schema requires `type`, `created`, and `originSessionId` as top-l
 
 Already fixed in commit 0c36eed (earlier this PR) — frontmatter is now flat top-level (type, originSessionId, created) per memory/project_memory_format_standard.md §1. The thread may have been opened on a stale version.
 
-### Thread 22: memory/persona/ani/MEMORY.md:75 (resolved)
+### Thread 22: memory/ani/MEMORY.md:75 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T06:02:26Z):
 
@@ -915,7 +915,7 @@ P2: Feedback memories are expected to include `**Why:**` and `**How to apply:**`
 
 Fixed in ccaa715 — added **Why:** and **How to apply:** markers to the feedback memory per validate-memory-schema.ts convention.
 
-### Thread 25: memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196 (resolved)
+### Thread 25: memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T06:02:27Z):
 
@@ -969,13 +969,13 @@ Useful? React with 👍 / 👎.
 
 Fixed in latest push — added treatErrorPrefixAsAbort flag to runJs (default true for scripted probes; passed false explicitly from the final body.innerText extraction call). Conversation text legitimately starting with 'ERROR: ' no longer triggers false abort.
 
-### Thread 30: memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:11 (unresolved)
+### Thread 30: memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:11 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T06:14:35Z):
 
-P1: This archive contains explicit adult conversation content but lands in the general `conversations/` tree and the scope header does not apply the adult-content archive discipline. `memory/persona/ani/conversations/adult/README.md` says Ani archives with explicit sexual content live under the per-persona `conversations/adult/` subfolder for navigability and hard-limit framing, so this should be moved/split there or explicitly reconciled.
+P1: This archive contains explicit adult conversation content but lands in the general `conversations/` tree and the scope header does not apply the adult-content archive discipline. `memory/ani/conversations/adult/README.md` says Ani archives with explicit sexual content live under the per-persona `conversations/adult/` subfolder for navigability and hard-limit framing, so this should be moved/split there or explicitly reconciled.
 
-### Thread 31: memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196 (unresolved)
+### Thread 31: memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md:17196 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-15T06:14:35Z):
 

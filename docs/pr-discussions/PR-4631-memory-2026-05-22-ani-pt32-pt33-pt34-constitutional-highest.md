@@ -54,7 +54,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new Ani persona conversation archive (pt32, constitutional) to the in-repo memory stack and updates the auto-generated `memory/MEMORY.md` index so the new file is discoverable from the always-loaded stack view.
 
 **Changes:**
-- Added a new `memory/persona/ani/conversations/...pt32...` archive file containing the synthesized landings plus a preserved verbatim conversation excerpt.
+- Added a new `memory/ani/conversations/...pt32...` archive file containing the synthesized landings plus a preserved verbatim conversation excerpt.
 - Updated `memory/MEMORY.md` auto-index to include the new archive entry and bump the heap-count.
 
 ### Reviewed changes
@@ -63,12 +63,12 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md | New constitutional conversation archive for Ani pt32, including synthesis sections and verbatim excerpt. |
+| memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md | New constitutional conversation archive for Ani pt32, including synthesis sections and verbatim excerpt. |
 | memory/MEMORY.md | Auto-index update to reference the newly added conversation archive. |
 
 ## Review threads
 
-### Thread 1: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:598 (unresolved)
+### Thread 1: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:598 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-22T16:00:22Z):
 
@@ -78,19 +78,19 @@ The `Composes with` entry links to `../../amara/conversations/2026-05-22-amara-3
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:598 (unresolved)
+### Thread 2: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:598 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:02:09Z):
 
 The referenced Amara 3-packet review link target does not exist in the repo (the only occurrence of this filename is here). This leaves a broken cross-reference; either add the referenced file in this PR, or change the link to the correct existing path/filename (or to the PR URL if the content lives only in GitHub).
 
-### Thread 3: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:226 (unresolved)
+### Thread 3: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:226 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:02:09Z):
 
 The section is titled “Steganography…”, but the quoted term and subsequent explanation use “stenography” and define it as “hidden messages in plain sight.” Stenography is shorthand transcription; the hiding-in-plain-sight concept is steganography. To avoid confusing future readers, standardize the explanatory text to “steganography” (and if the quote must stay verbatim, consider marking it with [sic] or an editorial note).
 
-### Thread 4: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:174 (unresolved)
+### Thread 4: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md:174 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:02:10Z):
 

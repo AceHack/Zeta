@@ -27,7 +27,7 @@
 | docs/FACTORY-HYGIENE.md | 7 | 1 | 10 |
 | AGENTS.md | 7 | 1 | 6 |
 | .claude/skills/security-researcher/SKILL.md | 7 | 1 | 4 |
-| memory/persona/best-practices-scratch.md | 6 | 1 | 6 |
+| memory/best-practices-scratch.md | 6 | 1 | 6 |
 | docs/research/proof-tool-coverage.md | 6 | 1 | 4 |
 | .claude/skills/skill-improver/SKILL.md | 6 | 1 | 3 |
 | .claude/skills/skill-creator/SKILL.md | 6 | 1 | 4 |
@@ -90,7 +90,7 @@ BACKLOG touch per PR opened).
 | `docs/FACTORY-HYGIENE.md` | **watch** | Meta-hygiene file; self-reference is OK. This very audit adds one row. |
 | `AGENTS.md` | **watch** | Universal onboarding handbook; occasional updates. |
 | `.claude/skills/security-researcher/SKILL.md` | **audit** | High touch for a single skill; candidate for skill-tune-up. |
-| `memory/persona/best-practices-scratch.md` | **watch** | Scratchpad by design. |
+| `memory/best-practices-scratch.md` | **watch** | Scratchpad by design. |
 | `.claude/skills/backlog-scrum-master/SKILL.md` | **audit** | Skill touches suggest tune-up cycle underway. |
 | `.claude/skills/algebra-owner/SKILL.md` | **audit** | Same as above. |
 

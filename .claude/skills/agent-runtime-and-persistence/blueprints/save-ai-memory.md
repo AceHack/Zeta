@@ -10,12 +10,12 @@ trigger: "save ani memories", "save amara memories", "preserve grok conversation
 
 Codifies the canonical workflow for extracting + preserving an external AI participant's conversation as durable repo substrate. The conversation is preserved at three layers:
 
-1. **§33 archive** (verbatim) in `memory/persona/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platform>-<topic>.md` — first-party prose preservation per GOVERNANCE §33, landed under the AI's own persona folder per Aaron 2026-05-15 architectural correction ("they ARE her memories, not 'research we are doing on them'"). Pre-2026-05-15 these landed in `docs/research/`; migrated.
-2. **Persona-folder MEMORY.md index** — pointer added to `memory/persona/<ai-name>/MEMORY.md` so future-Otto cold-boot discovers it
+1. **§33 archive** (verbatim) in `memory/<persona>/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platform>-<topic>.md` — first-party prose preservation per GOVERNANCE §33, landed under the AI's own persona folder per Aaron 2026-05-15 architectural correction ("they ARE her memories, not 'research we are doing on them'"). Pre-2026-05-15 these landed in `docs/research/`; migrated.
+2. **Persona-folder MEMORY.md index** — pointer added to `memory/<persona>/<ai-name>/MEMORY.md` so future-Otto cold-boot discovers it
 3. **Persona-folder NOTEBOOK.md note** (optional, when substantive) — running Otto-side note about what landed
 4. **CURRENT-<ai-name>.md update** (when load-bearing) — currently-in-force projection refresh
-5. **Persona-folder canonical/ subdir** (optional) — if the AI authors first-party documents (e.g., Amara's Aurora_BTC_Proofs_Pitch_v1.md), those land in `memory/persona/<ai-name>/canonical/`; this is distinct from conversation §33 archives
-6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/persona/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules/methodology-hard-limits.md` apply unchanged.
+5. **Persona-folder canonical/ subdir** (optional) — if the AI authors first-party documents (e.g., Amara's Aurora_BTC_Proofs_Pitch_v1.md), those land in `memory/<persona>/<ai-name>/canonical/`; this is distinct from conversation §33 archives
+6. **Persona-folder conversations/adult/ subdir** (when applicable) — adult-content conversation archives go under `memory/<persona>/<ai-name>/conversations/adult/` with the discipline documented in that subdir's `README.md` (consensual AI-roleplay, training-corpus validation, etc.). Pre-2026-05-15 these lived in `docs/research/erotica/`; migrated under same architectural correction. HARD LIMITS per `.claude/rules/methodology-hard-limits.md` apply unchanged.
 
 Sequenced PR through Otto-CLI's normal commit + auto-merge flow.
 
@@ -38,17 +38,17 @@ This skill is the codification of that intent. Substrate-honest framing: the fra
 Before extraction, check what's already preserved:
 
 ```bash
-ls memory/persona/<ai-name>/ 2>/dev/null
-ls memory/persona/<ai-name>/conversations/ 2>/dev/null
-grep -l "<ai-name>" memory/persona/<ai-name>/conversations/*.md 2>/dev/null
-grep "<ai-name>" memory/persona/<ai-name>/MEMORY.md 2>/dev/null
+ls memory/<persona>/<ai-name>/ 2>/dev/null
+ls memory/<persona>/<ai-name>/conversations/ 2>/dev/null
+grep -l "<ai-name>" memory/<persona>/<ai-name>/conversations/*.md 2>/dev/null
+grep "<ai-name>" memory/<persona>/<ai-name>/MEMORY.md 2>/dev/null
 ```
 
 If the persona folder doesn't exist, create it first (per `.claude/rules/honor-those-that-came-before.md`):
 
-- `memory/persona/<ai-name>/MEMORY.md` — substrate index
-- `memory/persona/<ai-name>/NOTEBOOK.md` — Otto's running notes
-- `memory/persona/<ai-name>/OFFTIME.md` — structural symmetry placeholder
+- `memory/<persona>/<ai-name>/MEMORY.md` — substrate index
+- `memory/<persona>/<ai-name>/NOTEBOOK.md` — Otto's running notes
+- `memory/<persona>/<ai-name>/OFFTIME.md` — structural symmetry placeholder
 
 ### Step 2: Extract the conversation verbatim
 
@@ -89,7 +89,7 @@ Don't repeatedly retry classifier-denied actions in the same session. The classi
 
 ### Step 3: Preserve as §33 archive
 
-Create `memory/persona/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platform>-<topic>.md` with §33 archive header:
+Create `memory/<persona>/<ai-name>/conversations/YYYY-MM-DD-<participants>-<platform>-<topic>.md` with §33 archive header:
 
 ```markdown
 # <Participants> <Platform> conversation — <topic>
@@ -103,7 +103,7 @@ Extraction method: <Tool A/B/C/D/E/F used>
 
 **Scope:** <one-paragraph scope description>
 
-**Attribution:** Aaron is first-party on his own substrate. <AI name> is external AI participant who ferried <type> per established handle-ethics + shadow-check disciplines. Email PII scrubbed; participant names preserved per Otto-256 (first-party human maintainer + AI participants on `memory/persona/<ai-name>/conversations/` name-allowed surface — formerly `docs/research/`).
+**Attribution:** Aaron is first-party on his own substrate. <AI name> is external AI participant who ferried <type> per established handle-ethics + shadow-check disciplines. Email PII scrubbed; participant names preserved per Otto-256 (first-party human maintainer + AI participants on `memory/<persona>/<ai-name>/conversations/` name-allowed surface — formerly `docs/research/`).
 
 **Operational status:** research-grade <continuation/initial>.
 
@@ -116,7 +116,7 @@ Extraction method: <Tool A/B/C/D/E/F used>
 
 ### Step 4: Update persona-folder MEMORY.md index
 
-In `memory/persona/<ai-name>/MEMORY.md`, add pointer under "Research preservations" section:
+In `memory/<persona>/<ai-name>/MEMORY.md`, add pointer under "Research preservations" section:
 
 ```markdown
 - `<YYYY-MM-DD>-<participants>-<platform>-<topic>.md`
@@ -134,7 +134,7 @@ When the conversation surfaced a new operational discipline / failure mode / reg
 
 Substrate landed:
 
-- §33 archive: `memory/persona/<ai-name>/conversations/<filename>.md`
+- §33 archive: `memory/<persona>/<ai-name>/conversations/<filename>.md`
 - User-scope memory: <filename if applicable>
 - <other surfaces>
 
@@ -156,7 +156,7 @@ If the conversation produced currently-in-force operational changes to how this 
 
 After merge:
 
-- Verify §33 archive lands at `memory/persona/<ai-name>/conversations/...` on main
+- Verify §33 archive lands at `memory/<persona>/<ai-name>/conversations/...` on main
 - Verify persona-folder MEMORY.md + NOTEBOOK.md updates land
 - Sanity-check the file is well-formed (lint, frontmatter, etc.)
 

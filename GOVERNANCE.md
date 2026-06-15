@@ -21,7 +21,7 @@ than renumbering the rest.
    what is true today, not the journey that got there.
    Historical notes live in `docs/ROUND-HISTORY.md` and
    `docs/DECISIONS/YYYY-MM-DD-*.md`. Two exceptions:
-   per-persona notebooks under `memory/persona/`
+   per-persona notebooks under `memory/<persona>/`
    (intentionally append-dated) and the ADR folder
    `docs/DECISIONS/` (dated by convention). Everywhere
    else, edit in place to reflect current truth.
@@ -142,7 +142,7 @@ than renumbering the rest.
     expert shares the same standing budget: ~10% of each
     round for self-directed work (exploration, reading,
     drafts, proposals). Each persona logs usage to their
-    own `memory/persona/<persona-name>/OFFTIME.md`
+    own `memory/<persona>/OFFTIME.md`
     (or section of their notebook). No round's
     classification suspends it.
 
@@ -222,7 +222,7 @@ than renumbering the rest.
     the repo.** The canonical shared memory folder is
     **`memory/`** (top-level, tracked in git, travels
     with every clone). Per-persona memory lives at
-    `memory/persona/<persona-name>/` (see §21).
+    `memory/<persona>/` (see §21).
 
     **Human maintainer rule.** The human contributor does
     not delete or modify files in `memory/` except as an
@@ -240,7 +240,7 @@ than renumbering the rest.
     backs; it is not a brake on the agents themselves.
     Any agent writes a new memory when it learns
     something durable. Each persona maintains its own
-    notebook at `memory/persona/<persona-name>/`.
+    notebook at `memory/<persona>/`.
     Agents revise and delete their own entries. Edits to
     *another* persona's notebook go through the architect
     per §11.
@@ -334,7 +334,7 @@ than renumbering the rest.
 21. **Per-persona memory is a real persona-scoped
     directory, not just a notebook.** Each persona has
     its own memory corpus at
-    `memory/persona/<persona-name>/` containing:
+    `memory/<persona>/` containing:
     - `NOTEBOOK.md` — working notes (round-scoped; prune
       per BP-07).
     - `MEMORY.md` — persona-specific memory index,
@@ -364,7 +364,7 @@ than renumbering the rest.
     architect per §11.
 
     Seats with substantive notebook drift convert from
-    single-file (`memory/persona/<persona-name>.md`)
+    single-file (`memory/<persona>/NOTEBOOK.md`)
     to folder layout; rollout is lazy, persona-by-persona.
 
 22. **`~/.claude/projects/` is Claude Code harness
@@ -384,7 +384,7 @@ than renumbering the rest.
     - **Shared agent memory** — `memory/` at the repo
       root (per §18).
     - **Per-persona memory + notebooks** —
-      `memory/persona/<persona-name>/` (per §21).
+      `memory/<persona>/` (per §21).
     - **Any other durable artifact agents rely on** —
       inside the repo tree.
 
@@ -524,7 +524,7 @@ than renumbering the rest.
     - **Personas** — named contributors (agents). Kenji,
       Aarav, Dejan, Kira, Rune, etc. A persona is
       assigned to one or more roles. Live on
-      `.claude/agents/<role>.md` + `memory/persona/
+      `.claude/agents/<role>.md` + `memory/<persona>/
       <persona>.md`.
 
     **The abstraction rule.**

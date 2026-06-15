@@ -58,4 +58,4 @@ POTENTIAL spike per operator standing direction. P3 because it's a small spike; 
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "Operator's two end-clarifications" — clarification 2.
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "Operator's two end-clarifications" — clarification 2.

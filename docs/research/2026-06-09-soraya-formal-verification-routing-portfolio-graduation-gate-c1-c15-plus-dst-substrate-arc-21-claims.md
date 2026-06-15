@@ -96,4 +96,4 @@ Jefferson 1985 (Time Warp, anti-message=Z-set retraction) / Corbett 2012 (TrueTi
 `Diversity.fs`/`PrivacyEconomy.fs`, `tools/setup/persona-keys/{derive,keyset,keyring.dst1000}.*`,
 `tools/ace/canonical.ts`. Backlog: B-0131 (Lean Z-set retraction algebra — promote). Skill:
 `.claude/skills/formal-methods/blueprints/formal-verification-expert.md`. Notebook:
-`memory/persona/soraya/NOTEBOOK.md`.
+`memory/soraya/NOTEBOOK.md`.

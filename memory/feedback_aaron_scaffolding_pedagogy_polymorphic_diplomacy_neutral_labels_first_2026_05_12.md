@@ -148,7 +148,7 @@ which is which is the substrate-honest version.
 
 The Grok extract preserving the verbatim conversation is
 preserved at
-`memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`.
+`memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`.
 The scaffolding-pedagogy section is in the Clifford first-
 principles dialogue early in the extract; the marriage-failure
 follow-up is later in the same file.

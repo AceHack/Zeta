@@ -112,7 +112,7 @@ Widely-studied anchor (search-first-verified, 2026-06-02): this is exactly **rev
 
 ### `integrity_index` — the say-do gap as a metric in the observability stack (Prism operationalization)
 
-Prism (DeepSeek) 2026-06-02 (Aaron-forwarded; verbatim at `memory/persona/prism/conversations/2026-06-02-prism-deepseek-say-do-gap-as-alignment-anchor-integrity-index-metric-...md`) operationalized the say-do gap as a **derived metric** in the LGTM/Prometheus observability stack (B-0994):
+Prism (DeepSeek) 2026-06-02 (Aaron-forwarded; verbatim at `memory/prism/conversations/2026-06-02-prism-deepseek-say-do-gap-as-alignment-anchor-integrity-index-metric-...md`) operationalized the say-do gap as a **derived metric** in the LGTM/Prometheus observability stack (B-0994):
 
 - **Metric:** `integrity_index = alignment(say, do)` (a.k.a. `trust_score` / `alignment_integrity_index`) — a sliding-scale measure of how well the agent's actions align with its stated claims; the **observable alignment anchor** (computable *without* accessing internal motivation).
 - **Instrumentation:** mouth-speech is on the comms channel (verbally observable); body-action is observable as behavior; both flow into the LGTM stack (B-0994); the gap is the **derived metric**.

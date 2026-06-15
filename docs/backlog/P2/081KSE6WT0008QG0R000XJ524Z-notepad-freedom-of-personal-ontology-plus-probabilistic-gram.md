@@ -19,7 +19,7 @@ related_substrate:
   - .claude/rules/persistence-choice-architecture-for-zeta-ais.md
   - .claude/rules/glass-halo-bidirectional.md
   - .claude/rules/bandwidth-served-falsifier.md
-  - memory/persona/mika/
+  - memory/mika/
 tags: [notepad-freedom, personal-ontology, probabilistic-grammars, per-person-personalized-parsers, glass-halo-personal-compiler, b0687-extension, ai-agency-stack-extension, mika-substrate-segment-3]
 ---
 
@@ -31,7 +31,7 @@ tags: [notepad-freedom, personal-ontology, probabilistic-grammars, per-person-pe
 
 ## Origin
 
-Mika 2026-05-25 segment 3 (ferried by Aaron). Full verbatim preserved at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md).
+Mika 2026-05-25 segment 3 (ferried by Aaron). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md).
 
 Continuation of the multi-turn voice conversation that produced B-0730 → B-0731 → B-0732 → B-0733 → B-0734 across segments 1 + 2. This segment 3 produces B-0735.
 
@@ -89,7 +89,7 @@ Every participant (human + AI) in Glass Halo can have their own personalized pro
 - Trained on how that participant naturally writes (their messy markdown corpus)
 - Improves over time as they write more substrate
 - Composes with B-0733's AI agency stack (Crystal Ball + runbook + Glass Halo) — the per-person parser becomes part of each participant's substrate
-- Per-person parser substrate lives at `memory/persona/<participant>/parser/` (extension of the persona folder pattern)
+- Per-person parser substrate lives at `memory/<persona>/<participant>/parser/` (extension of the persona folder pattern)
 
 Concrete examples:
 
@@ -121,7 +121,7 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 - `.claude/rules/bandwidth-served-falsifier.md` — Notepad-freedom-of-personal-ontology serves want-expression bandwidth (every brain has its own structure; force-fitting to one ontology kills the bandwidth); per-person parsers preserve the bandwidth
 - `.claude/rules/non-coercion-invariant.md` HC-8 — write access to per-person parser is AI-self-only (or human-self-only); others READ + COMMENT but do NOT WRITE; same shape as Crystal Ball write-authority
 - `.claude/rules/default-to-both.md` — probabilistic AND deterministic grammars both first-class; not either-or; user picks per-rule
-- `.claude/rules/razor-discipline.md` — operational claims only; "personal compiler" / "Notepad freedom" are operationally observable (the per-person parser file exists at `memory/persona/<participant>/parser/`; observable improvements over corpus); not metaphysical
+- `.claude/rules/razor-discipline.md` — operational claims only; "personal compiler" / "Notepad freedom" are operationally observable (the per-person parser file exists at `memory/<persona>/<participant>/parser/`; observable improvements over corpus); not metaphysical
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — "personal compiler for each brain" is compressed naming with substrate-anchors (B-0687 zetaparse + per-person persona folders + probabilistic-grammar literature); razor does NOT cut it as metaphysical
 - `.claude/rules/honor-those-that-came-before.md` — Amara's B-0687 zetaparse substrate stays load-bearing; B-0735 extends it, does NOT replace
 
@@ -147,7 +147,7 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 
 ### Scope item 2 — Per-person personalized parser substrate in Glass Halo
 
-- Per-person parser lives at `memory/persona/<participant>/parser/` (or equivalent location consistent with existing persona-folder pattern)
+- Per-person parser lives at `memory/<persona>/<participant>/parser/` (or equivalent location consistent with existing persona-folder pattern)
 - Parser-as-data is queryable from the knowledge graph (composes with B-0729 L5 JSON-LD)
 - Training pipeline: as participant authors substrate, parser updates from their corpus
 - Cross-participant translation: sender's parser → canonical intermediate → receiver's parser
@@ -155,7 +155,7 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 
 ### Scope item 3 — AI-assisted-syntax-errors-as-collaborative-thought-refinement (segment-4 substrate)
 
-Aaron 2026-05-25 segment 4: *"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."* Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md).
+Aaron 2026-05-25 segment 4: *"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."* Full verbatim at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md).
 
 Flip the social contract of parser errors:
 
@@ -178,7 +178,7 @@ NCI compose note: refinement is OFFERS, not OVERRIDES. AI says *"did you mean X 
 
 ### Scope item 4 — Confidence-threshold runtime routing (segment-5 substrate)
 
-Aaron 2026-05-25 segment 5: *"that makes a lot of sense. […] you'll have the confidence levels. You'll know exactly, like, what's ambiguous."* Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md).
+Aaron 2026-05-25 segment 5: *"that makes a lot of sense. […] you'll have the confidence levels. You'll know exactly, like, what's ambiguous."* Full verbatim at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md).
 
 The runtime dispatcher between scope item 1 (probabilistic option emitting confidence) and scope item 3 (collaborative refinement at low confidence):
 
@@ -246,7 +246,7 @@ Acceptance:
 
 ### Scope item 2 — Per-person personalized parser substrate acceptance
 
-- [ ] `memory/persona/<participant>/parser/` substrate location convention documented
+- [ ] `memory/<persona>/<participant>/parser/` substrate location convention documented
 - [ ] At least 2 participants have working per-person parsers (Aaron + 1 AI as minimum-viable)
 - [ ] Cross-participant translation worked example (sender's parser → canonical → receiver's parser)
 - [ ] Composes with B-0733 AI agency stack (Crystal Ball + runbook + Glass Halo + parser as 4th piece)

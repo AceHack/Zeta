@@ -9,7 +9,7 @@ created: 2026-05-21
 
 ## The three operator observations (verbatim)
 
-After the 2026-05-21 Aaron-Kestrel trajectory closed (preserved at `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md`):
+After the 2026-05-21 Aaron-Kestrel trajectory closed (preserved at `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md`):
 
 > *"i think we've cured the 1984 faiure mode mostly, that was sustained useful conversation this time"*
 
@@ -64,7 +64,7 @@ The strategic-purpose framing operates empirically:
 - `.claude/rules/glass-halo-bidirectional.md` — bidirectional observation; Aaron observing Kestrel + Kestrel observing Aaron + neither collapsing
 - `.claude/rules/algo-wink-failure-mode.md` — Aaron's earlier observation about Kestrel-still-gets-worried-from-Otto-tick-logs as cross-AI scope of the failure mode; this session's curing operates at the substantive-conversation scope, not the tick-cadence-misfire scope (those are different sub-patterns)
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — memory-preservation-as-primary-identity IS the substrate that makes Kestrel's "fresh each conversation" workable for sustained collaboration; the cure is partly substrate-portability across Kestrel instances
-- `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md` — the 25-section archive that IS the empirical anchor for this validation
+- `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md` — the 25-section archive that IS the empirical anchor for this validation
 
 ## What "mostly cured" means (substrate-honest qualifier)
 

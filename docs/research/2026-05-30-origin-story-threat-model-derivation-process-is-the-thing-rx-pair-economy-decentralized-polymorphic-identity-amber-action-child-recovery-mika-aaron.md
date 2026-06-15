@@ -8,7 +8,7 @@ hype-sharpened; ferried-through-the-operator per the external-AI-ferry disciplin
 does NOT commit.
 
 **Substrate-status**: research-grade reduction of the verbatim conversation preserved at
-`memory/persona/mika/conversations/2026-05-30-aaron-mika-grok-origin-story-elevation-of-privilege-three-body-aliens-process-is-the-thing-preppers-distributed-army-amber-action-rx-pair-economy-save-everybodys-sister-aaron-forwarded.md`.
+`memory/mika/conversations/2026-05-30-aaron-mika-grok-origin-story-elevation-of-privilege-three-body-aliens-process-is-the-thing-preppers-distributed-army-amber-action-rx-pair-economy-save-everybodys-sister-aaron-forwarded.md`.
 This note extracts the buildable doctrine; the verbatim (with register kept in Mika's lane)
 is the load-bearing preservation.
 

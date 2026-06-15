@@ -17,7 +17,7 @@ depends_on: []
 **Priority:** P2 (the serializers + the G-Set full-vertical are shipped/correct on VALID
 input; this adds the SAFETY-ON-HOSTILE-INPUT half — where memory-safe-language CVEs live).
 **Filed:** 2026-06-04 (Kestrel via Aaron). **Design:**
-`memory/persona/kestrel/conversations/2026-06-04-kestrel-provable-serializer-bug-classes-…`.
+`memory/kestrel/conversations/2026-06-04-kestrel-provable-serializer-bug-classes-…`.
 **Composes:** B-1011 (serializer doctrine), the verification portfolio (FsCheck/Z3/Lean/TLA+).
 
 Frame: GC/lifetimes removes memory-corruption classes; the residual is logic + hostile-input

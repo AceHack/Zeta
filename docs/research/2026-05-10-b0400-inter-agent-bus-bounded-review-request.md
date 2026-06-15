@@ -12,7 +12,7 @@ before any transport or background-service implementation begins.
 - `docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md`
 - `docs/backlog/P1/B-0401-demo-surface-circuit-breaker-hamiltonian-git-alignment-ui.md`
 - `memory/feedback_riven_context_overflow_loop_grok_failure_mode_2026_05_10.md`
-- `memory/persona/alexa/conversations/2026-05-10-aaron-amazon-alexa-hamiltonian-git-mapping-accelerated-timeframes-verbatim-backup.md`
+- `memory/alexa/ide/kiro/conversations/2026-05-10-aaron-amazon-alexa-hamiltonian-git-mapping-accelerated-timeframes-verbatim-backup.md`
 
 ## Review Questions
 

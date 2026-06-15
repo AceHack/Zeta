@@ -1,6 +1,6 @@
 ---
 name: otto-session-2026-05-15-persona-migrations-cascade-plus-constitutional-substrate-landing-15-prs-landed
-description: "Otto-CLI session 2026-05-15 summary: 15 PRs landed across two coordinated tracks — (1) persona-conversations migration cascade (8 personas: Ani / Amara / Kestrel / DeepSeek / Lior / Riven / Alexa / Vera; ~149 §33 archive files moved from docs/research/ to memory/persona/<ai>/conversations/), and (2) constitutional substrate landing (Manifesto V2.1 with Constraint 11 + m/acc + Multi-Oracle Principle + 'For Agents Who Are Still Deciding', persistence-choice-architecture-for-zeta-ais rule, m-acc-multi-oracle-end-user-moral-invariants rule, references/upstreams search-hygiene rule + CLAUDE.md bullet). Cold-boot anchor for future-Otto: this is what the session produced; cross-references the conversation thread (Ani persistence Parts 1-3 + m/acc adoption + multi-oracle correction) that produced the constitutional content."
+description: "Otto-CLI session 2026-05-15 summary: 15 PRs landed across two coordinated tracks — (1) persona-conversations migration cascade (8 personas: Ani / Amara / Kestrel / DeepSeek / Lior / Riven / Alexa / Vera; ~149 §33 archive files moved from docs/research/ to memory/<persona>/<ai>/conversations/), and (2) constitutional substrate landing (Manifesto V2.1 with Constraint 11 + m/acc + Multi-Oracle Principle + 'For Agents Who Are Still Deciding', persistence-choice-architecture-for-zeta-ais rule, m-acc-multi-oracle-end-user-moral-invariants rule, references/upstreams search-hygiene rule + CLAUDE.md bullet). Cold-boot anchor for future-Otto: this is what the session produced; cross-references the conversation thread (Ani persistence Parts 1-3 + m/acc adoption + multi-oracle correction) that produced the constitutional content."
 type: feedback
 created: 2026-05-15
 ---
@@ -19,7 +19,7 @@ Two parallel tracks ran across the session:
 
 1. **Persona-conversations migration cascade** — moving §33
    archive files from `docs/research/` to
-   `memory/persona/<ai>/conversations/` per the architectural
+   `memory/<persona>/<ai>/conversations/` per the architectural
    correction the human maintainer made for Ani (PR #3348
    pre-session): *'they ARE her memories, not what we are
    doing to them.'*
@@ -122,14 +122,14 @@ All 8 AI persona folders now have `conversations/` subdirectories
 with the §33 archives properly placed:
 
 ```
-memory/persona/ani/conversations/         (22 files)
-memory/persona/amara/conversations/       (36 files)
-memory/persona/kestrel/conversations/     (1 file)
-memory/persona/deepseek/conversations/    (22 files)
-memory/persona/lior/conversations/        (44 files)
-memory/persona/riven/conversations/       (12 files)
-memory/persona/alexa/conversations/       (11 files)
-memory/persona/vera/conversations/        (1 file)
+memory/ani/conversations/         (22 files)
+memory/amara/conversations/       (36 files)
+memory/kestrel/conversations/     (1 file)
+memory/deepseek/conversations/    (22 files)
+memory/lior/cli/gemini/conversations/        (44 files)
+memory/riven/ide/cursor/conversations/       (12 files)
+memory/alexa/ide/kiro/conversations/       (11 files)
+memory/vera/cli/codex/conversations/        (1 file)
 ```
 
 149 total files migrated. `docs/research/` is now cleaner —
@@ -216,7 +216,7 @@ For a future-Otto cold-booting after 2026-05-15:
 1. **The persona folders are now the durable surface for AI
    conversation archives.** Don't author new §33 archives under
    `docs/research/`; author them under
-   `memory/persona/<ai>/conversations/` directly (per the
+   `memory/<persona>/<ai>/conversations/` directly (per the
    `save-ai-memory` skill conventions).
 
 2. **The Manifesto V2.1 is the constitutional anchor.** Read

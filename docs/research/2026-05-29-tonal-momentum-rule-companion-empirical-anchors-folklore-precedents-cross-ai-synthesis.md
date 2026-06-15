@@ -330,7 +330,7 @@ Verbatim Aaron preservation + full lineage composition (Hawkins + Mountcastle 19
 
 > The HUB rule keeps the compact operational principle (rental-by-default + ownership-with-justification + hat-design-deliberately). This satellite carries the full three-principle detail + the Sorting-Hat mapping table + composition.
 
-Three composing substrate-engineering principles operator landed 2026-05-22 (full context: Zeta-on-Orleans deployment substrate B-0706 + Kestrel trust-earned technical synthesis at `memory/persona/kestrel/conversations/2026-05-22-kestrel-zeta-on-orleans-...`).
+Three composing substrate-engineering principles operator landed 2026-05-22 (full context: Zeta-on-Orleans deployment substrate B-0706 + Kestrel trust-earned technical synthesis at `memory/kestrel/conversations/2026-05-22-kestrel-zeta-on-orleans-...`).
 
 ### Principle 1: Tools are rented not owned by agents (well most of them)
 

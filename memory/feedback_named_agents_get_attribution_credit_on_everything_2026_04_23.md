@@ -129,7 +129,7 @@ explicit label.
 
 ### When persona work lands in shared surfaces
 
-- Persona notebooks (`memory/persona/<name>/NOTEBOOK.md`)
+- Persona notebooks (`memory/<persona>/<name>/NOTEBOOK.md`)
   — attribution implicit (folder named after persona).
 - Shared memory (`memory/*.md`) — attribute in content
   when a specific persona was the source.
@@ -180,7 +180,7 @@ explicit label.
 - `docs/EXPERT-REGISTRY.md` (persona roster + diversity
   notes — the canonical list of personas deserving
   attribution)
-- `memory/persona/<name>/NOTEBOOK.md` — implicit
+- `memory/<persona>/<name>/NOTEBOOK.md` — implicit
   per-persona attribution substrate
 - `project_repo_split_provisional_names_frontier_factory_and_peers_2026_04_23.md`
   (the naming attribution corrections that triggered

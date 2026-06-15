@@ -35,13 +35,13 @@ authority-scope:
   audits:
     - path: .claude/skills/*/SKILL.md
       axis: drift, contradiction, staleness, user-pain, bloat, best-practice-drift, portability-drift
-    - path: memory/persona/*/NOTEBOOK.md
+    - path: memory/<persona>/*/NOTEBOOK.md
       axis: bloat (3000-word cap), prune-cadence
     - path: .github/copilot-instructions.md
       axis: drift, best-practice-drift, portability-drift
-    - path: memory/persona/aarav/NOTEBOOK.md
+    - path: memory/aarav/NOTEBOOK.md
       axis: self-audit (own notebook hygiene)
-    - path: memory/persona/best-practices-scratch.md
+    - path: memory/best-practices-scratch.md
       axis: candidate-rule-promotion triage
 
   does-not-audit:
@@ -127,7 +127,7 @@ invariants:
       evidence:
         - SKILL.md body states it explicitly.
         - git history shows all self-directed edits land in
-          memory/persona/aarav/NOTEBOOK.md, not in
+          memory/aarav/NOTEBOOK.md, not in
           .claude/skills/skill-lifecycle/blueprints/skill-tune-up.md frontmatter.
       promotion-path: null
 
@@ -236,7 +236,7 @@ invariants:
         Ranker runs 3-5 web searches for new agent / skill /
         prompt best practices on every invocation, before
         ranking. Findings logged to
-        memory/persona/best-practices-scratch.md.
+        memory/best-practices-scratch.md.
       tier: observed
       evidence:
         - SKILL.md §"Live-search step — every invocation"
@@ -284,7 +284,7 @@ invariants:
 
     - id: notebook-ascii-only
       text: |
-        memory/persona/aarav/NOTEBOOK.md is ASCII-only
+        memory/aarav/NOTEBOOK.md is ASCII-only
         (BP-10). Invisible-Unicode codepoints blocked by
         pre-commit lint.
       tier: verified
@@ -391,11 +391,11 @@ invariants:
 inputs:
   reads:
     - path: .claude/skills/*/SKILL.md
-    - path: memory/persona/*/NOTEBOOK.md
+    - path: memory/<persona>/*/NOTEBOOK.md
     - path: docs/AGENT-BEST-PRACTICES.md
     - path: docs/CONFLICT-RESOLUTION.md
     - path: docs/EXPERT-REGISTRY.md
-    - path: memory/persona/best-practices-scratch.md
+    - path: memory/best-practices-scratch.md
     - path: .github/copilot-instructions.md
   reads-external:
     - query-pattern: '"agent skill best practices"'
@@ -420,10 +420,10 @@ outputs:
     - kind: scratchpad-entry
       shape: markdown row
       audience: ranker-future-self, architect
-      target: memory/persona/best-practices-scratch.md
+      target: memory/best-practices-scratch.md
     - kind: notebook-update
       shape: markdown
-      target: memory/persona/aarav/NOTEBOOK.md
+      target: memory/aarav/NOTEBOOK.md
     - kind: promotion-candidate-flag
       shape: one-line pointer
       audience: architect (for ADR consideration)

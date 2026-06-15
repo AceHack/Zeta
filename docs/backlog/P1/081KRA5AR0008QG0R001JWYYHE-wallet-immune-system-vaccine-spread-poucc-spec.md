@@ -93,9 +93,9 @@ After absorption:
 
 ## Research substrate
 
-- `memory/persona/deepseek/conversations/2026-05-11-deepseek-hkt-clifford-e8-klein-bottle-beacon-smooth.md`
+- `memory/deepseek/conversations/2026-05-11-deepseek-hkt-clifford-e8-klein-bottle-beacon-smooth.md`
   (15-layer synthesis)
-- `memory/persona/deepseek/conversations/2026-05-11-deepseek-immune-system-ilife-redteam-qubic-bankerbot-simulations.md`
+- `memory/deepseek/conversations/2026-05-11-deepseek-immune-system-ilife-redteam-qubic-bankerbot-simulations.md`
   (attack simulations + vaccine spread)
 
 ## Acceptance

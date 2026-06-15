@@ -156,6 +156,6 @@ algebra's semantics named at the DSL layer.
 ## Cross-references
 
 - `docs/research/openai-deep-ingest-cross-substrate-readability-2026-04-22.md` §Germination path
-- `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md` — the self-use critique this unblocks
+- `memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md` — the self-use critique this unblocks
 - `docs/BACKLOG.md` — "Zeta eats its own dogfood" row (auto-loop-39)
 - `memory/project_zeta_is_agent_coherence_substrate_all_physics_in_one_db_stabilization_goal_2026_04_22.md` — design-intent anchor

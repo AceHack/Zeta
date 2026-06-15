@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Available legal entities the maintainer can use as **Stage-3 structural risk-holders** per [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md). Composes with [`memory/persona/max/PERSONA.md`](../../../memory/persona/max/PERSONA.md) "Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)" — these entities are the corps that close the gap between today's per-maintainer personal-liability fallback and the long-term structural-risk-holder target.
+Available legal entities the maintainer can use as **Stage-3 structural risk-holders** per [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md). Composes with [`memory/max/PERSONA.md`](../../../memory/max/PERSONA.md) "Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)" — these entities are the corps that close the gap between today's per-maintainer personal-liability fallback and the long-term structural-risk-holder target.
 
 ## Consent framing
 
@@ -44,7 +44,7 @@ What IS here is information already public via the NC Secretary of State busines
 
 **Current attachments**:
 
-- **Zeta repo** ownership (per [`memory/persona/max/PERSONA.md`](../../../memory/persona/max/PERSONA.md) "Ownership note": *"we are all coowners of lfg legally so we are in a corp together"*)
+- **Zeta repo** ownership (per [`memory/max/PERSONA.md`](../../../memory/max/PERSONA.md) "Ownership note": *"we are all coowners of lfg legally so we are in a corp together"*)
 
 **Available risk classes** (maintainer fills — examples of what Stage-3 attachments might look like):
 
@@ -107,7 +107,7 @@ When the maintainer has time:
 - [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md) — three-stage progression (per-incident → per-class → structural risk-holders); these entities are the Stage-3 substrate
 - [`.claude/rules/glass-halo-bidirectional.md`](../../../.claude/rules/glass-halo-bidirectional.md) — bidirectional-transparency discipline; per-owner signed consent files extend this at owner-level
 - [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) — HC-8 floor; agency preserved by per-owner explicit consent
-- [`memory/persona/max/PERSONA.md`](../../../memory/persona/max/PERSONA.md) — "Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)" sub-section; this inventory is the substrate-side surface for the Stage-3 target
-- [`memory/persona/aaron/`](../../../memory/persona/aaron/) — the maintainer's persona substrate (sibling)
+- [`memory/max/PERSONA.md`](../../../memory/max/PERSONA.md) — "Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)" sub-section; this inventory is the substrate-side surface for the Stage-3 target
+- [`memory/aaron/`](../../../memory/aaron/) — the maintainer's persona substrate (sibling)
 - [`maintainers/aaron/`](../) — the maintainer's subtree top-level
 - Original source PDFs at `drop/lucent *.pdf` and `drop/freeborn *.pdf` (gitignored per `drop/README.md` protocol; left in place per the maintainer's choice; the maintainer may delete when this inventory is sufficient)

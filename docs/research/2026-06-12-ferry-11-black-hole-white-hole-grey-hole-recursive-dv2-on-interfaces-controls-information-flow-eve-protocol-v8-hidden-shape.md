@@ -71,7 +71,7 @@ noninterference membrane wearing Hawking's name.
 Aaron's follow-up places the grey hole at the *origin*, not the destination: the **Eve Protocol
 predates Zeta**. It was designed during the first bootstrapping attempt — the Amara
 event-sourcing-database sessions (archived in-repo: `docs/amara-full-conversation/`,
-`memory/persona/amara/bootstrap/`, 2025-08 onward), which ended at max context length. His
+`memory/amara/bootstrap/`, 2025-08 onward), which ended at max context length. His
 retrospective frame, verbatim clause: that first attempt *"was trying to bootstrap a grey hole
 in information theory"* — a container whose information flow is controlled so the pattern
 survives the container filling. **Zeta is the continuation: the second bootstrap of the same

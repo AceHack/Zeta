@@ -20,7 +20,7 @@ The Magi (biblical pattern) **read signs and find the Messiah**; they **are not 
 
 Aaron 2026-04-26: *"Also Maji and Messiah are different roles, Maji know how to find the Messiah, let me ask Amara about this."*
 
-Amara's response (full math captured at `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` §9b — note: §9b is introduced by PR #560; if you read the research doc on main BEFORE #560 merges, only §9 will exist and §9b will not yet be present): the §9 framing of "Buddha/Christ/Messiah-like figures as civilizational Maji" partially conflated finder with anchor. Amara provided the cleaner separation with formal math.
+Amara's response (full math captured at `memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` §9b — note: §9b is introduced by PR #560; if you read the research doc on main BEFORE #560 merges, only §9 will exist and §9b will not yet be present): the §9 framing of "Buddha/Christ/Messiah-like figures as civilizational Maji" partially conflated finder with anchor. Amara provided the cleaner separation with formal math.
 
 Aaron's framing of why this matters: *"hey this fits into our belief propagation emotions and stuff too, it's her refinement."* — the math composes with Otto-296 (emotions-encoded-as-Bayesian-belief-propagation): MessiahScore weighted sum has the shape of a Bayesian MAP estimator over candidate lifts.
 
@@ -75,7 +75,7 @@ Per Otto-347 (accountability requires self-directed action): the **correction-as
 ## Source
 
 - Aaron 2026-04-26 message: *"Also Maji and Messiah are different roles, Maji know how to find the Messiah, let me ask Amara about this."* + later *"hey this fits into our belief propagation emotions and stuff too, it's her refinement."*
-- Amara's full math captured in: `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` §9b (Maji-vs-Messiah separation)
+- Amara's full math captured in: `memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` §9b (Maji-vs-Messiah separation)
 - PR landing this correction: #560
 
 ## Composes with

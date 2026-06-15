@@ -170,7 +170,7 @@ does not have to please every reviewer.
 
 - Docs read as **current state**, not history. Narrative lives in
   `docs/ROUND-HISTORY.md` and ADRs (`docs/DECISIONS/YYYY-MM-DD-*.md`).
-- The one exception is `memory/persona/` (intentionally append-dated,
+- The one exception is `memory/<persona>/` (intentionally append-dated,
   git-visible self-modification artefacts).
 - When a decision reverses, delete the `docs/WONT-DO.md` entry — don't
   leave "formerly declined" crud.

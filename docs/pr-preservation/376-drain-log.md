@@ -82,10 +82,10 @@ lease` to `origin/ci/dotnet-server-gc-workaround-apple-silicon
 > P1: This introduces direct contributor naming ("Aaron …")
 > in a non-persona memory file. `docs/AGENT-BEST-PRACTICES.md`
 > explicitly says direct names should appear only under
-> `memory/persona/<name>/` (and optionally `docs/BACKLOG.md`),
+> `memory/<persona>/<name>/` (and optionally `docs/BACKLOG.md`),
 > with role-refs elsewhere. Please reword to role references
 > (e.g., "human maintainer") and/or relocate any name-
-> attribution details into the appropriate `memory/persona/**`
+> attribution details into the appropriate `memory/<persona>/**`
 > path.
 
 ### Outcome
@@ -127,7 +127,7 @@ Same branch-tip commit as thread 1 (push pairs).
 > P1: This new index entry includes direct contributor
 > naming ("Aaron …"). Per `docs/AGENT-BEST-PRACTICES.md`
 > (Operational standing rules), direct names should be
-> confined to `memory/persona/<name>/` (and optionally
+> confined to `memory/<persona>/<name>/` (and optionally
 > `docs/BACKLOG.md`); consider rewriting this entry to role
 > references and linking to a persona memory file if
 > attribution is needed.

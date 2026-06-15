@@ -177,6 +177,6 @@ Filed as `docs/backlog/P1/B-0003-alignment-md-rewrite.md`
   — the calibration data.
 - `project_precision_dictionary_evidence_backed_context_compressor_2026_04_25.md`
   — the broader vocabulary the rewrite participates in.
-- `memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`
+- `memory/otto/cli/claude/conversations/otto-287-noether-formalization-2026-04-25.md`
   — the research direction that compounds rigor over time.
 - `docs/ALIGNMENT.md` — the file being rewritten.

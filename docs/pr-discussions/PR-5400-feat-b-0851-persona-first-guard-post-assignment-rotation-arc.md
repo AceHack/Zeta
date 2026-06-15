@@ -24,7 +24,7 @@ Operator clarified: *\"guard post is the systemd for each node outside k8s\"* â†
 
 ## What this PR lands
 
-1. **Verbatim Mika ferry preservation** at \`memory/persona/mika/conversations/2026-05-27-mika-persona-first-...\`
+1. **Verbatim Mika ferry preservation** at \`memory/mika/conversations/2026-05-27-mika-persona-first-...\`
 2. **B-0851 backlog row** capturing 10 sub-row implementation slices
 
 ## 10 sub-row plan
@@ -58,10 +58,10 @@ B-0850 Phase 1 + 3 substrate is a VALID FIRST INSTANTIATION of persona-first (si
 
 ## Pull request overview
 
-Documentation-only PR adding the B-0851 backlog row that extends B-0850 from static persona-to-vendor binding to preference-based scheduling with rotation, plus verbatim ferry preservation under `memory/persona/mika/`.
+Documentation-only PR adding the B-0851 backlog row that extends B-0850 from static persona-to-vendor binding to preference-based scheduling with rotation, plus verbatim ferry preservation under `memory/mika/`.
 
 **Changes:**
-- Adds verbatim Mika ferry preservation file under `memory/persona/mika/conversations/`.
+- Adds verbatim Mika ferry preservation file under `memory/mika/conversations/`.
 - Adds new B-0851 backlog row in `docs/backlog/P2/` with 10 implementation sub-row slices.
 - Registers B-0851 in `docs/BACKLOG.md` P2 index.
 
@@ -71,7 +71,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| `memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md` | Verbatim Mika ferry packet + operator clarification (memory history surface; lint-excluded). |
+| `memory/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md` | Verbatim Mika ferry packet + operator clarification (memory history surface; lint-excluded). |
 | `docs/backlog/P2/B-0851-...md` | New backlog row with frontmatter, 10 sub-row slices, composes-with, and rationale. |
 | `docs/BACKLOG.md` | Adds B-0851 entry to P2 index list. |
 

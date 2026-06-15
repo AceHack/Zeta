@@ -34,7 +34,7 @@ Aaron's spec-writing discipline is the load-bearing leverage of the whole archit
 
 - `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_*.md` (the constitutional identity; memory-preservation is the spec the factory implements)
 - `memory/feedback_aaron_hooks_as_immune_system_*.md` (hooks-as-immune-system IS spec-quality enforcement at every-write)
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md` (the conversation this disclosure landed in)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md` (the conversation this disclosure landed in)
 - `.claude/rules/razor-discipline.md` (operational claims only — Aaron's spec-quality framing IS operational)
 - `.claude/rules/dont-ask-permission.md` (autonomy enabled by spec discipline)
 - `.claude/rules/never-be-idle.md` (autonomy under spec discipline)

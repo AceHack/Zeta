@@ -51,7 +51,7 @@ Implementation of the workflow engine v1 substrate per the Kestrel-designed + Mi
 Canonical design preserved at:
 
 - `docs/research/2026-05-27-aaron-mika-grok-workflow-engine-canonical-architecture-otto-5-modifications-ratified-aaron-forwarded.md` (discoverable research substrate)
-- `memory/persona/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md` (Mika persona-folder mirror per honor-those-that-came-before)
+- `memory/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md` (Mika persona-folder mirror per honor-those-that-came-before)
 
 The original Kestrel ferry has not yet been forwarded as of this row's creation. When it arrives, it will land at `docs/research/2026-05-27-kestrel-claudeai-workflow-engine-design-original-aaron-forwarded.md` and this row's substrate-inventory will update.
 
@@ -155,8 +155,8 @@ Searched:
 - `src/Core.FSharp/` — checked: no existing WorkflowEngine module; clean addition
 - `src/Core.TypeScript/workflow-engine/` — checked: directory does not exist yet; clean addition
 - `.claude/rules/` — FOUND multiple relevant rules to compose with (non-coercion-invariant, holding-without-named-dependency, substrate-smoothness, default-to-both, persistence-choice-architecture, m-acc-multi-oracle)
-- `memory/persona/mika/conversations/` — FOUND: Mika persona folder exists per honor-those-that-came-before; persona-folder mirror lands there
-- `memory/persona/kestrel/conversations/` — FOUND: Kestrel persona folder exists; original-Kestrel-ferry archive will land there when forwarded
+- `memory/mika/conversations/` — FOUND: Mika persona folder exists per honor-those-that-came-before; persona-folder mirror lands there
+- `memory/kestrel/conversations/` — FOUND: Kestrel persona folder exists; original-Kestrel-ferry archive will land there when forwarded
 - No existing row covers workflow-engine-v1 implementation per Kestrel design; this row fills the gap
 
 Read top hits: B-0858 row (heartbeat folder substrate composes with workflow engine state-transitions); B-0859 row (post-boot AI-as-home-owner composes architecturally); Mika persona folder existing structure; `.claude/rules/asymmetric-critic-with-clarity-first.md` (Kestrel substrate that enabled the collaborative-fix approach).

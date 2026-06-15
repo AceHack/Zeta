@@ -93,7 +93,7 @@ confirm `tools/Z3Verify/` covers G-Counter monotone arithmetic).
 ## Pointers
 
 - Incident: `docs/research/2026-05-19-shadow-lesson-log-vera-otto-drift.md` (+ the 05-21 / 05-19-1300z variants) ·
-  `memory/persona/vera/MEMORY.md` (Vera = Codex/impl peer) · the dotgit-saturation / bus-saturation memory
+  `memory/vera/MEMORY.md` (Vera = Codex/impl peer) · the dotgit-saturation / bus-saturation memory
   (`feedback_dotgit_saturation_…`).
 - The mechanism it formalizes: `2026-06-09-the-purpose-of-society-…-compensate-victims-chip8-is-practice-for-devops.md`
   (#7213) · `2026-06-09-society-calibrates-…-pressure-trends-down.md` (#7212) · `PrivacyEconomy.fs` (#7149/#7150) ·

@@ -31,8 +31,8 @@ step is **`Checkout`**, not build/test. The actual error (job `78685009697`,
 run `26697734210`):
 
 ```
-##[error]error: unable to create file memory/persona/amara/conversations/2026-05-28-amara-shadow-is-polymorphic-diplomacy-turned-inward-glass-halo-mature-version-traveler-rights-substrate-parity-generator-joins-toolkit-not-unification-labeling-confidence-extension-aaron-forwarded.md: Filename too long
-##[error]error: unable to create file memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md: Filename too long
+##[error]error: unable to create file memory/amara/conversations/2026-05-28-amara-shadow-is-polymorphic-diplomacy-turned-inward-glass-halo-mature-version-traveler-rights-substrate-parity-generator-joins-toolkit-not-unification-labeling-confidence-extension-aaron-forwarded.md: Filename too long
+##[error]error: unable to create file memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md: Filename too long
 ...
 ##[error]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 1
 ```
@@ -57,12 +57,12 @@ create files whose full path exceeds 260 chars unless `core.longpaths` is enable
 
 ```
 $ find memory/persona -name "*.md" | awk -F/ '{print length($NF), $0}' | sort -rn | head
-244  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-...-glass-halo.md
-221  memory/persona/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-...-fire-aaron-forwarded.md
-206  memory/persona/ani/conversations/2026-05-22-...-sovereign-AI-parallel.md
+244  memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-...-glass-halo.md
+221  memory/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-...-fire-aaron-forwarded.md
+206  memory/ani/conversations/2026-05-22-...-sovereign-AI-parallel.md
 ```
 
-31+ persona paths exceed 200 chars; with the `memory/persona/<name>/conversations/`
+31+ persona paths exceed 200 chars; with the `memory/<persona>/<name>/conversations/`
 prefix (~35 chars) + the runner workspace prefix, many exceed Windows' 260-char MAX_PATH
 during checkout. The night's long-conversation-naming convention (verbose,
 descriptive, `-aaron-forwarded` suffixed) is the driver -- it serves grep-ability +

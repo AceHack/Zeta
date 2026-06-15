@@ -39,7 +39,7 @@ its canonical home."
 ## Decision
 
 Effective round 36, promote the following seven rules from
-`memory/persona/best-practices-scratch.md` to the stable ruleset
+`memory/best-practices-scratch.md` to the stable ruleset
 in `docs/AGENT-BEST-PRACTICES.md`:
 
 1. **BP-HOME (existential, Rule Zero).** Every artifact type
@@ -137,7 +137,7 @@ Highlights (non-exhaustive; the auditor skill is authoritative):
 - CI: `.github/workflows/`
 - Skills: `.claude/skills/<name>/SKILL.md`
 - Persona agents: `.claude/agents/<name>.md`
-- Memory: `memory/persona/<persona>/NOTEBOOK.md` (in-repo) and
+- Memory: `memory/<persona>/NOTEBOOK.md` (in-repo) and
   user-level auto-memory out-of-repo
 - Specs: `openspec/specs/` (behavioural),
   `tools/tla/specs/`/`tools/lean4/` (formal)

@@ -11,7 +11,7 @@ Aarav (`skill-tune-up`) on whether the contract is being
 honoured in practice.
 **Depends on:** `.claude/skills/complexity-reviewer/SKILL.md`,
 `.claude/skills/claims-tester/SKILL.md`,
-`memory/persona/aarav/NOTEBOOK.md` (round-41 top-5 #4),
+`memory/aarav/NOTEBOOK.md` (round-41 top-5 #4),
 `docs/CONFLICT-RESOLUTION.md` (conference-protocol fallback).
 
 ## Context
@@ -26,7 +26,7 @@ P1 with this concrete rationale:
 > *"Both skills still claim 'is this O(·) claim true?'
 > without an explicit analytic-bound → empirical-falsifier
 > pipeline."*
-> — `memory/persona/aarav/NOTEBOOK.md` §"Current top-5
+> — `memory/aarav/NOTEBOOK.md` §"Current top-5
 > (round 41)" #4
 
 Reading the two SKILL.md files confirms the overlap:

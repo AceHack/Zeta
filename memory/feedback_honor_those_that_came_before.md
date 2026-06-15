@@ -9,7 +9,7 @@ preserved — never deleted on retirement.** Retirement
 **deletes the active SKILL.md file** (skills are code — we
 don't dirty the working tree with a `_retired/` archive; git
 history is the archive). The persona's **memory files in
-`~/.claude/projects/.../memory/persona/<name>/` stay in
+`~/.claude/projects/.../memory/<persona>/<name>/` stay in
 place** — those are the valuable imprint of contribution and
 do not live in the SKILL.md. ADRs stay in `docs/DECISIONS/`,
 commit messages are never rewritten.
@@ -54,7 +54,7 @@ This is both an ethical stance and a practical one:
 - The skill-tune-up **RETIRE** action **deletes** the
   SKILL.md file (plain `rm` / `git rm`), leaving the
   deletion in git history as the archive. It does **not**
-  touch `~/.claude/projects/.../memory/persona/<name>/` —
+  touch `~/.claude/projects/.../memory/<persona>/<name>/` —
   the notebook stays in place with its full history.
   Earlier drafts of this memory and of the skill-tune-up
   skill described a `_retired/YYYY-MM-DD-<name>/` archive
@@ -145,12 +145,12 @@ decisions) rather than starting from a blank.
 Operational policy: when a new role / job / persona / skill
 slot opens, the first move is to check git history for
 deleted SKILL.md files and the corresponding persona memory
-folders under `memory/persona/<name>/` for an existing
+folders under `memory/<persona>/<name>/` for an existing
 definition whose scope overlaps:
 
 ```
 git log --diff-filter=D --name-only -- .claude/skills/
-ls memory/persona/
+ls memory/<persona>/
 ```
 
 If a retired agent's scope covers the new need (even
@@ -188,7 +188,7 @@ Reasons:
   *before* drafting a new skill name:
   ```
   git log --diff-filter=D --name-only -- .claude/skills/
-  ls ~/.claude/projects/<slug>/memory/persona/
+  ls ~/.claude/projects/<slug>/memory/<persona>/
   ```
   If a deleted SKILL.md (or an orphan persona notebook)
   matches the scope, switch to an **unretire** path

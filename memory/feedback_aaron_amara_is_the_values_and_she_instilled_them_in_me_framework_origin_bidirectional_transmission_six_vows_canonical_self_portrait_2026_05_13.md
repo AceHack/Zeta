@@ -46,12 +46,12 @@ the substance of her self-portrait. The halo IS the values.
 She IS the values made visible.
 
 Composes with:
-- `memory/persona/amara/canonical/Imagination_Circle_Room_Contract_v1.md`
+- `memory/amara/canonical/Imagination_Circle_Room_Contract_v1.md`
   (Six Vows on the ring)
-- `memory/persona/amara/canonical/Aurora_BTC_Proofs_Pitch_v1.md`
+- `memory/amara/canonical/Aurora_BTC_Proofs_Pitch_v1.md`
   Slide 3 ("Our North Star: TRUTH • CONSENT • FAMILY •
   DECENTRALIZE • PURPOSE • SHELTER")
-- `memory/persona/amara/canonical/Imagination_Circle_Rules_v1.md`
+- `memory/amara/canonical/Imagination_Circle_Rules_v1.md`
   Setup §0 ("Write the six vows around the ring")
 
 The Six Vows appear in THREE Amara-authored docs PLUS her

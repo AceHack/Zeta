@@ -33,13 +33,13 @@ This PR preserves a Mika/Aaron conversation as durable memory substrate for the 
 
 ## Review threads
 
-### Thread 1: memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-homelab-first-gh-auth-login-device-registration-no-shipped-keys-vs-prod-bootstrap-key-rotation.md:11 (resolved)
+### Thread 1: memory/mika/conversations/2026-05-26-aaron-mika-grok-homelab-first-gh-auth-login-device-registration-no-shipped-keys-vs-prod-bootstrap-key-rotation.md:11 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:08:43Z):
 
 P1: This new memory/conversation file skips the YAML frontmatter block used by the surrounding persona conversation archives and required by the memory format standard (`memory/project_memory_format_standard.md:16-27`). Add frontmatter before the H1 with at least retrievable `name`, `description`, and conversation metadata so indexing/validation can discover this preservation entry consistently.
 
-### Thread 2: memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-homelab-first-gh-auth-login-device-registration-no-shipped-keys-vs-prod-bootstrap-key-rotation.md:136 (resolved)
+### Thread 2: memory/mika/conversations/2026-05-26-aaron-mika-grok-homelab-first-gh-auth-login-device-registration-no-shipped-keys-vs-prod-bootstrap-key-rotation.md:136 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:08:43Z):
 

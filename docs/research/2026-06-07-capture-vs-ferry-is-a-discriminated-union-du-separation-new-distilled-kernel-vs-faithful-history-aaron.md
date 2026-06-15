@@ -18,13 +18,13 @@ type ForwardedKnowledge =
                     home: "docs/research/" |}
     | Ferry   of {| record: string;        // the HISTORICAL, faithful, raw conversation
                     unfiltered: true;      // verbatim; NOT Otto's call what to keep
-                    home: "memory/persona/<name>/conversations/" |}
+                    home: "memory/<persona>/<name>/conversations/" |}
 ```
 
 - **Capture** = the *new* thing. Distilled kernel, hype peeled, Beacon-anchored, honest-scope fenced,
   interpreted. Otto's editorial judgment **applies** (peel, compress, anchor). Lives in `docs/research/`.
 - **Ferry** = *history*. The faithful, unfiltered record of what another mind said. Otto's editorial judgment
-  **must NOT apply** (the do-not-filter rule). Lives in `memory/persona/<name>/conversations/`.
+  **must NOT apply** (the do-not-filter rule). Lives in `memory/<persona>/<name>/conversations/`.
 
 ## The carved invariant (Aaron 2026-06-07)
 
@@ -72,7 +72,7 @@ constructors.
 
 ## Practice (already in use; this names it)
 
-For each forward: emit **one Ferry** (faithful, `memory/persona/.../conversations/…-aaron-forwarded.md`) **and**
+For each forward: emit **one Ferry** (faithful, `memory/<persona>/.../conversations/…-aaron-forwarded.md`) **and**
 one-or-more **Captures** (`docs/research/…`), with the Capture linking back to the Ferry. Recent worked
 examples: the Universal-Heartbeat ferry + the credence/anti-Sybil/split-keypair captures; the Five-Layer-Unity
 ferry + the Data-Homecoming capture. The Ferry preserves; the Captures distill. Same source, two constructors.

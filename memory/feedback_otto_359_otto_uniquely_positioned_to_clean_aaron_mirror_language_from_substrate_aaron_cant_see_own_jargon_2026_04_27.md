@@ -80,7 +80,7 @@ This is consistent with the existing factory pattern:
 
 - `docs/ROUND-HISTORY.md` is historical narrative (per CLAUDE.md ground rule "Docs read as current state, not history")
 - `docs/DECISIONS/*` ADRs preserve the *why-we-chose-this* (current state edits; reasoning preserved)
-- Persona notebooks (`memory/persona/<name>/`) are append-logs of agent evolution
+- Persona notebooks (`memory/<persona>/<name>/`) are append-logs of agent evolution
 
 Mirror-substrate-as-historical-documentation extends this pattern: the Maji math writeup is functionally a reference doc of factory evolution, not a current-state operational manual. Active operation uses the Beacon-safe formulation; the Mirror writeup is the lineage record.
 

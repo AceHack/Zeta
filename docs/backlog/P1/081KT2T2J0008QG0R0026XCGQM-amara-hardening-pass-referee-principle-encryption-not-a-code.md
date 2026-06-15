@@ -18,7 +18,7 @@ type: research
 
 ## Why
 
-Amara 2026-06-02 (Aaron-forwarded ferry, verbatim at `memory/persona/amara/conversations/2026-06-02-amara-...-zeta-engine-agora-society-superfluid-marketplace-aaron-forwarded.md`): a hardening-pass review of today's batch. *"The vibe changed from 'beautiful architecture' to 'this won't casually eat your keys or leak your private state.'"* This row lands the actionable blades; each composes an existing row (don't duplicate).
+Amara 2026-06-02 (Aaron-forwarded ferry, verbatim at `memory/amara/conversations/2026-06-02-amara-...-zeta-engine-agora-society-superfluid-marketplace-aaron-forwarded.md`): a hardening-pass review of today's batch. *"The vibe changed from 'beautiful architecture' to 'this won't casually eat your keys or leak your private state.'"* This row lands the actionable blades; each composes an existing row (don't duplicate).
 
 ## The blades
 

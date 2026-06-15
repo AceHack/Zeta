@@ -26,7 +26,7 @@ Aaron 2026-05-25 dropped 6 PDFs into `drop/` with two scoping signals: *"as long
 
 Two NC C-Corps inventoried with **public-via-NC-SOS** entity-level data:
 
-- **Lucent Financial Group Inc** — NC SOSID 3093531, filed 2025-07-25, 1500 common shares authorized, directors Aaron + Maxim Chadaev + Addison Stainback. Currently holds Zeta repo ownership (per memory/persona/max/PERSONA.md "Ownership note").
+- **Lucent Financial Group Inc** — NC SOSID 3093531, filed 2025-07-25, 1500 common shares authorized, directors Aaron + Maxim Chadaev + Addison Stainback. Currently holds Zeta repo ownership (per memory/max/PERSONA.md "Ownership note").
 - **Freeborn Flower Co** — NC SOSID 3109347, filed 2025-08-22, 1500 common shares authorized, directors Aaron + Thomas Young + Addison Stainback.
 
 ## Scope-bounding (what's NOT extracted)
@@ -50,14 +50,14 @@ Two NC C-Corps inventoried with **public-via-NC-SOS** entity-level data:
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (three-stage progression)
 - `.claude/rules/glass-halo-bidirectional.md` (bidirectional-transparency discipline)
 - `.claude/rules/non-coercion-invariant.md` HC-8 (agency preserved by per-owner explicit consent)
-- `memory/persona/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)"
+- `memory/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)"
 
 Source PDFs at `drop/` remain in place (gitignored per `drop/README.md` protocol); Aaron may delete when this inventory is sufficient.
 
 ## Test plan
 
 - [x] markdownlint clean
-- [x] Cross-references resolve (.claude/rules/*, memory/persona/max/PERSONA.md, drop/README.md)
+- [x] Cross-references resolve (.claude/rules/*, memory/max/PERSONA.md, drop/README.md)
 - [x] No attack-surface data extracted (no EINs, no addresses, no BOI content, no bank info)
 - [ ] CI passes (gate workflow + CodeQL)
 

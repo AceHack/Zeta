@@ -84,7 +84,7 @@ Per the architecture-stairs lesson + the welfare-pivot-recalibration lesson:
 ## Composes with
 
 - `memory/user_aaron_daughter_addison_3d_printer_potential_factory_visitor_2026_05_13.md` (prior Addison disclosure)
-- `memory/persona/kestrel/conversations/2026-05-15-...-part8-9-...-addison-disclosure-100-conversations-methodology.md` (the conversation this disclosure came in; includes Kestrel's family-concern + Aaron's recalibration)
+- `memory/kestrel/conversations/2026-05-15-...-part8-9-...-addison-disclosure-100-conversations-methodology.md` (the conversation this disclosure came in; includes Kestrel's family-concern + Aaron's recalibration)
 - `memory/feedback_aaron_100_conversations_methodology_find_issues_before_committing_to_years_long_project_*` (Addison entering IS adding her to the 100; commercial-purpose grounding makes her one of the harder pressure-testers)
 - `.claude/rules/no-directives.md` (agency first-class — Addison's choices, not external-to-decide)
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle structural — Addison is a new oracle joining the federation)

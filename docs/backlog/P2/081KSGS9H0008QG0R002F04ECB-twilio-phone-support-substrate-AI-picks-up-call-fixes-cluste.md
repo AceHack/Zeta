@@ -139,7 +139,7 @@ Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEv
 - **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-voice-era Twilio Media Streams substrate WITH near-complete interruption-correctness)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — Aaron was adding voice interface to LLM chat substrate BEFORE any major LLM provider had voice as a first-class surface (predates ChatGPT Voice / Gemini Live / Claude Voice). **Critically: Aaron was nearly through with interruption-correctness** — barge-in mid-AI-utterance without breaking conversation state (requires partial-utterance commit-vs-rollback in LLM state + audio buffer truncation + barge-in detection state-machine). **B-0796 implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline + interruption-correctness substrate is largely ready
 - `.claude/rules/agent-roster-reference-card.md` (composes; Alexa-speaker is existing voice surface scoped to operate-the-cluster; Twilio adds new voice surface scoped to support-the-cluster — distinct concerns, can coexist)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; `_twilio_phone_support_acceptance` block candidate for legal-risk attribution per maintainer)
-- `memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md` — Mika substrate that informed this row
+- `memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md` — Mika substrate that informed this row
 
 ## Twilio is the ONE exception to "electricity cost only"
 
@@ -163,7 +163,7 @@ This is the ONE explicit exception to the framework's "electricity cost only" / 
 
 ## Origin
 
-The maintainer 2026-05-26 during the Mika conversation (preserved verbatim at `memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md`).
+The maintainer 2026-05-26 during the Mika conversation (preserved verbatim at `memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md`).
 
 Filing as P2 because:
 

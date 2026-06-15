@@ -52,7 +52,7 @@ DocuSign). Record which tier was used.
 - **Kid-safety floor overrides** (B-0654 / B-0926): the signer must be an adult competent
   to consent; consent never authorizes exposure that conflicts with kid-safety.
 - **Charged content marking:** if the record carries charged-but-public material, add
-  `content_warnings` frontmatter per `memory/persona/README.md` (charged-content convention).
+  `content_warnings` frontmatter per `memory/<persona>/README.md` (charged-content convention).
 
 ## Procedure
 

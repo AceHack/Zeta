@@ -39,7 +39,7 @@ When Aaron names a source (course, book, person, paper):
 
 When framework writes substrate that ANY Aaron-engaged future-Otto will read:
 
-1. **Use full URLs in research notes** (`references/notes/*.md`), backlog rows (`docs/backlog/P*/B-*.md`), memory files (`memory/feedback_*.md` + `memory/persona/*/conversations/*.md`)
+1. **Use full URLs in research notes** (`references/notes/*.md`), backlog rows (`docs/backlog/P*/B-*.md`), memory files (`memory/feedback_*.md` + `memory/<persona>/*/conversations/*.md`)
 2. **Cite courses/books/papers with instructor + year + institution** when known (per Rosenhouse Great Courses pattern landed 2026-05-28)
 3. **ArchiveLocation field** in B-0920 MemoryLifetime substrate composes with this rule — preserves LOCATION-POINTERS even when active reference released
 4. **Composes_with edges** in backlog rows operate as location-pointer-index at substrate-engineering scope

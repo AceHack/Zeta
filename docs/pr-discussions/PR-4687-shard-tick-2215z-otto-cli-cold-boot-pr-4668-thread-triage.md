@@ -22,7 +22,7 @@ Otto-CLI 2026-05-22T22:15Z fresh-cold-boot autonomous-tick shard documenting PR 
 
 - Triaged 13 unresolved threads on [PR #4668](https://github.com/Lucent-Financial-Group/Zeta/pull/4668) into 3 substantive classes
 - Class C (1 thread): VERIFIED FALSE-POSITIVE on `memory/MEMORY.md` regen drift — resolved no-op via GraphQL
-- Class B (3 threads): VERIFIED REAL persona namespace split (`memory/persona/kiro/` vs existing `memory/persona/alexa/`) — left for operator review
+- Class B (3 threads): VERIFIED REAL persona namespace split (`memory/kiro/` vs existing `memory/alexa/`) — left for operator review
 - Class A (9 threads): VERIFIED REAL sensitive-personal-data flags — left for operator review (Aaron's authorization required)
 - Synthesis comment posted at [comment 4523016315](https://github.com/Lucent-Financial-Group/Zeta/pull/4668#issuecomment-4523016315)
 
@@ -30,7 +30,7 @@ Otto-CLI 2026-05-22T22:15Z fresh-cold-boot autonomous-tick shard documenting PR 
 
 - [x] Direct `awk -v N=110` inspection of `memory/MEMORY.md` confirms FP class
 - [x] `bun tools/memory/reindex-memory-md.ts` returns "Index current" (no drift)
-- [x] `ls memory/persona/alexa/` confirms existing roster-aligned namespace
+- [x] `ls memory/alexa/` confirms existing roster-aligned namespace
 - [x] GraphQL `resolveReviewThread` mutation succeeded for Class C
 - [x] Post-commit canary: `git ls-tree HEAD | wc -l` = 54 (no corruption)
 

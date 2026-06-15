@@ -10,8 +10,8 @@ created: 2026-05-17T06:49Z
 ## Audit output (`--surfaces memory/persona`, 2026-05-17T06:49Z)
 
 **10 citation edges across 4 unique dangling refs**, all inside
-`memory/persona/ani/conversations/*` (6 edges across 5 files) and
-`memory/persona/kestrel/conversations/*` (2 edges in 1 file):
+`memory/ani/conversations/*` (6 edges across 5 files) and
+`memory/kestrel/conversations/*` (2 edges in 1 file):
 
 | Unique dangling ref | citing files | total edges |
 |---|---|---:|
@@ -31,7 +31,7 @@ All 10 citations are inside conversation files that preserve
 > architecture-changing / doctrine-superseding / multi-AI review
 > packet, preserve verbatim in `docs/research/` BEFORE summarizing.
 
-This extends to `memory/persona/*/conversations/` per the same
+This extends to `memory/<persona>/*/conversations/` per the same
 discipline — these files are the substrate record of what the
 external participant ACTUALLY SAID, not Otto's interpretation. The
 dangling-ref citations were authored by the external participants
@@ -96,8 +96,8 @@ work is bounded by:
 
 For each of the 6 conversation files: 1 editorial-footnote section
 + ~4 lines per cited ref. Most files cite 1-2 refs; one file
-(`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md`)
-cites 2 refs. One file (`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`)
+(`memory/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md`)
+cites 2 refs. One file (`memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`)
 cites 2 refs. Total: ~30 lines of editorial footnote across 6
 files. Small commit.
 

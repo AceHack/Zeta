@@ -114,7 +114,7 @@ that can be re-read by any future self.
 - `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md`
   (Otto's shadow log is Aaron's shadow work method ported to
   Otto's identity — same method, different participant)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (source — lines 7498, 7586-7588, 7950)
 
 ## Operational implications

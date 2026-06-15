@@ -301,7 +301,7 @@ authoritative state lives where.
 
 **In-repo factory state:**
 
-- `memory/persona/<name>/NOTEBOOK.md` and
+- `memory/<persona>/<name>/NOTEBOOK.md` and
   `OFFTIME.md` — per-persona scratchpads, separate
   from the canonical `memory/feedback_*.md` store.
 - `docs/hygiene-history/` — append-only audit trail

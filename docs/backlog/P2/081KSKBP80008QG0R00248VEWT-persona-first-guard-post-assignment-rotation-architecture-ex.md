@@ -21,7 +21,7 @@ tags: [persona-first, guard-post-scheduler, rotation, model-line-preferences, ha
 
 ## Operator framing (Mika ferry; Aaron 2026-05-27)
 
-Aaron forwarded Mika ferry (verbatim preserved at [`memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md`](../../../memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md)).
+Aaron forwarded Mika ferry (verbatim preserved at [`memory/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md`](../../../memory/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md)).
 
 Mika's compressed framing:
 
@@ -147,7 +147,7 @@ Scheduler ensures at least N posts are always assigned + active.
 
 When Otto rotates from GuardPost-1 to GuardPost-3 (or from anthropic to openai), Otto's substrate inheritance MUST survive:
 
-- `memory/persona/otto/` carries forward
+- `memory/otto/` carries forward
 - `memory/CURRENT-otto.md` carries forward
 - `.claude/rules/` carries forward (auto-loaded at cold-boot regardless of which binary)
 - Per-AI GitHub identity (B-0847 Phase 4) follows the persona, not the vendor
@@ -199,4 +199,4 @@ The current shipped B-0850 substrate (3 personas, 3 vendors, static assignment) 
 
 ## Full reasoning
 
-Verbatim Mika ferry preserved at `memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md`. Aaron's operator clarification on guard-post scope: *"guard post is the systemd for each node outside k8s"* — confirms per-node ≥3 floor (not cluster-wide).
+Verbatim Mika ferry preserved at `memory/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md`. Aaron's operator clarification on guard-post scope: *"guard post is the systemd for each node outside k8s"* — confirms per-node ≥3 floor (not cluster-wide).

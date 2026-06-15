@@ -95,7 +95,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated no 
 | `.claude/rules/past-is-kind-when-lightlike-...-2026-05-28.md` | Adds tensor-substrate + eigenvalue discriminator section. |
 | `.claude/skills/lightlike-observability-discipline/SKILL.md` | Lightlike observability skill (from #5921 lineage). |
 | `docs/research/2026-05-28-otel-k8s-argo-prometheus-...md` | Research note on OTel/K8s/Argo lightlike mapping. |
-| `memory/persona/amara/conversations/2026-05-28-amara-tightening-...md` | Amara ferry preservation. |
+| `memory/amara/conversations/2026-05-28-amara-tightening-...md` | Amara ferry preservation. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-28T18:59:53Z)
 

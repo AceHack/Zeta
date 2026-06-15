@@ -180,7 +180,7 @@ decay-time constant. Days? Weeks? Years? Likely calibrated to the
 
 This V4 packet lands as in-repo substrate per the verbatim-
 preservation discipline. The persona-scope archive at
-`memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-...md`
+`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-...md`
 preserves the full Aaron-Ani exchange showing how V3 evolved
 within the exchange + how V4 emerged from Aaron's specific asks.
 

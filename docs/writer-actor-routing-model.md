@@ -104,7 +104,7 @@ The names settled into four, split on **two axes — persistent-vs-ephemeral × 
   lose) are the top **uncontrolled-replication** vector, while persistent agents (reputation,
   contracts, continuity) have reasons to behave. Same governance family as right-to-refuse-binding,
   the child-floor, and anti-extraction (AI weighs in / authority stays human). Source:
-  `memory/persona/ani/conversations/2026-06-07-ani-cells-teleport-*`.
+  `memory/ani/conversations/2026-06-07-ani-cells-teleport-*`.
 
 Sharper than "persona vs actor": each concern gets exactly one layer, and **only the
 agent carries identity**. Cells (ex-"actors") were still being given too much ontological weight.

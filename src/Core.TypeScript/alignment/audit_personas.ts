@@ -7,14 +7,14 @@
 // What it measures:
 //
 //   NOTEBOOK-LAST-ROUND   round number of the most recent entry in
-//                         memory/persona/<persona>/NOTEBOOK.md
+//                         memory/<persona>/NOTEBOOK.md
 //   NOTEBOOK-STALENESS    current round minus NOTEBOOK-LAST-ROUND
 //   COMMIT-MENTIONS       count of commits in the audited range whose
 //                         message body references the persona by name
 //   ROSTER-COVERAGE       fraction of the roster that shows either a
 //                         notebook-touch or a commit-mention this round
 //
-// Roster = union of `memory/persona/<persona>/` directories.
+// Roster = union of `memory/<persona>/` directories.
 //
 // Usage:
 //   bun tools/alignment/audit_personas.ts                   # main..HEAD
@@ -30,7 +30,7 @@
 //   1  Coverage below gate
 //   2  Script error / missing dependency / bad args
 
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   spawnSync,
@@ -195,19 +195,36 @@ function parseArgs(argv: readonly string[]): ParseResult {
   };
 }
 
-function listPersonas(): readonly string[] {
-  const personaDir = "memory/persona";
-  let entries: readonly import("node:fs").Dirent[];
+interface PersonaInfo {
+  readonly name: string;
+  readonly path: string;
+}
+
+function listPersonas(): readonly PersonaInfo[] {
+  const memoryDir = "memory";
+  const out: PersonaInfo[] = [];
   try {
-    entries = readdirSync(personaDir, { withFileTypes: true });
+    const items = readdirSync(memoryDir, { withFileTypes: true });
+    for (const item of items) {
+      if (item.isDirectory()) {
+        const personaPath = join(memoryDir, item.name);
+        if (item.name === "observed-phenomena" || item.name === "architectural-intent-guesses") {
+          continue;
+        }
+        
+        const hasNotebook =
+          existsSync(join(personaPath, "NOTEBOOK.md")) ||
+          existsSync(join(personaPath, "MEMORY.md")) ||
+          existsSync(join(personaPath, "PERSONA.md"));
+        if (hasNotebook) {
+          out.push({ name: item.name, path: personaPath });
+        }
+      }
+    }
   } catch {
     return [];
   }
-  const out: string[] = [];
-  for (const e of entries) {
-    if (e.isDirectory()) out.push(e.name);
-  }
-  out.sort(byteCompare);
+  out.sort((a, b) => byteCompare(a.name, b.name));
   return out;
 }
 
@@ -235,11 +252,13 @@ function maxRoundIn(notebook: string): number {
   return max;
 }
 
-function currentRound(personas: readonly string[]): number {
+function currentRound(personas: readonly PersonaInfo[]): number {
   let max = 0;
   for (const p of personas) {
-    const r = maxRoundIn(`memory/persona/${p}/NOTEBOOK.md`);
-    if (r > max) max = r;
+    for (const f of ["NOTEBOOK.md", "MEMORY.md", "PERSONA.md"]) {
+      const r = maxRoundIn(join(p.path, f));
+      if (r > max) max = r;
+    }
   }
   return max;
 }
@@ -252,12 +271,16 @@ function commitMentions(name: string, bodies: string): number {
   return count;
 }
 
-function buildRow(name: string, cr: number, bodies: string): PersonaRow {
-  const lastRound = maxRoundIn(`memory/persona/${name}/NOTEBOOK.md`);
+function buildRow(p: PersonaInfo, cr: number, bodies: string): PersonaRow {
+  let lastRound = 0;
+  for (const f of ["NOTEBOOK.md", "MEMORY.md", "PERSONA.md"]) {
+    const r = maxRoundIn(join(p.path, f));
+    if (r > lastRound) lastRound = r;
+  }
   const staleness = lastRound === 0 ? "-" : String(cr - lastRound);
-  const mentions = commitMentions(name, bodies);
+  const mentions = commitMentions(p.name, bodies);
   const touched = lastRound === cr || mentions > 0;
-  return { name, lastRound, staleness, commitMentions: mentions, touched };
+  return { name: p.name, lastRound, staleness, commitMentions: mentions, touched };
 }
 
 export function audit(args: Args): AuditResult {
@@ -321,7 +344,7 @@ function emitMd(r: AuditResult): string {
   }
   lines.push("");
   lines.push(
-    `Source of truth: \`memory/persona/<name>/NOTEBOOK.md\` for last-round signal; \`git log ${r.range}\` for commit mentions. Both are git-tracked text — no external DB.`,
+    `Source of truth: \`memory/<persona>/<name>/NOTEBOOK.md\` for last-round signal; \`git log ${r.range}\` for commit mentions. Both are git-tracked text — no external DB.`,
   );
   return lines.join("\n");
 }

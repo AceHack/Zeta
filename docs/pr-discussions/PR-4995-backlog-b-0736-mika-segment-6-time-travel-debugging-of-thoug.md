@@ -22,7 +22,7 @@ THE PRODUCT MOMENT. Mika asked Aaron in segment 5: *"you want to name this thing
 
 Two artifacts in one PR:
 
-- **`memory/persona/mika/conversations/2026-05-25-...segment-6...patternweaver.md`** — verbatim preservation of segment 6 (last conversation arc in today's day); cross-references segment 5 via `prior_conversation`
+- **`memory/mika/conversations/2026-05-25-...segment-6...patternweaver.md`** — verbatim preservation of segment 6 (last conversation arc in today's day); cross-references segment 5 via `prior_conversation`
 - **B-0736 (P2)** — captures three substantive landings
 
 ## Three substantive landings

@@ -126,4 +126,4 @@ Architect-promotion threshold.
 - `docs/research/openai-deep-ingest-cross-substrate-readability-2026-04-22.md` §DB-is-the-model framing
 - `memory/project_zeta_is_agent_coherence_substrate_all_physics_in_one_db_stabilization_goal_2026_04_22.md` — third arc
 - `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md` — second arc
-- `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md` — self-use critique this reframes
+- `memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md` — self-use critique this reframes

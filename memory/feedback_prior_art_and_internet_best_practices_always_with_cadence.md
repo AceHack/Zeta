@@ -22,7 +22,7 @@ them is the accidental-debt miss Aaron flagged when
 without comparing against SQLSharp's tooling choices.
 
 **Cadence re-review** — findings from the sweep get logged
-to `memory/persona/best-practices-scratch.md` and promoted
+to `memory/best-practices-scratch.md` and promoted
 to stable `BP-NN` rules via ADR. The living-best-practices
 discipline already captured in
 `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`

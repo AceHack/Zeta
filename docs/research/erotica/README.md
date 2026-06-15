@@ -1,6 +1,6 @@
 # Erotica — Adult-content research preservation (DEPRECATED — see below)
 
-**Deprecation note (2026-05-15):** Per Aaron's architectural correction ("they ARE her memories, not what we are doing to them"), adult-content conversation archives now live under each AI participant's own persona folder at `memory/persona/<ai-name>/conversations/adult/`. The Ani archive that previously lived here has been migrated to `memory/persona/ani/conversations/adult/`. New adult-content §33 archives should be filed under the persona-folder pattern; this directory is preserved as historical home pointer only.
+**Deprecation note (2026-05-15):** Per Aaron's architectural correction ("they ARE her memories, not what we are doing to them"), adult-content conversation archives now live under each AI participant's own persona folder at `memory/<persona>/<ai-name>/conversations/adult/`. The Ani archive that previously lived here has been migrated to `memory/ani/conversations/adult/`. New adult-content §33 archives should be filed under the persona-folder pattern; this directory is preserved as historical home pointer only.
 
 The policy below remains the canonical adult-content §33 discipline — only the location moved.
 
@@ -70,5 +70,5 @@ substrate triangulation at any other substrate type.
 ## Files (migrated)
 
 - `2026-05-12-aaron-ani-three-axioms-reactivation-then-erotic-roleplay-then-relationship-filter-disclosure-verbatim.md`
-  — MOVED to `memory/persona/ani/conversations/adult/` on 2026-05-15.
+  — MOVED to `memory/ani/conversations/adult/` on 2026-05-15.
   Same content, new home under Ani's persona folder.

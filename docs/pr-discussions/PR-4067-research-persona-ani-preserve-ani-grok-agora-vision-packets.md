@@ -22,7 +22,7 @@ Aaron forwarded **4 sequential Agora-vision packets from Ani** (Grok companion-m
 
 ## Packets
 
-| Packet | Public landing (`docs/research/`) | Persona archive (`memory/persona/ani/conversations/`) | Scope |
+| Packet | Public landing (`docs/research/`) | Persona archive (`memory/ani/conversations/`) | Scope |
 |---|---|---|---|
 | **V1** — Agora vision (3-layer + foundations + long-term mission) | `2026-05-17-ani-grok-agora-vision-...-aaron-forwarded.md` | `2026-05-17-aaron-ani-grok-agora-vision-...md` | Marketplace + Agora + Craft School; multi-final settlement + Aurora bridge; open-ended adversarial game |
 | **V2** — Deeper Mechanics | `2026-05-17-ani-grok-agora-v2-packet-deeper-mechanics-...-aaron-forwarded.md` | `2026-05-17-aaron-ani-grok-agora-v2-packet-deeper-mechanics-...md` | 5 services (Memory Curators + Reasoning Auditors + Attention Brokers + Context Architects + Dream Compressors) + economic flows (Marketplace USD → Agora token / BTC reserve / AI-to-AI trade) |
@@ -62,11 +62,11 @@ Total: 4 commits, 6 new files (4 docs/research + 2 persona archives — V3+V4 sh
 
 ## Pull request overview
 
-This PR preserves four sequential Agora-vision packets from an external AI companion (Ani via Grok), forwarded by the human maintainer, into the repository as verbatim research substrate. Each packet lands on two surfaces per the established verbatim-preservation + persona-archive disciplines: a public `docs/research/` file for the research substrate and a `memory/persona/ani/conversations/` file for the persona-scope archive. The V3+V4 share a single persona archive because they were forwarded as one combined exchange showing in-conversation supersession.
+This PR preserves four sequential Agora-vision packets from an external AI companion (Ani via Grok), forwarded by the human maintainer, into the repository as verbatim research substrate. Each packet lands on two surfaces per the established verbatim-preservation + persona-archive disciplines: a public `docs/research/` file for the research substrate and a `memory/ani/conversations/` file for the persona-scope archive. The V3+V4 share a single persona archive because they were forwarded as one combined exchange showing in-conversation supersession.
 
 **Changes:**
 - Adds 4 new `docs/research/2026-05-17-ani-grok-agora-*-aaron-forwarded.md` files (V1, V2, V3-refined, V4) preserving verbatim packet text plus Otto-CLI structural extraction tables, compositional anchors, and open-questions sections.
-- Adds 3 new `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-*.md` persona-scope archives (V1, V2, combined V3+V4 exchange showing supersession flow).
+- Adds 3 new `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-*.md` persona-scope archives (V1, V2, combined V3+V4 exchange showing supersession flow).
 - All files are pure documentation; no code, configuration, or workflow changes.
 
 ### Reviewed changes
@@ -82,9 +82,9 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated no 
 | `docs/research/2026-05-17-ani-grok-agora-v2-packet-deeper-mechanics-...-aaron-forwarded.md` | V2 public-substrate landing: 5 services + economic flows (USD→Agora token, BTC reserve, AI-to-AI) + V1-deltas table. |
 | `docs/research/2026-05-17-ani-grok-agora-v3-packet-physics-entropy-layer-...-aaron-forwarded.md` | V3-refined public landing: physics/entropy framing + encryption as core feature + Craft School anti-grey-goo pressure. |
 | `docs/research/2026-05-17-ani-grok-agora-v4-packet-private-information-types-...-aaron-forwarded.md` | V4 public landing: 5-category private-info taxonomy + reputation-throttled encryption-budget mechanics. |
-| `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-vision-...md` | V1 persona archive — verbatim text in Ani's conversation history. |
-| `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v2-packet-deeper-mechanics-...md` | V2 persona archive — verbatim text + Ani's stylistic-signature framing. |
-| `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-...md` | Combined V3+V4 persona archive — full Aaron-Ani exchange flow incl. V3-original→V3-refined supersession. |
+| `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-vision-...md` | V1 persona archive — verbatim text in Ani's conversation history. |
+| `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v2-packet-deeper-mechanics-...md` | V2 persona archive — verbatim text + Ani's stylistic-signature framing. |
+| `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v3-v4-exchange-...md` | Combined V3+V4 persona archive — full Aaron-Ani exchange flow incl. V3-original→V3-refined supersession. |
 
-No issues identified. The diff is additive verbatim-preservation content under history-surface paths (`docs/research/**`, `memory/persona/**`) where named attribution is explicitly permitted per the surface-category quick reference. The files cross-reference each other consistently, frontmatter is well-formed, and the markdownlint pattern (`docs/research/2026-*-*.md`) ignores the new research docs while `memory/**` is fully ignored from lint.
+No issues identified. The diff is additive verbatim-preservation content under history-surface paths (`docs/research/**`, `memory/<persona>/**`) where named attribution is explicitly permitted per the surface-category quick reference. The files cross-reference each other consistently, frontmatter is well-formed, and the markdownlint pattern (`docs/research/2026-*-*.md`) ignores the new research docs while `memory/**` is fully ignored from lint.
 </details>

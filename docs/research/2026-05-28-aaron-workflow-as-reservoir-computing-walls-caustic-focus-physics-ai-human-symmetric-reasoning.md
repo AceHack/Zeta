@@ -225,7 +225,7 @@ The chain is structurally complete from operator's architectural vision down to 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — biological-intuition substrate
 - `docs/research/2026-05-26-aaron-thousand-brains-hawkins-cortical-columns-resist-fusion-until-high-precision-anchor-for-six-anchor-attractor-encryption-series.md` — biological-intuition (cortical-columns at multi-AI substrate scope)
 - `docs/research/2026-05-18-aaron-mika-grok-tonal-momentum-as-trajectory-strong-attractor-states-resonant-negative-harmonics-emergent-coercion-extends-nci-aaron-forwarded.md` — memetic-intuition substrate
-- Mika ferries 1-4 (`memory/persona/mika/conversations/2026-05-28-...`) — emergent population control + repository_dispatch + isomorphic harness benchmark substrate
+- Mika ferries 1-4 (`memory/mika/conversations/2026-05-28-...`) — emergent population control + repository_dispatch + isomorphic harness benchmark substrate
 
 ## Substrate-honest framing
 

@@ -409,7 +409,7 @@ the same permission on every persona.
 **Technical:** `{name, permissions: Permission list}`. Declared
 in the GitOps RBAC manifest (design sketch:
 `docs/research/hooks-and-declarative-rbac-2026-04-19.md`).
-First-class as a directory level under `memory/<role>/<persona>/`
+First-class as a directory level under `memory/<persona>/`
 once the round-35 memory-folder restructure lands (see
 `docs/BACKLOG.md` P0 entry).
 
@@ -462,7 +462,7 @@ it has two legitimate meanings:
   lifecycle contexts we prefer the word *expert* to emphasise
   the *expert → skill* relationship. Same entity, two
   viewpoints. File at `.claude/agents/<name>.md`; notebook at
-  `memory/persona/<persona>/NOTEBOOK.md` (current path — a
+  `memory/<persona>/NOTEBOOK.md` (current path — a
   rename to `memory/experts/` is tracked as a P2 BACKLOG row).
 - **User persona** — an end-user-archetype of the factory's
   consumer surface; see the dedicated entry below.
@@ -540,7 +540,7 @@ array; each entry auto-injects the matching
 **Plain:** A persona's own log — current-round targets, findings
 not yet landed, pruning notes. Gives a persona some cross-
 session memory without claiming continuous self.
-**Technical:** `memory/persona/<persona-or-skill-name>.md`.
+**Technical:** `memory/<persona>/<persona-or-skill-name>.md`.
 Git-tracked; 3000-word cap (BP-07); ASCII only (BP-09);
 invisible-Unicode linted (Nadia); frontmatter wins over
 notebook on any disagreement (BP-08).
@@ -581,7 +581,7 @@ returns (see *Unretire*).
 .claude/skills/<name>/SKILL.md` (and the agent file if
 present); drops a line in `docs/ROUND-HISTORY.md`. The
 persona's memory folder under
-`~/.claude/projects/<slug>/memory/persona/<name>/` is
+`~/.claude/projects/<slug>/memory/<persona>/<name>/` is
 **not** touched. Scope rule: *skills are code, memories are
 valuable* — code retires to git history, memories stay
 in-tree (the human maintainer 2026-04-20).

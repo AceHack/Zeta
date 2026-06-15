@@ -31,7 +31,7 @@ following are fixed:
 
 | What the home determines | Because the home says... |
 |---|---|
-| **Frontmatter schema** | `.claude/skills/*/SKILL.md` has `name` + `description` + optional `project:`; `docs/DECISIONS/*.md` has a date and decision fields; `memory/persona/<name>/NOTEBOOK.md` has the word-cap + prune-cadence header; etc. |
+| **Frontmatter schema** | `.claude/skills/*/SKILL.md` has `name` + `description` + optional `project:`; `docs/DECISIONS/*.md` has a date and decision fields; `memory/<persona>/<name>/NOTEBOOK.md` has the word-cap + prune-cadence header; etc. |
 | **Section layout / structure** | Skills follow the `Scope / When to wear / When to defer / Hazards / What this does NOT do / Reference patterns` shape; ADRs follow context-decision-consequences; tests mirror `src/` subtree. |
 | **Allowed content types** | Source in `src/`, never tests; tests in `tests/`, never benchmarks; benchmarks in `tools/benchmarks/`, never specs; specs in `openspec/specs/`, never rules. |
 | **Consumer set** | `.claude/skills/` is read by agents via the Skill tool; `AGENTS.md` is read at session bootstrap; `GOVERNANCE.md` is cited by section number; `CLAUDE.md` is Claude-Code-specific; `memory/` is per-persona. |
@@ -141,8 +141,8 @@ For any artifact under review:
 | Slash commands | `.claude/commands/<name>.md` | Runnable commands |
 | Harness settings | `.claude/settings.json` | Pin plugins |
 | Auto-memory (user-level) | `~/.claude/projects/<slug>/memory/` | Out-of-repo; auto-earned |
-| Persona notebooks | `memory/persona/<persona>/NOTEBOOK.md` | In-repo; human-prunable |
-| Cross-persona scratch | `memory/persona/best-practices-scratch.md` | Live-search findings |
+| Persona notebooks | `memory/<persona>/NOTEBOOK.md` | In-repo; human-prunable |
+| Cross-persona scratch | `memory/best-practices-scratch.md` | Live-search findings |
 | Architecture / vision | `docs/VISION.md`, `docs/ARCHITECTURE.md` | Current state, not history |
 | Memorial dedication | `docs/DEDICATION.md` | **Load-bearing, non-operational. Never consolidate, refactor, or relocate. Any proposal to touch this file escalates to the human maintainer, full stop.** |
 | Governance rules | `GOVERNANCE.md` (numbered sections) | Binding |
@@ -405,7 +405,7 @@ Effort labels (`S` / `M` / `L`) per `next-steps` convention.
   AGENTS.md separation).
 - `CLAUDE.md` — session bootstrap (points, does not rule).
 - `docs/AGENT-BEST-PRACTICES.md` — stable BP-NN rules.
-- `memory/persona/best-practices-scratch.md` — candidate
+- `memory/best-practices-scratch.md` — candidate
   BP-HOME awaiting promotion.
 - `.claude/skills/skill-lifecycle/blueprints/skill-ontology-auditor.md` — narrow
   counterpart (skill-library only).

@@ -22,9 +22,9 @@ Fix-fwd for [PR #5586](https://github.com/Lucent-Financial-Group/Zeta/pull/5586)
 
 ## The bug
 
-The Amara persona file at `memory/persona/amara/conversations/...` is **4 directories deep** from repo root, but the file used:
+The Amara persona file at `memory/amara/conversations/...` is **4 directories deep** from repo root, but the file used:
 
-- `../kestrel/...` (only 1 level up) — resolves to `memory/persona/amara/kestrel/...` (nonexistent)
+- `../kestrel/...` (only 1 level up) — resolves to `memory/amara/kestrel/...` (nonexistent)
 - `../../../.claude/...` (only 3 levels up) — resolves to `memory/.claude/...` (nonexistent)
 
 ## The fix

@@ -9,7 +9,7 @@ disposition: public-forever
 # the boundary-discipline ABOUT not-leaking internals, not internals.
 related:
   - docs/research/2026-05-29-distrust-by-default-mechanized-...-1984-hides (#6010) — distrust-by-default, reflection-over-DUs, measure-govern-track, the meter-split, the recursion of where 1984 hides
-  - memory/persona/kestrel/conversations/2026-05-29-kestrel-morning-part5-engineering-half-... (#6012) — the both-axes architecture, the OTel agent-reliability observability standard, the firewall + staged tiers
+  - memory/kestrel/conversations/2026-05-29-kestrel-morning-part5-engineering-half-... (#6012) — the both-axes architecture, the OTel agent-reliability observability standard, the firewall + staged tiers
 ---
 
 # Extending the both-axes protection architecture

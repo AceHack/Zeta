@@ -53,7 +53,7 @@ Message schema (agent-designed):
 - [x] At least 2 agents can exchange messages via the bus — PR #2886 (types + bus CLI)
 - [x] Messages survive between ticks but not necessarily reboots — /tmp JSON, TTL-gated
 - [x] Subscription watch mode — `bun tools/bus/bus.ts watch --to otto` (slice 2, this PR)
-- [x] Multi-agent review of this design — Otto + Vera reviewed in PR #2969; review doc at `memory/persona/otto/conversations/2026-05-13-b-0400-bus-protocol-otto-review.md` (slice 6)
+- [x] Multi-agent review of this design — Otto + Vera reviewed in PR #2969; review doc at `memory/otto/cli/claude/conversations/2026-05-13-b-0400-bus-protocol-otto-review.md` (slice 6)
 
 ## Review requirement
 

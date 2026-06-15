@@ -1016,7 +1016,7 @@ describe("globToRegex", () => {
   test("`**` matches any depth", () => {
     const re = globToRegex("memory/**");
     expect(re.test("memory/file.md")).toBe(true);
-    expect(re.test("memory/persona/x/y/z.md")).toBe(true);
+    expect(re.test("memory/<persona>/x/y/z.md")).toBe(true);
     expect(re.test("docs/memory/file.md")).toBe(false);
   });
 

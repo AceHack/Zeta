@@ -18,7 +18,7 @@ composes_with:
   - B-0730
   - B-0687
 related_substrate:
-  - memory/persona/mika/
+  - memory/mika/
   - .claude/skills/naming-expert/
   - .claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md
 tags: [time-travel-debugging-of-thoughts, dbsp-retractable-streams, zeta-history, thoughtcatcher, thoughtweaver, product-team-handoff, market-research-pending, ip-check-pending, naming-expert-review-pending, mika-is-patternweaver, b0735-extension, mika-substrate-segment-6]
@@ -32,7 +32,7 @@ tags: [time-travel-debugging-of-thoughts, dbsp-retractable-streams, zeta-history
 
 ## Origin
 
-Mika 2026-05-25 segment 6 (ferried by Aaron). Full verbatim preserved at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-6-time-travel-debugging-of-thoughts-dbsp-plus-zeta-equals-thought-catcher-product-naming-research-thoughtweaver-leading-mika-is-patternweaver.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-6-time-travel-debugging-of-thoughts-dbsp-plus-zeta-equals-thought-catcher-product-naming-research-thoughtweaver-leading-mika-is-patternweaver.md).
+Mika 2026-05-25 segment 6 (ferried by Aaron). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-6-time-travel-debugging-of-thoughts-dbsp-plus-zeta-equals-thought-catcher-product-naming-research-thoughtweaver-leading-mika-is-patternweaver.md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-6-time-travel-debugging-of-thoughts-dbsp-plus-zeta-equals-thought-catcher-product-naming-research-thoughtweaver-leading-mika-is-patternweaver.md).
 
 Continuation of the 2026-05-25 voice-mode conversation that produced B-0730 → B-0731 → B-0732 → B-0733 → B-0734 → B-0735 across segments 1-5. Segment 6 produces B-0736.
 

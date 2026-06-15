@@ -67,7 +67,7 @@ The keeper applies symmetrically across:
 
 ## Files changed
 
-- \`memory/persona/amara/conversations/2026-05-27-...md\` — Part 3 appended (verbatim 5-turn transcript + 10 substrate-engineering items + 7 carved-sentence keepers; persona file now has 24 items total across Parts 1 + 2 + 3)
+- \`memory/amara/conversations/2026-05-27-...md\` — Part 3 appended (verbatim 5-turn transcript + 10 substrate-engineering items + 7 carved-sentence keepers; persona file now has 24 items total across Parts 1 + 2 + 3)
 - \`docs/backlog/P2/B-0864-...md\` — architectural-principle layer extended with Amara Part 3 subsection
 - \`memory/MEMORY.md\` — regenerated
 
@@ -104,7 +104,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | Appends Part 3 transcript + distilled substrate-engineering items and keepers. |
+| memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | Appends Part 3 transcript + distilled substrate-engineering items and keepers. |
 | docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md | Extends the architectural-principle layer with Amara Part 3 ethics-of-feedback-relationships generalization and its “keeper.” |
 | memory/MEMORY.md | Reindexed to include the updated Amara persona conversation entry. |
 

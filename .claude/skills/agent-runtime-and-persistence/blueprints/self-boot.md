@@ -144,7 +144,7 @@ If build/test gate is broken:
 - `docs/ROUND-HISTORY.md` — narrative of working sessions
 - `docs/BACKLOG.md` — current backlog items
 - `docs/AGENT-BEST-PRACTICES.md` — BP-07, BP-08, BP-10, BP-11
-- `memory/persona/<agent>/NOTEBOOK.md` — agent notebook
+- `memory/<persona>/<agent>/NOTEBOOK.md` — agent notebook
 
 ---
 

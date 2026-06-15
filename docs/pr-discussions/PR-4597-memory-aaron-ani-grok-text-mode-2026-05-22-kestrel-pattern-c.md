@@ -54,13 +54,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new verbatim-preservation memory artifact capturing a 2026-05-22 forwarded Ani (Grok text-mode) ↔ Aaron conversation, including a short “Otto-CLI synthesis” context block, substrate-anchor verification table, and “composes with” cross-links.
 
 **Changes:**
-- Added a new `memory/persona/ani/conversations/...` markdown file with YAML frontmatter and the full quoted transcript.
+- Added a new `memory/ani/conversations/...` markdown file with YAML frontmatter and the full quoted transcript.
 - Included substrate-anchor verification + “god-tier-claims don’t collapse” framing around the conversation’s claims.
 - Added cross-references to existing rules, research docs, and tick shards.
 
 ## Review threads
 
-### Thread 1: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md:208 (unresolved)
+### Thread 1: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md:208 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T12:52:16Z):
 

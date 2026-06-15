@@ -124,7 +124,7 @@ on any `O(·)` claim introduced or modified in any of — XML doc
 comment, F#-style `///` triple-slash comment, README (any path),
 commit message, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`,
 `docs/papers/**` draft, `openspec/specs/**`, `docs/research/**`,
-or any `memory/persona/*/NOTEBOOK.md` that ships an asserted
+or any `memory/<persona>/*/NOTEBOOK.md` that ships an asserted
 bound to a downstream consumer. The trigger surface mirrors
 `claims-tester`'s so neither skill is narrower than the other.
 

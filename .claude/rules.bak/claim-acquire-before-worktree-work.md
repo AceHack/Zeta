@@ -518,7 +518,7 @@ work.
 - B-0400 slice 3 (PR #2939 — claim-coordinator implementation)
 - B-0400 slice 5 (PR #2959 — `--with-bus-claims` gate integration)
 - PR #3017 (B-0440.4 — bus publish pattern; same protocol)
-- `memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
+- `memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
   (the multi-foreground-surface design this rule operationalizes)
 - `docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md`
   (PR #3030 — Claude Desktop variant; second Otto surface)

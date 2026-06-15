@@ -59,4 +59,4 @@ POTENTIAL extension per operator standing direction. Small surface; mostly compo
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "The composition with the earlier state machine"
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "The composition with the earlier state machine"

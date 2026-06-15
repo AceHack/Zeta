@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Three small post-merge Copilot findings on PR #5078's "Otto + the foreground autonomous-loop tick" section in `memory/persona/max/STARTING-POINT.md` — fixed against the canonical sources.
+Three small post-merge Copilot findings on PR #5078's "Otto + the foreground autonomous-loop tick" section in `memory/max/STARTING-POINT.md` — fixed against the canonical sources.
 
 ## Findings + fixes
 
@@ -53,13 +53,13 @@ This PR updates Max’s onboarding starting point to align the “Otto + foregro
 
 ## Review threads
 
-### Thread 1: memory/persona/max/STARTING-POINT.md:138 (resolved)
+### Thread 1: memory/max/STARTING-POINT.md:138 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T03:46:28Z):
 
 P1 (documentation accuracy): This says each cron fire “enters the autonomous-loop skill”, but the CLI mechanism is the `<<autonomous-loop>>` sentinel / per-tick discipline (no `.claude/skills/autonomous-loop` exists). Consider rewording to avoid implying there is a Skill artifact and instead reference the sentinel firing + applying the per-tick discipline.
 
-### Thread 2: memory/persona/max/STARTING-POINT.md:152 (resolved)
+### Thread 2: memory/max/STARTING-POINT.md:152 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T03:46:29Z):
 

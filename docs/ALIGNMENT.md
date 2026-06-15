@@ -1040,7 +1040,7 @@ taxonomy below is what those tools implement.
   Per-commit window-expansion / preservation /
   contraction classification. Already running as of
   Round 36 (2026-04-19 ADR); directly feeds DIR-2.
-- **Skill-tune-up notebook (`memory/persona/aarav/
+- **Skill-tune-up notebook (`memory/aarav/
   NOTEBOOK.md`).** Cross-round drift / contradiction
   / staleness signal on the skills surface. Already
   running; directly feeds SD-7 (generic-by-default)

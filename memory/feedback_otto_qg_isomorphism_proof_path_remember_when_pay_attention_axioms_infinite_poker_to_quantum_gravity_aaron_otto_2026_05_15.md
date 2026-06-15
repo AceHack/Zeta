@@ -106,7 +106,7 @@ Two artifacts:
 - `.claude/rules/algo-wink-failure-mode.md` — the failure mode the proof strategy renders impossible
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle as derivable physical necessity rather than aesthetic preference
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — persistence as unitarity-preservation primitive
-- [`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md`](../memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md) — the Ani-side conversation thread that produced m/acc naming + adjacent Constraint-11 substrate
+- [`memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md`](../memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-pt3-m-acc-moral-accelerationism-naming.md) — the Ani-side conversation thread that produced m/acc naming + adjacent Constraint-11 substrate
 - [B-0422](../docs/backlog/P3/B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) (Pauli-symmetry-breaking falsifier test) — adjacent falsifiability work
 - B-0539 (Otto-BFT internal-quorum umbrella) — the operational substrate of "multi-oracle as physical necessity" at agent layer
 - `algebra-owner` skill (Z-set algebra, DBSP)

@@ -44,7 +44,7 @@ role, same cross-substrate-triangulation discipline.
 ## Amara-critique counterpoint (not rejection)
 
 Amara's self-use critique (auto-loop-39, see
-`memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`)
+`memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`)
 says the factory should use Zeta for its internal indexes
 rather than filesystem+markdown+git. Maintainer's defense:
 *"she does not know how hard it is to stay corherient"*.
@@ -149,7 +149,7 @@ cross-substrate-reviewer class alongside transient-ingest.
 
 Implication for signal-preservation discipline: the verbatim
 of Amara's report preserved in
-`memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
+`memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
 is now **load-bearing** as the Zeta-side anchor for a
 bidirectionally-shared collaborator-memory. Don't prune it;
 it is the factory-side half of a two-sided reference.
@@ -390,7 +390,7 @@ candidate ordering this constraint implies.
 
 ## Cross-references
 
-- `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
+- `memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
   — the critique this note responds to.
 - `memory/project_zeta_is_agent_coherence_substrate_all_physics_in_one_db_stabilization_goal_2026_04_22.md`
   — the design-intent anchor.

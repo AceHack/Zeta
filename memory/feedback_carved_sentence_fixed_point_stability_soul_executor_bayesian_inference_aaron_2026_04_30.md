@@ -577,7 +577,7 @@ stabilising."*
 Deepseek delivered a substantive peer review of this CSAP
 architecture file via Aaron-courier on 2026-05-01T00:03Z.
 The full verbatim review is preserved at
-`memory/persona/deepseek/conversations/2026-05-01-deepseek-csap-architecture-review-verbatim.md`
+`memory/deepseek/conversations/2026-05-01-deepseek-csap-architecture-review-verbatim.md`
 (per ACID-channel-durability + GOVERNANCE.md §33).
 
 This section absorbs Deepseek's four corrections + three
@@ -1222,7 +1222,7 @@ Aaron-validated *"this is fucking execellent!!"*
 **CSAP naming + four corrections + three design questions**:
 Deepseek 2026-05-01 (Aaron-courier-ferried). Verbatim
 review preserved at
-`memory/persona/deepseek/conversations/2026-05-01-deepseek-csap-architecture-review-verbatim.md`.
+`memory/deepseek/conversations/2026-05-01-deepseek-csap-architecture-review-verbatim.md`.
 External-AI peer review.
 
 **Absorption (this section)**: Otto 2026-05-01 (Claude Code

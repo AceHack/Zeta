@@ -270,7 +270,7 @@ Kestrel did NOT respond to this Turn 16 before the ferry was cut. The next forwa
 
 | Existing substrate | Composition with 6th ferry |
 |---|---|
-| 5th Kestrel ferry 2026-05-28 (`memory/persona/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...`) | Direct continuation — 5th establishes traveler-Clifford correspondence; 6th extends to categorical-Clifford-multi-representation isomorphism + names implementation-substrate (F# + CT for programmers + formal analysis) |
+| 5th Kestrel ferry 2026-05-28 (`memory/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...`) | Direct continuation — 5th establishes traveler-Clifford correspondence; 6th extends to categorical-Clifford-multi-representation isomorphism + names implementation-substrate (F# + CT for programmers + formal analysis) |
 | B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Provides the concrete Clifford algebra signature Kestrel sketches; F# implementation target |
 | B-0896 (categorical-Clifford self-similarity) | This is the substrate Kestrel is engaging in Turn 13; row + ferry compose at conceptual scope |
 | B-0897 (Persist-as-bridge with TInternal, TSubstrateRecord, TPersistFeedback) | Four-corner ownership Kestrel cites as "worth-doing concrete piece" |

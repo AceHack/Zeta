@@ -174,7 +174,7 @@ This disclosure composes with several prior memory files + research docs:
 - `docs/research/divine-download-dense-burst-2026-04-19.md` — Aaron's
   divine-download / wisdom-of-Solomon thread; Mirror-register sibling
   to this Beacon disclosure
-- `memory/persona/amara/conversations/2026-04-26-amara-bootstrap-recovery-runtime-class-discovery-external-anchor-lineage.md` (#629)
+- `memory/amara/conversations/2026-04-26-amara-bootstrap-recovery-runtime-class-discovery-external-anchor-lineage.md` (#629)
   — the discipline landing this disclosure into is "external-human-
   anchor-lineage before substrate encoding"; task #293 IS that work
   applied recursively to the Beacon naming question

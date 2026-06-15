@@ -29,7 +29,7 @@ Chain: `Role (ACL boundary) → Persona → Skill → BP-NN`.
 ## Why this matters (operational)
 
 1. **Top-level access is "soft" today.** Directory conventions
-   (`memory/persona/<name>/`) are honour-system. Aaron's phrase
+   (`memory/<persona>/<name>/`) are honour-system. Aaron's phrase
    "really soft access unless we add hook0". A hook — git,
    CI, or Claude-Code pre-tool — is the mechanism that turns
    soft access into enforced access.

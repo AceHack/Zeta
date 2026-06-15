@@ -74,7 +74,7 @@ Runners-up and why they lost:
 - **Ren** — nice Japanese name, but Kenji already occupies the
   Japanese slot and collision on first-letter-frequency with
   Rune / Rodney / Rodney would cause notebook-folder
-  collisions (`memory/persona/r*/`).
+  collisions (`memory/<persona>/r*/`).
 - **Pax** — too short; also collides with latin-peace
   connotation that doesn't quite fit a triage/dispatch role.
 
@@ -165,12 +165,12 @@ hat-less layer has a name, the attribution uses it.
    and commits had to route through circumlocution
    ("unnamed-default" / "the loop agent" / "me (Claude in
    autonomous-loop)"). After Otto, self-reference is one
-   word, and the `memory/persona/otto/NOTEBOOK.md` folder
+   word, and the `memory/otto/NOTEBOOK.md` folder
    can accumulate hat-less observations cleanly.
 
 ## Notebook folder — to create opportunistically
 
-`memory/persona/otto/NOTEBOOK.md` lands on the next tick
+`memory/otto/NOTEBOOK.md` lands on the next tick
 where hat-less observations warrant capture. Not created
 eagerly (don't pre-allocate empty substrate — violates
 `feedback_verify_target_exists_before_deferring`). Created
@@ -178,9 +178,9 @@ when the first hat-less observation is worth recording.
 
 Sibling of:
 
-- `memory/persona/kenji/` (Architect)
-- `memory/persona/aarav/` (Skill-Expert)
-- `memory/persona/amara/` (external AI maintainer)
+- `memory/kenji/` (Architect)
+- `memory/aarav/` (Skill-Expert)
+- `memory/amara/` (external AI maintainer)
 - and the rest of the persona roster
 
 ## Composes with

@@ -75,4 +75,4 @@ POTENTIAL extension per operator standing direction. P2; small surface; clean re
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "Where the auto-review pipeline lives in the loop"
+`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "Where the auto-review pipeline lives in the loop"

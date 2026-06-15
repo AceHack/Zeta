@@ -239,7 +239,7 @@ external-consensus evidence-gathering requirement).
 
 ## State file — the keeper's notebook
 
-Maintain `memory/persona/glossary-anchor-keeper/NOTEBOOK.md`
+Maintain `memory/<persona>/glossary-anchor-keeper/NOTEBOOK.md`
 across sessions:
 
 - **Hard cap:** 3000 words (BP-07). On reaching the cap,
@@ -409,5 +409,5 @@ own audit, it gets tuned up per `skill-tune-up`.
 - `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md`
 - `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — invokes
   this skill on rotation.
-- `memory/persona/glossary-anchor-keeper/NOTEBOOK.md` —
+- `memory/<persona>/glossary-anchor-keeper/NOTEBOOK.md` —
   the keeper's notebook (created on first invocation).

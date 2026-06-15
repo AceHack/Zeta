@@ -11,7 +11,7 @@
 PR [#3364](https://github.com/Lucent-Financial-Group/Zeta/pull/3364) contains:
 
 1. `tools/save-ai-memory/extract-grok-conversation.ts` tool code — part of PR #3364's branch, not yet on main.
-2. `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md` — part of PR #3364's branch, not yet on main.
+2. `memory/ani/conversations/2026-05-15-aaron-ani-grok-full-history-day-one-share-link-extract.md` — part of PR #3364's branch, not yet on main.
 3. Multiple feedback memory notes.
 
 This violates the atomic-PR discipline (GOVERNANCE.md §24 — blob-PR rule). Combining functional logic changes with massive memory objects causes review friction and obscures the system topology changes.

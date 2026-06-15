@@ -93,7 +93,7 @@ After both subitems land:
 - [`docs/research/verification-registry.md`](../../research/verification-registry.md)
 - PR #4780 (peer Otto implementing B-0711 Residuated FsCheck — same shape as subitem (b) needs)
 - B-0710 / B-0711 / B-0712 (sibling cross-check rows from rounds 43-45)
-- `memory/persona/soraya/NOTEBOOK.md` round-57 entry (pending append)
+- `memory/soraya/NOTEBOOK.md` round-57 entry (pending append)
 
 ## Substrate-honest framing
 

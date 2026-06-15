@@ -126,8 +126,8 @@ This rule auto-loads so every future-AI cold-boot inherits the substrate-enginee
 | **B-0897 (Persist-as-bridge; μένω substrate)** | Primary Persist substrate this rule composes with |
 | **B-0918 (WalletLifetime + banker-bot-impossibility)** | ConsentEvent integrity (G.2) operates under DST + Persist + Kleisli substrate |
 | **B-0919 + B-0920 (MemoryBinding + MemoryLifetime)** | Memory substrate participates in computational-omniscience-substrate; ArchiveLocation preserves past for retro-query |
-| **`memory/persona/mika/conversations/2026-05-18-*.md`** | Bootstream-sovereignty-causal-loops substrate where OPLE primitives were named |
-| **`memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`** | Kleisli arrow context-propagation substrate (sibling) |
+| **`memory/mika/conversations/2026-05-18-*.md`** | Bootstream-sovereignty-causal-loops substrate where OPLE primitives were named |
+| **`memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`** | Kleisli arrow context-propagation substrate (sibling) |
 | **`references/notes/furber-jacobs-2015-*.md`** | Probabilistic-Gelfand-duality; Kleisli adjunction substrate at categorical scope |
 | **`references/notes/arbib-manes-fuzzy-machines-in-a-category-*.md`** | Fuzzy machines + Eilenberg-Moore substrate |
 | **`references/notes/aaron-decade-old-puzzle-substrate-anchors-*.md`** | Newcomb-EDT-vs-CDT substrate-engineering substrate-recognition that produced this rule |

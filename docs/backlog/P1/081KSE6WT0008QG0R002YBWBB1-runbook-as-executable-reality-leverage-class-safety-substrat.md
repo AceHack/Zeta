@@ -21,7 +21,7 @@ related_substrate:
   - .claude/rules/algo-wink-failure-mode.md
   - .claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md
   - .claude/rules/mechanical-authorization-check.md
-  - memory/persona/mika/
+  - memory/mika/
 tags: [safety-substrate, runbook-leverage, executable-reality, play-doh, system-direction-shift, guards, mika-substrate, leverage-class, nci-compose]
 ---
 

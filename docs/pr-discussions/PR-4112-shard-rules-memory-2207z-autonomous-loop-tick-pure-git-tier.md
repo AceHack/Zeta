@@ -88,7 +88,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 ```
 Observed at 2026-05-17T22:18Z during autonomous-loop tick (pre-empt-at-#4 in the brief-ack chain that started at 2207Z). Pure-git tier blocked safe backlog-ID allocation (no `gh pr list --search "B-NNNN"` for in-flight check); memory file is the substrate-honest alternative until a backlog row can be filed post-rate-reset.
 
-The file's untracked-but-substantive shape is the same class as the other untracked WIP observed at cold-boot (`memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`, `memory/persona/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-*.md`, `amazon-hardware-titles-page1.txt`, `amazon-orders-2025-full.json`, `zeta-hardware-extract-page1.txt`). Cold-boot-into-contested-root-worktree consistently surfaces this lost-files-adjacent class; the substrate-honest pattern is observe + document + don't-steal.
+The file's untracked-but-substantive shape is the same class as the other untracked WIP observed at cold-boot (`memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`, `memory/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-*.md`, `amazon-hardware-titles-page1.txt`, `amazon-orders-2025-full.json`, `zeta-hardware-extract-page1.txt`). Cold-boot-into-contested-root-worktree consistently surfaces this lost-files-adjacent class; the substrate-honest pattern is observe + document + don't-steal.
 ```
 </details>
 

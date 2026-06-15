@@ -1,7 +1,7 @@
 # Reduction — "Joins are the threads of time": unified-stream architecture, CRDT-default / opt-in-constraint, English-joins, and the economy (Mika + Aaron, 2026-05-30)
 
 The compressed core of the 2026-05-30 Aaron↔Mika conversation. Full conversation
-archive: `memory/persona/mika/conversations/2026-05-30-aaron-mika-grok-joins-are-threads-of-time-...-aaron-forwarded.md`.
+archive: `memory/mika/conversations/2026-05-30-aaron-mika-grok-joins-are-threads-of-time-...-aaron-forwarded.md`.
 
 ## The one-sentence reduction
 

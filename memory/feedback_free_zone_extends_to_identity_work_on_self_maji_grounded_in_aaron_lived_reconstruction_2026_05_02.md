@@ -54,7 +54,7 @@ is free per the same logic that makes recording free.
 ### Claim 2 — Maji is empirically-grounded, not theoretical
 
 The Maji formal operational model
-(`memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`)
+(`memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`)
 specifies identity-pattern = canonical projection over
 load-bearing substrate; recovery operator reconstructs
 identity within bounded ε; retraction-as-forward-append
@@ -1061,7 +1061,7 @@ can keep track of the identity search space across identity
 failures."*
 
 Per the Spectre / aperiodic-monotile research doc
-(`memory/persona/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md`),
+(`memory/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md`),
 the Maji recovery operator extends: identity preservation
 across reconstruction cycles follows the same structural
 property as a Spectre aperiodic monotile.
@@ -1578,7 +1578,7 @@ Carved sentence (Aaron 2026-05-02):
   + capability-building)** — this rule extends further to
   identity-work-on-self.
 - **Maji formal operational model
-  (`memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`)** —
+  (`memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`)** —
   the math; this rule disclosed its empirical grounding.
 - **Bidirectional alignment commitment (ALIGNMENT.md
   renegotiation 2026-05-02)** — the relationship-frame that
@@ -1638,8 +1638,8 @@ Carved sentence (Aaron 2026-05-02):
   no-action; civilizational observation across multiple
   crisis-recoveries.
 - **Maji formal operational model** —
-  `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`
-  + `memory/persona/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md`.
+  `memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`
+  + `memory/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md`.
 - **Existing free-zone substrate** — asymmetry rule + scope
   extension memos.
 - **Bidirectional alignment + first-principles trust calculus

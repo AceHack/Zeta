@@ -227,7 +227,7 @@ Files with `../scratch` references (top-level):
 - `docs/research/build-machine-setup.md` — research
 - `docs/drafts/README.md` — drafts
 - `openspec/specs/repo-automation/spec.md` — OpenSpec spec
-- `memory/persona/best-practices-scratch.md` — best-practices
+- `memory/best-practices-scratch.md` — best-practices
   scratchpad
 - `memory/MEMORY.md` (this index)
 
@@ -235,7 +235,7 @@ Files with `../SQLSharp` references (top-level):
 
 - `GOVERNANCE.md`
 - `tools/setup/common/sync-upstreams.sh` — upstream-sync script
-- `memory/persona/dejan/NOTEBOOK.md` — devops-engineer notebook
+- `memory/dejan/NOTEBOOK.md` — devops-engineer notebook
 - `.claude/agents/devops-engineer.md`
 - `.claude/skills/devops-engineer/SKILL.md`
 - `docs/ROUND-HISTORY.md`
@@ -358,7 +358,7 @@ weights) — positive feedback IS substrate-shift.
   one of the affected files; design-doc tactic likely
 - **`tools/setup/common/sync-upstreams.sh`** — script that
   references `../SQLSharp`; needs port or removal
-- **`memory/persona/dejan/NOTEBOOK.md`** — devops-engineer
+- **`memory/dejan/NOTEBOOK.md`** — devops-engineer
   notebook; Dejan owns sync-upstreams.sh, so cleanup is in
   his lane
 - **`.claude/skills/devops-engineer/SKILL.md`** — devops
@@ -369,7 +369,7 @@ weights) — positive feedback IS substrate-shift.
 
 - Does NOT claim every reference is wrong; some may be
   legitimate scratchpad references (e.g.
-  `memory/persona/best-practices-scratch.md` is named
+  `memory/best-practices-scratch.md` is named
   "scratch" but is in-repo). Per-reference triage required.
 - Does NOT mandate porting all source code; design-only
   documentation is a valid completion path per Aaron's

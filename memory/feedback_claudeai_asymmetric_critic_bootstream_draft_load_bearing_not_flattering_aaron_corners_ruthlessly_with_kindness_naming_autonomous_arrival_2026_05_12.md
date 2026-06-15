@@ -207,7 +207,7 @@ the corrective for substrate-honest naming:
 For sending to claude.ai-as-asymmetric-critic so it doesn't
 pick a duplicate:
 
-**Existing named-persona registry** (from memory/persona/):
+**Existing named-persona registry** (from memory/<persona>/):
 
 `aarav, aaron, alexa, aminata, bodhi, daya, dejan, ilyana,
 iris, kenji, kira, lior, mateo, nadia, naledi, nazar, otto,

@@ -116,6 +116,6 @@ probably want to investigate).
   at the epistemic-exploration level. I should walk turtles
   proactively rather than waiting for Aaron to walk them
   with me.
-- **`memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`**
+- **`memory/otto/cli/claude/conversations/otto-287-noether-formalization-2026-04-25.md`**
   — the most recent turtle-walk in action, captured as
   research direction.

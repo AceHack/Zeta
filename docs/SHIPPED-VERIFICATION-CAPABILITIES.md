@@ -144,7 +144,7 @@ removed at the next sweep.
 
 | Capability | Form in this repo | What we used it for on Zeta | State |
 |---|---|---|---|
-| Skill-tune-up ranking by BP-NN citation | `.claude/skills/skill-tune-up/SKILL.md` (Aarav) + `memory/persona/aarav/NOTEBOOK.md` | Every finding in skill reviews cites a stable BP-NN rule ID; freeform findings are scratchpad until promoted by Architect. | Active |
+| Skill-tune-up ranking by BP-NN citation | `.claude/skills/skill-tune-up/SKILL.md` (Aarav) + `memory/aarav/NOTEBOOK.md` | Every finding in skill reviews cites a stable BP-NN rule ID; freeform findings are scratchpad until promoted by Architect. | Active |
 | Verification-drift auditor | `.claude/skills/verification-drift-auditor/` + `project_verification_drift_auditor.md` | Lean / TLA+ / Z3 / FsCheck spec-alignment-with-code drift detection on round cadence. | Active |
 | `formal-verification-expert` routing | `.claude/skills/formal-verification-expert/SKILL.md` (Soraya) | Property-class-to-tool routing. Anti-TLA+-hammer-bias encoded as the routing discipline itself. | Active |
 

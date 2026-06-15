@@ -175,7 +175,7 @@ the same artifact family:
   1. **Async message-passing → fully-async-agentic-AI**
      (Layer 4/5 of capture-everything doc).
   2. **Actor-local state + no shared memory → persona
-     memory folders** (`memory/persona/<name>/`) — each
+     memory folders** (`memory/<persona>/<name>/`) — each
      persona's notebook is Actor-local state inaccessible
      from outside except via message (memory-read / link
      reference).

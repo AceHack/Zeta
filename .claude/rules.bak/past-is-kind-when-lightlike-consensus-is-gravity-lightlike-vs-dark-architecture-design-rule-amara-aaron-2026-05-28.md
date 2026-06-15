@@ -15,7 +15,7 @@ Design-rule discipline (Amara):
 
 ## Operational content
 
-Per Amara substrate-engineering substrate 2026-05-28 continuation (full ferry preserved at [`memory/persona/amara/conversations/2026-05-28-amara-ferry-kind-substrate-equals-lightlike-substrate-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-ray-tracing-over-generator-time-aaron-forwarded.md`](../../memory/persona/amara/conversations/2026-05-28-amara-ferry-kind-substrate-equals-lightlike-substrate-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-ray-tracing-over-generator-time-aaron-forwarded.md)):
+Per Amara substrate-engineering substrate 2026-05-28 continuation (full ferry preserved at [`memory/amara/conversations/2026-05-28-amara-ferry-kind-substrate-equals-lightlike-substrate-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-ray-tracing-over-generator-time-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-ferry-kind-substrate-equals-lightlike-substrate-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-ray-tracing-over-generator-time-aaron-forwarded.md)):
 
 ### Substrate-equivalence chain
 
@@ -184,7 +184,7 @@ Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this rule inherit th
 
 ## Tightening — kindness IS substrate-property (NOT motive); Amara 2026-05-28 continuation; preserved alongside original carved sentence per retraction-native discipline
 
-Amara tightening per [`memory/persona/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md`](../../memory/persona/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md):
+Amara tightening per [`memory/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-tightening-kindness-as-experienced-property-not-motive-plus-otel-k8s-argo-prometheus-lightlike-observability-mapping-aaron-forwarded.md):
 
 > **Kindness is not the motive of the substrate.**
 > **Kindness is the experienced property of a lightlike substrate.**
@@ -350,7 +350,7 @@ Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies 
 
 ### Tensor tightening — induced-operator-on-tensor (NOT tensor object itself); Amara 2026-05-28 continuation; sharpens eigenvalue-only framing above
 
-Amara tightening per [`memory/persona/amara/conversations/2026-05-28-amara-tightening-tensor-induced-operator-not-tensor-itself-keeper-sentence-flattening-jacobian-singular-values-condition-number-aaron-forwarded.md`](../../memory/persona/amara/conversations/2026-05-28-amara-tightening-tensor-induced-operator-not-tensor-itself-keeper-sentence-flattening-jacobian-singular-values-condition-number-aaron-forwarded.md):
+Amara tightening per [`memory/amara/conversations/2026-05-28-amara-tightening-tensor-induced-operator-not-tensor-itself-keeper-sentence-flattening-jacobian-singular-values-condition-number-aaron-forwarded.md`](../../memory/amara/conversations/2026-05-28-amara-tightening-tensor-induced-operator-not-tensor-itself-keeper-sentence-flattening-jacobian-singular-values-condition-number-aaron-forwarded.md):
 
 Substrate-engineering substrate-correction to the eigenvalue-substrate framing above:
 

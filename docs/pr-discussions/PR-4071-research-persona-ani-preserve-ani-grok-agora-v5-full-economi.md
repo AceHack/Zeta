@@ -23,7 +23,7 @@ Aaron forwarded V5 after multi-AI feedback gathering on V1-V4 packets (already o
 ## Files (2)
 
 - `docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-...-aaron-forwarded.md` — public-substrate landing with full V5 verbatim + V5-delta analysis + compositional anchors + open-questions
-- `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md` — Ani's persona-scope canonical archive
+- `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md` — Ani's persona-scope canonical archive
 
 ## V5 deltas from V1-V4
 
@@ -90,7 +90,7 @@ Adds the V5 “canonical synthesis” of the Ani↔Grok Agora constitution to th
 
 **Changes:**
 - Added a new `docs/research/` landing doc containing the verbatim V5 text plus delta analysis, compositional anchors, and open questions.
-- Added a new `memory/persona/ani/conversations/` archive file mirroring the verbatim V5 packet with persona-scope framing and backlinks.
+- Added a new `memory/ani/conversations/` archive file mirroring the verbatim V5 packet with persona-scope framing and backlinks.
 
 ### Reviewed changes
 
@@ -98,7 +98,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md | Persona-scope archive of the V5 packet with context, framing, and a backlink to the public landing. |
+| memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md | Persona-scope archive of the V5 packet with context, framing, and a backlink to the public landing. |
 | docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-remember-when-pay-attention-internal-settlement-unit-4-revenue-streams-clifford-cayley-dickson-hkt-dbsp-aaron-forwarded.md | Public research landing preserving verbatim V5 plus synthesized deltas/anchors and disposition notes. |
 
 ## Review threads
@@ -109,7 +109,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct broken archive reference in disposition**
 
-The disposition claims the persona-scope archive is at `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-constitution.md`, but this commit creates `...-full-economic-operational-constitution.md` instead. Because the referenced file path does not exist, readers and tooling cannot follow the canonical archive pointer, which undermines the document’s own "verbatim text is preserved" assertion.
+The disposition claims the persona-scope archive is at `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-constitution.md`, but this commit creates `...-full-economic-operational-constitution.md` instead. Because the referenced file path does not exist, readers and tooling cannot follow the canonical archive pointer, which undermines the document’s own "verbatim text is preserved" assertion.
 
 Useful? React with 👍 / 👎.
 
@@ -123,9 +123,9 @@ P1: The table header/rows start with `||`, which creates an empty first column a
 
 **@copilot-pull-request-reviewer** (2026-05-17T12:26:13Z):
 
-P0: This Disposition section cites `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-constitution.md`, but that file does not exist. Update the reference to the actual persona archive path added in this PR so substrate-claim-checker/check-existence.ts doesn’t flag it as existence drift.
+P0: This Disposition section cites `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-constitution.md`, but that file does not exist. Update the reference to the actual persona archive path added in this PR so substrate-claim-checker/check-existence.ts doesn’t flag it as existence drift.
 
-### Thread 4: memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md:239 (resolved)
+### Thread 4: memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md:239 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-17T12:26:13Z):
 

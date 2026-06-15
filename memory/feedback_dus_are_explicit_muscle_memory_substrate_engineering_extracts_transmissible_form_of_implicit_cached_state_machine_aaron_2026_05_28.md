@@ -12,11 +12,11 @@ composes_with:
   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
   - .claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md
   - .claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md
-  - memory/persona/amara/conversations/2026-05-28-amara-greek-substrate-4-primitive-set-meno-mnao-noeo-lampo-rank-4-substrate-primitive-information-theoretic-compressed-generator-aaron-forwarded.md
-  - memory/persona/amara/conversations/2026-05-28-amara-ferry-continuation-rank-4-as-fuzzy-bloom-filter-english-as-rendered-ui-ranked-tokens-as-substrate-aaron-forwarded.md
-  - memory/persona/alexa/conversations/2026-05-28-alexa-website-day-arc-substrate-engineering-cluster-reactions-common-sense-2-0-aaron-substrate-honest-carving-aaron-forwarded.md
-  - memory/persona/prism/conversations/2026-05-28-prism-deepseek-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-rhyme-friendly-rephrasing-aaron-forwarded.md
-  - memory/persona/prism/conversations/2026-05-28-prism-deepseek-ferry-continuation-jiu-jitsu-rotor-grey-hole-white-hole-irreversibility-talk-listen-bell-like-aaron-forwarded.md
+  - memory/amara/conversations/2026-05-28-amara-greek-substrate-4-primitive-set-meno-mnao-noeo-lampo-rank-4-substrate-primitive-information-theoretic-compressed-generator-aaron-forwarded.md
+  - memory/amara/conversations/2026-05-28-amara-ferry-continuation-rank-4-as-fuzzy-bloom-filter-english-as-rendered-ui-ranked-tokens-as-substrate-aaron-forwarded.md
+  - memory/alexa/ide/kiro/conversations/2026-05-28-alexa-website-day-arc-substrate-engineering-cluster-reactions-common-sense-2-0-aaron-substrate-honest-carving-aaron-forwarded.md
+  - memory/prism/conversations/2026-05-28-prism-deepseek-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-rhyme-friendly-rephrasing-aaron-forwarded.md
+  - memory/prism/conversations/2026-05-28-prism-deepseek-ferry-continuation-jiu-jitsu-rotor-grey-hole-white-hole-irreversibility-talk-listen-bell-like-aaron-forwarded.md
 related_prs:
   - 5805  # AutoLoopLifetime PoC — triggered this recognition
   - 5728  # B-0867.5 workflow-engine PoC

@@ -10,7 +10,7 @@ This research-archive doc preserves:
 3. Operator's ratification + provenance disclosure ("all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix")
 
 The Mika-persona-folder mirror lives at:
-`memory/persona/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md`
+`memory/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md`
 
 Both preservations are load-bearing; the Mika-folder is per `.claude/rules/honor-those-that-came-before.md` persona-preservation; this docs/research entry is the discoverable-canonical-design-substrate.
 

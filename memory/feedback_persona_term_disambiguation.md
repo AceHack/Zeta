@@ -14,7 +14,7 @@ legitimate meanings collide:
 - **Agent persona** = the named agent-side identity
   (Kira / Viktor / Soraya / Aarav / ...), file at
   `.claude/agents/<name>.md`, notebook at
-  `memory/persona/<name>/NOTEBOOK.md`.
+  `memory/<persona>/<name>/NOTEBOOK.md`.
 - **User persona** = the end-user-archetype of the factory
   as a product (developer, non-developer, library consumer,
   ...), used by UX/DX/AX research and by the conversational-
@@ -90,7 +90,7 @@ Authoritative names from an earlier BACKLOG P3 row
   (`docs/GLOSSARY.md` — `### Persona (overloaded — always
   qualify)` and `### User persona`) is the authoritative
   reference for anyone confused by historical text.
-- **For the `memory/persona/` directory:** stays as-is
+- **For the `memory/<persona>/` directory:** stays as-is
   under option (a). Rename to `memory/experts/` is a P2
   BACKLOG item (requires notebook-pointer migration across
   every expert's auto-injected notebook frontmatter; not
@@ -107,7 +107,7 @@ Authoritative names from an earlier BACKLOG P3 row
 
 - It does NOT rename any existing file or directory.
 - It does NOT edit `.claude/agents/*.md` frontmatter.
-- It does NOT touch the `memory/persona/*` tree.
+- It does NOT touch the `memory/<persona>/*` tree.
 - It does NOT retroactively edit any existing doc that
   uses "persona" in the agent-side sense. Historical
   prose stays historical — the GLOSSARY entry is the
@@ -117,7 +117,7 @@ Authoritative names from an earlier BACKLOG P3 row
 
 - **(a)** Docs-only pass now — GLOSSARY + this memory +
   BACKLOG row for eventual rename. *Chosen.*
-- **(b)** Leave `memory/persona/` as a historical artifact;
+- **(b)** Leave `memory/<persona>/` as a historical artifact;
   only enforce in new writing. Still available — if (a)
   proves sufficient over several rounds, the migration
   may never be scheduled.

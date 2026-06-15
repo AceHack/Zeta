@@ -1,6 +1,6 @@
 ---
-name: Per-named-agent memory architecture research — Aaron asked "how would per-named-agent memories change things" and "please research this one a lot"; **EMPIRICAL FINDING: the repo already has this**, per-persona directories under `memory/persona/<name>/` with `NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md` per persona (18+ personas live: aarav, aaron, aminata, bodhi, daya, dejan, ilyana, iris, kenji, kira, mateo, nadia, naledi, nazar, rodney, rune, soraya, sova, viktor); shared cross-role scratchpad at root (`best-practices-scratch.md` = functional GLOBAL_CONTEXT.md); Google Search AI proposal is partial rediscovery + some new primitives (per-persona merge drivers, identity header, writes-own-reads-all formal enforcement) worth considering; Aaron Otto-245 2026-04-24
-description: Aaron Otto-245 fourth Google Search AI share on per-named-agent memory architecture. Quality assessment: what Google AI proposed is already partially built in the repo — per-persona `memory/persona/<name>/` directories exist, formalized in `memory/persona/README.md` (promoted from Kenji-only to every persona in round 32). Google AI's genuinely new contributions: (1) per-persona merge drivers via `.gitattributes` glob patterns, (2) identity header `[AgentName: CommitHash]` (composes with Otto-243 `repoSha:`), (3) formal writes-own-reads-all boundary lint, (4) per-persona AutoDream triggers. Requires the no-symlink rule from Otto-244.
+name: Per-named-agent memory architecture research — Aaron asked "how would per-named-agent memories change things" and "please research this one a lot"; **EMPIRICAL FINDING: the repo already has this**, per-persona directories under `memory/<persona>/<name>/` with `NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md` per persona (18+ personas live: aarav, aaron, aminata, bodhi, daya, dejan, ilyana, iris, kenji, kira, mateo, nadia, naledi, nazar, rodney, rune, soraya, sova, viktor); shared cross-role scratchpad at root (`best-practices-scratch.md` = functional GLOBAL_CONTEXT.md); Google Search AI proposal is partial rediscovery + some new primitives (per-persona merge drivers, identity header, writes-own-reads-all formal enforcement) worth considering; Aaron Otto-245 2026-04-24
+description: Aaron Otto-245 fourth Google Search AI share on per-named-agent memory architecture. Quality assessment: what Google AI proposed is already partially built in the repo — per-persona `memory/<persona>/<name>/` directories exist, formalized in `memory/<persona>/README.md` (promoted from Kenji-only to every persona in round 32). Google AI's genuinely new contributions: (1) per-persona merge drivers via `.gitattributes` glob patterns, (2) identity header `[AgentName: CommitHash]` (composes with Otto-243 `repoSha:`), (3) formal writes-own-reads-all boundary lint, (4) per-persona AutoDream triggers. Requires the no-symlink rule from Otto-244.
 type: project
 ---
 ## What Aaron asked
@@ -18,11 +18,11 @@ repo today.
 
 ## Ground-truth finding: the repo already does this
 
-Empirical check (via `ls memory/persona/` + reading
-`memory/persona/README.md`):
+Empirical check (via `ls memory/<persona>/` + reading
+`memory/<persona>/README.md`):
 
 ```
-memory/persona/
+memory/<persona>/
 ├── aarav/          # skill-expert
 ├── aaron/          # human maintainer
 ├── aminata/        # threat-model-critic
@@ -71,9 +71,9 @@ Mapping Google AI's proposal against current reality:
 
 | Google AI proposal | Zeta repo today | Gap? |
 |---|---|---|
-| `.claude/agents/<name>/MEMORY.md` | `memory/persona/<name>/MEMORY.md` | Location different; content present |
+| `.claude/agents/<name>/MEMORY.md` | `memory/<persona>/<name>/MEMORY.md` | Location different; content present |
 | `.claude/agents/<name>/session_logs/` | No session-logs per persona | Not a gap — Anthropic AutoMemory handles global; per-persona session-logs would duplicate |
-| `GLOBAL_CONTEXT.md` at root | `best-practices-scratch.md` at `memory/persona/` root | Present, different name |
+| `GLOBAL_CONTEXT.md` at root | `best-practices-scratch.md` at `memory/<persona>/` root | Present, different name |
 | Identity header `[AgentName: CommitHash]` | NOT YET — memories currently have `name:`/`description:`/`type:` frontmatter | **Genuine gap** |
 | Per-persona merge drivers via `.gitattributes` | `.gitattributes` has no merge drivers currently | **Genuine gap** |
 | Writes-own reads-all boundary | Implicit discipline in skill files; not enforced | **Soft gap — formalization opportunity** |
@@ -103,13 +103,13 @@ Mapping Google AI's proposal against current reality:
    real, implementable improvement. Example:
    ```
    # Persona notebooks: union merge (simple concat)
-   memory/persona/*/NOTEBOOK.md merge=union
+   memory/<persona>/*/NOTEBOOK.md merge=union
 
    # Persona MEMORY.md indexes: require manual review
-   memory/persona/*/MEMORY.md merge=binary
+   memory/<persona>/*/MEMORY.md merge=binary
 
    # Shared scratchpad: append-dedup (custom driver)
-   memory/persona/best-practices-scratch.md merge=timestamp-dedup
+   memory/best-practices-scratch.md merge=timestamp-dedup
 
    # Tick-history (per-writer per Otto-240): union
    docs/hygiene-history/tick-history/*.md merge=union
@@ -127,11 +127,11 @@ Mapping Google AI's proposal against current reality:
 3. **Formal writes-own-reads-all boundary** — could be
    a lint rather than runtime enforcement:
    - Pre-commit hook: check that any change to
-     `memory/persona/<A>/` was authored by a session
+     `memory/<persona>/<A>/` was authored by a session
      wearing agent-<A>'s hat (how? hard to detect without
      a runtime marker — would need `agent:` header from
      #1 above + commit message convention).
-   - Alternative: just document in `memory/persona/README.md`
+   - Alternative: just document in `memory/<persona>/README.md`
      as an invariant and rely on discipline (current state).
    - Verdict: not worth automation effort until we see
      actual cross-persona writes happening. Low priority.
@@ -145,7 +145,7 @@ Mapping Google AI's proposal against current reality:
      `~/.claude/projects/<slug>/memory/MEMORY.md`. It
      doesn't have per-persona hooks. We can't redirect it.
    - What COULD work: a `/dream-persona <name>` custom
-     skill that consolidates only `memory/persona/<name>/`
+     skill that consolidates only `memory/<persona>/<name>/`
      using the same consolidation logic. That's a new
      skill, not a trigger hook.
    - Low priority until we see AutoDream-index quality
@@ -237,7 +237,7 @@ the picture.**
 - `codex search` does nearest-neighbor retrieval over the
   index.
 - If Aaron runs `codex index` against the repo,
-  root-level `memory/` and `memory/persona/**` content
+  root-level `memory/` and `memory/<persona>/**` content
   IS embedded and consumes search context. The Google
   AI "token waste" concern is **real here**.
 
@@ -281,7 +281,7 @@ the picture.**
 - `.claude/agents/` holds canonical persona frontmatter
   (hidden, harness-convention) — this is where the harness
   looks for agent definitions.
-- `memory/persona/<name>/` holds memory notebooks (at
+- `memory/<persona>/<name>/` holds memory notebooks (at
   root, visible) — Aaron explicitly chose the clutter cost
   for visibility; humans and agents both see them without
   grepping dot-dirs.
@@ -305,7 +305,7 @@ Mitigation when it matters (peer-agent mode, MCP plugins,
 `codex index` / `gemini labs rag index`):
 
 - **Codex**: check for `.codexignore` or index-scope
-  flags; exclude `memory/**`, `memory/persona/**` from
+  flags; exclude `memory/**`, `memory/<persona>/**` from
   embedding. If Codex supports `--source src/ docs/`
   instead of `./`, use that.
 - **Gemini**: use `gemini labs rag index --source` with
@@ -338,13 +338,13 @@ Reality in Zeta:
 - `.claude/agents/` — persona SKILL.md files (17 of them,
   per Claude Code convention; CLAUDE.md harness section
   names this location explicitly)
-- `memory/persona/<name>/` — per-persona memory notebooks
+- `memory/<persona>/<name>/` — per-persona memory notebooks
   (at repo root, NOT under `.claude/`)
 - No root `agents/` directory
 
 So Aaron's repo already answers the debate: **canonical
 frontmatter in `.claude/agents/` (where the harness
-expects it), memory in `memory/persona/` (where humans
+expects it), memory in `memory/<persona>/` (where humans
 and agents both see it without grepping the
 dot-directory).** Split by file-type, not by hierarchy.
 
@@ -356,7 +356,7 @@ memory) that the Google AI mashed together.
 
 - Does NOT authorize implementing the new primitives this
   tick. They're research findings for future BACKLOG rows.
-- Does NOT authorize moving `memory/persona/` to
+- Does NOT authorize moving `memory/<persona>/` to
   `.claude/agents/<name>/memory/` or any other location.
   Current location works and is already populated.
 - Does NOT authorize adopting `[AgentName: CommitHash]`
@@ -385,10 +385,10 @@ memory) that the Google AI mashed together.
    lint for new memories).
 2. **Per-file-type merge drivers in `.gitattributes`** —
    design document + worked drivers for:
-   - `memory/persona/*/NOTEBOOK.md` → `merge=union`
+   - `memory/<persona>/*/NOTEBOOK.md` → `merge=union`
    - `docs/hygiene-history/tick-history/*.md` → custom
      timestamp-sort driver
-   - `memory/persona/*/MEMORY.md` → `merge=binary` (manual)
+   - `memory/<persona>/*/MEMORY.md` → `merge=binary` (manual)
    Size: M (custom driver implementation + testing).
 3. **`/dream-persona <name>` skill** — per-persona
    consolidation skill. Low priority; file if
@@ -417,7 +417,7 @@ Three directives in one message:
    what Google AI proposed."
 
 Future Otto: when executing the BACKLOG rows above,
-start by reading `memory/persona/README.md` (the
+start by reading `memory/<persona>/README.md` (the
 existing formal documentation of the per-persona
 pattern). That document is the baseline; Otto-245
 research identifies the increments.

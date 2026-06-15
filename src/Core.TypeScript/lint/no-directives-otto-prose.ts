@@ -10,7 +10,7 @@
 //   worktree             — unstaged + staged + committed + untracked
 //
 // Otto-authored prose surfaces (path filter applied to changed files):
-//   memory/*.md (top-level only, NOT memory/persona/)
+//   memory/*.md (top-level only, NOT memory/<persona>/)
 //   docs/hygiene-history/ticks/**/*.md
 //   docs/research/*.md
 //   docs/active-trajectory.md

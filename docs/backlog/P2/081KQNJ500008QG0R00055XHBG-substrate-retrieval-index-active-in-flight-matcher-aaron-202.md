@@ -50,7 +50,7 @@ A working substrate-retrieval-index that:
    - Carved-sentence bullets in `CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md` (and equivalent harness files when added)
    - Memo topic files in `memory/*.md`
    - Decision archaeology output in `docs/research/`, `docs/DECISIONS/`
-   - Persona notebook entries in `memory/persona/<name>/`
+   - Persona notebook entries in `memory/<persona>/<name>/`
 
 2. **Matches** in-flight retrieval keys:
    - Keyword-tag index over memo frontmatter (description / type / tags fields)

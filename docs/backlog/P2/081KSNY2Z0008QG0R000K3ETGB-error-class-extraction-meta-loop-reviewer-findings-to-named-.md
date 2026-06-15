@@ -60,4 +60,4 @@ POTENTIAL extension per operator standing direction. P2 — operationally near-t
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "The auto-review pipeline as training data generator" + § "The error class extraction as its own pipeline"
+`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "The auto-review pipeline as training data generator" + § "The error class extraction as its own pipeline"

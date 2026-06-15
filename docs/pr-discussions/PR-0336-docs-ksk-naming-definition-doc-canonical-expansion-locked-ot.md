@@ -115,7 +115,7 @@ Fixed in 364be82. Rewrote the GLOSSARY KSK entry's initial-starting-point refere
 
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:24Z):
 
-Operational standing rules forbid direct contributor/agent name attribution in docs; this section uses named individuals. Please rewrite to use role references (e.g., “human maintainer”, “external collaborator”) and move any required provenance/credit to allowed locations (e.g., `memory/persona/**` or `docs/BACKLOG.md`). Also update the new glossary entry to match the same no-names convention.
+Operational standing rules forbid direct contributor/agent name attribution in docs; this section uses named individuals. Please rewrite to use role references (e.g., “human maintainer”, “external collaborator”) and move any required provenance/credit to allowed locations (e.g., `memory/<persona>/**` or `docs/BACKLOG.md`). Also update the new glossary entry to match the same no-names convention.
 ```suggestion
 - The **human maintainer** and an **external AI
   collaborator** are the concept owners of KSK-as-safety-
@@ -124,7 +124,7 @@ Operational standing rules forbid direct contributor/agent name attribution in d
   optional-anchoring design was articulated across courier
   ferries documented under `docs/aurora/2026-04-23-*` and
   `docs/aurora/2026-04-24-*`. If named provenance is needed,
-  keep it in allowed locations such as `memory/persona/**`
+  keep it in allowed locations such as `memory/<persona>/**`
   or `docs/BACKLOG.md`, not in this definition file.
 - An **external collaborator** committed the **initial
   starting point** of the KSK code under `LFG/lucent-ksk`

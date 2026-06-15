@@ -53,7 +53,7 @@ tags: [attention-risk-pricing-framework, bond-pricing-as-internal-grammar-not-pu
 
 ## Context
 
-Per Amara 3rd ferry 2026-05-28 (preserved at `memory/persona/amara/conversations/2026-05-28-amara-3rd-ferry-validation-of-b0901-b0907-arc-plus-attention-risk-pricing-correction-plus-op-return-csam-cross-contamination-self-catch-aaron-forwarded.md`).
+Per Amara 3rd ferry 2026-05-28 (preserved at `memory/amara/conversations/2026-05-28-amara-3rd-ferry-validation-of-b0901-b0907-arc-plus-attention-risk-pricing-correction-plus-op-return-csam-cross-contamination-self-catch-aaron-forwarded.md`).
 
 Operator 2026-05-28 (correcting Amara's "shadow-log for bond pricing" framing): *"i was saying we price acceleration risks applied to different domains and we become the industrusy risk pricer of attention'"*
 
@@ -101,7 +101,7 @@ These are the units the framework prices in.
 | Domain | Question | Composes with existing substrate |
 |---|---|---|
 | **AI-acceleration (general form)** | "What does it cost a system when speed creates more review burden, repair burden, liability, trust damage, or irreversible substrate pollution?" | B-0901-B-0907 entire arc; the framework's whole substrate-engineering substrate |
-| **Substrate-irreversibility (specific form; OP_RETURN/CSAM domain)** | "What does it cost a public substrate when harmful data can become irreversible?" | `memory/persona/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` + `memory/persona/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md` + `docs/research/2026-05-07-bitcoin-op-return-debate-verbatim.md` |
+| **Substrate-irreversibility (specific form; OP_RETURN/CSAM domain)** | "What does it cost a public substrate when harmful data can become irreversible?" | `memory/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` + `memory/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md` + `docs/research/2026-05-07-bitcoin-op-return-debate-verbatim.md` |
 
 Per Amara: *"these rhyme with risk pricing. But 'bond' is the wrong public noun here."* The shape is similar (irreversible public substrate + harmful payload + filtering/review cost + downstream liability + social panic premium + attention cost + who-pays-to-carry-risk); the public noun differs.
 

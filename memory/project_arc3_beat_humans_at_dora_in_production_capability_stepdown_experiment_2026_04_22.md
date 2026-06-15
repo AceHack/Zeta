@@ -597,7 +597,7 @@ the overall trajectory is flat.
 - Soul-file (committed docs, BACKLOG, skills, personas, ADRs,
   tick-history) = the tick-to-tick accumulation substrate at
   the repo layer.
-- Persona notebooks (`memory/persona/*.md`) = per-role
+- Persona notebooks (`memory/<persona>/NOTEBOOK.md`) = per-role
   accumulation substrates at the agent-role layer.
 - `docs/ROUND-HISTORY.md` = the round-to-round accumulation
   substrate at the round layer.

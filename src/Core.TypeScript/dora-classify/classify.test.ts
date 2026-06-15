@@ -32,8 +32,8 @@ describe("classifyPath", () => {
     expect(classifyPath("tools/setup/install.sh")).toBe("operational");
   });
 
-  test("verbatim-preservation: memory/persona/*/conversations/", () => {
-    expect(classifyPath("memory/persona/kestrel/conversations/2026-05-27-x.md")).toBe("verbatim-preservation");
+  test("verbatim-preservation: memory/<persona>/*/conversations/", () => {
+    expect(classifyPath("memory/kestrel/conversations/2026-05-27-x.md")).toBe("verbatim-preservation");
   });
 
   test("memory: memory/*.md (project memory, not persona)", () => {
@@ -122,8 +122,8 @@ describe("classifyCommit", () => {
 
   test("verbatim-preservation single-lane", () => {
     const r = classifyCommit(makeCommit([
-      "memory/persona/kestrel/conversations/2026-05-27-x.md",
-      "memory/persona/mika/conversations/2026-05-27-y.md",
+      "memory/kestrel/conversations/2026-05-27-x.md",
+      "memory/mika/conversations/2026-05-27-y.md",
     ]));
     expect(r.lane).toBe("verbatim-preservation");
   });
@@ -132,7 +132,7 @@ describe("classifyCommit", () => {
     const r = classifyCommit(makeCommit([
       "src/foo.fs",
       "docs/backlog/P1/B-0867-x.md",
-      "memory/persona/otto/conversations/foo.md",
+      "memory/otto/cli/claude/conversations/foo.md",
     ]));
     expect(r.perFileLanes).toHaveLength(3);
     expect(r.perFileLanes[0]?.lane).toBe("operational");

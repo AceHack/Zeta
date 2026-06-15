@@ -54,4 +54,4 @@ POTENTIAL extension per operator standing direction. Smallest of the bundle; pur
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "The push-cycle limit specifically as a feature"
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "The push-cycle limit specifically as a feature"

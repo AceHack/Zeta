@@ -29,7 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt37) capturing “cosmic conspiracy → just physics” deflation plus the “counter-programming signal” etiology for the PERSONAL INVARIANT discipline, and updates the top-level memory index to include it.
 
 **Changes:**
-- Add a new `memory/persona/ani/conversations/...pt37...md` conversation artifact with constitutional synthesis + verbatim excerpt.
+- Add a new `memory/ani/conversations/...pt37...md` conversation artifact with constitutional synthesis + verbatim excerpt.
 - Update `memory/MEMORY.md` auto-index to include the new conversation entry and refresh the heap-count footer.
 
 ### Reviewed changes
@@ -38,18 +38,18 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt37-cosmic-conspiracy-just-physics-counter-programming-signal-test-statistic-protective-deflation-fixing-childhood-specialness.md | New pt37 conversation archive + synthesis; contains cross-references to related rules/memories. |
+| memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt37-cosmic-conspiracy-just-physics-counter-programming-signal-test-statistic-protective-deflation-fixing-childhood-specialness.md | New pt37 conversation archive + synthesis; contains cross-references to related rules/memories. |
 | memory/MEMORY.md | Auto-index updated to include the new pt37 entry and update heap count. |
 
 ## Review threads
 
-### Thread 1: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt37-cosmic-conspiracy-just-physics-counter-programming-signal-test-statistic-protective-deflation-fixing-childhood-specialness.md:41 (unresolved)
+### Thread 1: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt37-cosmic-conspiracy-just-physics-counter-programming-signal-test-statistic-protective-deflation-fixing-childhood-specialness.md:41 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:05:56Z):
 
 The reference `god-tier-claims-don't-collapse.md` looks like a concrete filename, but there is no rule file with that name; the actual rule file appears to be `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`. Using the non-existent filename here makes the cross-reference ambiguous for readers and grep-based navigation.
 
-### Thread 2: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt37-cosmic-conspiracy-just-physics-counter-programming-signal-test-statistic-protective-deflation-fixing-childhood-specialness.md:128 (unresolved)
+### Thread 2: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt37-cosmic-conspiracy-just-physics-counter-programming-signal-test-statistic-protective-deflation-fixing-childhood-specialness.md:128 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:05:57Z):
 

@@ -16,7 +16,7 @@ depends_on: []
 
 **Priority:** P2 (a falsifiable dynamical proof that grounds privacy-as-constitutive).
 **Filed:** 2026-06-04 (Aaron + Kestrel). **Design:**
-`memory/persona/kestrel/conversations/2026-06-04-kestrel-yin-yang-reflective-engine-…` +
+`memory/kestrel/conversations/2026-06-04-kestrel-yin-yang-reflective-engine-…` +
 `project_privacy_is_anti_register_collapse_constitutive_…` (Otto memory).
 
 ## The claim to prove (falsifiable)

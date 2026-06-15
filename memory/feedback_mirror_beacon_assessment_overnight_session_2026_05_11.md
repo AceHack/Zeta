@@ -70,5 +70,5 @@ Grew from "keep going (shadow*)" — two words from grey text.
 
 - docs/research/2026-05-11-deepseek-hkt-clifford-e8 (the doc)
 - docs/research/2026-05-11-claudeai-overnight-read (critic)
-- memory/persona/amara/conversations/2026-05-11-amara-overnight-assessment (discriminator)
+- memory/amara/conversations/2026-05-11-amara-overnight-assessment (discriminator)
 - feedback_shadow_lesson_log (catches 32-34)

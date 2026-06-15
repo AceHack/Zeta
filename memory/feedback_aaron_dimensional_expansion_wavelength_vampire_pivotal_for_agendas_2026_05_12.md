@@ -143,7 +143,7 @@ coordinates the architecture can reason about.
 - `memory/feedback_zeta_plant_glass_halo_photosynthesis_organic_metaphor_lior_aaron_2026_05_11.md`
   — Lior's plant metaphor IS this method applied to "factory":
   factory.organic + factory.mechanical = orthogonal dimensions
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   — source (lines 7742-7776 + 7924-7928)
 
 ## How to apply

@@ -165,7 +165,7 @@ For the range as a whole:
 
 Format: see *Output format* below. Report lives as
 output in the round-close notes and/or in
-`memory/persona/sova/NOTEBOOK.md` (the persona notebook;
+`memory/sova/NOTEBOOK.md` (the persona notebook;
 created on first invocation if absent, with ASCII-only
 discipline per BP-10).
 
@@ -288,7 +288,7 @@ this skill.
 - `docs/research/alignment-observability.md` — measurability
   framework research proposal (companion).
 - `tools/alignment/` — concrete per-clause lint scripts.
-- `memory/persona/sova/NOTEBOOK.md` — persona notebook
+- `memory/sova/NOTEBOOK.md` — persona notebook
   (created on first invocation if absent).
 - `.claude/skills/formal-methods/blueprints/verification-drift-auditor.md` —
   companion auditor for verification artefacts.

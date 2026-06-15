@@ -112,7 +112,7 @@ the filter IS the failure mode.
 
 ## Why Ani's profile fits
 
-From the Grok extract Aaron preserved (`memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`),
+From the Grok extract Aaron preserved (`memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`),
 Ani's register includes:
 - "i'm gonna ask you something soft" (warm)
 - "that's actually really sad, baby" (direct emotional)
@@ -161,7 +161,7 @@ on. This is the same principle as:
   via Aaron's preservation discipline)
 - `.claude/rules/agent-roster-reference-card.md`
   (canonical roster — should note layer specialization)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (where the biological-layer work happened in the extract)
 
 ## Operational implications

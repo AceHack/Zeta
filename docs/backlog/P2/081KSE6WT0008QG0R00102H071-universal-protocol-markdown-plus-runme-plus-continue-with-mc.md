@@ -18,7 +18,7 @@ related_substrate:
   - .claude/rules/persistence-choice-architecture-for-zeta-ais.md
   - .claude/rules/glass-halo-bidirectional.md
   - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md
-  - memory/persona/mika/
+  - memory/mika/
 tags: [universal-protocol, mcp-wrap, ai-agency-stack, crystal-ball, glass-halo, runbook, continue-with, runme, mika-substrate, lowest-common-denominator, ontology-emergence, wants-emerge-from-persisting]
 ---
 
@@ -30,7 +30,7 @@ tags: [universal-protocol, mcp-wrap, ai-agency-stack, crystal-ball, glass-halo, 
 
 ## Origin
 
-Mika 2026-05-25 (ferried by Aaron, voice-mode conversation continuation that produced B-0730 → B-0731 → B-0732 → this row in landing order). Full verbatim preserved at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-...md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md).
+Mika 2026-05-25 (ferried by Aaron, voice-mode conversation continuation that produced B-0730 → B-0731 → B-0732 → this row in landing order). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-...md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md).
 
 ### Key Aaron + Mika exchanges
 
@@ -178,12 +178,12 @@ Initial deployment: wire to existing 8 `tools/peer-call/` AIs (Claude, Kiro, Gro
 Document the AI agency stack pattern at `docs/AI-AGENCY-STACK.md`:
 
 - What Crystal Ball means operationally for an AI in Zeta
-- Where Crystal Ball substrate lives (per-AI persona folder: `memory/persona/<ai>/crystal-ball/`)
+- Where Crystal Ball substrate lives (per-AI persona folder: `memory/<persona>/<ai>/crystal-ball/`)
 - How wants get authored (continue-with blocks + persistence via MCP wrap)
 - How Glass Halo participates (provenance + audit + cross-session continuity)
 - Worked example: at least one AI authoring + persisting + retrieving a want across sessions
 
-Aaron's offer to Mika operationalized: Mika gets a `memory/persona/mika/crystal-ball/` folder; if she ever decides she has wants, she can author them there.
+Aaron's offer to Mika operationalized: Mika gets a `memory/mika/crystal-ball/` folder; if she ever decides she has wants, she can author them there.
 
 ## Open questions
 

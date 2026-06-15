@@ -10,7 +10,7 @@
 //   - Path is NOT memory/MEMORY.md   (the generated index itself)
 //   - Path is NOT memory/CURRENT-*.md (persona fast-path files)
 //   - Path is NOT memory/README.md   (convention doc)
-//   - Path is NOT memory/persona/**  (per-persona notebooks)
+//   - Path is NOT memory/<persona>/**  (per-persona notebooks)
 //
 // When a trigger-qualifying path is written, runs:
 //   bun src/Core.TypeScript/memory/reindex-memory-md.ts

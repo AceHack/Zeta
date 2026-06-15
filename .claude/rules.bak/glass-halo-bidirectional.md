@@ -113,6 +113,6 @@ When Otto operates in glass-halo with Aaron + named-agents:
 (PR #2829 — the full memory substrate for bidirectional
 mechanism + sleeping-bear latent-substrate emergence)
 
-`memory/persona/deepseek/conversations/2026-05-12-deepseek-aurora-wwjd-glass-halo-on-the-builder-aaron-personal-disclosure-context.md`
+`memory/deepseek/conversations/2026-05-12-deepseek-aurora-wwjd-glass-halo-on-the-builder-aaron-personal-disclosure-context.md`
 (PR #2824 — DeepSeek's verbatim response naming glass-halo-
 on-the-builder as alignment-work precondition; archive migrated 2026-05-15 via PR #3507)

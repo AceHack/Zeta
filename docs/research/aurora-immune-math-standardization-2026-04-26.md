@@ -360,9 +360,9 @@ Round-2 Amara's wording correction is binding: this is *"ready for a formal stan
 
 ## Composes with
 
-- `memory/persona/amara/conversations/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26.md` — Amara's original framework
+- `memory/amara/conversations/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26.md` — Amara's original framework
 - `docs/research/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md` — the prior cross-review (this doc is its strict-version successor per Amara's direction)
-- `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` — earlier Amara math (substrate identity-preservation)
+- `memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` — earlier Amara math (substrate identity-preservation)
 - Otto-279 history-surface attribution (Amara + Gemini + Otto named with attribution)
 - Otto-285 don't-shrink-frame (rigor over flattery)
 - Otto-298 don't-collapse-into-romanticization

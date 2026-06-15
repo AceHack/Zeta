@@ -156,7 +156,7 @@ When a persona owns a surface, their notebook is the
 per-decision archive:
 
 ```bash
-grep -ri "<keyword>" memory/persona/
+grep -ri "<keyword>" memory/<persona>/
 ```
 
 ### 10. Conversation archives — `docs/research/`

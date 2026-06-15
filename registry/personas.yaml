@@ -4,7 +4,7 @@ description: |
   Persona-role registry (256 slots for the agent roster).
   Per docs/AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or
   skills": this registry uses neutral role-refs, not personal names. The
-  enumerated history surfaces (docs/hygiene-history/, memory/persona/) and
+  enumerated history surfaces (docs/hygiene-history/, memory/) and
   the roster carve-outs (.claude/rules/agent-roster-reference-card.md) are
   where named attribution lives.
 entries:

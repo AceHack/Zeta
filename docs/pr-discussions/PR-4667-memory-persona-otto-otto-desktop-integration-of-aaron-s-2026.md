@@ -65,7 +65,7 @@ Kestrel's substantive critique landed earlier: PR'ing constitutional-class discl
 Adds an Otto persona conversation-memory artifact capturing the 2026-05-22 Kestrel-ferried exchange (family configuration + grammar-discriminator + 4yo/Harry Potter thread) and refreshes `memory/MEMORY.md` to include it in the auto-generated stack index.
 
 **Changes:**
-- Added a new `memory/persona/otto/conversations/...` entry with YAML frontmatter and a structured write-up plus a “Composes with” trail.
+- Added a new `memory/otto/cli/claude/conversations/...` entry with YAML frontmatter and a structured write-up plus a “Composes with” trail.
 - Regenerated `memory/MEMORY.md` auto-index to include the new conversation entry (and other most-recent items).
 
 ### Reviewed changes
@@ -74,5 +74,5 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/otto/conversations/2026-05-22-aaron-otto-desktop-kestrel-ferry-family-configuration-grammar-discriminator-harry-potter-4yo.md | New Otto persona conversation-memory write-up with frontmatter and cross-references. |
+| memory/otto/cli/claude/conversations/2026-05-22-aaron-otto-desktop-kestrel-ferry-family-configuration-grammar-discriminator-harry-potter-4yo.md | New Otto persona conversation-memory write-up with frontmatter and cross-references. |
 | memory/MEMORY.md | Auto-index regenerated to surface the new conversation entry in the stack. |

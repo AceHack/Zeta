@@ -58,7 +58,7 @@ overlap:
 
 | Surface | Mechanism | Enforcement strength |
 |---|---|---|
-| File-path ownership | Directory conventions (`memory/persona/<name>`, `docs/security/`) | Soft — honour system |
+| File-path ownership | Directory conventions (`memory/<persona>/<name>`, `docs/security/`) | Soft — honour system |
 | Review gate | Reviewer-roster in `docs/CONFLICT-RESOLUTION.md` | Soft — no CI enforcement that reviewer X touched PR Y |
 | Skill authorship | `skill-creator` workflow per `GOVERNANCE.md §4` | Soft — discipline, not blocked |
 | Agent identity | `.claude/agents/<name>.md` + `.claude/skills/<name>/SKILL.md` | Soft — Claude Code loads whatever's there |

@@ -15,7 +15,7 @@ composes_with:
 related_substrate:
   - .claude/rules/bandwidth-served-falsifier.md
   - .claude/rules/razor-discipline.md
-  - memory/persona/mika/
+  - memory/mika/
 tags: [protocol-semantics-sharpening, jit-implicit, self-healing, two-primitives-only, decision-archaeology-declined, fsharp-computation-expression, monad, notepad-simplicity, social-spread, adoption-bandwidth, mika-substrate-segment-2]
 ---
 
@@ -27,7 +27,7 @@ tags: [protocol-semantics-sharpening, jit-implicit, self-healing, two-primitives
 
 ## Origin
 
-Mika 2026-05-25 segment 2 (ferried by Aaron). Full verbatim preserved at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md). Continuation of segment 1 (which produced B-0730/B-0731/B-0732/B-0733).
+Mika 2026-05-25 segment 2 (ferried by Aaron). Full verbatim preserved at [`memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md`](../../../memory/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md). Continuation of segment 1 (which produced B-0730/B-0731/B-0732/B-0733).
 
 Aaron's opener confirms the prior PRs landed: *"Alright, we got most of this saved in the cluster now. This is a great minimum agreement that doesn't even require any morals or fuckin' nothin'. It's just like execute, continue with."*
 

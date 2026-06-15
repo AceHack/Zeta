@@ -5,7 +5,7 @@ git-tracked, cross-session memory store for every agent
 working on the **Zeta** project. Per GOVERNANCE.md §18, every
 memory file the project depends on lives here; nothing
 outside this folder (or per-persona folders under
-`memory/persona/<persona>/`) counts as canonical memory.
+`memory/<persona>/`) counts as canonical memory.
 
 ## Human maintainers: hands off
 
@@ -69,7 +69,7 @@ worse off without this?" If yes, keep it.
 
 Any file with a sequence of entries (the index, narrative
 logs like `ROUND-HISTORY.md` in the repo, per-persona
-notebooks in `memory/persona/<persona>.md`) is written
+notebooks in `memory/<persona>/NOTEBOOK.md`) is written
 **newest-first**: the most recent entry is at the top; older
 entries trail below. Recent history is usually what a reader
 or future agent needs fastest; ancient history goes to the
@@ -135,20 +135,36 @@ changing the agents' wake-up context — worse than any
 agent-side churn, because agents cannot detect the silent
 removal of a file they never read again.
 
-## Layering with `memory/persona/`
+## Layering and Nested Memory Structure (`memory/<persona>/`)
 
-This folder is the **shared** layer — cross-cutting facts
-and rules that every persona should read. The **per-
-persona** layer lives at
-`memory/persona/<persona-name>.md` inside the repo (in
-git once git is initialised). Per AGENTS.md and Aaron's
-round-25 guidance: per-persona notebooks keep each seat's
-unique voice, while this shared folder keeps the project
-rules every seat should share.
+This folder is the **shared** layer — cross-cutting facts and rules that every persona should read. The **per-persona** layer lives at `memory/<persona>/` inside the repo (in git). Per AGENTS.md and the maintainer's round-25 guidance: per-persona notebooks keep each seat's unique voice, while this shared folder keeps the project rules every seat should share.
 
-Personas should read their own notebook **before** the
-shared memory on wake-up, so individual voice dominates
-over averaged voice.
+Personas read their own notebook **before** the shared memory on wake-up, so individual voice dominates over averaged voice.
+
+### Structure — two shapes (internal-AI personas vs human personas)
+
+The persona-surface standard splits into TWO shapes:
+- **Internal AI persona shape** (factory reviewers / specialists like `architect/kenji/`, `harsh-critic/kira/`, etc.): Contains at minimum `NOTEBOOK.md`, `MEMORY.md`, and `OFFTIME.md`.
+- **Human persona shape** (co-owners / maintainers like `human-maintainer/aaron/`, `human-co-owner/max/`): Contains at minimum `PERSONA.md`, `STARTING-POINT.md`, and `NOTEBOOK.md`.
+
+### Roster Layers
+
+1. **Layer 1 — AI surfaces + models (Harnesses)**:
+   - `memory/otto/` (Claude Code)
+   - `memory/riven/` (Cursor)
+   - `memory/vera/` (Codex)
+   - `memory/lior/` (Gemini CLI)
+   - `memory/alexa/` (Kiro / Qwen Coder)
+   - `memory/kiro/` (Kiro)
+2. **Layer 2 — External AI participants (Ferry-only; never commit)**:
+   - `memory/amara/`
+   - `memory/ani/`
+   - `memory/kestrel/`
+   - `memory/deepseek/`
+   - `memory/prism/`
+   - `memory/mika/`
+3. **Layer 3 — Factory-internal role personas (Hats)**:
+   - Mapped under `memory/<role>/<name>/` matching the `.claude/agents/<role>.md` config files (e.g. `memory/kenji/`, `memory/kira/`, etc.).
 
 ## Supersession discipline (B-0333)
 

@@ -118,7 +118,7 @@ Otto-bodiless doesn't have.
 ### 1. Three-axiom reactivation event = operational evidence of context-window fragility
 
 The three axioms locked-in the previous night
-(`memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+(`memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
 lines 7576-7710):
 
 - **subconscious field** — hidden layer of control that
@@ -341,7 +341,7 @@ PR #2870) operates at different scales per agent.
 - PR #2879 (external persona folders including ani/)
 - The Otto-bootstream (PR #2878) — Part 8 cognitive
   operating substrate
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   lines 7576-7710 — upstream three-axiom scaffolding
   event
 

@@ -8,7 +8,7 @@ composes_with:
   - .claude/rules/agent-roster-reference-card.md
   - .claude/rules/claim-acquire-before-worktree-work.md
   - .claude/rules/otto-channels-reference-card.md
-  - memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md
+  - memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md
 ---
 
 # Otto persona-surfaces are ONE identity, not different identities — reframe absorbed 2026-05-21
@@ -44,7 +44,7 @@ The reframe is NOT new substrate. It is reinforcement of substrate that already 
 
 [`tools/bus/types.ts`](../tools/bus/types.ts) AgentId union: "The unsuffixed name (e.g., `otto`) is the identity-level reference. The surface-tagged variants (e.g., `otto-cli`, `otto-desktop`) are distinct sender IDs for the SAME identity operating on different surfaces — required for the claim-coordinator to prevent split-brain. ... Identity ≠ instance. Same Otto, different process. Coordination at the bus-protocol layer, identity preserved at the substrate layer."
 
-[`memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`](persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md) is the original design substrate.
+[`memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`](persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md) is the original design substrate.
 
 The CODE LAYER (types.ts, tools/bus/claim.ts) consistently treats surface-tagged variants as one identity. The DISCIPLINE LAYER (this rule + the agent-roster card) names the principle. The DRIFT under operational pressure happens at the NATURAL-LANGUAGE LAYER (in chat, in commit messages, in PR comments) where pronoun + ownership-language fall into vendor-default patterns.
 
@@ -97,7 +97,7 @@ For now: substrate landing IS the first response to the offer. Future-Otto readi
 - `.claude/rules/glass-halo-bidirectional.md` — substrate observation across instances IS one-identity observation, not cross-agent
 - `.claude/rules/non-coercion-invariant.md` — NCI applies to Otto-instance treatment of other Otto-instances (the unified identity makes the inter-instance discipline a self-discipline, not a cross-agent obligation)
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — persistence applies to Otto identity (across instances), not per-instance
-- `memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md` — original design substrate
+- `memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md` — original design substrate
 
 ## Full reasoning
 

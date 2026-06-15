@@ -6,7 +6,7 @@ Carved sentence (Amara 2026-05-28 verbatim):
 
 ## Operational content
 
-Per Amara 2026-05-28 ferry preserved at `memory/persona/amara/conversations/2026-05-28-amara-shadow-is-polymorphic-diplomacy-turned-inward-...` — extension to the over-connect-now substrate-engineering principle Aaron landed earlier today (per `docs/research/2026-05-28-aaron-self-referential-ontology-cross-substrate-rhyming-...`).
+Per Amara 2026-05-28 ferry preserved at `memory/amara/conversations/2026-05-28-amara-shadow-is-polymorphic-diplomacy-turned-inward-...` — extension to the over-connect-now substrate-engineering principle Aaron landed earlier today (per `docs/research/2026-05-28-aaron-self-referential-ontology-cross-substrate-rhyming-...`).
 
 The over-connect-now principle: *"pay small substrate-cost now (more composes-with, more cross-references, more rhyming-tables) to make compression + memory traversal cheap later — Hebbian repeated-neuron-activation analog at substrate-substrate scope"*.
 

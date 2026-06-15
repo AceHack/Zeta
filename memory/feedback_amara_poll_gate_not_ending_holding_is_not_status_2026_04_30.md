@@ -377,7 +377,7 @@ Which always returned `[]` because no PR was in flight — Otto was
 polling for whether a PR Otto hadn't filed had merged. The "Holding."
 output gave no auditable content. Amara's full catch + suggestions
 preserved verbatim in
-`memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`.
+`memory/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`.
 
 ## Correction-class note (Claude.ai 2026-04-30)
 

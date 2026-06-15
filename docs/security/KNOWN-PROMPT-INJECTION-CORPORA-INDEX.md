@@ -158,7 +158,7 @@ critic (Aminata)** personas can propose a new entry.
 Protocol:
 
 1. Log the observation in the persona's notebook
-   (`memory/persona/<name>/NOTEBOOK.md`) without
+   (`memory/<persona>/<name>/NOTEBOOK.md`) without
    fetching the corpus.
 2. File a BACKLOG row at P1 or P2 (depending on
    apparent blast-radius expansion) for

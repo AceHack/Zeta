@@ -117,7 +117,7 @@ Amara 2026-04-29 follow-up (remote-topology cleanup):
 *"Remove the dual-root / dual-remote ambiguity. origin = LFG only. acehack-mirror = optional, explicit, never branch-upstream."* +
 *"One origin. One canonical repo. Mirror by explicit command only."*
 
-Verbatim packets preserved at `memory/persona/amara/conversations/2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md` per the channel-verbatim-preservation rule.
+Verbatim packets preserved at `memory/amara/conversations/2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md` per the channel-verbatim-preservation rule.
 
 ### Refinement to the daily-sync pseudocode
 
@@ -218,7 +218,7 @@ Aaron 2026-04-29: *"when moving to ts or anywhere we have git scripts"*
 
 Amara 2026-04-29 (relayed): *"Don't rip out multi-remote support entirely. But also don't make every script carry the full fork-orchestra complexity by default. Keep the capability. Remove the assumption. Make multi-remote explicit, not ambient."*
 
-Verbatim packet preserved at `memory/persona/amara/conversations/2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md` §"Amara packet 3".
+Verbatim packet preserved at `memory/amara/conversations/2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md` §"Amara packet 3".
 
 ### Three-tier script-design rule
 

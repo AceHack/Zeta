@@ -41,7 +41,7 @@ Landed in round 34 (commit `23ca7a2`):
   partially satisfied (see drift list).
 - `docs/research/ci-gate-inventory.md` — CodeQL now sits
   in CI Phase 3 (scheduled-heavy) + PR-gate overlap.
-- `memory/persona/soraya/NOTEBOOK.md` — round-34 follow-up
+- `memory/soraya/NOTEBOOK.md` — round-34 follow-up
   is tuning the default, not landing CodeQL.
 
 ## Round-34 drift list — status

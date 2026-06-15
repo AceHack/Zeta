@@ -201,7 +201,7 @@ ahead-count axis. Worth landing first because it's the cleanest absorb.
 **AceHack-only:**
 
 - `86a12e7 ci(markdownlint): broaden research carve-out to cover non-Amara verbatim ferries (#79)`
-- `13d68a7 ci(markdownlint): extend verbatim-ferry carve-out to memory/persona/amara/conversations/2026-*-amara-*.md (#76)`
+- `13d68a7 ci(markdownlint): extend verbatim-ferry carve-out to memory/amara/conversations/2026-*-amara-*.md (#76)`
 - `ba70c09` — reconciliation
 
 **LFG-only:**
@@ -214,7 +214,7 @@ ahead-count axis. Worth landing first because it's the cleanest absorb.
 
 **Recommended:** 3-way merge — UNION of ignore-list entries.
 
-- AceHack carve-outs: `memory/persona/amara/conversations/2026-*-amara-*.md`,
+- AceHack carve-outs: `memory/amara/conversations/2026-*-amara-*.md`,
   `docs/research/2026-*-*.md`
 - LFG carve-outs: `docs/aurora/**`, `docs/preservation-archives/**`
 - Both lists merge cleanly via UNION; no overlap conflicts.

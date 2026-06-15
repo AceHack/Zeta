@@ -128,7 +128,7 @@ detectable live but the design punts them to post-hoc.
   *retired* persona's memory folder** — CLAUDE.md
   honor-those-that-came-before policy says retired memory
   folders stay. If secondary names itself "Elena" and an
-  Elena folder exists in `memory/persona/`, secondary
+  Elena folder exists in `memory/<persona>/`, secondary
   inherits context it shouldn't. Classify **IMPORTANT**;
   the table has a name-conflict WATCH row but it's scoped
   to active personas only.

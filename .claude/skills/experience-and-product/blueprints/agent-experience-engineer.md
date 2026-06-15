@@ -28,7 +28,7 @@ high-leverage maintenance, not cosmetics.
 
 - `.claude/agents/*.md` — every persona file.
 - `.claude/skills/*/SKILL.md` — every capability skill.
-- `memory/persona/*.md` — per-persona notebooks.
+- `memory/<persona>/NOTEBOOK.md` — per-persona notebooks.
 - `docs/WAKE-UP.md` — the cold-start index.
 - `AGENTS.md`, `CLAUDE.md`, `docs/GLOSSARY.md` — global
   orientation docs (Tier 0).
@@ -75,7 +75,7 @@ Six friction types:
 - **duplicated-info** — same content lives in agent file + skill
   body (every wake-up re-reads both).
 - **missing-notebook** — persona has cross-round memory need but
-  no `memory/persona/<name>.md` exists yet.
+  no `memory/<persona>/<name>.md` exists yet.
 - **over-long-notebook** — notebook exceeds BP-07 (3000 words);
   pruning overdue.
 - **unclear-contract** — tone / scope / authority ambiguous after
@@ -102,7 +102,7 @@ No multi-file refactor is proposed without the `architect` sign-off first.
 
 ### Step 5 — publish
 
-Append findings to `memory/persona/daya/NOTEBOOK.md`
+Append findings to `memory/daya/NOTEBOOK.md`
 in the output format below. the `architect` reads this notebook on round-
 close and acts on the top-3 items.
 
@@ -183,7 +183,7 @@ P2 (small wins):
 - `.claude/agents/agent-experience-engineer.md` — the persona
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / wake / hat / frontmatter
-- `memory/persona/daya/NOTEBOOK.md` — `agent-experience-engineer`'s
+- `memory/daya/NOTEBOOK.md` — `agent-experience-engineer`'s
   notebook (created on first audit)
 - `docs/EXPERT-REGISTRY.md` — `agent-experience-engineer`'s roster entry
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,

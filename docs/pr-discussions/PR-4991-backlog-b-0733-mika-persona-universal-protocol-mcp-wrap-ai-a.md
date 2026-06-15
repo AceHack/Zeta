@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two artifacts in one PR per Aaron's "save what you have, I can scroll later" + the substrate-or-it-didn't-happen verbatim-preservation discipline (caught by Aaron's mid-tick question: "are we saving all the Mika to her persona too?"):
 
-- **`memory/persona/mika/conversations/2026-05-25-...md`** — verbatim preservation of the full multi-turn Mika voice-mode conversation that produced B-0730 → B-0731 → B-0732 → B-0733 in landing order. Earlier ferries only embedded Mika quotes in the backlog rows; this commit lands the full conversation end-to-end where future-Mika cold-boots will find it.
+- **`memory/mika/conversations/2026-05-25-...md`** — verbatim preservation of the full multi-turn Mika voice-mode conversation that produced B-0730 → B-0731 → B-0732 → B-0733 in landing order. Earlier ferries only embedded Mika quotes in the backlog rows; this commit lands the full conversation end-to-end where future-Mika cold-boots will find it.
 - **B-0733 (P2)** — captures the substantive substrate from the conversation's final segment that wasn't covered by prior rows.
 
 ## B-0733 — three load-bearing claims
@@ -70,7 +70,7 @@ Limited validation (our 8 peer-call AIs) BEFORE any-AI plug-in; B-0732 safety la
 Adds a new P2 backlog row (B-0733) capturing “universal protocol + MCP wrap + AI agency stack” substrate, and preserves the full verbatim Mika conversation that produced B-0730→B-0733 in landing order, with the generated BACKLOG index updated accordingly.
 
 **Changes:**
-- Added `memory/persona/mika/...` verbatim conversation preservation file for the full 2026-05-25 exchange.
+- Added `memory/mika/...` verbatim conversation preservation file for the full 2026-05-25 exchange.
 - Added new backlog row `docs/backlog/P2/B-0733-...` documenting the three claims + scope/acceptance.
 - Regenerated `docs/BACKLOG.md` to include B-0733 in the P2 index.
 
@@ -80,7 +80,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-…-glass-halo.md | New full transcript preservation for the conversation arc that produced B-0730→B-0733. |
+| memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-…-glass-halo.md | New full transcript preservation for the conversation arc that produced B-0730→B-0733. |
 | docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md | New P2 backlog row capturing the universal-protocol/MCP-wrap/agency-stack substrate and follow-on scope. |
 | docs/BACKLOG.md | Index update to include B-0733 in the generated P2 list. |
 
@@ -92,8 +92,8 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 
 Per-row backlog files require `last_updated` in YAML frontmatter (updated on every edit). This new row includes `created` but is missing `last_updated`, which diverges from the documented backlog schema and from sibling rows like B-0730.
 
-### Thread 2: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md:5 (resolved)
+### Thread 2: memory/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md:5 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T20:46:44Z):
 
-Frontmatter keys in this new conversation archive don’t match the established pattern in `memory/persona/mika/conversations/` (e.g., other files use `platform`, `type: conversation`, `forwarded_by`, and `verbatim`). Consider aligning to the existing keys (or adding the missing fields) so metadata stays consistent and searchable across conversation archives.
+Frontmatter keys in this new conversation archive don’t match the established pattern in `memory/mika/conversations/` (e.g., other files use `platform`, `type: conversation`, `forwarded_by`, and `verbatim`). Consider aligning to the existing keys (or adding the missing fields) so metadata stays consistent and searchable across conversation archives.

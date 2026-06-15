@@ -10,7 +10,7 @@ instead. Exempt surfaces:
 
 - the auto-memory folder at `/Users/acehack/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`
 - `docs/BACKLOG.md`
-- per-persona notebooks under `memory/persona/`
+- per-persona notebooks under `memory/<persona>/`
 - (added 2026-04-21) the `For:` column and per-addressee sub-table
   headers (`### For: Aaron`, etc.) in `docs/HUMAN-BACKLOG.md`,
   plus direct quotations in the `Source` / `Ask` fields where

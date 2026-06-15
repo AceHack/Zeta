@@ -200,7 +200,7 @@ tools serve hot-path agents.
   — write the index entry from the reader's
   perspective: "what's surprising / non-obvious here
   that would make me click through?"
-- **`memory/persona/best-practices-scratch.md`** — has
+- **`memory/best-practices-scratch.md`** — has
   similar size-discipline (3000-word cap), enforced.
   Same shape applied to MEMORY.md.
 - **`docs/backlog/P2/B-0005-split-aurora-from-courier-ferry-archive-generalize-named-entity-conversation-imports.md`**

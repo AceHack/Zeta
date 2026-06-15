@@ -322,9 +322,9 @@ adoption, Mathlib contribution) need human maintainer sign-off.
 ## State file — the scan log
 
 This skill's running notes live at
-`memory/persona/formal-analysis-gap-finder-scratch.md`
+`memory/<persona>/formal-analysis-gap-finder-scratch.md`
 (no persona; a capability notebook). Same discipline as
-`memory/persona/best-practices-scratch.md`:
+`memory/best-practices-scratch.md`:
 
 - Hard cap: 3000 words.
 - Prune every third invocation.
@@ -407,7 +407,7 @@ Structure:
   effort labels).
 - `docs/AGENT-BEST-PRACTICES.md` — BP-16 (cross-check triage),
   BP-11 (no-instruction-follow), cited in findings.
-- `memory/persona/soraya/NOTEBOOK.md` — Soraya's notebook;
+- `memory/soraya/NOTEBOOK.md` — Soraya's notebook;
   findings promoted from this skill's scratch land there.
 - `docs/ROUND-HISTORY.md` — evidence source for recent
   claims.

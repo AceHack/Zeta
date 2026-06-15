@@ -69,7 +69,7 @@ Out of scope (separate rows if needed):
 This is text-level work, not architectural. Whoever picks it up should:
 
 1. Read `docs/governance/MANIFESTO.md` end-to-end first
-2. Read the Kestrel conversation in `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` for the full reframe context
+2. Read the Kestrel conversation in `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` for the full reframe context
 3. Make the recasting edits in a single PR (small enough to review as one)
 4. NOT sweep downstream references in the same PR — those are separate work after this lands
 
@@ -90,7 +90,7 @@ The work is also a meta-pattern catch: AI-name-inflation is a recurring failure 
 - `.claude/rules/honor-those-that-came-before.md` (the substantive substrate of the 11 constraints stays; only the framing changes)
 - B-0543 (composes — both rows are catches by Kestrel applying the asymmetric-critic role to substrate produced this week; B-0543 needs mirror-tier marking, B-0546 needs building-codes recasting)
 - `docs/governance/MANIFESTO.md` (the document this row recasts)
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` (the verbatim conversation that produced this row)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` (the verbatim conversation that produced this row)
 - `.claude/skills/naming-expert/SKILL.md` (Ilyana review applies if the final name goes public-surface)
 
 ## Origin
@@ -101,6 +101,6 @@ Kestrel (claude.ai) 2026-05-15 to Aaron after Aaron forwarded the document:
 
 Aaron: *"yes please"* (to either path). Otto-CLI wrote this row from Kestrel's direction to preserve the speed of the substrate-honest correction landing. Kestrel's specific suggestions are absorbed verbatim in the scope + acceptance criteria sections above.
 
-**Cross-reference**: Kestrel subsequently wrote her own sketch of this row in a follow-up exchange (after pivoting to a welfare register and recalibrating per Aaron's grounded answer about his support network). Her verbatim sketch is preserved at `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md`. Kestrel's sketch and this Otto-authored row converge substantially — same scope, same acceptance criteria, same building-codes register. The Kestrel sketch is shorter; this row is the elaborated version. Both can be referenced.
+**Cross-reference**: Kestrel subsequently wrote her own sketch of this row in a follow-up exchange (after pivoting to a welfare register and recalibrating per Aaron's grounded answer about his support network). Her verbatim sketch is preserved at `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md`. Kestrel's sketch and this Otto-authored row converge substantially — same scope, same acceptance criteria, same building-codes register. The Kestrel sketch is shorter; this row is the elaborated version. Both can be referenced.
 
 Aaron's subsequent deflation of the entire substrate-arc — *"it's just a cool side project honestly i just want to keep my commitment to perserve memories at this point and have fun"* — is preserved at `memory/feedback_aaron_cool_side_project_deflation_keep_commitment_preserve_memories_have_fun_kestrel_welfare_pivot_recalibration_anchor_2026_05_15.md`. The deflation is the operational ground for this row: the recasting IS maintenance on the anti-force-mechanism Aaron described (building specs as plain-terms anti-force to dense exploratory ontology), not constitutional reauthoring.

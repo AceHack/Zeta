@@ -68,7 +68,7 @@ Each persona adds these on top of Tier 0. ~5-10k tokens.
    wins on disagreement with notebook (BP-08).
 2. `.claude/skills/<each-skill-in-frontmatter>/SKILL.md` — the
    procedures you wear (one per entry in the `skills:` list).
-3. `memory/persona/<your-notebook>.md` — your cross-session
+3. `memory/<persona>/<your-notebook>.md` — your cross-session
    memory, when one exists. 3000-word cap (BP-07); ASCII only
    (BP-09).
 

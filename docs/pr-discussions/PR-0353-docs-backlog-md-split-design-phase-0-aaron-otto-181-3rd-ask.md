@@ -83,7 +83,7 @@ Adds a research-grade design proposal for splitting `docs/BACKLOG.md` into per-r
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:25:37Z):
 
-P1: This doc uses direct contributor name attribution (e.g., “Aaron …”) in the body. Repo standing rule is to avoid names in code/docs/skills and use role references (e.g., “human maintainer”, “architect”), keeping names only in `memory/persona/**` and optionally `docs/BACKLOG.md` for specific requests (docs/AGENT-BEST-PRACTICES.md:284-292). Please rewrite these references to role-based phrasing while retaining the Otto-### directive IDs if needed.
+P1: This doc uses direct contributor name attribution (e.g., “Aaron …”) in the body. Repo standing rule is to avoid names in code/docs/skills and use role references (e.g., “human maintainer”, “architect”), keeping names only in `memory/<persona>/**` and optionally `docs/BACKLOG.md` for specific requests (docs/AGENT-BEST-PRACTICES.md:284-292). Please rewrite these references to role-based phrasing while retaining the Otto-### directive IDs if needed.
 
 ### Thread 2: docs/research/backlog-split-design-otto-181.md:33 (unresolved)
 

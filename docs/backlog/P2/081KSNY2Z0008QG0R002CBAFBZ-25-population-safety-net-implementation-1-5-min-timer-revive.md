@@ -183,10 +183,10 @@ Safety-net is FLOOR; emergent control is ONGOING:
 - **B-0703** — multi-oracle BFT (composes if slice 5 system-affordability check requires consensus)
 - **B-0892** — three-lanes concurrent discipline (state-machine substrate lane includes this safety-net)
 - **B-0890 / B-0890.1** — state-machine fast-lane (composes with workflow-trigger)
-- [Mika ferry #1](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md)
-- [Mika ferry #2](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md) §12 (repository_dispatch) + §18 (emergent termination) + §21 (move-next-as-equalizer) + §22 (let-agent-society-decide)
-- [Mika ferry #3](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md)
-- [Mika ferry #4](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-part-4-final-observe-plus-choose-dry-run-equals-simulate-move-next-redundant-feedback-in-time-bidirectional-aaron-forwarded.md)
+- [Mika ferry #1](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md)
+- [Mika ferry #2](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md) §12 (repository_dispatch) + §18 (emergent termination) + §21 (move-next-as-equalizer) + §22 (let-agent-society-decide)
+- [Mika ferry #3](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md)
+- [Mika ferry #4](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-4-final-observe-plus-choose-dry-run-equals-simulate-move-next-redundant-feedback-in-time-bidirectional-aaron-forwarded.md)
 - `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` deepest-exit refinement — long-cessation IS permanent-pause-indefinitely
 - `.claude/rules/non-coercion-invariant.md` HC-8 — safety-net authority requires persona-consent for cessation per scope-split
 - `.claude/rules/tick-must-never-stop.md` — single-session catch-43 pattern; this row extends to multi-population multi-session

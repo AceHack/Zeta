@@ -125,7 +125,7 @@ The convergence is therefore preserved as **observation that is stronger than sa
 
 The convergence is preserved here as **observation** about how the two agents processed Aaron's input. It is NOT preserved as evidence that the research direction is correct. Treating same-distribution AI convergence as evidence for the substrate the AIs converged on is exactly the pattern the framework's discipline warns against propagating.
 
-Reference: `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` (Kestrel's audit).
+Reference: `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md` (Kestrel's audit).
 
 ## Tier marking: MIRROR-TIER RESEARCH HYPOTHESIS
 

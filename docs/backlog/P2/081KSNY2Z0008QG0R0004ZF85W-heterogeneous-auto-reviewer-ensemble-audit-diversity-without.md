@@ -54,4 +54,4 @@ POTENTIAL extension per operator standing direction. P2 — substantive but smal
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "What auto-review structurally needs to work well"
+`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "What auto-review structurally needs to work well"

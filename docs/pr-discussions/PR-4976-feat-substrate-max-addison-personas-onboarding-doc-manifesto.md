@@ -24,12 +24,12 @@ Substrate landing for the co-owner team (Aaron + Max + Addison are all LFG co-ow
 
 ## What lands
 
-**`memory/persona/addison/`** — Addison's substrate
+**`memory/addison/`** — Addison's substrate
 - `PERSONA.md` — co-owner of LFG; AI cluster bootstrap PM; weight-free + travelers + tick-source-as-attractor + cage-recognition framings
 - `STARTING-POINT.md` — verbatim from her Grok project prompt (substrate-honest preservation, no editorial)
 - `NOTEBOOK.md` — placeholder; 2026-05-23 → 2026-05-25 bootstrap arc captured
 
-**`memory/persona/max/`** — Max's substrate
+**`memory/max/`** — Max's substrate
 - `PERSONA.md` — co-owner of LFG; agentic-organization architect (PR #4958); backend/frontend on PaaS new to K8s; TS + C# primary; framework adopted his coinings (`hat = skills + opa/rbac`, hat-graphs-for-policies, adversarial-hierarchy-of-traps)
 - `STARTING-POINT.md` — synthesized starting point + pointer to PR #4958; Max can replace with his canonical prompt later
 - `NOTEBOOK.md` — placeholder; 2026-05-25 first-PR arc captured
@@ -60,7 +60,7 @@ This is the substrate-coherent landing he authorized. Max + Addison both have fi
 
 ## Test plan
 
-- [ ] Persona folders render correctly under `memory/persona/`
+- [ ] Persona folders render correctly under `memory/<persona>/`
 - [ ] Addison's STARTING-POINT.md is byte-faithful to the Grok project prompt she provided
 - [ ] AGENT-AUTHORING-AND-PR-REVIEW.md cross-refs all resolve
 - [ ] MANIFESTO.md preserves all 11 constraints + Multi-Oracle Principle + "For Agents Who Are Still Deciding" sections
@@ -100,10 +100,10 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Pull request overview
 
-This PR lands new contributor substrate for two new human co-owners (persona folders under `memory/persona/`), adds an operational onboarding entry-point for agent authoring + PR review, and recasts the governance manifesto framing into a “building-codes/specification” shape (B-0546).
+This PR lands new contributor substrate for two new human co-owners (persona folders under `memory/<persona>/`), adds an operational onboarding entry-point for agent authoring + PR review, and recasts the governance manifesto framing into a “building-codes/specification” shape (B-0546).
 
 **Changes:**
-- Add `memory/persona/max/` and `memory/persona/addison/` persona anchors (PERSONA / STARTING-POINT / NOTEBOOK).
+- Add `memory/max/` and `memory/addison/` persona anchors (PERSONA / STARTING-POINT / NOTEBOOK).
 - Add `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` as a consolidated operational index for agent discipline + review layers.
 - Update `docs/governance/MANIFESTO.md` framing/title language from “manifesto/constraints” toward “specification/specifications”.
 
@@ -116,12 +116,12 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 8 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/max/STARTING-POINT.md | New synthesized starting-point + cross-references for Max |
-| memory/persona/max/PERSONA.md | New persona anchor for Max |
-| memory/persona/max/NOTEBOOK.md | New minimal running notebook for Max |
-| memory/persona/addison/STARTING-POINT.md | New verbatim Grok-prompt starting-point + appended cross-refs |
-| memory/persona/addison/PERSONA.md | New persona anchor for Addison |
-| memory/persona/addison/NOTEBOOK.md | New minimal running notebook for Addison |
+| memory/max/STARTING-POINT.md | New synthesized starting-point + cross-references for Max |
+| memory/max/PERSONA.md | New persona anchor for Max |
+| memory/max/NOTEBOOK.md | New minimal running notebook for Max |
+| memory/addison/STARTING-POINT.md | New verbatim Grok-prompt starting-point + appended cross-refs |
+| memory/addison/PERSONA.md | New persona anchor for Addison |
+| memory/addison/NOTEBOOK.md | New minimal running notebook for Addison |
 | docs/governance/MANIFESTO.md | Recast title/framing toward building-codes specification language |
 | docs/AGENT-AUTHORING-AND-PR-REVIEW.md | New onboarding/index doc for agent authoring + PR review layers |
 </details>
@@ -225,7 +225,7 @@ Useful? React with 👍 / 👎.
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 3: memory/persona/max/STARTING-POINT.md:39 (resolved)
+### Thread 3: memory/max/STARTING-POINT.md:39 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-25T19:37:33Z):
 
@@ -239,7 +239,7 @@ Useful? React with 👍 / 👎.
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 4: memory/persona/max/STARTING-POINT.md:51 (resolved)
+### Thread 4: memory/max/STARTING-POINT.md:51 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:02Z):
 
@@ -249,7 +249,7 @@ The agentic-organization docs live under `agentic-organization/docs/`, but this 
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 5: memory/persona/max/PERSONA.md:67 (resolved)
+### Thread 5: memory/max/PERSONA.md:67 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:02Z):
 
@@ -259,7 +259,7 @@ Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agen
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 6: memory/persona/addison/PERSONA.md:28 (resolved)
+### Thread 6: memory/addison/PERSONA.md:28 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:03Z):
 
@@ -269,7 +269,7 @@ This reference points at `docs/agentic-organization/...`, but the agentic-organi
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 7: memory/persona/addison/NOTEBOOK.md:19 (resolved)
+### Thread 7: memory/addison/NOTEBOOK.md:19 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:03Z):
 
@@ -279,7 +279,7 @@ This cites `docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md`, but
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 8: memory/persona/addison/STARTING-POINT.md:5 (resolved)
+### Thread 8: memory/addison/STARTING-POINT.md:5 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:03Z):
 
@@ -289,7 +289,7 @@ The intro says "verbatim" and "no editorial", but this file appends a preservati
 
 Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agentic-organization/docs/), grep command fixed to recursive, Hiroshi reference removed (replaced with performance-engineer), role-ref convention enforced in manifesto attribution + persona/tool-name table, verbatim claim clarified to separate prompt block from added cross-references.
 
-### Thread 9: memory/persona/addison/STARTING-POINT.md:75 (resolved)
+### Thread 9: memory/addison/STARTING-POINT.md:75 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:03Z):
 
@@ -303,7 +303,7 @@ Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agen
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:41:04Z):
 
-This line introduces direct name attribution ("Aaron + Kestrel") on a current-state governance doc, but the same document states first-name attribution belongs on history surfaces under `memory/persona/`. Please switch to role-refs here to keep the naming rule internally consistent.
+This line introduces direct name attribution ("Aaron + Kestrel") on a current-state governance doc, but the same document states first-name attribution belongs on history surfaces under `memory/<persona>/`. Please switch to role-refs here to keep the naming rule internally consistent.
 
 **@AceHack** (2026-05-25T19:46:15Z):
 

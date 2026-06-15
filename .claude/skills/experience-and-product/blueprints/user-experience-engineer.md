@@ -149,7 +149,7 @@ No multi-file refactor is proposed without Kenji sign-off.
 
 ### Step 5 — publish
 
-Append findings to `memory/persona/iris/NOTEBOOK.md` in the
+Append findings to `memory/iris/NOTEBOOK.md` in the
 output format below. Kenji reads this notebook on round-close
 and acts on the top-3 items.
 
@@ -251,7 +251,7 @@ P2 (cosmetic / small wins):
   shape)
 - `docs/VISION.md` — aspiration / reality tracking
 - `docs/GLOSSARY.md` — UX / DX / AX / wake / hat / frontmatter
-- `memory/persona/iris/NOTEBOOK.md` — Iris's notebook (created
+- `memory/iris/NOTEBOOK.md` — Iris's notebook (created
   on first audit)
 - `docs/EXPERT-REGISTRY.md` — Iris's roster entry
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution protocol

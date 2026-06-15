@@ -385,7 +385,7 @@ contradictions between homes develop silently.
 
 ### 14. Rule-registry drift
 
-Scratchpad findings (`memory/persona/best-practices-scratch.md`)
+Scratchpad findings (`memory/best-practices-scratch.md`)
 accumulate without being promoted to stable BP-NN rules or
 retired. The stable registry stagnates; findings pile up in
 the scratchpad.
@@ -524,7 +524,7 @@ blame; the rule is "no *accidental* debt," not "no mistakes."
 Every durable rule gets a stable ID (`BP-01`, `BP-02`, …)
 in `docs/AGENT-BEST-PRACTICES.md`. Reviewer findings cite
 the rule by ID. Candidates land in
-`memory/persona/best-practices-scratch.md`; promotion is
+`memory/best-practices-scratch.md`; promotion is
 Architect-ADR gated. The registry is what lets a reviewer
 say "violates BP-03" and have that mean something stable.
 

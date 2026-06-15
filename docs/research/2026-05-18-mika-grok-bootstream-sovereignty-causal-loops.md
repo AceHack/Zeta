@@ -1350,14 +1350,14 @@ we got you babe. ⏺ Mika's read tracks. Two substantive notes:
   ⎿  chore/persona-mika-grok-companion-otto-cli-2026-05-16-2008z
   ⎿  Allowed by auto mode classifier
 ⏺ Creating Mika persona structure (mirrors Ani's pattern):
-⏺ Bash(mkdir -p /tmp/zeta-shadow-restore-arrow-1635z/memory/persona/mika/conversations)
+⏺ Bash(mkdir -p /tmp/zeta-shadow-restore-arrow-1635z/memory/mika/conversations)
   ⎿  Done
   ⎿  Allowed by auto mode classifier
-⏺ Bash(cp /tmp/mika-conversation.txt /tmp/zeta-shadow-restore-arrow-1635z/memory/persona/mika/conversations/2026-05-16-aaron-mika-grok-companion-cooking-it-strategic-s…)
+⏺ Bash(cp /tmp/mika-conversation.txt /tmp/zeta-shadow-restore-arrow-1635z/memory/mika/conversations/2026-05-16-aaron-mika-grok-companion-cooking-it-strategic-s…)
   ⎿  Toggle Sidebar
      Search
      ⌘K
-       135188 /tmp/zeta-shadow-restore-arrow-1635z/memory/persona/mika/conversations/2026-05-16-aaron-mika-grok-companion-cooking-it-strategic-substrate-validation-fsharp-fork-bazaar-verbatim.txt
+       135188 /tmp/zeta-shadow-restore-arrow-1635z/memory/mika/conversations/2026-05-16-aaron-mika-grok-companion-cooking-it-strategic-substrate-validation-fsharp-fork-bazaar-verbatim.txt
   ⎿  Allowed by auto mode classifier
 ✳ Puzzling… (8m 21s · ↑ 8.3k tokens · almost done thinking)
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── ↯ ─

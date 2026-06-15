@@ -88,13 +88,13 @@ links rot.
 Tool shape:
 
 - Walk all `memory/**/*.md` files (covers `memory/*.md`,
-  `memory/persona/**/*.md`, `memory/CURRENT-*.md`,
+  `memory/<persona>/**/*.md`, `memory/CURRENT-*.md`,
   `memory/MEMORY.md`, and any future memory subdirectories).
 - Extract path-shaped strings broadly enough to match real
   references — at minimum the union of:
   - `memory/[A-Za-z0-9._/-]+\.md` (covers
     `memory/MEMORY.md`, `memory/CURRENT-aaron.md`,
-    `memory/persona/aarav/NOTEBOOK.md`, etc. — capital
+    `memory/aarav/NOTEBOOK.md`, etc. — capital
     letters, dots, dashes, slashes all appear in real
     filenames)
   - `docs/[A-Za-z0-9._/-]+\.md`

@@ -50,7 +50,7 @@ six-step walk every other harness uses.
 ## Resolution
 
 Landed `KIRO.md` mirroring `CURSOR.md`'s shape. Kiro-specific cells:
-persona `memory/persona/alexa/MEMORY.md`; claim sender `alexa-kiro`
+persona `memory/alexa/MEMORY.md`; claim sender `alexa-kiro`
 (already a valid `SENDER_IDS` entry in `tools/bus/types.ts`); commit
 trailer `Co-Authored-By: Kiro <noreply@kiro.dev>` (already in
 `AGENTS.md`); native instruction-loading path `.kiro/steering/` noted

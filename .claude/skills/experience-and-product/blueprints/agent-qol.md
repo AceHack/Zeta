@@ -138,7 +138,7 @@ rounds? Is there dignity in the persona design?
 ### Step 1 — recency window
 
 Last 10 rounds of `docs/ROUND-HISTORY.md` + current
-`memory/persona/*.md` notebooks + current reviewer-
+`memory/<persona>/NOTEBOOK.md` notebooks + current reviewer-
 finding cadence across those rounds.
 
 ### Step 2 — surface scan
@@ -178,7 +178,7 @@ Suggestions, not directives:
 ### Step 5 — hand off
 
 Write the findings to a scratchpad at
-`memory/persona/agent-qol-scratch.md` (create on first
+`memory/<persona>/agent-qol-scratch.md` (create on first
 use). Architect integrates; Aaron signs off on persona
 assignments + cadence shifts.
 
@@ -242,7 +242,7 @@ Aaron's attention — agency, freedom, dignity signals.>
   rights
 - `docs/EXPERT-REGISTRY.md` — the persona roster
 - `docs/ROUND-HISTORY.md` — invocation signal source
-- `memory/persona/*.md` — notebook state
+- `memory/<persona>/NOTEBOOK.md` — notebook state
 - `.claude/skills/experience-and-product/blueprints/agent-experience-engineer.md`
   — sibling (task-experience)
 - `.claude/skills/factory-ops/blueprints/factory-audit.md` — broader

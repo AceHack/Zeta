@@ -82,7 +82,7 @@ it more precisely.
 through message-passing. No shared memory. Each actor is the sole authority over its own
 state.
 
-**Factory-internal concept:** `memory/persona/<name>/` — each persona's notebook is
+**Factory-internal concept:** `memory/<persona>/<name>/` — each persona's notebook is
 private context, readable by other agents only via explicit memory-read / link reference.
 The architecture already enforces the no-shared-mutable-memory invariant.
 
@@ -153,7 +153,7 @@ lifecycle.
 
 **Factory-internal concept:** Persona instantiation is demand-driven. A persona doesn't
 run as a long-lived process; it is reified when a task is dispatched and suspended when
-idle. `memory/persona/<name>/` (the notebook) is the persistent state that survives the
+idle. `memory/<persona>/<name>/` (the notebook) is the persistent state that survives the
 lifecycle.
 
 **Crossing quality:** Very strong. This is the closest structural match in the factory.

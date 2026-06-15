@@ -62,7 +62,7 @@ There are two distinct persona axes:
 1. **Named AI agents** (internal to Zeta's identity): Otto, Soraya, Daya, Aarav, Nadia, etc. These are the project's internal-cognition personas — they have notebooks, history surfaces, and contribute as named contributors per Otto-279
 2. **End-user personas** (external consumers of Zeta substrate): both human (contributor / maintainer / skill-bundle user) AND AI (PR Copilot, external Codex / Cursor / Aider reviewers, etc.)
 
-This memo's table covers **end-user personas** (axis 2). Internal named-agent personas are tracked separately (per the Otto-279 history-surface attribution carve-out + persona notebooks under `memory/persona/`).
+This memo's table covers **end-user personas** (axis 2). Internal named-agent personas are tracked separately (per the Otto-279 history-surface attribution carve-out + persona notebooks under `memory/<persona>/`).
 
 **Tracked end-user personas (per Aaron 2026-05-03 — *"we should start keeping us with our end user persona contrbutor maintainer skill bundle user, there will be more over time"* + *"the pr copilot ... yes that's a first class personal any any exteranl ai like that that could benefit from our runtime"*)**:
 

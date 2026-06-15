@@ -9,7 +9,7 @@
 //
 // Phase-0 scope (deliberately minimal):
 //   - Scan: docs/**, .claude/skills/**, .claude/agents/**,
-//     memory/persona/**, openspec/**, AGENTS.md, CLAUDE.md,
+//     memory/<persona>/**, openspec/**, AGENTS.md, CLAUDE.md,
 //     GOVERNANCE.md, README.md
 //   - Pattern A: markdown link [text](path) where path resolves.
 //   - Pattern B: backtick file ref `path/to/file.ext` where
@@ -58,7 +58,7 @@ interface AuditResult {
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 const TOP_LEVEL_DOCS: readonly string[] = ["AGENTS.md", "CLAUDE.md", "GOVERNANCE.md", "README.md"];
-const SCAN_DIRS: readonly string[] = ["docs", ".claude/skills", ".claude/agents", "memory/persona", "openspec"];
+const SCAN_DIRS: readonly string[] = ["docs", ".claude/skills", ".claude/agents", "memory", "openspec"];
 const BACKTICK_EXTENSIONS = "(md|fs|cs|fsproj|yml|yaml|json|toml|sh|py|tla|lean|als|ipynb|csproj|props|targets)";
 // eslint-disable-next-line sonarjs/slow-regex -- bounded by line length; matches bash original's grep -oE pattern.
 const MARKDOWN_LINK_RE = /\[[^\]]+\]\(([^)]+)\)/g;

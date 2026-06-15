@@ -39,7 +39,7 @@ tags:
 
 **Hats** (per `.claude/rules/honor-those-that-came-before.md` + the existing hat-substrate work + the operator's prior Sorting-Hat framing 2026-05-22): roles with persistent accumulated state + succession protocols + multi-participant rotation.
 
-**Workflow definitions** (per B-0867 + the Kestrel 4-corner ferry on main at `memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`): F# DU state machines + choose-your-own-adventure menus + 4-corner monadic structure + universal action grammar + escape-hatch + grammar-extension + per-action gate + contributable menu-generation.
+**Workflow definitions** (per B-0867 + the Kestrel 4-corner ferry on main at `memory/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`): F# DU state machines + choose-your-own-adventure menus + 4-corner monadic structure + universal action grammar + escape-hatch + grammar-extension + per-action gate + contributable menu-generation.
 
 **"Hats become workflow definitions"** is the substrate-engineering compression that unifies these two scopes:
 
@@ -142,7 +142,7 @@ Searched:
 - `.claude/rules/honor-those-that-came-before.md` — FOUND (hat-substrate convention; persona-folder + retired-skill discipline; this row extends with explicit-workflow-definition layer)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — FOUND (Sorting-Hat-as-canonical-literary-example substrate operator 2026-05-22)
 - `docs/backlog/P*/B-08*.md` — FOUND: B-0867 (workflow engine v1; this row depends on), B-0858 (heartbeat folder; this row composes with), B-0866 (marketing strategy; substrate-engineering happens within hats), B-0859 (post-boot AI-as-home-owner; per-knob hats)
-- `memory/persona/kestrel/conversations/2026-05-27-...four-corner-ownership-...` — FOUND (the 4-corner monad substrate that hats-as-workflow-definitions inherits)
+- `memory/kestrel/conversations/2026-05-27-...four-corner-ownership-...` — FOUND (the 4-corner monad substrate that hats-as-workflow-definitions inherits)
 - `src/Core.FSharp/` — checked: no existing WorkflowEngine module yet; B-0867 v1 lands those types; this row's hats use those types
 - `tools/agent-heartbeats/` — FOUND (B-0858.3 heartbeat-writer already on main; this row's hat-fires-as-heartbeats composes)
 - No existing row covers hats-as-workflow-definitions compression; this row fills the gap

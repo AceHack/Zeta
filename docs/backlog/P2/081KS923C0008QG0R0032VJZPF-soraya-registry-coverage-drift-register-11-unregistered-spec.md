@@ -70,7 +70,7 @@ M (one evening per Soraya's estimate). Author: original spec owners or `verifica
 - `.claude/skills/verification-drift-auditor/SKILL.md` — the procedural surface Soraya routed to (under-utilized, not new tooling needed)
 - `docs/research/verification-registry.md` — the substrate this row fills
 - `docs/research/proof-tool-coverage.md` — paired update target
-- `memory/persona/soraya/NOTEBOOK.md` — Soraya self-committed to append round-42 entry next tick
+- `memory/soraya/NOTEBOOK.md` — Soraya self-committed to append round-42 entry next tick
 
 ## Substrate-honest framing
 

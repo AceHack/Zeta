@@ -905,7 +905,7 @@ New content below.
 ### Aaron message (verbatim)
 
 > Me:  early days but /docs/research/[aurora-immune-math-standardization-2026-04-26.md](http://aurora-immune-math-standardization-2026-04-26.md)
-> /memory/persona/amara/conversations/[aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md](http://aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md)
+> /memory/amara/conversations/[aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md](http://aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md)
 
 ### Claude.ai message 19 — URL-provenance-wall honest admission (verbatim)
 
@@ -940,7 +940,7 @@ New content below.
 **Otto verified path note:** The two paths Aaron gave Claude.ai
 DO exist on main and are reachable today:
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` (22320 bytes, committed 2026-04-28)
-- `memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md` (23674 bytes, committed 2026-04-28)
+- `memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md` (23674 bytes, committed 2026-04-28)
 
 Claude.ai's URL-provenance-wall is real — its fetcher's trust
 rule prevents path-from-text following — but the files themselves
@@ -962,7 +962,7 @@ text; only Claude.ai's review survives. The two Aurora docs
 referenced are committed at
 `docs/research/aurora-immune-math-standardization-2026-04-26.md`
 and
-`memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`.)
+`memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`.)
 
 ### Claude.ai message 20 — substantive review of Aurora docs (verbatim)
 

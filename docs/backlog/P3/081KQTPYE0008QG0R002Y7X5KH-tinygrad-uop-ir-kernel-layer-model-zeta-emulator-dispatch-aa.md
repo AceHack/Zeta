@@ -60,7 +60,7 @@ evidence):
   recent backend additions
 
 Full verbatim research-doc preservation will land at
-`memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
+`memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
 once sibling PR #1610 merges; until then, the link target lives on
 that PR's branch. (Same softening pattern as B-0201's research-doc
 reference to PR #1605.)
@@ -442,7 +442,7 @@ Explicit composition map (mirrors frontmatter `composes_with`):
   ROM emulators, the UOp-substrate question composes directly with the
   ROM-emulator engineering lane.
 - **The research-doc preservation** (will resolve at
-  `memory/persona/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
+  `memory/deepseek/conversations/2026-05-05-claudeai-tinygrad-uop-turboquant-deepseek-v4-symbolica-categorical-aaron-forwarded-preservation.md`
   once sibling PR #1610 merges) -- the verbatim Aaron-forwarded
   conversation that surfaced the substrate-engineering composition
   claim. (Aaron same-tick disconfirmed tinygrad as the paper-id

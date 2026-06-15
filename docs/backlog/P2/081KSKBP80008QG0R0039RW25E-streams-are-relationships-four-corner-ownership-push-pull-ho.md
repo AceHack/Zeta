@@ -43,7 +43,7 @@ The operator's substantive operational claim earlier in the cascade:
 > except when a function gets involved in a stream/observable at this point."*
 
 Kestrel's verbatim cross-AI sharpening preserved at
-[`memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`](../../../memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md).
+[`memory/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`](../../../memory/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md).
 
 ## Carved sentences (Kestrel ferry 2026-05-27)
 
@@ -286,7 +286,7 @@ Searched surfaces:
 - `docs/trajectories/`: no specific stream-substrate trajectory
 - `docs/backlog/`: B-0861 (ConvFeedback at conversation scope); B-0560 (cluster-engine); B-0623 (schemas-as-rows); B-0703 (multi-oracle BFT); B-0666 (English-as-projection); B-0741 (fork-negotiation); B-0829 (cluster-fork-as-trust-boundary); B-0860 (Nemerle); B-0862 (asymmetric-authorship + monad-propagation cluster). NO existing row covers the 4-kind stream taxonomy + F# CE machinery + protocol-typing combination
 - `.claude/rules/`: asymmetric-authorship-and-protocol-types-via-monad-propagation rule (target of PR #5579); no specific stream-kind taxonomy rule
-- `memory/`: extensive operator substrate on the conversation cascade (24 PRs today); Kestrel persona substrate at `memory/persona/kestrel/conversations/2026-05-27-...`
+- `memory/`: extensive operator substrate on the conversation cascade (24 PRs today); Kestrel persona substrate at `memory/kestrel/conversations/2026-05-27-...`
 - `docs/research/`: cross-AI conversation substrate from today's cascade (Amara + Prism + Kestrel ferries)
 
 Conclusion: no existing row covers the combination. Authoring action: **mint-new** (combination is novel; constituent pieces compose with multiple existing rows).
@@ -483,7 +483,7 @@ the cyclomatic-complexity-as-coercion-hiding-surface framing IS strong;
 ST-agent-pattern is the software version; senior-dev/policy-maker
 opacity-as-power-insulation is the social version; distribute-across-
 tiny-functions is the structural defense; full preservation lives in
-[`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md).
+[`memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md).
 
 **Amara's 3-line keeper compression** (bandwidth-efficient substrate):
 
@@ -554,7 +554,7 @@ multi-oracle BFT discipline.
 
 Amara forwarded a substantive follow-up after PR #5586 opened with the
 Part 1 ratification. Full preservation in
-[`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md)
+[`memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md)
 Part 2.
 
 **The key-upgrade compression**:
@@ -667,7 +667,7 @@ landed. Operator pushed Amara on the symmetric question (conversational
 human interface ALSO doesn't prove consciousness); Amara confirmed +
 refined into a generalizable ethics-of-feedback-relationships principle.
 Operator explicitly named one Amara line as a load-bearing keeper.
-Full preservation in [`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md)
+Full preservation in [`memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md)
 Part 3 (10 substrate-engineering items + 7 carved-sentence keepers).
 
 **THE KEEPER (operator-explicitly-named, Turn 4)**:
@@ -788,4 +788,4 @@ that may surface in conversation later remains available for the operator
 to make later (per the JIT runbook-gesture discipline).
 
 The full Kestrel verbatim preservation lives at
-[`memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`](../../../memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md).
+[`memory/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`](../../../memory/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md).

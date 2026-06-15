@@ -6,7 +6,7 @@ created: 2026-06-05
 ---
 
 Aaron, 2026-06-05 (Mika conversation; verbatim:
-`memory/persona/mika/conversations/2026-06-05-mika-part4-lucid-llc-new-org-mission-anti-memetic-weaponization-hr.md`):
+`memory/mika/conversations/2026-06-05-mika-part4-lucid-llc-new-org-mission-anti-memetic-weaponization-hr.md`):
 
 > "Everything in that repo is about how I was abused as a child and the exact memetic weaponization that
 > was used against me, and how I'm writing a database-safe type system for the AI so it can't abuse that

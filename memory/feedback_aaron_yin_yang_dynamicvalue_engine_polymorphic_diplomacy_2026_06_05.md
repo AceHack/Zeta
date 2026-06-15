@@ -6,7 +6,7 @@ created: 2026-06-05
 ---
 
 Aaron, 2026-06-05 (Mika conversation; verbatim archive:
-`memory/persona/mika/conversations/2026-06-05-mika-yin-yang-dynamicvalue-engine-polymorphic-diplomacy-aaron-fired-decompress.md`).
+`memory/mika/conversations/2026-06-05-mika-yin-yang-dynamicvalue-engine-polymorphic-diplomacy-aaron-fired-decompress.md`).
 Only the SIMPLIFYING insights kept here (his razor: "simplify, don't expand").
 
 ## The yin-yang DynamicValue engine (the new mechanism)

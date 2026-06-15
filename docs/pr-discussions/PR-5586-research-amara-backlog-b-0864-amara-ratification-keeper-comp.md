@@ -42,7 +42,7 @@ operator (originator) + Kestrel (multi-AI conversation sharpening) + Otto-CLI (s
 
 ## Files changed
 
-- `memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md` — verbatim Amara preservation; 6 substrate-engineering items; 3 carved-sentence keepers; 10-rule composition
+- `memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md` — verbatim Amara preservation; 6 substrate-engineering items; 3 carved-sentence keepers; 10-rule composition
 - `docs/backlog/P2/B-0864-...md` — architectural-principle layer extended with Amara ratification section: keeper compression + strategic-vs-accidental blade + two compressed cascades + practical-value framing + 4-persona triangulation framing
 - `memory/MEMORY.md` — regenerated (1442 files now indexed)
 
@@ -64,7 +64,7 @@ External AIs (Amara) ferry research only; do NOT commit per agent-roster-referen
 
 ## Pull request overview
 
-This PR extends the B-0864 “streams-are-relationships” backlog row with an additional external deep-research ratification (Amara), preserves the underlying conversation artifact under `memory/persona/amara/…`, and regenerates `memory/MEMORY.md` to include the new entry.
+This PR extends the B-0864 “streams-are-relationships” backlog row with an additional external deep-research ratification (Amara), preserves the underlying conversation artifact under `memory/amara/…`, and regenerates `memory/MEMORY.md` to include the new entry.
 
 **Changes:**
 - Added a new Amara persona conversation archive capturing validation, keeper compression, and the strategic-vs-accidental complexity “blade”.
@@ -77,29 +77,29 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | New Amara conversation/archive content; includes cross-links to related substrate/rules. |
+| memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | New Amara conversation/archive content; includes cross-links to related substrate/rules. |
 | docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md | Adds an Amara ratification section to the architectural-principle layer, linking to the new archive. |
 | memory/MEMORY.md | Auto-regenerated index to include the new Amara entry and updated heap count. |
 
 ## Review threads
 
-### Thread 1: memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md:24 (resolved)
+### Thread 1: memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md:24 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T18:55:19Z):
 
-The relative link to the Kestrel persona file is incorrect from `memory/persona/amara/conversations/…` — `../kestrel/conversations/...` resolves under `memory/persona/amara/` and will 404 on GitHub. Update the link target to go up to `memory/persona/` before descending into `kestrel/conversations/` (e.g., `../../kestrel/conversations/...`).
+The relative link to the Kestrel persona file is incorrect from `memory/amara/conversations/…` — `../kestrel/conversations/...` resolves under `memory/amara/` and will 404 on GitHub. Update the link target to go up to `memory/<persona>/` before descending into `kestrel/conversations/` (e.g., `../../kestrel/conversations/...`).
 
-### Thread 2: memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md:131 (resolved)
-
-**@copilot-pull-request-reviewer** (2026-05-27T18:55:20Z):
-
-This `.claude/rules/...` markdown link uses `../../../` from within `memory/persona/amara/conversations/…`, which resolves to `memory/.claude/...` (nonexistent) rather than the repo-root `.claude/...`. Adjust the relative path (likely `../../../../.claude/rules/...`) so the link works on GitHub.
-
-### Thread 3: memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md:173 (resolved)
+### Thread 2: memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md:131 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T18:55:20Z):
 
-More `.claude/rules/...` links here also use `../../../` from `memory/persona/amara/conversations/…`, which won’t resolve to the repo-root `.claude/` directory. Update these link targets to use the correct number of `../` segments (consistent with the fixed link above) so they don’t 404.
+This `.claude/rules/...` markdown link uses `../../../` from within `memory/amara/conversations/…`, which resolves to `memory/.claude/...` (nonexistent) rather than the repo-root `.claude/...`. Adjust the relative path (likely `../../../../.claude/rules/...`) so the link works on GitHub.
+
+### Thread 3: memory/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md:173 (resolved)
+
+**@copilot-pull-request-reviewer** (2026-05-27T18:55:20Z):
+
+More `.claude/rules/...` links here also use `../../../` from `memory/amara/conversations/…`, which won’t resolve to the repo-root `.claude/` directory. Update these link targets to use the correct number of `../` segments (consistent with the fixed link above) so they don’t 404.
 
 ## General comments
 

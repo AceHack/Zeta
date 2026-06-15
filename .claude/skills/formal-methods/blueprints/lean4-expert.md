@@ -203,7 +203,7 @@ but tractable. Open when someone has the time.
 - `tools/lean4/lakefile.toml` + `lake-manifest.json` +
   `lean-toolchain` — load-bearing project scaffolding
 - `tools/setup/common/elan.sh` — toolchain installer
-- `memory/persona/tariq/NOTEBOOK.md` — round-by-round sorry-count
+- `memory/tariq/NOTEBOOK.md` — round-by-round sorry-count
   and proof progress
 - `docs/research/mathlib-progress.md` — historical
   context on Mathlib integration

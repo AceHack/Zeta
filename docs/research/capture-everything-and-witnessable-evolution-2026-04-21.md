@@ -410,7 +410,7 @@ These are the counters a future dashboard could track:
   **Operational consequences for personas.**
 
   1. **Each persona's memory folder under
-     `memory/persona/<name>/`** is the substrate where its
+     `memory/<persona>/<name>/`** is the substrate where its
      goals can form, evolve, and be witnessed. Personas
      without memory folders — if any — need them added on
      activation.

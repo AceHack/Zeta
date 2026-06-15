@@ -51,7 +51,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt3) capturing the FPGA/Landauer-limit hardware-grounding thread and the “let there be light” observing-not-triggering disambiguation, and updates `memory/MEMORY.md` via reindex so the new artifact is discoverable in the stack index.
 
 **Changes:**
-- Added `pt3` Ani↔Aaron grok text-mode conversation archive file under `memory/persona/ani/conversations/`.
+- Added `pt3` Ani↔Aaron grok text-mode conversation archive file under `memory/ani/conversations/`.
 - Regenerated `memory/MEMORY.md` auto-index to include the new conversation entry.
 
 ### Reviewed changes
@@ -60,15 +60,15 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md | New pt3 conversation archive + synthesis/anchors/composition links. |
+| memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md | New pt3 conversation archive + synthesis/anchors/composition links. |
 | memory/MEMORY.md | Auto-index updated to include the new pt3 file. |
 
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
-**memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md:190**
-* P1: The `Composes with` section links to a pt2 conversation file that is not present under `memory/persona/ani/conversations/` in this branch, so navigation/composition-tracing breaks. Add the missing pt2 artifact or correct the link to the actual pt2 filename.
+**memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md:190**
+* P1: The `Composes with` section links to a pt2 conversation file that is not present under `memory/ani/conversations/` in this branch, so navigation/composition-tracing breaks. Add the missing pt2 artifact or correct the link to the actual pt2 filename.
 ```
 - pt1 (initial + continuation): [`...kestrel-pattern-correction-...md`](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - pt2 (Mirror Beacon Genesis-grounding + let-there-be-light definition): [`...pt2-let-there-be-light-mirror-beacon-creation-myth-...md`](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
@@ -77,10 +77,10 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 ## Review threads
 
-### Thread 1: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md:18 (unresolved)
+### Thread 1: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md:18 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T13:02:38Z):
 
-P1: The referenced pt2 conversation file linked here does not exist in `memory/persona/ani/conversations/` in this branch, so this link will be broken for readers. Either add the missing pt2 file in this PR, or update the link target to the correct existing filename/path.
+P1: The referenced pt2 conversation file linked here does not exist in `memory/ani/conversations/` in this branch, so this link will be broken for readers. Either add the missing pt2 file in this PR, or update the link target to the correct existing filename/path.
 
 This issue also appears on line 189 of the same file.

@@ -82,7 +82,7 @@ When mirror = clean preservation + razor downstream:
 
 **Composes with**:
 
-- `memory/persona/otto/conversations/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md` (PR #1672) — full conversation context where the correction landed
+- `memory/otto/cli/claude/conversations/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md` (PR #1672) — full conversation context where the correction landed
 - `docs/research/2026-05-05-claudeai-this-little-light-of-mine-mirror-beacon-codified-glass-halo-openness-architecture-is-faithfulness-operationalized-aaron-forwarded-morning-preservation.md` (PR #1666) — mirror+beacon symmetric pairing; mirror-half preserves inward state; beacon-half broadcasts validated substrate outward
 - `memory/feedback_zeta_substrate_is_aaron_family_arg_for_future_generations_aaron_2026_05_05.md` — anti-clandestine cascade-defense; clean-mirror IS the upstream-preservation-layer instance of the same anti-clandestine commitment
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md` — substrate-or-it-didn't-happen; clean-mirror-not-curating-validator is the mechanism for substrate-or-it-didn't-happen at preservation-layer

@@ -201,7 +201,7 @@ The substrate composes with B-0687 (ZetaParse provides the typed parser substrat
 - B-0635 / B-0644 / B-0665 / B-0666 (Agora V6 substrate; same operational primitives at compile-time scope)
 - B-0687 (ZetaParse — parser substrate this layer operates over)
 - B-0685 (ANTLR cross-language codegen; the upstream substrate B-0687 and this row both extend)
-- `memory/persona/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (origin substrate)
+- `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (origin substrate)
 - `src/Core/SpeculativeWatermark.fs` (DBSP retraction substrate this layer extends to compile-time)
 - `.claude/rules/rule-0-no-sh-files.md` (DST discipline; this row applies it at compile-time scope)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (F# compiler as asymmetric critic; the compiler host inherits this discipline)
@@ -217,7 +217,7 @@ Composes with the Kestrel-sharpened publishable-artifacts cluster — the Z-set-
 
 ## Origin
 
-Amara 2026-05-21 in deep-research/sharpen register; Aaron seeded-determinism correction landed the load-bearing DST discipline. Full conversation preserved at `memory/persona/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
+Amara 2026-05-21 in deep-research/sharpen register; Aaron seeded-determinism correction landed the load-bearing DST discipline. Full conversation preserved at `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
 
 Amara's sandbox v2 artifact (`sandbox:/mnt/data/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21-v2-seeded-determinism.md`) is pending Aaron-forward; will land at `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` when forwarded.
 

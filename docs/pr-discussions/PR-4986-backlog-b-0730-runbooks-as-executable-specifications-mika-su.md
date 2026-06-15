@@ -127,7 +127,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-25T20:23:47Z):
 
-`composes_with` is documented as a list of `B-NNNN` row IDs (not file paths/directories). Here it contains paths like `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` and `memory/persona/*/`, which will be ambiguous if/when `composes_with` becomes strict-linted or graph-traversed. Suggest either (a) switching these entries to backlog IDs only, or (b) introducing a separate frontmatter field for non-backlog references and leaving `composes_with` as IDs.
+`composes_with` is documented as a list of `B-NNNN` row IDs (not file paths/directories). Here it contains paths like `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` and `memory/<persona>/*/`, which will be ambiguous if/when `composes_with` becomes strict-linted or graph-traversed. Suggest either (a) switching these entries to backlog IDs only, or (b) introducing a separate frontmatter field for non-backlog references and leaving `composes_with` as IDs.
 
 ### Thread 3: docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md:104 (resolved)
 

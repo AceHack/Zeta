@@ -57,7 +57,7 @@ Via REST git-data API bypass (dotgit-saturation persists).
 This PR implements the B-0719 Option 1 landing: a per-round “Trigger Recognition Log” in Soraya’s persona NOTEBOOK, and updates the formal-verification skill’s reference patterns to point to that new canonical landing surface for trigger-fired-but-row-not-filed events.
 
 **Changes:**
-- Append a `## Trigger Recognition Log` section to `memory/persona/soraya/NOTEBOOK.md` with backfilled rounds 59/66/69 entries.
+- Append a `## Trigger Recognition Log` section to `memory/soraya/NOTEBOOK.md` with backfilled rounds 59/66/69 entries.
 - Update `.claude/skills/formal-verification-expert/SKILL.md` to reference the new NOTEBOOK section as the canonical substrate for these events.
 
 ### Reviewed changes
@@ -66,7 +66,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/soraya/NOTEBOOK.md | Adds the new Trigger Recognition Log section and initial backfill entries. |
+| memory/soraya/NOTEBOOK.md | Adds the new Trigger Recognition Log section and initial backfill entries. |
 | .claude/skills/formal-verification-expert/SKILL.md | Updates reference patterns to point at the new NOTEBOOK log section. |
 
 ## Review threads
@@ -77,13 +77,13 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 The bold emphasis is split across a line break (`**Trigger Recognition` / `Log section**`), which doesn’t reliably render as bold in CommonMark renderers. Keep the `**...**` token pair on the same line to ensure consistent formatting.
 
-### Thread 2: memory/persona/soraya/NOTEBOOK.md:241 (resolved)
+### Thread 2: memory/soraya/NOTEBOOK.md:241 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T03:10:36Z):
 
 The stated log format (`trigger=(letter) outcome=(routed/held/escalated) ...`) doesn’t match the actual entries below (table rows with full trigger text and outcomes like `recognition-without-row-filing`). Suggest updating the format line to reflect the table so future entries are consistent.
 
-### Thread 3: memory/persona/soraya/NOTEBOOK.md:248 (resolved)
+### Thread 3: memory/soraya/NOTEBOOK.md:248 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T03:10:36Z):
 

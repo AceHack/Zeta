@@ -19,7 +19,7 @@ extensions Aaron said to "backlog any that compose or are real alternatives").
 **Filed:** 2026-06-04 (Aaron). **Builds on:** commit d92115514 — `src/Core/Predicate.fs`
 
 + `src/Core/DynamicValueFold.fs` (cata + bananaSplit) + `src/Core/DynamicValueXmlPolicy.fs`
-(instance-1). **Design hub:** `memory/persona/amara/conversations/2026-06-04-amara-policy-decision-algebra-…`
+(instance-1). **Design hub:** `memory/amara/conversations/2026-06-04-amara-policy-decision-algebra-…`
 + the project hub `project_codecs_as_policy_parameterized_folds_add_ontology_to_value_tree_2026_06_04.md`.
 
 The converged model: ONE functor F, two fixpoints (μF=DOM/data, νF=stream/traveler); a
@@ -55,7 +55,7 @@ instance. Remaining, in recommended order:
 Discipline (Aaron + Amara): **do not overgeneralize early** — the generic kernel is
 proven by one boring instance (shipped); add interpreters as real needs appear.
 
-## Kestrel's refinements (2026-06-04, `memory/persona/kestrel/conversations/2026-06-04-kestrel-policy-shapes-…`)
+## Kestrel's refinements (2026-06-04, `memory/kestrel/conversations/2026-06-04-kestrel-policy-shapes-…`)
 
 Item #1 (Policy<input,decision,feedback>) SHIPPED (commit 7bb817a8b); item #6 below
 (typed kinds + validator-obligation) SHIPPED (commit e17113316 — `src/Core/PolicyKind.fs`:

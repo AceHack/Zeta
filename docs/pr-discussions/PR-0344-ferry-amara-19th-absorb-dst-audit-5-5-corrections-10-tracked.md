@@ -82,7 +82,7 @@ are Amara's internal citation markers and are kept intact.
 
 **@copilot-pull-request-reviewer** (2026-04-24T09:29:05Z):
 
-This attribution block uses direct contributor names throughout, but `docs/AGENT-BEST-PRACTICES.md` defines an operational standing rule: no name attribution in code/docs/skills (names only in `memory/persona/**` and optionally `docs/BACKLOG.md`). Replace direct names here with role references (e.g., “human maintainer”, “external collaborator”, “courier/absorber”) to match repo policy.
+This attribution block uses direct contributor names throughout, but `docs/AGENT-BEST-PRACTICES.md` defines an operational standing rule: no name attribution in code/docs/skills (names only in `memory/<persona>/**` and optionally `docs/BACKLOG.md`). Replace direct names here with role references (e.g., “human maintainer”, “external collaborator”, “courier/absorber”) to match repo policy.
 ```suggestion
 - **Human maintainer / courier** — originated the DST
   directive as a factory-wide discipline (rulebook in

@@ -37,7 +37,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive personal information from durable memory. |
+| memory/riven/ide/cursor/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive personal information from durable memory. |
 | memory/MEMORY.md | Updates the stack/heap preamble and auto-index; currently contains duplicated/inconsistent generated sections that should be regenerated. |
 | memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | Deleted to remove sensitive family-configuration information from durable memory. |
 

@@ -233,9 +233,9 @@ absorption (Aaron's explicit framing from this ask).
 
 | Role                       | Responsibility                                                                                      | Notebook                                  |
 |----------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------|
-| `event-storming-expert`    | Runs or advises on Big-Picture / Process / Software-Design workshops; maps outputs to Zeta primitives. | `memory/persona/<name>/NOTEBOOK.md`       |
+| `event-storming-expert`    | Runs or advises on Big-Picture / Process / Software-Design workshops; maps outputs to Zeta primitives. | `memory/<persona>/<name>/NOTEBOOK.md`       |
 | `event-storming-teacher`   | Onboarding explainer: ES vocabulary, colour palette, facilitation patterns, common failure modes. | Shared skill file; no per-round notebook. |
-| `event-storming-auditor`   | Reviews specs + glossary for ES-vocabulary misuse (present-tense events, confused aggregates, hidden policies). | `memory/persona/<name>/NOTEBOOK.md`       |
+| `event-storming-auditor`   | Reviews specs + glossary for ES-vocabulary misuse (present-tense events, confused aggregates, hidden policies). | `memory/<persona>/<name>/NOTEBOOK.md`       |
 | `event-storming` capability| Procedure-body skill: how to actually run a workshop in this factory's one-human-plus-agents setting. | `.claude/skills/event-storming/SKILL.md`  |
 
 Persona names deferred to the naming-expert per GOVERNANCE.md.

@@ -18,15 +18,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-The `lint (§33 migration xrefs)` check has been firing as a non-required failure on **every PR this session** (PRs #3626, #3628, #3631, #3636, #3639, #3641, #3646, #3647, #3650, #3652, #3653, #3654, #3657, #3661, #3662, #3663). Root cause: the `docs/research/` → `memory/persona/otto/conversations/` migration ([B-0533](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0533-section-33-migration-xrefs-audit-script-and-ci-gate-2026-05-15.md)) left 22 dead references across 18 files.
+The `lint (§33 migration xrefs)` check has been firing as a non-required failure on **every PR this session** (PRs #3626, #3628, #3631, #3636, #3639, #3641, #3646, #3647, #3650, #3652, #3653, #3654, #3657, #3661, #3662, #3663). Root cause: the `docs/research/` → `memory/otto/cli/claude/conversations/` migration ([B-0533](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/backlog/P1/B-0533-section-33-migration-xrefs-audit-script-and-ci-gate-2026-05-15.md)) left 22 dead references across 18 files.
 
-**Mechanical bulk fix**: 12 unique target filenames substituted in-place in 18 source files. Each substitution is `docs/research/<NAME>.md` → `memory/persona/otto/conversations/<NAME>.md` for a SPECIFIC filename (no blanket replacement of `docs/research/` — only the 12 known-migrated filenames).
+**Mechanical bulk fix**: 12 unique target filenames substituted in-place in 18 source files. Each substitution is `docs/research/<NAME>.md` → `memory/otto/cli/claude/conversations/<NAME>.md` for a SPECIFIC filename (no blanket replacement of `docs/research/` — only the 12 known-migrated filenames).
 
 **Verification**:
 
 - `bun tools/hygiene/audit-section-33-migration-xrefs.ts --enforce` was **22 dead xrefs** before this commit, **0 dead xrefs** after
 - Pure-substitution diff: **+22/-22**, no content changes
-- All 12 target files verified to exist in `memory/persona/otto/conversations/`
+- All 12 target files verified to exist in `memory/otto/cli/claude/conversations/`
 - ls-tree canary clean (53/53 root entries)
 
 ## Files changed
@@ -64,7 +64,7 @@ The other 4 perpetual non-required-check failures remain:
 
 ## Pull request overview
 
-This PR fixes the perpetual `lint (§33 migration xrefs)` failure by updating stale cross-references that still point at `docs/research/<NAME>.md` to instead point at the migrated archive location `memory/persona/otto/conversations/<NAME>.md`.
+This PR fixes the perpetual `lint (§33 migration xrefs)` failure by updating stale cross-references that still point at `docs/research/<NAME>.md` to instead point at the migrated archive location `memory/otto/cli/claude/conversations/<NAME>.md`.
 
 **Changes:**
 - Updated 22 xrefs across memory files, backlog rows, and a `.claude/rules` doc to the post-migration archive paths.
@@ -81,7 +81,7 @@ Copilot reviewed 18 out of 18 changed files in this pull request and generated 8
 | File | Description |
 | ---- | ----------- |
 | `.claude/rules/claim-acquire-before-worktree-work.md` | Updates a §33-migrated xref to the new archive location. |
-| `docs/backlog/P1/B-0003-alignment-md-rewrite.md` | Updates a migrated research xref to `memory/persona/otto/conversations/…`. |
+| `docs/backlog/P1/B-0003-alignment-md-rewrite.md` | Updates a migrated research xref to `memory/otto/cli/claude/conversations/…`. |
 | `docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md` | Updates the backlog-split design xref to the new archive location. |
 | `docs/backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md` | Updates a migrated conversation xref in “Composes with”. |
 | `docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md` | Updates slice-1 and slice-2 landing pointers to the new archive location. |

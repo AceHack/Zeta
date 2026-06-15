@@ -205,7 +205,7 @@ function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
     lines.push(
       `_Stack truncated at ${MAX_STACK_ENTRIES} most-recent entries. ` +
         `${entries.length - MAX_STACK_ENTRIES} additional memory files in heap — ` +
-        "browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/persona/<ai>/conversations/*.md` and other subdirectory heaps)._",
+        "browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/<persona>/<ai>/conversations/*.md` and other subdirectory heaps)._",
     );
   }
   lines.push(PREAMBLE_END);

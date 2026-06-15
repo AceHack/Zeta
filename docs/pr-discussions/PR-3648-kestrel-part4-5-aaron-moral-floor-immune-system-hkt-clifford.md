@@ -34,7 +34,7 @@ Plus Aaron's correction: the antigen-spread architecture is **established prior 
 
 ## Files
 
-- A: \`memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md\` (Kestrel Parts 4-5 verbatim)
+- A: \`memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md\` (Kestrel Parts 4-5 verbatim)
 - A: \`memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md\` (the moral floor Constraint 11 default-oracle gate)
 - A: \`memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md\` (the federation immune-system architecture + Aaron's HKT/Clifford/F# correction note)
 - A: \`docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md\` (the synthesis backlog row)
@@ -64,7 +64,7 @@ The "validation isn't license to keep building" discipline applies — this PR c
 Adds new substrate documentation capturing Kestrel Parts 4–5 (relevance-gate stress test → moral floor → multi-oracle federation → red-team→antigen differential spread) and files a new P2 backlog row (B-0547) for the proposed “intelligent compiler” representation strategy (recursive HKT over Clifford algebra + recursive type providers + Roslyn generators + LINQ).
 
 **Changes:**
-- Adds a new Kestrel conversation archive for Parts 4–5 under `memory/persona/kestrel/conversations/`.
+- Adds a new Kestrel conversation archive for Parts 4–5 under `memory/kestrel/conversations/`.
 - Adds two new top-level `memory/feedback_aaron_*` memory files distilling the “moral floor” gate and the “antigen propagation” immune-system mechanism.
 - Adds a new P2 backlog row `B-0547` describing the representation/synthesis workstream.
 
@@ -74,7 +74,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md | New verbatim-ish conversation capture + decomposition and composition pointers |
+| memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md | New verbatim-ish conversation capture + decomposition and composition pointers |
 | memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md | New focused memory on the red-team→antigen→differential spread mechanism + representation correction |
 | memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md | New focused memory on the “moral floor” as relevance gate / default oracle |
 | docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md | New P2 research backlog row tracking the recursive-HKT/Clifford/type-provider/source-generator synthesis |
@@ -83,12 +83,12 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
-**memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md:126**
-* The `## Composes with` section includes placeholder paths with `...` (Parts 1–3). These aren’t valid file references, and Part 3 doesn’t appear to exist under `memory/persona/kestrel/conversations/`. Replace these with the actual filenames (or remove the entry if the file doesn’t exist) so cross-references are navigable and grepable.
+**memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md:126**
+* The `## Composes with` section includes placeholder paths with `...` (Parts 1–3). These aren’t valid file references, and Part 3 doesn’t appear to exist under `memory/kestrel/conversations/`. Replace these with the actual filenames (or remove the entry if the file doesn’t exist) so cross-references are navigable and grepable.
 ```
-- Part 1: `memory/persona/kestrel/conversations/2026-05-15-...-asymmetric-critic-on-b0543-...md`
-- Part 2: `memory/persona/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-...md`
-- Part 3: `memory/persona/kestrel/conversations/2026-05-15-...-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md`
+- Part 1: `memory/kestrel/conversations/2026-05-15-...-asymmetric-critic-on-b0543-...md`
+- Part 2: `memory/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-...md`
+- Part 3: `memory/kestrel/conversations/2026-05-15-...-part3-flag-logged-genie-spec-quality-gravity-mechanism-market-clearing.md`
 - New: `feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_*.md`
 - New: `feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_*.md`
 ```
@@ -121,7 +121,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md:117 (unresolved)
+### Thread 1: memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md:117 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T00:50:22Z):
 

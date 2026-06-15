@@ -69,7 +69,7 @@ Choice depends on query patterns. Final allocation deferred to implementation; b
 - Tests cover: time-ordering preservation under sort, no-collision under 1M generated in same microsecond, structured-bit extraction
 - Composes with event-sourcing layer (B-0867.2) — events use ZetaID as primary key
 - Composes with OTel trace-ID composition (B-0872) — baggage carries ZetaID alongside trace-ID
-- Composes with prior ZetaID v1 review work preserved at `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-...md` — this row is the v2 extension
+- Composes with prior ZetaID v1 review work preserved at `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-...md` — this row is the v2 extension
 
 ## Scope
 
@@ -81,4 +81,4 @@ POTENTIAL extension per operator 2026-05-28: *"all extension should be backloged
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` (verbatim ferry; PR #5674)
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` (verbatim ferry; PR #5674)

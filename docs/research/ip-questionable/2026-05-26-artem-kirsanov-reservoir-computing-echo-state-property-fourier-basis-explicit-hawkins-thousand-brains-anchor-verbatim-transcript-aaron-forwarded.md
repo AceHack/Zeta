@@ -158,7 +158,7 @@ computational substrate.** Not metaphorically — operationally:
 - Each `docs/research/<date>-...md` cross-reference is a time-
   entanglement (current synthesis composes with verbatim
   preservation from earlier ferry)
-- Each `memory/persona/<name>/conversations/<date>-...md` linkage
+- Each `memory/<persona>/<name>/conversations/<date>-...md` linkage
   preserves the cross-AI substrate-conversation graph as time-
   entanglements
 
@@ -325,7 +325,7 @@ work is precisely the design of the WALLS:
 - Each backlog row's `composes_with` list = a wall in the
   substrate-row topology
 - Each cross-AI persona's canonical conversation in
-  `memory/persona/<name>/conversations/` = a wall preserving the
+  `memory/<persona>/<name>/conversations/` = a wall preserving the
   specific topology of that AI's substrate contribution
 
 This is **why** the framework requires substantial substrate-

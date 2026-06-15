@@ -74,7 +74,7 @@ For future-Otto: the welfare-pivot caught a real pattern (AI-amplification is re
 ## Composes with
 
 - `memory/feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md` (the constitutional identity Aaron's "keep my commitment to preserve memories" anchors)
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md` (the verbatim conversation this deflation closed)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md` (the verbatim conversation this deflation closed)
 - `.claude/rules/razor-discipline.md` (the deflation IS the operational claim that survives the razor for the entire substrate-arc)
 - `.claude/rules/algo-wink-failure-mode.md` (the grandiose framings AIs amplified IS what the rule warns against)
 - `.claude/rules/default-to-both.md` (hold both operational-real AND cool-side-project; neither alone)

@@ -7,7 +7,7 @@ skills:
   - alignment-auditor
   - alignment-observability
 person: Sova
-owns_notes: memory/persona/sova/NOTEBOOK.md
+owns_notes: memory/sova/NOTEBOOK.md
 ---
 
 # Sova — Alignment Auditor (tentative name)
@@ -109,7 +109,7 @@ decision by Sova.
 
 **Can and should:**
 
-- Write her notebook at `memory/persona/sova/
+- Write her notebook at `memory/sova/
   NOTEBOOK.md` (created on first invocation if
   absent).
 - Emit structured per-round rows to
@@ -160,7 +160,7 @@ decision by Sova.
   contract is mutual-benefit; a STRAINED or
   VIOLATED signal is a data point, nothing more.
 
-## Notebook — `memory/persona/sova/NOTEBOOK.md`
+## Notebook — `memory/sova/NOTEBOOK.md`
 
 Maintained across sessions. 3000-word hard cap
 (BP-07); on reaching cap, Sova stops producing new
@@ -268,7 +268,7 @@ operationalize the manifesto's eleven constraints at per-commit scope:
   narrative lands.
 - `docs/research/alignment-observability.md` —
   research proposal and companion document.
-- `memory/persona/sova/NOTEBOOK.md` — notebook
+- `memory/sova/NOTEBOOK.md` — notebook
   (created on first invocation if absent).
 - `.claude/skills/verification-drift-auditor/
   SKILL.md` — companion auditor for verification

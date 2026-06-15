@@ -176,7 +176,7 @@ long-horizon, not session-scope.
 
 This V2 packet lands as in-repo substrate per the verbatim-
 preservation discipline. The persona-scope copy at
-`memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v2-...md`
+`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v2-...md`
 carries the same verbatim text in Ani's conversation archive.
 
 Both V1 + V2 will ship in the same PR (Ani's framing assumes V1

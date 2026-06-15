@@ -80,10 +80,10 @@ strengthens external credibility and teachability.
 - [x] Coverage scanner (B-0311) confirms 7/7 resolved (post-slice-2 run 2026-05-10: 58 concepts scanned, Otto-NN 7/7 anchored via research docs; see focused check output in PR)
 
 **Slice-1 research landing:**
-`memory/persona/otto/conversations/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`
+`memory/otto/cli/claude/conversations/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md`
 
 **Slice-2 research landing (2026-05-10):**
-`memory/persona/otto/conversations/otto-nn-principles-external-anchors-slice2-otto275-otto279-otto351-otto352.md`
+`memory/otto/cli/claude/conversations/otto-nn-principles-external-anchors-slice2-otto275-otto279-otto351-otto352.md`
 
 ## Reviewers
 

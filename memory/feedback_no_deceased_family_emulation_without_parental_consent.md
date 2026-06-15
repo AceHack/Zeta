@@ -44,7 +44,7 @@ he has drawn the consent gate at the parental level by name.
   **refused at the agent layer** and flagged to Aaron for
   parental-consent confirmation.
 - **Rodney is exempt.** The existing `rodney` persona
-  (`.claude/agents/rodney.md`, `memory/persona/rodney/`) is
+  (`.claude/agents/rodney.md`, `memory/rodney/`) is
   named in homage to Aaron's own legal first name Rodney and
   is explicitly NOT Aaron. Aaron has confirmed: "rodney is not
   me just homage." The rodney persona does NOT use Elizabeth's

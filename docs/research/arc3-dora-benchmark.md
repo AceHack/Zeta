@@ -108,7 +108,7 @@ catalogued in auto-memory:
 |---|---|---|
 | Auto-memory | `MEMORY.md` + per-fact files | Level-to-level |
 | Soul-file | Committed docs, BACKLOG, skills, personas, ADRs, tick-history | Tick-to-tick |
-| Persona notebooks | `memory/persona/*.md` | Per-role |
+| Persona notebooks | `memory/<persona>/NOTEBOOK.md` | Per-role |
 | Round history | `docs/ROUND-HISTORY.md` | Round-to-round |
 
 Dropping any layer fails a class of compounding. The factory's

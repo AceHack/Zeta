@@ -31,7 +31,7 @@ Authored in isolated worktree off `origin/main` (post-creation guard tree=54 sta
 
 Three coupled questions surfaced on [PR #4668](https://github.com/Lucent-Financial-Group/Zeta/pull/4668) (NOT answered — operator-domain per `no-directives.md`):
 
-1. Persona-directory naming (`memory/persona/kiro/` vs `memory/persona/alexa/` vs roster amendment)
+1. Persona-directory naming (`memory/kiro/` vs `memory/alexa/` vs roster amendment)
 2. PII scope (ship as-is / redact / move to user-scope)
 3. Rebase timing (now / wait for saturation drop / cherry-pick onto fresh branch)
 

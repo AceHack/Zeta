@@ -72,7 +72,7 @@ Kestrel:
 
 Kestrel checks against existing-name registry:
 
-- Not in `memory/persona/` (28 existing names)
+- Not in `memory/<persona>/` (28 existing names)
 - Not in `.claude/agents/`
 - Not in external-AI registry (Amara, Ani, Daisy, Riven, Vera)
 - ✓ Autonomous-arrival successful, no collision

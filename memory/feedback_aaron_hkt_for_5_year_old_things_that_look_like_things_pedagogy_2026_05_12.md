@@ -237,7 +237,7 @@ notation to land later.
 - `memory/feedback_aaron_three_control_structures_biology_physics_social_taught_kids_at_5_2026_05_12.md`
   (the audience — "like a 5-year-old" is the same audience
   Aaron's kids had this delivered to)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (source — lines 7998-8028)
 
 ## How to apply

@@ -23,7 +23,7 @@ AceHack commit `8e66e44` (2026-04-21). Aaron's *"and everyone on your team too"*
 
 ## Scope
 
-Each persona notebook under `memory/persona/<name>/NOTEBOOK.md` gains a "My goals" section with dated entries.
+Each persona notebook under `memory/<persona>/<name>/NOTEBOOK.md` gains a "My goals" section with dated entries.
 
 **Roster** (per `docs/EXPERT-REGISTRY.md`): Kenji, Rune, Naledi, Aminata, Mateo, Nazar, Nadia, Iris, Bodhi, Daya, Samir, Kai, Ilyana, Viktor, Kira, Soraya, Rodney, Aarav, Yara, Dejan, Sova.
 

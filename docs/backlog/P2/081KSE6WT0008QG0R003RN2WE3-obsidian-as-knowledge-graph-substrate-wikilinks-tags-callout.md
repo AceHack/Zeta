@@ -12,7 +12,7 @@ type: knowledge-substrate
 discovered_by: aaron
 owners: [aaron, max, addison]
 composes_with:
-  - memory/persona/
+  - memory/<persona>/
   - docs/backlog/
   - .claude/rules/
   # docs/AGENT-AUTHORING-AND-PR-REVIEW.md ref pending PR #4976 merge
@@ -94,7 +94,7 @@ Verification:
 Backlog rows already use frontmatter `tags: [...]`. Extend to:
 
 - `.claude/rules/*.md` — add `tags: [discipline, agent-coordination, hat-system]` etc. per rule
-- `memory/persona/<name>/*.md` — add `tags: [persona, human-co-owner, ai-agent]` etc.
+- `memory/<persona>/<name>/*.md` — add `tags: [persona, human-co-owner, ai-agent]` etc.
 - `docs/*.md` — add `tags: [governance, spec, onboarding]` etc.
 
 Convention doc: `docs/CONVENTIONS-FRONTMATTER-TAGS.md` — lists the canonical tag vocabulary + when to apply each.
@@ -195,7 +195,7 @@ Each layer ships standalone; team picks adoption pace.
 
 - [ ] `docs/CONVENTIONS-FRONTMATTER-TAGS.md` lists canonical tag vocabulary
 - [ ] All `.claude/rules/*.md` carry frontmatter tags
-- [ ] All `memory/persona/<name>/*.md` carry frontmatter tags
+- [ ] All `memory/<persona>/<name>/*.md` carry frontmatter tags
 - [ ] All `docs/*.md` carry frontmatter tags
 
 ### L3 acceptance
@@ -220,7 +220,7 @@ Each layer ships standalone; team picks adoption pace.
 ## Composes with shipped substrate
 
 - All `.claude/rules/*.md` — auto-loaded discipline becomes graph-queryable
-- All `memory/persona/<name>/` — persona substrate becomes graph-queryable
+- All `memory/<persona>/<name>/` — persona substrate becomes graph-queryable
 - All `docs/backlog/P*/B-NNNN-*.md` — backlog rows already use frontmatter; the graph extraction makes dependency chains visible
 - `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` (just landed in PR #4976) — the curated entry-point doc references the existing substrate by markdown links; would become richer with the graph view
 - `docs/governance/MANIFESTO.md` (just recast per B-0546 in PR #4976) — composes-with section becomes the natural graph-edge surface

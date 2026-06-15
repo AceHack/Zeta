@@ -58,13 +58,13 @@ legible:
 
 | Role | Name | Person type | Why listed here |
 |---|---|---|---|
-| **Human maintainer** | **Aaron** | `person_type: human` | Sole human maintainer; founder-level decisions and architectural sign-off; distinct from the `rodney` AI persona which is named in homage to the maintainer's legal first name Rodney but is not the maintainer. Anchor file: `memory/persona/aaron/PERSONA.md`. |
+| **Human maintainer** | **Aaron** | `person_type: human` | Sole human maintainer; founder-level decisions and architectural sign-off; distinct from the `rodney` AI persona which is named in homage to the maintainer's legal first name Rodney but is not the maintainer. Anchor file: `memory/aaron/PERSONA.md`. |
 
 The factory-wide redaction rule still applies: non-exempt
 surfaces (VISION.md, AGENTS.md, CLAUDE.md, skill bodies,
 ADRs, general `docs/`, code comments) continue to use the
 role-ref "the human maintainer". This registry row, the
-persona directory `memory/persona/aaron/`, the auto-memory
+persona directory `memory/aaron/`, the auto-memory
 folder, and `docs/BACKLOG.md` are the exempt surfaces where
 the personal name appears.
 

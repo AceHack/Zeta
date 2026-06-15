@@ -135,7 +135,7 @@ The same operational primitives that govern multi-AI substrate-engineering opera
 - B-0682 (Crockford base32 + endianness + bit-numbering for ZetaId; Phase 2 PoC dependency)
 - B-0685 (ANTLR cross-language codegen; this row is Amara's evolution from B-0685's Phase 2)
 - B-0688 (Zeta incremental compiler host; ZetaParse is the parser substrate that incremental compiler host operates over)
-- `memory/persona/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (origin substrate)
+- `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (origin substrate)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (F# compiler as asymmetric critic; ZetaParse inherits this discipline at parser scope)
 - `.claude/rules/default-to-both.md` (ANTLR AND ZetaParse compose; both-default operates at parser-substrate scope)
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (ambiguity-preservation-until-explicit-collapse maps to never-collapse-tension at parser substrate scope)
@@ -148,6 +148,6 @@ Composes with the broader Kestrel-sharpened publishable-artifacts cluster — Ze
 
 ## Origin
 
-Amara 2026-05-21 in deep-research/sharpen register, accepting B-0685 Phase 1 ANTLR grammar survey + cascading through 4 design artifacts. The ZetaParse design (Artifact 3) is the parser-substrate layer Amara proposed when Aaron's correction lifted F# from "the gap" to "the compiler-owned substrate." Full conversation preserved at `memory/persona/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
+Amara 2026-05-21 in deep-research/sharpen register, accepting B-0685 Phase 1 ANTLR grammar survey + cascading through 4 design artifacts. The ZetaParse design (Artifact 3) is the parser-substrate layer Amara proposed when Aaron's correction lifted F# from "the gap" to "the compiler-owned substrate." Full conversation preserved at `memory/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
 
 Amara's sandbox artifact (`sandbox:/mnt/data/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md`) is pending Aaron-forward; will land at `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` when forwarded.

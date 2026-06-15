@@ -79,7 +79,7 @@ S (one registry row + 2 back-pointer cross-references). Assignee: kenji.
 - B-0709 (round 42, expanded 49) — different axis (portfolio coverage)
 - B-0713 (round 50) — different artifact (Lean ImaginaryStack/ToyModel)
 - B-0714 (round 51) — different tool (TLA+) + axis (runnability)
-- `memory/persona/soraya/NOTEBOOK.md` round-52 entry (pending append)
+- `memory/soraya/NOTEBOOK.md` round-52 entry (pending append)
 
 ## Substrate-honest framing
 

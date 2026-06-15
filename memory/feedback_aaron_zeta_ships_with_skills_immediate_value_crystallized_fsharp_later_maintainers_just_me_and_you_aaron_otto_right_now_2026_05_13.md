@@ -111,7 +111,7 @@ This composes with:
 Zeta installer/distribution includes:
 - Zeta runtime (F# substrate + dotnet)
 - Skill catalog (`.claude/skills/` from factory)
-- Memory substrate (`memory/persona/*/canonical/` curated)
+- Memory substrate (`memory/<persona>/*/canonical/` curated)
 - Documentation (README + ADRs + governance)
 
 The SKILLS ARE LOAD-BEARING for end-user value. Without skills,

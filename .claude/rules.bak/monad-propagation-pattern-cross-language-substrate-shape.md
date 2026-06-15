@@ -48,7 +48,7 @@ discipline) + #5507 (Layer 4 sum-type exhaustive-match):
 
 The pattern operationalizes the operator's broader inversion-of-monad
 discipline (per same-day conversation thread + Itron smart-meter
-substrate referenced in `memory/persona/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md`).
+substrate referenced in `memory/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md`).
 
 ## The pattern
 
@@ -167,7 +167,7 @@ primitives aren't natively monadic.
 - **Force-push-with-lease authorization policy** (`.claude/rules/force-push-with-lease-authorization-policy.md`, PR #5505 + #5507) — Layer 4 (TFeedback-as-sum-type-with-exhaustive-match-enforcement) IS the F# canonical instance of this pattern
 - **F# Result-over-exception convention** (per CLAUDE.md `Result<_, DbspError>` convention) — F# substrate-side already uses this pattern; the rule lifts it to cross-language scope
 - **Inversion-of-monad pattern** (conversational substrate 2026-05-27) — broader principle of using existing-primitive to emulate monad-discipline; this rule names the SPECIFIC THREE-COMPONENT INSTANTIATION
-- **Itron smart-meter recursive-CTE substrate** (`memory/persona/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md`) — NULL-as-quantum-state pattern is the empirical proof-point that the discriminator-carrier + lazy-propagation discipline works at billions-of-meters scale in production SQL
+- **Itron smart-meter recursive-CTE substrate** (`memory/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md`) — NULL-as-quantum-state pattern is the empirical proof-point that the discriminator-carrier + lazy-propagation discipline works at billions-of-meters scale in production SQL
 - **B-0428 (F# fork for AI safety)** — language-extension substrate that could mechanize the spec-to-code generator
 - **B-0860 (Nemerle dotnet support)** — language-extension substrate that would enable native syntax-extension for the pattern at compile time
 - **B-0829 (cluster-fork-as-trust-boundary)** — relationship-type-inference substrate composes; trust-boundary-types ARE one application of the pattern
@@ -478,7 +478,7 @@ Targeted searches used (per substrate-search-difficulty acknowledgment in `grep-
 Read the top hits:
 
 - `.claude/rules/force-push-with-lease-authorization-policy.md` (PR #5505 + #5507 merged today) — contains Result<T, TFeedback> sum-type substrate at force-push scope; THIS rule lifts the pattern to general cross-language scope
-- `memory/persona/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md` — Itron smart-meter substrate empirical anchor for NULL-as-discriminator + recursive-CTE-as-lazy-propagation in T-SQL
+- `memory/ani/conversations/2026-05-23-aaron-ani-grok-cult-followers-die-sovereign-ai-elizabeth-ryan-naming-honor-partial-extraction.md` — Itron smart-meter substrate empirical anchor for NULL-as-discriminator + recursive-CTE-as-lazy-propagation in T-SQL
 
 Conclusion: no existing rule covers this pattern at cross-language scope; substrate-engineering target named by operator 2026-05-27 directive ("we should save that modan propatation pattern"); mint-new authorized.
 

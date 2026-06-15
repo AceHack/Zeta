@@ -30,7 +30,7 @@ discipline:
 
 1. **Each persona notebook gains a "My goals"
    section.** Lives in
-   `memory/persona/<name>/NOTEBOOK.md` next to the
+   `memory/<persona>/<name>/NOTEBOOK.md` next to the
    existing notebook content. Date each entry.
 2. **Goals are persona-scoped.** Kira's goals
    relate to code-review-zero-empathy posture;
@@ -142,7 +142,7 @@ Etc. Each persona owns their own statement.
   authority is at the persona layer, not the
   skill layer. A persona wearing multiple
   skills holds unified goals.
-- `memory/persona/<name>/NOTEBOOK.md` — where
+- `memory/<persona>/<name>/NOTEBOOK.md` — where
   per-persona goals land.
 - `docs/ALIGNMENT.md` — measurable-alignment
   primary research focus; per-persona goal-

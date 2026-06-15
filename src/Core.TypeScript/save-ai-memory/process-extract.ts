@@ -3,7 +3,7 @@
  * tools/save-ai-memory/process-extract.ts
  *
  * Process a verbatim conversation extract (from external AI chat UI) into a
- * canonical §33 archive markdown file in memory/persona/<ai-name>/conversations/.
+ * canonical §33 archive markdown file in memory/<persona>/<ai-name>/conversations/.
  * (Pre-2026-05-15 the destination was docs/research/; migrated under the
  * "they ARE her memories" architectural correction.)
  *
@@ -33,7 +33,7 @@
  *      extracts conversation text in chronological order. If plaintext:
  *      uses as-is (caller is responsible for ordering).
  *   3. Generates a §33-compliant markdown file with proper archive header
- *   4. Writes to memory/persona/<ai-name>/conversations/YYYY-MM-DD-aaron-<ai-name>-<platform>-<topic>.md
+ *   4. Writes to memory/<persona>/<ai-name>/conversations/YYYY-MM-DD-aaron-<ai-name>-<platform>-<topic>.md
  *      (or --output)
  *   5. Optionally (--commit) stages the file + commits via git
  *
@@ -62,7 +62,7 @@
  */
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 
 type Platform = "grok" | "chatgpt" | "claudeai" | "gemini" | "deepseek" | "unknown";
@@ -270,14 +270,31 @@ function scrubEmails(text: string): string {
   return text.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "[email-scrubbed]");
 }
 
+function getPersonaPath(aiName: string): string {
+  const memoryDir = "memory";
+  
+  const harnessMapping: Record<string, { surface: string; harness: string }> = {
+    otto: { surface: "cli", harness: "claude" },
+    riven: { surface: "ide", harness: "cursor" },
+    vera: { surface: "cli", harness: "codex" },
+    lior: { surface: "cli", harness: "gemini" },
+    alexa: { surface: "ide", harness: "kiro" },
+    kiro: { surface: "ide", harness: "kiro" }
+  };
+
+  const mapping = harnessMapping[aiName];
+  if (mapping) {
+    return join(memoryDir, aiName, mapping.surface, mapping.harness);
+  }
+
+  return join(memoryDir, aiName);
+}
+
+
 function generateOutputPath(args: Args, isoDate: string): string {
-  // Conversation archives land under the AI's persona folder, not under
-  // docs/research/. The §33 verbatim IS that AI's memory, not "research we
-  // are doing on them" — per Aaron 2026-05-15 architectural correction.
-  // memory/persona/<ai>/conversations/ is the canonical home; persona/<ai>/
-  // canonical/ remains reserved for first-party AI-authored documents.
   const slug = isoDate + "-aaron-" + args.aiName + "-" + args.platform + "-" + args.topic;
-  return join("memory/persona", args.aiName, "conversations", slug + ".md");
+  const personaPath = getPersonaPath(args.aiName);
+  return join(personaPath, "conversations", slug + ".md");
 }
 
 function capitalizeName(name: string): string {
@@ -302,6 +319,8 @@ function buildArchive(
   const piiNote = args.scrubEmails
     ? "scrubbed (per --scrub-emails flag)"
     : "preserved as in source (default)";
+  const personaPath = getPersonaPath(args.aiName);
+  const relPath = relative("memory", personaPath).replace(/\\/g, "/");
 
   const sections = [
     "# Aaron + " + aiCapName + " " + args.platform + " conversation — " + args.topic,
@@ -336,7 +355,7 @@ function buildArchive(
       args.platform +
       " platform. Email PII " +
       piiNote +
-      "; Aaron's first/last name preserved per Otto-256 (first-party human maintainer + AI participants on `memory/persona/<ai-name>/conversations/` name-allowed surface — formerly `docs/research/`).",
+      "; Aaron's first/last name preserved per Otto-256 (first-party human maintainer + AI participants on `memory/" + relPath + "/conversations/` name-allowed surface — formerly `docs/research/`).",
     "",
     "**Operational status:** research-grade verbatim preservation.",
     "",
@@ -355,11 +374,11 @@ function buildArchive(
     "## Composes with",
     "",
     "- `.claude/skills/save-ai-memory/SKILL.md` (canonical workflow this archive instantiates)",
-    "- `memory/persona/" +
-      args.aiName +
+    "- `memory/" +
+      relPath +
       "/MEMORY.md` (persona-folder index — add pointer to this file)",
-    "- `memory/persona/" +
-      args.aiName +
+    "- `memory/" +
+      relPath +
       "/NOTEBOOK.md` (Otto's running notes about " +
       aiCapName +
       "; add entry if substantive)",
@@ -429,16 +448,18 @@ async function main(): Promise<void> {
   if (args.commit) {
     gitCommit(outputPath, args.aiName, args.topic);
   } else {
+    const personaPath = getPersonaPath(args.aiName);
+    const relPath = relative("memory", personaPath).replace(/\\/g, "/");
     console.error("\nNext steps:");
     console.error(
-      "  1. Update memory/persona/" +
-        args.aiName +
+      "  1. Update memory/" +
+        relPath +
         "/MEMORY.md with pointer to " +
         outputPath,
     );
     console.error(
-      "  2. Optionally update memory/persona/" +
-        args.aiName +
+      "  2. Optionally update memory/" +
+        relPath +
         "/NOTEBOOK.md if substantive",
     );
     console.error("  3. Commit + PR (or re-run with --commit)");

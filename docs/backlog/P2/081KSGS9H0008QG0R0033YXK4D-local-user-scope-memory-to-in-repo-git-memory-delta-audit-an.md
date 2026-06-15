@@ -87,7 +87,7 @@ Initial heuristics for MIGRATE-vs-KEEP-LOCAL:
 |---|---|
 | `feedback_*` (load-bearing learnings) | MIGRATE |
 | `project_*` (project-context substrate) | MIGRATE |
-| `aaron_*` / `mika_*` / persona-specific | MIGRATE to `memory/persona/<name>/` |
+| `aaron_*` / `mika_*` / persona-specific | MIGRATE to `memory/<persona>/<name>/` |
 | `*_secret*` / `*_password*` / `*_key*` | KEEP-LOCAL (sensitive) |
 | `*_local*` / `*_per_machine*` | KEEP-LOCAL (per-machine substrate) |
 | Files with explicit `local-only: true` frontmatter | KEEP-LOCAL |

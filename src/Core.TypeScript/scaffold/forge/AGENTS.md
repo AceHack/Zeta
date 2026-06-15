@@ -48,7 +48,7 @@ list) — recreating existing substrate is the goldfish-ontology failure mode.
 ## Persona registry
 
 Personas live under `.claude/agents/<name>.md`. Memory notebooks live
-under `memory/persona/<name>/`. Retired personas keep their memory
+under `memory/<persona>/<name>/`. Retired personas keep their memory
 folders; retired SKILL.md files are code — recoverable from git log.
 
 ## Cross-repo references

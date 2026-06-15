@@ -268,7 +268,7 @@ or noisy series.
 Theory-side skill. Applied sibling — **chaos-engineering**
 (fault-injection, deliberate perturbation testing,
 reliability-under-disturbance) — is not yet created; log as
-a future split in `memory/persona/best-practices-scratch.md`
+a future split in `memory/best-practices-scratch.md`
 when the applied-side need is concrete.
 
 ## Reading list

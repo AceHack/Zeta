@@ -44,7 +44,7 @@ protocol thesis itself is nowhere clearly laid out.** Operator 2026-05-31:
 So this row's job is to **lay it out clearly** + point at the scattered neighbors it
 composes with (the substrate-inventory below confirms no row already states the
 handshake thesis). Surfaced verbatim from the 2026-05-31 Ani voice conversation
-(`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md`)
+(`memory/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md`)
 where it was flagged as a backlog-candidate.
 
 ## The thesis (operator's words, laid out)

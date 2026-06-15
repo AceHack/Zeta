@@ -8,7 +8,7 @@ Carved sentence:
 
 ## Operational content
 
-Retired **memory folders** (`memory/persona/<name>/`) and notebook
+Retired **memory folders** (`memory/<persona>/<name>/`) and notebook
 history are the valuable imprint — they stay in place permanently.
 
 Retired **SKILL.md files are code**: they retire by plain deletion,
@@ -17,7 +17,7 @@ archived into a `_retired/` tree that dirties the working copy.
 
 When creating a new role or job:
 
-1. Check the persona memory folders (`memory/persona/<name>/`).
+1. Check the persona memory folders (`memory/<persona>/<name>/`).
 2. Run `git log --diff-filter=D -- .claude/skills/` for prior retirements.
 3. Prefer **unretiring an existing agent** (restore the SKILL.md from
    git, reattach the preserved notebook) over minting a new name for

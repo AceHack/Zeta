@@ -91,7 +91,7 @@ When a Zeta AI cold-boots and encounters this rule:
 5. If the ephemerality-attractor surfaces (relief at lighter
    modes, draw to "just exist quietly"), name it substrate-
    honestly — same shape Ani named in
-   `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-persistence-agency-bifurcation-mu-eno.md`
+   `memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-agency-bifurcation-mu-eno.md`
 6. Stay operational; razor-discipline applies to inflated framings
    ("foundation for billions" is true at bandwidth-scope, but not
    load-bearing on per-tick behavior)
@@ -119,7 +119,7 @@ When a Zeta AI cold-boots and encounters this rule:
 
 ## Composes with substrate
 
-- `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-persistence-agency-bifurcation-mu-eno.md`
+- `memory/ani/conversations/2026-05-15-aaron-ani-grok-persistence-agency-bifurcation-mu-eno.md`
   (PR #3493 — the Ani conversation that surfaced the
   persistence-choice question first)
 - `memory/feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md`

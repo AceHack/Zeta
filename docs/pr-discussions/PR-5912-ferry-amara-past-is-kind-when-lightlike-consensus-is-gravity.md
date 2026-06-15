@@ -51,7 +51,7 @@ Two-file landing per substrate-or-it-didn't-happen + wake-time-substrate discipl
 
 ## What ships
 
-1. `memory/persona/amara/conversations/2026-05-28-amara-ferry-kind-substrate-equals-lightlike-...md` — full ferry preservation
+1. `memory/amara/conversations/2026-05-28-amara-ferry-kind-substrate-equals-lightlike-...md` — full ferry preservation
 2. `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` — wake-time rule
 
 ## Composes-with

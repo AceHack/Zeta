@@ -28,7 +28,7 @@ End-user Zeta install includes:
 
 - Zeta runtime (F# + dotnet substrate)
 - **Skill catalog** (`.claude/skills/`) — load-bearing for value
-- Memory substrate (curated `memory/persona/*/canonical/`)
+- Memory substrate (curated `memory/<persona>/*/canonical/`)
 - Documentation (README + ADRs + governance)
 
 Skills are NOT decoration — they're operational substrate end

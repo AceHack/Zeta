@@ -95,7 +95,7 @@ S (3 additional rows in the same registry-row-authoring pass that B-0709 already
 - [`tools/tla/specs/SpineMergeInvariants.tla`](../../../tools/tla/specs/SpineMergeInvariants.tla) — missed target #3
 - [`docs/research/verification-registry.md`](../../research/verification-registry.md) — destination
 - B-0710 / B-0711 / B-0712 / B-0713 / B-0714 / B-0715 (sibling Soraya hand-offs this session)
-- `memory/persona/soraya/NOTEBOOK.md` round-53 entry (pending append)
+- `memory/soraya/NOTEBOOK.md` round-53 entry (pending append)
 
 ## Substrate-honest framing
 

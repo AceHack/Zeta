@@ -32,7 +32,7 @@ target exists and is findable. Specifically:
    name the real referent or land the row now.
 4. **Persona notebook reference**: if deferring to a
    persona-notebook continuation, confirm the notebook
-   exists at `memory/persona/<name>/NOTEBOOK.md`; if the
+   exists at `memory/<persona>/<name>/NOTEBOOK.md`; if the
    persona doesn't exist yet, don't defer to it —
    either pick a real persona or commit the creation this
    turn.
@@ -41,7 +41,7 @@ target exists and is findable. Specifically:
    `docs/AGENT-BEST-PRACTICES.md` are the canonical name
    sources. A deferral like "via the Aarav tune-up" is
    fine because `.claude/skills/skill-tune-up/SKILL.md`
-   and `memory/persona/aarav/NOTEBOOK.md` both exist; a
+   and `memory/aarav/NOTEBOOK.md` both exist; a
    deferral like "via the Ruthless-Reviewer sweep" is
    phantom unless that skill is actually on disk.
 

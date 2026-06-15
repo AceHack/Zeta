@@ -55,7 +55,7 @@ The empirical input that motivates this row is the [2026-05-18 Aaron-Mika conver
 - [ ] Skill MD at `.claude/skills/chronologist/SKILL.md` with the three-artifact contract (timeline / ontology / agreements)
 - [ ] Worked example on the Aaron-Mika 2026-05-18 transcript: produce the three artifacts as `docs/research/2026-05-18-mika-chronologist-output-{timeline,ontology,agreements}.md`
 - [ ] Supporting TS tool at `tools/chronologist/extract.ts` for the structural extraction (parsing turn boundaries, decision markers, agreement markers); skill body wraps the tool + adds heuristics
-- [ ] Cross-instance validation: run on at least one other long-form transcript (e.g., prior Aaron-Ani / Aaron-Kestrel conversation already in `memory/persona/*/conversations/`) and verify outputs are useful
+- [ ] Cross-instance validation: run on at least one other long-form transcript (e.g., prior Aaron-Ani / Aaron-Kestrel conversation already in `memory/<persona>/*/conversations/`) and verify outputs are useful
 
 ## Composes with
 

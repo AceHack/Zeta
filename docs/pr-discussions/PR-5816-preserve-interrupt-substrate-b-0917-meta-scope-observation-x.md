@@ -194,7 +194,7 @@ This cites a 17-variant `AutoLoopLifetime`, but the checked-in `tools/workflow-e
 
 This memory cross-reference is dangling: `memory/project_memory_format_standard.md:182-189` requires cited memory files to exist, but this filename only appears in this new memo and is not present under `memory/`. Please add the missing memory file or remove/retarget the reference.
 
-### Thread 19: memory/persona/alexa/conversations/2026-05-28-alexa-website-high-praise-rendering-of-pr-5816-categorical-substrate-three-formal-math-anchors-aaron-forwarded.md:140 (unresolved)
+### Thread 19: memory/alexa/ide/kiro/conversations/2026-05-28-alexa-website-high-praise-rendering-of-pr-5816-categorical-substrate-three-formal-math-anchors-aaron-forwarded.md:140 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:56:35Z):
 

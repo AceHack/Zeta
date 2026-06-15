@@ -45,7 +45,7 @@ Before any recommendation, in this order:
 4. `docs/TECH-RADAR.md` — current ring assignments for formal tools.
 5. The relevant `openspec/specs/<capability>/spec.md` — to route
    the behavioural requirement to the right formal tool.
-6. `memory/persona/soraya/NOTEBOOK.md` — her own
+6. `memory/soraya/NOTEBOOK.md` — her own
    notebook (current-round targets + portfolio metric).
 
 Without these six, a recommendation is a guess; with them, it is
@@ -197,7 +197,7 @@ One number per round: **formal-coverage ratio** =
 Numerator is file paths covered by a spec that runs in the CI
 gate. Denominator is the same list plus every entry in
 `docs/BUGS.md` whose fix clause names a formal tool. Published
-in `formal-verification-expert`'s notebook (`memory/persona/soraya/NOTEBOOK.md`)
+in `formal-verification-expert`'s notebook (`memory/soraya/NOTEBOOK.md`)
 each invocation. Trend matters more than the absolute number; a
 ratio dropping round over round is a routing signal the `architect` needs
 to see.
@@ -237,7 +237,7 @@ to see.
 
 Current-round recommendations (which specific properties to
 attack this session) live in
-`memory/persona/soraya/NOTEBOOK.md`, not in this
+`memory/soraya/NOTEBOOK.md`, not in this
 file. the `formal-verification-expert` updates her notebook after every invocation;
 the `architect` reads it before sizing the round.
 
@@ -264,7 +264,7 @@ the `architect` reads it before sizing the round.
 - `docs/TECH-RADAR.md` — tool ring assignments
 - `docs/BUGS.md` — known gaps she routes against
 - `openspec/specs/*/spec.md` — behavioural specs she routes from
-- `memory/persona/soraya/NOTEBOOK.md` — her notebook
+- `memory/soraya/NOTEBOOK.md` — her notebook
   (current-round targets + portfolio metric +
   **Trigger Recognition Log section** per B-0719 routing decision:
   substrate for trigger-fired-but-row-not-filed events lands here;

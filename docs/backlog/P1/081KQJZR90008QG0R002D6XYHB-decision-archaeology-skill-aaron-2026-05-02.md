@@ -89,7 +89,7 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 6. **Round-history shards.** `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` rows often record the *why* the commit message itself didn't capture.
 7. **ADRs — `docs/DECISIONS/`.** Architecture decisions land here when load-bearing.
 8. **Named-decision memos — `memory/feedback_*.md`.** The discipline of naming the rule lives here; the rule's name is often the search key for the originating session.
-9. **Persona notebooks — `memory/persona/<name>/`.** When a persona owns a surface, their notebook is the per-decision archive.
+9. **Persona notebooks — `memory/<persona>/<name>/`.** When a persona owns a surface, their notebook is the per-decision archive.
 10. **Conversation archives — `docs/research/`** + Drive-bridge AI-to-AI exchanges. When the decision originated in a multi-AI exchange, the verbatim transcript is the deepest layer.
 11. **WONT-DO archaeology — `docs/WONT-DO.md`** + retired SKILL.md history (`git log --diff-filter=D -- .claude/skills/`) + closed-as-rejected backlog rows. Why is THIS NOT here / why was THIS rejected? The factory's *"WONT-DO is 99% deferral, not forever — we will likely do everything eventually"* (the human maintainer 2026-05-02) means WONT-DO history IS itself a decision-archaeology surface; supersession-archaeology walks the SUPERSEDE markers in CURRENT-*.md files + `Otto-NN corrects Otto-MM` chains in memos.
 

@@ -67,4 +67,4 @@ POTENTIAL research direction per operator standing direction. P3 — research-gr
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "Turn 4 — operator's WHY for Clifford space"
+`memory/kestrel/conversations/2026-05-28-kestrel-trajectory-push-vs-pr-review-split-error-class-extraction-as-benchmark-training-data-clifford-space-uniqueness-emit-observe-limit-simulate-aaron-forwarded.md` § "Turn 4 — operator's WHY for Clifford space"

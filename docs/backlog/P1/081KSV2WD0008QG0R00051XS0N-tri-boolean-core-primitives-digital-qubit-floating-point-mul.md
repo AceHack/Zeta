@@ -10,7 +10,7 @@ created: 2026-05-30
 last_updated: 2026-05-30
 decomposition: umbrella
 composes_with:
-  - memory/persona/mika/conversations/2026-05-30-mika-grok-driver-swap-arc-guilt-engine-to-privacy-engine-harmonious-division-uncertainty-in-priors-aaron-forwarded.md
+  - memory/mika/conversations/2026-05-30-mika-grok-driver-swap-arc-guilt-engine-to-privacy-engine-harmonious-division-uncertainty-in-priors-aaron-forwarded.md
   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
   - .claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md
   - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md

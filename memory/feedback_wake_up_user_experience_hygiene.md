@@ -67,7 +67,7 @@ Two things this acknowledges that were previously tacit:
   (5-ish rows; expected to grow). Each row cites this memory
   as source-of-truth.
 - **Daya is the owner.** Findings land in
-  `memory/persona/daya/NOTEBOOK.md` (creating if absent).
+  `memory/daya/NOTEBOOK.md` (creating if absent).
 - **Pain-point log.** When the agent hits wake friction
   mid-session and can name it, log a dated bullet in
   Daya's notebook under a "Wake friction observed" section.
@@ -134,7 +134,7 @@ Two things this acknowledges that were previously tacit:
 - Cadence: opportunistic (any time friction is observed).
 - Owner: Daya.
 - Checks: agent self-reports wake friction in
-  `memory/persona/daya/NOTEBOOK.md` under a dated "Wake
+  `memory/daya/NOTEBOOK.md` under a dated "Wake
   friction observed" section. Patterns become candidate
   new hygiene rows.
 - Durable output: notebook bullets; quarterly pattern-

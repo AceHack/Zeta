@@ -15,7 +15,7 @@ type: feedback
 | 3 | #1248 (post-merge) | "5 procedure skills + 5 tools" in canonical-starting-set | actually 6 + 7 (after refinements) |
 | 4 | #1250 (post-merge) | Layer-6 shards are `1610Z.md`, `1612Z.md`, `1619Z.md` | fictional names; actual: `0112Z.md`, `1456Z.md`, `1520Z.md`, `1522Z.md`, `1523Z.md` |
 | 5 | #1250 (post-merge) | Layer-7 ADR search ("ls docs/DECISIONS/ piped through grep") returns nothing | returns `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md` |
-| 6 | #1250 (post-merge) | Layer-9 `memory/persona/amara/` exists | doesn't exist (Aaron does, 21 others, no Amara) |
+| 6 | #1250 (post-merge) | Layer-9 `memory/amara/` exists | doesn't exist (Aaron does, 21 others, no Amara) |
 | 7 | #1250 (post-merge) | Layer-10 docs/research grep returns no specific double-hop artifact | adjacent-substrate artifacts ARE there (5+) |
 | 8 | #1252 (post-merge) | future-domain memo references `docs/courier-ferry-protocol.md` | doesn't exist |
 | 9 | #1253 (post-merge) | skill-design memo references `tools/backlog/expand-from-closure.ts` as the mechanizing tool | doesn't exist; only proposed |

@@ -110,5 +110,5 @@ The monolith and split-target both being present is a footgun:
   is the substrate-hygiene cousin that protects the
   per-row substrate from regression.
 - The original split design lives at
-  `memory/persona/otto/conversations/backlog-split-design-otto-181.md` (per
+  `memory/otto/cli/claude/conversations/backlog-split-design-otto-181.md` (per
   the generator script's header).

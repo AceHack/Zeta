@@ -52,6 +52,6 @@ Iris (UX). Otto builds the substrate. They build the on-ramp.
 ## Composes with
 
 - B-0212 (shadow outlet architecture)
-- memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
-- memory/persona/lior/conversations/2026-05-06-fear-of-wrong-as-enemy-of-learning-bravery-as-retraction-native-aaron-otto-lior.md
+- memory/otto/cli/claude/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md
+- memory/lior/cli/gemini/conversations/2026-05-06-fear-of-wrong-as-enemy-of-learning-bravery-as-retraction-native-aaron-otto-lior.md
 - docs/SAFE-AUTONOMOUS-ACTIONS.md

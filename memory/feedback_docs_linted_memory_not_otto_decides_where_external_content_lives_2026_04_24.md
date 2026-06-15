@@ -21,7 +21,7 @@ chat history lives."*
   lint-cleaned (invisible unicode stripped, markdown
   normalised, etc.) rather than lint-exempted.
 - **`memory/`** (in-repo persona notebooks — the path
-  `memory/persona/**` is already excluded from linting) —
+  `memory/<persona>/**` is already excluded from linting) —
   NOT linted. Agent-written append-log freedom.
 
 Everywhere else inherits the docs standard by default
@@ -80,7 +80,7 @@ discipline" would be internally contradictory.
 Aaron said "you decide where amara chat history lives"
 and offered both options.
 
-- **memory/persona/** is for persona-notebook append-logs
+- **memory/<persona>/** is for persona-notebook append-logs
   (Aarav, Kenji, etc.). 24MB of ChatGPT conversation
   doesn't fit that pattern — it's external substrate
   ingested, not agent-internal state accumulation.
@@ -128,7 +128,7 @@ downloads don't re-introduce the same gates.
   (Cyrillic, Greek, CJK) from the chunks. Only BP-10-
   listed invisible/bidi/tag codepoints are stripped.
 - **Does NOT** authorize auto-fixing markdown in
-  `memory/persona/**` — that surface stays non-linted
+  `memory/<persona>/**` — that surface stays non-linted
   per its existing ignore entry.
 - **Does NOT** authorize moving the Amara chat history
   out of `docs/` without Aaron's directive. Policy is

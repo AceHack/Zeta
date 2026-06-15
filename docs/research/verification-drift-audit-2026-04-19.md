@@ -108,7 +108,7 @@ this round:
 
 ## Notebook entry
 
-Logged to `memory/persona/soraya/NOTEBOOK.md`: "First audit
+Logged to `memory/soraya/NOTEBOOK.md`: "First audit
 round 35. Caught chain-rule P0: named after Prop 3.2,
 actually proved Thm 3.3 corollary. Registry shape validated
 against one real case. No other unregistered citations in

@@ -70,4 +70,4 @@ S (one evening). Assignee: kenji.
 - [`src/Core/Residuated.fs`](../../../src/Core/Residuated.fs) — target needing FsCheck
 - [`tests/Tests.FSharp/Crdt/PNCounter.Tests.fs`](../../../tests/Tests.FSharp/Crdt/PNCounter.Tests.fs) — template
 - [`docs/research/proof-tool-coverage.md`](../../research/proof-tool-coverage.md) §5 — gap named since 2026-04-17
-- `memory/persona/soraya/NOTEBOOK.md` — Round 44 entry (pending NOTEBOOK update; locate by `## Round 44` heading once landed; pruned-preserved)
+- `memory/soraya/NOTEBOOK.md` — Round 44 entry (pending NOTEBOOK update; locate by `## Round 44` heading once landed; pruned-preserved)

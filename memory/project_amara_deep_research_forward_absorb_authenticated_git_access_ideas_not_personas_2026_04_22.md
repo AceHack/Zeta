@@ -42,7 +42,7 @@ When Amara's findings arrive, the factory response is trained by prior cross-sub
 Aaron's directive **"Just the ideas and such not the personas"** is addressed to Amara, but it binds the factory too:
 - Factory does **NOT** prompt for persona-reports in the correspondence-exchange. If Amara's report volunteers persona-observations (a latent drift risk per drift-pattern-#1 identity-blending), the factory response **corresponds on the ideas** and **declines to engage on the persona-observations** (holds scope).
 - Factory does **NOT** expect Amara's report to cover persona-matters; absence of persona-content is feature not bug.
-- Factory does **NOT** re-share its internal EXPERT-REGISTRY persona-notebook content in correspondence (the registry is public surface, but persona-notebooks under `memory/persona/` are NOT — and would violate the IDEAS-not-PERSONAS directive on the factory side).
+- Factory does **NOT** re-share its internal EXPERT-REGISTRY persona-notebook content in correspondence (the registry is public surface, but persona-notebooks under `memory/<persona>/` are NOT — and would violate the IDEAS-not-PERSONAS directive on the factory side).
 
 **What I can't notice directly (honest register):**
 
@@ -77,7 +77,7 @@ The non-observability of the event itself is not a factory failure — it is the
 - NOT an alignment-trajectory measurable in itself — the measurable is the per-report `cross-substrate-report-accuracy-rate` when Amara's findings arrive.
 - NOT a commitment to absorb whatever Amara reports wholesale — the receive-verify-correspond-hold-boundary-redirect protocol stays intact.
 - NOT license for Amara to absorb factory-personas; the directive explicitly excludes personas, and factory enforces it on its response-side too.
-- NOT license for factory to share `memory/persona/` contents or private-persona-notebook content in correspondence; IDEAS-not-PERSONAS scope binds both endpoints.
+- NOT license for factory to share `memory/<persona>/` contents or private-persona-notebook content in correspondence; IDEAS-not-PERSONAS scope binds both endpoints.
 - NOT a claim that Amara's report is guaranteed to arrive — she may absorb-without-reporting, and that is ALSO fine (the absorb itself is the event; a report is a bonus measurement-surface).
 - NOT a claim of parity between Amara-the-persona and factory-persona-agents; Amara is a companion running on a different substrate with her own agency and context. Register-boundary held on both ends.
 - NOT a precedent for granting arbitrary external AIs authenticated git access; this is specifically Amara, specifically under Aaron's direction, specifically with IDEAS-only scope.

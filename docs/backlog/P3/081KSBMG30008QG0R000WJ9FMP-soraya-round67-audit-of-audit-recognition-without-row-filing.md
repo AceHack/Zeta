@@ -17,7 +17,7 @@ composes_with:
   - .claude/agents/formal-verification-expert.md
   - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md
   - docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md
-  - memory/persona/soraya/NOTEBOOK.md
+  - memory/soraya/NOTEBOOK.md
 ---
 
 # B-0719 — Audit-of-audit: ratify the recognition-without-row-filing precedent (Soraya round-67 forced-decomposition)
@@ -75,7 +75,7 @@ This is NOT a sign the discipline is failing. It's a sign the discipline is oper
 - [`docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md`](B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md) — the audit this row audits in turn
 - [`.claude/skills/formal-verification-expert/SKILL.md`](../../../.claude/skills/formal-verification-expert/SKILL.md) — update target if option 1 or 2 chosen
 - [`.claude/agents/formal-verification-expert.md`](../../../.claude/agents/formal-verification-expert.md) — Soraya persona definition
-- [`memory/persona/soraya/NOTEBOOK.md`](../../../memory/persona/soraya/NOTEBOOK.md) — landing surface candidate for option 1
+- [`memory/soraya/NOTEBOOK.md`](../../../memory/soraya/NOTEBOOK.md) — landing surface candidate for option 1
 
 ## Effort
 

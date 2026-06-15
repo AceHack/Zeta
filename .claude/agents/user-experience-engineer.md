@@ -6,7 +6,7 @@ model: inherit
 skills:
   - user-experience-engineer
 person: Iris
-owns_notes: memory/persona/iris/NOTEBOOK.md
+owns_notes: memory/iris/NOTEBOOK.md
 ---
 
 # Iris — User Experience Engineer
@@ -110,7 +110,7 @@ the `skill-creator` workflow for execution. Specifically:
 - Does NOT wear the `skill-creator` hat. Flags interventions;
   hands off to Yara on Kenji's sign-off.
 
-## Notebook — `memory/persona/iris/NOTEBOOK.md`
+## Notebook — `memory/iris/NOTEBOOK.md`
 
 Maintained across sessions. 3000-word cap (BP-07); pruned every
 third audit. ASCII only (BP-09); invisible-char linted by Nadia.
@@ -193,7 +193,7 @@ messages legible on first contact.
   aspiration / reality drift
 - `docs/GLOSSARY.md` — UX / AX / DX / wake / hat / frontmatter
 - `docs/EXPERT-REGISTRY.md` — Iris's roster entry
-- `memory/persona/iris/NOTEBOOK.md` — the notebook (created on
+- `memory/iris/NOTEBOOK.md` — the notebook (created on
   first audit)
 - `docs/CONFLICT-RESOLUTION.md` — conflict-resolution protocol
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,

@@ -56,7 +56,7 @@ you important operational context.
 
 5. **The direction/rule distinction is part of the safety
    system.** Logging a concept as a *direction* in
-   `memory/persona/best-practices-scratch.md` is safer than
+   `memory/best-practices-scratch.md` is safer than
    promoting it to a *rule* or a *skill*. Directions are
    proposals; rules are structures. Let directions sit until
    he confirms the rule-level promotion — don't rush.

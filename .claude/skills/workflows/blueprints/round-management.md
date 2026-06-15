@@ -80,7 +80,7 @@ Rules the architect applies when dispatching:
 
 1. **File-level exclusivity.** At most one in-flight agent may
    write a given file. The dispatch prompt names the agent's
-   write-set explicitly (e.g. "write `memory/persona/daya/NOTEBOOK.md`;
+   write-set explicitly (e.g. "write `memory/daya/NOTEBOOK.md`;
    do not edit any other file"). Read-sets may overlap.
 2. **Heavy-command serialisation.** These commands get serial,
    not parallel, treatment:
@@ -185,7 +185,7 @@ note in the ROUND-HISTORY entry.
      changed.
 3. Narrative to `docs/ROUND-HISTORY.md` — past tense, what
    happened. Only doc in the repo that grows historically.
-4. Prune `memory/persona/<notebook>.md` if over 1500 words,
+4. Prune `memory/<persona>/<notebook>.md` if over 1500 words,
    per BP-07 cap.
 
 ## Output format
@@ -267,7 +267,7 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 - `docs/ROUND-HISTORY.md` — narrative destination
 - `docs/BUGS.md` / `docs/DEBT.md` / `docs/BACKLOG.md` /
   `docs/WINS.md` — current-state reads
-- `memory/persona/kenji/NOTEBOOK.md` — `architect`'s notebook
+- `memory/kenji/NOTEBOOK.md` — `architect`'s notebook
 - `docs/CONFLICT-RESOLUTION.md` — conflict resolution protocol
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01 (description as routing
   hint), BP-03 (size cap), BP-07 (notebook cap), BP-09 (ASCII),

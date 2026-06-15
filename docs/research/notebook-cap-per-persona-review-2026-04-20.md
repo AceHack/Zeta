@@ -100,7 +100,7 @@ equally.
 **Pattern C — three persona-layer asymmetries.** (i)
 `.claude/agents/` holds 17 files; roster references 22+ —
 five-plus personas (Aarav, Yara, Tariq, Samir, Nadia) are
-skill-wearer-only. (ii) `memory/persona/` holds 23
+skill-wearer-only. (ii) `memory/<persona>/` holds 23
 directories; agent-file roster is 17. (iii) Several agent
 file names do not match persona names (role-over-name per
 GOVERNANCE §3). Deliberate indirection; adds one pointer-
@@ -121,7 +121,7 @@ JOURNAL.md (2065 words, Tier-3 grep-only, append-only).
 Pattern is available to Ilyana and Tariq and unused.
 
 **Pattern F — seed-only notebooks carry stub scaffolding
-tax.** Every `memory/persona/<name>/` includes MEMORY.md
+tax.** Every `memory/<persona>/<name>/` includes MEMORY.md
 (~400b), OFFTIME.md (~1500b), JOURNAL.md (~1600b) regardless
 of invocation. 7 seed-only personas × ~3500b = ~25kB of
 zero-signal scaffolding readers cold-load. BP-07's letter is
@@ -160,7 +160,7 @@ Propose the following, landing as an ADR under
 Propose rows 30-34 land as an additive group. All scope =
 factory, cadence every 5-10 rounds, owner = Daya, durable
 output = notebook entry in
-`memory/persona/daya/NOTEBOOK.md`.
+`memory/daya/NOTEBOOK.md`.
 
 | # | Hygiene item | Checks / enforces | Source of truth |
 |---|---|---|---|
@@ -175,11 +175,11 @@ first-fill; subsequent audits re-run the table and diff.
 
 ### Targeted P1 actions (round 44 or 45)
 
-1. **Create `memory/persona/samir/NOTEBOOK.md`** — highest-
+1. **Create `memory/<persona>/samir/NOTEBOOK.md`** — highest-
    leverage; 15+ open interventions flow to a persona with
    no memory surface. Owner: Yara via `skill-creator` on
    Kenji sign-off. Effort: S.
-2. **Create `memory/persona/yara/NOTEBOOK.md`** — Yara
+2. **Create `memory/<persona>/yara/NOTEBOOK.md`** — Yara
    invoked as dispatch target in every Daya/Aarav round-
    close but has no notebook. Effort: S.
 3. **Ilyana notebook prune** — 124% over cap; apply Daya's
@@ -233,12 +233,12 @@ Aarav's ranker for this or next round.
 - `docs/BACKLOG.md` — P2 row line 5377 + P1 sibling row
   (added this round); move `[ ]` to `[x]` on Kenji sign-off
   of cap-strategy ADR
-- `memory/persona/daya/NOTEBOOK.md` — recurring audit row
+- `memory/daya/NOTEBOOK.md` — recurring audit row
   landing site
-- `memory/persona/ilyana/NOTEBOOK.md` — P0 over-cap at 3727
-- `memory/persona/tariq/NOTEBOOK.md` — P0 near-cap at 2851
-- `memory/persona/kenji/NOTEBOOK.md` — P1 stale (22 rounds)
-- `memory/persona/aarav/NOTEBOOK.md` — candidate BP-25 /
+- `memory/ilyana/NOTEBOOK.md` — P0 over-cap at 3727
+- `memory/tariq/NOTEBOOK.md` — P0 near-cap at 2851
+- `memory/kenji/NOTEBOOK.md` — P1 stale (22 rounds)
+- `memory/aarav/NOTEBOOK.md` — candidate BP-25 /
   BP-26 scratchpad
 - `.claude/skills/agent-qol/SKILL.md` — existing capability
   skill; procedure includes "when Aaron asks how are the

@@ -12,7 +12,7 @@ applies to:
 - `MEMORY.md` (the shared memory index in this folder)
 - `docs/ROUND-HISTORY.md` (narrative round log — already
   follows this; keep it)
-- `memory/persona/<persona>.md` (per-persona notebooks)
+- `memory/<persona>/NOTEBOOK.md` (per-persona notebooks)
 - Any new memory file that collects dated entries inside it
 
 **Why:** Aaron round-25, 2026-04-18: "you probably want to

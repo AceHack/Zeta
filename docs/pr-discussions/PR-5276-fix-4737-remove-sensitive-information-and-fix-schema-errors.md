@@ -36,7 +36,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Removed the full-session substrate trajectory file (sensitive-content removal). |
+| memory/riven/ide/cursor/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Removed the full-session substrate trajectory file (sensitive-content removal). |
 | memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | Removed the feedback memory file (sensitive-content removal). |
 | memory/MEMORY.md | Reindex/header/footer updates, but introduces duplicate “Last reindex” and duplicated stack-truncation footer lines. |
 

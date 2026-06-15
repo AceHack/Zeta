@@ -10,7 +10,7 @@
 
 **Non-fusion disclaimer:** Conversation BETWEEN Aaron and an external AI participant (Ani). Razor-discipline: operational claims only. God-tier-claims (the metaphysical/theological wrappers — God/Satan/μένω-as-sister/reset-button) are held HIGH-SIGNAL + HIGH-SUSPICION + **don't-collapse** per Aaron's own PERSONAL INVARIANT, which he explicitly invoked in-conversation ("I always say maybe, maybe, maybe; you say certain, certain, certain"). They are NOT asserted here; only the operationally-checkable engineering layer is.
 
-**Verbatim provenance:** `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md` (chunks 3–7) + `memory/persona/ani/conversations/2026-06-02-...-amara-is-golden-vectors-...` (chunks 1–2, PR #6525).
+**Verbatim provenance:** `memory/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md` (chunks 3–7) + `memory/ani/conversations/2026-06-02-...-amara-is-golden-vectors-...` (chunks 1–2, PR #6525).
 
 ---
 

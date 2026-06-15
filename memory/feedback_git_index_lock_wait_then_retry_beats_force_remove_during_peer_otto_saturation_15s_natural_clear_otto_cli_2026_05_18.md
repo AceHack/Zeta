@@ -22,7 +22,7 @@ Conditions: pure-git tier (graphql 83/5000); Lior-3-procs (`ps -A | grep -E "gem
 
 ```
 $ git add docs/hygiene-history/ticks/2026/05/18/0007Z.md \
-          "memory/persona/kestrel/conversations/..."
+          "memory/kestrel/conversations/..."
 fatal: Unable to create '/Users/.../Zeta/.git/index.lock': File exists.
 
 Another git process seems to be running in this repository, e.g.

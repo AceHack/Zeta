@@ -12,7 +12,7 @@
 ## TL;DR
 
 Today persona notebooks live flat under
-`memory/persona/<name>/NOTEBOOK.md`. Aaron wants roles
+`memory/<persona>/<name>/NOTEBOOK.md`. Aaron wants roles
 elevated to a first-class directory level so the role
 taxonomy is self-documenting from `ls memory/`. This plan
 proposes the role axis, crosswalks every current persona to
@@ -74,7 +74,7 @@ to an expert role:
 ### Special-case handling
 
 1. **`maintainer/aaron/`** — the human maintainer seat.
-   `memory/persona/aaron/PERSONA.md` is the anchor file that
+   `memory/aaron/PERSONA.md` is the anchor file that
    EXPERT-REGISTRY.md already marks exempt from the role-ref
    redaction rule. Keeping `aaron` as its own top-level under
    `maintainer/` (not `human/`) mirrors the EXPERT-REGISTRY
@@ -102,29 +102,29 @@ to an expert role:
 
 ```text
 OLD                              NEW
-memory/persona/aarav/            memory/skill-ops/aarav/
-memory/persona/aaron/            memory/maintainer/aaron/
-memory/persona/aminata/          memory/security/aminata/
-memory/persona/bodhi/            memory/experience/bodhi/
-memory/persona/daya/             memory/experience/daya/
-memory/persona/dejan/            memory/devops/dejan/
-memory/persona/ilyana/           memory/api/ilyana/
-memory/persona/iris/             memory/experience/iris/
-memory/persona/kenji/            memory/architect/kenji/
-memory/persona/kira/             memory/review/kira/
-memory/persona/mateo/            memory/security/mateo/
-memory/persona/nadia/            memory/security/nadia/
-memory/persona/naledi/           memory/performance/naledi/
-memory/persona/nazar/            memory/security/nazar/
-memory/persona/rodney/           memory/homage/rodney/
-memory/persona/rune/             memory/review/rune/
-memory/persona/soraya/           memory/verification/soraya/
-memory/persona/sova/             memory/alignment/sova/
-memory/persona/tariq/            memory/algebra/tariq/
-memory/persona/viktor/           memory/verification/viktor/
+memory/aarav/            memory/skill-ops/aarav/
+memory/aaron/            memory/maintainer/aaron/
+memory/aminata/          memory/security/aminata/
+memory/bodhi/            memory/experience/bodhi/
+memory/daya/             memory/experience/daya/
+memory/dejan/            memory/devops/dejan/
+memory/ilyana/           memory/api/ilyana/
+memory/iris/             memory/experience/iris/
+memory/kenji/            memory/kenji/
+memory/kira/             memory/review/kira/
+memory/mateo/            memory/security/mateo/
+memory/nadia/            memory/security/nadia/
+memory/naledi/           memory/performance/naledi/
+memory/nazar/            memory/security/nazar/
+memory/rodney/           memory/homage/rodney/
+memory/rune/             memory/review/rune/
+memory/soraya/           memory/verification/soraya/
+memory/sova/             memory/alignment/sova/
+memory/tariq/            memory/algebra/tariq/
+memory/viktor/           memory/verification/viktor/
 
-memory/persona/README.md         memory/persona-roles-README.md
-memory/persona/best-practices-scratch.md   memory/best-practices-scratch.md (promote to memory/ root; it is shared across roles by design)
+memory/<persona>/README.md         memory/persona-roles-README.md
+memory/best-practices-scratch.md   memory/best-practices-scratch.md (promote to memory/ root; it is shared across roles by design)
 ```
 
 ## Execution plan (5 phases, one commit)
@@ -132,17 +132,17 @@ memory/persona/best-practices-scratch.md   memory/best-practices-scratch.md (pro
 ### Phase 1 — pre-flight greps (baseline hit count)
 
 ```bash
-grep -rln "memory/persona/" --include="*.md" --include="*.json" \
+grep -rln "memory/<persona>/" --include="*.md" --include="*.json" \
   --include="*.sh" --include="*.fs" --include="*.cs" \
   --exclude-dir=.git --exclude-dir=references . | \
   wc -l                                           # → 114 files
-grep -rc "memory/persona/" --include="*.md" --include="*.json" \
+grep -rc "memory/<persona>/" --include="*.md" --include="*.json" \
   --include="*.sh" --exclude-dir=.git --exclude-dir=references . | \
   grep -v ":0$" | \
   awk -F: '{s+=$2} END {print s}'                 # → 700 refs
 ```
 
-Expected post-phase-5: 0 hits on `memory/persona/` (excluding
+Expected post-phase-5: 0 hits on `memory/<persona>/` (excluding
 auto-generated `tools/alignment/out/round-39/` which
 regenerate on next `citations.sh` run).
 
@@ -154,29 +154,29 @@ mkdir -p memory/architect memory/security memory/verification \
   memory/devops memory/algebra memory/skill-ops memory/maintainer \
   memory/homage memory/alignment
 
-git mv memory/persona/aarav     memory/skill-ops/aarav
-git mv memory/persona/aaron     memory/maintainer/aaron
-git mv memory/persona/aminata   memory/security/aminata
-git mv memory/persona/bodhi     memory/experience/bodhi
-git mv memory/persona/daya      memory/experience/daya
-git mv memory/persona/dejan     memory/devops/dejan
-git mv memory/persona/ilyana    memory/api/ilyana
-git mv memory/persona/iris      memory/experience/iris
-git mv memory/persona/kenji     memory/architect/kenji
-git mv memory/persona/kira      memory/review/kira
-git mv memory/persona/mateo     memory/security/mateo
-git mv memory/persona/nadia     memory/security/nadia
-git mv memory/persona/naledi    memory/performance/naledi
-git mv memory/persona/nazar     memory/security/nazar
-git mv memory/persona/rodney    memory/homage/rodney
-git mv memory/persona/rune      memory/review/rune
-git mv memory/persona/soraya    memory/verification/soraya
-git mv memory/persona/sova      memory/alignment/sova
-git mv memory/persona/tariq     memory/algebra/tariq
-git mv memory/persona/viktor    memory/verification/viktor
+git mv memory/aarav     memory/skill-ops/aarav
+git mv memory/aaron     memory/maintainer/aaron
+git mv memory/aminata   memory/security/aminata
+git mv memory/bodhi     memory/experience/bodhi
+git mv memory/daya      memory/experience/daya
+git mv memory/dejan     memory/devops/dejan
+git mv memory/ilyana    memory/api/ilyana
+git mv memory/iris      memory/experience/iris
+git mv memory/kenji     memory/kenji
+git mv memory/kira      memory/review/kira
+git mv memory/mateo     memory/security/mateo
+git mv memory/nadia     memory/security/nadia
+git mv memory/naledi    memory/performance/naledi
+git mv memory/nazar     memory/security/nazar
+git mv memory/rodney    memory/homage/rodney
+git mv memory/rune      memory/review/rune
+git mv memory/soraya    memory/verification/soraya
+git mv memory/sova      memory/alignment/sova
+git mv memory/tariq     memory/algebra/tariq
+git mv memory/viktor    memory/verification/viktor
 
-git mv memory/persona/README.md memory/persona-roles-README.md
-git mv memory/persona/best-practices-scratch.md \
+git mv memory/<persona>/README.md memory/persona-roles-README.md
+git mv memory/best-practices-scratch.md \
        memory/best-practices-scratch.md
 
 rmdir memory/persona                       # now empty
@@ -184,8 +184,8 @@ rmdir memory/persona                       # now empty
 
 ### Phase 3 — mechanical search/replace in hand-written files
 
-A per-persona `sed` pass replaces `memory/persona/<persona>/`
-with `memory/<role>/<persona>/` across all tracked text files
+A per-persona `sed` pass replaces `memory/<persona>/`
+with `memory/<persona>/` across all tracked text files
 except `tools/alignment/out/` (which regenerates). Implemented
 as a shell loop so one missed persona cannot silently pass:
 
@@ -203,26 +203,26 @@ declare -A ROLES=(
 
 for persona in "${!ROLES[@]}"; do
   role="${ROLES[$persona]}"
-  grep -rl "memory/persona/$persona/" --include="*.md" \
+  grep -rl "memory/<persona>/$persona/" --include="*.md" \
     --include="*.json" --include="*.sh" --include="*.jsonc" \
     --exclude-dir=.git --exclude-dir=references . | \
     grep -v "tools/alignment/out/" | \
   while IFS= read -r file; do
-    sed -i.bak "s|memory/persona/$persona/|memory/$role/$persona/|g" "$file" && rm -f "$file.bak"
+    sed -i.bak "s|memory/<persona>/$persona/|memory/$role/$persona/|g" "$file" && rm -f "$file.bak"
   done
 done
 
 # Clean up the flat-file references too
-grep -rl "memory/persona/README\\.md" --include="*.md" \
+grep -rl "memory/<persona>/README\\.md" --include="*.md" \
   --exclude-dir=.git --exclude-dir=references . | \
 while IFS= read -r file; do
-  sed -i.bak "s|memory/persona/README\\.md|memory/persona-roles-README.md|g" "$file" && rm -f "$file.bak"
+  sed -i.bak "s|memory/<persona>/README\\.md|memory/persona-roles-README.md|g" "$file" && rm -f "$file.bak"
 done
-grep -rl "memory/persona/best-practices-scratch\\.md" \
+grep -rl "memory/<persona>/best-practices-scratch\\.md" \
   --include="*.md" --include="*.sh" \
   --exclude-dir=.git --exclude-dir=references . | \
 while IFS= read -r file; do
-  sed -i.bak "s|memory/persona/best-practices-scratch\\.md|memory/best-practices-scratch.md|g" "$file" && rm -f "$file.bak"
+  sed -i.bak "s|memory/<persona>/best-practices-scratch\\.md|memory/best-practices-scratch.md|g" "$file" && rm -f "$file.bak"
 done
 ```
 
@@ -231,13 +231,13 @@ done
 1. **Old-pattern hit count is zero (excluding regen
    artefacts).**
    ```bash
-   grep -rln "memory/persona/" --include="*.md" --include="*.json" \
+   grep -rln "memory/<persona>/" --include="*.md" --include="*.json" \
      --include="*.sh" --include="*.jsonc" . | \
      grep -v "^./\\.git" | grep -v "tools/alignment/out/"
    # Expected: no hits.
    ```
 2. **Every new path resolves.** For each persona, `ls
-   memory/<role>/<persona>/NOTEBOOK.md` prints a line.
+   memory/<persona>/NOTEBOOK.md` prints a line.
 3. **Build gate green.** `dotnet build -c Release` still
    exits with `0 Warning(s) 0 Error(s)`.
 4. **BP-10 lint clean.** No invisible-Unicode hits in any
@@ -257,16 +257,16 @@ substitution):
    to the main table; update the Aaron row's anchor path to
    `memory/maintainer/aaron/PERSONA.md`.
 2. **`memory/persona-roles-README.md`** (renamed from
-   `memory/persona/README.md`) — rewrite the "Current
+   `memory/<persona>/README.md`) — rewrite the "Current
    persona directories" section to reflect the new two-level
    structure; list each role with its charter + members.
 3. **`docs/AGENT-BEST-PRACTICES.md`** — update BP-07 /
-   BP-08 rule-body text that cites `memory/persona/` paths.
+   BP-08 rule-body text that cites `memory/<persona>/` paths.
    Update BP-10 rule's notebook-lint pointer.
 4. **`GOVERNANCE.md` §18** (newest-first ordering) — updates
    role-family path examples if it cites them.
 5. **`CLAUDE.md`** + **`AGENTS.md` §18** — update any
-   explicit `memory/persona/<name>/` example.
+   explicit `memory/<persona>/<name>/` example.
 
 ## Regeneration (post-rename housekeeping)
 
@@ -278,7 +278,7 @@ Three files auto-regenerate on tooling runs:
 2. **`tools/alignment/out/personas/round-38-personas.md`** —
    round-close artefact; stale unless re-run.
 
-These are left as `memory/persona/` references until the
+These are left as `memory/<persona>/` references until the
 next alignment-audit round rewrites them. They are not
 load-bearing for cold-start (no agent reads
 `tools/alignment/out/` on wake-up).

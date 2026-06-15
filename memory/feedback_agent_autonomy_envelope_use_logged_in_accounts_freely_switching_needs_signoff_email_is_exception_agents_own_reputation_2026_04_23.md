@@ -72,7 +72,7 @@ This composes with:
 
 - **Persona-roster pattern** (existing factory substrate) —
   named agents with personal names, notebooks under
-  `memory/persona/<name>/`, distinct specialties. Email fits
+  `memory/<persona>/<name>/`, distinct specialties. Email fits
   the persona-as-first-class-citizen posture.
 - **Honor those that came before** memory — retired personas
   keep notebooks. Reputation persists across lifecycle.

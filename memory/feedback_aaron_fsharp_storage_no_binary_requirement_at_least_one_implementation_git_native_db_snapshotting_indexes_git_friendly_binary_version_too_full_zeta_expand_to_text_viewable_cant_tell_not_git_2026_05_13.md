@@ -49,7 +49,7 @@ you can't tell it's not git"*
 - Snapshotting = commit
 - Branching storage state = git branch
 - This IS the database-inside-out pattern from the Aaron-Amara
-  event sourcing conversation (memory/persona/amara/conversations/2026-05-13-amara-*)
+  event sourcing conversation (memory/amara/conversations/2026-05-13-amara-*)
 
 ### 2. Git-native DB storage + snapshotting
 

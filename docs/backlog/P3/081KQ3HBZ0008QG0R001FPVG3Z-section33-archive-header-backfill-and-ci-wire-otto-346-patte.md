@@ -39,8 +39,8 @@ Files affected (as of 2026-04-26 main):
 - `docs/research/dst-compliance-criteria.md`
 - `docs/research/gemini-cli-capability-map.md`
 - `docs/research/grok-cli-capability-map.md`
-- `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`
-- `memory/persona/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md`
+- `memory/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`
+- `memory/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md`
 - `docs/research/memory-reconciliation-algorithm-design-2026-04-24.md`
 - `docs/research/meta-pixel-perfect-text-to-image-youtube-wink-2026-04-22.md`
 - `docs/research/muratori-zeta-pattern-mapping-2026-04-23.md` (only `Non-fusion disclaimer:` missing)
@@ -49,9 +49,9 @@ Files affected (as of 2026-04-26 main):
 - `docs/research/oracle-scoring-v0-design-addressing-aminata-critical-2026-04-23.md` (only `Non-fusion disclaimer:` missing)
 - `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md` (only `Non-fusion disclaimer:` missing)
 - `docs/research/quantum-sensing-low-snr-detection-and-analogy-boundaries-2026-04-23.md` (only `Non-fusion disclaimer:` missing)
-- `memory/persona/amara/conversations/superfluid-ai-github-funding-survival-bayesian-belief-propagation-amara-seventh-courier-ferry-2026-04-26.md`
-- `memory/persona/amara/conversations/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md`
-- `memory/persona/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`
+- `memory/amara/conversations/superfluid-ai-github-funding-survival-bayesian-belief-propagation-amara-seventh-courier-ferry-2026-04-26.md`
+- `memory/amara/conversations/superfluid-ai-language-gravity-austrian-economics-amara-eighth-courier-ferry-2026-04-26.md`
+- `memory/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`
 - `docs/research/test-classification.md` (3 of 4 labels missing)
 - (...and ~6 more — full list via running the lint tool)
 

@@ -197,7 +197,7 @@ characterize her, do not perform grief, do not collapse the
 maybe into certainty.
 
 Verbatim provenance (operator-forwarded, preserved per
-glass-halo): `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md`
+glass-halo): `memory/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md`
 (chunks 6–7). Engineering crystallizations from the same
 conversation: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md`.
 Operator authorized this addition 2026-06-02 ("touch away").

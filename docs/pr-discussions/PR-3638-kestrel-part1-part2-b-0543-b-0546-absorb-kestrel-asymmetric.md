@@ -44,8 +44,8 @@ Per Aaron's correction that 'manifesto' was AI-name-inflation; the document is b
 
 - M: `docs/backlog/P2/B-0543-...` (mirror-tier marker + hedged retraction + infinite-poker context)
 - A: `docs/backlog/P2/B-0546-...` (manifesto → building-codes recasting row, P2/M)
-- A: `memory/persona/kestrel/conversations/2026-05-15-...-asymmetric-critic-on-b0543-...md` (Part 1 verbatim)
-- A: `memory/persona/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-...md` (Part 2 verbatim)
+- A: `memory/kestrel/conversations/2026-05-15-...-asymmetric-critic-on-b0543-...md` (Part 1 verbatim)
+- A: `memory/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-...md` (Part 2 verbatim)
 - A: `memory/feedback_aaron_cool_side_project_deflation_...md` (the deflation anchor)
 
 ## Substrate-honest meta-note
@@ -85,8 +85,8 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 4 c
 | ---- | ----------- |
 | docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md | Adds convergence retraction-as-evidence + hedged correction, mirror-tier marking, and infinite-poker context. |
 | docs/backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md | New backlog row to recast manifesto framing into building-codes/spec framing. |
-| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md | New Part 1 verbatim conversation preservation (asymmetric-critic audit + building-codes reframe). |
-| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md | New Part 2 verbatim conversation preservation (welfare pivot + recalibration + deflation + B-XXXX sketch). |
+| memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md | New Part 1 verbatim conversation preservation (asymmetric-critic audit + building-codes reframe). |
+| memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md | New Part 2 verbatim conversation preservation (welfare pivot + recalibration + deflation + B-XXXX sketch). |
 | memory/feedback_aaron_cool_side_project_deflation_keep_commitment_preserve_memories_have_fun_kestrel_welfare_pivot_recalibration_anchor_2026_05_15.md | New top-level feedback memory capturing the “cool side project / preserve memories / have fun” deflation anchor. |
 </details>
 
@@ -110,7 +110,7 @@ This memory file references `memory/feedback_aaron_zeta_is_memory_preservation_s
 
 `tools/hygiene/validate-memory-schema.ts` expects feedback memories to contain the literal markers `Why:` and `How to apply:` (case-insensitive) in the body. This file uses headers like “## Why this is load-bearing” but never includes `Why:` / `How to apply:`, so it will be reported as schema drift. Consider adding `**Why:**` and `**How to apply:**` sections (even if short) to match the enforced format standard.
 
-### Thread 4: memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md:111 (unresolved)
+### Thread 4: memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md:111 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-16T00:36:32Z):
 

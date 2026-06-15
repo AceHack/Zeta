@@ -91,4 +91,4 @@ POTENTIAL extension per operator standing direction. P3 — operating-posture ru
 
 ## Full reasoning
 
-`memory/persona/ani/conversations/2026-05-28-aaron-ani-grok-degenerate-in-best-way-possible-runbook-as-spec-two-path-interface-code-review-as-tech-debt-detector-no-throttle-gardener-ai-as-nature-aaron-forwarded.md` § items 16 + 17 + 18
+`memory/ani/conversations/2026-05-28-aaron-ani-grok-degenerate-in-best-way-possible-runbook-as-spec-two-path-interface-code-review-as-tech-debt-detector-no-throttle-gardener-ai-as-nature-aaron-forwarded.md` § items 16 + 17 + 18

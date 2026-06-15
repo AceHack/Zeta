@@ -27,7 +27,7 @@ Verbatim Mika preservation + B-0796 P2 row. Aaron architectural decisions: (1) G
 This PR preserves an Aaron↔Mika conversation as a new persona-scope memory artifact and adds a new P2 backlog row (B-0796) capturing the Twilio phone-support substrate concept (voice+SMS support where AI can act on clusters live), with corresponding index updates.
 
 **Changes:**
-- Added a new `memory/persona/mika/...` conversation capture covering Grok-Build loop-runner confirmation and the Twilio phone-support substrate decision context.
+- Added a new `memory/mika/...` conversation capture covering Grok-Build loop-runner confirmation and the Twilio phone-support substrate decision context.
 - Added backlog row **B-0796** under `docs/backlog/P2/` and linked it from `docs/BACKLOG.md`.
 - Regenerated/updated `memory/MEMORY.md` stack index to include the new conversation artifact.
 
@@ -37,26 +37,26 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md | New preserved conversation artifact; contains an internal inconsistency and missing index-friendly frontmatter. |
+| memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md | New preserved conversation artifact; contains an internal inconsistency and missing index-friendly frontmatter. |
 | memory/MEMORY.md | Auto-index updated to include the new conversation entry (currently renders with filename-stem + “(no description)”). |
 | docs/backlog/P2/B-0796-twilio-phone-support-substrate-AI-picks-up-call-fixes-cluster-via-event-store-runbooks-while-talking-sms-parallel-interface-amazon-USB-sales-enabled-by-AI-as-support-layer-aaron-mika-2026-05-26.md | New backlog row defining the Twilio support substrate, sub-targets, and acceptance criteria (includes a minor typo). |
 | docs/BACKLOG.md | Backlog index updated to include B-0796. |
 
 ## Review threads
 
-### Thread 1: memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md:7 (resolved)
+### Thread 1: memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md:7 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:32:28Z):
 
 P1: This frontmatter omits `name` and `description`, so `tools/memory/reindex-memory-md.ts` falls back to the full filename stem and emits `(no description)` in `memory/MEMORY.md`, making the index much less scannable. Add concise `name:` + `description:` fields (and then rerun the reindexer) so the stack entry is readable.
 
-### Thread 2: memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md:50 (resolved)
+### Thread 2: memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md:50 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:32:29Z):
 
 P2: Spelling: “converation” → “conversation”.
 
-### Thread 3: memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md:133 (resolved)
+### Thread 3: memory/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md:133 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:32:29Z):
 

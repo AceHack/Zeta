@@ -67,7 +67,7 @@ Before any non-trivial default choice, especially one that:
 
 → **Recompute from S_t before defaulting from W_t.**
 
-Concretely: pause, read the relevant memory/persona/Otto-NN substrate, let the substrate constrain the decision. Don't re-derive the answer from working memory if substrate already encodes it.
+Concretely: pause, read the relevant memory/<persona>/Otto-NN substrate, let the substrate constrain the decision. Don't re-derive the answer from working memory if substrate already encodes it.
 
 This is the *action-time* layer. It is not a post-hoc audit; it fires *before* the default lands.
 

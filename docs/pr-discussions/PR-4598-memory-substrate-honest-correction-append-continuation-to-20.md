@@ -59,5 +59,5 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md | Adds the continuation section (new threads + anchors + verbatim continuation) to the existing archive. |
+| memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md | Adds the continuation section (new threads + anchors + verbatim continuation) to the existing archive. |
 | memory/MEMORY.md | Updates the generated auto-index to reflect the new/updated memory entry and updated heap count. |

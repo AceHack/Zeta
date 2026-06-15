@@ -259,7 +259,7 @@ workflow must continue to work without the plugin present.
 - `.github/copilot-instructions.md` — factory-managed per
   GOVERNANCE §31; edits flow through this same workflow
 - `docs/CONFLICT-RESOLUTION.md` — conflict protocol
-- `memory/persona/` — per-skill notebooks
+- `memory/<persona>/` — per-skill notebooks
 - `.claude/skills/security/blueprints/prompt-protector.md` — the lint
   pass this workflow invokes
 - `.claude/skills/skill-lifecycle/blueprints/skill-tune-up.md` — the

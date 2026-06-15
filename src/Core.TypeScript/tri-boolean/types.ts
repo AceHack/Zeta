@@ -5,7 +5,7 @@
 // collapsing operation, and collapsing a living (Null) cell is surfaced as feedback
 // rather than performed silently (asymmetric-authorship / Result<T, TFeedback>).
 //
-// Spec source: memory/persona/mika/conversations/2026-05-30-mika-grok-driver-swap-arc-
+// Spec source: memory/mika/conversations/2026-05-30-mika-grok-driver-swap-arc-
 //   ...-uncertainty-in-priors-aaron-forwarded.md (batch 6).
 // Composes: .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
 //   + .claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-...md.

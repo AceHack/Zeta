@@ -437,7 +437,7 @@ This is **input for the Max-lock, not a locked decision.** Crew convergence (ope
 ### Design input — Ani conversation 2026-05-31 (agent-perspective-first; bumper-rails; why-it-works-for-both)
 
 Operator-forwarded voice conversation (preserved verbatim at
-[`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md`](../../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md)).
+[`memory/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md`](../../memory/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md)).
 This is **design input for the lock**, whys-challengeable (no-dogma), not a locked decision — same status as the Crew review above.
 
 1. **Agent-perspective-first.** The default/home state is the agent in its own

@@ -33,7 +33,7 @@ authority-scope:
   audits:
     - path: .claude/skills/*/SKILL.md
       axis: safety-clause-presence, injection-surface, scope-breadth
-    - path: memory/persona/*.md
+    - path: memory/<persona>/NOTEBOOK.md
       axis: invisible-char-lint, growth-bound, injection-surface
     - path: SECURITY.md
       axis: disclosure-policy-coverage
@@ -242,7 +242,7 @@ invariants:
 inputs:
   reads:
     - path: .claude/skills/*/SKILL.md
-    - path: memory/persona/*.md
+    - path: memory/<persona>/NOTEBOOK.md
     - path: SECURITY.md
     - path: docs/security/THREAT-MODEL.md
     - path: docs/security/THREAT-MODEL-SPACE-OPERA.md

@@ -169,7 +169,7 @@ harness and when static signals suffice.
 
 ## Notebook format template (extracted from SKILL.md)
 
-The notebook at `memory/persona/aarav/NOTEBOOK.md` follows:
+The notebook at `memory/aarav/NOTEBOOK.md` follows:
 
 ```markdown
 # Skill Tune-Up — Notebook
@@ -198,7 +198,7 @@ Every ranking round produces:
 ## Live-search summary
 - Queries run: <list>
 - Findings logged to scratchpad: <count> (in
-  memory/persona/best-practices-scratch.md)
+  memory/best-practices-scratch.md)
 - Candidate promotions flagged to Architect: <count>
 
 ## Top-5 skills needing tune-up

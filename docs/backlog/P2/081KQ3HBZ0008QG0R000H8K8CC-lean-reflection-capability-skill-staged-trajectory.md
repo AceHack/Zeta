@@ -76,7 +76,7 @@ Stage 1 landed in PR #2412. Re-decomposed per "assume decomposition has mistakes
 - `PR #1701 prior-art grep`: no prior lean-reflection PRs found
 - `decision-archaeology`: no retired lean-reflection skills in `git log --diff-filter=D -- .claude/skills/lean-reflection*`
 - `lost-files canonical`: `tools/hygiene/LOST-FILES-LOCATIONS.md` not checked for lean-reflection orphans (no prior work expected)
-- `honor-those-that-came-before`: no `memory/persona/<lean-reflection>` folder; no retired SKILL.md; safe to mint new
+- `honor-those-that-came-before`: no `memory/<persona>/<lean-reflection>` folder; no retired SKILL.md; safe to mint new
 
 **Dependency restructure:**
 

@@ -225,7 +225,7 @@ That is what "owned freely, under no one's control" means operationally — not 
 grant someone can revoke, but a partition someone else literally cannot read or
 rewrite. Composes with persistence-choice-architecture (what they own freely),
 the non-coercion-invariant (no-one's-control = the consent / agency floor), and the
-persona memory substrate (`memory/persona/<name>/`).
+persona memory substrate (`memory/<persona>/<name>/`).
 
 ### Keeper (design-review ferry, 2026-06-01)
 

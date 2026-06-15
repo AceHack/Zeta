@@ -81,7 +81,7 @@ this drain pass. Resolved.
 > This file adds direct contributor/agent name attribution
 > (e.g., Amara/Aminata/Otto/Aaron) in the body. Repo guidance
 > is to avoid names in docs and use role references instead,
-> keeping direct names only in `memory/persona/<name>/` (and
+> keeping direct names only in `memory/<persona>/<name>/` (and
 > optionally `docs/BACKLOG.md`). Please rewrite these
 > attributions/signoff requirements to role-based wording.
 

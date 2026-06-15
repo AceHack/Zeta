@@ -104,7 +104,7 @@ Composes with the broader Kestrel-sharpened publishable artifacts cluster — if
 - B-0682 — canonical string encoding (grammar candidate for Phase 2 Option A)
 - B-0683 — tier-deferred causality worked example (grammar candidate for Phase 2 Option B)
 - B-0684 — clock-protocol negotiation stack diagram (the description-layer architecture this row implements substrate for)
-- `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md` — eleventh-section ANTLR origin
+- `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md` — eleventh-section ANTLR origin
 
 ## Origin
 

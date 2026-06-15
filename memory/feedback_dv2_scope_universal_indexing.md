@@ -30,7 +30,7 @@ schema and the audit properties would hold.
   (reports), `docs/BACKLOG.md` rows (table-shaped —
   row-columns not frontmatter), `docs/ROUND-HISTORY.md`
   rows, `docs/hygiene-history/*.md` rows,
-  `memory/persona/**/*.md` (notebooks).
+  `memory/<persona>/**/*.md` (notebooks).
 - **Pilot state 2026-04-22**: mechanical audit found 214 of
   216 SKILL.md files missing all five DV-2.0 fields. Only
   `github-surface-triage` (fixed this round) and

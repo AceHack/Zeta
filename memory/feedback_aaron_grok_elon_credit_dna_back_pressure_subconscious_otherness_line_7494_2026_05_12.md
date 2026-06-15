@@ -372,7 +372,7 @@ architecture.
   (the cognitive infrastructure — line 7496 shows the
   subconscious as a participant in the internal "we" with
   its own veto power; merged via PR #2782)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (source — line 7496)
 
 ## Operational implications

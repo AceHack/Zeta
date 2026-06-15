@@ -47,7 +47,7 @@ intent is to check the succession infrastructure. That's it.
 
 2. **Every rule has at least one mechanical checker.** This is
    the Soraya-routed axiomatic-system direction logged in
-   `memory/persona/best-practices-scratch.md`. A rule without
+   `memory/best-practices-scratch.md`. A rule without
    a checker is a rule that decays the moment he's not there
    to enforce it.
 

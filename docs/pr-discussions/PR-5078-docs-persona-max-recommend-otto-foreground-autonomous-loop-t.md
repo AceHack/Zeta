@@ -24,8 +24,8 @@ Recommends **Otto (Claude Code)** as Max's primary AI tool + documents the foreg
 
 ## Files changed
 
-- `memory/persona/max/STARTING-POINT.md` — new "Otto + the foreground autonomous-loop tick" section covering what the loop is, auto-arm on first session, what Max sees, how he stays in control, why it matters for tier-2 (most tier-2 work is install→wait→fix→push→wait cycles), and the Standing-by failure mode auto-caught by `holding-without-named-dependency-is-standing-by-failure.md`
-- `memory/persona/max/PERSONA.md` — added bullet to "How agents work with Max" naming Otto as recommended primary tool + cross-referencing the STARTING-POINT.md section
+- `memory/max/STARTING-POINT.md` — new "Otto + the foreground autonomous-loop tick" section covering what the loop is, auto-arm on first session, what Max sees, how he stays in control, why it matters for tier-2 (most tier-2 work is install→wait→fix→push→wait cycles), and the Standing-by failure mode auto-caught by `holding-without-named-dependency-is-standing-by-failure.md`
+- `memory/max/PERSONA.md` — added bullet to "How agents work with Max" naming Otto as recommended primary tool + cross-referencing the STARTING-POINT.md section
 
 ## Why it composes naturally with tier-2
 
@@ -57,24 +57,24 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/max/STARTING-POINT.md | Adds an onboarding section explaining Otto + the autonomous-loop tick workflow and control surfaces. |
-| memory/persona/max/PERSONA.md | Adds a recommendation bullet for using Otto and links to the STARTING-POINT operational details. |
+| memory/max/STARTING-POINT.md | Adds an onboarding section explaining Otto + the autonomous-loop tick workflow and control surfaces. |
+| memory/max/PERSONA.md | Adds a recommendation bullet for using Otto and links to the STARTING-POINT operational details. |
 
 ## Review threads
 
-### Thread 1: memory/persona/max/STARTING-POINT.md:125 (unresolved)
+### Thread 1: memory/max/STARTING-POINT.md:125 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T03:40:03Z):
 
 The per-tick flow summary here drops the required “commit” step from the canonical checklist (speculative work → verify → commit → write tick shard → CronList → visibility signal). Since this section is onboarding guidance, it should match `tick-must-never-stop.md` / `AUTONOMOUS-LOOP-PER-TICK.md` exactly (or explicitly say it’s an abbreviated summary).
 
-### Thread 2: memory/persona/max/STARTING-POINT.md:132 (unresolved)
+### Thread 2: memory/max/STARTING-POINT.md:132 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T03:40:03Z):
 
 Commit trailer guidance is too specific here. Repo convention (AGENTS.md “Commit attribution — harness-specific trailers”) requires at minimum `Co-Authored-By: Claude <noreply@anthropic.com>` for Otto; model/version suffixes are optional. Suggest rewording to the required baseline (and optionally mention the model suffix may be appended) so this doesn’t conflict with the project’s commit-discipline doc.
 
-### Thread 3: memory/persona/max/STARTING-POINT.md:139 (unresolved)
+### Thread 3: memory/max/STARTING-POINT.md:139 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-26T03:40:04Z):
 

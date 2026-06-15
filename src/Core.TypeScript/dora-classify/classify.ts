@@ -40,7 +40,7 @@
  */
 export type Lane =
   | "operational"        // ships on USB / runs on cluster / changes live-system DORA
-  | "verbatim-preservation" // memory/persona/<x>/conversations/** (Kestrel/Mika/Ani ferries)
+  | "verbatim-preservation" // memory/<persona>/<x>/conversations/** (Kestrel/Mika/Ani ferries)
   | "memory"             // memory/*.md (project memory; not persona-conversations)
   | "heartbeat"          // docs/agent-heartbeats/** (B-0858)
   | "backlog-row"        // docs/backlog/** (sub-rows + parent rows)
@@ -65,7 +65,7 @@ interface PathRule {
 
 const PATH_RULES: readonly PathRule[] = [
   // Verbatim preservation FIRST (most specific): persona-folder conversations
-  { prefix: "memory/persona/", lane: "verbatim-preservation" },
+  { prefix: "memory/<persona>/", lane: "verbatim-preservation" },
   // Memory next (project-scope memory; not persona-folder)
   { prefix: "memory/", lane: "memory" },
   // Heartbeat folder (B-0858)

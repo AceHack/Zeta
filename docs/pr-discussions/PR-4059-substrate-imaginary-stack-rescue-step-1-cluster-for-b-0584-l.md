@@ -736,7 +736,7 @@ P1/xref: This memo refers to `com.zeta.lior-loop.plist` and `lior-loop-tick.ts` 
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove broken memory-index entries**
 
-These newly added stack entries point to files that do not exist in this commit (`memory/persona/kestrel/...`, `memory/persona/riven/...`, and later `memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`), so the canonical MEMORY index now contains dead links immediately after merge. That breaks cold-boot navigation and any tooling/review workflow that relies on `memory/MEMORY.md` as a resolvable index surface.
+These newly added stack entries point to files that do not exist in this commit (`memory/kestrel/...`, `memory/riven/...`, and later `memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`), so the canonical MEMORY index now contains dead links immediately after merge. That breaks cold-boot navigation and any tooling/review workflow that relies on `memory/MEMORY.md` as a resolvable index surface.
 
 Useful? React with 👍 / 👎.
 
@@ -847,7 +847,7 @@ The prompt instructs checking for git/worktree locks using `ls .git/worktrees/*/
 
 **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unresolved handoff path from B-0612 provenance**
 
-The `Why` paragraph cites `memory/persona/riven/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` as supporting substrate, but that file is not present in this commit (repo-wide check: `git ls-tree -r --name-only b8e5b873... | rg 'riven-aaron-cursor-lean4'` returns no matches). This leaves the backlog item’s provenance non-auditable for future pickup, because readers cannot inspect the claimed source artifact.
+The `Why` paragraph cites `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` as supporting substrate, but that file is not present in this commit (repo-wide check: `git ls-tree -r --name-only b8e5b873... | rg 'riven-aaron-cursor-lean4'` returns no matches). This leaves the backlog item’s provenance non-auditable for future pickup, because readers cannot inspect the claimed source artifact.
 
 Useful? React with 👍 / 👎.
 
@@ -910,7 +910,7 @@ CI reclassification after the latest `5ec7145` push:
 - `check MEMORY.md generated-index drift`: `Entries: 1368. Index STALE.`
 - `lint memory/MEMORY.md reference-existence`: 100 refs checked, 98 resolved, 2 broken:
   - `feedback_otto_cwd_parameter_fix_2026_05_16.md -> memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`
-  - `persona/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-six-concessions-pioneer-takes-hits-irreversible-vs-operationally-binding-handoff-criteria-non-executable-per-aaron.md -> memory/persona/kestrel/conversations/...`
+  - `persona/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-six-concessions-pioneer-takes-hits-irreversible-vs-operationally-binding-handoff-criteria-non-executable-per-aaron.md -> memory/kestrel/conversations/...`
 
 Next safe branch-owner action: restore/include those two memory files or remove/correct the broken `memory/MEMORY.md` rows, then rerun `bun tools/memory/reindex-memory-md.ts`, add `memory/MEMORY.md` plus any restored files, commit, and push. Also wait for the still-pending macOS build / CodeQL jobs before considering merge.
 
@@ -944,7 +944,7 @@ Verified each reviewer thread against current `HEAD` (5ec7145).
 
 ### Path forward (substrate-honest)
 
-- **Lean P0/P1 cluster is intentionally left open.** The proper toy-model rewrite is being handed off to Soraya in flight — see `memory/persona/riven/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` (currently local-untracked; lands in a separate B-0543 PR under Soraya's lane per `formal-verification-expert` routing).
+- **Lean P0/P1 cluster is intentionally left open.** The proper toy-model rewrite is being handed off to Soraya in flight — see `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` (currently local-untracked; lands in a separate B-0543 PR under Soraya's lane per `formal-verification-expert` routing).
 - Recommend: do NOT shrink the Lean-thread cluster in this PR via cosmetic fixes. Either (a) demote `ToyModel.lean` to a `.sketch.md` here and reference Soraya's lane, or (b) wait for the Soraya rewrite and merge then.
 - Non-Lean P1s (lior-loop-tick prompt, ℝ-vs-field doc note, xref paths) are tractable as additive commits in this PR on a future tick — happy to land them if Aaron wants them under this branch rather than a follow-up.
 
@@ -963,7 +963,7 @@ Remote CI blockers:
 - `check MEMORY.md generated-index drift`: `Entries: 1368. Index STALE.`
 - `lint memory/MEMORY.md reference-existence`: 100 refs checked, 98 resolved, 2 broken:
   - `memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`
-  - `memory/persona/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-six-concessions-pioneer-takes-hits-irreversible-vs-operationally-binding-handoff-criteria-non-executable-per-aaron.md`
+  - `memory/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-six-concessions-pioneer-takes-hits-irreversible-vs-operationally-binding-handoff-criteria-non-executable-per-aaron.md`
 - `lint (markdownlint)`: `docs/hygiene-history/ticks/2026/05/17/1218Z.md:30` has MD038/no-space-in-code on the code spans around the nested-paren example.
 
 Local coordination note:
@@ -986,7 +986,7 @@ Remaining inspected blockers:
 - `check MEMORY.md generated-index drift`: `Entries: 1368. Index STALE.`
 - `lint memory/MEMORY.md reference-existence`: 100 refs checked, 98 resolved, 2 broken:
   - `memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`
-  - `memory/persona/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-six-concessions-pioneer-takes-hits-irreversible-vs-operationally-binding-handoff-criteria-non-executable-per-aaron.md`
+  - `memory/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-six-concessions-pioneer-takes-hits-irreversible-vs-operationally-binding-handoff-criteria-non-executable-per-aaron.md`
 
 Most other required checks are green, including build-and-test on macOS/Ubuntu/Ubuntu arm, CodeQL jobs seen so far, BACKLOG drift, memory frontmatter, markdownlint, and Lean DbspChainRule. Otto's semantic blocker on the ToyModel Lean sketch still remains separate from CI hygiene.
 

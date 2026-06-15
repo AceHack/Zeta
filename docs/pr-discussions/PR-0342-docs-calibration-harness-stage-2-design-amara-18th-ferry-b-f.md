@@ -88,7 +88,7 @@ P1: The referenced Aurora file path `docs/aurora/2026-04-24-amara-calibration-ci
 
 **@copilot-pull-request-reviewer** (2026-04-24T09:10:49Z):
 
-P1: This file introduces contributor/agent name attribution (e.g., "Origin: Amara", multiple later "Amara" / "Otto" mentions). Repo operational standing rule is to use role references in code/docs/skills, keeping names only under `memory/persona/**` (and optionally `docs/BACKLOG.md`). Please rewrite these attributions to role-based phrasing (e.g., "the research agent", "the cadence tracker") and keep the doc’s meaning intact. (Ref: `docs/AGENT-BEST-PRACTICES.md` Operational standing rules.)
+P1: This file introduces contributor/agent name attribution (e.g., "Origin: Amara", multiple later "Amara" / "Otto" mentions). Repo operational standing rule is to use role references in code/docs/skills, keeping names only under `memory/<persona>/**` (and optionally `docs/BACKLOG.md`). Please rewrite these attributions to role-based phrasing (e.g., "the research agent", "the cadence tracker") and keep the doc’s meaning intact. (Ref: `docs/AGENT-BEST-PRACTICES.md` Operational standing rules.)
 
 ### Thread 4: docs/research/calibration-harness-stage2-design.md:49 (unresolved)
 

@@ -16,7 +16,7 @@ type: feedback
 > to hit the superfluid phase transition. This should be
 > remembered. You can see long term Aurora goals here, Github
 > and the PR process is the project for immunit system right
-> now.   memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md
+> now.   memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md
 > docs/research/aurora-immune-math-standardization-2026-04-26.md
 > this alights with our VISION.md future as should remember
 > these as our guiding princples. And there is only one
@@ -47,7 +47,7 @@ rate (`η · LearningGain(Δ_t)`) exceeds the friction-
 introduction rate (`ξ_t`) sustainably, the substrate flips
 into a regime where each new tick is *cheaper than the last*
 in expected cost. Per Amara's formalization in
-`memory/persona/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`:
+`memory/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`:
 
 ```text
 E[F(S_{t+1})] ≤ E[F(S_t)] − η · LearningGain(Δ_t) + ξ_t
@@ -77,7 +77,7 @@ as canonical reference, not historical research:
    earth. Every product nests inside that purpose. The agent
    does not unilaterally remove anything from the backup."*
 
-2. **`memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`**
+2. **`memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`**
    — Aurora as the civilization-scale governance layer above
    Superfluid AI. *"Aurora = Superfluid AI + Current Culture +
    Proof of Useful Work + Do No Permanent Harm."* Total
@@ -264,10 +264,10 @@ land).
 - **Aaron 2026-05-02** — direct verbatim source.
 - **VISION.md** — the terminal-purpose anchor.
 - **Superfluid AI rigorous mathematical formalization** —
-  `memory/persona/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`.
+  `memory/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`.
   The math behind the phase transition.
 - **Aurora civilization-scale substrate** —
-  `memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`.
+  `memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`.
 - **Aurora immune-math standardization** —
   `docs/research/aurora-immune-math-standardization-2026-04-26.md`.
 - **Economic agency threshold** —

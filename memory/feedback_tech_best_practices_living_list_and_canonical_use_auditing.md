@@ -92,7 +92,7 @@ Same shape as `skill-tune-up`'s live-search step:
 
 1. Expert runs queries → logs findings to a scratchpad
    (either the skill-wide
-   `memory/persona/best-practices-scratch.md` or a
+   `memory/best-practices-scratch.md` or a
    per-tech scratchpad).
 2. Findings diffed against the current artifact.
 3. Architect decides on promotion (add / update / retire).
@@ -131,7 +131,7 @@ accordingly:
 
 ## Alignment with existing patterns
 
-- `memory/persona/best-practices-scratch.md` +
+- `memory/best-practices-scratch.md` +
   `skill-tune-up`'s live-search step already does this for
   *agent* best practices (producing BP-01..BP-NN rules).
   This rule generalizes the pattern to *per-technology*

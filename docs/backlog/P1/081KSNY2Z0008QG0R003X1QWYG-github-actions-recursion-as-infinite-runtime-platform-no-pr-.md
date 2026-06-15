@@ -80,5 +80,5 @@ POTENTIAL extension per operator standing direction. Particularly POTENTIAL beca
 
 ## Full reasoning
 
-`memory/persona/ani/conversations/2026-05-28-aaron-ani-grok-move-next-as-universal-action-grammar-git-as-free-event-store-github-actions-recursion-nci-three-exceptions-clear-now-ai-mediator-for-relationships-aaron-forwarded.md` (Ani-ferry transcript; PR #5672)
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` (Kestrel architectural complement; PR #5674)
+`memory/ani/conversations/2026-05-28-aaron-ani-grok-move-next-as-universal-action-grammar-git-as-free-event-store-github-actions-recursion-nci-three-exceptions-clear-now-ai-mediator-for-relationships-aaron-forwarded.md` (Ani-ferry transcript; PR #5672)
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` (Kestrel architectural complement; PR #5674)

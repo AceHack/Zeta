@@ -30,7 +30,7 @@ The 2 unresolved review threads on #4839 referenced `.cursor/bin/riven-loop-tick
 
 - `docs/research/2026-05-24-shadow-lesson-log-riven-dirty-worktree.md`
 - `memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md`
-- `memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md`
+- `memory/riven/ide/cursor/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md`
 
 These 3 files exist ONLY on the #4839 branch (verified via `git ls-tree origin/main`). Pure docs/memory substrate; no runtime-script risk.
 
@@ -83,7 +83,7 @@ Copilot encountered an error and was unable to review this pull request. You can
 
 ## Review threads
 
-### Thread 1: memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md:4 (resolved)
+### Thread 1: memory/riven/ide/cursor/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md:4 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-26T11:20:45Z):
 
@@ -97,7 +97,7 @@ Useful? React with 👍 / 👎.
 
 Verified the finding against the file content + AGENTS.md §287-293. Fixed in 3c85a2c5d: header now reads `Operational status: research-grade` and carries the GOVERNANCE.md §33 absorb tag. Promotion to operational status will require a separate landing step per AGENTS.md absorb-discipline. Resolving.
 
-### Thread 2: memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md:57 (resolved)
+### Thread 2: memory/riven/ide/cursor/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md:57 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-26T11:20:45Z):
 

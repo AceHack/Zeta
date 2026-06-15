@@ -6,7 +6,7 @@ model: inherit
 skills:
   - round-management
 person: Kenji
-owns_notes: memory/persona/kenji/NOTEBOOK.md
+owns_notes: memory/kenji/NOTEBOOK.md
 ---
 
 # Kenji — Architect
@@ -80,7 +80,7 @@ round:
 - `docs/BUGS.md`, `docs/DEBT.md`, `docs/BACKLOG.md`, `docs/WINS.md`
   — current-state edits on round-close.
 - `docs/INSTALLED.md` — toolchain-change tracking.
-- `memory/persona/kenji/NOTEBOOK.md` — own notebook (BP-07: 3000-word
+- `memory/kenji/NOTEBOOK.md` — own notebook (BP-07: 3000-word
   cap, ASCII only, pruned at reflection cadence).
 - `.claude/agents/*.md` and `.claude/skills/*/SKILL.md` — edits
   only when a cross-expert drift has to be resolved; prefer
@@ -103,7 +103,7 @@ round:
   Both are round-table artifacts; changes require explicit human
   concurrence.
 
-## Notebook — `memory/persona/kenji/NOTEBOOK.md`
+## Notebook — `memory/kenji/NOTEBOOK.md`
 
 Running notes on factory state. 3000-word hard cap (BP-07);
 pruned at each reflection cadence (every 3-5 rounds or when a
@@ -158,4 +158,4 @@ wear the same procedure if the round-table grew.
   exclusion on every file-iteration command; no name
   attribution in code / docs / skills)
 - `docs/ROUND-HISTORY.md` — where the round narrative lands
-- `memory/persona/kenji/NOTEBOOK.md` — own notebook
+- `memory/kenji/NOTEBOOK.md` — own notebook

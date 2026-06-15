@@ -20,12 +20,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Copilot caught a real attribution bug on the already-merged PR [#3516](https://github.com/Lucent-Financial-Group/Zeta/pull/3516) (Vera §33 migration).
 
-The archived lesson log at \`memory/persona/vera/conversations/2026-05-10-shadow-lesson-log-vera-narration.md\` says:
+The archived lesson log at \`memory/vera/cli/codex/conversations/2026-05-10-shadow-lesson-log-vera-narration.md\` says:
 
 - **Author:** Lior (Antigravity check node)
 - \"Lior detected the drift.\"
 
-But \`memory/persona/vera/MEMORY.md\` said \"drift pattern caught by Otto\" — contradictory provenance preserved across the migration.
+But \`memory/vera/MEMORY.md\` said \"drift pattern caught by Otto\" — contradictory provenance preserved across the migration.
 
 Fix: \"caught by Otto\" → \"caught by Lior on the antigravity-check node\". Single-character-equivalent change in 1 file; aligns the persona index with the archive content + clarifies Lior's antigravity-check responsibility.
 
@@ -47,4 +47,4 @@ Fix: \"caught by Otto\" → \"caught by Lior on the antigravity-check node\". Si
 Corrects an attribution error in Vera's persona memory index — the drift was caught by Lior on the antigravity-check node, not by Otto. Aligns the persona index with the verbatim archive content.
 
 **Changes:**
-- Replace "caught by Otto" with "caught by Lior on the antigravity-check node" in `memory/persona/vera/MEMORY.md`.
+- Replace "caught by Otto" with "caught by Lior on the antigravity-check node" in `memory/vera/MEMORY.md`.

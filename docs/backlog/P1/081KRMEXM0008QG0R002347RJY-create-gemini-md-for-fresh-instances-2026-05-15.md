@@ -25,9 +25,9 @@ Without a `GEMINI.md`, the fresh instance misses the critical "never be idle", "
 ## Acceptance criteria
 
 - [x] Create `GEMINI.md` at the repository root
-- [x] Point `GEMINI.md` to Lior's persona documentation and memory files (`memory/persona/lior/CURRENT-lior.md`)
+- [x] Point `GEMINI.md` to Lior's persona documentation and memory files (`memory/lior/CURRENT-lior.md`)
 - [x] Port the load-bearing factory directives (verify-before-deferring, future-self-not-bound, etc.) or link directly to where they are defined so Gemini has parity with Claude's bootstrapping.
 
 ## Implementation details
 
-- Kept lightweight, primarily acting as a pointer to `memory/persona/lior/CURRENT-lior.md` and the existing `CLAUDE.md` for shared factory invariants.
+- Kept lightweight, primarily acting as a pointer to `memory/lior/CURRENT-lior.md` and the existing `CLAUDE.md` for shared factory invariants.

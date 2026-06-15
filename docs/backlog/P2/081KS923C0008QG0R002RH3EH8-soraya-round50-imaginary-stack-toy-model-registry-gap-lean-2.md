@@ -67,7 +67,7 @@ S (one evening). Assignee: kenji.
 - [`docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md`](../../research/2026-05-17-imaginary-stack-toy-model-lemma-1.md) — paper-anchor research companion
 - [`tools/lean4/README.md`](../../../tools/lean4/README.md) — exploratory disclaimer location; bidirectional cross-link target
 - B-0709 sibling (round-42 hand-off, scope-expanded round-49) — distinct-axis Class 0 drift, NOT a duplicate
-- `memory/persona/soraya/NOTEBOOK.md` round-50 entry (1828 words, no prune needed)
+- `memory/soraya/NOTEBOOK.md` round-50 entry (1828 words, no prune needed)
 
 ## Substrate-honest framing
 

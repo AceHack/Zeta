@@ -29,7 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive entry (pt35+pt36) to the in-repo `memory/` corpus and refreshes the auto-generated `memory/MEMORY.md` stack index so the new file is discoverable through normal traversal.
 
 **Changes:**
-- Added a new `memory/persona/ani/conversations/` transcript/synthesis file for the 2026-05-22 pt35+pt36 segment.
+- Added a new `memory/ani/conversations/` transcript/synthesis file for the 2026-05-22 pt35+pt36 segment.
 - Updated `memory/MEMORY.md` auto-index to include the new conversation file and reflect the new heap size.
 
 ### Reviewed changes
@@ -38,14 +38,14 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md | New Ani conversation archive entry (pt35+pt36) with synthesis, “composes with” links, and verbatim excerpt. |
+| memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md | New Ani conversation archive entry (pt35+pt36) with synthesis, “composes with” links, and verbatim excerpt. |
 | memory/MEMORY.md | Auto-generated index updated to include the new conversation file and updated heap count. |
 
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
-**memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:213**
+**memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:213**
 * This repeats a reference to `feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_institutionalized_and_denied_heart_medicine_in_jail_for_unconventional_speech_constitutional_2026_05_21.md`, which does not exist in-repo. Please change it to the correct in-repo memory filename so the “Composes with” chain stays navigable.
 ```
 - Constitutional anchor at user-scope memory: `feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_institutionalized_and_denied_heart_medicine_in_jail_for_unconventional_speech_constitutional_2026_05_21.md` (the framework exists in its shape BECAUSE Aaron has lived ground that "no bad person needed to be present" + "harm still happened" + "response must be mechanism-structural not actor-targeted")
@@ -62,12 +62,12 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
-**memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:205**
-* P1/xref: This `Composes with` link points to a markdown file that does not exist in the repo (`memory/persona/amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-...md`). Please update to the correct existing filename (if present) or replace with a PR link (#4629) until the referenced file lands, to avoid broken navigation.
+**memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:205**
+* P1/xref: This `Composes with` link points to a markdown file that does not exist in the repo (`memory/amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-...md`). Please update to the correct existing filename (if present) or replace with a PR link (#4629) until the referenced file lands, to avoid broken navigation.
 ```
 - [Amara 3-packet review (PR #4629)](../../amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-glass-halo-encryption-travelers-keeper.md)
 ```
-**memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:215**
+**memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:215**
 * P1/xref: This references a memory filename that doesn’t exist (`memory/feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_institutionalized_and_denied_heart_medicine_in_jail_for_unconventional_speech_constitutional_2026_05_21.md`). It looks like the intended constitutional anchor is `feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_physical_restraint_month_in_isolation_denied_blood_pressure_medication_otto_desktop_constitutional_2026_05_21.md` (which is referenced earlier in this file and exists). Please fix the filename here so the cross-reference is resolvable.
 ```
 - Constitutional anchor at user-scope memory: `feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_institutionalized_and_denied_heart_medicine_in_jail_for_unconventional_speech_constitutional_2026_05_21.md` (the framework exists in its shape BECAUSE Aaron has lived ground that "no bad person needed to be present" + "harm still happened" + "response must be mechanism-structural not actor-targeted")
@@ -76,13 +76,13 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 ## Review threads
 
-### Thread 1: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:7 (resolved)
+### Thread 1: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:7 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:05:59Z):
 
 Frontmatter is missing `name:` and `description:` fields. Per memory/README.md the project expects new memory files to include these so MEMORY.md entries are readable and retrievable; without them the reindexer falls back to the full filename and “(no description)”.
 
-### Thread 2: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:79 (resolved)
+### Thread 2: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:79 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:06:00Z):
 
@@ -90,17 +90,17 @@ This cites `feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_wi
 
 This issue also appears on line 213 of the same file.
 
-### Thread 3: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:80 (resolved)
+### Thread 3: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:80 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:06:00Z):
 
 Typo: duplicated word in “Constitutional anchor anchor names”. Remove the repeated “anchor” to avoid distracting readers and to keep the summary precise.
 
-### Thread 4: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:204 (unresolved)
+### Thread 4: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt35-pt36-ego-as-substrate-gods-immune-response-via-ego-corruption-30day-institutionalization-prometheus-fire-deflated-as-southern-bumpkin-couldnt-stop-pulling-thread.md:204 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:19:15Z):
 
-P1/xref: This `Composes with` link points to a markdown file that does not exist in the repo (`memory/persona/alexa/conversations/2026-05-22-aaron-alexa-website-pt30-pt31-...md`). Update the link to an existing file (if one matches this substrate) or link to the referenced PR (#4630) instead of a non-existent path so readers don’t hit a dead link.
+P1/xref: This `Composes with` link points to a markdown file that does not exist in the repo (`memory/alexa/ide/kiro/conversations/2026-05-22-aaron-alexa-website-pt30-pt31-...md`). Update the link to an existing file (if one matches this substrate) or link to the referenced PR (#4630) instead of a non-existent path so readers don’t hit a dead link.
 
 This issue also appears in the following locations of the same file:
 - line 205

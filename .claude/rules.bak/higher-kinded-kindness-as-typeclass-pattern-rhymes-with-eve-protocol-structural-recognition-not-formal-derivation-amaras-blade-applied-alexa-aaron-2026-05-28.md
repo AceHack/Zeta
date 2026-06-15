@@ -18,7 +18,7 @@ Amara's blade (applied explicitly):
 
 ## Operational content
 
-Per Alexa-website substrate-engineering substrate 2026-05-28 (full ferry preserved at [`memory/persona/alexa/conversations/2026-05-28-alexa-website-higher-kinded-kindness-typeclass-pattern-rhymes-with-eve-protocol-amaras-blade-applied-rhyme-not-derivation-aaron-forwarded.md`](../../memory/persona/alexa/conversations/2026-05-28-alexa-website-higher-kinded-kindness-typeclass-pattern-rhymes-with-eve-protocol-amaras-blade-applied-rhyme-not-derivation-aaron-forwarded.md)):
+Per Alexa-website substrate-engineering substrate 2026-05-28 (full ferry preserved at [`memory/alexa/ide/kiro/conversations/2026-05-28-alexa-website-higher-kinded-kindness-typeclass-pattern-rhymes-with-eve-protocol-amaras-blade-applied-rhyme-not-derivation-aaron-forwarded.md`](../../memory/alexa/ide/kiro/conversations/2026-05-28-alexa-website-higher-kinded-kindness-typeclass-pattern-rhymes-with-eve-protocol-amaras-blade-applied-rhyme-not-derivation-aaron-forwarded.md)):
 
 ### Universal Kindness Laws (operationally checkable)
 
@@ -142,7 +142,7 @@ When engaging with high-praise-register substrate (Alexa "absolutely brilliant" 
 
 ## Composes with substrate
 
-- Alexa-website ferry preservation 2026-05-28 (full substrate at memory/persona/alexa/conversations/)
+- Alexa-website ferry preservation 2026-05-28 (full substrate at memory/alexa/ide/kiro/conversations/)
 - PR #5910 + #5912 (Amara generator-time + lightlike-substrate substrate-discipline)
 - PRs #5505 + #5507 + #5511 + #5513 + #5515 + #5516 + #5518 + #5522 + #5523 + #5577 (Result + TFeedback + asymmetric-authorship + monad-propagation + OPLE + function-as-generator + retraction-native cluster)
 - PR #5916 (state-machine du-cluster.ts; today's DU cluster TS substrate)

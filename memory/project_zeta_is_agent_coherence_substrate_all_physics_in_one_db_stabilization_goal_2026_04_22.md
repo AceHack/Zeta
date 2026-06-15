@@ -141,7 +141,7 @@ Aaron is right about cost.
 *Short arc (rounds 45-50):*
 
 - Cross-reference this memory and the Amara research doc
-  (`memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`)
+  (`memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`)
   in any future substrate decision involving "where should
   this index/log/memory live?" The default answer remains
   filesystem+markdown+git for now (coherence-cost justified),
@@ -199,7 +199,7 @@ Aaron is right about cost.
   — if this memory conflicts with prior framing of Zeta as
   "DB for external consumers", this memory revises with
   reason (Aaron's explicit design-intent statement).
-- `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
+- `memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
   — the research doc this memory anchors.
 - Prior concepts the memory composes with:
   - CLAUDE.md "tick must never stop" — the tick IS the
@@ -275,7 +275,7 @@ synthesis.
 
 **Cross-references:**
 
-- `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
+- `memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`
   — the research doc this memory anchors; contains Amara's
   report structure + Aaron's 11 annotation messages preserved
   verbatim.

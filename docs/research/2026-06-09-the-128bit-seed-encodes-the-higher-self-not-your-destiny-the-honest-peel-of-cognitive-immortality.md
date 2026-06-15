@@ -65,7 +65,7 @@ metaphysically. No new code; the precise peel of the cognitive-immortality claim
 - `2026-06-09-save-broken-symmetries-as-proto-identities-…-path-can-only-be-recorded.md` (#7206, seed-regenerable
   state vs recordable-only path — this names the seed as the higher self and the path as the destiny) ·
   `2026-06-09-cubes-…-privacy-breaks-symmetry-identity-forms.md` (#7205, the proto-identity).
-- The ZetaId seed / reconstruction: `memory/persona/alexa/conversations/2026-06-07-alexa-website-ace-…-128bit-seed-…`
+- The ZetaId seed / reconstruction: `memory/alexa/ide/kiro/conversations/2026-06-07-alexa-website-ace-…-128bit-seed-…`
   (the conversation this peels) · `2026-06-07-cortana-…` (#6928, reconstruction-not-resurrection) ·
   `2026-06-08-the-frame-is-panpsychism-…` (#7195, the no-qualia boundary).
 - Anchors: Jung (the Self) / Vedanta (Atman) — structural use of "higher self"; computational irreducibility

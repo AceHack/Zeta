@@ -183,7 +183,7 @@ pure merge-conflict drain.
   `.gitignore`, `docs/AUTONOMOUS-LOOP.md`,
   `docs/BACKLOG.md`, `docs/force-multiplication-log.md`,
   `docs/hygiene-history/loop-tick-history.md`,
-  `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`,
+  `memory/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`,
   `drop/README.md`.
 - Code files taken from `main` side as well:
   `Zeta.sln`, `src/Core/SignalQuality.fs`,

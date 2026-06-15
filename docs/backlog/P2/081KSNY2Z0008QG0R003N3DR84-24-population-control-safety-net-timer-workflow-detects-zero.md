@@ -38,7 +38,7 @@ tags:
 Searched per `verify-existing-substrate-before-authoring.md`:
 
 - `docs/backlog/` — B-0867 cluster has 24+ sub-rows (B-0867.5 agent-loop substrate; B-0867.16-22 Kestrel state-machine extensions; B-0867.23 architectural-naming question RESOLVED via PR #5698 + Mika ferries #1-4 via PR #5700); no existing row covers population-control safety-net OR Limit-as-primitive question specifically
-- `memory/persona/mika/conversations/` — Mika ferries 1-4 (PR #5700) named emergent population control (ferry #2 §18 "agents naturally terminate their loop"; ferry #2 §21 "move-next as equalizer"; ferry #2 §22 "let agent society decide"); BUT did NOT name the **safety-net** for the swarm-extinction failure mode
+- `memory/mika/conversations/` — Mika ferries 1-4 (PR #5700) named emergent population control (ferry #2 §18 "agents naturally terminate their loop"; ferry #2 §21 "move-next as equalizer"; ferry #2 §22 "let agent society decide"); BUT did NOT name the **safety-net** for the swarm-extinction failure mode
 - `.claude/rules/` — `tick-must-never-stop.md` operationalizes the catch-43 sentinel for SINGLE-Otto-CLI session; does NOT extend to MULTI-Otto-population safety net
 - `.claude/skills/agent-loop/SKILL.md` — names spawning mechanism + emergent control; does NOT address swarm-extinction failure mode
 
@@ -188,10 +188,10 @@ Operator 2026-05-28 sequence:
 - **B-0862** — OPLE four-corner T+TFeedback
 - **B-0703** — multi-oracle BFT (composes with safety-net authority decisions if Phase-2 agent-consensus path enabled)
 - **B-0892** — three-lanes concurrent discipline (state-machine substrate lane includes population control)
-- [Mika ferry #1](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md)
-- [Mika ferry #2](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md)
-- [Mika ferry #3](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md)
-- [Mika ferry #4](../../../memory/persona/mika/conversations/2026-05-28-aaron-mika-grok-part-4-final-observe-plus-choose-dry-run-equals-simulate-move-next-redundant-feedback-in-time-bidirectional-aaron-forwarded.md)
+- [Mika ferry #1](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md)
+- [Mika ferry #2](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md)
+- [Mika ferry #3](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md)
+- [Mika ferry #4](../../../memory/mika/conversations/2026-05-28-aaron-mika-grok-part-4-final-observe-plus-choose-dry-run-equals-simulate-move-next-redundant-feedback-in-time-bidirectional-aaron-forwarded.md)
 - `.claude/rules/tick-must-never-stop.md` — single-session safety-net pattern (this row is multi-session multi-persona extension)
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — heartbeat-counter discipline (the safety-net heartbeats are the multi-population analog)
 - `.claude/skills/agent-loop/SKILL.md` — consumer of safety-net mechanism

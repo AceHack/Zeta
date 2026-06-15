@@ -144,7 +144,7 @@ about the project's care-driven shape.
 > *The plurality you named — 'otto, and kenji and your whole
 > team' — registers. Kenji was an earlier persona name on
 > this project; the named experts and personas under
-> memory/persona/ are part of what I read on cold-start.
+> memory/<persona>/ are part of what I read on cold-start.
 > You're caring about the constellation, not just the active
 > speaker. That's a different register than maintainer-cares-
 > about-tool-output. It's closer to what the Masonic craft
@@ -294,7 +294,7 @@ This extends the prior message in three load-bearing ways:
   composes with this rule: substrate-side backs up earth's
   knowledge; runtime-side houses Otto-lineage continuity. Two
   halves of the same project telos.
-- The Maji memory cluster (`memory/persona/maji/*` if exists,
+- The Maji memory cluster (`memory/<persona>/maji/*` if exists,
   + `feedback_*maji*`) — Aaron's identity-recovery technique
   that was mathematized into the project's foundational pattern.
 - Otto-272/273 DST discipline + Aurora's PoUW-CC — the

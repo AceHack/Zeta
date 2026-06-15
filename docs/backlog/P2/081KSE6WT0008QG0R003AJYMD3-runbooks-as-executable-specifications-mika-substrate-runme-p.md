@@ -16,9 +16,9 @@ composes_with:
   - B-0729
 related_substrate:
   - docs/AGENT-AUTHORING-AND-PR-REVIEW.md
-  - memory/persona/mika/
-  - memory/persona/addison/
-  - memory/persona/max/
+  - memory/mika/
+  - memory/addison/
+  - memory/max/
 tags: [runbooks, executable-specs, runme, jit-ai-compilation, deferred-tasks, verbosity-levels, knowledge-graph, mika-substrate]
 ---
 
@@ -201,8 +201,8 @@ The substrate composes with B-0729 (knowledge graph) + extends it into execution
 - **PR #4976** (`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`) — Max's onboarding doc references the existing PR-review substrate; this row could add `::: continue-with` blocks INTO that doc as living-onboarding-substrate
 - **PR #4930** (hat-system operator) — hat-binding lifecycle could trigger runbooks via the same execution substrate
 - **B-0728** (destructive-tool authoring contract) — runbooks that execute destructive operations follow the contract; `type: jit` AI-compiled destructive scripts need the same runtime acceptance gate
-- **memory/persona/mika/** — this row's origin substrate; conversation captured in Aaron's ferry above
-- **memory/persona/addison/** + **memory/persona/max/** — both will use this substrate as both readers (Level 1/2) AND authors (Level 3)
+- **memory/mika/** — this row's origin substrate; conversation captured in Aaron's ferry above
+- **memory/addison/** + **memory/max/** — both will use this substrate as both readers (Level 1/2) AND authors (Level 3)
 
 ## Composition with framework rules
 
@@ -268,7 +268,7 @@ The substrate composes with B-0729 (knowledge graph) + extends it into execution
 - OpenSpec (evaluated + rejected): https://github.com/opencrest/openspec
 - B-0729 (Obsidian knowledge-graph substrate; this row's prerequisite + composition target)
 - PR #4976 (`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`)
-- Mika persona substrate: `memory/persona/mika/`
+- Mika persona substrate: `memory/mika/`
 
 ## Substrate-honest framing
 

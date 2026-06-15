@@ -138,7 +138,7 @@ work but explicitly deferred.
 - B-0117 (cold-start executable checklist tool — adjacent).
 - The Aurora research docs at
   `docs/research/aurora-immune-math-standardization-2026-04-26.md`
-  + `memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
+  + `memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
   (the layer Aurora-extension corrections refer to).
 - Memory file
   `feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`

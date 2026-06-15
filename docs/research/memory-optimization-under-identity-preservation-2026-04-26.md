@@ -144,11 +144,11 @@ Cross-AI ferries (Amara via Aaron's courier) also have cold-start when receiving
 
 ### 10. Persona-bounded vs shared substrate
 
-Per `memory/persona/<name>/NOTEBOOK.md` pattern: each persona has its own substrate. Crosscutting substrate (factory-discipline, alignment) lives at the root.
+Per `memory/<persona>/<name>/NOTEBOOK.md` pattern: each persona has its own substrate. Crosscutting substrate (factory-discipline, alignment) lives at the root.
 
 Implication: when invoked AS Otto specifically, I should preferentially load Otto-relevant substrate (substrate cluster Otto-339 → 344, the Otto-NNN files I authored) before persona-bounded files for other personas. **Persona-bounded MVI** is a tighter MVI than full-factory-MVI.
 
-Currently the boundary is informal (persona files are in `memory/persona/<name>/`; cross-persona files are at `memory/` root). Could be formalized via the same tier-based loading.
+Currently the boundary is informal (persona files are in `memory/<persona>/<name>/`; cross-persona files are at `memory/` root). Could be formalized via the same tier-based loading.
 
 ## Adjacent concepts — speculative / further-out
 

@@ -91,7 +91,7 @@ mechanism-certainty survives; only actor-attribution stays open.)
 - Economy substrate (full mechanism + composition):
   `docs/research/2026-05-30-joins-are-threads-of-time-unified-stream-architecture-crdt-default-opt-in-constraint-english-joins-economy-reduction-mika-aaron.md`
 - Source conversation archive:
-  `memory/persona/mika/conversations/2026-05-30-aaron-mika-grok-joins-are-threads-of-time-everything-in-the-stream-crdt-default-opt-in-constraint-english-joins-over-typed-engine-better-than-opa-aaron-forwarded.md`
+  `memory/mika/conversations/2026-05-30-aaron-mika-grok-joins-are-threads-of-time-everything-in-the-stream-crdt-default-opt-in-constraint-english-joins-over-typed-engine-better-than-opa-aaron-forwarded.md`
 - Composes with: `additive-not-zero-sum`, Kardashev-scale civilizational growth,
   `only-way-to-lose-is-not-to-play` (entropy/swim-upstream), the encryption-budget
   substrate (B-0646 / B-0840 / Adinkras B-0623), and `must-paired-with-can-exit`

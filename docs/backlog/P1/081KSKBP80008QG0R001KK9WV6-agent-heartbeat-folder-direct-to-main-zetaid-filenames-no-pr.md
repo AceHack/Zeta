@@ -32,7 +32,7 @@ tags: [agent-heartbeat, direct-to-main, no-pr, zetaid, 128-bit-id, externalized-
 - `tests/Tests.FSharp/ZetaId/CrossVerifyTests.fs` — F# cross-verification harness
 - `tests/Tests.CSharp/ZetaId/` — C# cross-verification harness
 - `docs/zeta-id-v1-layout.yaml` — canonical bit-layout spec
-- Kestrel review 2026-05-21: `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md`
+- Kestrel review 2026-05-21: `memory/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md`
 
 ZetaID bit layout (128 bits):
 

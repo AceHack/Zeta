@@ -69,7 +69,7 @@ right, not to be diplomatic.
 
 **Inspection path:** [`../ROUND-HISTORY.md`](../ROUND-HISTORY.md),
 [`../BUGS.md`](../BUGS.md), and reviewer persona
-notebooks under `memory/persona/`.
+notebooks under `memory/<persona>/`.
 
 ### 4. The human maintainer sits outside the agent loop
 

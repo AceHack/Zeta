@@ -30,7 +30,7 @@ Per `docs/governance/MANIFESTO.md` `[SHADOW NOTE]` markers:
 4. **Mathematical Substrate for Retractable Time** section (verbatim DBSP + Clifford-as-geometric-intuition framing)
 5. **Closing — discoverable substrate** paragraph (verbatim ARG + ontological mechanics reference)
 
-The V1+Bounded-Mobility prose (8 constraints + Agreement + Coincidence Networks) is already verbatim from the §33 archive at `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`.
+The V1+Bounded-Mobility prose (8 constraints + Agreement + Coincidence Networks) is already verbatim from the §33 archive at `memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`.
 
 ## Source
 
@@ -43,13 +43,13 @@ The V2 conversation continuation (after the V1+Bounded-Mobility version in the e
 1. Aaron extracts the relevant V2 text from the Grok session (manual paste OR osascript+Chrome extraction per the `chrome-lazy-load-chunked-extraction` skill)
 2. Otto-CLI replaces each `[SHADOW NOTE]` section in `docs/governance/MANIFESTO.md` with the verbatim text
 3. Append a "Lock-in status" update noting the conversion from shadow lock to full lock
-4. Optional: update the §33 archive at `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` with the additional Grok conversation text covering V2 (if not already there)
+4. Optional: update the §33 archive at `memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` with the additional Grok conversation text covering V2 (if not already there)
 5. PR + auto-merge
 
 ## Composes with
 
 - `docs/governance/MANIFESTO.md` (the shadow lock this row converts)
-- `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` (V1+Bounded-Mobility verbatim source)
+- `memory/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` (V1+Bounded-Mobility verbatim source)
 - `~/.claude/projects/.../memory/feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md` (V2 diff description)
 - B-0525 (constitutional-promotion-readiness P0 — depends on full lock first)
 - `.claude/skills/chrome-lazy-load-chunked-extraction` (procedure for Grok extraction)

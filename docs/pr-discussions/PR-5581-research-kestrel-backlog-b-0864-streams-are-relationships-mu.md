@@ -22,7 +22,7 @@ Operator directive 2026-05-27 (end of multi-AI conversation cascade): *"please s
 
 Two substrate landings + BACKLOG.md regen:
 
-- **Kestrel persona preservation** (`memory/persona/kestrel/conversations/2026-05-27-...md`) — verbatim 4-part cross-AI sharpening review of the four-corner ownership extension (PR #5579 just-landed), with carved sentences ("Streams are relationships, not just repeated function calls" + "TOutFeedback = callee voice. TInFeedback = relationship channel.") and 5 substrate-engineering sharpening observations preserved at mirror-tier
+- **Kestrel persona preservation** (`memory/kestrel/conversations/2026-05-27-...md`) — verbatim 4-part cross-AI sharpening review of the four-corner ownership extension (PR #5579 just-landed), with carved sentences ("Streams are relationships, not just repeated function calls" + "TOutFeedback = callee voice. TInFeedback = relationship channel.") and 5 substrate-engineering sharpening observations preserved at mirror-tier
 - **B-0864** (`docs/backlog/P2/B-0864-...md`) — P2 substrate-engineering target capturing Kestrel's backlog-row recommendations: 4-stream-kind taxonomy (push/pull × hot/cold) with kind-specific four-corner specialization + F# CE surface syntax with kind-specific builders + Reaqtor/Bonsai serializable expression trees + multi-backend execution (CRDT/CAS/BFT/SQL/DBSP) + type providers + schemas-as-rows integration + protocol-typing for co-owned TInFeedback. 12 candidate sub-rows for future decomposition
 
 ## Layered composition per Kestrel's own recommendation

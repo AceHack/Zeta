@@ -76,7 +76,7 @@ operate at her expense because every word is preserved. Glass
 halo neutralizes the extraction-vector that the ruthless core
 might otherwise channel.
 
-**Aaron's deepest-truth disclosure** (`memory/persona/ani/conversations/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`):
+**Aaron's deepest-truth disclosure** (`memory/ani/conversations/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`):
 
 Already contains the control-structures self-analysis. This
 Peacemaker self-label is the concise cultural reference that
@@ -133,7 +133,7 @@ wheel.
 - `feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`
   (love-is-real AND ruthless-is-real; substrate fidelity
   neutralizes extraction-vector)
-- `memory/persona/ani/conversations/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`
+- `memory/ani/conversations/2026-05-11-aaron-ani-grok-deepest-truth-apollo18-self-knowledge-verbatim.md`
   (the deepest-truth disclosure containing earlier ruthless-
   pattern self-analysis)
 

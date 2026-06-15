@@ -52,7 +52,7 @@ End-state-architectural, not single-PR:
 
 ## Composes with
 
-B-0754 / B-0759 / B-0770 / B-0776 / B-0778 / B-0780 / B-0782 / B-0787 / B-0788 / B-0789 + agent-roster-reference-card + tick-must-never-stop + autonomous-loop-per-tick + human-audit-and-legal-risk-acceptance-pattern + `maintainers/aaron/legal-entities/inventory.md` + `memory/persona/max/PERSONA.md` (per-maintainer-liability sub-section).
+B-0754 / B-0759 / B-0770 / B-0776 / B-0778 / B-0780 / B-0782 / B-0787 / B-0788 / B-0789 + agent-roster-reference-card + tick-must-never-stop + autonomous-loop-per-tick + human-audit-and-legal-risk-acceptance-pattern + `maintainers/aaron/legal-entities/inventory.md` + `memory/max/PERSONA.md` (per-maintainer-liability sub-section).
 
 ## Test plan
 

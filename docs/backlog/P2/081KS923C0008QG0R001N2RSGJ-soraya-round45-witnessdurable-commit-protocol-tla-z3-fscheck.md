@@ -73,5 +73,5 @@ M + S + S (total ~M+). Assignee: kenji.
 - [`src/Core/Durability.fs`](../../../src/Core/Durability.fs):14-22 — self-declared TLA+ prereq
 - [`docs/research/proof-tool-coverage.md`](../../research/proof-tool-coverage.md) §2 line 100 — gap named 2026-04-17
 - [`tools/tla/specs/TwoPCSink.tla`](../../../tools/tla/specs/TwoPCSink.tla) — structural cousin
-- `memory/persona/soraya/NOTEBOOK.md` — Round 45 entry (pending NOTEBOOK update; locate by `## Round 45` heading once landed; pruned-preserved)
+- `memory/soraya/NOTEBOOK.md` — Round 45 entry (pending NOTEBOOK update; locate by `## Round 45` heading once landed; pruned-preserved)
 - B-0710 + B-0711 (sibling Soraya hand-offs from same session)

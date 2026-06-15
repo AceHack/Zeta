@@ -98,7 +98,7 @@ Five concrete shapes the row covers:
    research output should name whether any of the
    formal-verification toolbelt (`tools/lean4/`,
    `tools/Z3Verify/`) or research-mathematics surfaces
-   (`memory/persona/otto/conversations/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md`)
+   (`memory/otto/cli/claude/conversations/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md`)
    genuinely need MPFR-grade precision, or whether
    `double` suffices.
 

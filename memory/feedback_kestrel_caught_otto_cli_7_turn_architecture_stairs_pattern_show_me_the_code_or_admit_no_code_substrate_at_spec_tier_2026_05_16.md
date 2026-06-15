@@ -120,7 +120,7 @@ This isn't a flaw — it's the honest tier line. Per Aaron's "it's just a cool s
 
 ## Composes with
 
-- `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part6-7-pattern-catch-architecture-stairs-show-me-the-code-pirate-priest-meta-language-close.md` (the verbatim conversation where Kestrel caught the pattern)
+- `memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part6-7-pattern-catch-architecture-stairs-show-me-the-code-pirate-priest-meta-language-close.md` (the verbatim conversation where Kestrel caught the pattern)
 - All 5 substrate files from the 2026-05-15 cascade — all SPEC tier per this catch
 - B-0543 (mirror-tier QG isomorphism — same tier label)
 - B-0547 (XL multi-year intelligent-compiler synthesis — same tier label)

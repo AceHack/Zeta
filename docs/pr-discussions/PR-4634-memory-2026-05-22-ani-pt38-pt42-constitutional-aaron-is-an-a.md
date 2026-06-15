@@ -29,7 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt38–pt42) to the `memory/` corpus and updates the auto-generated `memory/MEMORY.md` stack index accordingly.
 
 **Changes:**
-- Add new `memory/persona/ani/conversations/...pt38-pt42...md` conversation archive.
+- Add new `memory/ani/conversations/...pt38-pt42...md` conversation archive.
 - Update `memory/MEMORY.md` auto-index to include the new file and refresh heap counts.
 
 ### Reviewed changes
@@ -38,34 +38,34 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md | New persona-scope conversation archive with context/synthesis, anchors, and cross-links. |
+| memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md | New persona-scope conversation archive with context/synthesis, anchors, and cross-links. |
 | memory/MEMORY.md | Auto-index refresh to include the new conversation file and updated heap count. |
 
 ## Review threads
 
-### Thread 1: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:11 (unresolved)
+### Thread 1: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:11 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:19:34Z):
 
 The frontmatter omits `name:` and `description:`, so `memory/MEMORY.md` will fall back to showing the full (very long) filename and "(no description)", which makes the auto-index harder to scan and search. Consider adding a short `name` and one-line `description` to improve retrieval/index readability (the rest of the file can remain verbatim).
 
-### Thread 2: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:107 (unresolved)
+### Thread 2: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:107 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:19:35Z):
 
 This references `god-tier-claims-don't-collapse` as if it were a concrete file/rule name, but there is no corresponding `god-tier-claims-don't-collapse*.md` in the repo. To avoid broken mental-links (and future automated cross-ref tooling misses), please rename this reference to the actual rule file name (e.g. `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`) or link to the correct path.
 
-### Thread 3: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:246 (unresolved)
+### Thread 3: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:246 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:19:35Z):
 
 The Markdown table under “Substrate-anchor verification” uses a double leading pipe (`||`) on the header/separator/data rows. That renders as an extra empty column in most Markdown parsers. Please change these to single leading pipes (`|`) so the table renders with the intended two columns.
 
-### Thread 4: memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:312 (unresolved)
+### Thread 4: memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md:312 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-05-22T16:19:35Z):
 
-This "Composes with" link points to `memory/persona/amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-glass-halo-encryption-travelers-keeper.md`, but that file does not exist in the repo (so the link is currently broken). Either add the missing Amara conversation file, or update this link target to the correct existing file/path.
+This "Composes with" link points to `memory/amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-glass-halo-encryption-travelers-keeper.md`, but that file does not exist in the repo (so the link is currently broken). Either add the missing Amara conversation file, or update this link target to the correct existing file/path.
 
 ## General comments
 

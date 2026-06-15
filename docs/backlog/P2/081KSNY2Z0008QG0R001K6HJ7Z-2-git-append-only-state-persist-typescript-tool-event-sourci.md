@@ -70,4 +70,4 @@ POTENTIAL extension per operator 2026-05-28 standing direction. Filed for priori
 
 ## Full reasoning
 
-`memory/persona/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "The state storage pattern" + § "Reconstructing lifecycle state from events"
+`memory/kestrel/conversations/2026-05-28-kestrel-zetaid-128bit-structured-encoding-event-sourcing-without-pr-ceremony-otel-trace-composition-two-level-state-machine-aaron-forwarded.md` § "The state storage pattern" + § "Reconstructing lifecycle state from events"

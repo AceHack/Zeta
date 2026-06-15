@@ -3,7 +3,7 @@ id: B-0533
 zetaid: 081KRMEXM0008QG0R000K25MXS
 priority: P3
 status: open
-title: "§33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/persona/<name>/conversations/"
+title: "§33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/<persona>/<name>/conversations/"
 tier: factory-infrastructure
 effort: M
 created: 2026-05-15
@@ -22,7 +22,7 @@ Codex P2 finding on already-merged [PR #3513](https://github.com/Lucent-Financia
 
 The narrow fix shipped as [PR #3529](https://github.com/Lucent-Financial-Group/Zeta/pull/3529) — 3 live-nav pointers updated for one migrated Riven file. But the pattern generalizes: **every §33 migration moves files without auto-updating backlinks**, and the same dead-xref class likely exists across the 8 personas migrated so far.
 
-Empirical scan in tick 1802Z surfaced **20+ dead xrefs** in live-nav surfaces (`.claude/rules/`, `memory/feedback_*.md`, `docs/backlog/*.md`) pointing at old `docs/research/<file>` paths that now live at `memory/persona/<persona>/conversations/<file>`. Rough per-persona distribution:
+Empirical scan in tick 1802Z surfaced **20+ dead xrefs** in live-nav surfaces (`.claude/rules/`, `memory/feedback_*.md`, `docs/backlog/*.md`) pointing at old `docs/research/<file>` paths that now live at `memory/<persona>/conversations/<file>`. Rough per-persona distribution:
 
 | Persona | Dead-xref count (approx) |
 |---|---|
@@ -53,10 +53,10 @@ NOT a problem in **historical archives** (`docs/history/pr-reviews/*`, `docs/hyg
 Update all dead xrefs in live-nav surfaces. Mechanical because the mapping is deterministic:
 
 ```
-docs/research/<basename>   →   memory/persona/<persona>/conversations/<basename>
+docs/research/<basename>   →   memory/<persona>/conversations/<basename>
 ```
 
-The `<persona>` is derivable from `git log --diff-filter=R` on each migration PR (or from `git ls-tree -r origin/main -- memory/persona/<persona>/conversations/`).
+The `<persona>` is derivable from `git log --diff-filter=R` on each migration PR (or from `git ls-tree -r origin/main -- memory/<persona>/conversations/`).
 
 Per-persona PR batching (8 small PRs, ~3-15 files each) to keep blast radius small + reviewable.
 
@@ -65,7 +65,7 @@ Per-persona PR batching (8 small PRs, ~3-15 files each) to keep blast radius sma
 Add `tools/hygiene/lint-section-33-xrefs.ts` that:
 
 1. Walks live-nav surfaces (`.claude/`, `memory/*.md`, `docs/backlog/`, `tools/`, root `*.md` files).
-2. For each `docs/research/<basename>` reference, checks whether `<basename>` now lives under `memory/persona/<*>/conversations/`.
+2. For each `docs/research/<basename>` reference, checks whether `<basename>` now lives under `memory/<persona>/<*>/conversations/`.
 3. If migrated, fails with the canonical target path + edit suggestion.
 4. Wire into `lint` job in `.github/workflows/gate.yml`.
 

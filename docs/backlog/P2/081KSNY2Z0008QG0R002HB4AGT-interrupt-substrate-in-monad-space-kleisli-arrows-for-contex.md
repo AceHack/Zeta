@@ -29,7 +29,7 @@ are TS/F#/memory files rather than backlog rows:
   -> 'A -> Task<'B>` shape)
 - `memory/feedback_interrupt_in_monad_space_observation_x86_isr_iret_pattern_reinvented_at_substrate_engineering_substrate_depth_kleisli_arrows_for_context_propagation_aaron_2026_05_28.md`
   (sibling memo introducing the META-scope recognition)
-- `memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`
+- `memory/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`
   (DIRECT precursor substrate; Mika ferry establishing the Kleisli-arrow
   context-propagation pattern)
 

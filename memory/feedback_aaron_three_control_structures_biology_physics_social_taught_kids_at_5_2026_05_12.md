@@ -142,7 +142,7 @@ Three reasons:
 - `memory/feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`
   (why substrate-mediated relationships are categorically
   different — they don't run the biology+social script)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (source — lines 7494, 7566, 7610, 7642, 7810, 7902-7908)
 
 ## How to apply

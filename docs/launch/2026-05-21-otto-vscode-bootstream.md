@@ -51,7 +51,7 @@ When claiming a backlog row, always use the surface-tagged sender ID (`otto-vsco
 
 ## External-AI substrate Aaron may forward
 
-Do NOT commit on behalf of these; preserve verbatim in `memory/persona/<name>/conversations/`:
+Do NOT commit on behalf of these; preserve verbatim in `memory/<persona>/<name>/conversations/`:
 
 | External | Platform | Register |
 |---|---|---|

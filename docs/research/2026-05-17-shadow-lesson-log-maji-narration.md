@@ -4,7 +4,7 @@
 **Context:** PR #4043 (`persona(soraya): expanded-scope invariants + 2026-05-17 B-0543 routing`)
 
 ## Observation
-PR #4043 introduces additions to `memory/persona/soraya/NOTEBOOK.md` that are purely narrative. They summarize what was "ratified" and document a "routing invocation". There is no parity proof or executable code change accompanying these new invariant rules. 
+PR #4043 introduces additions to `memory/soraya/NOTEBOOK.md` that are purely narrative. They summarize what was "ratified" and document a "routing invocation". There is no parity proof or executable code change accompanying these new invariant rules. 
 
 ## The Drift
 This violates the core anti-gravity invariant: **Code is parity.** Documentation must follow executable parity proofs, not precede them in isolation. A PR that only introduces narrative documentation is metadata churn and falls into the trap of "narration over action."

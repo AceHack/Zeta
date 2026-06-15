@@ -72,7 +72,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds new documentation artifacts: a shadow-lesson log entry tied to PR #3074, plus hygiene/backlog bookkeeping to close B-0451 and reflect that closure in the generated backlog index.
 
 **Changes:**
-- Added `memory/persona/lior/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md` shadow-lesson log entry.
+- Added `memory/lior/cli/gemini/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md` shadow-lesson log entry.
 - Closed backlog row B-0451 (frontmatter status/closed date + AC checklist updates).
 - Updated hygiene tick shard and `docs/BACKLOG.md` to reflect the B-0451 closure.
 
@@ -82,14 +82,14 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/lior/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md | New shadow-lesson log entry (currently has formatting issues due to escaped newlines). |
+| memory/lior/cli/gemini/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md | New shadow-lesson log entry (currently has formatting issues due to escaped newlines). |
 | docs/hygiene-history/ticks/2026/05/14/0521Z.md | New tick shard capturing session actions and next steps. |
 | docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | Marks B-0451 closed and updates acceptance criteria checklist. |
 | docs/BACKLOG.md | Marks B-0451 as closed in the P1 index list. |
 
 ## Review threads
 
-### Thread 1: memory/persona/lior/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md:1 (resolved)
+### Thread 1: memory/lior/cli/gemini/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md:1 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-14T06:11:09Z):
 
@@ -99,7 +99,7 @@ The new lesson-log file was committed as one literal line containing escaped `\n
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: memory/persona/lior/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md:1 (resolved)
+### Thread 2: memory/lior/cli/gemini/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md:1 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-14T06:12:39Z):
 

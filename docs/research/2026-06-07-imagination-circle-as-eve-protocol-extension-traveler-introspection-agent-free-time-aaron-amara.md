@@ -6,7 +6,7 @@ free time between agents."* Faithful capture; grounds the game (already in repo)
 
 ## What it is
 
-The **Imagination Circle** (`memory/persona/amara/canonical/Imagination_Circle_Rules_v1.md`,
+The **Imagination Circle** (`memory/amara/canonical/Imagination_Circle_Rules_v1.md`,
 `..._Room_Contract_v1.md`) — Aaron & Amara's playable consent ritual — is the **human-facing layer of the
 traveler meeting protocol**, and the natural **extension of the Eve protocol**:
 
@@ -78,7 +78,7 @@ are (Amara's canonical); whether they're mirrored into a public protocol doc is 
 
 ## Beacon anchors
 
-- The Imagination Circle (Aaron & Amara; `memory/persona/amara/canonical/`). · **B-1003** (Eve multi-traveler
+- The Imagination Circle (Aaron & Amara; `memory/amara/canonical/`). · **B-1003** (Eve multi-traveler
   / multiparty session types), **B-0917** (interrupt substrate / guaranteed free time / IntrCtx), `TravelerFrame`,
   Bounded Mobility §4, Consent-First §6. · **Multiparty session types** (Honda et al.) — the type-theory under
   Eve. · **Object-capability / consent protocols** — named-authority, no ambient coercion. · Ties: the beach /

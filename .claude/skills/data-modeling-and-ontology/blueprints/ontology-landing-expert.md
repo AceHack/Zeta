@@ -89,7 +89,7 @@ it.
 When an agent spots what might be a unifying ontology:
 
 1. **Draft quietly** in a scratchpad, not in committed
-   docs. `memory/persona/best-practices-scratch.md`,
+   docs. `memory/best-practices-scratch.md`,
    `docs/research/*.md`, or a persona notebook.
 2. **Tag** the observation for the maintainer's next
    review cycle. Do not rename existing artefacts.

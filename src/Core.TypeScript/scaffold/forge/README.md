@@ -25,7 +25,7 @@ Until Stage 2 completes, the canonical factory tooling lives in Zeta.
 - `docs/AGENT-BEST-PRACTICES.md` — the `BP-NN` rule list
 - `docs/FACTORY-HYGIENE.md` — hygiene cadence and checklists
 - `docs/hygiene-history/` — append-only tick history
-- `memory/persona/` — persona notebooks (stays with personas)
+- `memory/<persona>/` — persona notebooks (stays with personas)
 - `docs/research/` — factory-level research archive
 
 ## The Ouroboros loop

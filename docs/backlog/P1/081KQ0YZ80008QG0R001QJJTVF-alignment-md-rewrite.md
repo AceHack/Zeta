@@ -71,7 +71,7 @@ Rewrite `docs/ALIGNMENT.md` to incorporate:
 7. **Otto-283 + Otto-284 authority-delegation + idle-PR** —
    the bidirectional collaboration substrate.
 8. **Noether-formalization research direction**
-   (`memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`,
+   (`memory/otto/cli/claude/conversations/otto-287-noether-formalization-2026-04-25.md`,
    B-0002) — pipeline that promises compounding rigor over
    time.
 
@@ -176,7 +176,7 @@ factory-as-superfluid data accumulates.
   — the rigor foundation.
 - `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`
   — the empirical calibration data.
-- `memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md`
+- `memory/otto/cli/claude/conversations/otto-287-noether-formalization-2026-04-25.md`
   — the formalization research that compounds rigor.
 - `docs/backlog/P3/B-0002-otto-287-noether-formalization.md`
   — research-grade dependency for the deepest version of

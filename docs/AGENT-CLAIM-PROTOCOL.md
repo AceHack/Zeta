@@ -675,9 +675,9 @@ rather than bundling it into the claim.
 
 **Claim code, not identity.** The factory has personas
 (named reviewer roles) and agent notebooks under
-`memory/persona/`. Some of that material is committed to
+`memory/<persona>/`. Some of that material is committed to
 git (the `memory/` tree is tracked; see `memory/MEMORY.md`
-and `memory/persona/README.md` for what lives where), and
+and `memory/<persona>/README.md` for what lives where), and
 some is harness-local. External agents arriving via this
 protocol claim code and docs on the public repo surface
 only. Do not invent persona-names, do not claim identity

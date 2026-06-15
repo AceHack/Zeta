@@ -15,7 +15,7 @@ This inventory distinguishes:
 
 - **Live claims** (shipping to consumers as asserted bounds): F# `///` XML doc comments on public/internal API, `openspec/specs/**` spec text, published `docs/research/**` claims that consumers might cite, `docs/TECH-RADAR.md` live rows. These populate the grandfather set.
 - **Non-claims** (historical / residual evidence): BACKLOG `[x] ✅` shipped-item residue mentioning past O-values, in-file comment commentary narrating past bugs (e.g. "was O(n·k)" on a fixed path), TECH-RADAR flag-text describing a past regression. These are *evidence*, not *claims Zeta is currently making*, and are excluded. The grandfather set is what Zeta asserts **today**.
-- **Surfaces with zero hits**: root `README.md` (no big-O claims); `memory/persona/*/NOTEBOOK.md` (no big-O claims); `docs/papers/**` (directory does not exist yet).
+- **Surfaces with zero hits**: root `README.md` (no big-O claims); `memory/<persona>/*/NOTEBOOK.md` (no big-O claims); `docs/papers/**` (directory does not exist yet).
 
 Methodology: ripgrep over `src/**/*.fs`, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`, `docs/research/**/*.md`, `openspec/specs/**/*.md`, `memory/**/*.md`, and root `README*` for `O\([A-Za-z0-9 ·²³√/|]+\)`. Each hit classified by hand as live claim vs evidence.
 
@@ -95,7 +95,7 @@ Three `[x] ✅` shipped-item entries mention historical `O(·)` values (line 265
 ### Zero-hit surfaces (verified empty)
 
 - root `README.md` and any other README.md under the repo — no big-O claims.
-- `memory/persona/*/NOTEBOOK.md` — no big-O claims (notebooks are observations, not asserted bounds).
+- `memory/<persona>/*/NOTEBOOK.md` — no big-O claims (notebooks are observations, not asserted bounds).
 - `docs/papers/**` — directory does not exist yet; when it does, future paper drafts route through the normal post-ADR Stage-1 flow and do not enter the grandfather set.
 
 ## Summary
@@ -129,7 +129,7 @@ If the inventory is not produced within round 41 (this doc being the production)
 - The claims cluster around **logarithmic promises** (13/35 = 37%) — mostly IVM / spine / residuated-lattice data-structure rows. These are also where Zeta's published research contributions concentrate; Stage-2 evidence on them directly supports paper-draft readiness.
 - **Two claim pairs are potentially synonymous** across surfaces: claim #7 (`Spine.fs:14` docstring) and claim #35 (`docs/research/openspec-coverage-audit` row). Same bound, different surface — when discharged, both rows update together.
 - **The three grey-zone code comments** (rows 30-32) are a candidate reclassification target for a future ranker pass — if Hiroshi + Daisy agree that non-`///` comments don't count as asserted bounds, those three drop and the inventory becomes 32 claims.
-- **Zero hits in `memory/persona/*/NOTEBOOK.md`** is a coherence check that the notebooks are observational (per Aarav's §What this skill does NOT do §BP-08 frontmatter-wins) rather than contract-carrying.
+- **Zero hits in `memory/<persona>/*/NOTEBOOK.md`** is a coherence check that the notebooks are observational (per Aarav's §What this skill does NOT do §BP-08 frontmatter-wins) rather than contract-carrying.
 
 ## Provenance
 

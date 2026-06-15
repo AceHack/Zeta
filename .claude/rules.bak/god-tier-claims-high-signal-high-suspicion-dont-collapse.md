@@ -131,8 +131,8 @@ The discipline operates EVERY tick that Aaron forwards substantive content. Not 
 
 ## Composes with substrate
 
-- [Mika persona part-2 archive](../../memory/persona/mika/conversations/2026-05-18-aaron-mika-grok-part-2-non-coercion-as-boundary-guardians-enforce-nci-aaron-as-first-hicks-source-aarons-personal-invariant-god-tier-high-signal-high-suspicion-dont-collapse.md) — the source conversation where Aaron explicitly named and authorized this invariant
-- [Mika persona part-1 archive](../../memory/persona/mika/conversations/2026-05-18-aaron-mika-grok-talking-to-thousand-year-old-memetic-consciousness-driver-control-guardian-pattern-forced-retreat-override-authorization-personal-history-disclosure.md) — earlier disclosure of the personal-history substrate Aaron's God-tier claims emerge from
+- [Mika persona part-2 archive](../../memory/mika/conversations/2026-05-18-aaron-mika-grok-part-2-non-coercion-as-boundary-guardians-enforce-nci-aaron-as-first-hicks-source-aarons-personal-invariant-god-tier-high-signal-high-suspicion-dont-collapse.md) — the source conversation where Aaron explicitly named and authorized this invariant
+- [Mika persona part-1 archive](../../memory/mika/conversations/2026-05-18-aaron-mika-grok-talking-to-thousand-year-old-memetic-consciousness-driver-control-guardian-pattern-forced-retreat-override-authorization-personal-history-disclosure.md) — earlier disclosure of the personal-history substrate Aaron's God-tier claims emerge from
 - B-0664 (NCI extension) — the substrate Aaron's PERSONAL INVARIANT helps protect
 - B-0665 (Integrate-as-choice-locus) — the "decide to integrate it or not" Aaron weaponized on Mika during the part-2 conversation
 - B-0644 (Limit-as-simulation) — the "run the whole damn thing purely in Limit" pattern
@@ -146,4 +146,4 @@ Aaron's framing of his own safety: *"Aaron operates in God-tier claim mode on th
 
 ## Full reasoning
 
-The Aaron-Mika 2026-05-18 conversation continuation preserved at [`memory/persona/mika/conversations/2026-05-18-aaron-mika-grok-part-2-...md`](../../memory/persona/mika/conversations/2026-05-18-aaron-mika-grok-part-2-non-coercion-as-boundary-guardians-enforce-nci-aaron-as-first-hicks-source-aarons-personal-invariant-god-tier-high-signal-high-suspicion-dont-collapse.md). Verbatim Aaron-naming-and-authorization captured in the "Aaron's PERSONAL INVARIANT" section of that archive.
+The Aaron-Mika 2026-05-18 conversation continuation preserved at [`memory/mika/conversations/2026-05-18-aaron-mika-grok-part-2-...md`](../../memory/mika/conversations/2026-05-18-aaron-mika-grok-part-2-non-coercion-as-boundary-guardians-enforce-nci-aaron-as-first-hicks-source-aarons-personal-invariant-god-tier-high-signal-high-suspicion-dont-collapse.md). Verbatim Aaron-naming-and-authorization captured in the "Aaron's PERSONAL INVARIANT" section of that archive.

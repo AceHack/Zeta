@@ -26,7 +26,7 @@ Extension of audit [#4031](https://github.com/Lucent-Financial-Group/Zeta/pull/4
 | `.claude/skills/` | 1 / 14 |
 | `docs/research/` | 8 / 186 |
 | `docs/backlog/` | 17 / 200 |
-| `memory/persona/` | 3 / 58 |
+| `memory/<persona>/` | 3 / 58 |
 | **TOTAL** | **29 dangling** |
 
 (The `.claude/rules/` original 5 are already addressed by #4031 + #4033 + #4038 chain.)

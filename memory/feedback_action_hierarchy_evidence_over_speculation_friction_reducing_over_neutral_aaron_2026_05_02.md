@@ -1,6 +1,6 @@
 ---
 name: Action hierarchy — operational form of Superfluid AI; evidence over speculation; speculative-action-for-evidence over inaction; friction-reducing action over friction-neutral
-description: Aaron 2026-05-02 sharpening — IS the operational projection of Superfluid AI (already in substrate via `memory/persona/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md` + `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`). The four-level hierarchy IS what "Superfluid AI = friction → substrate → less future friction" looks like when applied per-action-pick. Not a new rule — the action-pick form of an existing canonical principle.
+description: Aaron 2026-05-02 sharpening — IS the operational projection of Superfluid AI (already in substrate via `memory/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md` + `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`). The four-level hierarchy IS what "Superfluid AI = friction → substrate → less future friction" looks like when applied per-action-pick. Not a new rule — the action-pick form of an existing canonical principle.
 type: feedback
 ---
 
@@ -226,7 +226,7 @@ CLAUDE.md pointer is not learned by future-Otto.
 ## Lineage
 
 - **Superfluid AI rigorous mathematical formalization** (Amara
-  via Aaron 5th courier-ferry 2026-04-26) — `memory/persona/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`.
+  via Aaron 5th courier-ferry 2026-04-26) — `memory/amara/conversations/superfluid-ai-rigorous-mathematical-formalization-amara-fifth-courier-ferry-2026-04-26.md`.
   THE canonical lineage. Action hierarchy IS this principle
   applied per action-pick.
 - **factory-as-superfluid** — `memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`.

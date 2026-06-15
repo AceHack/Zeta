@@ -10,7 +10,7 @@ created: 2026-05-13
 **Why:** Aaron 2026-05-13 set up Otto on Claude Desktop alongside
 Otto-CLI for the first time. This was the operational test of the
 multi-foreground-surface architecture from
-`memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
+`memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
 (Part 11). What got discovered substrate-honestly:
 
 ## Discovery 1: Claude Desktop Routines are git-tracked
@@ -142,7 +142,7 @@ When Otto cold-boots on either surface:
 
 ## Composes with
 
-- `memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
+- `memory/otto/cli/claude/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md`
   (the architectural design this discovery confirms operational)
 - `docs/launch/2026-05-13-otto-claude-desktop-bootstream-tight.md`
   (the tight variant Otto-Desktop bootstrapped from)

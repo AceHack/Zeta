@@ -17,7 +17,7 @@ Composes with:
 | Lane | Path matchers | Storage cost | Future gate (Step 3) |
 |---|---|---|---|
 | `operational` | `src/`, `tools/installer/`, `tools/setup/`, `full-ai-cluster/` | Free | Full PR + CI + review |
-| `verbatim-preservation` | `memory/persona/<X>/conversations/` | Free | Fast-track PR + lint-only |
+| `verbatim-preservation` | `memory/<persona>/<X>/conversations/` | Free | Fast-track PR + lint-only |
 | `memory` | `memory/*.md` (non-persona) | Free | Fast-track PR + lint-only |
 | `heartbeat` | `docs/agent-heartbeats/` | Free | Direct-to-main append-only |
 | `backlog-row` | `docs/backlog/` | Free | Fast-track PR + lint-only |

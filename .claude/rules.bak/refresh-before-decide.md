@@ -94,4 +94,4 @@ searched `git fetch` + `FETCH_HEAD` + `local HEAD stale` + `ff-only` +
 `memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md`
 
 Verbatim packet:
-`memory/persona/riven/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`
+`memory/riven/ide/cursor/conversations/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`

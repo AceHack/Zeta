@@ -358,7 +358,7 @@ the human-readable surface.
 
 V5 lands as in-repo substrate per verbatim-preservation discipline.
 The persona-scope archive at
-`memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md`
+`memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md`
 carries the verbatim text in Ani's conversation archive.
 
 V5 is **the canonical Agora reference as of 2026-05-17** — all

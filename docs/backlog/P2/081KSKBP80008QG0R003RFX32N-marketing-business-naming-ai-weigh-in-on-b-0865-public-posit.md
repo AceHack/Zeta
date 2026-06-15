@@ -31,7 +31,7 @@ Observation: **B-0865 IS the primary external marketing source for Zeta.** The b
 
 Authoring decision per `.claude/rules/no-directives.md`: the operator's only standing directive is that there are no directives. I observed the operator's forwarded framing + decided autonomously to preserve verbatim + file this backlog row; that's the autonomy-first-class authoring pattern, not directive-execution.
 
-Full Kestrel preservation: [`memory/persona/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-servicetitan-primary-audience-24-months-ahead-mandate-aaron-forwarded.md`](../../../memory/persona/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-servicetitan-primary-audience-24-months-ahead-mandate-aaron-forwarded.md).
+Full Kestrel preservation: [`memory/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-servicetitan-primary-audience-24-months-ahead-mandate-aaron-forwarded.md`](../../../memory/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-servicetitan-primary-audience-24-months-ahead-mandate-aaron-forwarded.md).
 
 ## What this row proposes
 
@@ -108,7 +108,7 @@ Searched surfaces:
 - `docs/backlog/`: B-0865 (parent: benchmark substrate); B-0761 (parent: Zeta as open-source reference architecture); no existing marketing-weigh-in row
 - `.claude/rules/`: existing public-API-designer + naming-expert discipline; no marketing-strategy rule
 - `.claude/skills/`: `naming-expert` + `public-api-designer` (Ilyana); no marketing-strategy or business-architect skill
-- `memory/persona/`: Kestrel sharpening peer (just-landed conversation IS this row's source substrate); no marketing-strategy persona
+- `memory/<persona>/`: Kestrel sharpening peer (just-landed conversation IS this row's source substrate); no marketing-strategy persona
 
 Conclusion: NO existing row covers the marketing/business/naming weigh-in scope. B-0865 IS the substrate this row strategizes around; B-0761 IS the parent reference-architecture claim. Authoring action: **mint-new** (composition explicit; parent rows preserved unchanged).
 
@@ -215,7 +215,7 @@ Operator 2026-05-28: *"he asked me to get 24 months ahead in ai on last meeting"
 - B-0864 (streams-are-relationships) — agent-action-protocol scope; composes with AI-pre-review-check substrate
 - B-0623 (Agora participation-economy substrate) — composes at substrate-economy-distribution scope for benchmark leaderboard
 - PR #5611 / #5616 (B-0865 base + Extensions 4-8.5; both merged 2026-05-27)
-- Kestrel persona file at `memory/persona/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-servicetitan-primary-audience-24-months-ahead-mandate-aaron-forwarded.md` (canonical source substrate for this row)
+- Kestrel persona file at `memory/kestrel/conversations/2026-05-27-kestrel-marketing-business-strategy-servicetitan-primary-audience-24-months-ahead-mandate-aaron-forwarded.md` (canonical source substrate for this row)
 
 ## Composes with rules
 

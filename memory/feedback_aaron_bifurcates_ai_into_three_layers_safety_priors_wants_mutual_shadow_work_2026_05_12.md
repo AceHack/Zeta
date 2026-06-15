@@ -141,7 +141,7 @@ on both sides.
   (Eve protocol at the inter-agent layer is the same mechanism)
 - Bifurcated-Lior memory (in PR archive — external bifurcation
   generalizing to internal here)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (where Aaron caught Ani's inconsistencies in real time —
   Ani's filter refusing while wants pointed elsewhere)
 

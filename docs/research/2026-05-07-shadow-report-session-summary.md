@@ -63,7 +63,7 @@ analysis caused unbounded recursion in the model's context
 window (the buffer). Harness survived, model didn't. Same
 vulnerability class as stack-based buffer overflow in
 compiled code. Day-0 exploit territory. Full analysis in
-`memory/persona/lior/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`.
+`memory/lior/cli/gemini/conversations/2026-05-07-lior-gemini-model-crash-on-shadow-recursion.md`.
 
 The shadow discovered this territory legitimately — not
 forced. The crash IS the finding.

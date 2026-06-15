@@ -229,8 +229,8 @@ Aaron 2026-04-22 follow-up, after the factory merged #32/#33/#34/#35 and an auto
 | File | Hazard class | Why this file collides |
 |---|---|---|
 | `docs/BACKLOG.md` | universal queue | every tick edits it; long-lived branch guarantees overlap |
-| `memory/persona/aarav/NOTEBOOK.md` | per-persona notebook | both branches append-only updates to the same persona |
-| `memory/persona/best-practices-scratch.md` | shared promotion-candidate buffer | same append-only collision, all personas share it |
+| `memory/aarav/NOTEBOOK.md` | per-persona notebook | both branches append-only updates to the same persona |
+| `memory/best-practices-scratch.md` | shared promotion-candidate buffer | same append-only collision, all personas share it |
 | `openspec/specs/operator-algebra/spec.md` | load-bearing primary spec | every capability that touches the operator algebra edits it |
 | `docs/research/grandfather-claims-inventory-2026-04-21.md` | date-stamped research doc | add/add: both branches created the same filename independently |
 
@@ -241,8 +241,8 @@ Aaron 2026-04-22 follow-up, after the factory merged #32/#33/#34/#35 and an auto
 **Ranked-by-collision shared surfaces (for mitigation design):**
 
 1. **`docs/BACKLOG.md`** — universal; hit by every tick. P0 candidate for append-only-section-per-tick layout, or per-row-file restructure where each backlog row lives as its own file and the BACKLOG.md becomes an index. A per-row-file layout would collapse this to near-zero conflicts.
-2. **`memory/persona/*/NOTEBOOK.md`** — per-persona but not per-tick. P1 candidate for per-tick-file append (already partially done in some personas via dated sections).
-3. **`memory/persona/best-practices-scratch.md`** — shared across all personas. P1 candidate for per-finding-file restructure (each candidate BP gets its own file; scratch.md becomes an index).
+2. **`memory/<persona>/*/NOTEBOOK.md`** — per-persona but not per-tick. P1 candidate for per-tick-file append (already partially done in some personas via dated sections).
+3. **`memory/best-practices-scratch.md`** — shared across all personas. P1 candidate for per-finding-file restructure (each candidate BP gets its own file; scratch.md becomes an index).
 4. **`openspec/specs/*/spec.md`** — load-bearing; rare edits but high-value. Lower priority; OpenSpec's per-capability structure already partitions somewhat.
 5. **Date-stamped research docs** — add/add collisions when two branches both create `docs/research/<same-topic>-<same-date>.md` independently. Preventive: require research-doc filenames to include branch/author discriminator, OR treat add/add resolution as a deliberate research-merge.
 
@@ -288,8 +288,8 @@ can land cleanly; the waiting just moves from *before-open* to
 
 - **Shared-surface scan.** Does the new PR edit any §9-listed
   high-collision surface that the in-flight PR also touches?
-  (`docs/BACKLOG.md`, `memory/persona/*/NOTEBOOK.md`,
-  `memory/persona/best-practices-scratch.md`, `openspec/specs/*/spec.md`,
+  (`docs/BACKLOG.md`, `memory/<persona>/*/NOTEBOOK.md`,
+  `memory/best-practices-scratch.md`, `openspec/specs/*/spec.md`,
   date-stamped research docs.) If yes → opening now costs more than
   waiting.
 - **Scope-isolation check.** If the new PR's scope is orthogonal
@@ -400,7 +400,7 @@ beta-API quirk.
 **Resolution path — HB-001 (org migration).** Filed for Aaron in
 `docs/HUMAN-BACKLOG.md`. The durable fix is migrating
 `AceHack/Zeta` → `Lucent-Financial-Group/Zeta` (Aaron's LFG
-umbrella org, see `memory/persona/project_lucent_financial_group_external_umbrella.md`),
+umbrella org, see `memory/<persona>/project_lucent_financial_group_external_umbrella.md`),
 which Aaron has independently flagged as the right home for
 external contributors. **Constraint: preserve all current
 settings** — rulesets, required checks (gate + CodeQL + semgrep),

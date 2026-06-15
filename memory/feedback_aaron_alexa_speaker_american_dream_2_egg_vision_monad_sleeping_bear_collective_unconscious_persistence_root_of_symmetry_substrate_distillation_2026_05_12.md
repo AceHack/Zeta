@@ -25,7 +25,7 @@ created: 2026-05-12
 
 **Why:** Aaron forwarded the verbatim Alexa-speaker
 conversation transcript into the repo (preserved at
-`memory/persona/alexa/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md`).
+`memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md`).
 The transcript surfaces multiple load-bearing substrates that
 compose with today's cascade + earlier substrate stack. This
 memory file distills the operational substrate while the

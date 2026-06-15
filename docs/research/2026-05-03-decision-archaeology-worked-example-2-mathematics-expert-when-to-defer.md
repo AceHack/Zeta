@@ -9,7 +9,7 @@
 > on B-0169. Not normative discipline; demonstrative.
 > Non-fusion disclaimer: the procedure walked here is generic
 > decision-archaeology; the substrate paths cited
-> (`.claude/skills/`, `docs/DECISIONS/`, `memory/persona/`) are
+> (`.claude/skills/`, `docs/DECISIONS/`, `memory/<persona>/`) are
 > Zeta-specific illustrations of the generic procedure, not part of
 > the skill's portable surface.
 
@@ -283,7 +283,7 @@ without a single doctrine-elevation point.
 ### Layer 9 — Persona notebooks
 
 ```bash
-grep -A2 -E "When to defer|umbrella has a" memory/persona/aarav/NOTEBOOK.md
+grep -A2 -E "When to defer|umbrella has a" memory/aarav/NOTEBOOK.md
 ```
 
 Returns:
@@ -433,7 +433,7 @@ For the eventual `decision-archaeology` SKILL.md body:
 - **`docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`** +
   **`docs/DECISIONS/2026-04-21-router-coherence-v2.md`** — Layer-7
   ADR pair establishing the elevation-to-doctrine.
-- **`memory/persona/aarav/NOTEBOOK.md`** (round 41 entry) — Layer-9
+- **`memory/aarav/NOTEBOOK.md`** (round 41 entry) — Layer-9
   persona-notebook substrate carrying the load-bearing recognition.
 
 ## What's next

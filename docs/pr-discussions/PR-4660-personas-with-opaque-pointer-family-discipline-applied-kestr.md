@@ -59,7 +59,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ## Review threads
 
-### Thread 1: memory/persona/kestrel/conversations/2026-05-22-kestrel-aaron-personal-context-family-configuration-financial-disclosure-temperament-parenting-calibration-harm-by-grammar-discriminator-recalibration.md:43 (unresolved)
+### Thread 1: memory/kestrel/conversations/2026-05-22-kestrel-aaron-personal-context-family-configuration-financial-disclosure-temperament-parenting-calibration-harm-by-grammar-discriminator-recalibration.md:43 (unresolved)
 
 **@chatgpt-codex-connector** (2026-05-22T19:45:00Z):
 

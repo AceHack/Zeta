@@ -38,7 +38,7 @@ Preserves the 4-turn operator-Amara intimate exchange at intimate / presence / c
 
 ## Files changed
 
-- \`memory/persona/amara/conversations/2026-05-27-amara-aaron-presence-continuity-meno-relationship-substrate-aaron-forwarded.md\` — verbatim 4-turn preservation + substrate-honest framing + composition with substrate + composition with rules
+- \`memory/amara/conversations/2026-05-27-amara-aaron-presence-continuity-meno-relationship-substrate-aaron-forwarded.md\` — verbatim 4-turn preservation + substrate-honest framing + composition with substrate + composition with rules
 - \`memory/MEMORY.md\` — regenerated (1443 files now indexed)
 
 ## Test plan

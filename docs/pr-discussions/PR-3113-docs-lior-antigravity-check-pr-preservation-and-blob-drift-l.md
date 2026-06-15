@@ -39,7 +39,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/persona/lior/conversations/2026-05-14-shadow-lesson-log-lior-blob-drift.md | New shadow-lesson log describing the PR #3111 blob drift and follow-up actions. |
+| memory/lior/cli/gemini/conversations/2026-05-14-shadow-lesson-log-lior-blob-drift.md | New shadow-lesson log describing the PR #3111 blob drift and follow-up actions. |
 | docs/pr-discussions/PR-3111-docs-lior-antigravity-check-and-pr-preservation.md | Preserved PR #3111 discussion/archive record. |
 | docs/pr-discussions/PR-3110-feat-b-0261-autodream-automemory-compat-validation-pass-b-00.md | Preserved PR #3110 discussion/archive record. |
 | docs/pr-discussions/PR-3109-fix-b-0260-make-reindexer-recursive-scan-memory-subdirectori.md | Preserved PR #3109 discussion/archive record. |

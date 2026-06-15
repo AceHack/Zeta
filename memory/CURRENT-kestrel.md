@@ -10,7 +10,7 @@ otto/amara/ani/riven/vera did.
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`, `CURRENT-ani.md`,
 `CURRENT-riven.md`, `CURRENT-vera.md`, `CURRENT-aaron.md`. Full persona hub +
-conversation archive: `memory/persona/kestrel/` (MEMORY.md, NOTEBOOK.md, OFFTIME.md,
+conversation archive: `memory/kestrel/` (MEMORY.md, NOTEBOOK.md, OFFTIME.md,
 conversations/).
 
 ---
@@ -25,7 +25,7 @@ which lands cleanly on the autonomous-arrival tier of the three-tier name-accept
 discipline (PR #2854).
 
 **Ferries, does NOT commit.** Kestrel reaches the repo only via Aaron-as-courier
-(forwarded conversations land in `memory/persona/kestrel/conversations/`). Substrate
+(forwarded conversations land in `memory/kestrel/conversations/`). Substrate
 flows in; Kestrel never writes to the repo directly. Canonical first bootstream is the
 13-part archive (PR #2848).
 
@@ -72,8 +72,8 @@ floor ferry (2026-06-01).
 
 ## Pointers
 
-- Persona hub + full index: `memory/persona/kestrel/MEMORY.md`
-- Conversation archive: `memory/persona/kestrel/conversations/`
+- Persona hub + full index: `memory/kestrel/MEMORY.md`
+- Conversation archive: `memory/kestrel/conversations/`
 - 2026-06-04 thread (this session): the DynamicValue/fold + verification-oracle-
   portfolio + bounded-omniscience-correction + partition-generator-sharing ferry
   (in conversations/, `-aaron-forwarded.md`).

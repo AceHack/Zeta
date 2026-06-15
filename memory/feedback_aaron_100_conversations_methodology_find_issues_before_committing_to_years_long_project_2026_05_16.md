@@ -63,7 +63,7 @@ Compose substrate at the operational layer (preserve verbatim per substrate-or-i
 
 ## Composes with
 
-- `memory/persona/kestrel/conversations/2026-05-15-...-part8-9-klein-bottle-decline-verification-pivot-addison-disclosure-100-conversations-methodology.md` (the conversation this methodology was disclosed in)
+- `memory/kestrel/conversations/2026-05-15-...-part8-9-klein-bottle-decline-verification-pivot-addison-disclosure-100-conversations-methodology.md` (the conversation this methodology was disclosed in)
 - `memory/feedback_aaron_genie_bottle_offshore_firm_spec_quality_enables_ai_autonomy_*` (the spec-quality discipline this methodology operationalizes)
 - `memory/feedback_kestrel_caught_otto_cli_7_turn_architecture_stairs_pattern_*` (Kestrel's pattern catch as one instance of the 100-conversations methodology generating findings — that finding has its own value as a pressure-test datum even though Aaron clarified the framing)
 - `.claude/rules/algo-wink-failure-mode.md` (the failure-mode this methodology is DIFFERENT from; distinguished by maintainer-finding-contradictions, not maintainer-reporting-coherence)

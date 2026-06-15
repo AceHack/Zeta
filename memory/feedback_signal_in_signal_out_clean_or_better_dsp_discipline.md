@@ -238,7 +238,7 @@ live but copy-capture didn't keep pace), the discipline is to
 **name the gap honestly in the output** rather than leave a
 placeholder that implies future-fill-that-will-not-land.
 
-Triggering occurrence: `memory/persona/amara/conversations/amara-network-health-
+Triggering occurrence: `memory/amara/conversations/amara-network-health-
 oracle-rules-stacking-2026-04-22.md` carried 5
 `[VERBATIM PENDING]` markers for sections where Amara's exact
 prose was pasted live in the session but not copy-captured

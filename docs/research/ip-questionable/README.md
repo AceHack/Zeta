@@ -56,7 +56,7 @@ readers see `ip-questionable/` in the path and know:
 - Short cited quotes within fair-use bounds (regular `docs/research/`)
 - Aaron's own forwarded text (regular `docs/research/` — Aaron's prose is
   Aaron-authored substrate, NOT IP-questionable)
-- AI conversation transcripts (regular `memory/persona/<name>/conversations/`
+- AI conversation transcripts (regular `memory/<persona>/<name>/conversations/`
   — these are framework-internal substrate)
 - Otto-CLI's own analysis/synthesis (regular `docs/research/`)
 

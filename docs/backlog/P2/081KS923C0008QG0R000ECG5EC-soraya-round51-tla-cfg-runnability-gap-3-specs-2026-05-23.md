@@ -81,7 +81,7 @@ S each, total ≈ M (one evening). Assignee: kenji.
 - [`tools/tla/specs/DictionaryStripedCAS.tla`](../../../tools/tla/specs/DictionaryStripedCAS.tla) — target needing `.cfg` (59 LOC)
 - [`tools/tla/specs/OperatorLifecycleRace.cfg`](../../../tools/tla/specs/OperatorLifecycleRace.cfg) — existing peer `.cfg` for shape reference
 - [`docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md`](B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md) — composes-with: registry rows must also land; B-0709 + B-0714 together close both axes (registry + runnability) for these specs
-- `memory/persona/soraya/NOTEBOOK.md` round-51 entry (pending append)
+- `memory/soraya/NOTEBOOK.md` round-51 entry (pending append)
 
 ## Substrate-honest framing
 

@@ -34,7 +34,7 @@ unit of maintainer effort.
 |---|---|---|
 | **Publication velocity** | Papers drafted + ADRs landed per round | `docs/ROUND-HISTORY.md` |
 | **P0 burndown** | P0 items closed per round | `docs/BACKLOG.md` |
-| **Reviewer-latency reduction** | Rounds between spec-zealot finding and close | `memory/persona/viktor/NOTEBOOK.md` |
+| **Reviewer-latency reduction** | Rounds between spec-zealot finding and close | `memory/viktor/NOTEBOOK.md` |
 | **Skill-coverage** | Number of factory-expert hats covering novel frontiers | `skill-gap-finder` output |
 | **Tech-radar graduation rate** | Items moving Hold→Trial→Adopt per quarter | `docs/TECH-RADAR.md` |
 | **Formal-coverage** | Invariants covered by Lean / TLA+ / Z3 / FsCheck | `docs/research/proof-tool-coverage.md` |

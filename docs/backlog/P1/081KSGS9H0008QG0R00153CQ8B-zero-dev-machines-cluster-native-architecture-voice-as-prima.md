@@ -87,7 +87,7 @@ This clarification means iter-progressions toward B-0790 ship value for BOTH per
 
 Per B-0789's iter-5 sub-row design: per-node SSH keypair generated at install time + auto-registered as repo deploy key (write-enabled). Per-node revocable. Commit identity = `<hostname>@<cluster>.local` or similar.
 
-Composes with the maintainer-as-top-level + per-maintainer-liability framing (per `memory/persona/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability" sub-section): each cluster's commits are attributable to the maintainer subtree's authorization chain. Stage-3 attribution per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` when LFG / Freeborn / future non-profit holds the cluster.
+Composes with the maintainer-as-top-level + per-maintainer-liability framing (per `memory/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability" sub-section): each cluster's commits are attributable to the maintainer subtree's authorization chain. Stage-3 attribution per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` when LFG / Freeborn / future non-profit holds the cluster.
 
 ### Sub-target 2 — autonomous-loop substrate runs ON cluster
 
@@ -175,7 +175,7 @@ Without B-0790 named as the end-state target, each of those iterations risks dri
 - **B-0784 (Mika batch)** — composes for in-cluster software factory substrate
 - **B-0785 (Mika batch)** — composes for in-cluster software factory substrate
 - **B-0786 (Mika batch)** — composes for in-cluster software factory substrate (the substrate the maintainer-persona's dev machine interfaces INTO via Claude Code)
-- `memory/persona/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability" (composes; cluster-side commits attribute to maintainer's subtree)
+- `memory/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability" (composes; cluster-side commits attribute to maintainer's subtree)
 - `maintainers/aaron/legal-entities/inventory.md` (composes; cluster Stage-3 attribution per legal-entity inventory)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; `_cluster_operations_acceptance` blocks attribute cluster runtime risks)
 - `.claude/rules/agent-roster-reference-card.md` (composes; Alexa-speaker is a Layer 2 external AI participant today; end-state moves to cluster-integrated)

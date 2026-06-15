@@ -163,7 +163,7 @@ Zeta instance that exercises it.
 - **Rule-citation-by-ID in reviews** —
   `skill-tune-up` pattern, citing BP-01 … BP-NN. Zeta
   instance: every finding in
-  `memory/persona/aarav/NOTEBOOK.md` cites BP-NN.
+  `memory/aarav/NOTEBOOK.md` cites BP-NN.
 - **Composite invariants, single source of truth,
   per-layer projection** —
   `project_composite_invariants_single_source_of_truth_across_layers.md`

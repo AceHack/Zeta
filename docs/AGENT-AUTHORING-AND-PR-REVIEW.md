@@ -144,8 +144,8 @@ This doc serves both humans (co-owners + future contributors) AND agents (Otto, 
 - [`GOVERNANCE.md`](../GOVERNANCE.md) — process
 - [`.claude/rules/`](../.claude/rules/) — the auto-loaded discipline library
 - [`.claude/agents/`](../.claude/agents/) — persona reviewer definitions
-- [`memory/persona/max/`](../memory/persona/max/) — Max's persona; this doc is one of his entry points
-- [`memory/persona/addison/`](../memory/persona/addison/) — Addison's persona; same
+- [`memory/max/`](../memory/max/) — Max's persona; this doc is one of his entry points
+- [`memory/addison/`](../memory/addison/) — Addison's persona; same
 - B-0546 — manifesto → building-codes recast (addresses the manifesto-vs-operational-spec misread that motivated this doc)
 - B-0724 — TS hat-system operator (Max's primary substrate-engineering target; learning path included)
 - B-0728 — destructive-tool authoring contract (pattern for tools that destroy things)

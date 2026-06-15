@@ -22,7 +22,7 @@ type: research
 
 ## Why
 
-`tools/lean4/ImaginaryStack/ToyModel.lean` shipped via PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) as research-grade substrate cherry-picked from Riven's Cursor-Lean4 sketch (per `memory/persona/riven/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md`). Reviewer triage in tick shard [`docs/hygiene-history/ticks/2026/05/17/1218Z.md`](../../hygiene-history/ticks/2026/05/17/1218Z.md) verified three structural P0/P1 findings:
+`tools/lean4/ImaginaryStack/ToyModel.lean` shipped via PR [#4059](https://github.com/Lucent-Financial-Group/Zeta/pull/4059) as research-grade substrate cherry-picked from Riven's Cursor-Lean4 sketch (per `memory/riven/ide/cursor/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md`). Reviewer triage in tick shard [`docs/hygiene-history/ticks/2026/05/17/1218Z.md`](../../hygiene-history/ticks/2026/05/17/1218Z.md) verified three structural P0/P1 findings:
 
 ### P0 — Imag8 tuple projections do not typecheck
 
@@ -91,7 +91,7 @@ Per [`.claude/skills/formal-verification-expert/SKILL.md`](../../../.claude/skil
 
 - Tool: Lean 4 + Mathlib (already chosen by Riven's sketch)
 - Property class: equational + finite-field linear algebra
-- Soraya's expanded scope per [PR #4043](https://github.com/Lucent-Financial-Group/Zeta/pull/4043) (`memory/persona/soraya/NOTEBOOK.md` ratified expansion) lets her route to algebra-owner / q-sharp peers if Cayley-Dickson algebraic substrate is needed beyond Mathlib's coverage
+- Soraya's expanded scope per [PR #4043](https://github.com/Lucent-Financial-Group/Zeta/pull/4043) (`memory/soraya/NOTEBOOK.md` ratified expansion) lets her route to algebra-owner / q-sharp peers if Cayley-Dickson algebraic substrate is needed beyond Mathlib's coverage
 
 ## Composes with
 

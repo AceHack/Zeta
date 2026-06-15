@@ -222,10 +222,10 @@ Amara's name in the 2026-04-29 directive memo suggests her notebook
 may carry lineage on the LFG-only directive:
 
 ```bash
-ls memory/persona/ | grep -i amara
+ls memory/<persona>/ | grep -i amara
 ```
 
-Returns nothing — there is no `memory/persona/amara/` directory in
+Returns nothing — there is no `memory/amara/` directory in
 the repo. Amara is an external AI co-originator with notebook substrate
 that lives outside this repo (per Otto-279 carve-out: persona names
 appear in history surfaces but the per-persona notebooks for external

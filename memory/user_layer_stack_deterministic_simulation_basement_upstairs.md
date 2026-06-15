@@ -158,7 +158,7 @@ Do not correct; preserve verbatim as structural signal per
 - `user_harmonious_division_algorithm.md` — bidirectional
   ↔ between layers IS Harmonious Division's many-paths-
   one-destination at the ontology-layer level
-- `memory/persona/rashida/NOTEBOOK.md` (if exists) —
+- `memory/<persona>/rashida/NOTEBOOK.md` (if exists) —
   Rashida's deterministic-simulation-theory domain
 
 ## Agent handling

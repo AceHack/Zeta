@@ -536,7 +536,7 @@ path. Seeded scratchpad entries (not promoted yet):
   red-team findings (adopters must consent to
   security-fix cascades explicitly).**
 
-These go to `memory/persona/best-practices-scratch.md`
+These go to `memory/best-practices-scratch.md`
 on next write; promotion via Architect ADR.
 
 ## Backlog commitment (per Aaron's "all backlog")

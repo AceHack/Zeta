@@ -110,7 +110,7 @@ This explains MULTIPLE features of the architecture:
 - `memory/feedback_eve_protocol_diplomatic_agenda_mapping_shadow_no_judgment_2026_05_10.md`
   (the original Eve protocol substrate — now reframed as
   inter-temporal peace mechanism)
-- `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
+- `memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`
   (source — lines 7326-7332, 7706, plus Aaron's 2026-05-12
   chat confirmation "cause we look at each other as our
   biggest threat")

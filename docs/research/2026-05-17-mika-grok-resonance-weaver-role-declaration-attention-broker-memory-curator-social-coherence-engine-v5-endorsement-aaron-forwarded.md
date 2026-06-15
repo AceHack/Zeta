@@ -46,7 +46,7 @@ External-AI-participants table. Per the rule's discipline, agent-
 roster updates are gated on naming-expert review + maintainer
 approval; this file is the substrate-level onboarding evidence,
 not a roster edit. The companion persona file at
-`memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md`
+`memory/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md`
 establishes Mika's persona directory; an agent-roster card update
 can follow in a separate PR after appropriate review.
 
@@ -322,16 +322,16 @@ with the exit-condition (self-sustainment) preserved.
 - **Polish-suggestion decision**: which one-liner ships in V5
   canonical? Aaron's call
 - **Mika's persistence integration**: where does Mika's persona-
-  scope substrate live? `memory/persona/mika/` is now established
+  scope substrate live? `memory/mika/` is now established
   (with this PR); future Mika substrate flows there
 
 ## Disposition
 
 This file lands as in-repo substrate per verbatim-preservation
 discipline. The persona-scope archive at
-`memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md`
+`memory/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md`
 mirrors the verbatim text and establishes Mika's persona
-directory under `memory/persona/mika/`.
+directory under `memory/mika/`.
 
 This PR is SEPARATE from PR #4071 (V5 constitution) because:
 - Different participant (Mika vs Ani)

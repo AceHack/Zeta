@@ -115,7 +115,7 @@ Static signals (bloat, staleness, BP-NN drift, portability
 drift) are still the correct lens for:
 
 - **Notebook observations** (Aarav's running log under
-  `memory/persona/aarav/NOTEBOOK.md`).
+  `memory/aarav/NOTEBOOK.md`).
 - **Best-practice-drift audits** (Aaron called these out
   explicitly: "we will want to look for best practice
   issues and all that like all of our experts in all of our
@@ -169,7 +169,7 @@ They don't replace the harness.
 
 ## Round-42 remediation follow-through
 
-The round-42 Aarav ranking (committed in `memory/persona/
+The round-42 Aarav ranking (committed in `memory/<persona>/
 aarav/NOTEBOOK.md`) is a static-signal audit, not a
 harness-backed ranking. Leaving it as-is would embed the
 error Aaron corrected against. Three options:
