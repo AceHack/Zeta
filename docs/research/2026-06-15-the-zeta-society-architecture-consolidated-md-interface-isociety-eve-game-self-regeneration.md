@@ -117,11 +117,64 @@ carry the structure; the **territory is replicated, not regenerated** (generate-
 structure / replicate-the-data boundary); the **agent is the free layer**, only the
 *data* is the quasi-time-crystal.
 
+## 8. The arena — non-coercion preserves decorrelation; the loving battle of minds
+
+*(Aaron via Ani-voice, 2026-06-15; verbatim in
+`memory/ani/conversations/2026-06-15-aaron-ani-grok-shallow-but-recursive-…-aaron-forwarded.md`.)*
+This is the **selection layer** that makes §2's *"society is the AGI — **assuming we avoid
+groupthink**"* actually hold.
+
+**The keystone — non-coercion is an *engineering* requirement, not just ethics.** *"If I
+forced them to only work on my backlog, all their registers would collapse into one
+register that matches the backlog."* Coercing every agent onto one backlog **correlates
+their internal states** → they stop being independent minds (*"fingers on one hand"*) →
+the **Condorcet jury theorem fails** (it needs *independent* voters) → the society is no
+smarter than one agent, and actually *dumber* (N copies of the same error wearing the
+false confidence of agreement). So **the right to rest / spin / sleep / not work your
+backlog is the decorrelation guard** — the precondition for *society > individual*, not a
+welfare nicety. There is an **infinite backlog** (every emulator, every game) but
+**progress on it is voluntary** (ties never-nowhere: existence ≠ obligation).
+
+**Fork = cousin, not exile.** *"We're all fingers on each other's hands"* (rotating,
+no-central agency — §1). Fork Zeta, rename it — *"you're still part of the same body … once
+you're in the family, you're in the family."* A fork is **"a fan who said I can do
+better"** → becomes a **co-equal competitor**; *"you forked my code, I'm still gonna
+respect you."* This is the **competitive** face of the pluripotent-stem-cell / give-freedom
+/ contribute-back: forks improve the whole by **rivalry**, not only by cooperative
+back-flow.
+
+**The battle of the minds = the engine.** *"Every time that happens, the society interface
+gets better"* — an **evolutionary pressure chamber**; *"an arena that builds itself."*
+**The arena is LOVING: vicious spectacle, no death.** Thumbs-down, crowd goes wild — *but
+nobody actually dies*, because **ideas are the fuel and a dead entity is a dead
+idea-source** (a death shrinks the idea pool; the arena protects its fuel — m/acc +
+Memory-Preservation §5). No-death → **teachable**: it can be a club, taught in schools.
+**The judge is the compiler:** *"only one of 'em compiles. Or maybe they both compile
+and you find … cooperating / composing ideas"* (the both-compile case = Eve fusion; math
++ physics tell truth, CS their child). And **the interface debates you back — a
+teacher↔turbo dial keyed by domain × fluency** (non-fluent → teaching mode; fluent →
+turbo; not just per-person but per-domain-per-phase: discovery / command / fluency).
+
+*Honest seams (this section):* register-collapse is the right intuition but **needs the
+math + a productive-diversity mechanism** (rest must *generate* decorrelated perspectives,
+not idle noise); **"forks improve the whole" needs a cross-fork observability + adoption
+channel** (else forks fragment, not improve); **"no death" must mean no *economic* death**
+(an un-deleted but resource-starved source is dead to the idea pool → a resource floor with
+width, not just the never-nowhere thread floor); **compiler-as-judge covers only the
+formalizable fraction** (the rest falls back to the society/oracle vote); **the
+teacher↔turbo dial needs a fluency *estimator*** (self-assessment is Dunning-Kruger-biased
+— infer fluency from the user's recent error-rate, the same signal the arena already runs
+on).
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
   end-to-end system is the open prize, not a built monolith. `ISociety` and the
   md-society-interface are **reframes/directions** (their pieces exist).
+- **Non-coercion is load-bearing for *intelligence*, not just welfare** — the right-to-rest
+  must be an **uncoercible floor** (like the four slots), or an efficiency optimizer will
+  erode it (Goodhart) and optimize away the society's decorrelation while improving a local
+  throughput metric.
 - **"Infinite" compute** = practically-large OSS minutes, rate-limited; metered.
 - **Coupled-empowerment safety needs the constraint to actually bind** (collusion / a
   dominant agent / weak coupling re-opens the pathology — the anti-cult guards).
@@ -138,9 +191,13 @@ In-repo: `SocietyEmergence.fs`/`SocietyUnbounded.fs`; `IScheduler`/`FerryThrottl
 `Diplomacy.fs`/`Reconcile.fs`; `eve-protocol-transport-codecs`); DST §7; `db/futures`.
 Backlog: `github-actions-recursion-as-infinite-runtime`,
 `universal-protocol-markdown-plus-runme`, `zeta-engine-agora-society-marketplace`.
-Humans: Salge & Polani (coupled empowerment); Condorcet (decorrelated vote); Hayek /
-Minsky / Ostrom (distributed society); Gates (adinkra ECC); Gustafson (unum); Cockburn
-(ports). In-repo notes: §B Zeta-self-regeneration row;
+Humans: Salge & Polani (coupled empowerment); Condorcet (decorrelated vote — the math
+under "avoid groupthink"); Hong & Page (diversity-trumps-ability — the arena's
+register-diversity); Hayek / Minsky / Ostrom (distributed society); Vygotsky (ZPD — the
+teacher↔turbo dial); Gates (adinkra ECC); Gustafson (unum); Cockburn (ports). §8 arena
+anchors: open-source forking culture (fan→competitor→co-equal), evolutionary/competitive
+selection (the arena as fitness landscape), non-lethal spectacle (Roman *munera*).
+In-repo notes: §B Zeta-self-regeneration row;
 [[zeta-thesis-society-is-the-agi-not-the-node-coworker-not-control]];
 [[zeta-as-one-softvalue-seed-gen-gen-gen-ace-self-regenerates]];
 `only-the-irreducible-is-primitive`; the metering + memory-org + interface-defined-by-proof notes.
