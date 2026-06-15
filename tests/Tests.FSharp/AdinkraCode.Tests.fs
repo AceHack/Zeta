@@ -52,3 +52,21 @@ let ``xor of two codewords stays doubly-even`` (i: int) (j: int) =
     let a = AK.allCodewords.[((i % n) + n) % n]
     let b = AK.allCodewords.[((j % n) + n) % n]
     AK.weight (AK.xor a b) % 4 = 0
+
+// ── Self-duality: the gen(gen)===gen fixed point at the code level (Face 1) ──
+// The dual map C ↦ C⊥ is an involution; a self-dual code is its fixed point (dual C = C). Proven via
+// the standard criterion: self-orthogonal (C ⊆ C⊥) AND dim C = n/2 ⇒ C = C⊥.
+
+[<Fact>]
+let ``code is self-orthogonal — every pair of codewords is GF(2)-orthogonal (C subset of C-perp)`` () =
+    for a in AK.allCodewords do
+        for b in AK.allCodewords do
+            Assert.Equal(0, AK.dot a b)
+
+[<Fact>]
+let ``dimension is half the length — dim C = n/2 (forces C-perp subset of C)`` () =
+    Assert.Equal(AK.length, 2 * AK.dimension)
+
+[<Fact>]
+let ``the code is self-dual — the gen(gen)=gen duality fixed point (C = C-perp)`` () =
+    Assert.True(AK.isSelfDual)

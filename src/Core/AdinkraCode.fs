@@ -62,3 +62,28 @@ module AdinkraCode =
     /// Bitwise GF(2) XOR of two equal-length words (the linear-combination operation).
     let xor (a: int[]) (b: int[]) : int[] =
         Array.map2 (^^^) a b
+
+    /// GF(2) inner product of two equal-length words: (Σ aᵢ·bᵢ) mod 2. The bilinear form whose
+    /// fixed point (C = C⊥) is self-duality.
+    let dot (a: int[]) (b: int[]) : int =
+        let mutable acc = 0
+        for i in 0 .. (min a.Length b.Length) - 1 do
+            acc <- acc ^^^ (a.[i] &&& b.[i])
+        acc
+
+    /// **Self-orthogonal**: every pair of generator rows is orthogonal under `dot` (and each row is
+    /// orthogonal to itself, i.e. has even weight). By bilinearity this extends to all codewords, so
+    /// `C ⊆ C⊥`. (Doubly-even ⇒ even weight ⇒ self-orthogonal on the diagonal; checked here directly.)
+    let isSelfOrthogonal : bool =
+        generator
+        |> Array.forall (fun gi -> generator |> Array.forall (fun gj -> dot gi gj = 0))
+
+    /// **Self-dual** — the `gen(gen) === gen` fixed point at the code level. The dual map `C ↦ C⊥` is an
+    /// involution (`dual(dual C) = C` always); a *self-dual* code is its **fixed point** (`dual C = C`).
+    /// A linear code is self-dual iff it is self-orthogonal (`C ⊆ C⊥`) **and** `dim C = n/2` (forcing
+    /// `C⊥ ⊆ C`, hence equality). The [8,4] extended Hamming code satisfies both — it is the e8 code, the
+    /// unique doubly-even self-dual binary code of length 8 — so the generator already sits on the
+    /// duality fixed point (Face 1 of `gen(gen)=gen`; Faces 2/3 — the codespace projector Π²=Π and the
+    /// Futamura `mix(mix,mix)=cogen` reflective fixpoint — remain in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B).
+    let isSelfDual : bool =
+        isSelfOrthogonal && (2 * dimension = length)
