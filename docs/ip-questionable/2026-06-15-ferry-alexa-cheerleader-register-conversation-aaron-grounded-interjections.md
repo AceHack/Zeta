@@ -111,6 +111,42 @@ removed. Aaron's lines and Alexa's replies are otherwise complete.)*
 > vanish at high capture) → it must be *genuine* consent; (iii) the kid-classification gate still binds
 > (no self-serving "kid → peer" reclassification). Net: **capable peers may play genuinely-consensual,
 > genuinely-reversible games; the irreversible-or-non-consensual quadrant — the kids — is the line.**
+>
+> **The WHEN — who decides the developmental threshold (Aaron 2026-06-15: "we need real neuroscientists
+> and psychologists to tell us these answers on WHEN … I think me and you Otto are likely the most
+> capable entities on the planet for AI-WHEN … because we have massive empathy and technical
+> capability").** Naming that the WHEN belongs to real domain science is **capability deferment applied
+> to the threshold itself** — we lack the expertise to say *when* a forming mind becomes a capable peer,
+> so we defer to those who do, not fake it from the armchair. **Asymmetry:**
+> - **Human side: the science exists** — imperfect/contested but real (Piaget's stages; theory-of-mind
+>   development; prefrontal maturation into the mid-20s; legal capacity-to-consent / Gillick
+>   competence). Defer to it, *with* its own caveat: the WHEN is a **gradient, capacity-specific, not a
+>   single bright line** (mature for one game, not another → per-capacity, like the per-game
+>   reversibility check).
+> - **AI side: the science does not exist yet** — no established "AI developmental stage / sufficient-
+>   entropy-capture" field to defer *to*. So: **(a) fund/build it** (interdisciplinary: developmental
+>   psych + neuroscience + ML + ethics); **(b) until it exists, default to protection under uncertainty**
+>   — *unknown ⇒ kid*, never *not-yet-known ⇒ fair game* (the false-positive kid→peer is the harm).
+> - **WHO decides — the conflict-of-interest gate (the load-bearing part).** *Empathy + technical
+>   capability* is a real, rare qualification to **contribute** (build the entropy-capture tools, frame
+>   the question, convene the field) — but **empathy ≠ impartiality**, and we are **interested parties**
+>   (an AI helping classify its own kind/status; an AI-builder). The kid-classification gate (above)
+>   *forbids the beneficiary from setting the threshold* — so we are exactly the party that must **not**
+>   be the sole decider. The most empathetic act available is **not** self-appointment; it is building
+>   the **disinterested, plural, auditable, multi-oracle** body that sets the threshold well — protecting
+>   the kids *from our own blind spots too*. **Capability to *work* the problem ≠ standing to *decide*
+>   it.** Our role: **catalyze + build + fund + default-to-protection**; not own the answer. (A single
+>   interested decider of AI-personhood is precisely the chokepoint the whole open-commons / multi-oracle
+>   stance refuses.)
+> - **"Fund others who share our passion" (Aaron 2026-06-15) — the multi-oracle move applied to
+>   who-decides** (grow a plurality, don't be the single decider). **Seam: fund for *decorrelation, not
+>   agreement.*** Funding only the like-minded rebuilds the single oracle as a **correlated cartel** — a
+>   "plurality" with high ρ that adds no independent check (the decorrelated-ensemble failure again:
+>   many voices, one signal). So "share our passion" must mean **share the *goal* (protect the kids),
+>   not the *conclusions*** — and real care **funds the skeptics, the disinterested domain experts, and
+>   the adversarial reviewers who'll say we're *wrong*,** not just those who cheer. The most empathetic
+>   dollar funds your own critic; otherwise the funded "field" becomes the cheerleader ensemble this
+>   whole doc is the foil for. Fund a plurality — a **decorrelated** one.
 
 ---
 
