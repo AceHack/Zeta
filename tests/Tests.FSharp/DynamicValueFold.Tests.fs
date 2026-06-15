@@ -115,3 +115,43 @@ let ``banana-split visits each node exactly once (one pass)`` (dv: DynamicValue)
     DynamicValueFold.bananaSplit counting nodeCount dv |> ignore
     // exactly one tick per non-Null node — no double traversal.
     visits = DynamicValueFold.cata nonNullCount dv
+
+// ── Fusion law (cata-fusion / deforestation): h ∘ cata f = cata g  when h is an f→g hom ──
+//   (d) deforestation instance: List.length ∘ cata collectLeaves = cata leafCount   (no intermediate list)
+//   (e) the homomorphism PRECONDITION for (d) holds (so (d) IS an instance of the fusion law)
+//   (f) a second, independent instance (scaling hom h = (*7)) — the law isn't a one-off
+
+// (d) the fusion law, deforestation form: counting leaves via the built list = the fused one-pass count.
+[<Property(Arbitrary = [| typeof<FoldDvArb> |])>]
+let ``fusion law (deforestation): length (cata collectLeaves dv) = cata leafCount dv`` (dv: DynamicValue) =
+    let viaList = List.length (DynamicValueFold.cata DynamicValueFold.collectLeaves dv)
+    let fused = DynamicValueFold.cata DynamicValueFold.leafCount dv
+    viaList = fused
+
+// (e) the precondition: List.length carries collectLeaves to leafCount (checked on representative samples).
+[<Fact>]
+let ``collectLeaves -> leafCount is a List.length homomorphism (fusion precondition, isHom)`` () =
+    let by = ImmutableArray.CreateRange [| 1uy; 2uy |]
+    let kids: DynamicValue list list =
+        [ [ DynamicValue.Int 1L ]; []; [ DynamicValue.Null; DynamicValue.Bool true ] ]
+    let okids: (string * DynamicValue list) list =
+        [ ("a", [ DynamicValue.Int 9L ]); ("b", []) ]
+    Assert.True(
+        DynamicValueFold.isHom
+            List.length DynamicValueFold.collectLeaves DynamicValueFold.leafCount
+            true 5L 1.5 "x" by kids okids)
+
+// (f) a second instance: scaling hom h = (*7) from nodeCount to sevenWeight.
+let private sevenWeight: DynamicValueFold.DvAlgebra<int> =
+    { Null = 7
+      Bool = fun _ -> 7
+      Int = fun _ -> 7
+      Float = fun _ -> 7
+      String = fun _ -> 7
+      Bytes = fun _ -> 7
+      Array = fun rs -> 7 + List.sum rs
+      Object = fun rs -> 7 + (rs |> List.sumBy snd) }
+
+[<Property(Arbitrary = [| typeof<FoldDvArb> |])>]
+let ``fusion law (scaling): 7 * cata nodeCount dv = cata sevenWeight dv`` (dv: DynamicValue) =
+    7 * DynamicValueFold.cata nodeCount dv = DynamicValueFold.cata sevenWeight dv

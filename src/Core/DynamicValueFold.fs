@@ -128,3 +128,71 @@ module DynamicValueFold =
           Bytes = DynamicValue.Bytes
           Array = DynamicValue.Array
           Object = DynamicValue.Object }
+
+    // ───────────────────────── Fusion law (cata-fusion) ─────────────────────────
+    // The banana-split's sibling law (FFP 1991). Banana-split fuses two folds INTO one
+    // traversal; cata-fusion fuses a fold followed by a post-map INTO one fold.
+
+    /// **Cata-fusion / deforestation law.** If `h : 'a -> 'b` is an F-algebra homomorphism
+    /// from `f` to `g` — it commutes with both algebras shape-by-shape — then folding under
+    /// `f` and post-composing `h` fuses into a single fold under `g`:
+    ///
+    ///     h (cata f dv) = cata g dv          for every `dv`.
+    ///
+    /// The win is **deforestation**: `h ∘ cata f` materialises the intermediate `'a` and then
+    /// maps; `cata g` never builds it. Fusion is *conditional* on the homomorphism, so this
+    /// module supplies the certifier `isHom` (cf. `AdinkraCode.isSelfDual`) rather than an
+    /// unconditional constructor; the law itself is proven in `DynamicValueFold.Tests`. This
+    /// is the value-tree-level law that `Fusion.fs` realises at the circuit-operator level
+    /// (same deforestation, two layers).
+
+    /// The cata-fusion homomorphism condition: does `h` carry algebra `f` to algebra `g`?
+    /// Leaf cases `h (f.Leaf x) = g.Leaf x`; parent cases `h (f.Array xs) = g.Array (List.map h xs)`
+    /// and the Object analogue. Checked on the supplied samples (leaf payloads + already-folded
+    /// child lists). When this holds for ALL inputs, `h ∘ cata f = cata g` (the fusion law).
+    let isHom
+        (h: 'a -> 'b)
+        (f: DvAlgebra<'a>)
+        (g: DvAlgebra<'b>)
+        (bl: bool)
+        (i: int64)
+        (fl: float)
+        (s: string)
+        (by: ImmutableArray<byte>)
+        (kids: 'a list)
+        (okids: (string * 'a) list)
+        : bool =
+        h f.Null = g.Null
+        && h (f.Bool bl) = g.Bool bl
+        && h (f.Int i) = g.Int i
+        && h (f.Float fl) = g.Float fl
+        && h (f.String s) = g.String s
+        && h (f.Bytes by) = g.Bytes by
+        && h (f.Array kids) = g.Array(List.map h kids)
+        && h (f.Object okids) = g.Object(okids |> List.map (fun (k, v) -> (k, h v)))
+
+    /// Deforestation example (the fusion law made concrete): collect every scalar leaf into a
+    /// document-order list. `List.length ∘ cata collectLeaves` counts leaves by BUILDING the
+    /// list; the fused `leafCount` counts them in one pass with no intermediate list. The
+    /// fusion law says the two agree (`List.length` is a `collectLeaves → leafCount` hom).
+    let collectLeaves: DvAlgebra<DynamicValue list> =
+        { Null = [ DynamicValue.Null ]
+          Bool = fun b -> [ DynamicValue.Bool b ]
+          Int = fun i -> [ DynamicValue.Int i ]
+          Float = fun f -> [ DynamicValue.Float f ]
+          String = fun s -> [ DynamicValue.String s ]
+          Bytes = fun b -> [ DynamicValue.Bytes b ]
+          Array = List.concat
+          Object = fun kvs -> kvs |> List.collect snd }
+
+    /// The fused leaf-count — `g` such that `List.length (cata collectLeaves dv) = cata leafCount dv`.
+    /// A parent contributes only its children's leaves (it is not itself a leaf).
+    let leafCount: DvAlgebra<int> =
+        { Null = 1
+          Bool = fun _ -> 1
+          Int = fun _ -> 1
+          Float = fun _ -> 1
+          String = fun _ -> 1
+          Bytes = fun _ -> 1
+          Array = List.sum
+          Object = fun kvs -> kvs |> List.sumBy snd }
