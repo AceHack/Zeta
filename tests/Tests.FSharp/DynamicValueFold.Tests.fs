@@ -155,3 +155,36 @@ let private sevenWeight: DynamicValueFold.DvAlgebra<int> =
 [<Property(Arbitrary = [| typeof<FoldDvArb> |])>]
 let ``fusion law (scaling): 7 * cata nodeCount dv = cata sevenWeight dv`` (dv: DynamicValue) =
     7 * DynamicValueFold.cata nodeCount dv = DynamicValueFold.cata sevenWeight dv
+
+// ── Anamorphism (unfold / generator): reconstruction + hylo round-trip + ana-fusion (dual of cata-fusion) ──
+//   (g) ana reconstruction:  ana oneLayer dv = dv          (dual of cata's reflection law)
+//   (h) hylo round-trip:     cata identityAlgebra (ana oneLayer dv) = dv   (generate then fold = id)
+//   (i) ana-fusion:          ana coalgB (h s) = ana coalgA s   when h is a coalgebra hom (seed-map fuses in)
+
+[<Property(Arbitrary = [| typeof<FoldDvArb> |])>]
+let ``ana reconstruction law: ana oneLayer dv = dv`` (dv: DynamicValue) =
+    DynamicValueFold.ana DynamicValueFold.oneLayer dv = dv
+
+[<Property(Arbitrary = [| typeof<FoldDvArb> |])>]
+let ``hylo round-trip: cata identityAlgebra (ana oneLayer dv) = dv`` (dv: DynamicValue) =
+    let regenerated = DynamicValueFold.ana DynamicValueFold.oneLayer dv
+    DynamicValueFold.cata DynamicValueFold.identityAlgebra regenerated = dv
+
+// countdownA n  unfolds to an n-deep nested Array ending in Null; countdownB works on doubled seeds.
+let private countdownA: DynamicValueFold.DvCoalgebra<int> =
+    fun n -> if n <= 0 then DynamicValueFold.NullF else DynamicValueFold.ArrayF [ n - 1 ]
+
+let private countdownB: DynamicValueFold.DvCoalgebra<int> =
+    fun m -> if m <= 0 then DynamicValueFold.NullF else DynamicValueFold.ArrayF [ m - 2 ]
+
+[<Fact>]
+let ``ana-fusion precondition: (*2) is a countdownA -> countdownB coalgebra homomorphism`` () =
+    for n in 0..6 do
+        Assert.True(DynamicValueFold.isCoalgHom (fun x -> x * 2) countdownA countdownB n)
+
+[<Fact>]
+let ``ana-fusion law: ana countdownB (2n) = ana countdownA n (seed-map fuses into the unfold)`` () =
+    for n in 0..6 do
+        Assert.Equal<DynamicValue>(
+            DynamicValueFold.ana countdownB (n * 2),
+            DynamicValueFold.ana countdownA n)

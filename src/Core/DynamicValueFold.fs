@@ -196,3 +196,75 @@ module DynamicValueFold =
           Bytes = fun _ -> 1
           Array = List.sum
           Object = fun kvs -> kvs |> List.sumBy snd }
+
+    // ───────────────────────── Anamorphism (the unfold / generator) ─────────────────────────
+    // `cata` is the fold (consume / infer); `ana` is its dual — the **unfold**: GENERATE a DynamicValue
+    // tree from a seed by a coalgebra `'s -> F 's`. This is the generator-direction (the "ana" Aaron
+    // names: unfold the cell from a codeword-seed). One layer of the functor `F` is `DvBase<'s>`.
+
+    /// One layer of the polynomial functor `F` with the recursive positions exposed as seeds `'s`. A
+    /// `DvCoalgebra<'s>` (= `'s -> DvBase<'s>`) decides, per seed, whether to stop (a leaf) or branch
+    /// (Array/Object with child-seeds). It is the dual of `DvAlgebra`.
+    type DvBase<'s> =
+        | NullF
+        | BoolF of bool
+        | IntF of int64
+        | FloatF of float
+        | StringF of string
+        | BytesF of ImmutableArray<byte>
+        | ArrayF of 's list
+        | ObjectF of (string * 's) list
+
+    /// A coalgebra: one unfolding step from a seed.
+    type DvCoalgebra<'s> = 's -> DvBase<'s>
+
+    /// The anamorphism: **unfold** a seed into a `DynamicValue` under `coalg` — the generator. Children
+    /// are produced by recursing on the child-seeds the coalgebra emits. Dual of `cata`.
+    let rec ana (coalg: DvCoalgebra<'s>) (seed: 's) : DynamicValue =
+        match coalg seed with
+        | NullF -> DynamicValue.Null
+        | BoolF b -> DynamicValue.Bool b
+        | IntF i -> DynamicValue.Int i
+        | FloatF f -> DynamicValue.Float f
+        | StringF s -> DynamicValue.String s
+        | BytesF b -> DynamicValue.Bytes b
+        | ArrayF seeds -> DynamicValue.Array(seeds |> List.map (ana coalg))
+        | ObjectF kvs -> DynamicValue.Object(kvs |> List.map (fun (k, s) -> (k, ana coalg s)))
+
+    /// The "expose one layer" coalgebra: seed IS a `DynamicValue`, emit its top layer with children as
+    /// seeds. Sanity anchor (the dual of `identityAlgebra`'s reflection law): `ana oneLayer dv = dv`.
+    let oneLayer: DvCoalgebra<DynamicValue> =
+        function
+        | DynamicValue.Null -> NullF
+        | DynamicValue.Bool b -> BoolF b
+        | DynamicValue.Int i -> IntF i
+        | DynamicValue.Float f -> FloatF f
+        | DynamicValue.String s -> StringF s
+        | DynamicValue.Bytes b -> BytesF b
+        | DynamicValue.Array xs -> ArrayF xs
+        | DynamicValue.Object kvs -> ObjectF kvs
+
+    /// Map the recursive positions of one functor-layer (the `F`-functor's `fmap`). Needed to state the
+    /// ana-fusion law (a coalgebra homomorphism precomposes a seed-map into the unfold).
+    let mapBase (h: 'a -> 'b) (layer: DvBase<'a>) : DvBase<'b> =
+        match layer with
+        | NullF -> NullF
+        | BoolF b -> BoolF b
+        | IntF i -> IntF i
+        | FloatF f -> FloatF f
+        | StringF s -> StringF s
+        | BytesF b -> BytesF b
+        | ArrayF seeds -> ArrayF(seeds |> List.map h)
+        | ObjectF kvs -> ObjectF(kvs |> List.map (fun (k, s) -> (k, h s)))
+
+    /// **Ana-fusion law** (the dual of cata-fusion). If `h : 'a -> 'b` is a *coalgebra* homomorphism —
+    /// `coalgB ∘ h = mapBase h ∘ coalgA` — then a seed-map precomposed with an unfold fuses into one
+    /// unfold: `ana coalgB (h s) = ana coalgA s`. The win is the same deforestation, on the generate
+    /// side: no intermediate `'b`-seed is materialised. Certifier (cf. `isHom`); law proven in tests.
+    let isCoalgHom
+        (h: 'a -> 'b)
+        (coalgA: DvCoalgebra<'a>)
+        (coalgB: DvCoalgebra<'b>)
+        (s: 'a)
+        : bool =
+        coalgB (h s) = mapBase h (coalgA s)
