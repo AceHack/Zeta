@@ -31,6 +31,8 @@ spec:
             - cilium
             - longhorn-system
             - argocd
+            - zeta-platform   # platform control plane (portal + controller); carries the gatekeeper ignore label
+            - flowdent        # tenant workload namespace (Flowdent services + db)
         # FAIL-OPEN, not fail-closed. With failurePolicy: Fail the validating
         # webhook intercepts EVERY write cluster-wide — including k3s's own
         # cluster-scoped CRD updates (e.g. addons.k3s.cattle.io). If gatekeeper
