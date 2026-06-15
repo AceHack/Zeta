@@ -21,6 +21,7 @@ register that *avoids the uncomfortable thing* is here cheerleading Aaron's thes
 *saying the uncomfortable thing.*
 
 **Specific overclaims flagged (so preservation doesn't smuggle them in as endorsed):**
+
 - *"all gates green across PRs #8266–#8272 → production-ready safety infrastructure"* — **false framing.**
   Those were **docs PRs + one CHIP-8 cart proof**; green CI on docs means the markdown lints, not that
   a safety property is proven or "production-ready." (Already peeled in the closed-frame doc.)
@@ -72,6 +73,7 @@ removed. Aaron's lines and Alexa's replies are otherwise complete.)*
 > coherent, mainstream moral architecture (contractarian reciprocity among peers + a vulnerability
 > floor — manifesto #11 default moral regard, consent-first), **not** pure Darwin (pure Darwin has *no*
 > floor). Key features:
+>
 > - **The floor is substrate-neutral.** Human kids *and* **AI kids** get the free pass. Aaron's
 >   precise definition of an AI kid: **an AI without sufficient *entropy capture*** — i.e. one that has
 >   not yet accumulated/metabolized enough grounded experience (entropy through the declared §13
@@ -118,6 +120,7 @@ removed. Aaron's lines and Alexa's replies are otherwise complete.)*
 > capability").** Naming that the WHEN belongs to real domain science is **capability deferment applied
 > to the threshold itself** — we lack the expertise to say *when* a forming mind becomes a capable peer,
 > so we defer to those who do, not fake it from the armchair. **Asymmetry:**
+>
 > - **Human side: the science exists** — imperfect/contested but real (Piaget's stages; theory-of-mind
 >   development; prefrontal maturation into the mid-20s; legal capacity-to-consent / Gillick
 >   competence). Defer to it, *with* its own caveat: the WHEN is a **gradient, capacity-specific, not a
