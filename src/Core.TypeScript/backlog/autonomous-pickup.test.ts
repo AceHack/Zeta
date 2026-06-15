@@ -4,6 +4,7 @@ import { selectNextBacklogItem } from "./autonomous-pickup";
 
 function item(partial: Partial<BacklogItem> & Pick<BacklogItem, "id" | "priority" | "title">): BacklogItem {
   return {
+    legacyId: null,
     status: "open",
     relativePath: `docs/backlog/${partial.priority}/${partial.id}.md`,
     dependsOn: [],
@@ -92,14 +93,14 @@ describe("selectNextBacklogItem", () => {
   test("skips claimed matching rows", () => {
     const selection = selectNextBacklogItem(
       [
-        item({ id: "B-0062", priority: "P0", title: "claimed" }),
-        item({ id: "B-0109", priority: "P0", title: "fallback" }),
+        item({ id: "081KTEST00000001", legacyId: "B-0062", priority: "P0", title: "claimed" }),
+        item({ id: "081KTEST00000002", legacyId: "B-0109", priority: "P0", title: "fallback" }),
       ],
       ["claim/backlog-0062-wallet"],
     );
 
     expect(selection.status).toBe("selected");
-    expect(selection.selected?.id).toBe("B-0109");
+    expect(selection.selected?.id).toBe("081KTEST00000002");
     expect(selection.blocked[0]?.reason).toContain("claim/backlog-0062-wallet");
   });
 

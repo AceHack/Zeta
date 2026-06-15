@@ -29,6 +29,7 @@ import { folderSink } from "./event-sink-folder";
 import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
+import { kiroExecutor, buildDoItemSpec } from "./kiro-executor";
 
 interface CliArgs {
   by: string;
@@ -107,10 +108,16 @@ async function main(): Promise<number> {
     return 0;
   }
 
-  // 3. Execute the pick (real sink + no executor/operatorPort for now —
-  //    do_item and operator actions will return not-yet-executable until
-  //    those adapters are wired in a follow-up)
+  // 3. Execute the pick (real sink + real executor for do_item)
   const sink = folderSink({ eventDir: args.eventDir, by: args.by });
+
+  // Wire the real executor for do_item actions
+  const executor = kiroExecutor({ repoRoot: args.repoRoot, agentId: args.by });
+
+  // Build DoItemOptions if the action is do_item
+  const doItemOpts = action.kind === "do_item"
+    ? buildDoItemSpec(action.item, { repoRoot: args.repoRoot, agentId: args.by })
+    : undefined;
 
   // Placeholder OperatorPort — just logs; real implementation writes to transcript
   const operatorPort: OperatorPort = {
@@ -124,7 +131,7 @@ async function main(): Promise<number> {
     },
   };
 
-  const result = await execute(enrichedWorld, action, sink, undefined, undefined, operatorPort);
+  const result = await execute(enrichedWorld, action, sink, executor, doItemOpts, operatorPort);
 
   if (!result.ok) {
     console.error(

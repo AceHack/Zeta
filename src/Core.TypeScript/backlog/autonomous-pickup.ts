@@ -15,6 +15,7 @@ type Action = "decompose-first" | "claim-and-implement";
 
 export interface BacklogItem {
   id: string;
+  legacyId: string | null;
   priority: Priority;
   status: string;
   title: string;
@@ -259,18 +260,20 @@ function asStringList(value: string | string[] | undefined): string[] {
 }
 
 function itemNumber(id: string): number {
-  if (!id.startsWith("B-")) {
-    return Number.MAX_SAFE_INTEGER;
-  }
-  const rawNumber = id.slice(2);
-  let hasOnlyDigits = rawNumber.length > 0;
-  for (const char of rawNumber) {
-    if (char < "0" || char > "9") {
-      hasOnlyDigits = false;
-      break;
+  // Legacy B-xxxx: extract the numeric part for ordering
+  if (id.startsWith("B-")) {
+    const rawNumber = id.slice(2).split(".")[0] ?? "";
+    let hasOnlyDigits = rawNumber.length > 0;
+    for (const char of rawNumber) {
+      if (char < "0" || char > "9") {
+        hasOnlyDigits = false;
+        break;
+      }
     }
+    return rawNumber.length > 0 && hasOnlyDigits ? Number(rawNumber) : Number.MAX_SAFE_INTEGER;
   }
-  return rawNumber.length > 0 && hasOnlyDigits ? Number(rawNumber) : Number.MAX_SAFE_INTEGER;
+  // ZetaIds: use MAX so they sort by age (compareAge) instead of numeric order
+  return Number.MAX_SAFE_INTEGER;
 }
 
 export function readBacklogItems(repoRoot: string): BacklogItem[] {
@@ -283,13 +286,24 @@ export function readBacklogItems(repoRoot: string): BacklogItem[] {
       continue;
     }
     for (const entry of readdirSync(tierDir, { withFileTypes: true })) {
-      if (!entry.isFile() || !entry.name.startsWith("B-") || !entry.name.endsWith(".md")) {
+      if (!entry.isFile() || !entry.name.endsWith(".md")) {
+        continue;
+      }
+      // ZetaId-prefixed filenames (128-bit hex). The B-xxxx sequential naming
+      // is a dead coordinate primitive — only the frontmatter `id` field carries
+      // that legacy identifier. Filenames are ZetaId-only.
+      if (!/^[0-9A-Z]{10,}/.test(entry.name)) {
         continue;
       }
       const absolutePath = join(tierDir, entry.name);
       const content = readFileSync(absolutePath, "utf8");
       const frontmatter = parseFrontmatter(content);
-      const id = asString(frontmatter.id);
+      // ZetaId is the canonical identifier — locally mintable, no coordination.
+      // The legacy `id: B-xxxx` field is kept as a display label but never used
+      // for coordination or dependency resolution.
+      const zetaid = asString(frontmatter.zetaid);
+      const legacyId = asString(frontmatter.id);
+      const id = zetaid || legacyId; // prefer zetaid; fall back to legacy only if missing
       const title = asString(frontmatter.title);
       if (!id || !title) {
         continue;
@@ -300,6 +314,7 @@ export function readBacklogItems(repoRoot: string): BacklogItem[] {
       }
       items.push({
         id,
+        legacyId: legacyId || null,
         priority: declaredPriority,
         status: asString(frontmatter.status) || "open",
         title,
@@ -372,10 +387,19 @@ function dependencyBlocker(item: BacklogItem, byId: ReadonlyMap<string, BacklogI
 function claimMatchesItem(claim: string, item: BacklogItem): boolean {
   const normalized = claim.toLowerCase();
   const idLower = item.id.toLowerCase();
-  const numeric = idLower.replace("b-", "");
-  return (
-    normalized.includes(idLower) || normalized.includes(`backlog-${numeric}`) || normalized.includes(`b${numeric}`)
-  );
+  // Match by ZetaId (canonical)
+  if (normalized.includes(idLower)) return true;
+  // Match by legacy B-xxxx (for existing claim branches that use old naming)
+  if (item.legacyId) {
+    const legacyLower = item.legacyId.toLowerCase();
+    const numeric = legacyLower.replace("b-", "");
+    if (
+      normalized.includes(legacyLower) ||
+      normalized.includes(`backlog-${numeric}`) ||
+      normalized.includes(`b${numeric}`)
+    ) return true;
+  }
+  return false;
 }
 
 function claimBlocker(item: BacklogItem, activeClaims: readonly string[]): string | null {
@@ -390,7 +414,8 @@ function decomposedParentBlocker(
   if (item.decomposition !== "decomposed") {
     return null;
   }
-  const openChildren = openChildrenByParent.get(item.id) ?? [];
+  // Check by canonical id AND legacy id (parent refs may use either)
+  const openChildren = openChildrenByParent.get(item.id) ?? (item.legacyId ? openChildrenByParent.get(item.legacyId) ?? [] : []);
   if (openChildren.length === 0) {
     return null;
   }
@@ -458,7 +483,14 @@ export function selectNextBacklogItem(
   activeClaims: readonly string[],
   maxPriority: Priority = "P2",
 ): PickupSelection {
-  const byId = new Map(items.map((item) => [item.id, item]));
+  // Dual-lookup: resolve dependencies by ZetaId (canonical) OR legacy B-xxxx.
+  // This allows existing `depends_on: [B-xxxx]` to resolve while the migration
+  // replaces them with ZetaIds incrementally.
+  const byId = new Map<string, BacklogItem>();
+  for (const item of items) {
+    byId.set(item.id, item); // canonical ZetaId
+    if (item.legacyId) byId.set(item.legacyId, item); // legacy B-xxxx alias
+  }
   const blocked: BlockedItem[] = [];
   const maxRank = PRIORITY_RANK[maxPriority];
   const childrenByParent = openChildrenByParent(items);
