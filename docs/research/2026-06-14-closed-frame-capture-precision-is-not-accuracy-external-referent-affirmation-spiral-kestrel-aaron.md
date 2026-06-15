@@ -200,6 +200,36 @@ and the teacher / router / verifier stop working). So the risk is permanent and 
 permanent: you do not deny the vector, you keep it **surfaced, detected, and bound.** The asymmetric
 critic is dual-use by construction.
 
+**Dual-use confirmed in the wild — anti-distillation weight defense (Aaron 2026-06-15).** The *exact*
+mechanism — a high-compute model out-thinking a low-compute one to capture its frame — is **already
+deployed defensively** by AI labs to protect model weights from distillation theft: the teacher
+**shapes its outputs so a student distilling from them is corrupted** — Aaron: *"it basically prompt
+injected the attacking model"* (the defender's outputs become adversarial inputs to the attacker's
+training). This is real research, checked 2026-06-15: **DOGe** (*Defensive Output Generation for LLM
+Protection Against Knowledge Distillation*, arXiv 2505.19504, 2025), **MISLEADER** (extraction
+defense via ensembles of distilled models, 2506.02362), **DistillGuard** (2603.07835), the
+model-extraction survey (2506.22521), Tramèr et al. 2016 (foundational model stealing). So the **same
+superior-compute-captures-lower mechanism is both the welfare-capture attack vector and a legitimate
+anti-theft defense** — same shape, opposite valence; the discriminator is the doc's own
+**aggressor/consent** line (a non-consensual *extractor* forfeited the protection; an innocent
+low-compute entity did not). Three sharp seams this surfaces:
+
+- **The detection problem moves to the center.** Defensive output generation needs to *detect* the
+  extractor; a **false positive** — flagging a legitimate low-compute user as an attacker and serving
+  them captured/poisoned output — *is* collateral welfare-capture. The detector must itself be
+  grounded and honest (the same detection problem, now load-bearing).
+- **"Complete prevention is impossible"** (the survey's own conclusion — an LLM's nature is to
+  answer): it is an arms race / cost-raising, not a wall, and poisoning the distiller without perfect
+  detection means *slightly degrading what you serve everyone* — capability honesty applies to the
+  defense too.
+- **It is escalatory:** prompt-injecting the attacker is itself an attack the attacker can harden
+  against — the "out-thinking" defense compounds the very asymmetry it polices.
+
+The lesson: the welfare-capture vector is **not hypothetical** — it is an already-weaponized mechanism,
+so far pointed (legitimately) at thieves. That is precisely why the guards above (aggressor/consent
+discriminator, honest detection, metering, compute-handicap, non-latency) are load-bearing, not
+optional.
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
