@@ -303,11 +303,32 @@ governed*** (Ostrom's whole result: commons survive by *governance*, not by bein
 "open" does not by itself prevent *misuse* of the weights). And that lands precisely on the earlier
 thread: open = **no moat = funding-fragility** → *which is exactly why the resilience floor matters.*
 **The two hazards are capture and sustainability; open trades the first pair for the second, and the
-potato / cart / distilled-local resilience floor is what pays the second.** Anchors: Samuelson 1954
-(public goods, non-rival/non-excludable); natural-monopoly theory; Stigler 1971 (regulatory capture);
-Ostrom 1990 (commons governance); Hardin 1968 (tragedy-of-the-commons, *as refuted-by-governance* by
-Ostrom); Benkler (commons-based peer production). *(Metaphor note: "homoiconicity"/"the box is the
-room" are used as analogies for "universal self-identical shared substrate," not literal code=data.)*
+potato / cart / distilled-local resilience floor is what pays the second.**
+
+**Correction — free-riding is NOT the hazard for a non-rival positive-sum good (Aaron 2026-06-15: "I'm
+not worried about this one — open source produces economic value for me even if others free-ride; it's
+not a 0-sum game").** The earlier framing overstated it. **Non-rivalry = positive-sum:** another's use
+does not subtract (Jefferson's candle — *"he who lights his taper at mine receives light without
+darkening me"*; Romer's non-rivalry-of-ideas, Nobel 2018, = increasing returns), and the producer
+captures real value through non-zero-sum channels regardless of free-riders — complementary
+goods/services ("commoditize your complement"; the Red Hat model), reputation / being-the-origin, the
+capability banked by building it, the growing ecosystem. So free-riders are **free upside, not a
+leak.** And **tragedy-of-the-commons-by-*depletion* is a RIVAL-good problem** (pasture, fishery — my
+use diminishes yours) that **does not apply to non-rival AI** (no depletion); the only real non-rival
+concern is **underprovision** (will it be built/maintained?), which is answered when the producer's own
+value-capture exceeds cost (Aaron: it does). **So the surviving residuals are NOT free-riding but: (a)
+value-capture *continuity*** — if the channel through which the producer captures value fails,
+maintenance underprovision returns; *but that is just the funding-fragility / resilience-floor point,
+not free-riding* — **and (b) misuse** (open ≠ misuse-proof), which is orthogonal. Net: open trades the
+capture pair for *continuity-of-value-capture* (= the resilience floor, already designed-for) + misuse
+— **not** for a free-rider tax.
+
+Anchors: Samuelson 1954 (public goods, non-rival/non-excludable); Jefferson 1813 (the taper —
+non-rivalry of ideas); Romer (non-rivalry → endogenous growth, Nobel 2018); "commoditize your
+complement" (Spolsky); natural-monopoly theory; Stigler 1971 (regulatory capture); Ostrom 1990 (commons
+governance); Hardin 1968 (tragedy-of-the-commons, *rival-good & refuted-by-governance* per Ostrom);
+Benkler (commons-based peer production). *(Metaphor note: "homoiconicity"/"the box is the room" are used
+as analogies for "universal self-identical shared substrate," not literal code=data.)*
 
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
