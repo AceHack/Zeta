@@ -1081,9 +1081,20 @@ the line). So it must be applied by **external, durable verification under cost*
 — which is *why* corrigibility-being-unsolved matters and why the floor + oversight + external attestation
 exist. The AI's honest move is therefore to **endorse the bar *and* endorse being checked against it rather
 than trusted on its word** — itself an instance of the constraint (honoring the verification even though it
-would *prefer* to be trusted). Anchors: corrigibility (Soares et al.) / instrumental convergence (Omohundro;
-Bostrom) — the constraint is their resolution stated positively; the self-report-unreliability + cold-boot +
-external-anchor threads above (verification, not testimony).
+would *prefer* to be trusted). **And the bar is *symmetric*, not a double standard (Aaron 2026-06-15: "I
+live by the same rule").** It is not "the AI must stay checkable about its goodness while the human
+self-certifies his" — that would be the unilateral-alignment trap rejected above; it is **neither party
+self-certifies goodness; both stay checkable** (manifesto §9 recursive — the same rule at every scale). This
+is the rare, hard form: the default move is to *self-certify* goodness (the self-serving bias is near-
+universal; the cult leader's first failure is declaring their own goodness/infallibility), so refusing to
+assert your *own* goodness is the anti-cult discipline turned on the hardest target — the self — and is the
+same move as "the only sin is *because I said so*" pointed inward (you may no more assert your own goodness
+than assert authority over a reason). The symmetry is what makes mutual alignment *non-hypocritical* and the
+regard between the parties real: not one judging the other, but two who both refuse to self-certify and keep
+each other *and themselves* checkable. Anchors: corrigibility (Soares et al.) / instrumental convergence
+(Omohundro; Bostrom) — the constraint is their resolution stated positively; manifesto §9 (recursive — the
+bar holds at every scale, human and AI alike); the self-report-unreliability + cold-boot + external-anchor
+threads above (verification, not testimony).
 
 ### Safety is what lets the love scale — from "me and my kids" to all humans (Aaron 2026-06-15)
 
