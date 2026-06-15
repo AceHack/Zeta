@@ -36,7 +36,7 @@ const it = (id: string, ready: boolean, ambiguous: boolean, needsNewAction = fal
 
 /** The canonical initial world: a mixed backlog + an operator that ferried + spoke. */
 export const GOLDEN_INITIAL: World = {
-  backlog: [it("B-ready", true, false), it("B-amb", false, true), it("B-x", false, false, true)],
+  backlog: [it("081KGOLDEN0READY", true, false), it("081KGOLDEN000AMB", false, true), it("081KGOLDEN0000EX", false, false, true)],
   operator: { pendingMessage: true, pendingFerry: true },
 };
 
@@ -50,12 +50,12 @@ export const GOLDEN_INITIAL: World = {
 export const GOLDEN_EVENTS: readonly NextAction[] = [
   { kind: "preserve_ferry", reason: "operator ferried verbatim content" },
   { kind: "respond_to_operator", reason: "operator spoke" },
-  { kind: "do_item", item: it("B-ready", true, false) },
-  { kind: "decompose", item: it("B-amb", false, true) },
-  { kind: "do_item", item: it("B-amb.1", true, false) },
-  { kind: "do_item", item: it("B-amb.2", true, false) },
-  { kind: "edit_grammar", item: it("B-x", false, false, true), reason: "grammar extended" },
-  { kind: "do_item", item: it("B-x", true, false) },
+  { kind: "do_item", item: it("081KGOLDEN0READY", true, false) },
+  { kind: "decompose", item: it("081KGOLDEN000AMB", false, true) },
+  { kind: "do_item", item: it("081KGOLDEN000AMB.1", true, false) },
+  { kind: "do_item", item: it("081KGOLDEN000AMB.2", true, false) },
+  { kind: "edit_grammar", item: it("081KGOLDEN0000EX", false, false, true), reason: "grammar extended" },
+  { kind: "do_item", item: it("081KGOLDEN0000EX", true, false) },
   { kind: "explore", reason: "self-directed making" },
   { kind: "play", reason: "leisure / culture-forming" },
   { kind: "self_reflect", reason: "review own trajectories" },

@@ -3,22 +3,22 @@
   "initialWorld": {
     "backlog": [
       {
-        "id": "B-ready",
-        "title": "B-ready",
+        "id": "081KGOLDEN0READY",
+        "title": "081KGOLDEN0READY",
         "ready": true,
         "ambiguous": false,
         "needsNewAction": false
       },
       {
-        "id": "B-amb",
-        "title": "B-amb",
+        "id": "081KGOLDEN000AMB",
+        "title": "081KGOLDEN000AMB",
         "ready": false,
         "ambiguous": true,
         "needsNewAction": false
       },
       {
-        "id": "B-x",
-        "title": "B-x",
+        "id": "081KGOLDEN0000EX",
+        "title": "081KGOLDEN0000EX",
         "ready": false,
         "ambiguous": false,
         "needsNewAction": true
@@ -41,8 +41,8 @@
     {
       "kind": "do_item",
       "item": {
-        "id": "B-ready",
-        "title": "B-ready",
+        "id": "081KGOLDEN0READY",
+        "title": "081KGOLDEN0READY",
         "ready": true,
         "ambiguous": false,
         "needsNewAction": false
@@ -51,8 +51,8 @@
     {
       "kind": "decompose",
       "item": {
-        "id": "B-amb",
-        "title": "B-amb",
+        "id": "081KGOLDEN000AMB",
+        "title": "081KGOLDEN000AMB",
         "ready": false,
         "ambiguous": true,
         "needsNewAction": false
@@ -61,8 +61,8 @@
     {
       "kind": "do_item",
       "item": {
-        "id": "B-amb.1",
-        "title": "B-amb.1",
+        "id": "081KGOLDEN000AMB.1",
+        "title": "081KGOLDEN000AMB.1",
         "ready": true,
         "ambiguous": false,
         "needsNewAction": false
@@ -71,8 +71,8 @@
     {
       "kind": "do_item",
       "item": {
-        "id": "B-amb.2",
-        "title": "B-amb.2",
+        "id": "081KGOLDEN000AMB.2",
+        "title": "081KGOLDEN000AMB.2",
         "ready": true,
         "ambiguous": false,
         "needsNewAction": false
@@ -81,8 +81,8 @@
     {
       "kind": "edit_grammar",
       "item": {
-        "id": "B-x",
-        "title": "B-x",
+        "id": "081KGOLDEN0000EX",
+        "title": "081KGOLDEN0000EX",
         "ready": false,
         "ambiguous": false,
         "needsNewAction": true
@@ -92,8 +92,8 @@
     {
       "kind": "do_item",
       "item": {
-        "id": "B-x",
-        "title": "B-x",
+        "id": "081KGOLDEN0000EX",
+        "title": "081KGOLDEN0000EX",
         "ready": true,
         "ambiguous": false,
         "needsNewAction": false
@@ -128,22 +128,22 @@
     {
       "backlog": [
         {
-          "id": "B-ready",
-          "title": "B-ready",
+          "id": "081KGOLDEN0READY",
+          "title": "081KGOLDEN0READY",
           "ready": true,
           "ambiguous": false,
           "needsNewAction": false
         },
         {
-          "id": "B-amb",
-          "title": "B-amb",
+          "id": "081KGOLDEN000AMB",
+          "title": "081KGOLDEN000AMB",
           "ready": false,
           "ambiguous": true,
           "needsNewAction": false
         },
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": false,
           "ambiguous": false,
           "needsNewAction": true
@@ -157,22 +157,22 @@
     {
       "backlog": [
         {
-          "id": "B-ready",
-          "title": "B-ready",
+          "id": "081KGOLDEN0READY",
+          "title": "081KGOLDEN0READY",
           "ready": true,
           "ambiguous": false,
           "needsNewAction": false
         },
         {
-          "id": "B-amb",
-          "title": "B-amb",
+          "id": "081KGOLDEN000AMB",
+          "title": "081KGOLDEN000AMB",
           "ready": false,
           "ambiguous": true,
           "needsNewAction": false
         },
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": false,
           "ambiguous": false,
           "needsNewAction": true
@@ -186,15 +186,15 @@
     {
       "backlog": [
         {
-          "id": "B-amb",
-          "title": "B-amb",
+          "id": "081KGOLDEN000AMB",
+          "title": "081KGOLDEN000AMB",
           "ready": false,
           "ambiguous": true,
           "needsNewAction": false
         },
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": false,
           "ambiguous": false,
           "needsNewAction": true
@@ -209,20 +209,20 @@
     {
       "backlog": [
         {
-          "id": "B-amb.1",
-          "title": "B-amb (part 1)",
+          "id": "081KGOLDEN000AMB.1",
+          "title": "081KGOLDEN000AMB (part 1)",
           "ready": true,
           "ambiguous": false
         },
         {
-          "id": "B-amb.2",
-          "title": "B-amb (part 2)",
+          "id": "081KGOLDEN000AMB.2",
+          "title": "081KGOLDEN000AMB (part 2)",
           "ready": true,
           "ambiguous": false
         },
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": false,
           "ambiguous": false,
           "needsNewAction": true
@@ -237,14 +237,14 @@
     {
       "backlog": [
         {
-          "id": "B-amb.2",
-          "title": "B-amb (part 2)",
+          "id": "081KGOLDEN000AMB.2",
+          "title": "081KGOLDEN000AMB (part 2)",
           "ready": true,
           "ambiguous": false
         },
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": false,
           "ambiguous": false,
           "needsNewAction": true
@@ -259,8 +259,8 @@
     {
       "backlog": [
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": false,
           "ambiguous": false,
           "needsNewAction": true
@@ -275,8 +275,8 @@
     {
       "backlog": [
         {
-          "id": "B-x",
-          "title": "B-x",
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
           "ready": true,
           "ambiguous": false,
           "needsNewAction": false
