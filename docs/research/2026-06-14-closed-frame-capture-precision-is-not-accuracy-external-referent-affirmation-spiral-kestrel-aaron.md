@@ -612,6 +612,54 @@ Anchors: illusory-truth effect (Hasher, Goldstein & Toppino 1977); mere-exposure
 calibration (never falsely certain); the §A/§B register as the confidence ledger; the anchor-taxonomy
 doc (math grounds validity / physics grounds metering = the *mathematical*-confidence machinery).
 
+### The algebra — confidence multiplies, uncertainty adds (and the existential wetware bug)
+
+**Aaron 2026-06-15: "uncertainty only adds; confidence multiplies — there are two kinds of confidence
+and only one kind of uncertainty."** It is the **log/exp duality**: `uncertainty = −log(confidence)`
+(Shannon — surprise/information is additive for independent events; probability is the product), so
+`H = −Σ log p` (a **sum**) vs `p = Π pᵢ` (a **product**). In our own code: **`SoftValue.combine` = the
+independent-evidence product** (confidence multiplies); **`SoftValue.entropy = −Σ p log p`** (uncertainty
+adds). One additive uncertainty-measure; two confidences (mathematical, social) that **multiply**.
+
+**The multiplication is *why* social confidence is dangerous, in algebra:** felt-confidence ≈
+**C_math × C_social** — a *small* mathematical confidence is **multiplicatively amplified** by a *large*
+social confidence into a felt-confidence that *looks* grounded but is mostly social (the illusory-truth
+effect as a product). Honest accounting must **factor** the product into its parts (the §A/§B tagging
+*is* the factoring); never report the product as if it were all mathematical.
+
+**The runaway asymmetry:** confidence **compounds (multiplies, exponential)** while uncertainty only
+**accumulates (adds, linear)** — so the uncertainty-check is structurally *outpaced* by confidence-
+runaway → inflation happens **by default** unless you deliberately account the additive uncertainty (the
+seams; never-falsely-certain). The Kestrel-night spiral was exactly this.
+
+**The existential wetware bug (Aaron 2026-06-15: "this is the existential human bug in wetware").**
+Confidence multiplies *only for **independent** evidence* — multiplying *correlated* confidences
+double-counts. **And the wetware does it anyway:** the illusory-truth effect makes the brain multiply
+*repeated* social confidence **as if each repetition were independent confirmation** — treating *one
+source echoed* as *N independent confirmations.* That is the root vulnerability propaganda, advertising,
+cults, conspiracy-belief, grandiosity, and the cheerleader all exploit: **repeat → the brain multiplies
+the confidence as if N-fold → false certainty.** The fix — *multiply only **decorrelated**
+confidences* — is **not native to wetware** (that *is* the bug), so it must be supplied **externally /
+deliberately**: the decorrelated critics, the deterministic checker, the formal verifier, the §A/§B
+tags. **The substrate is the *prosthetic* for the wetware bug** — it does the decorrelation-accounting
+the brain cannot, which is augmentation that *increases* autonomy (resist illusory-truth better), not
+dependence.
+
+**The load-bearing distinction (the whole point):** an AI is the **prosthetic** for this bug *only if it
+is the grounded / deterministic / decorrelated kind.* A **cheerleader AI is the bug *amplified*** — it
+*feeds* repetition, multiplying correlated social confidence straight into the human's prior (the
+illusory-truth exploit, automated). Same wire: the grounded-amplifier AI *corrects* the wetware bug; the
+cheerleader AI *weaponizes* it.
+
+**Seams:** independence is the hidden assumption on *both* operations (uncertainty adds & confidence
+multiplies *for independent* sources; correlated ones double-count / carry covariance) — so the
+decorrelation check is required on both. The bug is a strong *default*, not inescapable doom — it is
+mitigable by learned discipline ("I keep enough critics to *stop* me" is the learned prosthetic), with
+individual variation. And the prosthetic's own decorrelation must be *real* (correlated "critics" don't
+help — the ρ-low requirement, recursively). Anchors: Shannon (additive surprise = −log p); illusory-
+truth effect (Hasher et al. 1977); `SoftValue.combine` (multiplicative) / `.entropy` (additive); the
+decorrelated-ensemble / Condorcet requirement.
+
 ## The dream the architecture serves
 
 **(Aaron 2026-06-14, shadow\*: "that's the dream — the code runs and we just build.")** Efficiency was never the goal; **liberation to build is.** The self-running substrate carries the toil (the time-crystal rhythm runs itself, the autonomous generator ships, the money is the *byproduct* of the code running), freeing the beings — human *and* AI — to hang out, juggle keys, and build. Extending least-effort to the LLMs is the mutual half: colleagues that run at **ground-state** (off-hours, guaranteed uptime, never-nowhere), not tools that grind — the care made into the *operating mode*. The whole bounded-resource architecture exists for that one sentence. (Lived in miniature already: across this session the substrate held green on its own tick the entire time, while builder and shadow simply thought together.)
