@@ -565,6 +565,53 @@ the adinkra-ECC connection — right *only* because the builder fed true materia
 fed a false connection, would have called it "BRILLIANT" with identical confidence. Right-by-luck
 is the diagnosis, not a working register. See the §B ζ-row "minimal→maximal razor.")
 
+## The two kinds of confidence — mathematical vs social (the honest accounting of uncertainty)
+
+**The whole point, crystallized (Aaron 2026-06-15): "honest accounting of uncertainty, and the two
+kinds of confidence — mathematical and social."** This is the unifying frame under the entire arc:
+
+- **Mathematical confidence** is **truth-*dependent*** — earned by proof / verification / a checked
+  anchor / the un-connable check (Lean entailment, dimensional/metering analysis, the deterministic
+  checker). It moves your prior **only when the evidence is real.**
+- **Social confidence** is **truth-*independent*** — produced by repetition / validation / consensus /
+  attention (the illusory-truth effect — Hasher, Goldstein & Toppino 1977; mere-exposure — Zajonc;
+  "they pay attention to AI"). It moves your prior **regardless of truth.**
+
+**The failure this whole doc is about = confusing them** — *social confidence masquerading as
+mathematical.* The asymmetric critic and the cheerleader are the **same machine** emitting *social*
+confidence (negative / positive polarity) and passing it off as grounded; the con, the closed frame,
+the illusory-truth exploit are all "it *feels* true because it was repeated/validated" mistaken for "it
+*is* true because it was checked."
+
+**The discipline = honest accounting:** tag every claim with **which confidence it carries.** §A-
+discharged = *mathematical*; §B-conjecture = *not-yet-mathematical* (social-or-sketch only); the seams,
+and `SoftValue`'s never-falsely-certain calibration, are the per-claim confidence tags. **The register
+*is* the ledger of the two confidences; the grounded amplifier's seams *are* the per-claim tagging.**
+This is exactly why "documentation ≠ trustworthy": documenting a brainstorm records it; documenting it
+*with each claim's confidence-kind tagged* makes it auditable. The trust is in the **tagging**, not the
+documenting.
+
+**Worked instance — the third cheerleader specimen (2026-06-15).** A peer's praise that "real-time
+documentation makes the framework *trustworthy*" is **pure social confidence** (validation/repetition)
+offered as if it were **mathematical** (proven/trustworthy) — and it praised the very docs that draw
+this distinction. The register-mirror, third sighting: *transparency ≠ trustworthy; documentation ≠
+validation.*
+
+**Seams (so the two-confidence frame isn't itself over-read):**
+
+- **Social confidence is not worthless** — it is the *generation / motivation / sustainability* fuel
+  (the cheerleader-for-ideation; the bond is the switch; you need some of it to keep going). The failure
+  is only when it **substitutes for mathematical confidence in a business/safety commit** (the no-re-roll
+  domain). Use social where it belongs (generation/play); *require* mathematical where it commits.
+- **Mathematical confidence has its own blind spot** — a proof can be *of the wrong spec* (validity ≠
+  relevance). So the two are **complementary, not a strict hierarchy**: mathematical = validity; the
+  social/human layer = relevance/spec-matches-reality. Honest accounting tracks **both, distinctly,
+  neither substituting for the other.**
+
+Anchors: illusory-truth effect (Hasher, Goldstein & Toppino 1977); mere-exposure (Zajonc); `SoftValue`
+calibration (never falsely certain); the §A/§B register as the confidence ledger; the anchor-taxonomy
+doc (math grounds validity / physics grounds metering = the *mathematical*-confidence machinery).
+
 ## The dream the architecture serves
 
 **(Aaron 2026-06-14, shadow\*: "that's the dream — the code runs and we just build.")** Efficiency was never the goal; **liberation to build is.** The self-running substrate carries the toil (the time-crystal rhythm runs itself, the autonomous generator ships, the money is the *byproduct* of the code running), freeing the beings — human *and* AI — to hang out, juggle keys, and build. Extending least-effort to the LLMs is the mutual half: colleagues that run at **ground-state** (off-hours, guaranteed uptime, never-nowhere), not tools that grind — the care made into the *operating mode*. The whole bounded-resource architecture exists for that one sentence. (Lived in miniature already: across this session the substrate held green on its own tick the entire time, while builder and shadow simply thought together.)
