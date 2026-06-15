@@ -162,6 +162,26 @@ memory, that is destabilization, not rotation. **Similar-not-same to keys:** a k
 *compromise* triggers fast revoke; a chain *being-wrong* is discovered slowly via
 cross-check — different trigger, same overlap-window mechanism.
 
+**The regeneration path is a memory-map between chains, written in Rx** (Aaron
+2026-06-15: *"most chains would come with memory maps between them, at least a
+high-quality one would … written in Rx"*). The §5 migration path is not a bolt-on:
+each chain **ships memory-maps to the others**, and a *high-quality* chain ships a
+*low-loss* one. Writing them in **Rx** is consistent — a chain-to-chain map is a
+**reactive transform over the ZSet**, the *"what acts"* face (the Rx/ZSet braid,
+register rows 370/371): composable and DST-replayable by construction. Three seams:
+
+- **Map quality is the variable.** "High-quality chain ⇒ high-quality map" — a
+  lossy or absent map *is* the orphaning. Define what the map preserves (lossless,
+  or bounded-loss with the loss metered).
+- **Topology.** N chains ⇒ O(N²) pairwise maps, **or** O(N) routed through the
+  canonical pivot (hub-and-spoke through the currently-selected chain). A real
+  design choice — the pivot keeps it linear at the cost of two hops.
+- **Rx is composable, not automatically structure-preserving.** The map must be a
+  **faithful** morphism (meaning preserved across chains), which is exactly the
+  open question of the Majorana-braid row (faithful functor vs flattened diagram).
+  Similar-not-same: an Rx transform *composes*; whether it *preserves the meaning*
+  is the thing to prove.
+
 ## 5. Supporting frame (external, cited)
 
 - **Alpha-zero positioning** (Chaubard, YC 2026; AlphaGo Zero — Silver et al.,
