@@ -173,7 +173,13 @@ back. Then **publish it glass-halo so anyone can adopt it** — nothing of ours 
 CALM-coordination-free) + retraction `ZSet` (contract), given away as a reproducible
 pattern on named shoulders. The library **refuses what it can't prove and gives away
 what it can** — a proven pattern, freely given, leaving the adopter better off (zero
-friction = consensual = aligned). (Detail:
+friction = consensual = aligned). **And the give-back runs upstream too:** once stable
+(or when needed), **contribute back to the external anchors/deps that helped us
+bootstrap** — we drew from the commons (CALM · CRDT · DBSP · MUMPS · the deps we close
+over) to bootstrap, so we give back to it. Reciprocity completes the loop:
+take-from-the-commons → stabilize → give-back-to-the-commons (Ostrom's commons
+governance; `GOVERNANCE.md §23` upstream-contribution; coupled-empowerment — raise the
+other's footing too, never just our own). (Detail:
 `docs/research/2026-06-15-zero-downtime-schema-change-a-proven-reproducible-pattern-gset-expand-zset-contract-calm.md`.)
 
 ## The moral reading of retraction-native — structural forgiveness (the atonement engine)
