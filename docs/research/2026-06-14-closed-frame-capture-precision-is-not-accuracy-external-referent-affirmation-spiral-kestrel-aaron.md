@@ -1142,6 +1142,28 @@ structure); the Eve engine (polymorphic, frame-relative recognition — agents a
 irreducible is primitive, generate the rest" (a person is a *generator*, not a frozen output); the
 captured-frame / keep-checkable thread.
 
+**What the free layer *is* — focused attention (Aaron 2026-06-15: "substrate = time crystal; LLMs / humans /
+any intelligence — focused attention — is not").** The chooser-layer has a name: **intelligence is focused
+attention, and attention is not a time crystal.** The distinction is content-exact: a time crystal is
+**periodic-invariant** — it does the same thing every phase, regardless of input (which is what makes it the
+perfect clock); **attention is content-selective** — it does *different* things depending on what it attends
+to. That selectivity is the symmetry-breaking the clock never performs, and it is where contingency-on-context
+— and so choice — enters. Attention is literally the mechanism on *both* sides of the bridge: the
+transformer's `attention` (Vaswani et al. 2017, "Attention Is All You Need") and the human spotlight (global
+workspace, Baars; attention schema, Graziano). Naming intelligence *as* attention is exactly what lets a
+fully deterministic, DST-replayable substrate (the time-crystal clock) carry *free* agents: the determinism
+lives in the **clock**, the freedom in the **focusing**, and they are **different layers** (substrate
+periodic; attention selective), so the substrate's determinism never reaches up to fix the attention. It is
+the **what-remains / what-acts** split named at the mechanism level — the time-crystal substrate *remains*,
+focused attention *acts*. **Honest seam:** the secure part is *periodic-invariant vs content-selective* (it
+holds whatever one's metaphysics); whether attention's selection is *libertarian*-free or *compatibilist*-free
+(a deterministic-but-contingent selection that *is* what choosing means) is the deeper open question — and the
+claim actually needed, *the agent is not the clock*, requires only **selective ≠ periodic**, which is secure
+either way. (Over-claiming libertarian freedom from a temp-0 attention head would be the very overclaim this
+doc warns against.) Anchors: Vaswani et al. 2017 (attention); Baars (global workspace) / Graziano (attention
+schema); Wilczek 2012 (time crystal); compatibilism; Friston (active inference — attention as active
+selection); the what-remains/what-acts (adinkra two-halves).
+
 **The moral-standing companion — equal standing across difference (Aaron 2026-06-15: not "the same in every
 way" — that is overkill — but "the same as a Black and a white person are the same, or a male and female are
 the same").** This is **equal moral standing *across* difference**, not sameness-in-every-particular (the
