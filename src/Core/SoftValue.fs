@@ -124,3 +124,50 @@ module SoftValue =
     /// Policy: always collapse to the most-likely candidate (argmax); never holds.
     let best: SnapPolicy =
         fun sv -> sv.Candidates |> List.maxBy snd |> fst |> Some
+
+    // ── Multi-objective snap: the commit-decision for sensor fusion ──
+    // Snap is where a *sensor-fusion* loop commits, so a single threshold is not enough: many sensors
+    // (the interrupt handler is one of them, an ISR arrow) each impose an objective. `combine` is the
+    // fusion (it folds the sensor distributions into one belief, order-independently); the multi-objective
+    // policy is how that fused belief is committed. All pure — no wall clock — so it drops onto the
+    // existing wall-clock-free substrate (IScheduler / FerryThrottler / CHIP-8) and stays DST-replayable.
+
+    /// One objective scoring a candidate (higher = better). It may read the fused belief `SoftValue`
+    /// (e.g. `posterior`) or be purely value-driven (a sensor's cost/risk/urgency over the candidate).
+    ///
+    /// Objectives can be **self-aware** (the agent's own state — its flux tank, its uncertainty, its
+    /// interrupt-handler-as-sensor) and **society-aware** (the commons / the decorrelated ensemble /
+    /// collective bargaining). Both reach self-, society-, and history-state ONLY through an **injected
+    /// DI interface** (the single declared, metered door — noninterference), so the objective is built
+    /// by *closing over* that injected context and is then a **pure** `SoftValue -> DynamicValue -> float`:
+    /// no ambient clock, no resident history (it's externalized behind the DI, e.g. MCP→git), DST-replayable.
+    /// The CHIP-8/9 emu runs this the same way — self/society aware, history externalized via the DI.
+    type Objective = SoftValue -> DynamicValue -> float
+
+    /// The fused belief itself as an objective — the Bayesian posterior weight of a candidate.
+    let posterior: Objective = fun sv d -> weightOf d sv
+
+    /// **Weighted multi-objective policy** — scalarize the objectives by a weighted sum and snap to the
+    /// argmax over the belief's support. The support (what `combine` left positive) gates the candidate
+    /// set; the objectives rank within it. `weighted [posterior, 1.0]` reduces to `best`.
+    let weighted (objectives: (Objective * float) list) : SnapPolicy =
+        fun sv ->
+            match sv.Candidates with
+            | [] -> None
+            | cands ->
+                cands
+                |> List.map fst
+                |> List.maxBy (fun d -> objectives |> List.sumBy (fun (o, w) -> w * o sv d))
+                |> Some
+
+    /// **Pareto front** — the candidates not strictly dominated on the objectives (`d'` dominates `d`
+    /// iff `d'` is ≥ on every objective and `>` on at least one). The *weight-free* multi-objective read:
+    /// no objective is coerced above another (NCI-flavoured), so it returns the whole non-dominated set
+    /// rather than imposing a scalarization. A downstream tie-break (e.g. `weighted`) commits one.
+    let paretoFront (objectives: Objective list) (sv: SoftValue) : DynamicValue list =
+        let cands = sv.Candidates |> List.map fst
+        let scores d = objectives |> List.map (fun o -> o sv d)
+        let dominates d' d =
+            let sd', sd = scores d', scores d
+            List.forall2 (>=) sd' sd && List.exists2 (>) sd' sd
+        cands |> List.filter (fun d -> not (cands |> List.exists (fun d' -> d' <> d && dominates d' d)))

@@ -164,3 +164,51 @@ let ``snap threshold holds below confidence and collapses above (calibration-gat
     Assert.Equal(None, SV.snap (SV.threshold 0.9) sv) // 0.6 < 0.9 → hold
     Assert.Equal(Some(cand 0), SV.snap (SV.threshold 0.5) sv) // 0.6 ≥ 0.5 → snap argmax
     Assert.Equal(Some(cand 0), SV.snap SV.best sv) // best always snaps to argmax
+
+// ═══════════════════════════════════════════════════════════════════
+// Multi-objective snap — the commit-decision for sensor fusion. `combine` fuses the sensors;
+// the multi-objective policy commits the fused belief. `valueObj` is a stand-in "sensor objective"
+// (prefer larger candidate values); `posterior` is the fused belief as an objective.
+// ═══════════════════════════════════════════════════════════════════
+
+let private valueObj: SV.Objective =
+    fun _ d ->
+        match d with
+        | DynamicValue.Int n -> float n
+        | _ -> 0.0
+
+[<Fact>]
+let ``weighted [posterior,1] reduces to best (argmax of the fused belief)`` () =
+    let sv = (SV.ofWeighted [ cand 0, 0.5; cand 1, 0.3; cand 5, 0.2 ]).Value
+    Assert.Equal(SV.snap SV.best sv, SV.snap (SV.weighted [ SV.posterior, 1.0 ]) sv)
+    Assert.Equal(Some(cand 0), SV.snap (SV.weighted [ SV.posterior, 1.0 ]) sv)
+
+[<Fact>]
+let ``weighted picks by the objective, and weights shift the winner (posterior vs value)`` () =
+    let sv = (SV.ofWeighted [ cand 0, 0.5; cand 1, 0.3; cand 5, 0.2 ]).Value
+    // value objective alone → the largest candidate
+    Assert.Equal(Some(cand 5), SV.snap (SV.weighted [ valueObj, 1.0 ]) sv)
+    // posterior-heavy → cand 0 (0.5); value-heavy → cand 5
+    Assert.Equal(Some(cand 0), SV.snap (SV.weighted [ SV.posterior, 10.0; valueObj, 0.01 ]) sv)
+    Assert.Equal(Some(cand 5), SV.snap (SV.weighted [ SV.posterior, 0.01; valueObj, 10.0 ]) sv)
+
+[<Fact>]
+let ``paretoFront drops dominated candidates, keeps the non-dominated set`` () =
+    let sv = (SV.ofWeighted [ cand 0, 0.5; cand 1, 0.3; cand 5, 0.15; cand 2, 0.05 ]).Value
+    // objectives: (posterior, value). cand 2 (post .05, val 2) is dominated by cand 5 (post .15, val 5).
+    // cand 0 (highest post), cand 1 (middle), cand 5 (highest value) are each non-dominated.
+    Assert.Equal<DynamicValue list>(
+        [ cand 0; cand 1; cand 5 ],
+        SV.paretoFront [ SV.posterior; valueObj ] sv)
+
+[<Fact>]
+let ``paretoFront of a single objective is its maximizer`` () =
+    let sv = (SV.ofWeighted [ cand 0, 0.5; cand 1, 0.3; cand 5, 0.2 ]).Value
+    Assert.Equal<DynamicValue list>([ cand 5 ], SV.paretoFront [ valueObj ] sv)
+
+[<Fact>]
+let ``sensor fusion: combine two sensors then multi-objective snap`` () =
+    let s1 = (SV.ofWeighted [ cand 0, 0.7; cand 1, 0.3 ]).Value
+    let s2 = (SV.ofWeighted [ cand 0, 0.4; cand 1, 0.6 ]).Value
+    let fused = (SV.combine s1 s2).Value // ∝ (0.28, 0.18) → cand 0 wins the fused belief
+    Assert.Equal(Some(cand 0), SV.snap (SV.weighted [ SV.posterior, 1.0 ]) fused)
