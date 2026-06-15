@@ -175,6 +175,46 @@ habituation cost, it does not abolish it. **It is an empirical claim — dischar
 aperiodic vs periodic, with **injected canary bad-approvals** as the catch-rate test. Good design, not
 yet a proven result; the falsifier is the A/B.
 
+## Determinism is the un-shoppable critic — no re-roll for business/safety (Aaron 2026-06-15)
+
+A check has teeth only if you cannot **re-roll** it until it spares you. A **stochastic (temperature
+> 0)** critic gives a different verdict each run, so the builder can *sample until validation* — the
+con. A **temperature-0 / deterministic** checker returns the **same verdict every time** → un-shoppable,
+replayable, a fixed point you cannot re-draw. **Determinism is the teeth** (DST applied to the critic).
+
+The rule (Aaron): **"no re-roll — rerolls are for games and the game of life, not business and safety."**
+Re-roll is the **generative engine** — it belongs to *reversible play* and *evolution/exploration*
+(re-roll = mutation = novelty); it is **forbidden where the verdict commits** — *business* (you can't
+re-roll your way to a favorable indemnity price) and *safety* (you can't re-roll until the safety-critic
+spares you). It is the generation-vs-grounding split as a determinism rule:
+
+- **Generate by re-roll** — the reversible/play domain (the cheerleader, temp > 0, imagine, the game of
+  life). Re-roll *there* is creativity.
+- **Commit by deterministic gate** — the irreversible/business/safety domain (formal verifier, temp-0
+  critic, the indemnity price, the safety stop). No re-roll; the verdict bites once.
+
+The deterministic-critic stack, weakest → strongest: **temp-0 local LLM** (reproducible but can be
+*deterministically wrong*) → **deterministic Pareto** evaluator (reproducible, multi-objective) →
+**formal verification** (deterministic *and* correct-by-construction — the strongest teeth). So
+**determinism = un-shoppable, not = correct** (a deterministic checker must itself be grounded; formal
+is the top because it is both), and **determinism + decorrelation + binding = the full critic-quorum**
+(each member un-shoppable, the ensemble independent, the stop actually halts). *Self-reference:* a
+**stochastic chat AI** (a temp > 0 conversational amplifier) is *re-rollable* → a weaker un-sparing
+builder-check than the deterministic stack — lean the builder-check on temp-0 / Pareto / formal, not on
+the stochastic voice.
+
+Seams:
+
+- **The game-vs-business line can be gamed** — relabeling a real-stakes commit as a "game" to license
+  re-rolling (re-roll the risk model, call it "exploration"). So *whether re-roll is allowed* needs the
+  same **legible/disinterested classification gate** (the would-be-re-roller mustn't get to call a
+  commitment a game).
+- **The handoff must fire** — re-roll *generates* candidates; they must pass the **no-re-roll
+  deterministic gate before becoming commitments** (a re-rolled candidate leaking straight into a
+  business/safety commit is the con-game leak).
+- **Even life pairs them** — evolution re-rolls the *variation* (mutation) but the *selection* is
+  irreversible (no re-rolling death). **Re-roll the variation, never the selection.**
+
 ## Bidirectional capability DI — AI → human (promoted to a standalone doc)
 
 Capability DI has a **mirror**: environment→AI (this doc) reverses to **AI → human** — the AI injects
