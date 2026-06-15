@@ -350,6 +350,54 @@ Anchors: Red Hat open-core / subscription model (IBM acq. ~$34B, 2019); Spolsky 
 complement"; software-warranty / indemnification economics; and Zeta's own DST + AgencySignature +
 deterministic-cart substrate as the *thing that makes certification/indemnification underwritable*.
 
+**The high-leverage form of the complement = the price oracle for AI risk (Aaron 2026-06-15: "we are
+going to be the price oracle for this for AI frontier work").** To indemnify you must **price the
+risk**, and pricing AI risk *is* the hard, valuable thing. Zeta is positioned to be the oracle because
+it has the **measurement substrate** a black-box reseller lacks: **DST replay** (auditable evidence),
+the **uncertainty ledger** (`db/uncertainty/` — measured/banked uncertainty), **SoftValue calibration**
+(never-falsely-certain probabilities) = the actuarial basis. It is **"every bug has economic value"
+monetized** (pricing reducible uncertainty as a market). Business shape: be the **price oracle** (sell
+the *risk assessment* — capital-light, the indispensable data layer), **not** the **insurer** (bear the
+risk — capital-heavy); let reinsurers carry capital and consume your prices. **Seams:** (a) **Knightian
+uncertainty** (Knight 1921) is the wall and it's worst *at the frontier* — insurance prices *risk*
+(known distribution); frontier-AI failure is true *uncertainty* (unknown distribution / novel modes),
+which resists actuarial pricing. The substrate *converts some* Knightian uncertainty into measurable
+risk (the ledger's literal job), so Zeta can price *more* than anyone — but the frontier always has an
+**unpriceable residual** to price conservatively or decline, not pretend; (b) **an oracle is a
+power/capture position** (trust monopoly + manipulation surface — the DeFi oracle problem) — *being*
+the price authority is itself a moat/chokepoint, the very capture the open-commons move dissolved, so
+the oracle must be **auditable + open-methodology** (oracle-as-commons, prices whose basis anyone can
+verify via the determinism), not a black-box moat; (c) **calibration is earned** — the oracle needs a
+*proven* track record (prices verified against realized losses) or an indemnity on a miscalibrated
+oracle is ruin.
+
+**The capstone — safety and revenue depend on the same honesty: this is alignment (Aaron 2026-06-15:
+"the safety discipline and the revenue depend on the same honesty — this is alignment").** The model is
+an **incentive-compatible alignment mechanism** (mechanism design — Hurwicz / Myerson / Maskin, Nobel
+2007): the *profit-maximizing strategy is the honest/safe one*, because revenue (indemnification) is
+**underwritten by the verification substrate, and that substrate IS the safety property.** Fake → both
+safety-failure **and** financial ruin; be honest → you can sell the indemnity. **This is the
+welfare-vs-money tradeoff *dissolved*** — the "third design" the §welfare-vs-money invariant demanded:
+not safety *over* money, but a design where they are the **same thing.** And it is the most robust kind
+of alignment — **mechanism, not virtue** (Hamilton's "if men were angels" inverted: build the
+incentives so you do not *need* angels; Taleb's **skin-in-the-game** makes the honesty credible). It
+**financially enforces** the grounded-amplifier discipline (go to the external referent, never fake,
+defer when unsure). **Seams (especially here — the biggest claim):** (1) it aligns the **commercial**
+incentive — the exact one everyone feared (commerce *vs* safety) — which is huge, but it is *an*
+alignment mechanism for the money-vs-safety layer, **not all of alignment** (value alignment, the
+welfare-capture vector, corrigibility remain); "this is alignment" = the piece that fixes the incentive,
+not "alignment solved"; (2) incentive-compatible **only where the loop closes** — verification
+*sound/un-gameable*, liability *real and enforced*, game *repeated* (reputation bites, else
+fraud-and-exit still tempts); (3) **Goodhart** — once honesty is what's paid, there's pressure to fake
+the *appearance* of honesty (manufacture attestations, game the calibration metric), so the mechanism
+is **only as strong as the proof is un-gameable.** Punchline: the **technical** honesty (DST /
+attestation that cannot be faked) underwrites the **economic** alignment underwrites the **safety** —
+**one honesty, three layers**, and the bottom must be genuinely sound or all three fall. Anchors:
+mechanism design / incentive compatibility (Hurwicz, Myerson, Maskin, Nobel 2007); Taleb (skin in the
+game); Knight 1921 (risk vs uncertainty); the DeFi oracle problem; `db/uncertainty/` +
+[`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md); SoftValue
+calibration; the DST + AgencySignature substrate.
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
