@@ -6,8 +6,8 @@ status: open
 title: "B-0004.8 — Precision anchor translations: extend anchors-en.json to anchors-<lang>.json for first language"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.7]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR7JY10008QG0R0022YWDVZ]
 classification: blocked
 type: research
 effort: S

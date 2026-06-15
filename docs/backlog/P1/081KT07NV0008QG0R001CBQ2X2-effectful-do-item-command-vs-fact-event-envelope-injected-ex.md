@@ -8,10 +8,10 @@ created: 2026-06-01
 last_updated: 2026-06-01
 author: otto-cli
 composes_with:
-  - B-0958 # observe.ts checklist — this is LEFT item #1 (effectful action kinds, do_item first)
-  - B-0962 # coordination (do_item is the work action the menu offers; deadlock/livelock disciplines)
-  - B-0963 # liveness proof (completion = an executed do_item, not just a selection)
-  - B-0867 # workflow-engine lifecycle DUs (the executed-event envelope is lifecycle-shaped)
+  - 081KSXN940008QG0R001A4WWX4 # observe.ts checklist — this is LEFT item #1 (effectful action kinds, do_item first)
+  - 081KT07NV0008QG0R002KWQS05 # coordination (do_item is the work action the menu offers; deadlock/livelock disciplines)
+  - 081KT07NV0008QG0R001N9GJWX # liveness proof (completion = an executed do_item, not just a selection)
+  - 081KSKBP80008QG0R000B3Y19A # workflow-engine lifecycle DUs (the executed-event envelope is lifecycle-shaped)
 ---
 
 # B-0964 — Effectful do_item

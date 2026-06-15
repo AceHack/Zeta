@@ -10,7 +10,7 @@ created: 2026-05-18
 last_updated: 2026-05-18
 renumbered_from: B-0633
 depends_on: []
-composes_with: [B-0632, B-0629, B-0499]
+composes_with: [081KRW63S0008QG0R002Z2GR1X, 081KRW63S0008QG0R0015WHHG1, 081KRHWGX0008QG0R0034E0N22]
 tags: [design, mika, permanent-coliseum, language-deathmatch, retractable-substrate, no-privileged-language, regenerate-and-translate, locked-in]
 type: design
 ---

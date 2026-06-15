@@ -10,7 +10,7 @@ effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
-parent: B-0365
+parent: 081KR50HA0008QG0R002R3NVGS
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

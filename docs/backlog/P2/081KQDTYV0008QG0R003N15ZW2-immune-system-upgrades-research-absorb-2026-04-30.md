@@ -10,7 +10,7 @@ ask: Aaron 2026-04-30 (autonomous-loop channel input — verbatim "backlog immun
 created: 2026-04-30
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0086]
+composes_with: [081KQ8P5D0008QG0R003BFZPRC]
 tags: [research-absorb, immune-system, aurora-bridge, superorganism, factory-substrate]
 type: friction-reducer
 ---

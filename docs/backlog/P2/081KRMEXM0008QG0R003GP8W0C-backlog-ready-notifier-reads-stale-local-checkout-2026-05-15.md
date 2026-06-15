@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-15
 last_updated: 2026-05-15
 depends_on: []
-composes_with: [B-0441, B-0442, B-0532]
+composes_with: [081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW, 081KRMEXM0008QG0R003FZNK3E]
 tags: [background-service, bus, drift-detection, multi-otto, mechanization]
 type: bug
 ---

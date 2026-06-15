@@ -8,8 +8,8 @@ tier: research+engineering-direction
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0202]
-composes_with: [B-0052, B-0053]
+depends_on: [081KQTPYE0008QG0R002Y7X5KH]
+composes_with: [081KQ3HBZ0008QG0R000FQ69NN, 081KQ3HBZ0008QG0R000JWFD37]
 tags: [tinygrad, uop-ir, retract-semantics]
 type: task
 ---

@@ -6,8 +6,8 @@ status: open
 title: "Timeseries native-ZSet research - CRDT multi-mode semantics"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0147
-depends_on: [B-0225]
+parent: 081KQGDBJ0008QG0R0004ACHJJ
+depends_on: [081KQX9B50008QG0R003Z7Z9EG]
 classification: blocked-on-algebra-fit
 type: feature
 ---

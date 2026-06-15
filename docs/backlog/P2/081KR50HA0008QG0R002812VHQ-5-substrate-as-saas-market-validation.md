@@ -6,7 +6,7 @@ status: open
 title: "B-0029.5 — Survey: substrate-as-SaaS market validation (hosted factory-discipline tooling opportunity)"
 created: 2026-05-09
 last_updated: 2026-05-09
-parent: B-0029
+parent: 081KQ3HBZ0008QG0R000JRZAMM
 depends_on: []
 classification: research-now
 type: research

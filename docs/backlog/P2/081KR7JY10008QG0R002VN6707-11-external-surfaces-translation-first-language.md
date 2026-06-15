@@ -6,8 +6,8 @@ status: open
 title: "B-0004.11 — External-facing surfaces translation — first language (NuGet metadata, GitHub description, README)"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.10]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR7JY10008QG0R001XQ6N71]
 classification: blocked
 type: feature
 effort: XS

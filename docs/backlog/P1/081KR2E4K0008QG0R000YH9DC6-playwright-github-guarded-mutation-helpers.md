@@ -6,11 +6,11 @@ status: closed
 title: "Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check"
 tier: agent-capability-expansion
 effort: M
-parent: B-0064
+parent: 081KQ8P5D0008QG0R0010FP5SY
 created: 2026-05-08
 last_updated: 2026-05-08
-depends_on: [B-0317, B-0318, B-0320]
-composes_with: [B-0064, B-0322]
+depends_on: [081KR2E4K0008QG0R0031QR36N, 081KR2E4K0008QG0R003RVDX91, 081KR2E4K0008QG0R002A0AGBJ]
+composes_with: [081KQ8P5D0008QG0R0010FP5SY, 081KR2E4K0008QG0R002N1C3YJ]
 tags: [agent-capability, github-ui, playwright, mutation, guardrails, safety]
 type: friction-reducer
 ---

@@ -12,7 +12,7 @@ last_updated: 2026-05-22
 depends_on: []
 decomposition: decomposed
 classification: buildable-now
-composes_with: [B-0169]
+composes_with: [081KQJZR90008QG0R002D6XYHB]
 tags: [tooling, ts, substrate-claim-checker, verify-then-claim, drift-detection, mechanization, hub-shaped, foundation]
 type: friction-reducer
 ---

@@ -6,7 +6,7 @@ status: open
 title: "CI-wire the skill-description audit gate so the cap is enforced, not just checkable"
 created: 2026-05-29
 last_updated: 2026-05-29
-parent: B-0347
+parent: 081KR50HA0008QG0R002ZNFQBZ
 depends_on: []
 classification: buildable-now
 decomposition: atomic

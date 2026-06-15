@@ -8,8 +8,8 @@ tier: research
 effort: XL
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1000]
-composes_with: [B-1004, B-1006, B-0997, B-0998, B-0999, B-0428]
+depends_on: [081KT2T2J0008QG0R000S7GHQ8]
+composes_with: [081KT2T2J0008QG0R0038CRFJM, 081KT2T2J0008QG0R0008TFHJT, 081KT2T2J0008QG0R0026XCGQM, 081KT2T2J0008QG0R003VK5GRX, 081KT2T2J0008QG0R0019YVX8M, 081KRFA460008QG0R0018SN61J]
 tags: [formal-coverage, formal-proof-first, nothing-canonical-yet, proven-from-seed, homeostat, hex-4x4-connection, consensus-not-validation, asserted-vs-proven, z3, fscheck, tla-plus, bp-16, soraya, message-group-laws, bp-exact-on-trees, ep-moment-match, codec-functor-laws, tick-algebra-laws, infer-net, research, aaron, soraya]
 type: research
 ---

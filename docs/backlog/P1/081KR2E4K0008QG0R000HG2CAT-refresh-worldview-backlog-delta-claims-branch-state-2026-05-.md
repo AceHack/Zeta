@@ -6,8 +6,8 @@ status: closed
 title: "refresh-worldview — backlog delta + claim inventory + branch state"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0159
-depends_on: [B-0262]
+parent: 081KQGDBJ0008QG0R003H0G5YQ
+depends_on: [081KR2E4K0008QG0R001DYCKNH]
 classification: buildable-now
 decomposition: atomic
 ---

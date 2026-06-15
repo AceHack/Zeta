@@ -10,12 +10,12 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on: []
 composes_with:
-  - B-0867
-  - B-0874
-  - B-0880
-  - B-0881
-  - B-0859
-  - B-0875.1
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R003X1QWYG
+  - 081KSNY2Z0008QG0R000ED0ED8
+  - 081KSNY2Z0008QG0R0015C3F01
+  - 081KSKBP80008QG0R00146WEX1
+  - 081KSNY2Z0008QG0R002WQ747V
 tags:
   - no-throttle-system-design
   - gardener-not-engineer-operator-posture

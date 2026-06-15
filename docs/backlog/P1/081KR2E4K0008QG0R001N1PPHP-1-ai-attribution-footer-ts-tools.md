@@ -7,7 +7,7 @@ title: "Layer 4: AI attribution footer for TS comment-posting tools"
 created: 2026-05-08
 last_updated: 2026-05-08
 depends_on: []
-parent: B-0126
+parent: 081KQGDBJ0008QG0R001JC9HCJ
 classification: buildable-now
 type: friction-reducer
 ---

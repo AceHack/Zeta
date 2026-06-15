@@ -8,8 +8,8 @@ tier: product
 effort: M
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0401, B-0413]
-composes_with: [B-0409]
+depends_on: [081KR7JY10008QG0R001VP6JWG, 081KRA5AR0008QG0R003DVPANH]
+composes_with: [081KRA5AR0008QG0R000Y6102S]
 tags: [dashboard, dora, metrics, json, agent-readable, promotion-pipeline]
 type: feature
 ---

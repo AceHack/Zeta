@@ -10,9 +10,9 @@ created: 2026-05-13
 last_updated: 2026-05-13
 closed: 2026-05-13
 closed_reason: "All acceptance criteria satisfied; shipped in PR associated with feat/b-0401-demo-alignment-tab-slice-1"
-parent: B-0401
-depends_on: [B-0400]
-composes_with: [B-0017, B-0154]
+parent: 081KR7JY10008QG0R001VP6JWG
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KQ0YZ80008QG0R0003GAYYN, 081KQGDBJ0008QG0R002NV04N9]
 tags: [demo, alignment-ui, github-pages, html, js]
 type: feature
 ---

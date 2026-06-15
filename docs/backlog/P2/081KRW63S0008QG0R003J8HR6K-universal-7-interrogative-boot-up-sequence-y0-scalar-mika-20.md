@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0618, B-0616]
+composes_with: [081KRW63S0008QG0R003CST61D, 081KRW63S0008QG0R0003XMM0W]
 tags: [design, mika, boot-stream, interrogatives, y0-scalar, tick-source, canonical, cold-boot]
 type: design
 ---

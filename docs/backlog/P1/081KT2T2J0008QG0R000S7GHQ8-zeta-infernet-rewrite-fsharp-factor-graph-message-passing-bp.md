@@ -8,8 +8,8 @@ tier: research
 effort: XL
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0998]
-composes_with: [B-0998, B-0999, B-0985, B-0428, B-0547, B-0543, B-0544]
+depends_on: [081KT2T2J0008QG0R003VK5GRX]
+composes_with: [081KT2T2J0008QG0R003VK5GRX, 081KT2T2J0008QG0R0019YVX8M, 081KT2T2J0008QG0R0026MS6PV, 081KRFA460008QG0R0018SN61J, 081KRMEXM0008QG0R001VGNET5, 081KRMEXM0008QG0R002YSPW1X, 081KRMEXM0008QG0R003YWZC21]
 tags: [infer-net, infernet-rewrite, bayesian-inference, factor-graph, message-passing, belief-propagation, expectation-propagation, vmp, gibbs, sum-product, semiring, dbsp, nested-circuit, fixpoint, conjugate-prior, exponential-family, seed-core, seed-ce, model-dsl, incremental-inference, fsharp, research, aaron]
 type: research
 ---

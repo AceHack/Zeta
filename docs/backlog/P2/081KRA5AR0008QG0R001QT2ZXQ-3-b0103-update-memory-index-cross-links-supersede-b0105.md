@@ -9,7 +9,7 @@ effort: M
 ask: Final atomic slice of B-0105 consolidation: mark B-0098/0099 subsumed in B-0103, add Home-3 pointer to MEMORY.md, cross-link all 3 homes, supersede B-0105 itself
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0105.1, B-0105.2]
+depends_on: [081KRA5AR0008QG0R0031VF018, 081KRA5AR0008QG0R002JS7GRB]
 composes_with: []
 tags: [consolidation, durable-home, index-update, supersede]
 type: friction-reducer

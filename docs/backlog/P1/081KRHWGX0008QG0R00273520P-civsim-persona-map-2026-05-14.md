@@ -10,15 +10,15 @@ type: planning
 origin: B-0429 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0429
+parent: 081KRFA460008QG0R002M05EY1
 depends_on:
-  - B-0485
+  - 081KRHWGX0008QG0R00019453T
 composes_with:
-  - B-0429
-  - B-0485
-  - B-0492
-  - B-0493
-  - docs/backlog/P1/B-0470-civsim-zeta-version-pin-bump-2026-05-14.md
+  - 081KRFA460008QG0R002M05EY1
+  - 081KRHWGX0008QG0R00019453T
+  - 081KRHWGX0008QG0R000WGP5AQ
+  - 081KRHWGX0008QG0R002XVHSG5
+  - docs/backlog/P1/081KRHWGX0008QG0R002NJP2BH-civsim-zeta-version-pin-bump-2026-05-14.md
 ---
 
 # B-0486 — Civsim persona map

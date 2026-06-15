@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0506, B-0528, B-0530, B-0532, B-0535]
+composes_with: [081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000T0A28T, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R003FZNK3E, 081KRMEXM0008QG0R000HHAG77]
 tags: [backlog, hygiene, drift, factory-cadence, mechanization, friction-reducer]
 type: feature
 ---

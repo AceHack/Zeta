@@ -9,13 +9,13 @@ ask: aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0867
-  - B-0893
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000V24M7E
 composes_with:
-  - B-0867
-  - B-0893
-  - B-0872
-  - B-0873
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000V24M7E
+  - 081KSNY2Z0008QG0R000ZNRFCE
+  - 081KSNY2Z0008QG0R000F0C5V0
 tags:
   - github-actions-recursion
   - workflows-triggering-workflows-forever

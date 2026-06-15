@@ -6,7 +6,7 @@ status: closed
 title: "git-bash routing install-shield — the one unshielded install surface (parity gap)"
 created: 2026-06-01
 last_updated: 2026-06-01
-depends_on: [B-0857]
+depends_on: [081KSKBP80008QG0R002J03WGA]
 classification: buildable-now
 decomposition: atomic
 owners: [devops-engineer]

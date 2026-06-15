@@ -7,10 +7,10 @@ title: Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constrain
 created: 2026-05-01
 last_updated: 2026-05-01
 decomposition: decomposed
-children: [B-0268, B-0269]
+children: [081KR2E4K0008QG0R003DDAFJD, 081KR2E4K0008QG0R002FYNDT1]
 depends_on:
-  - B-0006
-  - B-0153
+  - 081KQ0YZ80008QG0R001V0XCYZ
+  - 081KQGDBJ0008QG0R000E10AAM
 # `depends_on` is a forward-compat schema field per
 # `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`
 # 2026-05-01 extension; informational-only until tooling lands.

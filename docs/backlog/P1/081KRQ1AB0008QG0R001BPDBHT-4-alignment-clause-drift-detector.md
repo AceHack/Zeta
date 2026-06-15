@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 (decomposed from B-0058)
 created: 2026-05-16
 last_updated: 2026-05-29
 decomposition: leaf
-depends_on: [B-0058]
+depends_on: [081KQ3HBZ0008QG0R002S674CG]
 composes_with: [docs/ALIGNMENT.md]
 tags: [ai-ethics, ai-safety, alignment, drift-detector, alignment-clause]
 type: friction-reducer

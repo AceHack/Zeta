@@ -7,8 +7,8 @@ closed: 2026-05-09
 title: "Extract carved sentences from CLAUDE.md to .claude/rules/"
 created: 2026-05-08
 last_updated: 2026-05-09
-parent: B-0158
-depends_on: [B-0268]
+parent: 081KQGDBJ0008QG0R003YPS5GB
+depends_on: [081KR2E4K0008QG0R003DDAFJD]
 classification: done
 decomposition: atomic
 type: feature

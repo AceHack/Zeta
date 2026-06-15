@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
-composes_with: [B-0926, B-0867]
+composes_with: [081KSRGFP0008QG0R00091PP56, 081KSKBP80008QG0R000B3Y19A]
 tags: [conflict-resolution, agora, non-coercion, de-escalation, data-driven, wellbeing, workflow-engine, aaron]
 type: design
 ---

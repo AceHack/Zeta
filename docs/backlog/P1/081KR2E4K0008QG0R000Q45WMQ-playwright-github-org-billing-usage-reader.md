@@ -6,11 +6,11 @@ status: open
 title: "Org-level billing/usage page reader — extract Actions minutes and costs via UI"
 tier: agent-capability-expansion
 effort: S
-parent: B-0064
+parent: 081KQ8P5D0008QG0R0010FP5SY
 created: 2026-05-08
 last_updated: 2026-05-08
-depends_on: [B-0318]
-composes_with: [B-0064, B-0319]
+depends_on: [081KR2E4K0008QG0R003RVDX91]
+composes_with: [081KQ8P5D0008QG0R0010FP5SY, 081KR2E4K0008QG0R0001FRW8H]
 tags: [agent-capability, github-ui, playwright, billing, cost-parity, read-only]
 type: friction-reducer
 ---

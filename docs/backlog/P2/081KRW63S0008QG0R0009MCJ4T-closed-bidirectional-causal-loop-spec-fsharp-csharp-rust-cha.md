@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0632]
-composes_with: [B-0649, B-0651, B-0652, B-0653, B-0628]
+depends_on: [081KRW63S0008QG0R002Z2GR1X]
+composes_with: [081KRW63S0008QG0R0020DGSK1, 081KRW63S0008QG0R002N6PPVK, 081KRW63S0008QG0R002GRX85J, 081KRW63S0008QG0R003ECWGJV, 081KRW63S0008QG0R003TX8MG5]
 tags: [design, aaron, mika, bidirectional-causal-loop, spec-implementation-co-evolution, mutual-regeneration-chain, integrity-checksum, language-coliseum, locked-in, b0632-sharpening]
 type: design
 ---

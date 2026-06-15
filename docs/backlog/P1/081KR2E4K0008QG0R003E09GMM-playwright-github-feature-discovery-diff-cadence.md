@@ -6,11 +6,11 @@ status: open
 title: "GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features"
 tier: agent-capability-expansion
 effort: S
-parent: B-0064
+parent: 081KQ8P5D0008QG0R0010FP5SY
 created: 2026-05-08
 last_updated: 2026-05-09
-depends_on: [B-0318]
-composes_with: [B-0064, B-0319]
+depends_on: [081KR2E4K0008QG0R003RVDX91]
+composes_with: [081KQ8P5D0008QG0R0010FP5SY, 081KR2E4K0008QG0R0001FRW8H]
 tags: [agent-capability, github-ui, playwright, feature-discovery, cadence]
 type: friction-reducer
 ---

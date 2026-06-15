@@ -12,7 +12,7 @@ composes_with:
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
   - memory/project_repo_split_provisional_names_frontier_factory_and_peers_2026_04_23.md
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md
-  - B-0425
+  - 081KRFA460008QG0R003JQ46J4
 ---
 
 # Three-repo split Stage 1 — create empty Forge + ace repos with day-one scaffolding

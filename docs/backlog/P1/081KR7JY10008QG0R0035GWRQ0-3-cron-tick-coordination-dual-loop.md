@@ -8,8 +8,8 @@ effort: S
 created: 2026-05-10
 last_updated: 2026-05-31
 depends_on:
-  - B-0164.1
-parent: B-0164
+  - 081KR7JY10008QG0R000MH7PJT
+parent: 081KQJZR90008QG0R002GJAJ19
 classification: blocked
 decomposition: atomic
 owners: [architect]

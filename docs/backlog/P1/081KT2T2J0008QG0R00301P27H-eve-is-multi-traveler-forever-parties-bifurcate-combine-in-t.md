@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1002]
-composes_with: [B-1002, B-1000, B-0669, B-0638, B-0998, B-0985, B-0984, B-0983, B-0666, B-0428]
+depends_on: [081KT2T2J0008QG0R002R72323]
+composes_with: [081KT2T2J0008QG0R002R72323, 081KT2T2J0008QG0R000S7GHQ8, 081KRYRGG0008QG0R0031EYYE4, 081KRW63S0008QG0R0030F8ZXA, 081KT2T2J0008QG0R003VK5GRX, 081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R003DMEKFH, 081KT2T2J0008QG0R003WYPBY5, 081KRW63S0008QG0R001SAHYKV, 081KRFA460008QG0R0018SN61J]
 tags: [eve-protocol, multi-traveler, multi-party, party-as-identity-noun, identity, fluent-monad, bifurcate, combine, v8-single-traveler, hidden-shape, multiparty-session-types, mpst, roles, global-type, endpoint-projection, decentralized-identity, hex-core, nouns, vector, prior-art, research, aaron]
 type: research
 ---

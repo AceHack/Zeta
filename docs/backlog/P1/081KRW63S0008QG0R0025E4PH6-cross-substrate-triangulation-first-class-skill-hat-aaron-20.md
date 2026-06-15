@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0626, B-0646, B-0644, B-0645]
+composes_with: [081KRW63S0008QG0R000BH37EV, 081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R003AZNK6J]
 tags: [methodology, aaron, cross-substrate-triangulation, skill, hat, epistemic-ratification, independent-observation-paths, multi-harness, locked-in]
 type: methodology
 ---

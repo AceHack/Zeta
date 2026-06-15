@@ -10,7 +10,7 @@ ask: aaron 2026-05-21 ("plan phase 2 zsetw operator migration (shadow*)")
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0697]
-composes_with: [B-0666, B-0668, B-0669]
+composes_with: [081KRW63S0008QG0R001SAHYKV, 081KRYRGG0008QG0R0018CMFQY, 081KRYRGG0008QG0R0031EYYE4]
 tags: [zsetw-phase-2, operator-migration, polymorphic-z-set, tropical-shortest-path, interval-propagation, worked-examples, migration-documentation]
 type: research
 ---

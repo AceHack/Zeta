@@ -9,13 +9,13 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0789
-  - B-0792
-  - B-0793
+  - 081KSGS9H0008QG0R002T3BJ2R
+  - 081KSGS9H0008QG0R003V23XNZ
+  - 081KSGS9H0008QG0R000EDNTY5
 composes_with:
-  - B-0776
-  - B-0790
-  - B-0782
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSGS9H0008QG0R00153CQ8B
+  - 081KSE6WT0008QG0R003CMCX84
 tags: [gitops, self-registration, argocd, kubernetes-bringup, cluster-bringup, maintainers-subtree, b0789-iter5-cluster-write-back, end-state-substrate]
 ---
 

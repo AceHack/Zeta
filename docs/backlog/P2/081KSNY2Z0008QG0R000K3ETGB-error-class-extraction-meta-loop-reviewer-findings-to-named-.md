@@ -10,9 +10,9 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on: []
 composes_with:
-  - B-0867
-  - B-0869
-  - B-0876
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000HENSVM
+  - 081KSNY2Z0008QG0R003KG3JTG
 tags:
   - error-class-extraction
   - meta-loop-turning-review-findings-into-rules

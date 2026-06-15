@@ -10,8 +10,8 @@ created: 2026-05-13
 last_updated: 2026-05-13
 closed_at: 2026-05-13
 closed_by_pr: 3043
-depends_on: [B-0400]
-composes_with: [B-0440, B-0441, B-0442]
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW]
 tags: [bus, claim, worktree, multi-foreground-surface, split-brain, B-0400-followup]
 type: feature
 ---

@@ -10,7 +10,7 @@ created: 2026-05-30
 last_updated: 2026-05-30
 decomposition: leaf
 composes_with:
-  - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
+  - docs/backlog/P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
 tags: [core-primitive, tri-boolean, floating-point, fromvalue, performance, dos-hardening, cross-language-parity, biased-exponent, v0-hardening]

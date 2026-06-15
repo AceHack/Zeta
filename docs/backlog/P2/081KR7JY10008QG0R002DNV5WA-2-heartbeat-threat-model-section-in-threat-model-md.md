@@ -7,7 +7,7 @@ title: B-0032.2 — add heartbeat-file integrity section to THREAT-MODEL.md (bui
 tier: security-research
 effort: S
 depends_on: [B-0032.1]
-parent: B-0032
+parent: 081KQ3HBZ0008QG0R002ZPXAFQ
 composes_with: [tools/security/heartbeat-attack-vectors.ts, docs/security/THREAT-MODEL.md]
 tags: [security, threat-model, aminata, heartbeat-integrity, substrate-poisoning]
 type: friction-reducer

@@ -9,7 +9,7 @@ effort: S
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-1007, B-1000]
+composes_with: [081KT2T2J0008QG0R000YZ3NMY, 081KT2T2J0008QG0R000S7GHQ8]
 tags: [z3, smt, ci, gate-yml, green-by-skip, assert-dont-skip, formal-proof-first, formal-verification, self-skip-hole, shield-with-a-hole, infer-net, aaron]
 type: tooling
 ---

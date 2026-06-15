@@ -12,7 +12,7 @@ type: cluster-architecture
 discovered_by: aaron
 owners: [aaron, maintainer]
 composes_with:
-  - docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md
+  - docs/backlog/P1/081KR2E4K0008QG0R001SWEPNV-green-lantern-hardware-spec-2026-05-08.md
   - full-ai-cluster/k8s/applications/cilium/
   - full-ai-cluster/k8s/applications/spire/
   - full-ai-cluster/k8s/applications/hat-system/

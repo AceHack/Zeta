@@ -7,9 +7,9 @@ title: TS lucky-guess + unsolicited-inference firewall protocol
 tier: factory-hygiene
 effort: S
 depends_on:
-  - B-0093.2
+  - 081KDVJZK7008QG0R0023FS41G
 composes_with:
-  - B-0093
+  - 081KQ8P5D0008QG0R003MY8246
 tags: [riven-2026-05-11, ts-prefer, lucky-guess, inference-firewall, compliance]
 ---
 # B-0093.3 — Atomic child: TS lucky-guess + unsolicited-inference firewall

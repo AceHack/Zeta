@@ -8,16 +8,16 @@ type: adr
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0426
+parent: 081KRFA460008QG0R0007RWSN1
 depends_on:
-  - B-0472
-  - B-0473
+  - 081KRHWGX0008QG0R002DP6AZN
+  - 081KRHWGX0008QG0R0031EGYA7
 composes_with:
-  - B-0426
-  - B-0471
-  - B-0472
-  - B-0473
-  - B-0424
+  - 081KRFA460008QG0R0007RWSN1
+  - 081KRHWGX0008QG0R002VV6DTS
+  - 081KRHWGX0008QG0R002DP6AZN
+  - 081KRHWGX0008QG0R0031EGYA7
+  - 081KRFA460008QG0R001H98EXJ
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md
   - docs/DECISIONS/2026-05-14-product-repo-split-decisions.md
 ---

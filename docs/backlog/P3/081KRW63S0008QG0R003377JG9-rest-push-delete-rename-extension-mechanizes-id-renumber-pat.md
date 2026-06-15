@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0615, B-0648]
+composes_with: [081KRW63S0008QG0R000EAZ9K2, 081KRW63S0008QG0R0025E4PH6]
 tags: [tooling, otto-cli, rest-push, delete-support, rename-support, id-renumber-mechanization, closed]
 type: tooling
 ---

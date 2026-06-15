@@ -12,7 +12,7 @@ last_updated: 2026-05-08
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0060]
+composes_with: [081KQ8P5D0008QG0R000N718AC]
 tags: [install-path, supply-chain, upstream-installers, codex-p0, pr-75, streaming-vs-buffered, checksum]
 type: friction-reducer
 ---

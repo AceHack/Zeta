@@ -6,8 +6,8 @@ status: open
 title: "Multi-site fork — maintainer fork onboarding and mirror-sync setup for Addison and Max"
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0248
-depends_on: [B-0110]
+parent: 081KQZVQW0008QG0R0032TPKT8
+depends_on: [081KQDTYV0008QG0R001Y2E9TD]
 decomposition: atomic
 owners: [security-auditor]
 type: feature

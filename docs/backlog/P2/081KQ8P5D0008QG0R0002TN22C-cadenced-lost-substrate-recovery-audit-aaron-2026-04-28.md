@@ -11,11 +11,11 @@ created: 2026-04-28
 last_updated: 2026-05-11
 depends_on: []
 composes_with:
-  - B-0060
-  - B-0090.1
-  - B-0090.2
-  - B-0090.3
-  - B-0090.4
+  - 081KQ8P5D0008QG0R000N718AC
+  - 081KDVJT3E008QG0R003GV8BHV
+  - 081KDVJT3E008QG0R00183ME0R
+  - 081KDVJT3E008QG0R000P3YGTX
+  - 081KDVJT3E008QG0R002GGF22P
 tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder, decomposed]
 type: friction-reducer
 ---

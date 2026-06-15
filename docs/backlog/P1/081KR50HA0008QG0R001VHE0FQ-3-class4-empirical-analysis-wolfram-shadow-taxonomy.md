@@ -9,8 +9,8 @@ created: 2026-05-09
 last_updated: 2026-05-09
 resolved: 2026-05-09
 resolved_by: "docs(B-0365.3): Class 4 empirical analysis — shadow taxonomy, 30 catches, 8 classes"
-depends_on: [B-0365.2]
-parent: B-0365
+depends_on: [081KR50HA0008QG0R001AW7R6R]
+parent: 081KR50HA0008QG0R002R3NVGS
 classification: done
 decomposition: atomic
 owners: [architect]

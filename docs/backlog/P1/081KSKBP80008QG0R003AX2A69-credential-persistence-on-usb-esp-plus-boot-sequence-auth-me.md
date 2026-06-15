@@ -10,12 +10,12 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with:
-  - B-0850
-  - B-0833
-  - B-0835
-  - B-0831
-  - B-0847
-  - B-0851
+  - 081KSKBP80008QG0R003Z4C0D0
+  - 081KSGS9H0008QG0R003JNSVR5
+  - 081KSGS9H0008QG0R00120EEHM
+  - 081KSGS9H0008QG0R0011BC7T2
+  - 081KSGS9H0008QG0R002T0XQ50
+  - 081KSKBP80008QG0R00248VEWT
 tags: [installer, credentials, gh-auth, esp-write, encrypted-blob, boot-sequence, auth-method-picker, multi-vendor, phase-1, operator-passphrase, usb-uuid-binding]
 ---
 

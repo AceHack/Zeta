@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - sitemap, robots, and AI crawler policy"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0234
-depends_on: [B-0284]
+parent: 081KQX9B50008QG0R0004N4HNK
+depends_on: [081KR2E4K0008QG0R0028VW6B3]
 classification: blocked-on-B-0284
 decomposition: atomic
 owners: [architect, docs]

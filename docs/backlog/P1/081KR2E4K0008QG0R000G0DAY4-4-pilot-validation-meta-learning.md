@@ -6,8 +6,8 @@ status: closed
 title: "Pilot validation: meta-learning pattern on 2-3 PR cycles"
 created: 2026-05-08
 last_updated: 2026-05-08
-depends_on: [B-0126.1, B-0126.3]
-parent: B-0126
+depends_on: [081KR2E4K0008QG0R001N1PPHP, 081KR2E4K0008QG0R002MG5Q5Z]
+parent: 081KQGDBJ0008QG0R001JC9HCJ
 classification: buildable-now
 type: friction-reducer
 ---

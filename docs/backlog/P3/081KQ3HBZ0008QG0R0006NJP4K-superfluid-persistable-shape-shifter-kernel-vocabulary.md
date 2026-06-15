@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 three-message compound — *"bottlenech=friction, our retr
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [user_retractable_computational_substrate_is_superfluid_bottleneck_equals_friction_no_roads_where_we_are_going_2026_04_21.md, feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, B-0039]
+composes_with: [user_retractable_computational_substrate_is_superfluid_bottleneck_equals_friction_no_roads_where_we_are_going_2026_04_21.md, feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, 081KQ3HBZ0008QG0R003FQQSMC]
 tags: [substrate-property, kernel-vocabulary, superfluid, persistable-star, shape-shifter, yin-yang, no-bottlenecks, physics-register]
 type: friction-reducer
 ---

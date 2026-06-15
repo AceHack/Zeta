@@ -6,7 +6,7 @@ status: in-progress
 title: "Green Lantern ring — hardware spec + local inference requirements"
 created: 2026-05-08
 last_updated: 2026-05-14
-parent: B-0246
+parent: 081KQZVQW0008QG0R00348SHDZ
 depends_on: []
 classification: buildable-now
 decomposition: atomic

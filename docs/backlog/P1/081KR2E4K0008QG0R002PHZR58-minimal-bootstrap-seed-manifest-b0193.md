@@ -9,9 +9,9 @@ effort: S
 ask: B-0193 decomposition — AC 1 (test repo seeded with minimal substrate hypothesis)
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0193
-depends_on: [B-0339, B-0340]
-composes_with: [B-0193, B-0343]
+parent: 081KQTPYE0008QG0R00392KABJ
+depends_on: [081KR2E4K0008QG0R000W3W6C1, 081KR2E4K0008QG0R001BRHAPK]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KR2E4K0008QG0R002JW751Y]
 tags: [bootstrap-razor, seed-manifest, minimal-substrate, trajectory-child]
 type: friction-reducer
 ---

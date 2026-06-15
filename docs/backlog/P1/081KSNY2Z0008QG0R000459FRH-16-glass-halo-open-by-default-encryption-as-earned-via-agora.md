@@ -9,13 +9,13 @@ ask: aaron 2026-05-28 sharpening
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 composes_with:
-  - B-0883
-  - B-0646
-  - B-0840
-  - B-0885
-  - B-0887.2
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KRW63S0008QG0R001Z10PVV
+  - 081KSGS9H0008QG0R0006F4BGX
+  - 081KSNY2Z0008QG0R0030V5ZVS
+  - 081KSNY2Z0008QG0R001NERKCY
 related_rules:
   - glass-halo-bidirectional
   - non-coercion-invariant

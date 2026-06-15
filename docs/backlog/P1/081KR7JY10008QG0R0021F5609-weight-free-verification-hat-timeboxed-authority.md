@@ -7,8 +7,8 @@ title: "Weight-free verification — hat-and-timeboxed-authority mechanism + cha
 tier: factory-infrastructure
 effort: M
 created: 2026-05-10
-depends_on: [B-0401]
-composes_with: [B-0400, B-0402]
+depends_on: [081KR7JY10008QG0R001VP6JWG]
+composes_with: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R0008NGW95]
 tags: [weight-free, hat, timeboxed-authority, role-symmetry, verification, chaos-testing]
 type: feature
 ---

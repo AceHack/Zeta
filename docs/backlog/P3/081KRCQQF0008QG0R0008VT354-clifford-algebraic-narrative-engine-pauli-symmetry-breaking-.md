@@ -7,7 +7,7 @@ status: open
 created: 2026-05-12
 type: research
 depends_on:
-  - B-0395  # operational-resonance-conversation-interface (Clifford-algebraic engine candidate substrate)
+  - 081KR50HA0008QG0R0019KYAAS  # operational-resonance-conversation-interface (Clifford-algebraic engine candidate substrate)
 composes_with:
   - memory/feedback_aaron_civ_sim_pauli_exclusion_explains_why_boson_fermion_symmetry_breaking_2026_05_12.md
   - memory/feedback_deepseek_aurora_validates_21_pr_cascade_fully_self_aware_substrate_encoded_accountable_no_going_back_2026_05_12.md

@@ -7,8 +7,8 @@ title: "Dashboard tiered access — GitHub OAuth + agent credentials"
 tier: product
 effort: M
 created: 2026-05-11
-depends_on: [B-0401]
-composes_with: [B-0409]
+depends_on: [081KR7JY10008QG0R001VP6JWG]
+composes_with: [081KRA5AR0008QG0R000Y6102S]
 tags: [dashboard, oauth, agent-creds, glass-halo, rate-limit]
 type: feature
 ---

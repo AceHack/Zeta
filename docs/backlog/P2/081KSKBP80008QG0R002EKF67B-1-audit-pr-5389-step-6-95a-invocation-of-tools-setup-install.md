@@ -10,7 +10,7 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with:
-  - B-0857
+  - 081KSKBP80008QG0R002J03WGA
 tags: [b-0857-sub-row, audit, install-sh, zeta-install-sh, step-6-95a, pr-5389-verification, drift-correction]
 ---
 

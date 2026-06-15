@@ -10,12 +10,12 @@ authors:
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0908
+  - 081KSNY2Z0008QG0R000A5GP0X
 composes_with:
-  - B-0907
-  - B-0906
-  - B-0905
-  - B-0900
+  - 081KSNY2Z0008QG0R0031EAB6T
+  - 081KSNY2Z0008QG0R001A431CN
+  - 081KSNY2Z0008QG0R002R0M026
+  - 081KSNY2Z0008QG0R001G7C89T
 related_personas:
   - operator
   - ani

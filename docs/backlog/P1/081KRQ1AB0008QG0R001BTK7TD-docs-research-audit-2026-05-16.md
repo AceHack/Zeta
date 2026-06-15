@@ -6,7 +6,7 @@ status: in-progress
 title: Docs/research cross-reference audit
 created: 2026-05-16
 last_updated: 2026-05-16
-depends_on: [B-0139]
+depends_on: [081KQGDBJ0008QG0R002S9SWH6]
 type: friction-reducer
 decomposition: atomic
 renumbered_from: B-0549

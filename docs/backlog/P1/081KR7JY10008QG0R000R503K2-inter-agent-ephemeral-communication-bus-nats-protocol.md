@@ -11,7 +11,7 @@ last_updated: 2026-05-13
 closed: 2026-05-13
 closed_reason: "All acceptance criteria satisfied; multi-agent review complete (slice 6)"
 depends_on: []
-composes_with: [B-0164]
+composes_with: [081KQJZR90008QG0R002GJAJ19]
 tags: [multi-agent, bus, nats, ephemeral, shadow-space, accelerated-timeframe, agent-designed]
 type: feature
 ---

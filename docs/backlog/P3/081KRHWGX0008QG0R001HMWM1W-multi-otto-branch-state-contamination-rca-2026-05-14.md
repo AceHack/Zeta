@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-14
 last_updated: 2026-05-15
 depends_on: []
-composes_with: [B-0400, B-0444, B-0506]
+composes_with: [081KR7JY10008QG0R000R503K2, 081KRFA460008QG0R001SXP0C2, 081KRHWGX0008QG0R002DPG02X]
 tags: [multi-foreground-surface, git-worktree, branch-state, friction, factory-hygiene]
 type: chore
 ---

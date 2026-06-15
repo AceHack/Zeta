@@ -8,8 +8,8 @@ tier: design
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0629, B-0644, B-0641]
-composes_with: [B-0629, B-0644, B-0641, B-0654, B-0631, B-0660]
+depends_on: [081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R000KVMZ9B]
+composes_with: [081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R000KVMZ9B, 081KRW63S0008QG0R002WT5VTQ, 081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R0004P69JA]
 tags: [design, aaron, mika, consent-as-limit, architectural-revocability, pure-function-re-evaluation, tick-source, substrate-refinement, locked-in, keystone-refinement]
 type: design
 ---

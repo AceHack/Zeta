@@ -11,7 +11,7 @@ created: 2026-04-30
 last_updated: 2026-05-02
 depends_on: []
 closed_in: PR #890 (commit 9ca9ed9, 2026-04-30)
-composes_with: [B-0086]
+composes_with: [081KQ8P5D0008QG0R003BFZPRC]
 tags: [ci-lint, factory-hygiene, ts-bun-migration, mechanical-guard, missing-gate]
 ---
 

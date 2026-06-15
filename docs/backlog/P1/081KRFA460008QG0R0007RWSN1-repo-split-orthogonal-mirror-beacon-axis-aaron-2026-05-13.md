@@ -9,13 +9,13 @@ origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
 last_updated: 2026-05-14
 children:
-  - B-0471
-  - B-0472
-  - B-0473
-  - B-0474
+  - 081KRHWGX0008QG0R002VV6DTS
+  - 081KRHWGX0008QG0R002DP6AZN
+  - 081KRHWGX0008QG0R0031EGYA7
+  - 081KRHWGX0008QG0R0023FDYVE
 composes_with:
-  - B-0424
-  - B-0425
+  - 081KRFA460008QG0R001H98EXJ
+  - 081KRFA460008QG0R003JQ46J4
   - memory/feedback_aaron_civsim_language_mirror_beacon_discipline_fun_rigorous_aliens_and_future_included_2026_05_13.md
   - memory/feedback_orthogonal_axes_factory_hygiene.md
   - memory/feedback_aaron_forker_perspective_easy_fork_no_files_they_cant_touch_segregate_owner_only_substrate_to_different_repo_2026_05_13.md

@@ -11,7 +11,7 @@ ask: Aaron
 effort: M
 tags: [substrate, multi-otto, bft, self-recovery, holding-rule]
 depends_on: []
-composes_with: [B-0540, B-0541, B-0542]
+composes_with: [081KRMEXM0008QG0R0039V4SQQ, 081KRMEXM0008QG0R0026V9A0Y, 081KRMEXM0008QG0R0001HY6M6]
 last_updated: 2026-05-15
 ---
 

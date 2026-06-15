@@ -9,7 +9,7 @@ last_updated: 2026-05-09
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0190, B-0196]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KQTPYE0008QG0R001W237MZ]
 type: friction-reducer
 ---
 

@@ -7,7 +7,7 @@ title: "Git-native full-text inverted index — Lucene-style search over repo su
 effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
-depends_on: [B-0362]
+depends_on: [081KR50HA0008QG0R000239VTZ]
 classification: research
 decomposition: needs-decomposition
 owners: [architect]

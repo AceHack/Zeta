@@ -9,11 +9,11 @@ last_updated: 2026-05-28
 ask: operator 2026-05-28
 authors: [aaron, otto]
 composes_with:
-  - B-0917  # interrupt substrate (sibling typestate DU)
-  - B-0918  # WalletLifetime DU (sibling typestate DU)
-  - B-0867  # workflow-engine v1 parent
-  - B-0628  # Knights Guild + Constitution-Class governance
-  - B-0664  # NCI HC-8 (consent-floor)
+  - 081KSNY2Z0008QG0R002HB4AGT  # interrupt substrate (sibling typestate DU)
+  - 081KSNY2Z0008QG0R0036SJ3T1  # WalletLifetime DU (sibling typestate DU)
+  - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 parent
+  - 081KRW63S0008QG0R003TX8MG5  # Knights Guild + Constitution-Class governance
+  - 081KRW63S0008QG0R001Z7NYMV  # NCI HC-8 (consent-floor)
 depends_on: []
 ---
 

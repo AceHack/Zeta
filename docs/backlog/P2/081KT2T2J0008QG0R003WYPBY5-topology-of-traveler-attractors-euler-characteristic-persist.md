@@ -8,8 +8,8 @@ tier: research
 effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0976, B-0640]
-composes_with: [B-0976, B-0640, B-0668, B-0543, B-0840, B-0982, B-0251, B-0623, B-0917]
+depends_on: [081KT07NV0008QG0R003BE6MJ2, 081KRW63S0008QG0R002XA5N6S]
+composes_with: [081KT07NV0008QG0R003BE6MJ2, 081KRW63S0008QG0R002XA5N6S, 081KRYRGG0008QG0R0018CMFQY, 081KRMEXM0008QG0R002YSPW1X, 081KSGS9H0008QG0R0006F4BGX, 081KT07NV0008QG0R0032MCYER, 081KQZVQW0008QG0R000PPQ3MH, 081KRW63S0008QG0R000QJR08H, 081KSNY2Z0008QG0R002HB4AGT]
 tags: [research, aaron, topology, strange-attractor, euler-characteristic, persistent-homology, topological-data-analysis, betti-numbers, topology-of-chaos, takens-embedding, hyperchaos, bonsai-closure, retraction, meno, what-remains, decentralized-identity, identity-invariant, traveler, search-first-gated]
 type: research
 ---

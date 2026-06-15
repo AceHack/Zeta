@@ -6,8 +6,8 @@ status: open
 title: "GitHub Wiki integration - sync mode and indexing validation"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0237
-depends_on: [B-0299]
+parent: 081KQX9B50008QG0R003ZBBJT7
+depends_on: [081KR2E4K0008QG0R00286HGNK]
 classification: blocked-on-wiki-seed-plan
 decomposition: atomic
 owners: [docs, qa]

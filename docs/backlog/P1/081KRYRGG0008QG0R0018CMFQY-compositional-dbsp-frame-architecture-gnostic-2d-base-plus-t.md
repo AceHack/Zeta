@@ -9,9 +9,9 @@ effort: L
 created: 2026-05-19
 last_updated: 2026-05-28
 decomposition: decomposed
-children: [B-0668.1, B-0668.2]
-depends_on: [B-0644, B-0665, B-0666, B-0667, B-0640]
-composes_with: [B-0635, B-0637, B-0664]
+children: [081KSNY2Z0008QG0R001TMM2HY, 081KSNY2Z0008QG0R002RPC7QZ]
+depends_on: [081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R001SAHYKV, 081KRW63S0008QG0R003Z7QV2A, 081KRW63S0008QG0R002XA5N6S]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R0004D5XG1, 081KRW63S0008QG0R001Z7NYMV]
 tags: [design, aaron, dbsp, fsharp, compositional-architecture, clifford-algebra, rx-bonsai, gnostic-encoding-as-bandwidth-engineering, two-wolves-chaos-theory, emotion-attractor-2d, meta-tagged-dimensions, fsharp-computation-expressions, monadic-composition, beacon-tier-eligible]
 type: design
 ---

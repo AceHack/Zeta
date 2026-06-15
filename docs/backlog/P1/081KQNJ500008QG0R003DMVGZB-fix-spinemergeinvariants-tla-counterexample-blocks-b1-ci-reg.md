@@ -10,7 +10,7 @@ ask: Otto 2026-05-03 verify-then-claim sweep (#1397) — running TLC on `SpineMe
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/research/proof-tool-coverage.md, B-0179, B-0180, B-0184]
+composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/research/proof-tool-coverage.md, 081KQNJ500008QG0R000S68KDE, 081KQNJ500008QG0R0001QHA1J, 081KQNJ500008QG0R001N1AAJ9]
 tags: [tla-plus, formal-verification, spine-merge, balanced-spine, counterexample, b1, math-proofs-assessment, verify-then-claim, closed]
 ---
 

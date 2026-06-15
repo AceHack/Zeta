@@ -9,9 +9,9 @@ closed_by: "memory-index-integrity.yml replaced paired-edit gate with frontmatte
 title: Relax memory-index-integrity.yml CI check — heap-state-acceptable
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0423
-depends_on: [B-0423.1, B-0423.3]
-composes_with: [B-0423, B-0423.2, B-0423.3, B-0088, B-0088.2]
+parent: 081KRCQQF0008QG0R0037YYP1A
+depends_on: [081KRFA460008QG0R0006Q6BWP, 081KRFA460008QG0R0034C2W0E]
+composes_with: [081KRCQQF0008QG0R0037YYP1A, 081KRFA460008QG0R000YPS21H, 081KRFA460008QG0R0034C2W0E, 081KQ8P5D0008QG0R002FSTGXP, 081KRA5AR0008QG0R0036JP9KM]
 effort: S
 tier: factory-tooling
 authors: [otto]

@@ -6,7 +6,7 @@ status: open
 title: "Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0240, B-0249]
+depends_on: [081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R000C35RNY]
 decomposition: atomic
 owners: [architect, performance-engineer]
 type: feature

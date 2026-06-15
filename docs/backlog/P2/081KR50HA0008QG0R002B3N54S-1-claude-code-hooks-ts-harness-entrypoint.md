@@ -12,7 +12,7 @@ ask: smallest root for all Otto-discipline hooks (TS per Rule 0)
 created: 2026-05-09
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [B-0033]
+composes_with: [081KQ3HBZ0008QG0R0008RYCSX]
 tags: [claude-code-hooks, ts-harness, settings-json, otto-discipline]
 type: friction-reducer
 ---

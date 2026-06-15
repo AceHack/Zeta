@@ -7,8 +7,8 @@ title: "Mechanical authorization check — autonomous-loop tick-start integratio
 effort: S
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0160
-depends_on: [B-0305, B-0307]
+parent: 081KQJZR90008QG0R000FTJ1TC
+depends_on: [081KR2E4K0008QG0R00361ZCDR, 081KR2E4K0008QG0R003CF4YHE]
 classification: closed
 decomposition: atomic
 owners: [architect]

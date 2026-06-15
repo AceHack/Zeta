@@ -9,12 +9,12 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0850
+  - 081KSKBP80008QG0R003Z4C0D0
 composes_with:
-  - B-0843
-  - B-0831
-  - B-0852
-  - B-0833
+  - 081KSGS9H0008QG0R0012R8ZWS
+  - 081KSGS9H0008QG0R0011BC7T2
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSGS9H0008QG0R003JNSVR5
 tags: [supply-chain, signing, sigstore, cosign, fulcio, rekor, keyless-oidc, slsa, artifact-attestation, iso-signing, container-signing, free-stuff, github-actions-oidc]
 ---
 

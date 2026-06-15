@@ -9,13 +9,13 @@ ask: otto pushback on parallel-tracks design 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0886
+  - 081KSNY2Z0008QG0R0034FR5FG
 composes_with:
-  - B-0886
-  - B-0884
-  - B-0852
-  - B-0737
-  - B-0844
+  - 081KSNY2Z0008QG0R0034FR5FG
+  - 081KSNY2Z0008QG0R0011XCT94
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSE6WT0008QG0R003WZAQKV
+  - 081KSGS9H0008QG0R001EZKNCB
 tags:
   - usb-track-parallel-work-budget
   - prevents-deferral-of-stated-parallel-track

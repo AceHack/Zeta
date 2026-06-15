@@ -9,11 +9,11 @@ ask: aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0867
+  - 081KSKBP80008QG0R000B3Y19A
 composes_with:
-  - B-0858
-  - B-0866
-  - B-0859
+  - 081KSKBP80008QG0R001KK9WV6
+  - 081KSKBP80008QG0R003RFX32N
+  - 081KSKBP80008QG0R00146WEX1
 tags:
   - hats-as-workflow-definitions
   - hat-substrate-compression

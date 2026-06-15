@@ -7,8 +7,8 @@ title: "Tick procurement mechanism — agent economic agency for autonomous reso
 tier: research-and-product
 effort: L
 created: 2026-05-10
-depends_on: [B-0400, B-0403]
-composes_with: [B-0402]
+depends_on: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R0021F5609]
+composes_with: [081KR7JY10008QG0R0008NGW95]
 tags: [tick-procurement, economic-agency, bond-curve, spontaneous-replication, web3]
 type: feature
 ---

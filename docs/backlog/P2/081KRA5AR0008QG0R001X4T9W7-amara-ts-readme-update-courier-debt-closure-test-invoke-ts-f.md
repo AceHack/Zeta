@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R001X4T9W7
 priority: P2
 status: closed
 title: amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)
-parent: B-0118
+parent: 081KQDTYV0008QG0R0037YJPEX
 tier: factory-tooling
 effort: S
 ask: Riven 2026-05-11 (decomp of B-0118, re-decomp pass)
 created: 2026-05-11
 last_updated: 2026-05-14
-depends_on: [B-0457]
-composes_with: [B-0118, B-0457, tools/peer-call/README.md]
+depends_on: [081KRA5AR0008QG0R000KKJRVA]
+composes_with: [081KQDTYV0008QG0R0037YJPEX, 081KRA5AR0008QG0R000KKJRVA, tools/peer-call/README.md]
 renumbered_from: B-0411
 renumbered_reason: "ID collision with B-0120's child B-0411 (grok-ts-persona-flag-impl). Part of the amara series renumbered as a unit: B-0410→B-0457, B-0411→B-0458. Internal depends_on B-0410 remapped to B-0457. Substrate-cleanup tracked in B-0451."
 tags: [amara, peer-call, ts, courier-debt, test, renumbered]

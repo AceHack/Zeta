@@ -6,8 +6,8 @@ status: closed
 title: "Codex loop - empty queue autonomous backlog pickup"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0249
-depends_on: [B-0280]
+parent: 081KQZVQW0008QG0R000C35RNY
+depends_on: [081KR2E4K0008QG0R0022RVRCZ]
 classification: completed
 decomposition: atomic
 owners: [architect, codex]

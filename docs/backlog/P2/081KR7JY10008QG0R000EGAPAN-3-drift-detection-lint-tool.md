@@ -6,8 +6,8 @@ status: open
 title: "B-0004.3 — Drift-detection lint tool: flag stale translations when English source changes"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.1]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR50HA0008QG0R000YTJE8Q]
 classification: buildable-now
 type: tooling
 effort: S

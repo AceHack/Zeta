@@ -9,9 +9,9 @@ ask: aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 composes_with:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 tags:
   - library-landscape-audit
   - bouncy-castle-pqc-patterns

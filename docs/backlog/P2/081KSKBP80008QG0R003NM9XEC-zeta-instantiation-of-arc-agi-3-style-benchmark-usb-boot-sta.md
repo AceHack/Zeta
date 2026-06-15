@@ -9,13 +9,13 @@ ask: operator 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0761
+  - 081KSE6WT0008QG0R0015ZF2G6
 composes_with:
-  - B-0850
-  - B-0852
-  - B-0857
-  - B-0859
-  - B-0864
+  - 081KSKBP80008QG0R003Z4C0D0
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSKBP80008QG0R002J03WGA
+  - 081KSKBP80008QG0R00146WEX1
+  - 081KSKBP80008QG0R0039RW25E
 tags: [arc-agi-3, agentic-benchmark, devops-objectives-as-levels, usb-boot-starting-state, zeta-instantiation, real-operational-substrate, agentic-intelligence, chollet-benchmark, our-own-version, agent-as-player, cluster-objectives]
 ---
 

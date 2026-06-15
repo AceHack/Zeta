@@ -9,8 +9,8 @@ effort: M
 ask: aaron 2026-05-26
 created: 2026-05-27
 last_updated: 2026-06-13
-parent: B-0824
-depends_on: [B-0822]
+parent: 081KSGS9H0008QG0R0031PBNGA
+depends_on: [081KSGS9H0008QG0R0018ES3R4]
 composes_with: []
 tags: [ace-feature, meta-package-manager, n-dimensional-dependency-space]
 ---

@@ -8,8 +8,8 @@ tier: security
 effort: L
 created: 2026-05-29
 last_updated: 2026-05-29
-depends_on: [B-0928]
-composes_with: [B-0928, B-0781, B-0428, B-0784, B-0732, B-0864, B-0918, B-0658, B-0664]
+depends_on: [081KSRGFP0008QG0R001RY8S3N]
+composes_with: [081KSRGFP0008QG0R001RY8S3N, 081KSE6WT0008QG0R001H3DA90, 081KRFA460008QG0R0018SN61J, 081KSE6WT0008QG0R0018WZ7TH, 081KSE6WT0008QG0R002YBWBB1, 081KSKBP80008QG0R0039RW25E, 081KSNY2Z0008QG0R0036SJ3T1, 081KRW63S0008QG0R00140R3TA, 081KRW63S0008QG0R001Z7NYMV]
 tags: [fsharp, type-system, authorization, provenance, shadow-auth, compile-time-safety, fork-decision, self-modifying-dus, wallet-independence, agora, sovereignty, security, aaron]
 type: security
 ---

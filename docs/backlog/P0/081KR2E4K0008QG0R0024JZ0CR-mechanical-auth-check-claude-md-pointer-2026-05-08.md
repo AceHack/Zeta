@@ -7,8 +7,8 @@ title: "Mechanical authorization check — CLAUDE.md discoverable-skill pointer"
 effort: XS
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0160
-depends_on: [B-0308]
+parent: 081KQJZR90008QG0R000FTJ1TC
+depends_on: [081KR2E4K0008QG0R002S3FDXN]
 classification: closed
 decomposition: atomic
 owners: [architect]

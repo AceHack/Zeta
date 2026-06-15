@@ -6,11 +6,11 @@ status: open
 title: "Real-time inter-loop messaging via Orleans grains — replace turn-based broadcast files"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0251, B-0040]
+depends_on: [081KQZVQW0008QG0R000PPQ3MH, 081KQ3HBZ0008QG0R000RP1WDN]
 decomposition: decomposed
-children: [B-0283, B-0284]
+children: [081KR2E4K0008QG0R000JW0DZB, 081KR2E4K0008QG0R0028VW6B3]
 owners: [architect]
-composes_with: [B-0040, B-0250, B-0251]
+composes_with: [081KQ3HBZ0008QG0R000RP1WDN, 081KQZVQW0008QG0R001FG05RZ, 081KQZVQW0008QG0R000PPQ3MH]
 tags: [orleans, grains, silos, realtime, messaging, broadcast, rpg]
 type: feature
 ---

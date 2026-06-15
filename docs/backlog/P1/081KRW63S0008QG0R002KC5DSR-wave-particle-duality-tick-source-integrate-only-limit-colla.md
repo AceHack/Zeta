@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0629]
-composes_with: [B-0630, B-0632, B-0649, B-0499, B-0665, B-0667, B-0623, B-0624, B-0626]
+depends_on: [081KRW63S0008QG0R0015WHHG1]
+composes_with: [081KRW63S0008QG0R000DBX6PT, 081KRW63S0008QG0R002Z2GR1X, 081KRW63S0008QG0R0020DGSK1, 081KRHWGX0008QG0R0034E0N22, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R003Z7QV2A, 081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R000BH37EV]
 tags: [design, aaron, mika, wave-particle-duality, tick-source, integrate, fifth-primitive, fsharp-computation-expression, only-limit-collapses, superposition-transfer, keystone, locked-in, integrate-role-expanded-by-b0665]
 extended_by: B-0665
 type: design

@@ -8,9 +8,9 @@ tier: factory-infrastructure
 effort: M
 created: 2026-05-13
 last_updated: 2026-05-14
-depends_on: [B-0400]
-composes_with: [B-0402, B-0441, B-0442]
-children: [B-0459, B-0497]
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KR7JY10008QG0R0008NGW95, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW]
+children: [081KRHWGX0008QG0R000TVGDGV, 081KRHWGX0008QG0R003NT6DY9]
 decomposition: decomposed
 tags: [multi-agent, background-service, bus, mechanization, infinite-backlog, standing-by, anti-idle]
 type: feature

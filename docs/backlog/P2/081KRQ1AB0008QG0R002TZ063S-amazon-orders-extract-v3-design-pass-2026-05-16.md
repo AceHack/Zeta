@@ -8,8 +8,8 @@ created: 2026-05-16
 last_updated: 2026-05-16
 type: feature
 composes_with:
-  - B-0600  # family-distributed AI interface (per-relative AI on miner fleet — different consumer of the same inventory substrate)
-  - B-0590  # fleet replication + hardware inventory substrate (consumer of this script's output)
+  - 081KRQ1AB0008QG0R003HCZ5YM  # family-distributed AI interface (per-relative AI on miner fleet — different consumer of the same inventory substrate)
+  - 081KRQ1AB0008QG0R002G93CM7  # fleet replication + hardware inventory substrate (consumer of this script's output)
 depends_on: []
 ---
 

@@ -10,8 +10,8 @@ ask: maintainer Aaron 2026-04-28 ("we should backlog human lineage to all our su
 created: 2026-04-28
 last_updated: 2026-05-08
 depends_on: []
-composes_with: [B-0003]
-children: [B-0310, B-0311, B-0312, B-0313, B-0314, B-0315, B-0316]
+composes_with: [081KQ0YZ80008QG0R001QJJTVF]
+children: [081KR2E4K0008QG0R003DS2XHJ, 081KR2E4K0008QG0R001ZWARTN, 081KR2E4K0008QG0R0009QXZ77, 081KR2E4K0008QG0R00289GE8Z, 081KR2E4K0008QG0R001ADMBVW, 081KR2E4K0008QG0R000R3ZVGD, 081KR2E4K0008QG0R0032TWN5H]
 tags: [substrate-quality, beacon-safety, otto-351, otto-352, external-anchors, human-lineage, prior-art, agent-design-research, research-discipline]
 type: friction-reducer
 ---

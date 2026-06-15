@@ -9,8 +9,8 @@ effort: XL
 ask: otto-vscode 2026-05-21 + aaron Rx-codegen-at-construction architectural insight (8-PR campaign capstone; aaron-approved via shadow* "file the 3 rows for PRs 6-8")
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0692, B-0693]
-composes_with: [B-0635, B-0687, B-0688]
+depends_on: [081KS3X9Y0008QG0R001D454ZK, 081KS3X9Y0008QG0R003Y2X2T0]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KS3X9Y0008QG0R00323NSZA, 081KS3X9Y0008QG0R0010716X9]
 tags: [standing-query-codegen, iincrementalgenerator, rewrite-circuit-expressions, fused-il, otto-vscode-pr-8, reaqtor-applied-to-dbsp, capstone, query-rewrite-across-rx-streams]
 type: research
 ---

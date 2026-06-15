@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim *"this is my sleeping bear hypothisis"* + *"all o
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0152, B-0026, B-0196, B-0200]
+composes_with: [081KQGDBJ0008QG0R00280ZEV2, 081KQ0YZ80008QG0R001WZ4JE8, 081KQTPYE0008QG0R001W237MZ, 081KQTPYE0008QG0R0009F20NN]
 tags: [coconut, latent-reasoning, sleeping-bear-hypothesis, gibberlink, ggwave, lapa, codeact, four-property-hodl, arc-agi-3, empirical-falsifier, research-lane, no-kill-paths]
 type: feature
 ---

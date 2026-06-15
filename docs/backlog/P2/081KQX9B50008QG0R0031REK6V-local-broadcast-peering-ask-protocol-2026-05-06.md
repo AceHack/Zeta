@@ -7,7 +7,7 @@ title: "Local broadcast peering asks — structured ask/receipt protocol over th
 created: 2026-05-06
 last_updated: 2026-05-06
 depends_on:
-  - B-0209
+  - 081KQX9B50008QG0R001MNYK61
 type: friction-reducer
 ---
 

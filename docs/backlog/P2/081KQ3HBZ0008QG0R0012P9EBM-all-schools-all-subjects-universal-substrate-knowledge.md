@@ -10,8 +10,8 @@ ask: Aaron 2026-04-21 two-message compound — *"biology backlog all schools all
 created: 2026-04-26
 last_updated: 2026-05-09
 depends_on: []
-children: [B-0045.1]
-composes_with: [B-0046, B-0049, B-0054, B-0056, B-0059, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
+children: [081KR50HA0008QG0R001Q071YY]
+composes_with: [081KQ3HBZ0008QG0R0001XKNWK, 081KQ3HBZ0008QG0R0007CAGSP, 081KQ3HBZ0008QG0R003V6B2ME, 081KQ3HBZ0008QG0R0034DHWTQ, 081KQ3HBZ0008QG0R003GTG5P2, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
 tags: [universal-sweep, biology, trade-vocational, blue-collar, autopoiesis, time-energy-substrate, mr-khan-pedagogy, three-filter, yin-yang]
 type: friction-reducer
 ---

@@ -10,14 +10,14 @@ created: 2026-05-25
 last_updated: 2026-05-25
 depends_on: []
 composes_with:
-  - B-0247
-  - B-0287
-  - B-0288
-  - B-0428
-  - B-0759
-  - B-0761
-  - B-0765
-  - B-0772
+  - 081KQZVQW0008QG0R000ZHEN62
+  - 081KR2E4K0008QG0R0033WVCXE
+  - 081KR2E4K0008QG0R002YE3MMD
+  - 081KRFA460008QG0R0018SN61J
+  - 081KSE6WT0008QG0R003G0Y62D
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSE6WT0008QG0R00063R6HB
+  - 081KSE6WT0008QG0R003WMG4XV
 tags: [strategy, plugins, ontology, industry-standards, personas, ace-package-manager, negotiation, multi-map]
 ---
 

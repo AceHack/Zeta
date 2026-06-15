@@ -10,10 +10,10 @@ ask: Change the "vigilance" sentence in memory/CURRENT-aaron.md (and siblings) t
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on:
-  - B-0113.1
-  - B-0113.2
+  - 081KRA5AR0008QG0R002A78X5F
+  - 081KRA5AR0008QG0R0010A24JD
 composes_with:
-  - B-0113
+  - 081KQDTYV0008QG0R002424VSE
   - memory/CURRENT-aaron.md
 tags: [riven-2026-05-11, rule-update, substrate]
 type: friction-reducer

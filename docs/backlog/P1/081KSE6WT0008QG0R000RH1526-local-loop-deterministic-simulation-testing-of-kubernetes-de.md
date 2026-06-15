@@ -9,19 +9,19 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0428
-  - B-0767
+  - 081KRFA460008QG0R0018SN61J
+  - 081KSE6WT0008QG0R0016CEE2Z
 composes_with:
   - B-0747
   - B-0754
-  - B-0761
-  - B-0762
-  - B-0763
-  - B-0766
-  - B-0772
-  - B-0773
-  - B-0774
-  - B-0776
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSE6WT0008QG0R003FG3E8R
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R00049EFBD
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R0008483B2
+  - 081KSE6WT0008QG0R001AZQA5Z
+  - 081KSE6WT0008QG0R002275NDE
 tags: [cluster, dst, deterministic-simulation, kubernetes, scheduler, lexisnexis, local-loop, argo-cd, app-of-apps, packages-json, three-tier-testing]
 ---
 

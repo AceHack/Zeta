@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0985, B-0986]
-composes_with: [B-0985, B-0986, B-0982, B-0428, B-0547, B-0639, B-0867, B-0993, B-0995, B-0734]
+depends_on: [081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R002Z46D8Q]
+composes_with: [081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R002Z46D8Q, 081KT07NV0008QG0R0032MCYER, 081KRFA460008QG0R0018SN61J, 081KRMEXM0008QG0R001VGNET5, 081KRW63S0008QG0R000ZQ9WDH, 081KSKBP80008QG0R000B3Y19A, 081KT2T2J0008QG0R003C166K4, 081KT2T2J0008QG0R002TVT60G, 081KSE6WT0008QG0R00276F8SE]
 tags: [vectors, trajectories, primitive-ordering, seed-first, build-most-inevitable-first, computation-expression, fsharp-ce, dsl, infer-net, reduced-bayesian, bp-ep, 4x4, ce-extension, skill, hat, ontology, language-kernel, particle-as-locus, hex-core, aaron]
 type: research
 ---

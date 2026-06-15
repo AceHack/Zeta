@@ -7,12 +7,12 @@ title: "Fresh-instance validation test for bootstrap CLAUDE.md"
 created: 2026-05-09
 last_updated: 2026-05-29
 depends_on:
-  - B-0353
+  - 081KR50HA0008QG0R001DBKS6T
 decomposition: multi-child (re-decomp pass 1, smallest safe slice)
 classification: buildable-now
 type: friction-reducer
 owners: [architect]
-parent: B-0329
+parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
 # B-0354 — Fresh-instance validation test

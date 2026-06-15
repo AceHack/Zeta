@@ -8,8 +8,8 @@ tier: research
 effort: XL
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1001]
-composes_with: [B-1001, B-1000, B-0638, B-0883, B-0885, B-0829, B-0428, B-0289]
+depends_on: [081KT2T2J0008QG0R000VG204F]
+composes_with: [081KT2T2J0008QG0R000VG204F, 081KT2T2J0008QG0R000S7GHQ8, 081KRW63S0008QG0R0030F8ZXA, 081KSNY2Z0008QG0R002JKH50A, 081KSNY2Z0008QG0R0030V5ZVS, 081KSGS9H0008QG0R000Q18PGQ, 081KRFA460008QG0R0018SN61J, 081KR2E4K0008QG0R001SWEPNV]
 tags: [eve-protocol, transport, websocket, tcp, multiplexed, channels, pipelines, aspnet, fowler, zero-trust, strangers, codec-of-codecs, codecs-all-the-way-down, on-wire-negotiation, key-exchange, authenticated-encryption, security-surface, recordbatch, message-passing, bcl-interface-boundary, research, aaron]
 type: research
 ---

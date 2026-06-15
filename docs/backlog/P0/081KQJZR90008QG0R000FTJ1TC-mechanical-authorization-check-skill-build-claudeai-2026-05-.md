@@ -11,7 +11,7 @@ last_updated: 2026-05-10
 tags: [skill-build, claude-ai, mechanical-check, authorization-source, never-idle, no-op-cadence, codex-handoff, pr-1200]
 type: friction-reducer
 decomposition: decomposed
-children: [B-0305, B-0306, B-0307, B-0308, B-0309]
+children: [081KR2E4K0008QG0R00361ZCDR, 081KR2E4K0008QG0R0007CFSZ7, 081KR2E4K0008QG0R003CF4YHE, 081KR2E4K0008QG0R002S3FDXN, 081KR2E4K0008QG0R0024JZ0CR]
 ---
 
 # B-0160 — Mechanical authorization check skill build

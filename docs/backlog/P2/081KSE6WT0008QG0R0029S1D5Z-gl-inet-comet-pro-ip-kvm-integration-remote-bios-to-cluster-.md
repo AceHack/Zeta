@@ -13,10 +13,10 @@ depends_on:
   - B-0760
 composes_with:
   - B-0743
-  - B-0757
-  - B-0759
-  - B-0761
-  - B-0762
+  - 081KSE6WT0008QG0R000CV98PV
+  - 081KSE6WT0008QG0R003G0Y62D
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSE6WT0008QG0R003FG3E8R
 tags: [cluster, ip-kvm, comet-pro, gl-inet, remote, bios, headless, repair, hardware]
 ---
 

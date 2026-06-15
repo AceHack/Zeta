@@ -10,7 +10,7 @@ created: 2026-05-14
 last_updated: 2026-05-14
 closed: 2026-05-14
 depends_on: []
-composes_with: [B-0451]
+composes_with: [081KRFA460008QG0R00308W7FJ]
 tags: [substrate-hygiene, markdownlint, MD032, mechanization, tick-shards, encoding-rules-without-mechanizing]
 type: friction-reducer
 ---

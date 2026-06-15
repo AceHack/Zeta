@@ -12,7 +12,7 @@ ask: Aaron 2026-05-04 forwarded Claude.ai 2026-05-04 design + verbatim *"and we 
 created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
-composes_with: [B-0138, B-0190, B-0191, B-0193]
+composes_with: [081KQGDBJ0008QG0R0012FC7RX, 081KQR4HQ0008QG0R001909FPT, 081KQR4HQ0008QG0R002YNV361, 081KQTPYE0008QG0R00392KABJ]
 tags: [razor-cadence, mechanization, github-actions, trigger-reliability, foundation, autonomy]
 ---
 

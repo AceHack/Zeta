@@ -5,7 +5,7 @@ priority: P2
 status: open
 title: "Interloop messaging — protocol design (message types + delivery)"
 created: 2026-05-08
-parent: B-0253
+parent: 081KQZVQW0008QG0R000W4B8KT
 depends_on: []
 classification: buildable-now
 decomposition: atomic

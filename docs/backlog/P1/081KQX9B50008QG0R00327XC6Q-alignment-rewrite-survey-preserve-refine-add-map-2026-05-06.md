@@ -8,7 +8,7 @@ closed_by: "survey at docs/research/2026-05-07-alignment-md-rewrite-survey-b0215
 title: "ALIGNMENT.md rewrite survey - preserve/refine/add map"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0003
+parent: 081KQ0YZ80008QG0R001QJJTVF
 depends_on: []
 classification: buildable-now
 ---

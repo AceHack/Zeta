@@ -9,7 +9,7 @@ effort: S
 ask: deepseek-flag-via-aaron-forward
 created: 2026-04-30
 last_updated: 2026-05-11
-depends_on: [B-0112.1, B-0112.2, B-0112.3]
+depends_on: [081KRA5AR0008QG0R0032RZ322, 081KRA5AR0008QG0R003SBRWDZ, 081KRA5AR0008QG0R0004HM4P3]
 trigger: any tick that touches memory/project_laptop_only_source_integration_*.md OR any tick that scopes work into ../scratch / ../SQLSharp / ../no-copy-only-learning-agents-insight integration
 composes_with:
   - feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md

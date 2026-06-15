@@ -6,8 +6,8 @@ status: open
 title: "Timeseries native-ZSet research - algebra fit, retraction, and ZSet mapping"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0147
-depends_on: [B-0224]
+parent: 081KQGDBJ0008QG0R0004ACHJJ
+depends_on: [081KQX9B50008QG0R0037YZ1WX]
 classification: blocked-on-candidate-landscape
 type: feature
 ---

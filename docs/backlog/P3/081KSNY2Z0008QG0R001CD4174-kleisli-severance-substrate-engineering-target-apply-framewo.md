@@ -9,11 +9,11 @@ last_updated: 2026-05-28
 ask: operator 2026-05-28
 authors: [operator, otto]
 composes_with:
-  - B-0917  # interrupt substrate in monad space + Kleisli arrows
-  - B-0918  # WalletLifetime + ConsentEvent integrity
-  - B-0703  # Aurora multi-oracle BFT trust-calculus
-  - B-0867  # workflow-engine v1 parent
-  - B-0664  # NCI HC-8 consent-floor
+  - 081KSNY2Z0008QG0R002HB4AGT  # interrupt substrate in monad space + Kleisli arrows
+  - 081KSNY2Z0008QG0R0036SJ3T1  # WalletLifetime + ConsentEvent integrity
+  - 081KS3X9Y0008QG0R00218150M  # Aurora multi-oracle BFT trust-calculus
+  - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 parent
+  - 081KRW63S0008QG0R001Z7NYMV  # NCI HC-8 consent-floor
 depends_on: []
 ---
 

@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1000]
-composes_with: [B-1001, B-1002, B-1003, B-0428, B-0976]
+depends_on: [081KT2T2J0008QG0R000S7GHQ8]
+composes_with: [081KT2T2J0008QG0R000VG204F, 081KT2T2J0008QG0R002R72323, 081KT2T2J0008QG0R00301P27H, 081KRFA460008QG0R0018SN61J, 081KT07NV0008QG0R003BE6MJ2]
 tags: [hkt-composition, minimal-vocabulary, inumerics, generic-math, rx, bonsai, reaqtor, dbsp, zset, gset, bag, indexed-zset, retraction-native, constraint-breeds-novelty, generative-constraint, earn-your-keep, structural-sparsity, interfaces-are-the-asset, infer-net, factor-graph, research, aaron]
 type: research
 ---

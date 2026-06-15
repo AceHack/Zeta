@@ -9,8 +9,8 @@ effort: S
 ask: derived from B-0112
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0112.1]
-composes_with: [B-0112]
+depends_on: [081KRA5AR0008QG0R0032RZ322]
+composes_with: [081KQDTYV0008QG0R003MV3WAR]
 tags: [discipline-cleanup, no-copy, classification]
 type: friction-reducer
 ---

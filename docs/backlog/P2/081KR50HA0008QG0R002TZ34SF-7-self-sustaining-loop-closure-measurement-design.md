@@ -6,8 +6,8 @@ status: open
 title: "B-0029.7 — Measurement design: self-sustaining loop closure (does the funding → time-budget → output feedback loop close?)"
 created: 2026-05-09
 last_updated: 2026-05-09
-parent: B-0029
-depends_on: [B-0029.1, B-0029.2, B-0029.3, B-0029.5, B-0029.6]
+parent: 081KQ3HBZ0008QG0R000JRZAMM
+depends_on: [081KR50HA0008QG0R002K2G8B0, 081KR50HA0008QG0R0027AAPTZ, 081KR50HA0008QG0R001D8Q8X1, 081KR50HA0008QG0R002812VHQ, 081KR50HA0008QG0R001B4TD7G]
 classification: blocked-on-B-0029.1+B-0029.2+B-0029.3+B-0029.5+B-0029.6
 type: research
 effort: M

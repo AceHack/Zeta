@@ -8,10 +8,10 @@ created: 2026-06-01
 last_updated: 2026-06-01
 author: otto-cli
 composes_with:
-  - B-0961 # taxonomy gap-analysis — this IS its Phase 1 (typed events under existing categories)
-  - B-0954 # git-native bus / G-Set (Claim is monotone, lives here)
-  - B-0954.1 # bus-tip partition tolerance (Lock = the non-monotone single-row CAS)
-  - B-0959 # sovereign-DB lane master (CALM boundary + lock-free/wait-free disciplines)
+  - 081KSXN940008QG0R000JZVFXX # taxonomy gap-analysis — this IS its Phase 1 (typed events under existing categories)
+  - 081KSXN940008QG0R00171YAZW # git-native bus / G-Set (Claim is monotone, lives here)
+  - 081KT07NV0008QG0R000QWEKTE # bus-tip partition tolerance (Lock = the non-monotone single-row CAS)
+  - 081KSXN940008QG0R003FCQ7WT # sovereign-DB lane master (CALM boundary + lock-free/wait-free disciplines)
 ---
 
 # B-0962 — Phase 1: typed Claim/Lock coordination events

@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0989, B-0988]
-composes_with: [B-0989, B-0988, B-0986, B-0991, B-0993, B-0990, B-0428, B-0982, B-0635, B-0905, B-0906, B-0703, B-0954, B-0623]
+depends_on: [081KT2T2J0008QG0R002ZG89QA, 081KT2T2J0008QG0R001GE4M6A]
+composes_with: [081KT2T2J0008QG0R002ZG89QA, 081KT2T2J0008QG0R001GE4M6A, 081KT2T2J0008QG0R002Z46D8Q, 081KT2T2J0008QG0R003TSGNMN, 081KT2T2J0008QG0R003C166K4, 081KT2T2J0008QG0R002DFPSHX, 081KRFA460008QG0R0018SN61J, 081KT07NV0008QG0R0032MCYER, 081KRW63S0008QG0R002KC5DSR, 081KSNY2Z0008QG0R002R0M026, 081KSNY2Z0008QG0R001A431CN, 081KS3X9Y0008QG0R00218150M, 081KSXN940008QG0R00171YAZW, 081KRW63S0008QG0R000QJR08H]
 tags: [digital-twin, earth-twin, world-model, lightlike, consensus-gravity, atsophmera, weather, temperature, units, uom, fsharp-uom, multi-culture, generic-math, hkt, f-bounded, crtp, inumber, cross-language, lgtm, grafana, prometheus, loki, tempo, mimir, observability, rainbow-table, storm-recovery, post-disruption-reconciliation, runtime-unit-tag, acoustic, sonic, visual, predictive-maintenance, preventative-maintenance, memory-health, attention-health, itron, concept-not-code, aaron]
 type: research
 ---

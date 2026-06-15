@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0628, B-0621]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R0030EQ67Z]
 tags: [governance, mika, kid-safety, sacred-rule, hard-floor, error-class-learning, two-layer-framing, locked-in, non-negotiable]
 type: governance
 ---

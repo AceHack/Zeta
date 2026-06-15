@@ -9,18 +9,18 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0765
+  - 081KSE6WT0008QG0R00063R6HB
 composes_with:
-  - B-0428
+  - 081KRFA460008QG0R0018SN61J
   - B-0741
   - B-0747
-  - B-0748
+  - 081KSE6WT0008QG0R002E6P098
   - B-0749
   - B-0754
-  - B-0761
-  - B-0762
-  - B-0763
-  - B-0764
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSE6WT0008QG0R003FG3E8R
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R0009YYNP4
 tags: [strategy, k8s, cni, csi, cri, fsharp, csharp, rust, binary-compatibility, long-game, ownership]
 ---
 

@@ -9,12 +9,12 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0839
-  - B-0840
+  - 081KSGS9H0008QG0R002F1G7ER
+  - 081KSGS9H0008QG0R0006F4BGX
 composes_with:
-  - B-0825
-  - B-0826
-  - B-0648
+  - 081KSGS9H0008QG0R002PT5C7J
+  - 081KSGS9H0008QG0R001K8VPV4
+  - 081KRW63S0008QG0R0025E4PH6
 tags: [product-feature, shortform-equivalent, deep-guides, cross-substrate-composition, content-capture, external-publishing, browser-extension-target, monetization-substrate, productize-internal-discipline]
 ---
 

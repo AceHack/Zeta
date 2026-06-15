@@ -9,9 +9,9 @@ effort: M
 ask: B-0193 decomposition — close the loop (spec gaps → spec additions → specs become complete source of truth)
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0193
-depends_on: [B-0345]
-composes_with: [B-0193, B-0171, B-0340]
+parent: 081KQTPYE0008QG0R00392KABJ
+depends_on: [081KR2E4K0008QG0R003KQKYTJ]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KQNJ500008QG0R001N94412, 081KR2E4K0008QG0R001BRHAPK]
 tags: [bootstrap-razor, spec-gaps, openspec, backport, trajectory-child]
 type: friction-reducer
 ---

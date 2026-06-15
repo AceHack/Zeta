@@ -10,11 +10,11 @@ last_updated: 2026-05-31
 decomposition: umbrella
 depends_on: []
 composes_with:
-  - B-0668
-  - B-0956
-  - B-0646
-  - B-0776
-  - B-0867
+  - 081KRYRGG0008QG0R0018CMFQY
+  - 081KSXN940008QG0R002FWR9B2
+  - 081KRW63S0008QG0R001Z10PVV
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSKBP80008QG0R000B3Y19A
 tags:
   - labels
   - tags

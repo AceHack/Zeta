@@ -7,12 +7,12 @@ title: "Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)"
 created: 2026-05-09
 last_updated: 2026-05-29
 depends_on:
-  - B-0354
+  - 081KR50HA0008QG0R001CNS20T
 decomposition: atomic
 classification: blocked
 type: friction-reducer
 owners: [architect]
-parent: B-0329
+parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
 # B-0355 — Cross-harness bootstrap template

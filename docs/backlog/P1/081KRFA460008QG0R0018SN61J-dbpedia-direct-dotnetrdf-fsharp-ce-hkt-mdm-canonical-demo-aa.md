@@ -9,13 +9,13 @@ origin: Aaron 2026-05-13 (autonomous-loop substrate cascade)
 created: 2026-05-13
 last_updated: 2026-05-14
 children:
-  - B-0480
-  - B-0481
-  - B-0482
-  - B-0483
-  - B-0484
+  - 081KRHWGX0008QG0R00187PQGZ
+  - 081KRHWGX0008QG0R003MTMBGR
+  - 081KRHWGX0008QG0R001VKR0TH
+  - 081KRHWGX0008QG0R002GFSJC6
+  - 081KRHWGX0008QG0R002TYF2NM
 composes_with:
-  - B-0043
+  - 081KQ3HBZ0008QG0R000Q4Y00F
   - memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md
   - memory/feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md
   - memory/feedback_aaron_clifford_hkt_ontology_vocabulary_axis_basis_rudders_rotors_steering_cartographer_navigator_edge_mapper_world_model_civsim_edge_runner_5_control_structures_or_4_plus_meta_2026_05_13.md

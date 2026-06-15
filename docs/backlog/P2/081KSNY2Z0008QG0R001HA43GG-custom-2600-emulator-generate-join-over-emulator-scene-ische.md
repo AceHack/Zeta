@@ -9,15 +9,15 @@ ask: operator 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0865
-  - B-0917
+  - 081KSKBP80008QG0R003NM9XEC
+  - 081KSNY2Z0008QG0R002HB4AGT
 composes_with:
-  - B-0761
-  - B-0052
-  - B-0053
-  - B-0202
-  - B-0867
-  - B-0703
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KQ3HBZ0008QG0R000FQ69NN
+  - 081KQ3HBZ0008QG0R000JWFD37
+  - 081KQTPYE0008QG0R002Y7X5KH
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KS3X9Y0008QG0R00218150M
 tags: [custom-emulator, atari-2600, arc3-agi-training, ischeduler-dst, bit-perfect-consensus, z-sets, generate-plus-join, vs-imitation-learning, hardware-interrupts, kleisli-isr, b0917-composition, full-state-space-traversal, cooperative-emulator-substrate-target]
 ---
 

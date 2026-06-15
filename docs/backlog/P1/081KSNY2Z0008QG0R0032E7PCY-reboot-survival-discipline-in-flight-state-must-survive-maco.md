@@ -8,9 +8,9 @@ created: 2026-05-28
 attribution: aaron-2026-05-28
 depends_on: []
 composes_with:
-  - B-0750
-  - B-0530
-  - B-0858.5
+  - 081KSE6WT0008QG0R003YYC9PV
+  - 081KRMEXM0008QG0R000X1PPGC
+  - 081KSKBP80008QG0R003NG37GQ
 tags:
   - hygiene
   - infrastructure

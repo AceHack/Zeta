@@ -10,9 +10,9 @@ ask: maintainer Aaron 2026-04-28 ("backlog github/playwrite integration, this is
 created: 2026-04-28
 last_updated: 2026-05-08
 decomposition: clean
-children: [B-0317, B-0318, B-0319, B-0320, B-0321, B-0322, B-0323, B-0324]
+children: [081KR2E4K0008QG0R0031QR36N, 081KR2E4K0008QG0R003RVDX91, 081KR2E4K0008QG0R0001FRW8H, 081KR2E4K0008QG0R002A0AGBJ, 081KR2E4K0008QG0R000YH9DC6, 081KR2E4K0008QG0R002N1C3YJ, 081KR2E4K0008QG0R003E09GMM, 081KR2E4K0008QG0R000Q45WMQ]
 depends_on: []
-composes_with: [B-0060, B-0061]
+composes_with: [081KQ8P5D0008QG0R000N718AC, 081KQ8P5D0008QG0R001BH93SA]
 tags: [agent-capability, github-ui, playwright, mcp, automation, friction-reduction, feature-discovery]
 type: friction-reducer
 ---

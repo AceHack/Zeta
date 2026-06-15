@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0570, B-0571]
+composes_with: [081KRQ1AB0008QG0R002422Z9Q, 081KRQ1AB0008QG0R0038VQJZ0]
 tags: [github, billing, rate-limit, scarcity-mitigation, factory-infrastructure, decision]
 type: decision
 ---

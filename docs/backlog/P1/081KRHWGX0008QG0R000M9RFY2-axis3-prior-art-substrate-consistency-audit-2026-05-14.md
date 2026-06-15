@@ -8,16 +8,16 @@ type: research
 origin: B-0427 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0427
+parent: 081KRFA460008QG0R000VKJF0H
 composes_with:
-  - B-0427
-  - B-0424
-  - B-0425
-  - B-0426
-  - B-0476
-  - B-0477
-  - B-0478
-  - B-0479
+  - 081KRFA460008QG0R000VKJF0H
+  - 081KRFA460008QG0R001H98EXJ
+  - 081KRFA460008QG0R003JQ46J4
+  - 081KRFA460008QG0R0007RWSN1
+  - 081KRHWGX0008QG0R000BS8Y4R
+  - 081KRHWGX0008QG0R002893S6E
+  - 081KRHWGX0008QG0R0008EYYCA
+  - 081KRHWGX0008QG0R0023DWW8D
   - memory/feedback_aaron_repo_split_third_orthogonal_axis_code_vs_english_formal_verification_maybe_split_ruleset_divergence_is_smell_2026_05_13.md
   - memory/feedback_orthogonal_axes_factory_hygiene.md
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md

@@ -10,7 +10,7 @@ created: 2026-05-07
 last_updated: 2026-05-09
 depends_on: []
 decomposition: decomposed
-children: [B-0278, B-0279, B-0280, B-0281]
+children: [081KR2E4K0008QG0R001GFXN05, 081KR2E4K0008QG0R000YTJS3Q, 081KR2E4K0008QG0R0022RVRCZ, 081KR2E4K0008QG0R002FSPPQR]
 owners: [architect]
 type: friction-reducer
 ---

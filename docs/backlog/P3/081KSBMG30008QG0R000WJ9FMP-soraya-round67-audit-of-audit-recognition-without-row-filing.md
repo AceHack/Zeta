@@ -16,7 +16,7 @@ composes_with:
   - .claude/skills/formal-verification-expert/SKILL.md
   - .claude/agents/formal-verification-expert.md
   - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md
-  - docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md
+  - docs/backlog/P3/081KS923C0008QG0R000TE1589-soraya-four-trigger-framework-cadence-audit-2026-05-23.md
   - memory/soraya/NOTEBOOK.md
 ---
 

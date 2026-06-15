@@ -11,10 +11,10 @@ ferried_by: aaron
 owners: [aaron, max, addison]
 composes_with:
   - B-0747
-  - B-0742
+  - 081KSE6WT0008QG0R000YYH3DY
   - B-0741
-  - B-0727
-  - B-0726
+  - 081KSE6WT0008QG0R0006HKTXJ
+  - 081KSE6WT0008QG0R003C9KGQE
 related_substrate:
   - docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md
   - docs/research/2026-05-25-radius-terraform-pulumi-controllers-crossplane-alternatives-aaron-forwarded.md

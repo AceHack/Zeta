@@ -10,15 +10,15 @@ created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
   - B-0754
-  - B-0759
+  - 081KSE6WT0008QG0R003G0Y62D
 composes_with:
   - B-0743
-  - B-0755
-  - B-0756
-  - B-0757
+  - 081KSE6WT0008QG0R003612WGJ
+  - 081KSE6WT0008QG0R001NG9JZH
+  - 081KSE6WT0008QG0R000CV98PV
   - B-0758
   - B-0760
-  - B-0761
+  - 081KSE6WT0008QG0R0015ZF2G6
 tags: [cluster, telemetry, ai-native, network-effects, adoption, consent, distributed]
 ---
 

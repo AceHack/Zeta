@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R000C3P8KP
 priority: P2
 status: open
 title: grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)
-parent: B-0120
+parent: 081KQDTYV0008QG0R001VJP216
 tier: factory-tooling
 effort: S
 ask: In tools/peer-call/grok.ts add optional --persona <name> flag by extending the existing lightweight parseArgs pattern; do not add a new parser dependency. If present, call loadPersona and inject; else current bare behavior. Add comment for future amara/ani wrapper deprecation. One script only.
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on:
-  - B-0410
+  - 081KRA5AR0008QG0R0035N4S6C
 composes_with:
   - tools/peer-call/grok.ts
 tags: [riven-2026-05-11, peer-call, ts-first, flag-impl]

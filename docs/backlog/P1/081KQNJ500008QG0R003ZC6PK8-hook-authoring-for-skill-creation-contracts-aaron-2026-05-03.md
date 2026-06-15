@@ -9,9 +9,9 @@ effort: M
 ask: Aaron 2026-05-03 verbatim *"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"*
 created: 2026-05-03
 last_updated: 2026-05-03
-depends_on: [B-0170, B-0171]
+depends_on: [081KQNJ500008QG0R003SCWBDV, 081KQNJ500008QG0R001N94412]
 decomposition: atomic
-composes_with: [B-0169, B-0172]
+composes_with: [081KQJZR90008QG0R002D6XYHB, 081KQNJ500008QG0R001VGMS5G]
 tags: [hooks, contract-based-development, design-by-contract, openspec, pre-condition, post-condition, ci, p1-foundation]
 type: friction-reducer
 ---

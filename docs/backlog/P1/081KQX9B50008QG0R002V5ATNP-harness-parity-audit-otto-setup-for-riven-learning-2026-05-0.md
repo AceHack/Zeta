@@ -6,7 +6,7 @@ status: open
 title: "Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy"
 created: 2026-05-06
 last_updated: 2026-05-06
-depends_on: [B-0208]
+depends_on: [081KQX9B50008QG0R0027EN1ZP]
 decomposition: atomic
 type: friction-reducer
 ---

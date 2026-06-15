@@ -7,8 +7,8 @@ title: "Z-set join weight multiplication as reversible Toffoli encoding (slice o
 effort: S
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0366.2.1]
-parent: B-0366.2
+depends_on: [081KR50HA0008QG0R0002PGV1N.1]
+parent: 081KR50HA0008QG0R0002PGV1N
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

@@ -10,7 +10,7 @@ ask: maintainer Aaron + Kestrel-claude.ai 2026-05-21
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0040, B-0251, B-0253, B-0254, B-0284, B-0635, B-0669, B-0683]
+composes_with: [081KQ3HBZ0008QG0R000RP1WDN, 081KQZVQW0008QG0R000PPQ3MH, 081KQZVQW0008QG0R000W4B8KT, 081KQZVQW0008QG0R000JJVA4E, 081KR2E4K0008QG0R0028VW6B3, 081KRW63S0008QG0R002KC5DSR, 081KRYRGG0008QG0R0031EYYE4, 081KS3X9Y0008QG0R0006MQXA4]
 tags: [zeta-id, capability-negotiation, orleans, spiffe, opa, reticulum, dbsp, kestrel-sharpening]
 type: research
 ---

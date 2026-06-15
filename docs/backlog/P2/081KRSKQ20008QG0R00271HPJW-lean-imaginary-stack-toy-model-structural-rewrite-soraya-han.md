@@ -8,8 +8,8 @@ tier: research
 effort: M
 created: 2026-05-17
 last_updated: 2026-05-17
-depends_on: [B-0584, B-0543]
-composes_with: [B-0584, B-0543]
+depends_on: [081KRQ1AB0008QG0R001YAF3TR, 081KRMEXM0008QG0R002YSPW1X]
+composes_with: [081KRQ1AB0008QG0R001YAF3TR, 081KRMEXM0008QG0R002YSPW1X]
 tags: [lean4, mathlib, formal-verification, soraya, imaginary-stack, qg-isomorphism]
 type: research
 ---

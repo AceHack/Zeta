@@ -9,11 +9,11 @@ ask: aaron via ani 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0875
+  - 081KSNY2Z0008QG0R000K3ETGB
 composes_with:
-  - B-0875
-  - B-0876
-  - B-0877
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R003KG3JTG
+  - 081KSNY2Z0008QG0R0004ZF85W
 tags:
   - code-review-as-force-multiplier
   - tech-debt-detector

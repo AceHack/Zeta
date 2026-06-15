@@ -9,9 +9,9 @@ effort: M
 created: 2026-05-10
 last_updated: 2026-05-13
 decomposition: decomposed
-children: [B-0434, B-0435, B-0436, B-0437]
-depends_on: [B-0400]
-composes_with: [B-0017, B-0188, B-0064, B-0154]
+children: [081KRFA460008QG0R0005DWKBG, 081KRFA460008QG0R001MC7D7R, 081KRFA460008QG0R0009TXX5S, 081KRFA460008QG0R001JTAPZW]
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KQ0YZ80008QG0R0003GAYYN, 081KQR4HQ0008QG0R002ZDREYC, 081KQ8P5D0008QG0R0010FP5SY, 081KQGDBJ0008QG0R002NV04N9]
 tags: [demo, circuit-breaker, hamiltonian, alignment-ui, service-titan, enterprise, glass-halo]
 type: feature
 ---

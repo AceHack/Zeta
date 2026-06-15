@@ -10,7 +10,7 @@ ask: Aaron 2026-05-03 verbatim "maybe you just made a memo in memory for it agai
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0175]
+composes_with: [081KQNJ500008QG0R00055XHBG]
 tags: [backlog, memory, audit, category-confusion, substrate-architecture, index, retrieval]
 type: friction-reducer
 ---

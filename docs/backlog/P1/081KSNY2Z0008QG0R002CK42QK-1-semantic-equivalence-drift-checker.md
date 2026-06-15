@@ -8,7 +8,7 @@ closed_by: "tools/substrate-claim-checker/check-semantic-equivalence.ts"
 title: "Substrate-claim-checker - semantic-equivalence-drift checker"
 created: 2026-05-28
 last_updated: 2026-06-12
-parent: B-0170
+parent: 081KQNJ500008QG0R003SCWBDV
 depends_on: []
 classification: buildable-now
 decomposition: atomic

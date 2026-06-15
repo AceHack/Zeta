@@ -10,7 +10,7 @@ ask: Aaron 2026-05-02 ("we would just need Ani's review on those") — load-bear
 created: 2026-05-02
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0164]
+composes_with: [081KQJZR90008QG0R002GJAJ19]
 tags: [ani-review, peer-ai-review, register-fluency, multi-ai-bft, load-bearing-substrate, gen-z-survival-chain]
 type: friction-reducer
 ---

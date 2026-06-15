@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - frontend DORA metric definitions"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0236
-depends_on: [B-0147, B-0297]
+parent: 081KQX9B50008QG0R001XQV4M5
+depends_on: [081KQGDBJ0008QG0R0004ACHJJ, 081KR2E4K0008QG0R002QNGJVX]
 classification: blocked-on-pages-validation
 decomposition: atomic
 owners: [observability, qa]

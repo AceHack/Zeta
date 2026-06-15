@@ -9,13 +9,13 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0794
-  - B-0814
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R000EPPQTR
 composes_with:
-  - B-0812
-  - B-0813
-  - B-0815
-  - B-0816
+  - 081KSGS9H0008QG0R0037H3W4T
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R000JVGZKG
+  - 081KSGS9H0008QG0R003A37Z65
 tags: [cluster-tooling, register, operator-invocation, gh-auth, ts-rule-0-compliant, iter-5-4-sibling, symmetric-to-deregister]
 ---
 

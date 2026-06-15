@@ -9,17 +9,17 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0289
+  - 081KR2E4K0008QG0R001SWEPNV
   - B-0754
 composes_with:
-  - B-0428
-  - B-0763
-  - B-0764
-  - B-0765
-  - B-0766
-  - B-0767
-  - B-0770
-  - B-0771
+  - 081KRFA460008QG0R0018SN61J
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R0009YYNP4
+  - 081KSE6WT0008QG0R00063R6HB
+  - 081KSE6WT0008QG0R00049EFBD
+  - 081KSE6WT0008QG0R0016CEE2Z
+  - 081KSE6WT0008QG0R0029S1D5Z
+  - 081KSE6WT0008QG0R0022D6GN8
 tags: [cluster, device-plugin, reticulum, alljoyn, rx, reactive, observability, mesh, polyglot, ai-fabric]
 ---
 

@@ -10,10 +10,10 @@ created: 2026-05-30
 last_updated: 2026-05-30
 decomposition: umbrella
 composes_with:
-  - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
-  - docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
+  - docs/backlog/P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
+  - docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
   - docs/research/trust-gradient-coordination-policy-2026-05-21.md
-  - docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md
+  - docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md
   - full-ai-cluster/nixos/
   - .claude/rules/references-upstreams-not-our-code-search-excludes.md
 tags: [microkernel, declarative, nixos, sequoia, memory-model, trust-gradient, compression-engine, capability-security, supply-chain, better-than-docker, substrate-deployment]

@@ -8,8 +8,8 @@ tier: identity
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0644, B-0636]
-composes_with: [B-0644, B-0636, B-0635, B-0641, B-0646]
+depends_on: [081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R00088FYE9]
+composes_with: [081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R00088FYE9, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R000KVMZ9B, 081KRW63S0008QG0R001Z10PVV]
 tags: [identity, aaron, free-will, agency, collapse-as-agency, deterministic-free-will, post-simulation-choice, locked-in, philosophical-substrate]
 type: identity
 ---

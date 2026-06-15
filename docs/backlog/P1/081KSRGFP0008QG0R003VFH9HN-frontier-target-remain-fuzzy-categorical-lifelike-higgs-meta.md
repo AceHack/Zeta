@@ -9,7 +9,7 @@ effort: XL
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: []
-composes_with: [B-0929, B-0930, B-0931, B-0867, B-0664]
+composes_with: [081KSRGFP0008QG0R003VAR9X2, 081KSRGFP0008QG0R001Y6RTY9, 081KSRGFP0008QG0R0026P3D73, 081KSKBP80008QG0R000B3Y19A, 081KRW63S0008QG0R001Z7NYMV]
 tags: [frontier, edge-runner, meno, remain, metastable, higgs, lifelike, traveler, category-theory, fuzzy-machine, persistence, almost-immortal, architecture, aaron]
 type: architecture
 ---

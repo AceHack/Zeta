@@ -9,12 +9,12 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0839
+  - 081KSGS9H0008QG0R002F1G7ER
 composes_with:
-  - B-0820
-  - B-0838
-  - B-0840
-  - B-0841
+  - 081KSGS9H0008QG0R00352WW0V
+  - 081KSGS9H0008QG0R002THJ2P1
+  - 081KSGS9H0008QG0R0006F4BGX
+  - 081KSGS9H0008QG0R001876MP6
 tags: [universal-pattern, basis-decomposition, fourier-transform, audio-fingerprinting, energy-disaggregation, reservoir-readout, substrate-as-basis, mathematical-unification, cross-domain-isomorphism]
 ---
 

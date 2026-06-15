@@ -11,7 +11,7 @@ ask: Aaron 2026-04-25 ("happy to give you access to trading accounts where it wo
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/backlog/P2/B-0023-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md, docs/aurora/**]
+composes_with: [docs/backlog/P2/081KQ0YZ80008QG0R0026WN385-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/backlog/P2/081KQ0YZ80008QG0R003EJQZ1M-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md, docs/aurora/**]
 tags: [trading, self-funding, autonomous-economic-actor, aurora, otto-336, otto-337, prerequisite-work]
 type: feature
 ---

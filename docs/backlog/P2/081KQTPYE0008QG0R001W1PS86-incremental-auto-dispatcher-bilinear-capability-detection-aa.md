@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 forwarded Claude.ai review-of-review of the algebra-capabi
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0140, B-0156, B-0189, B-0196]
+composes_with: [081KQGDBJ0008QG0R0022EW5ZE, 081KQGDBJ0008QG0R000A4EZS5, 081KQR4HQ0008QG0R002933PRR, 081KQTPYE0008QG0R001W237MZ]
 tags: [dbsp, plugin-api, bilinear, capability-detection, active-patterns, fsharp-type-system, retraction-correctness, research+implementation]
 type: friction-reducer
 ---

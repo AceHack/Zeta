@@ -10,8 +10,8 @@ ask: decomposition of B-0017
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
-composes_with: [B-0017, B-0388, B-0389, B-0391, B-0392, B-0393, B-0394, B-0395]
-parent: B-0017
+composes_with: [081KQ0YZ80008QG0R0003GAYYN, 081KR50HA0008QG0R002DR44J1, 081KR50HA0008QG0R000TQKYGM, 081KR50HA0008QG0R0036HGEJ5, 081KR50HA0008QG0R003BM7FNK, 081KR50HA0008QG0R001DX165X, 081KR50HA0008QG0R002NZENZJ, 081KR50HA0008QG0R0019KYAAS]
+parent: 081KQ0YZ80008QG0R0003GAYYN
 tags: [frontier, metrics, time-to-answer, dashboard, operational-resonance, measurement, a-b-experiments]
 type: research
 ---

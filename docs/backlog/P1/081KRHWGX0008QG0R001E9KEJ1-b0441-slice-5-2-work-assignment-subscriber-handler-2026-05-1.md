@@ -8,9 +8,9 @@ tier: factory-infrastructure
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0441
-depends_on: [B-0449]
-composes_with: [B-0441, B-0449, B-0459, B-0461]
+parent: 081KRFA460008QG0R00229616S
+depends_on: [081KRFA460008QG0R002DG8KPZ]
+composes_with: [081KRFA460008QG0R00229616S, 081KRFA460008QG0R002DG8KPZ, 081KRHWGX0008QG0R000TVGDGV, 081KRHWGX0008QG0R000JMEYBH]
 tags: [multi-agent, background-service, bus, subscriber-pattern, anti-idle, work-assignment]
 type: feature
 ---

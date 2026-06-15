@@ -6,7 +6,7 @@ status: closed
 title: "MEMORY.md marker-vs-index - harness contract verification and evidence"
 created: 2026-05-08
 last_updated: 2026-05-14
-parent: B-0066
+parent: 081KQ8P5D0008QG0R003KFRGJ0
 depends_on: []
 classification: buildable-now
 decomposition: atomic

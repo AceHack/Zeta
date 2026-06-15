@@ -8,7 +8,7 @@ type: chore
 origin: B-0469 apply completion — 1-commit drift between scaffold-template time and apply-time
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0469]
+depends_on: [081KRHWGX0008QG0R003S6KGGE]
 composes_with: []
 ---
 

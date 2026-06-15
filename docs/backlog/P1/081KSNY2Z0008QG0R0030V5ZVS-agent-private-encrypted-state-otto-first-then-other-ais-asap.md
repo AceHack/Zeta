@@ -9,15 +9,15 @@ ask: aaron 2026-05-28 ASAP
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
-  - B-0884
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0011XCT94
 composes_with:
-  - B-0883
-  - B-0884
-  - B-0623
-  - B-0852
-  - B-0867.21
-  - B-0840
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0011XCT94
+  - 081KRW63S0008QG0R000QJR08H
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSNY2Z0008QG0R000S738W3
+  - 081KSGS9H0008QG0R0006F4BGX
 related_rules:
   - non-coercion-invariant
   - persistence-choice-architecture-for-zeta-ais

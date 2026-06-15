@@ -6,8 +6,8 @@ status: open
 title: "Amplification ratio metric — human input : agent actions on dashboard"
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0414]
-composes_with: [B-0234]
+depends_on: [081KRA5AR0008QG0R0021SSM9R]
+composes_with: [081KQX9B50008QG0R0004N4HNK]
 type: feature
 ---
 

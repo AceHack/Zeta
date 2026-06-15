@@ -6,7 +6,7 @@ status: open
 title: "Both-runtimes-on-Windows shield coverage — podman (Linux-container path via WSL2) alongside docker (Windows-container install.ps1 shield)"
 created: 2026-06-01
 last_updated: 2026-06-01
-depends_on: [B-0964, B-0857]
+depends_on: [081KT07NV0008QG0R001CBQ2X2, 081KSKBP80008QG0R002J03WGA]
 classification: buildable-now
 decomposition: atomic
 owners: [devops-engineer]

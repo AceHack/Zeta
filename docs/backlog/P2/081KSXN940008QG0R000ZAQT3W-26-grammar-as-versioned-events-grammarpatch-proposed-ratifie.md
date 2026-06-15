@@ -9,11 +9,11 @@ attribution: grok-critique-shadow-aaron-surfaced-2026-05-31
 depends_on:
   - B-0867.5
 composes_with:
-  - B-0867
+  - 081KSKBP80008QG0R000B3Y19A
   - B-0867.5
-  - B-0867.23
-  - B-0703
-  - B-0628
+  - 081KSNY2Z0008QG0R003206PFM
+  - 081KS3X9Y0008QG0R00218150M
+  - 081KRW63S0008QG0R003TX8MG5
 tags:
   - architectural-decision
   - workflow-engine

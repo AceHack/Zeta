@@ -12,10 +12,10 @@ type: umbrella
 decomposition: umbrella
 depends_on: []
 composes_with:
-  - B-0948
-  - B-0867
-  - B-0890.1
-  - B-0951
+  - 081KSXN940008QG0R002B89QZ1
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000E5KTPX
+  - 081KSXN940008QG0R000R76H45
   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
   - docs/research/2026-05-31-the-whole-thing-one-event-sourced-fold-substrate-gset-bag-zset-identity-observability-controller-world-model-synthesis.md
 tags: [observe, agent-loop, event-sourcing, local-llm, execute, sovereign, testing, checklist, vendor-store, umbrella]

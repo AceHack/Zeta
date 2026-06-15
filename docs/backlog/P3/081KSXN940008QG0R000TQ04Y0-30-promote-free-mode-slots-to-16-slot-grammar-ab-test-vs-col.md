@@ -8,12 +8,12 @@ created: 2026-05-31
 last_updated: 2026-05-31
 attribution: aaron-2026-05-31
 depends_on:
-  - B-0867.27
-  - B-0393
+  - 081KSXN940008QG0R0033T2BQT
+  - 081KR50HA0008QG0R001DX165X
 composes_with:
-  - B-0867
-  - B-0867.26
-  - B-0944
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSXN940008QG0R000ZAQT3W
+  - 081KSV2WD0008QG0R00051XS0N
 tags:
   - workflow-engine
   - universal-action-grammar

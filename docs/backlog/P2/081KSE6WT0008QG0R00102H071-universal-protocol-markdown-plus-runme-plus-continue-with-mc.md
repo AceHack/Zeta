@@ -10,9 +10,9 @@ domain: agentic-organization
 ferried_by: aaron
 owners: [aaron, mika]
 composes_with:
-  - B-0730
-  - B-0731
-  - B-0732
+  - 081KSE6WT0008QG0R003AJYMD3
+  - 081KSE6WT0008QG0R0004HV6RR
+  - 081KSE6WT0008QG0R002YBWBB1
 related_substrate:
   - tools/peer-call/
   - .claude/rules/persistence-choice-architecture-for-zeta-ais.md

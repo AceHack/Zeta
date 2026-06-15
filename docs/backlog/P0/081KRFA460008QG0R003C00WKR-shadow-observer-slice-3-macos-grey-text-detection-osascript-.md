@@ -8,7 +8,7 @@ tier: product-feature
 effort: S
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0402
+parent: 081KR7JY10008QG0R0008NGW95
 depends_on: []
 classification: buildable-now
 decomposition: atomic

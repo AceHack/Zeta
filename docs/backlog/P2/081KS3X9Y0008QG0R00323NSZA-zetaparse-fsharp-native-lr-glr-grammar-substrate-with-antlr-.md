@@ -9,8 +9,8 @@ effort: L
 ask: amara 2026-05-21 (B-0685 Phase 1 cascade); aaron-forwarded
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0685]
-composes_with: [B-0635, B-0644, B-0665, B-0666, B-0682, B-0688]
+depends_on: [081KS3X9Y0008QG0R000EKJE9S]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R001SAHYKV, 081KS3X9Y0008QG0R000W00V73, 081KS3X9Y0008QG0R0010716X9]
 tags: [zetaparse, fsharp-compiler-fork, lr-parser, glr-parser, ielr, lalr, antlr-compat, tree-sitter, parser-substrate, grammar-ir, ambiguity-preservation, agora-v6-applied-to-parsing]
 type: research
 ---

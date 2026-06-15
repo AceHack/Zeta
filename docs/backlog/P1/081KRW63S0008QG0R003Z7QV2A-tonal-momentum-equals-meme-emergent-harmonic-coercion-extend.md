@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0664, B-0665, B-0666]
-composes_with: [B-0644, B-0645, B-0648, B-0660, B-0659, B-0621, B-0628, B-0635, B-0637, B-0640]
+depends_on: [081KRW63S0008QG0R001Z7NYMV, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R001SAHYKV]
+composes_with: [081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R003AZNK6J, 081KRW63S0008QG0R0025E4PH6, 081KRW63S0008QG0R0004P69JA, 081KRW63S0008QG0R001WKJN53, 081KRW63S0008QG0R0030EQ67Z, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R0004D5XG1, 081KRW63S0008QG0R002XA5N6S]
 tags: [design, aaron, mika, tonal-momentum, meme-as-trajectory, strong-attractor-states, copy-pasteable-trajectories, resonant-negative-harmonics, emergent-harmonic-coercion, nci-extension, defensive-technology, beacon-tier-eligible, locked-in]
 type: design
 ---

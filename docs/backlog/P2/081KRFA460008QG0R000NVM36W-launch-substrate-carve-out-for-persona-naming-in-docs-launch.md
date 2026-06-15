@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-13
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0429]
+composes_with: [081KRFA460008QG0R002M05EY1]
 tags: [governance, launch-substrate, persona-naming, agent-best-practices, copilot-recurring-finding]
 type: feature
 ---

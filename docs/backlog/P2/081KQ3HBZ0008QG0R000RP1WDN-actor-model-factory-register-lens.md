@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — research track on whether the actor model's vocabulary
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, B-0038, B-0251]
+composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, 081KQ3HBZ0008QG0R0006NJP4K, 081KQZVQW0008QG0R000PPQ3MH]
 tags: [actor-model, vocabulary-as-lens, hewitt, meijer, akka, orleans, service-fabric, async-agentic, no-bottlenecks, research-grade]
 type: friction-reducer
 

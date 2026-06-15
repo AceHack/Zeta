@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0628, B-0643, B-0654, B-0658, B-0651, B-0646]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R002ZRYY4F, 081KRW63S0008QG0R002WT5VTQ, 081KRW63S0008QG0R00140R3TA, 081KRW63S0008QG0R002N6PPVK, 081KRW63S0008QG0R001Z10PVV]
 tags: [governance, aaron, mika, three-faction-bft, tla-plus, z-state-retractable-algebra, layered-formal-proof, non-monetary-bft, locked-in]
 type: governance
 ---

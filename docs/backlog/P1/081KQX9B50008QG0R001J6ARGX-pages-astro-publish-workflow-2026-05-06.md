@@ -6,11 +6,11 @@ status: open
 title: "GitHub Pages discoverability - Astro publish workflow"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0154
-depends_on: [B-0047]
+parent: 081KQGDBJ0008QG0R002NV04N9
+depends_on: [081KQ3HBZ0008QG0R0022ZJ7KV]
 classification: buildable-now
 decomposition: decomposed
-children: [B-0274, B-0275]
+children: [081KR2E4K0008QG0R003VN9WC8, 081KR2E4K0008QG0R0032SWP2M]
 type: friction-reducer
 ---
 

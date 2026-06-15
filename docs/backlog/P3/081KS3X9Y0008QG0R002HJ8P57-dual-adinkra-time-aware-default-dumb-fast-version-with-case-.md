@@ -8,8 +8,8 @@ tier: design
 effort: S
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0623, B-0624]
-composes_with: [B-0623, B-0624, B-0625]
+depends_on: [081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003J8HR6K]
+composes_with: [081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R003NP3YA3]
 tags: [design, mika, adinkras, retractable-z-state, performance-escape-hatch, dual-default-rule]
 type: design
 ---

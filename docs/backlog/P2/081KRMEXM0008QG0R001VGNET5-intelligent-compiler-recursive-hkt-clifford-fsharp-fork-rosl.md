@@ -10,7 +10,7 @@ ask: Otto-CLI
 effort: XL
 tags: [research, fsharp-fork, hkt, recursive-hkt, clifford-algebra, ai-type-safety, computation-expressions, recursive-type-providers, roslyn-source-generators, linq, intelligent-compiler, antigen-spread-representation]
 depends_on: []
-composes_with: [B-0543, B-0546]
+composes_with: [081KRMEXM0008QG0R002YSPW1X, 081KRMEXM0008QG0R00278KS63]
 last_updated: 2026-05-16
 ---
 

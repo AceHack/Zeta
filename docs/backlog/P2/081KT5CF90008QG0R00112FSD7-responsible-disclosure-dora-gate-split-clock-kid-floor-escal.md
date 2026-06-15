@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
-composes_with: [B-0926]
+composes_with: [081KSRGFP0008QG0R00091PP56]
 tags: [security, responsible-disclosure, dora, safety-floor, kid-safety, coordinated-disclosure, governance, aaron]
 type: design
 ---

@@ -6,7 +6,7 @@ status: open
 title: Host-loop setup for Max's 24/7 site (slice of B-0248)
 created: 2026-05-16
 last_updated: 2026-05-23
-parent: B-0248
+parent: 081KQZVQW0008QG0R0032TPKT8
 depends_on: []
 decomposition: atomic
 owners: [infrastructure-operator]

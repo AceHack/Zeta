@@ -6,8 +6,8 @@ status: open
 title: "GitHub Wiki integration - seed pages and Pages/Wiki boundaries"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0237
-depends_on: [B-0232, B-0233, B-0234]
+parent: 081KQX9B50008QG0R003ZBBJT7
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0001XDTDQ, 081KQX9B50008QG0R0004N4HNK]
 classification: blocked-on-pages-primary-surface
 decomposition: atomic
 owners: [docs, architect]

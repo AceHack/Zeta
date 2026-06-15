@@ -9,7 +9,7 @@ created: 2026-05-16
 ask: Otto
 effort: XL
 tags: [research, category-theory, quantum-error-correction, adinkra, cayley-dickson, happy-code]
-depends_on: [B-0543, B-0544]
+depends_on: [081KRMEXM0008QG0R002YSPW1X, 081KRMEXM0008QG0R003YWZC21]
 composes_with: []
 last_updated: 2026-05-16
 ---

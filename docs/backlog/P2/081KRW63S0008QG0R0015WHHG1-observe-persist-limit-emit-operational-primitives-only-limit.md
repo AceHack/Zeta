@@ -11,7 +11,7 @@ last_updated: 2026-05-18
 superseded_by: B-0665
 resolved: 2026-05-18
 depends_on: []
-composes_with: [B-0624, B-0630, B-0626, B-0499, B-0623, B-0625, B-0635, B-0665]
+composes_with: [081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R000DBX6PT, 081KRW63S0008QG0R000BH37EV, 081KRHWGX0008QG0R0034E0N22, 081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003NP3YA3, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R002YAA09X]
 tags: [design, mika, operational-language, observe-persist-limit-emit, only-limit-collapses, dialectic-coherent-state, pure-vs-effectful, type-safety, locked-in]
 type: design
 ---

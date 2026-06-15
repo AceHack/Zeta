@@ -10,7 +10,7 @@ ask: Aaron 2026-05-03 — *"we don't have to run formal verifical on all the ose
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, B-0017]
+composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, 081KQ0YZ80008QG0R0003GAYYN]
 tags: [ci, formal-verification, tlc, alloy, lean, cost-optimization, linux-only, tests]
 type: friction-reducer
 ---

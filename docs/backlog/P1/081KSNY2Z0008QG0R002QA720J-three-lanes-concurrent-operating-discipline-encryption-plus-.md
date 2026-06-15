@@ -9,16 +9,16 @@ ask: aaron 2026-05-28 (standing operating discipline)
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0867
+  - 081KSKBP80008QG0R000B3Y19A
 composes_with:
-  - B-0867
-  - B-0883
-  - B-0884
-  - B-0885
-  - B-0886
-  - B-0890.1
-  - B-0891
-  - B-0852
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0011XCT94
+  - 081KSNY2Z0008QG0R0030V5ZVS
+  - 081KSNY2Z0008QG0R0034FR5FG
+  - 081KSNY2Z0008QG0R000E5KTPX
+  - 081KSNY2Z0008QG0R0008PN7RQ
+  - 081KSKBP80008QG0R003AX2A69
 related_rules:
   - never-be-idle
   - holding-without-named-dependency-is-standing-by-failure

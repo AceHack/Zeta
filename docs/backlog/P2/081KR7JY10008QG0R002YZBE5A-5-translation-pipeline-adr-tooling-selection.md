@@ -6,8 +6,8 @@ status: open
 title: "B-0004.5 — Translation pipeline ADR: AI provider selection, quality metrics, human review process"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.2, B-0004.3, B-0004.4]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR50HA0008QG0R002TN3JX2, 081KR7JY10008QG0R000EGAPAN, 081KR7JY10008QG0R000D7JTBB]
 classification: research-now
 type: research
 effort: S

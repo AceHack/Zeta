@@ -9,9 +9,9 @@ effort: S
 ask: B-0193 decomposition — informs minimal bootstrap seed (what specs cover, what's missing)
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0193
+parent: 081KQTPYE0008QG0R00392KABJ
 depends_on: []
-composes_with: [B-0193, B-0171, B-0339, B-0341]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KQNJ500008QG0R001N94412, 081KR2E4K0008QG0R000W3W6C1, 081KR2E4K0008QG0R002PHZR58]
 tags: [bootstrap-razor, spec-completeness, openspec, inventory, audit, trajectory-child]
 type: friction-reducer
 ---

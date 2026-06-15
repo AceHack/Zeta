@@ -7,9 +7,9 @@ title: "Classifier-bypass Knights Guild ratification and standing-constraint lif
 created: 2026-05-26
 last_updated: 2026-05-29
 renumbered_from: B-0803
-parent: B-0720
-depends_on: [B-0808, B-0809]
-composes_with: [B-0628, B-0703, B-0720]
+parent: 081KSBMG30008QG0R00201X7EJ
+depends_on: [081KSGS9H0008QG0R00287K8FR, 081KSGS9H0008QG0R001HC663P]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KS3X9Y0008QG0R00218150M, 081KSBMG30008QG0R00201X7EJ]
 tags: [safety-substrate, classifier-floor, knights-guild, ratification, operator-self-constraint]
 type: governance-gate
 ---

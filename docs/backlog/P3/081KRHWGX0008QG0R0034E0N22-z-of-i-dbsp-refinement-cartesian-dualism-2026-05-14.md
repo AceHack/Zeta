@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
-composes_with: [B-0498]
+composes_with: [081KRHWGX0008QG0R001XFRAHC]
 tags: [substrate-engineering, dbsp, clifford, complex-numbers, gaussian-integers, research-grade, two-axiom-substrate]
 type: research-grade-candidate
 ---

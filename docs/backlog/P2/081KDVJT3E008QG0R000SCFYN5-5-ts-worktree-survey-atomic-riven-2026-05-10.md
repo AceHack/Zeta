@@ -8,8 +8,8 @@ tier: factory-hygiene
 effort: S
 depends_on: []
 composes_with:
-  - B-0090
-  - B-0090.1
+  - 081KQ8P5D0008QG0R0002TN22C
+  - 081KDVJT3E008QG0R003GV8BHV
 last_updated: 2026-05-13
 renumbered_from: B-0090.1
 renumbered_reason: "ID collision with the second B-0090 decomposition (PR #2680, 2026-05-11) which the B-0090 parent body describes as canonical (3-bucket-taxonomy / worktree-delta / closed-not-merged-PR-scan / cadence-hook). This row is part of Riven's earlier 2026-05-10 decomposition (PR #2503, ts-* atomic series) which kept original scope but lost the ID claim. Renumbered .1→.5, .2→.6, .3→.7, .4→.8 to preserve both decompositions side-by-side. Substrate-cleanup tracked in B-0451."

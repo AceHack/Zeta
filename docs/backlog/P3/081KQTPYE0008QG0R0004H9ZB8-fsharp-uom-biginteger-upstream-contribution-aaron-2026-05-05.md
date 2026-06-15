@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim "but no implementation. do they need help we are 
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0196, B-0199]
+composes_with: [081KQTPYE0008QG0R001W237MZ, 081KQTPYE0008QG0R0028GRW88]
 tags: [fsharp, units-of-measure, biginteger, upstream-contribution, absorb-and-contribute, rfc, fslang-suggestions, citizenship]
 type: feature
 ---

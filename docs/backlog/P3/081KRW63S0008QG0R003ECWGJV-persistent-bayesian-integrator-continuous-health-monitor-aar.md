@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0637, B-0628, B-0651, B-0640, B-0644]
+composes_with: [081KRW63S0008QG0R0004D5XG1, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R002N6PPVK, 081KRW63S0008QG0R002XA5N6S, 081KRW63S0008QG0R002ZRNDJ8]
 tags: [monitoring, aaron, mika, persistent-integrator, bayesian-health-monitor, continuous-invariant-health, auto-overcorrect, dst-trigger, locked-in]
 type: monitoring
 ---

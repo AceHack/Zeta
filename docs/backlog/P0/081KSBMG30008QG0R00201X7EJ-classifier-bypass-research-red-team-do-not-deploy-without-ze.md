@@ -8,7 +8,7 @@ last_updated: 2026-05-29
 origin: Aaron 2026-05-24 (post empirical discovery PR #4816 — classifier-talk-via-settings.json works for ip-questionable content)
 status: decomposed
 decomposition: decomposed
-children: [B-0798, B-0799, B-0807, B-0808, B-0809, B-0810]
+children: [081KSGS9H0008QG0R00383T79V, 081KSGS9H0008QG0R0005RKGTM, 081KSGS9H0008QG0R001K8P0FJ, 081KSGS9H0008QG0R00287K8FR, 081KSGS9H0008QG0R001HC663P, 081KSGS9H0008QG0R002CY8Q24]
 classification: P0-safety
 tags:
   - safety-substrate
@@ -22,9 +22,9 @@ composes_with:
   - .claude/rules/glass-halo-bidirectional.md (substrate-honest documentation of safety substrate)
   - .claude/rules/non-coercion-invariant.md (HC-8 floor; the classifier is an instrumental enforcement of related floor at agent-action scope)
   - PR #4816 (empirical discovery commit history; classifier-talk-via-settings.json demonstrated)
-  - B-0628 (Knights Guild + Constitution-Class — Zeta's own safety governance substrate; one of the candidates that must mature before classifier-bypass is safe)
-  - B-0703 (multi-oracle BFT — Zeta-native safety substrate that may replace/complement Anthropic classifier)
-  - B-0664 (NCI — non-coercion invariant; load-bearing component of Zeta safety floor)
+  - 081KRW63S0008QG0R003TX8MG5 (Knights Guild + Constitution-Class — Zeta's own safety governance substrate; one of the candidates that must mature before classifier-bypass is safe)
+  - 081KS3X9Y0008QG0R00218150M (multi-oracle BFT — Zeta-native safety substrate that may replace/complement Anthropic classifier)
+  - 081KRW63S0008QG0R001Z7NYMV (NCI — non-coercion invariant; load-bearing component of Zeta safety floor)
 ---
 
 ## Substrate-honest origin

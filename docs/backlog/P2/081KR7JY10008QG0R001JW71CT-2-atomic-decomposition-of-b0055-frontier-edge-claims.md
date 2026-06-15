@@ -9,8 +9,8 @@ effort: S
 ask: Re-decompose B-0055.1 (the large monolithic edge-claims-catalog.ts) into smallest atomic TS modules + corresponding backlog rows; CTF flags remain falsifiable/retractible
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0055.1]
-composes_with: [B-0055]
+depends_on: [081KR7JY10008QG0R0035HP11K]
+composes_with: [081KQ3HBZ0008QG0R001K0EC2C]
 tags: [decomposition, re-decomp, atomic-children, TS-modules, edge-claims]
 type: friction-reducer
 ---

@@ -10,11 +10,11 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on: []
 composes_with:
-  - B-0869
-  - B-0875
-  - B-0875.1
-  - B-0881
-  - B-0882
+  - 081KSNY2Z0008QG0R000HENSVM
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R002WQ747V
+  - 081KSNY2Z0008QG0R0015C3F01
+  - 081KSNY2Z0008QG0R000J555YB
 tags:
   - growth-rate-ratio-discipline
   - backlog-vs-tech-debt-balance

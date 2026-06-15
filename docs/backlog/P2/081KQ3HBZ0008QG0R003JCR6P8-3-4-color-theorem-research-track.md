@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"3 4 color theorm backlog"*
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [B-0050, B-0051, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean, .claude/agents/formal-verification-expert.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md]
+composes_with: [081KQ3HBZ0008QG0R000H8K8CC, 081KQ3HBZ0008QG0R002SM3G49, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean, .claude/agents/formal-verification-expert.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md]
 tags: [graph-coloring, four-color-theorem, three-color, gonthier-coq, appel-haken, formal-verification, lean4, alloy, z3, csp, proof-by-reflection, planar-graphs]
 type: feature
 

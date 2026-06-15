@@ -9,13 +9,13 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0850
+  - 081KSKBP80008QG0R003Z4C0D0
 composes_with:
-  - B-0703
-  - B-0824
-  - B-0847
-  - B-0848
-  - B-0796
+  - 081KS3X9Y0008QG0R00218150M
+  - 081KSGS9H0008QG0R0031PBNGA
+  - 081KSGS9H0008QG0R002T0XQ50
+  - 081KSGS9H0008QG0R001JNKBFD
+  - 081KSGS9H0008QG0R002F04ECB
 tags: [persona-first, guard-post-scheduler, rotation, model-line-preferences, harness-compat-matrix, tier-modeling, per-node-3-floor, mika-ferry, weaver-role, substrate-extension-of-b0850]
 ---
 

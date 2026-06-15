@@ -7,11 +7,11 @@ priority: P1
 created: 2026-05-28
 attribution: aaron-2026-05-28
 depends_on:
-  - B-0894
+  - 081KSNY2Z0008QG0R0032E7PCY
 composes_with:
-  - B-0750
+  - 081KSE6WT0008QG0R003YYC9PV
   - B-0751
-  - B-0530
+  - 081KRMEXM0008QG0R000X1PPGC
 tags:
   - hygiene
   - infrastructure

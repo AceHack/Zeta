@@ -7,7 +7,7 @@ title: Branch/worktree content inventory — Pre-substrate Kenji-era
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
-parent: B-0139
+parent: 081KQGDBJ0008QG0R002S9SWH6
 type: friction-reducer
 decomposition: atomic
 ---

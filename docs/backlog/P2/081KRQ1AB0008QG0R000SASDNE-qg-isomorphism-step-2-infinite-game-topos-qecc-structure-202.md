@@ -9,7 +9,7 @@ created: 2026-05-16
 ask: Aaron
 effort: L
 tags: [research, quantum-gravity, axiomatization, decomposition]
-depends_on: [B-0548]
+depends_on: [081KRQ1AB0008QG0R002DQBGZF]
 ---
 
 ## Why

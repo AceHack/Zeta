@@ -12,7 +12,7 @@ ask: maintainer Aaron 2026-04-28 ("checking for git hotspots should be on some c
 created: 2026-04-28
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0061, B-0066]
+composes_with: [081KQ8P5D0008QG0R001BH93SA, 081KQ8P5D0008QG0R003KFRGJ0]
 tags: [factory-hygiene, git-hotspot, cadence, structural-fix, audit, phase-1-2-landed]
 ---
 

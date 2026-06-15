@@ -11,12 +11,12 @@ origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on:
-  - B-0465
+  - 081KRHWGX0008QG0R002B2P0K0
 composes_with:
-  - B-0425
-  - B-0424
-  - B-0426
-  - B-0427
+  - 081KRFA460008QG0R003JQ46J4
+  - 081KRFA460008QG0R001H98EXJ
+  - 081KRFA460008QG0R0007RWSN1
+  - 081KRFA460008QG0R000VKJF0H
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md
 ---

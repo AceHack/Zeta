@@ -9,11 +9,11 @@ origin: B-0435 slice-2 (noted in PR #3133 body)
 created: 2026-05-14
 last_updated: 2026-05-16
 closed: 2026-05-16
-depends_on: [B-0435]
+depends_on: [081KRFA460008QG0R001MC7D7R]
 composes_with:
-  - B-0401
-  - B-0435
-  - docs/backlog/P1/B-0213-broadcast-bus-production-hardening-2026-05-13.md
+  - 081KR7JY10008QG0R001VP6JWG
+  - 081KRFA460008QG0R001MC7D7R
+  - docs/backlog/P1/081KQX9B50008QG0R001YRPGD6-broadcast-bus-production-hardening-2026-05-13.md
 tags: [demo, circuit-breaker, alignment-ui, github-pages, html, js, bus]
 ---
 

@@ -6,8 +6,8 @@ status: open
 title: "B-0029.2 — Setup: GitHub Sponsors profile + npm funding field (the 54th-package experiment)"
 created: 2026-05-09
 last_updated: 2026-05-09
-parent: B-0029
-depends_on: [B-0029.1]
+parent: 081KQ3HBZ0008QG0R000JRZAMM
+depends_on: [081KR50HA0008QG0R002K2G8B0]
 classification: buildable-after-B-0029.1
 type: feature
 effort: XS

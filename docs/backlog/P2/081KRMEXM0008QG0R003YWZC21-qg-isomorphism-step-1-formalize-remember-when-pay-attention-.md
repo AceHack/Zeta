@@ -9,7 +9,7 @@ created: 2026-05-15
 ask: Otto
 effort: L
 tags: [research, category-theory, topos-theory, axiomatization, qg-isomorphism]
-depends_on: [B-0543]
+depends_on: [081KRMEXM0008QG0R002YSPW1X]
 composes_with: []
 last_updated: 2026-05-16
 ---

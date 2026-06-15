@@ -10,7 +10,7 @@ ask: Aaron 2026-05-01 named the row in the prefer-mechanical-external-anchors me
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0125, B-0153, B-0156, B-0177]
+composes_with: [081KQGDBJ0008QG0R001MK4YPC, 081KQGDBJ0008QG0R000E10AAM, 081KQGDBJ0008QG0R000A4EZS5, 081KQNJ500008QG0R0035QCEX9]
 tags: [ci, workflows, detect-changes, parallel-pr, gating, fine-grained-workflows, sibling-repo, external-anchor, tooling]
 type: friction-reducer
 ---

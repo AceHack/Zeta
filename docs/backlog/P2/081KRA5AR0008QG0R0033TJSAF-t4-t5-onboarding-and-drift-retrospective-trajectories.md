@@ -9,9 +9,9 @@ effort: S
 ask: Onboarding + measurement per B-0092
 created: 2026-05-11
 last_updated: 2026-05-14
-parent: B-0092
-depends_on: [B-0452, B-0453]
-composes_with: [B-0090]
+parent: 081KQ8P5D0008QG0R003ZF64GG
+depends_on: [081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS]
+composes_with: [081KQ8P5D0008QG0R0002TN22C]
 renumbered_from: B-0373
 renumbered_reason: "ID collision with B-0373 P1 (alignment-proof-primitive-ladder). Part of the P2 contributor-compliance set renumbered as a unit: B-0370→B-0452, B-0371→B-0453, B-0372→B-0454, B-0373→B-0455. Internal depends_on [B-0370, B-0371] remapped to [B-0452, B-0453]. Substrate-cleanup tracked in B-0451."
 tags: [contributor-compliance, T4, T5, trajectory, renumbered]

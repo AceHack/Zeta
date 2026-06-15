@@ -7,11 +7,11 @@ title: TypeScript standardization — port every .sh outside install graph + eve
 created: 2026-05-01
 last_updated: 2026-05-17
 decomposition: decomposed
-children: [B-0140]
+children: [081KQGDBJ0008QG0R0022EW5ZE]
 depends_on:
-  - B-0086
-  - B-0122
-composes_with: [B-0190, B-0194, B-0196]
+  - 081KQ8P5D0008QG0R003BFZPRC
+  - 081KQDTYV0008QG0R001HQSSAX
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KQTPYE0008QG0R001W1PS86, 081KQTPYE0008QG0R001W237MZ]
 type: friction-reducer
 ---
 

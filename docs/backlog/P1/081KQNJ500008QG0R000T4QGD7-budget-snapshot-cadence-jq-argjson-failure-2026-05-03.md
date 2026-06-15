@@ -12,7 +12,7 @@ ask: maintainer-gated diagnosis + defensive-fix landing (autonomous-loop investi
 created: 2026-05-03
 last_updated: 2026-05-07
 depends_on: []
-composes_with: [B-0085]
+composes_with: [081KQ8P5D0008QG0R003JETMEV]
 tags: [budget-snapshot, jq, argjson, ci-failure, cron-fire-2026-05-03, github-token-scopes]
 ---
 

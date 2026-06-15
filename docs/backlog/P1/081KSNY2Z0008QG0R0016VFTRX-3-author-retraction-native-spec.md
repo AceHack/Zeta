@@ -8,8 +8,8 @@ closed_by: "openspec/specs/retraction-native/spec.md"
 title: "OpenSpec catch-up - author Retraction-Native Semantics spec"
 created: 2026-05-28
 last_updated: 2026-06-12
-parent: B-0171
-depends_on: [B-0171.1]
+parent: 081KQNJ500008QG0R001N94412
+depends_on: [081KSNY2Z0008QG0R003YZ3JXC]
 classification: buildable-now
 decomposition: atomic
 owners: [lior]

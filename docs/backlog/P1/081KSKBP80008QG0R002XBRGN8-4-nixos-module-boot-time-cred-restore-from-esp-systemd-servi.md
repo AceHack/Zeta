@@ -10,15 +10,15 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
   - B-0852.1
-  - B-0852.2a
-  - B-0852.2b
+  - 081KSKBP80008QG0R003AX2A69.2a
+  - 081KSKBP80008QG0R003AX2A69.2b
   - B-0852.5
   - B-0852.10
-  - B-0852.3a
+  - 081KSKBP80008QG0R003AX2A69.3a
 composes_with:
-  - B-0852.3b
-  - B-0855
-  - B-0857
+  - 081KSKBP80008QG0R003AX2A69.3b
+  - 081KSKBP80008QG0R000GPC0TB
+  - 081KSKBP80008QG0R002J03WGA
 tags: [b-0852-sub-row, cred-persistence, nixos-module, systemd, boot-time, esp-restore, interactive-passphrase, env-passphrase, end-to-end-usb-test-gate]
 ---
 

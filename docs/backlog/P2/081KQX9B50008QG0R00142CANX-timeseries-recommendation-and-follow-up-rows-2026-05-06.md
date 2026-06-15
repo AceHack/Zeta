@@ -6,8 +6,8 @@ status: open
 title: "Timeseries native-ZSet research - recommendation and follow-up rows"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0147
-depends_on: [B-0230]
+parent: 081KQGDBJ0008QG0R0004ACHJJ
+depends_on: [081KQX9B50008QG0R001T7M5SK]
 classification: blocked-on-pareto-synthesis
 type: feature
 ---

@@ -9,10 +9,10 @@ attribution: aaron-2026-05-28
 depends_on:
   - B-0867.5
 composes_with:
-  - B-0867
-  - B-0867.23
-  - B-0892
-  - B-0890
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R003206PFM
+  - 081KSNY2Z0008QG0R002QA720J
+  - 081KSNY2Z0008QG0R0017JSTGD
 tags:
   - agent-loop
   - workflow-engine

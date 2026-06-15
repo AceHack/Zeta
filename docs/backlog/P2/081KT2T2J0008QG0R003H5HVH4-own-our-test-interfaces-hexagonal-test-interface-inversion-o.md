@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-1000, B-1006, B-1007, B-0982, B-0428]
+composes_with: [081KT2T2J0008QG0R000S7GHQ8, 081KT2T2J0008QG0R0008TFHJT, 081KT2T2J0008QG0R000YZ3NMY, 081KT07NV0008QG0R0032MCYER, 081KRFA460008QG0R0018SN61J]
 tags: [hexagonal, own-your-interfaces, test-interface-inversion, reflection, ports-and-adapters, dependency-inversion, fscheck, xunit, z3, sat-solver, rust-test, ts-runner, cross-language, bcl-interface-boundary, formal-proof-first, test-contract-port, property-engine, proof-engine, infer-net, aaron]
 type: feature
 ---

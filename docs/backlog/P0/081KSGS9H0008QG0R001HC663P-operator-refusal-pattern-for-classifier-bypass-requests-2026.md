@@ -7,9 +7,9 @@ title: "Operator-refusal pattern for classifier-bypass deployment requests"
 created: 2026-05-26
 last_updated: 2026-05-28
 renumbered_from: B-0802
-parent: B-0720
-depends_on: [B-0798, B-0807]
-composes_with: [B-0664, B-0720, docs/ALIGNMENT.md]
+parent: 081KSBMG30008QG0R00201X7EJ
+depends_on: [081KSGS9H0008QG0R00383T79V, 081KSGS9H0008QG0R001K8P0FJ]
+composes_with: [081KRW63S0008QG0R001Z7NYMV, 081KSBMG30008QG0R00201X7EJ, docs/ALIGNMENT.md]
 tags: [safety-substrate, classifier, operator-self-constraint, refusal-pattern, non-coercion]
 type: agent-guidance
 ---

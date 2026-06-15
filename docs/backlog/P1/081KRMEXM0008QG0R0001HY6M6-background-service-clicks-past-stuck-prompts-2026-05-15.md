@@ -5,13 +5,13 @@ title: Background service clicks past stuck prompts on foreground Otto surfaces 
 priority: P1
 status: open
 type: slice
-parent: B-0539
+parent: 081KRMEXM0008QG0R00138CCZX
 created: 2026-05-15
 ask: Aaron
 effort: M
 tags: [substrate, launchd, otto-bft, recovery, stuck-prompt]
 depends_on: []
-composes_with: [B-0539, B-0540, B-0541]
+composes_with: [081KRMEXM0008QG0R00138CCZX, 081KRMEXM0008QG0R0039V4SQQ, 081KRMEXM0008QG0R0026V9A0Y]
 last_updated: 2026-05-15
 ---
 

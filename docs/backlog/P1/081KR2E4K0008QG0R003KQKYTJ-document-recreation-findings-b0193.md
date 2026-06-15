@@ -9,9 +9,9 @@ effort: M
 ask: B-0193 decomposition — AC 5 (findings documented in research-grade preservation file)
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0193
-depends_on: [B-0344]
-composes_with: [B-0193, B-0342, B-0346]
+parent: 081KQTPYE0008QG0R00392KABJ
+depends_on: [081KR2E4K0008QG0R0035HNPG1]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KR2E4K0008QG0R00322TP58, 081KR2E4K0008QG0R000JGRY8N]
 tags: [bootstrap-razor, findings, research-preservation, trajectory-child]
 type: friction-reducer
 ---

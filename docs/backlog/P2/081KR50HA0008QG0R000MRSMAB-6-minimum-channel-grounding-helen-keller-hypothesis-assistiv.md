@@ -6,7 +6,7 @@ status: open
 title: "B-0026.6 — Helen Keller minimum-channel hypothesis: dual-purpose grounding + assistive-tech research"
 created: 2026-05-09
 last_updated: 2026-05-09
-parent: B-0026
+parent: 081KQ0YZ80008QG0R001WZ4JE8
 depends_on: []
 classification: research-now
 type: research

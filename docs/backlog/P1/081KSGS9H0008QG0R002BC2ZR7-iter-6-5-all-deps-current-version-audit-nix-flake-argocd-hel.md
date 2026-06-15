@@ -10,11 +10,11 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0800
-  - B-0801
-  - B-0802
-  - B-0803
-  - B-0804
+  - 081KSGS9H0008QG0R001EKTS5A
+  - 081KSGS9H0008QG0R002T6J6FS
+  - 081KSGS9H0008QG0R003GM7TYN
+  - 081KSGS9H0008QG0R00280HHA7
+  - 081KSGS9H0008QG0R0034ZYYR8
 tags: [iter-6, capstone, version-sweep, nix, argocd, helm, search-first-authority, training-data-stale, agent-discipline, full-ai-cluster, supply-chain-security]
 ---
 

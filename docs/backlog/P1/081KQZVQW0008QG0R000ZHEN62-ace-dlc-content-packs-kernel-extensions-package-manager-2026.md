@@ -6,9 +6,9 @@ status: open
 title: "Ace DLC content packs — distributable kernel extensions via package manager"
 created: 2026-05-07
 last_updated: 2026-05-08
-depends_on: [B-0240, B-0244, B-0245]
+depends_on: [081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001PS4F8G, 081KQZVQW0008QG0R002Q58F6Z]
 decomposition: decomposed
-children: [B-0287, B-0288]
+children: [081KR2E4K0008QG0R0033WVCXE, 081KR2E4K0008QG0R002YE3MMD]
 owners: [architect, product-scrum-master, public-api-designer]
 type: feature
 ---

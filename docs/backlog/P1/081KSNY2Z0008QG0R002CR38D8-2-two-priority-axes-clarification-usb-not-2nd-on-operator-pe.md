@@ -9,15 +9,15 @@ ask: aaron 2026-05-28 correction
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0886
+  - 081KSNY2Z0008QG0R0034FR5FG
 composes_with:
-  - B-0886
-  - B-0886.1
-  - B-0884
-  - B-0852
-  - B-0844
-  - B-0737
-  - B-0866
+  - 081KSNY2Z0008QG0R0034FR5FG
+  - 081KSNY2Z0008QG0R002FTH3NQ
+  - 081KSNY2Z0008QG0R0011XCT94
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSGS9H0008QG0R001EZKNCB
+  - 081KSE6WT0008QG0R003WZAQKV
+  - 081KSKBP80008QG0R003RFX32N
 tags:
   - two-priority-axes-clarification
   - operator-personal-axis-usb-first

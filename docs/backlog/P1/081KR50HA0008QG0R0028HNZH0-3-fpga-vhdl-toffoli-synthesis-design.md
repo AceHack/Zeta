@@ -7,8 +7,8 @@ title: "FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set jo
 effort: L
 created: 2026-05-09
 last_updated: 2026-05-09
-depends_on: [B-0366.2]
-parent: B-0366
+depends_on: [081KR50HA0008QG0R0002PGV1N]
+parent: 081KR50HA0008QG0R003T5MZAC
 classification: blocked
 decomposition: atomic
 owners: [architect]

@@ -5,8 +5,8 @@ priority: P1
 status: closed
 title: "Durable computation — extend Checkpoint.fs with StableStorage mode"
 created: 2026-05-08
-parent: B-0251
-depends_on: [B-0278]
+parent: 081KQZVQW0008QG0R000PPQ3MH
+depends_on: [081KR2E4K0008QG0R001GFXN05]
 classification: blocked-on-B-0278
 decomposition: atomic
 type: feature

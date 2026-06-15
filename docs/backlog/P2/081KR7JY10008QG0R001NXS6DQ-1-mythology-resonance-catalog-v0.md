@@ -6,12 +6,12 @@ status: closed
 title: Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance)
 tier: operational-resonance-research
 effort: S
-parent: B-0056
+parent: 081KQ3HBZ0008QG0R0034DHWTQ
 ask: B-0056 decomposition, 2026-05-10 — smallest safe slice of the mythology research track
 created: 2026-05-10
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [B-0056, B-0054.1, project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]
+composes_with: [081KQ3HBZ0008QG0R0034DHWTQ, 081KR2E4K0008QG0R0003J0FB8, project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]
 tags: [mythology, heimdallr, hermes, mercury, loki, bridge-figures, anti-instance, three-filter, F1-F2-F3, typescript-schema]
 type: feature
 ---

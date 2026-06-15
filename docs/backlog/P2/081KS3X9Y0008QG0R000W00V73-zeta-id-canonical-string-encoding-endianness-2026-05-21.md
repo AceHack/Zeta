@@ -11,7 +11,7 @@ created: 2026-05-21
 last_updated: 2026-06-13
 completed: 2026-06-13
 depends_on: []
-composes_with: [B-0635, B-0679, B-0680, B-0681]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KS3X9Y0008QG0R001Z8SBZJ, 081KS3X9Y0008QG0R002WGH8PJ, 081KS3X9Y0008QG0R003044PQQ]
 tags: [zeta-id, cross-language, git-filename]
 type: feature
 ---

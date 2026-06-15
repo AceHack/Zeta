@@ -10,9 +10,9 @@ created: 2026-05-14
 last_updated: 2026-05-15
 closed: 2026-05-15
 closed_by_pr: 3458
-parent: B-0442
-depends_on: [B-0503]
-composes_with: [B-0442, B-0503, B-0505]
+parent: 081KRFA460008QG0R00061SXRW
+depends_on: [081KRHWGX0008QG0R0027YXBTB]
+composes_with: [081KRFA460008QG0R00061SXRW, 081KRHWGX0008QG0R0027YXBTB, 081KRHWGX0008QG0R002C038BJ]
 tags: [background-service, bus, mechanization, drift-detection, recovery-pr, config]
 type: feature
 ---

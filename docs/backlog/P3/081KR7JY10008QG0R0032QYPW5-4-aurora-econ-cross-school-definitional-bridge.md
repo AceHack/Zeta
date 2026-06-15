@@ -6,8 +6,8 @@ status: open
 title: "B-0021.4 — Cross-school definitional bridge: Austrian vs Post-Keynesian vs complexity-economics on load-bearing terms (money, capital, interest, value)"
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0021.2, B-0021.3]
-parent: B-0021
+depends_on: [081KR7JY10008QG0R001RR02BP, 081KR7JY10008QG0R0038QNJP0]
+parent: 081KQ0YZ80008QG0R0026WN385
 classification: buildable-after-B-0021.3
 type: research
 effort: M

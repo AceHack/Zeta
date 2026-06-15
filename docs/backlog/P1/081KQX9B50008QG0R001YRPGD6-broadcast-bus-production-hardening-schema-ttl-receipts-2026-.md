@@ -7,7 +7,7 @@ title: "Broadcast bus production hardening — structured schema, TTL, receipts,
 created: 2026-05-06
 last_updated: 2026-05-06
 decomposition: atomic
-depends_on: [B-0210]
+depends_on: [081KQX9B50008QG0R0031REK6V]
 type: feature
 ---
 

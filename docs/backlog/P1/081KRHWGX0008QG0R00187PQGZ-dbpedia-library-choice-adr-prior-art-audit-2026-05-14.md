@@ -8,15 +8,15 @@ type: research
 origin: B-0428 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0428
+parent: 081KRFA460008QG0R0018SN61J
 depends_on: []
 composes_with:
-  - B-0428
-  - B-0481
-  - B-0482
-  - B-0483
-  - B-0484
-  - docs/backlog/P3/B-0043-universal-company-government-information-substrate.md
+  - 081KRFA460008QG0R0018SN61J
+  - 081KRHWGX0008QG0R003MTMBGR
+  - 081KRHWGX0008QG0R001VKR0TH
+  - 081KRHWGX0008QG0R002GFSJC6
+  - 081KRHWGX0008QG0R002TYF2NM
+  - docs/backlog/P3/081KQ3HBZ0008QG0R000Q4Y00F-universal-company-government-information-substrate.md
   - memory/feedback_aaron_dbpedia_is_free_master_data_human_curated_fsharp_type_provider_archived_resurrect_for_hkt_mdm_canonical_demo_fork_fsharp_compiler_for_ai_safety_real_hkt_over_clifford_2026_05_13.md
 ---
 

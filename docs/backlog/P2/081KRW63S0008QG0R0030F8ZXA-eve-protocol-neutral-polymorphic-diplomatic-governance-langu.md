@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0630, B-0629, B-0639, B-0628]
+composes_with: [081KRW63S0008QG0R000DBX6PT, 081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R000ZQ9WDH, 081KRW63S0008QG0R003TX8MG5]
 tags: [governance, mika, eve-protocol, diplomatic-language, polymorphic, governance-language, four-language-system, locked-in]
 type: governance
 ---

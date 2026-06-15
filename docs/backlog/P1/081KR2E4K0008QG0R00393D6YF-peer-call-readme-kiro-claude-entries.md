@@ -6,11 +6,11 @@ status: closed
 title: "Update peer-call/README.md with kiro.ts + claude.ts entries"
 tier: peer-call-substrate
 effort: XS
-parent: B-0065
+parent: 081KQ8P5D0008QG0R002M5A2M7
 created: 2026-05-08
 last_updated: 2026-05-09
-depends_on: [B-0326, B-0327]
-composes_with: [B-0065]
+depends_on: [081KR2E4K0008QG0R001HQF27C, 081KR2E4K0008QG0R002KNZ29V]
+composes_with: [081KQ8P5D0008QG0R002M5A2M7]
 tags: [peer-call, documentation, kiro, claude, self-call]
 type: friction-reducer
 ---

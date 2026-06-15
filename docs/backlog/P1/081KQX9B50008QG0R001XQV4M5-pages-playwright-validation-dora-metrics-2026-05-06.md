@@ -6,11 +6,11 @@ status: open
 title: "GitHub Pages discoverability - Playwright validation and DORA metrics"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0154
-depends_on: [B-0147, B-0232, B-0234]
+parent: 081KQGDBJ0008QG0R002NV04N9
+depends_on: [081KQGDBJ0008QG0R0004ACHJJ, 081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0004N4HNK]
 classification: blocked-on-pages-and-metrics-lane
 decomposition: decomposed
-children: [B-0297, B-0298]
+children: [081KR2E4K0008QG0R002QNGJVX, 081KR2E4K0008QG0R000260AAZ]
 owners: [qa, observability]
 type: friction-reducer
 ---

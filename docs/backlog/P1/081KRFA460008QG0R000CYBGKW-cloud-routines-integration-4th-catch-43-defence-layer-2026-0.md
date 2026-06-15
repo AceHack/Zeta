@@ -9,7 +9,7 @@ origin: Aaron 2026-05-13 — "yes that sounds good about the backlog too" (autho
 created: 2026-05-13
 last_updated: 2026-05-14
 depends_on: []
-composes_with: [B-0440, B-0441, B-0442, B-0444]
+composes_with: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW, 081KRFA460008QG0R001SXP0C2]
 child_rows: [B-0507, B-0508, B-0509, B-0510, B-0511, B-0512, B-0513]
 tags: [routines, scheduled-tasks, claude-desktop, cloud-routines, catch-43, github-event-trigger, autonomous-loop, api-trigger]
 ---

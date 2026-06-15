@@ -12,7 +12,7 @@ decomposition: leaf
 composes_with:
   - tools/setup/
   - .github/workflows/
-  - docs/backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md
+  - docs/backlog/P3/081KRW63S0008QG0R000EAZ9K2-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md
 tags: [ci, dst, retries, mise, flake, network, dns, toolchain, reliability]
 type: bug
 ---

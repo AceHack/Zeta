@@ -8,8 +8,8 @@ tier: governance
 effort: S
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0631, B-0654]
-composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628, B-0626]
+depends_on: [081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R002WT5VTQ]
+composes_with: [081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R002WT5VTQ, 081KRW63S0008QG0R000KVMZ9B, 081KRW63S0008QG0R002ZRYY4F, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R000BH37EV]
 tags: [governance, aaron, mika, all-children-equal-value, life-and-death-vs-merit-ranking, kid-safety-sub-invariant, no-special-treatment, even-aaron-kids, consent-based-ranking-allowed, locked-in]
 type: governance
 ---

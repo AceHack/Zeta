@@ -6,8 +6,8 @@ status: open
 priority: P2
 created: 2026-05-26
 last_updated: 2026-05-26
-depends_on: [B-0824]
-composes_with: [B-0824, B-0827]
+depends_on: [081KSGS9H0008QG0R0031PBNGA]
+composes_with: [081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R00123050G]
 ---
 
 # B-0826 — Extend Runme core BCL with 4 capabilities — runbook as queryable substrate (Aaron + Mika + Kestrel 2026-05-26)

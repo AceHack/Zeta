@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0631, B-0654, B-0655, B-0641, B-0628, B-0658, B-0660]
+composes_with: [081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R002WT5VTQ, 081KRW63S0008QG0R00393BSVT, 081KRW63S0008QG0R000KVMZ9B, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R00140R3TA, 081KRW63S0008QG0R0004P69JA]
 tags: [governance, aaron, mika, civilizational-hygiene-rule, no-tokenizable-death, no-non-consensual-harm-token, consensual-adult-carve-out, thought-vs-collection-distinction, constitutional, locked-in]
 type: governance
 ---

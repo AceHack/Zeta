@@ -5,7 +5,7 @@ priority: P1
 status: closed
 title: "Concordance AI — corpus ingestion + tokenization pipeline"
 created: 2026-05-08
-parent: B-0244
+parent: 081KQZVQW0008QG0R001PS4F8G
 depends_on: []
 classification: buildable-now
 decomposition: atomic

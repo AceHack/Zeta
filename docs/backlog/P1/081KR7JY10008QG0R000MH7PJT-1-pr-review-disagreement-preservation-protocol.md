@@ -8,8 +8,8 @@ effort: M
 created: 2026-05-10
 last_updated: 2026-06-01
 depends_on:
-  - B-0160
-parent: B-0164
+  - 081KQJZR90008QG0R000FTJ1TC
+parent: 081KQJZR90008QG0R002GJAJ19
 classification: buildable-now
 decomposition: decomposed
 owners: [architect]

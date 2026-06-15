@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0570]
+composes_with: [081KRQ1AB0008QG0R002422Z9Q]
 tags: [github, github-app, authentication, rate-limit, scarcity-mitigation, factory-infrastructure]
 type: feature
 ---

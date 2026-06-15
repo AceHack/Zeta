@@ -10,7 +10,7 @@ ask: aaron 2026-05-21 ("we can start to loose up and have hourly gates or someth
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0691, B-0032]  # B-0691 row pending merge via PR #4562; implementation already shipped via PR #4565
+composes_with: [B-0691, 081KQ3HBZ0008QG0R002ZPXAFQ]  # B-0691 row pending merge via PR #4562; implementation already shipped via PR #4565
 tags: [ci-cadence, branch-model, fast-branch, life-branch, hourly-batched-gates, promotion-path, soraya-promotion-gate, cost-reduction]
 type: operational
 ---

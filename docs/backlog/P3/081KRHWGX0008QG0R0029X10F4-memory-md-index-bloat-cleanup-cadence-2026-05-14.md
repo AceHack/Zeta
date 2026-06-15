@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
-composes_with: [B-0006]
+composes_with: [081KQ0YZ80008QG0R001V0XCYZ]
 tags: [memory, MEMORY.md, fast-path, index-hygiene, razor-cadence, user-scope]
 type: chore
 ---

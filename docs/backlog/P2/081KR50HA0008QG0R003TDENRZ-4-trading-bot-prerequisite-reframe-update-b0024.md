@@ -6,9 +6,9 @@ status: open
 title: "B-0029.4 — Trading-bot path reframe: update B-0024 with Aaron's API-access offer (capability-gate, not infrastructure-gate)"
 created: 2026-05-09
 last_updated: 2026-05-09
-parent: B-0029
+parent: 081KQ3HBZ0008QG0R000JRZAMM
 depends_on: []
-composes_with: [B-0023, B-0024]
+composes_with: [081KQ0YZ80008QG0R003EJQZ1M, 081KQ0YZ80008QG0R0006VRT18]
 classification: buildable-now
 type: chore
 effort: XS

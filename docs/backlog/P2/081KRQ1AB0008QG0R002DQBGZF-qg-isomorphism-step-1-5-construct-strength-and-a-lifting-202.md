@@ -9,8 +9,8 @@ created: 2026-05-16
 ask: Otto
 effort: L
 tags: [research, category-theory, topos-theory, axiomatization, qg-isomorphism, step-1-5, lawvere-tierney, strength, eilenberg-moore]
-depends_on: [B-0544]
-composes_with: [B-0543]
+depends_on: [081KRMEXM0008QG0R003YWZC21]
+composes_with: [081KRMEXM0008QG0R002YSPW1X]
 last_updated: 2026-05-16
 ---
 

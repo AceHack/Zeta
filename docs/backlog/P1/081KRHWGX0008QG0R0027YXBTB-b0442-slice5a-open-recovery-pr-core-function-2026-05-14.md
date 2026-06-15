@@ -9,9 +9,9 @@ effort: S
 created: 2026-05-14
 last_updated: 2026-05-15
 closed: 2026-05-15
-parent: B-0442
+parent: 081KRFA460008QG0R00061SXRW
 depends_on: []
-composes_with: [B-0442, B-0504]
+composes_with: [081KRFA460008QG0R00061SXRW, 081KRHWGX0008QG0R000PVB6FF]
 tags: [background-service, bus, mechanization, drift-detection, recovery-pr, git]
 type: feature
 ---

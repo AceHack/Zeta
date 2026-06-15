@@ -6,8 +6,8 @@ status: open
 title: Cadence hook + hygiene-history append for lost-substrate audits (weekly/monthly)
 tier: factory-hygiene
 effort: S
-depends_on: [B-0090.1, B-0090.2, B-0090.3]
-composes_with: [B-0090]
+depends_on: [081KDVJT3E008QG0R003GV8BHV, 081KDVJT3E008QG0R00183ME0R, 081KDVJT3E008QG0R000P3YGTX]
+composes_with: [081KQ8P5D0008QG0R0002TN22C]
 tags: [b0090-decomp, cadence, hygiene-history, autonomous]
 type: friction-reducer
 ---

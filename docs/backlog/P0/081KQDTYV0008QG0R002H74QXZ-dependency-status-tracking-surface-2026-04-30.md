@@ -12,7 +12,7 @@ ask: Aaron 2026-04-30 (autonomous-loop channel input — verbatim "we need somew
 created: 2026-04-30
 last_updated: 2026-05-07
 depends_on: []
-composes_with: [B-0086, B-0096]
+composes_with: [081KQ8P5D0008QG0R003BFZPRC, 081KQB8J40008QG0R000A61G4T]
 tags: [dependency-status, outages, github-incidents, supply-chain, observability, factory-resilience, urgent]
 ---
 

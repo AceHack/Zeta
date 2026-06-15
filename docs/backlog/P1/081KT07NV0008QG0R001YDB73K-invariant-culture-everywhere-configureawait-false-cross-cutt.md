@@ -10,7 +10,7 @@ created: 2026-06-01
 last_updated: 2026-06-14
 depends_on: []
 composes_with:
-  - B-0959
+  - 081KSXN940008QG0R003FCQ7WT
 ---
 
 # Invariant-culture-everywhere + ConfigureAwait(false) — cross-cutting .NET defaults

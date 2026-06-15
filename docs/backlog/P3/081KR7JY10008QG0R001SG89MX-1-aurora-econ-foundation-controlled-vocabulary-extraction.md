@@ -7,7 +7,7 @@ title: "B-0021.1 — Controlled-vocabulary extraction: rigorous-why / anti-decep
 created: 2026-05-10
 last_updated: 2026-05-10
 depends_on: []
-parent: B-0021
+parent: 081KQ0YZ80008QG0R0026WN385
 classification: buildable-now
 type: research
 effort: S

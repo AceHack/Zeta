@@ -9,11 +9,11 @@ ask: aaron 2026-05-28 sharpening
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 composes_with:
-  - B-0883
-  - B-0883.16
-  - B-0885
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R000459FRH
+  - 081KSNY2Z0008QG0R0030V5ZVS
 tags:
   - plaintext-readable-ciphertext
   - git-friendly-format

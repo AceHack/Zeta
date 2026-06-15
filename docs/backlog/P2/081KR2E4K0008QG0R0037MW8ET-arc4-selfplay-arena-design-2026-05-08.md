@@ -7,7 +7,7 @@ closed: 2026-05-08
 closed_by: "Arena.fs landed — PR #2014"
 title: "ARC-4 — adversarial self-play arena design"
 created: 2026-05-08
-parent: B-0252
+parent: 081KQZVQW0008QG0R0029709BP
 depends_on: []
 classification: buildable-now
 decomposition: atomic

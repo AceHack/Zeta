@@ -6,7 +6,7 @@ status: open
 title: "Timeseries native-ZSet research - candidate landscape and source-priority filter"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0147
+parent: 081KQGDBJ0008QG0R0004ACHJJ
 depends_on: []
 classification: buildable-now
 type: feature

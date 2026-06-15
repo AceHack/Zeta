@@ -8,9 +8,9 @@ tier: factory-infrastructure
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-20
-parent: B-0441
+parent: 081KRFA460008QG0R00229616S
 depends_on: []
-composes_with: [B-0441, B-0500, B-0502]
+composes_with: [081KRFA460008QG0R00229616S, 081KRHWGX0008QG0R0025PX5SZ, 081KRHWGX0008QG0R001ZJ3W8R]
 tags: [background-service, bus, mechanization, anti-idle, history-tracking]
 type: feature
 ---

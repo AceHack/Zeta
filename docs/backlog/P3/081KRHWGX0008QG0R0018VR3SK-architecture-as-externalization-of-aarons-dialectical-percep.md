@@ -8,8 +8,8 @@ tier: substrate-engineering
 effort: M
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0394, B-0402]
-composes_with: [B-0394, B-0402, B-0498]
+depends_on: [081KR50HA0008QG0R002NZENZJ, 081KR7JY10008QG0R0008NGW95]
+composes_with: [081KR50HA0008QG0R002NZENZJ, 081KR7JY10008QG0R0008NGW95, 081KRHWGX0008QG0R001XFRAHC]
 tags: [substrate-engineering, observability, dashboard, dialectical-perception, panopticon-lens, externalization, research-grade]
 type: research-grade-candidate
 ---

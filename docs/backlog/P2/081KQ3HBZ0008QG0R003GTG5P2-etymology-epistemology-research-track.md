@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"eipmology and ipistomology backlog"* (shorthand dire
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md, user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md, B-0056, B-0057, B-0058, docs/ALIGNMENT.md, docs/GLOSSARY.md, feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md]
+composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md, user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md, 081KQ3HBZ0008QG0R0034DHWTQ, 081KQ3HBZ0008QG0R000K3NSX8, 081KQ3HBZ0008QG0R002S674CG, docs/ALIGNMENT.md, docs/GLOSSARY.md, feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md]
 tags: [etymology, epistemology, greek, hebrew, latin, eimi, iustus, meno, melchizedek, grammatical-class-extension, three-filter, F1-F2-F3, kernel-vocabulary, paired-dual, bridge-figure]
 type: feature
 

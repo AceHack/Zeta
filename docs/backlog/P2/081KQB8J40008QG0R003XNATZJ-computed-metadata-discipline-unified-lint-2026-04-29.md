@@ -10,7 +10,7 @@ ask: Multi-AI synthesis packet 2026-04-29 (Amara filter — promote individual P
 created: 2026-04-29
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0098, B-0099, B-0102]
+composes_with: [081KQB8J40008QG0R003VMCFWB, 081KQB8J40008QG0R002PEP2A2, 081KQB8J40008QG0R002DQ0FDR]
 tags: [ci-lint, factory-hygiene, derived-metadata, manual-drift-class, mechanical-guard, p2-promotion]
 type: friction-reducer
 ---

@@ -8,8 +8,8 @@ tier: codec-algebra
 effort: M
 created: 2026-06-03
 last_updated: 2026-06-03
-depends_on: [B-1007]
-composes_with: [B-1006, B-1002, B-0997]
+depends_on: [081KT2T2J0008QG0R000YZ3NMY]
+composes_with: [081KT2T2J0008QG0R0008TFHJT, 081KT2T2J0008QG0R002R72323, 081KT2T2J0008QG0R0026XCGQM]
 tags: [codec, codec-algebra, deserialize-safety, purity, side-effects, untrusted-wire, zero-trust, hexagonal, bcl-interface-boundary, security, infer-net, aaron]
 type: design
 ---

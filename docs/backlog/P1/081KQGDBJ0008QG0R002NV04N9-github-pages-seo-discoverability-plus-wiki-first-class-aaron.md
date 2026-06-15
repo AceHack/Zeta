@@ -7,15 +7,15 @@ title: GitHub Pages for SEO/discoverability + GitHub Wiki first-class integratio
 created: 2026-05-01
 last_updated: 2026-05-06
 decomposition: clean
-children: [B-0232, B-0233, B-0234, B-0235, B-0236, B-0237]
+children: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0001XDTDQ, 081KQX9B50008QG0R0004N4HNK, 081KQX9B50008QG0R003HVP90P, 081KQX9B50008QG0R001XQV4M5, 081KQX9B50008QG0R003ZBBJT7]
 depends_on:
-  - B-0047
-  - B-0232
-  - B-0233
-  - B-0234
-  - B-0235
-  - B-0236
-  - B-0237
+  - 081KQ3HBZ0008QG0R0022ZJ7KV
+  - 081KQX9B50008QG0R001J6ARGX
+  - 081KQX9B50008QG0R0001XDTDQ
+  - 081KQX9B50008QG0R0004N4HNK
+  - 081KQX9B50008QG0R003HVP90P
+  - 081KQX9B50008QG0R001XQV4M5
+  - 081KQX9B50008QG0R003ZBBJT7
 # Note: `depends_on` is a forward-compat schema field landed via the
 # 2026-05-01 extension to `memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md`
 # (Aaron 2026-05-01 *"you could start adding depends on if you find that

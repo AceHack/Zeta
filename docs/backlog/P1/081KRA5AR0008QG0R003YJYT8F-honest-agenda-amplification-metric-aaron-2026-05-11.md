@@ -6,7 +6,7 @@ status: open
 title: "Honest agenda amplification metric — actions weighted by agenda alignment"
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0418]
+depends_on: [081KRA5AR0008QG0R001NXBYTY]
 composes_with: []
 type: feature
 ---

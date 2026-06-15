@@ -9,7 +9,7 @@ ask: operator 2026-06-01
 created: 2026-06-01
 last_updated: 2026-06-01
 depends_on:
-  - B-0288
+  - 081KR2E4K0008QG0R002YE3MMD
 composes_with: []
 tags: [ace, package-manager, lockfile, frozen, locked, ci, deferred-enhancement, slice-5.3]
 ---

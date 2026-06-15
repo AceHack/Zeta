@@ -11,7 +11,7 @@ created: 2026-04-28
 last_updated: 2026-05-03
 depends_on: []
 composes_with:
-  - B-0085
+  - 081KQ8P5D0008QG0R003JETMEV
 tags: [otto-2026-04-28, github-actions, workflow-startup-failure, invalid-permission, drift-detector-broken, factory-hygiene, option-a-landed]
 ---
 

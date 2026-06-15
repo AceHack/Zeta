@@ -5,13 +5,13 @@ title: Standing-by counter-with-escalation in the rule (N consecutive brief-acks
 priority: P1
 status: closed
 type: slice
-parent: B-0539
+parent: 081KRMEXM0008QG0R00138CCZX
 created: 2026-05-15
 ask: Aaron
 effort: S
 tags: [substrate, holding-rule, otto-bft]
 depends_on: []
-composes_with: [B-0539, B-0541, B-0542]
+composes_with: [081KRMEXM0008QG0R00138CCZX, 081KRMEXM0008QG0R0026V9A0Y, 081KRMEXM0008QG0R0001HY6M6]
 last_updated: 2026-05-16
 ---
 

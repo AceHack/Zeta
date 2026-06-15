@@ -9,12 +9,12 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0794
-  - B-0812
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R0037H3W4T
 composes_with:
-  - B-0776
-  - B-0782
-  - B-0790
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSE6WT0008QG0R003CMCX84
+  - 081KSGS9H0008QG0R00153CQ8B
 tags: [iter-5, iter-5.4, argocd, gitops-reconciliation, cluster-nodes, kubernetes-bringup, b0794-sub-target-4, completes-iter-5-4-arc]
 ---
 

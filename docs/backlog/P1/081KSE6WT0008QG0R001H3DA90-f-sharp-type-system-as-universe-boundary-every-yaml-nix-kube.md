@@ -9,18 +9,18 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0428
+  - 081KRFA460008QG0R0018SN61J
 composes_with:
   - B-0747
   - B-0754
-  - B-0763
-  - B-0765
-  - B-0766
-  - B-0772
-  - B-0773
-  - B-0776
-  - B-0777
-  - B-0780
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R00063R6HB
+  - 081KSE6WT0008QG0R00049EFBD
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R0008483B2
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSE6WT0008QG0R000JSJ3SR
+  - 081KSE6WT0008QG0R000RH1526
 tags: [fsharp, type-providers, compiler, universe-boundary, yaml-as-types, cachet, single-source-of-truth, strong-typing]
 ---
 

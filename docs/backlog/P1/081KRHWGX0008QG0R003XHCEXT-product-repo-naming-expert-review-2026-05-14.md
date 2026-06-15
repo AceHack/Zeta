@@ -11,9 +11,9 @@ origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on:
-  - B-0465
+  - 081KRHWGX0008QG0R002B2P0K0
 composes_with:
-  - B-0425
+  - 081KRFA460008QG0R003JQ46J4
   - .claude/skills/naming-expert/SKILL.md
   - .claude/rules/honor-those-that-came-before.md
 ---

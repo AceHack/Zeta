@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
-composes_with: [B-0400, B-0402]
+composes_with: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R0008NGW95]
 tags: [substrate-engineering, methodology, rule-promotion, cooling-period, two-axiom-substrate, glass-halo, razor-discipline]
 type: rule-promotion-candidate
 ---

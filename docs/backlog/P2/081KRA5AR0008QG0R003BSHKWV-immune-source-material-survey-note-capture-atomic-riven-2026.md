@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R003BSHKWV
 priority: P2
 status: open
 title: Immune source material survey + note capture (atomic research pass, child of B-0108)
-parent: B-0108
+parent: 081KQDTYV0008QG0R003N15ZW2
 tier: research-absorb
 effort: S
 ask: Riven 2026-05-11 (decomp of B-0108)
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
-composes_with: [B-0108]
+composes_with: [081KQDTYV0008QG0R003N15ZW2]
 tags: [research-absorb, immune-system, source-survey]
 type: friction-reducer
 decomposition: atomic

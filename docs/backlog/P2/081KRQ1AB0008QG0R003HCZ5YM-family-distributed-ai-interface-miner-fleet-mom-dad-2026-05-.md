@@ -8,8 +8,8 @@ priority: P2
 created: 2026-05-16
 type: feature
 composes_with:
-  - B-0590  # fleet replication + hardware inventory substrate
-  - B-0571  # GitHub App factory automation (per-AI-identity pattern at production scope)
+  - 081KRQ1AB0008QG0R002G93CM7  # fleet replication + hardware inventory substrate
+  - 081KRQ1AB0008QG0R0038VQJZ0  # GitHub App factory automation (per-AI-identity pattern at production scope)
 depends_on: []
 ---
 

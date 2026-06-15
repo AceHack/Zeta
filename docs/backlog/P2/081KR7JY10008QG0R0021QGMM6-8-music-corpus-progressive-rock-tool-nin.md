@@ -7,8 +7,8 @@ title: "Music corpus — progressive rock + Tool / Meshuggah / NIN first pass"
 effort: S
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0054.1]
-parent: B-0054
+depends_on: [081KR2E4K0008QG0R0003J0FB8]
+parent: 081KQ3HBZ0008QG0R003V6B2ME
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

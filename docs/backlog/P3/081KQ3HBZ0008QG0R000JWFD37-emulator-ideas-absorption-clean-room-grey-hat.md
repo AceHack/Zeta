@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"absourb not code ideas all emulator into Zeta someho
 created: 2026-04-26
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0052, B-0054, B-0199, B-0202, feedback_crystallize_everything_lossless_compression_except_memory.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md, user_aaron_caret_means_hat_universally_symbol_crystallization.md]
+composes_with: [081KQ3HBZ0008QG0R000FQ69NN, 081KQ3HBZ0008QG0R003V6B2ME, 081KQTPYE0008QG0R0028GRW88, 081KQTPYE0008QG0R002Y7X5KH, feedback_crystallize_everything_lossless_compression_except_memory.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md, user_aaron_caret_means_hat_universally_symbol_crystallization.md]
 tags: [emulator, ideas-absorption, clean-room, mame, higan, bsnes, mesen, mednafen, save-state, deterministic-replay, jit, bank-switching, view-clock, grey-hat-register, math-safety]
 type: feature
 ---

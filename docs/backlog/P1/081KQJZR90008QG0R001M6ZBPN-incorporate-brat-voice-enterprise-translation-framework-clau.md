@@ -14,7 +14,7 @@ last_updated: 2026-05-14T06:42Z
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0164, B-0167]
+composes_with: [081KQJZR90008QG0R002GJAJ19, 081KQJZR90008QG0R000VSHWK6]
 tags: [register-architecture, brat-voice, enterprise-translation, claudeai-research, lucent, gen-z-recruitment, alignment-discipline, beacon-safe, plain-language]
 type: friction-reducer
 ---

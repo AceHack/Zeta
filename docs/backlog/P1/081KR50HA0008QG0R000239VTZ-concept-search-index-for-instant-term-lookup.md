@@ -9,7 +9,7 @@ created: 2026-05-09
 last_updated: 2026-05-10
 resolved: 2026-05-09
 resolved_by: "PR #2322 feat(B-0362): smallest safe slice — concept search index (curated regex term→file); PR #2323 feat(B-0362): concept search index — build-index.ts, lookup.ts, AND semantics, tests"
-depends_on: [B-0310]
+depends_on: [081KR2E4K0008QG0R003DS2XHJ]
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

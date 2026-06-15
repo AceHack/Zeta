@@ -9,12 +9,12 @@ title: "Extract meta/governance bullets to .claude/rules/"
 created: 2026-05-09
 last_updated: 2026-05-10
 depends_on:
-  - B-0348
+  - 081KR50HA0008QG0R000ZKBHE4
 decomposition: atomic
 classification: completed
 type: friction-reducer
 owners: [architect]
-parent: B-0329
+parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
 # B-0352 — Extract meta/governance bullets to `.claude/rules/`

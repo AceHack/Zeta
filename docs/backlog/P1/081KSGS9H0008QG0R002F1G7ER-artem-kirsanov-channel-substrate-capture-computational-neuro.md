@@ -10,11 +10,11 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0623
-  - B-0703
-  - B-0822
-  - B-0823
-  - B-0838
+  - 081KRW63S0008QG0R000QJR08H
+  - 081KS3X9Y0008QG0R00218150M
+  - 081KSGS9H0008QG0R0018ES3R4
+  - 081KSGS9H0008QG0R003SWZF9J
+  - 081KSGS9H0008QG0R002THJ2P1
 tags: [substrate-capture, computational-neuroscience, hopfield-networks, boltzmann-machines, rbm, energy-based-models, thousand-brains, hebbian-learning, generative-models, kirsanov, multi-video-capture, fsharp-implementation-target]
 ---
 

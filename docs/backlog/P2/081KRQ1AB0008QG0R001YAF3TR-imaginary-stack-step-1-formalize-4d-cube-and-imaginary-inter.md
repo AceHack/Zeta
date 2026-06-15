@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0543]
+composes_with: [081KRMEXM0008QG0R002YSPW1X]
 tags: [research, imaginary-stack, category-theory, algebra, qg-isomorphism]
 type: research
 ---

@@ -11,7 +11,7 @@ last_updated: 2026-05-13
 renumbered_from: B-0444
 renumbered_reason: "ID collision with separate B-0444 row (docs/backlog/P2/B-0444-bus-claim-envelope-worktree-field-...md, shipped via PR #3043). Per first-merged-wins, that row kept B-0444; this row renumbered to next-available B-0450 on 2026-05-13."
 depends_on: []
-composes_with: [B-0154, B-0445]
+composes_with: [081KQGDBJ0008QG0R002NV04N9, 081KRFA460008QG0R002JQERS5]
 tags: [consumer-ux, getting-started, quickstart, documentation, onboarding, csharp, samples]
 ---
 

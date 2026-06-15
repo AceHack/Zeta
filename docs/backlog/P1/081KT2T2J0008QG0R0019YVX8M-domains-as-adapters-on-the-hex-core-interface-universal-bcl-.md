@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0985, B-0997]
-composes_with: [B-0985, B-0986, B-0982, B-0428, B-0547, B-0994, B-0995, B-0998, B-0997]
+depends_on: [081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R0026XCGQM]
+composes_with: [081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R002Z46D8Q, 081KT07NV0008QG0R0032MCYER, 081KRFA460008QG0R0018SN61J, 081KRMEXM0008QG0R001VGNET5, 081KT2T2J0008QG0R0000H12VT, 081KT2T2J0008QG0R002TVT60G, 081KT2T2J0008QG0R003VK5GRX, 081KT2T2J0008QG0R0026XCGQM]
 tags: [hex-core, domains-as-adapters, bcl-interface-boundary, universal-interface, clifford, cayley-dickson, six-bivectors, lorentz-generators, se3, cube-of-space, girard, mimetic-theory, active-inference, i-ching, cross-domain, referee-principle, precise-metaphor, dont-collapse, aaron]
 type: research
 ---

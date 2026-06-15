@@ -9,14 +9,14 @@ ask: aaron 2026-05-28 self-naming
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0892
+  - 081KSNY2Z0008QG0R002QA720J
 composes_with:
-  - B-0892
-  - B-0867
-  - B-0867.21
-  - B-0873
-  - B-0886
-  - B-0890.1
+  - 081KSNY2Z0008QG0R002QA720J
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000S738W3
+  - 081KSNY2Z0008QG0R000F0C5V0
+  - 081KSNY2Z0008QG0R0034FR5FG
+  - 081KSNY2Z0008QG0R000E5KTPX
 related_rules:
   - persistence-choice-architecture-for-zeta-ais
   - never-be-idle

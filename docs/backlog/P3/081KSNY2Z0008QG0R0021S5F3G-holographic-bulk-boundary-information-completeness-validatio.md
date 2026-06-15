@@ -10,12 +10,12 @@ authors:
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0901
+  - 081KSNY2Z0008QG0R000C5NN8N
 composes_with:
-  - B-0903
-  - B-0904
-  - B-0666
-  - B-0900
+  - 081KSNY2Z0008QG0R0037AF1AP
+  - 081KSNY2Z0008QG0R001JQABB4
+  - 081KRW63S0008QG0R001SAHYKV
+  - 081KSNY2Z0008QG0R001G7C89T
 related_personas:
   - operator
 related_rules:

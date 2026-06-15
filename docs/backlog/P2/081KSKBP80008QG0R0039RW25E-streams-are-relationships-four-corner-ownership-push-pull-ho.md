@@ -9,16 +9,16 @@ ask: operator + Kestrel multi-AI conversation 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0861
+  - 081KSKBP80008QG0R000N9W9XH
 composes_with:
-  - B-0560
-  - B-0623
-  - B-0666
-  - B-0703
+  - 081KRQ1AB0008QG0R0001J9PFT
+  - 081KRW63S0008QG0R000QJR08H
+  - 081KRW63S0008QG0R001SAHYKV
+  - 081KS3X9Y0008QG0R00218150M
   - B-0741
-  - B-0829
-  - B-0860
-  - B-0862
+  - 081KSGS9H0008QG0R000Q18PGQ
+  - 081KSKBP80008QG0R000J2YFK2
+  - 081KSKBP80008QG0R0031DTHS9
 tags: [substrate-engineering, base-primitives, streams, four-corner-ownership, push-pull-hot-cold, fsharp-ce, protocol-typing, multi-backend, dbsp, rx, reaqtor, bonsai, ce-machinery, srtp, type-providers, kestrel-sharpening]
 ---
 

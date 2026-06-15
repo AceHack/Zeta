@@ -13,7 +13,7 @@ closed: 2026-05-09
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0006, B-0140, B-0156, B-0162]
+composes_with: [081KQ0YZ80008QG0R001V0XCYZ, 081KQGDBJ0008QG0R0022EW5ZE, 081KQGDBJ0008QG0R000A4EZS5, 081KQJZR90008QG0R000V16E1C]
 tags: [orchestrator, concurrency-hazard, mechanization, pre-commit-hook, worktree, foundation]
 type: friction-reducer
 ---

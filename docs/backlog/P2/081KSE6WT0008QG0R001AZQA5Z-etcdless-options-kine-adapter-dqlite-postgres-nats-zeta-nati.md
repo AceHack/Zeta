@@ -9,16 +9,16 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0756
+  - 081KSE6WT0008QG0R001NG9JZH
 composes_with:
-  - B-0428
+  - 081KRFA460008QG0R0018SN61J
   - B-0747
   - B-0754
-  - B-0763
-  - B-0765
-  - B-0766
-  - B-0772
-  - B-0773
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R00063R6HB
+  - 081KSE6WT0008QG0R00049EFBD
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R0008483B2
 tags: [cluster, k8s, etcd, kine, dqlite, postgres, nats, dbsp, consensus, ha]
 ---
 

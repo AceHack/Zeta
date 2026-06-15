@@ -6,9 +6,9 @@ status: open
 title: "Coherence AI with consent-first design — KSK override for military/emergency use"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0240, B-0244]
+depends_on: [081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001PS4F8G]
 decomposition: decomposed
-children: [B-0293, B-0294]
+children: [081KR2E4K0008QG0R003CPCM4V, 081KR2E4K0008QG0R00009QQJM]
 owners: [architect, security-researcher, threat-model-critic]
 type: feature
 ---

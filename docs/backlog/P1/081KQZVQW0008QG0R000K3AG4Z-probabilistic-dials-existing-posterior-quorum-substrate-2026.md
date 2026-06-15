@@ -6,10 +6,10 @@ status: open
 title: "Probabilistic dials over existing posterior quorum substrate"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0254, B-0251, B-0250]
+depends_on: [081KQZVQW0008QG0R000JJVA4E, 081KQZVQW0008QG0R000PPQ3MH, 081KQZVQW0008QG0R001FG05RZ]
 decomposition: atomic
 owners: [architect]
-composes_with: [B-0244, B-0249, B-0250, B-0251, B-0254]
+composes_with: [081KQZVQW0008QG0R001PS4F8G, 081KQZVQW0008QG0R000C35RNY, 081KQZVQW0008QG0R001FG05RZ, 081KQZVQW0008QG0R000PPQ3MH, 081KQZVQW0008QG0R000JJVA4E]
 tags: [trajectory, bayesian-inference, posterior-quorum, dials]
 type: feature
 ---

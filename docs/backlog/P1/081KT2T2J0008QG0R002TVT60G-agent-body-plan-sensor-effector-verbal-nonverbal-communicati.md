@@ -8,8 +8,8 @@ tier: research
 effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0993]
-composes_with: [B-0994, B-0643, B-0643.1, B-0245, B-0638, B-0639, B-0986, B-0990, B-0985, B-0703]
+depends_on: [081KT2T2J0008QG0R003C166K4]
+composes_with: [081KT2T2J0008QG0R0000H12VT, 081KRW63S0008QG0R002ZRYY4F, 081KT2T2J0008QG0R001C2K4F2, 081KQZVQW0008QG0R002Q58F6Z, 081KRW63S0008QG0R0030F8ZXA, 081KRW63S0008QG0R000ZQ9WDH, 081KT2T2J0008QG0R002Z46D8Q, 081KT2T2J0008QG0R002DFPSHX, 081KT2T2J0008QG0R0026MS6PV, 081KS3X9Y0008QG0R00218150M]
 tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, say-do-gap, revealed-preference, stated-preference, cheap-talk, intention-behavior-gap, alignment, trust, veridicality, integrity-index, trust-score, alignment-anchor, prism, deepseek, aaron]
 type: research
 ---

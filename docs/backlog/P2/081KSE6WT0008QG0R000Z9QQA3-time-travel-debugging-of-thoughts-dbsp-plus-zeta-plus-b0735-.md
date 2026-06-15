@@ -10,13 +10,13 @@ domain: agentic-organization
 ferried_by: aaron
 owners: [aaron, mika]
 composes_with:
-  - B-0735
-  - B-0734
-  - B-0733
-  - B-0732
-  - B-0731
-  - B-0730
-  - B-0687
+  - 081KSE6WT0008QG0R000XJ524Z
+  - 081KSE6WT0008QG0R00276F8SE
+  - 081KSE6WT0008QG0R00102H071
+  - 081KSE6WT0008QG0R002YBWBB1
+  - 081KSE6WT0008QG0R0004HV6RR
+  - 081KSE6WT0008QG0R003AJYMD3
+  - 081KS3X9Y0008QG0R00323NSZA
 related_substrate:
   - memory/mika/
   - .claude/skills/naming-expert/

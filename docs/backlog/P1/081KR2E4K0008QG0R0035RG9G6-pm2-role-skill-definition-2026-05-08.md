@@ -7,7 +7,7 @@ title: "PM-2 role - skill definition + persona agent"
 created: 2026-05-08
 last_updated: 2026-05-08
 closed_by: ".claude/skills/product-manager/SKILL.md and .claude/agents/pm2.md"
-parent: B-0145
+parent: 081KQGDBJ0008QG0R000RWAA67
 depends_on: []
 classification: buildable-now
 decomposition: atomic

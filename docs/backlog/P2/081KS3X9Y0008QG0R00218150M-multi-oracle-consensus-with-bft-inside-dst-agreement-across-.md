@@ -8,8 +8,8 @@ tier: design
 effort: M
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0623, B-0664]
-composes_with: [B-0623, B-0628, B-0635, B-0646, B-0652, B-0664]
+depends_on: [081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R001Z7NYMV]
+composes_with: [081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R002GRX85J, 081KRW63S0008QG0R001Z7NYMV]
 tags: [design, aaron, consensus, bft, dst, multi-oracle, trust-gradient, agora-v6, participation-economy, deterministic-simulation]
 type: design
 ---

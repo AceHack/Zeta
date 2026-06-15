@@ -12,10 +12,10 @@ decomposition: atomic
 classification: buildable
 type: friction-reducer
 owners: [architect]
-parent: B-0355
+parent: 081KR50HA0008QG0R003G7DR8Z
 composes_with:
   - B-0355.2
-  - B-0355.3
+  - 081KSRGFP0008QG0R000EWSMKV
 ---
 
 # B-0355.4 — CODEX.md harness bootstrap file

@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-15
 last_updated: 2026-05-15
 depends_on: []
-composes_with: [B-0070]
+composes_with: [081KQ8P5D0008QG0R003VN5P2Z]
 tags: [audit, otto-279, role-refs, code-hygiene]
 type: feature
 ---

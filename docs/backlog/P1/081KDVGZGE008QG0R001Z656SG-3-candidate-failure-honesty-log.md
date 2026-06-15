@@ -8,7 +8,7 @@ closed_by: "PR #5575"
 title: Candidate-failure honesty log
 tier: substrate-foundational-discipline
 effort: S
-parent: B-0058
+parent: 081KQ3HBZ0008QG0R002S674CG
 ---
 
 # B-0058.3 — Candidate-failure honesty log

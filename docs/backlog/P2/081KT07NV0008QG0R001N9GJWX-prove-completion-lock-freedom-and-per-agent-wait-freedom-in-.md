@@ -8,11 +8,11 @@ created: 2026-06-01
 last_updated: 2026-06-01
 author: otto-cli
 composes_with:
-  - B-0962 # the two unproven claims this row proves (multi-round review flagged them)
-  - B-0959 # sovereign-DB lane master (lock-free/wait-free always-active disciplines)
-  - B-0954.1 # bus-tip partition tolerance (the git-extension hazards: partition, visibility lag)
-  - B-0767 # scheduler-first DST (the F# IScheduler model harness)
-  - B-0878 # time-generator IScheduler abstraction (deterministic concurrency model)
+  - 081KT07NV0008QG0R002KWQS05 # the two unproven claims this row proves (multi-round review flagged them)
+  - 081KSXN940008QG0R003FCQ7WT # sovereign-DB lane master (lock-free/wait-free always-active disciplines)
+  - 081KT07NV0008QG0R000QWEKTE # bus-tip partition tolerance (the git-extension hazards: partition, visibility lag)
+  - 081KSE6WT0008QG0R0016CEE2Z # scheduler-first DST (the F# IScheduler model harness)
+  - 081KSNY2Z0008QG0R000DZHHE5 # time-generator IScheduler abstraction (deterministic concurrency model)
 ---
 
 # B-0963 — Prove completion-lock-freedom + per-agent wait-freedom

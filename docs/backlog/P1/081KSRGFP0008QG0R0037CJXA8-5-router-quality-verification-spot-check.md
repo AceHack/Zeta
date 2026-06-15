@@ -6,7 +6,7 @@ status: open
 title: "Router-quality verification — spot-check 10 carved skill descriptions"
 created: 2026-05-29
 last_updated: 2026-05-29
-parent: B-0347
+parent: 081KR50HA0008QG0R002ZNFQBZ
 depends_on: []
 classification: buildable-now
 decomposition: atomic

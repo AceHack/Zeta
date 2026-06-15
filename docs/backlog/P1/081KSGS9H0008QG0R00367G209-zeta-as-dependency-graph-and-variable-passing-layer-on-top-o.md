@@ -11,15 +11,15 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-06-12
 depends_on:
-  - B-0247
-  - B-0288
-  - B-0816
-  - B-0819
-  - B-0820
+  - 081KQZVQW0008QG0R000ZHEN62
+  - 081KR2E4K0008QG0R002YE3MMD
+  - 081KSGS9H0008QG0R003A37Z65
+  - 081KSGS9H0008QG0R0005P83AP
+  - 081KSGS9H0008QG0R00352WW0V
 composes_with:
-  - B-0742
-  - B-0794
-  - B-0813
+  - 081KSE6WT0008QG0R000YYH3DY
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R002K93MWX
 tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology-substrate, empty-architectural-slot, force-multiplier, terraform-pulumi-helmfile-comparison, ace-feature, maven-for-helm]
 ---
 

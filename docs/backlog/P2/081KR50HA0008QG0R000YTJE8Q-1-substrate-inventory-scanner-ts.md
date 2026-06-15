@@ -7,7 +7,7 @@ title: "B-0004.1 — TS substrate inventory scanner for translatable content sur
 created: 2026-05-09
 last_updated: 2026-05-09
 depends_on: []
-parent: B-0004
+parent: 081KQ0YZ80008QG0R002HWBHKJ
 classification: buildable-now
 type: tooling
 effort: S

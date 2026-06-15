@@ -9,11 +9,11 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0794
+  - 081KSGS9H0008QG0R0027HJZYH
 composes_with:
-  - B-0790
-  - B-0782
-  - B-0789
+  - 081KSGS9H0008QG0R00153CQ8B
+  - 081KSE6WT0008QG0R003CMCX84
+  - 081KSGS9H0008QG0R002T3BJ2R
 tags: [iter-5, iter-5.4, self-registration, gh-auth, commit-push, maintainers-subtree, gitops-native-cluster-bringup, b0794-sub-target-3]
 ---
 

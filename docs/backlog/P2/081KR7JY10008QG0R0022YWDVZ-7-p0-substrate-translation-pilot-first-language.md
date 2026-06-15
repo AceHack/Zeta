@@ -6,8 +6,8 @@ status: open
 title: "B-0004.7 — P0 substrate translation pilot: translate CLAUDE/AGENTS/ALIGNMENT/GOVERNANCE/VISION into first chosen language"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.5, B-0004.6]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR7JY10008QG0R002YZBE5A, 081KR7JY10008QG0R003SATDK8]
 classification: blocked
 type: feature
 effort: M

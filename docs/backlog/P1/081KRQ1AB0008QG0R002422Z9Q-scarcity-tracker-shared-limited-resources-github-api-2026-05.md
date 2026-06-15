@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0400, B-0440, B-0441]
+composes_with: [081KR7JY10008QG0R000R503K2, 081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S]
 tags: [multi-agent, scarcity, rate-limit, github-api, bandwidth, factory-infrastructure, observability]
 type: feature
 ---

@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0570, B-0571, B-0572, B-0580, B-0581]
+composes_with: [081KRQ1AB0008QG0R002422Z9Q, 081KRQ1AB0008QG0R0038VQJZ0, 081KRQ1AB0008QG0R000GZEMCR, 081KRQ1AB0008QG0R000522MPJ, 081KRQ1AB0008QG0R001Q4GNST]
 tags: [security, capability-scoping, hard-limits, refusal-gate, forkable, kestrel-recommended, substrate-honest]
 type: feature
 ---

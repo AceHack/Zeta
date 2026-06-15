@@ -18,7 +18,7 @@ composes_with:
   - .claude/rules/all-complexity-is-accidental-in-greenfield.md (per-PR drift-check is accidental complexity vs scheduled regen)
   - tools/backlog/generate-index.ts (the regenerator)
   - tools/backlog/README.md (documents the BACKLOG_WRITE_FORCE=1 guard)
-  - PR #4816 (empirical anchor — BACKLOG.md drift check blocked the PR after adding B-0720)
+  - PR #4816 (empirical anchor — BACKLOG.md drift check blocked the PR after adding 081KSBMG30008QG0R00201X7EJ)
 ---
 
 ## Substrate-honest origin

@@ -6,11 +6,11 @@ status: open
 title: "BP-NN rule external-anchor backfill"
 tier: substrate-quality
 effort: M
-parent: B-0060
+parent: 081KQ8P5D0008QG0R000N718AC
 created: 2026-05-08
 last_updated: 2026-05-10 (slice-8)
-depends_on: [B-0311]
-composes_with: [B-0060]
+depends_on: [081KR2E4K0008QG0R001ZWARTN]
+composes_with: [081KQ8P5D0008QG0R000N718AC]
 tags: [substrate-quality, external-anchors, best-practices, beacon-safety, research]
 type: friction-reducer
 ---

@@ -6,9 +6,9 @@ status: open
 title: "English language concordance AI on local GPUs — structure recognizer applied to language"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0240, B-0242]
+depends_on: [081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001CQPQ0E]
 decomposition: decomposed
-children: [B-0291, B-0292]
+children: [081KR2E4K0008QG0R000DK0BFY, 081KR2E4K0008QG0R001ZZ5XXF]
 owners: [architect, performance-engineer]
 type: feature
 ---

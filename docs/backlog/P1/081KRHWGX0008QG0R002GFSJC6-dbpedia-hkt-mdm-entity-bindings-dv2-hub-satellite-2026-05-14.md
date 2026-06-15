@@ -8,14 +8,14 @@ type: feature
 origin: B-0428 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0428
+parent: 081KRFA460008QG0R0018SN61J
 depends_on:
-  - B-0482
+  - 081KRHWGX0008QG0R001VKR0TH
 composes_with:
-  - B-0428
-  - B-0482
-  - B-0484
-  - B-0043
+  - 081KRFA460008QG0R0018SN61J
+  - 081KRHWGX0008QG0R001VKR0TH
+  - 081KRHWGX0008QG0R002TYF2NM
+  - 081KQ3HBZ0008QG0R000Q4Y00F
   - .claude/rules/dv2-data-split-discipline-activated.md
   - memory/feedback_aaron_ontology_hkt_applies_directly_to_master_data_every_company_has_one_human_lineage_2026_05_13.md
   - memory/feedback_aaron_clifford_hkt_ontology_vocabulary_axis_basis_rudders_rotors_steering_cartographer_navigator_edge_mapper_world_model_civsim_edge_runner_5_control_structures_or_4_plus_meta_2026_05_13.md

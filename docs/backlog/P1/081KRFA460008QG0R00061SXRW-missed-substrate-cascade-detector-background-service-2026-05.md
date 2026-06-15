@@ -10,9 +10,9 @@ created: 2026-05-13
 last_updated: 2026-05-15
 closed: 2026-05-15
 closed_by_pr: 3458
-depends_on: [B-0400]
-composes_with: [B-0402, B-0440, B-0441]
-children: [B-0503, B-0504, B-0505]
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KR7JY10008QG0R0008NGW95, 081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S]
+children: [081KRHWGX0008QG0R0027YXBTB, 081KRHWGX0008QG0R000PVB6FF, 081KRHWGX0008QG0R002C038BJ]
 tags: [multi-agent, background-service, bus, mechanization, drift-detection, race-condition]
 type: feature
 ---

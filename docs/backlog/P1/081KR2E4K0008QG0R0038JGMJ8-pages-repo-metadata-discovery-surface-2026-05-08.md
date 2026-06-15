@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - repository metadata and discovery surface"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0235
-depends_on: [B-0232, B-0234]
+parent: 081KQX9B50008QG0R003HVP90P
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0004N4HNK]
 classification: blocked-on-live-pages
 decomposition: atomic
 owners: [architect, docs]

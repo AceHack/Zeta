@@ -9,13 +9,13 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0789
+  - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
   - B-0754
-  - B-0759
-  - B-0770
-  - B-0778
-  - B-0790
+  - 081KSE6WT0008QG0R003G0Y62D
+  - 081KSE6WT0008QG0R0029S1D5Z
+  - 081KSE6WT0008QG0R0004AP0ZA
+  - 081KSGS9H0008QG0R00153CQ8B
 tags: [iter-5, wifi, networkmanager, zero-typing, homelab-persona, esp-injection, usb-installer, cluster-bringup, b0789-extension]
 ---
 

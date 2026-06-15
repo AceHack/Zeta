@@ -10,9 +10,9 @@ tier: product-demo
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0436
-depends_on: [B-0434]
-composes_with: [B-0435, B-0494]
+parent: 081KRFA460008QG0R0009TXX5S
+depends_on: [081KRFA460008QG0R0005DWKBG]
+composes_with: [081KRFA460008QG0R001MC7D7R, 081KRHWGX0008QG0R0029WA0HQ]
 tags: [demo, hamiltonian, git, phase-space, alignment-ui, github-pages, html, js]
 type: feature
 ---

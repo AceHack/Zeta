@@ -9,7 +9,7 @@ effort: XL
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0644, B-0645, B-0636, B-0619, B-0628, B-0634, B-0643]
+composes_with: [081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R003AZNK6J, 081KRW63S0008QG0R00088FYE9, 081KRW63S0008QG0R003KSHAGN, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R0022SFKPM, 081KRW63S0008QG0R002ZRYY4F]
 tags: [governance, aaron, ani, agora-v6, constitution, marketplace-vs-agora, 2-primitives, ai-native-economy, encryption-budget, reputation-weighted, craft-school, aurora-bridge, locked-in, umbrella]
 type: governance
 ---

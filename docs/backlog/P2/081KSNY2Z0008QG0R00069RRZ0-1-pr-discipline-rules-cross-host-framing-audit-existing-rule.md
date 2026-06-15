@@ -9,14 +9,14 @@ ask: otto pushback on parallel-tracks design 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0887
-  - B-0867.15
+  - 081KSNY2Z0008QG0R001DFZK4V
+  - 081KSNY2Z0008QG0R002A785QR
 composes_with:
-  - B-0887
-  - B-0867.15
-  - B-0875
-  - B-0875.1
-  - B-0877
+  - 081KSNY2Z0008QG0R001DFZK4V
+  - 081KSNY2Z0008QG0R002A785QR
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R002WQ747V
+  - 081KSNY2Z0008QG0R0004ZF85W
 tags:
   - pr-discipline-rules-cross-host-audit
   - existing-rules-encode-github-specific-learning

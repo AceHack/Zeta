@@ -9,9 +9,9 @@ closed_by: "implemented in PR #2992 (5de7f82f)"
 title: Update memory/ documentation to describe heap-state-acceptable model
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0423
+parent: 081KRCQQF0008QG0R0037YYP1A
 depends_on: []
-composes_with: [B-0423, B-0423.1]
+composes_with: [081KRCQQF0008QG0R0037YYP1A, 081KRFA460008QG0R0006Q6BWP]
 effort: XS
 tier: documentation
 authors: [otto]

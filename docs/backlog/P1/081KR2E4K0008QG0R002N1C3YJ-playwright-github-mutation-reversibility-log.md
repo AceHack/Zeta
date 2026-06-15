@@ -6,11 +6,11 @@ status: closed
 title: "Mutation reversibility drain log — inverse-action record for every UI mutation"
 tier: agent-capability-expansion
 effort: S
-parent: B-0064
+parent: 081KQ8P5D0008QG0R0010FP5SY
 created: 2026-05-08
 last_updated: 2026-05-10
-depends_on: [B-0321]
-composes_with: [B-0064]
+depends_on: [081KR2E4K0008QG0R000YH9DC6]
+composes_with: [081KQ8P5D0008QG0R0010FP5SY]
 tags: [agent-capability, github-ui, playwright, audit-trail, reversibility, safety]
 type: friction-reducer
 ---

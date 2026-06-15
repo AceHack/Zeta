@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0624, B-0625, B-0617]
+composes_with: [081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R003NP3YA3, 081KRW63S0008QG0R000SGXN70]
 tags: [design, mika, type-safety, voluntary-binding, hats, domains, criticality, llm-error-classes]
 type: design
 ---

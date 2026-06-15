@@ -10,7 +10,7 @@ created: 2026-05-26
 last_updated: 2026-06-11
 depends_on: []
 composes_with:
-  - B-0789
+  - 081KSGS9H0008QG0R002T3BJ2R
 tags: [zflash, agent-driven, auto-type-challenge, pty, child-process-spawn, doc-implementation-gap, substrate-honest-disclosure, ux-improvement, touch-id-pam-preserved]
 ---
 

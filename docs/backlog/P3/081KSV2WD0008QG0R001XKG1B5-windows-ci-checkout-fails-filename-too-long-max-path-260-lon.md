@@ -12,7 +12,7 @@ type: bug
 composes_with:
   - .claude/rules/refresh-world-model-poll-pr-gate.md
   - .claude/rules/blocked-green-ci-investigate-threads.md
-  - docs/backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md
+  - docs/backlog/P1/081KQ8P5D0008QG0R001590WJ3-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md
 tags: [ci, windows, max-path, longpaths, checkout, persona-archive, filename-length, devops, non-required-check, cross-platform]
 ---
 

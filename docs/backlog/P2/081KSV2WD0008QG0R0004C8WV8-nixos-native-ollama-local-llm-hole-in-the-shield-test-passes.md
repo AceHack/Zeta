@@ -14,7 +14,7 @@ composes_with:
   - tools/setup/manifests/local-llm
   - .github/workflows/docker-nixos-install-sh-test.yml
   - tools/accelerator/validate-local-llm.ts
-  - docs/backlog/P2/B-0940-evaluate-ubuntu-support-value-nixos-primary-community-reach-aaron-2026-05-30.md
+  - docs/backlog/P2/081KSV2WD0008QG0R0028NY0MV-evaluate-ubuntu-support-value-nixos-primary-community-reach-aaron-2026-05-30.md
 tags: [install-sh, nixos, ollama, local-llm, ci, docker, false-green, entropy-shield]
 type: bug
 ---

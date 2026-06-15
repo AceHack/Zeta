@@ -9,7 +9,7 @@ ask: operator 2026-06-01
 created: 2026-06-01
 last_updated: 2026-06-01
 depends_on:
-  - B-0971
+  - 081KT07NV0008QG0R000SJ34AK
 composes_with: []
 tags: [ace, package-manager, registry, remote, security, key-rotation, deferred-enhancement, slice-6]
 ---

@@ -6,11 +6,11 @@ status: closed
 title: "Add KIRO + CLAUDE firewall trigger lists to _firewall.ts"
 tier: peer-call-substrate
 effort: XS
-parent: B-0065
+parent: 081KQ8P5D0008QG0R002M5A2M7
 created: 2026-05-08
 last_updated: 2026-05-09
 depends_on: []
-composes_with: [B-0065]
+composes_with: [081KQ8P5D0008QG0R002M5A2M7]
 tags: [peer-call, firewall, kiro, claude, self-call]
 type: friction-reducer
 ---

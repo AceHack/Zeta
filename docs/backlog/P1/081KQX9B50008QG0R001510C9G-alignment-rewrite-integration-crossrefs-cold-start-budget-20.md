@@ -6,8 +6,8 @@ status: open
 title: "ALIGNMENT.md rewrite - final integration, crossrefs, and cold-start budget"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0003
-depends_on: [B-0216, B-0217, B-0218, B-0219, B-0220, B-0221, B-0222]
+parent: 081KQ0YZ80008QG0R001QJJTVF
+depends_on: [081KQX9B50008QG0R0039H39VC, 081KQX9B50008QG0R001FK1G36, 081KQX9B50008QG0R003B0HG9R, 081KQX9B50008QG0R0026EHVW2, 081KQX9B50008QG0R001D089H3, 081KQX9B50008QG0R0008KHHZR, 081KQX9B50008QG0R000Z511EV]
 classification: blocked-on-content-slices
 type: friction-reducer
 ---

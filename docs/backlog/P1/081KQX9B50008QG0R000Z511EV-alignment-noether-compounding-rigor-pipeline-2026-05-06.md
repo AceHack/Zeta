@@ -6,8 +6,8 @@ status: open
 title: "ALIGNMENT.md rewrite - Noether compounding-rigor pipeline"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0003
-depends_on: [B-0002, B-0216, B-0219]
+parent: 081KQ0YZ80008QG0R001QJJTVF
+depends_on: [081KQ0YZ80008QG0R002T6TM7Z, 081KQX9B50008QG0R0039H39VC, 081KQX9B50008QG0R0026EHVW2]
 classification: blocked-on-foundation-and-rigor-floor
 type: friction-reducer
 ---

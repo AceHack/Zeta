@@ -4,12 +4,12 @@ zetaid: 081KRA5AR0008QG0R002TPJ4NC
 priority: P2
 status: open
 title: Hardware resource audit + model-candidate shortlist (TS inventory tool, XS)
-parent: B-0068
+parent: 081KQ8P5D0008QG0R002E1G72J
 ask: B-0068 decomposition — smallest atomic hardware-aware slice (TS prefer)
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
-composes_with: [B-0068, task-287-resource-cost-monitoring, Otto-235]
+composes_with: [081KQ8P5D0008QG0R002E1G72J, task-287-resource-cost-monitoring, Otto-235]
 tags: [hardware, audit, model-selection, ts-tool, local-ai, resource-aware]
 type: feature
 effort: XS

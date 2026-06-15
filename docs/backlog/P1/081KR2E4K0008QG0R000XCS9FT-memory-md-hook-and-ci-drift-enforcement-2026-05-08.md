@@ -6,8 +6,8 @@ status: closed
 title: "MEMORY.md marker-vs-index - hook and CI drift enforcement"
 created: 2026-05-08
 last_updated: 2026-05-14
-parent: B-0066
-depends_on: [B-0258]
+parent: 081KQ8P5D0008QG0R003KFRGJ0
+depends_on: [081KR2E4K0008QG0R001E27DDV]
 classification: blocked-on-generator
 decomposition: atomic
 closed_by: "feat/b0259-memory-index-drift-ci-hook-2026-05-14"

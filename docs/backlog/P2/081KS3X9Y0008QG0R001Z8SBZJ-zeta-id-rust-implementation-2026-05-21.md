@@ -10,7 +10,7 @@ ask: maintainer Aaron + Mika 2026-05-21
 created: 2026-05-21
 last_updated: 2026-06-01
 depends_on: []
-composes_with: [B-0635, B-0636, B-0644, B-0665, B-0666]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R00088FYE9, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R001SAHYKV]
 tags: [zeta-id, multi-oracle, rust, cross-verification]
 type: feature
 ---

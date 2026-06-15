@@ -9,9 +9,9 @@ closed_by: "B-0088, B-0088.1, B-0088.2 closed as superseded; B-0088.3 left open 
 title: Close B-0088 chain as superseded by B-0423 heap architecture
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0423
-depends_on: [B-0423.4]
-composes_with: [B-0423, B-0423.4, B-0088, B-0088.1, B-0088.2, B-0088.3]
+parent: 081KRCQQF0008QG0R0037YYP1A
+depends_on: [081KRFA460008QG0R0035NKRHG]
+composes_with: [081KRCQQF0008QG0R0037YYP1A, 081KRFA460008QG0R0035NKRHG, 081KQ8P5D0008QG0R002FSTGXP, 081KRA5AR0008QG0R000GZ8ECC, 081KRA5AR0008QG0R0036JP9KM, 081KRA5AR0008QG0R002WVSEGW]
 effort: XS
 tier: factory-hygiene
 authors: [otto]

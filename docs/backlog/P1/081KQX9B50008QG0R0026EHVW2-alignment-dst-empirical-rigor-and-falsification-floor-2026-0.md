@@ -6,8 +6,8 @@ status: open
 title: "ALIGNMENT.md rewrite - DST empirical-rigor and falsification floor"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0003
-depends_on: [B-0205, B-0215]
+parent: 081KQ0YZ80008QG0R001QJJTVF
+depends_on: [081KQTPYE0008QG0R000ZJ2GW8, 081KQX9B50008QG0R00327XC6Q]
 classification: buildable-after-survey
 type: friction-reducer
 ---

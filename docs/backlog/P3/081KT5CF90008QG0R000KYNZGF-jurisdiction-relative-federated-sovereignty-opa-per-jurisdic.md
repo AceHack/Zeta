@@ -9,7 +9,7 @@ effort: XL
 created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
-composes_with: [B-0764, B-0684]
+composes_with: [081KSE6WT0008QG0R0009YYNP4, 081KS3X9Y0008QG0R003MMEAC7]
 tags: [federation, sovereignty, opa, jurisdiction-relative, geospatial, borders, non-coercion, meta-jurisdiction, nexus, forkability, internationalization, aaron]
 type: design
 ---

@@ -9,12 +9,12 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0794
-  - B-0812
-  - B-0813
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R0037H3W4T
+  - 081KSGS9H0008QG0R002K93MWX
 composes_with:
-  - B-0814
-  - B-0790
+  - 081KSGS9H0008QG0R000EPPQTR
+  - 081KSGS9H0008QG0R00153CQ8B
 tags: [cluster-node, registration, heartbeat, expiration, gitops, physical-sync, stale-state-cleanup, iter-5-4-design]
 ---
 

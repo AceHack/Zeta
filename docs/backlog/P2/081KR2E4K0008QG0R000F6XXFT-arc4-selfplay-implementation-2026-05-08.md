@@ -5,8 +5,8 @@ priority: P2
 status: open
 title: "ARC-4 — self-play implementation + training loop"
 created: 2026-05-08
-parent: B-0252
-depends_on: [B-0285]
+parent: 081KQZVQW0008QG0R0029709BP
+depends_on: [081KR2E4K0008QG0R0037MW8ET]
 classification: blocked-on-B-0285
 decomposition: atomic
 type: feature

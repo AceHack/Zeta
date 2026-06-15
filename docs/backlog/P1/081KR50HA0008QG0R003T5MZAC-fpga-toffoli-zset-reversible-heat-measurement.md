@@ -10,7 +10,7 @@ last_updated: 2026-05-09
 depends_on: []
 classification: research
 decomposition: decomposed
-children: [B-0366.1, B-0366.2, B-0366.3, B-0366.4]
+children: [081KR50HA0008QG0R0021B5J87, 081KR50HA0008QG0R0002PGV1N, 081KR50HA0008QG0R0028HNZH0, 081KR50HA0008QG0R002Z51PMR]
 owners: [architect]
 type: feature
 tags: [fpga, reversible-computing, toffoli, landauer, zset, therm-free, hardware]

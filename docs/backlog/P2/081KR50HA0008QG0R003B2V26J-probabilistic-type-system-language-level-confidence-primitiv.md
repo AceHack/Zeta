@@ -7,7 +7,7 @@ title: "Probabilistic type system — language-level confidence primitives (Hejl
 effort: XL
 created: 2026-05-09
 last_updated: 2026-05-09
-depends_on: [B-0358]
+depends_on: [081KR50HA0008QG0R00224DXPP]
 classification: research
 decomposition: needs-decomposition
 owners: [architect]

@@ -8,7 +8,7 @@ closed_by: "StructureFingerprint.fs — 10 shapes, extractSignals, classify, fin
 title: "Structure recognizer — fingerprint library for codebase shapes"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0240
+parent: 081KQZVQW0008QG0R002QZAFB2
 depends_on: []
 classification: buildable-now
 decomposition: atomic

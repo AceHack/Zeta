@@ -7,8 +7,8 @@ title: "refresh-worldview — integrate into tick scripts as canonical pre-decid
 created: 2026-05-08
 last_updated: 2026-05-09
 closed_by: "PR via claim/B-0264-refresh-worldview-tick-integration"
-parent: B-0159
-depends_on: [B-0262, B-0263]
+parent: 081KQGDBJ0008QG0R003H0G5YQ
+depends_on: [081KR2E4K0008QG0R001DYCKNH, 081KR2E4K0008QG0R000HG2CAT]
 classification: buildable-now
 decomposition: atomic
 type: friction-reducer

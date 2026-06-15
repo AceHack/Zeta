@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0867, B-0986]
-composes_with: [B-0867, B-0986, B-0985, B-0543, B-0990, B-0623, B-0703, B-0954, B-0988, B-0989, B-0991]
+depends_on: [081KSKBP80008QG0R000B3Y19A, 081KT2T2J0008QG0R002Z46D8Q]
+composes_with: [081KSKBP80008QG0R000B3Y19A, 081KT2T2J0008QG0R002Z46D8Q, 081KT2T2J0008QG0R0026MS6PV, 081KRMEXM0008QG0R002YSPW1X, 081KT2T2J0008QG0R002DFPSHX, 081KRW63S0008QG0R000QJR08H, 081KS3X9Y0008QG0R00218150M, 081KSXN940008QG0R00171YAZW, 081KT2T2J0008QG0R001GE4M6A, 081KT2T2J0008QG0R002ZG89QA, 081KT2T2J0008QG0R003TSGNMN]
 tags: [app-store, ml-app-store, ai-app-store, web3, decentralized, autonomous, attribution, contribution, anti-extractive, superadditive, self-selecting, attractive, attention-as-currency, contribution-graph, agora, ace, product-decision-lanes, itron, aaron]
 type: research
 ---

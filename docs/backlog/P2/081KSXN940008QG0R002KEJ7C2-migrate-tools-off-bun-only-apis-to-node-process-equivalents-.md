@@ -9,10 +9,10 @@ attribution: aaron-otto-2026-05-31
 last_updated: 2026-05-31
 decomposition: sweep
 depends_on:
-  - B-0954
+  - 081KSXN940008QG0R00171YAZW
 composes_with:
-  - B-0076
-  - B-0805
+  - 081KQ8P5D0008QG0R003G61V9V
+  - 081KSGS9H0008QG0R002BC2ZR7
 tags:
   - node
   - bun

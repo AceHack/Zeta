@@ -10,7 +10,7 @@ effort: XS
 ask: "Substrate-class promotion (new skill); needs maintainer grading before landing under .claude/skills/"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0160
+parent: 081KQJZR90008QG0R000FTJ1TC
 depends_on: []
 classification: buildable-now
 decomposition: atomic

@@ -8,9 +8,9 @@ tier: factory-infrastructure
 effort: XS
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0440
+parent: 081KRFA460008QG0R001KC0VBH
 depends_on: []
-composes_with: [B-0440, B-0441, B-0442]
+composes_with: [081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW]
 tags: [background-service, launchd, mechanization, anti-idle]
 type: chore
 ---

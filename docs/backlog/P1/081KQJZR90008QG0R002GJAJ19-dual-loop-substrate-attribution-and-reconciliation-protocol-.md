@@ -7,11 +7,11 @@ title: Dual-loop substrate attribution + reconciliation protocol — implementat
 created: 2026-05-02
 last_updated: 2026-05-31
 depends_on:
-  - B-0160
+  - 081KQJZR90008QG0R000FTJ1TC
 children:
-  - B-0164.1
-  - B-0164.2
-  - B-0164.3
+  - 081KR7JY10008QG0R000MH7PJT
+  - 081KR7JY10008QG0R000HEPQ8Y
+  - 081KR7JY10008QG0R0035GWRQ0
 decomposition: decomposed
 type: friction-reducer
 ---

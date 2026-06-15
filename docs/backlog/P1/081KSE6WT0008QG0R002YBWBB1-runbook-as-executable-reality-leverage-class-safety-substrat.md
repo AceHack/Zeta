@@ -9,11 +9,11 @@ domain: safety-substrate
 ferried_by: aaron
 owners: [aaron, mika]
 composes_with:
-  - B-0730
-  - B-0731
-  - B-0728
-  - B-0664
-  - B-0628
+  - 081KSE6WT0008QG0R003AJYMD3
+  - 081KSE6WT0008QG0R0004HV6RR
+  - 081KSE6WT0008QG0R0005XASX2
+  - 081KRW63S0008QG0R001Z7NYMV
+  - 081KRW63S0008QG0R003TX8MG5
 related_substrate:
   - .claude/rules/methodology-hard-limits.md
   - .claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md

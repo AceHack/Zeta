@@ -6,9 +6,9 @@ status: open
 title: "Green Lantern ring — IoT wearable running Genesis Seed with local inference + consent gating"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0240, B-0242, B-0244, B-0245]
+depends_on: [081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001CQPQ0E, 081KQZVQW0008QG0R001PS4F8G, 081KQZVQW0008QG0R002Q58F6Z]
 decomposition: decomposed
-children: [B-0289, B-0290]
+children: [081KR2E4K0008QG0R001SWEPNV, 081KR2E4K0008QG0R003MJ4JK0]
 owners: [architect, product-scrum-master, user-experience-engineer]
 type: feature
 ---

@@ -8,8 +8,8 @@ tier: implementation
 effort: L
 created: 2026-05-28
 last_updated: 2026-05-28
-parent: B-0668
-depends_on: [B-0668]
+parent: 081KRYRGG0008QG0R0018CMFQY
+depends_on: [081KRYRGG0008QG0R0018CMFQY]
 composes_with: []
 tags: [dbsp, fsharp, kubernetes, orleans, durabletask]
 ---

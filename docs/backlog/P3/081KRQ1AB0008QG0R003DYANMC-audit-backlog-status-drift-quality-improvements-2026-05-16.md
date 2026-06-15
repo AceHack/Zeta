@@ -9,8 +9,8 @@ effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
 closed: 2026-05-16
-depends_on: [B-0553]
-composes_with: [B-0553]
+depends_on: [081KRQ1AB0008QG0R000QYJFZE]
+composes_with: [081KRQ1AB0008QG0R000QYJFZE]
 tags: [audit, hygiene, follow-up, reviewer-findings, mechanization]
 type: feature
 ---

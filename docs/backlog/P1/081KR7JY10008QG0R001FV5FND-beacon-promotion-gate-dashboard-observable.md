@@ -7,8 +7,8 @@ title: "Beacon promotion gate — observable mirror→beacon pipeline with dashb
 tier: factory-infrastructure
 effort: S
 created: 2026-05-10
-depends_on: [B-0401]
-composes_with: [B-0400]
+depends_on: [081KR7JY10008QG0R001VP6JWG]
+composes_with: [081KR7JY10008QG0R000R503K2]
 tags: [beacon, mirror, promotion, dashboard, quality-gate, tier-stratified]
 type: friction-reducer
 ---

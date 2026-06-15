@@ -4,7 +4,7 @@ zetaid: 081KR50HA0008QG0R001Q071YY
 priority: P2
 status: closed
 title: Biology Stage 1 — reading-list scaffold (inaugural substrate shelf)
-parent: B-0045
+parent: 081KQ3HBZ0008QG0R0012P9EBM
 tier: substrate-knowledge-sweep
 effort: S
 ask: B-0045 Stage 1, biology inaugural increment; staged-scope item S per subject
@@ -12,7 +12,7 @@ created: 2026-05-09
 last_updated: 2026-05-16
 closed: 2026-05-16
 depends_on: []
-composes_with: [B-0045]
+composes_with: [081KQ3HBZ0008QG0R0012P9EBM]
 tags: [biology, substrate-shelf, reading-list, inaugural, autopoiesis, margulis, kauffman, maturana-varela]
 type: friction-reducer
 ---

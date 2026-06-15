@@ -4,12 +4,12 @@ zetaid: 081KRA5AR0008QG0R001JVT5FX
 priority: P2
 status: open
 title: Forge CLI + Ollama bridge research pass (WebSearch + capability matrix, XS)
-parent: B-0068
+parent: 081KQ8P5D0008QG0R002E1G72J
 ask: B-0068 decomposition — smallest atomic research slice
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
-composes_with: [B-0068, memory/feedback_announce_non_default_harness_dependencies_plugins_mcp_skills_2026_04_28.md, Otto-247]
+composes_with: [081KQ8P5D0008QG0R002E1G72J, memory/feedback_announce_non_default_harness_dependencies_plugins_mcp_skills_2026_04_28.md, Otto-247]
 tags: [forge, ollama, research, websearch, harness-roster, local-ai]
 type: research
 effort: XS

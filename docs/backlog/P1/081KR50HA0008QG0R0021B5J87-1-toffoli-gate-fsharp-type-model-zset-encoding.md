@@ -10,7 +10,7 @@ last_updated: 2026-05-09
 resolved: 2026-05-09
 resolved_by: "PR #2333 feat(B-0366): smallest safe slice — decompose + B-0366.1 Toffoli gate F# model"
 depends_on: []
-parent: B-0366
+parent: 081KR50HA0008QG0R003T5MZAC
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

@@ -8,8 +8,8 @@ tier: product-demo
 effort: M
 created: 2026-05-13
 last_updated: 2026-05-14
-parent: B-0401
-depends_on: [B-0434]
+parent: 081KR7JY10008QG0R001VP6JWG
+depends_on: [081KRFA460008QG0R0005DWKBG]
 tags: [demo, circuit-breaker, alignment-ui, github-pages, html, js]
 type: feature
 ---

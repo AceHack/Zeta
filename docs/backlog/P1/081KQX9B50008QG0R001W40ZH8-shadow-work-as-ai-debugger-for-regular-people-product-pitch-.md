@@ -6,7 +6,7 @@ status: open
 title: "Shadow work as AI debugger for regular people — product pitch + on-ramp design"
 created: 2026-05-06
 last_updated: 2026-05-06
-depends_on: [B-0212]
+depends_on: [081KQX9B50008QG0R00147GZX9]
 decomposition: atomic
 owners: [product-scrum-master, branding-specialist, user-experience-engineer]
 type: feature

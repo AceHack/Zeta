@@ -6,8 +6,8 @@ status: open
 title: "Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool"
 created: 2026-05-07
 last_updated: 2026-05-23
-depends_on: [B-0110, B-0240, B-0246, B-0247]
-children: [B-0248.1, B-0248.2]
+depends_on: [081KQDTYV0008QG0R001Y2E9TD, 081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R00348SHDZ, 081KQZVQW0008QG0R000ZHEN62]
+children: [081KRHWGX0008QG0R000EE6VN5, 081KRQ1AB0008QG0R0014PKF49]
 decomposition: sliceable
 owners: [architect, infrastructure-operator, security-auditor]
 type: feature

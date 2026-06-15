@@ -8,8 +8,8 @@ created: 2026-05-28
 last_updated: 2026-05-31
 closed_at: 2026-05-31
 closed_by: "openspec/specs/tick-history/spec.md"
-parent: B-0171
-depends_on: [B-0171.1]
+parent: 081KQNJ500008QG0R001N94412
+depends_on: [081KSNY2Z0008QG0R003YZ3JXC]
 classification: buildable-now
 decomposition: atomic
 owners: [lior]

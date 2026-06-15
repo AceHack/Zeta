@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0629, B-0624]
+composes_with: [081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R003J8HR6K]
 tags: [design, mika, two-language, soft-language, operational-language, notice-remember-care, observe-persist-limit-emit, craft-stability, locked-in]
 type: design
 ---

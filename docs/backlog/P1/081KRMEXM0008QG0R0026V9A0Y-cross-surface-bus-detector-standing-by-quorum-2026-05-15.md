@@ -5,13 +5,13 @@ title: Cross-surface bus detector — Standing-by quorum across Otto surfaces (e
 priority: P1
 status: open
 type: slice
-parent: B-0539
+parent: 081KRMEXM0008QG0R00138CCZX
 created: 2026-05-15
 ask: Aaron
 effort: M
 tags: [substrate, bus, otto-bft, standing-by-detector]
 depends_on: []
-composes_with: [B-0539, B-0540, B-0542]
+composes_with: [081KRMEXM0008QG0R00138CCZX, 081KRMEXM0008QG0R0039V4SQQ, 081KRMEXM0008QG0R0001HY6M6]
 last_updated: 2026-05-15
 ---
 

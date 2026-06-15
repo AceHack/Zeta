@@ -10,7 +10,7 @@ tier: governance
 effort: S
 created: 2026-05-23
 last_updated: 2026-05-30
-depends_on: [B-0525]
+depends_on: [081KRHWGX0008QG0R0016T9408]
 composes_with: []
 tags: [manifesto, governance, time-series, hygiene-history]
 type: friction-reducer

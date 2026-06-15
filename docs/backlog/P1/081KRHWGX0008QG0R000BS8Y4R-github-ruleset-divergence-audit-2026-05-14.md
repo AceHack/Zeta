@@ -8,14 +8,14 @@ type: research
 origin: B-0427 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0427
+parent: 081KRFA460008QG0R000VKJF0H
 depends_on:
-  - B-0475
+  - 081KRHWGX0008QG0R000M9RFY2
 composes_with:
-  - B-0427
-  - B-0475
-  - B-0477
-  - B-0479
+  - 081KRFA460008QG0R000VKJF0H
+  - 081KRHWGX0008QG0R000M9RFY2
+  - 081KRHWGX0008QG0R002893S6E
+  - 081KRHWGX0008QG0R0023DWW8D
   - memory/feedback_aaron_repo_split_third_orthogonal_axis_code_vs_english_formal_verification_maybe_split_ruleset_divergence_is_smell_2026_05_13.md
   - .claude/rules/lfg-acehack-topology.md
 ---

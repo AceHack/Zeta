@@ -9,9 +9,9 @@ effort: S
 ask: Cadence surface per B-0092 (T3 deferred)
 created: 2026-05-11
 last_updated: 2026-05-14
-parent: B-0092
-depends_on: [B-0452]
-composes_with: [B-0090]
+parent: 081KQ8P5D0008QG0R003ZF64GG
+depends_on: [081KRA5AR0008QG0R0029YWXYW]
+composes_with: [081KQ8P5D0008QG0R0002TN22C]
 renumbered_from: B-0372
 renumbered_reason: "ID collision with B-0372 P1 (pages-sitemap-robots-ai-crawler-policy). Part of the P2 contributor-compliance set renumbered as a unit: B-0370→B-0452, B-0371→B-0453, B-0372→B-0454, B-0373→B-0455. Internal depends_on B-0370 remapped to B-0452. Substrate-cleanup tracked in B-0451."
 tags: [contributor-compliance, trajectory, T1, T2, TS, renumbered]

@@ -10,8 +10,8 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on: []
 composes_with:
-  - B-0875
-  - B-0869
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R000HENSVM
 tags:
   - heterogeneous-auto-reviewer-ensemble
   - diversity-without-correlated-blind-spots

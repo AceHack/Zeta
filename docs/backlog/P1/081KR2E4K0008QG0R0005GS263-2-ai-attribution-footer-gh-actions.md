@@ -6,8 +6,8 @@ status: closed
 title: "Layer 4: AI attribution footer for GitHub Actions workflows"
 created: 2026-05-08
 last_updated: 2026-05-08
-depends_on: [B-0126.1]
-parent: B-0126
+depends_on: [081KR2E4K0008QG0R001N1PPHP]
+parent: 081KQGDBJ0008QG0R001JC9HCJ
 classification: buildable-now
 type: friction-reducer
 ---

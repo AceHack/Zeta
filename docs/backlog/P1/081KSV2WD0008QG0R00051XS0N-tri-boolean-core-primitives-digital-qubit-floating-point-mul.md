@@ -14,9 +14,9 @@ composes_with:
   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
   - .claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md
   - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
-  - docs/backlog/P2/B-0679-zeta-id-rust-implementation-2026-05-21.md
-  - docs/backlog/P2/B-0681-zeta-id-v2-spec-hardening-2026-05-21.md
-  - docs/backlog/P2/B-0893-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md
+  - docs/backlog/P2/081KS3X9Y0008QG0R001Z8SBZJ-zeta-id-rust-implementation-2026-05-21.md
+  - docs/backlog/P2/081KS3X9Y0008QG0R003044PQQ-zeta-id-v2-spec-hardening-2026-05-21.md
+  - docs/backlog/P2/081KSNY2Z0008QG0R000V24M7E-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md
 tags: [core-primitive, tri-boolean, digital-qubit, floating-point, multi-language, bft, multi-oracle, monad-propagation, ts, fsharp, csharp, rust, middle-out-compression]
 type: feature
 ---

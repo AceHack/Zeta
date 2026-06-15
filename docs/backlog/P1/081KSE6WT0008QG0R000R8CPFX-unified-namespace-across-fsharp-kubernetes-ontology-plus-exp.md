@@ -9,20 +9,20 @@ ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0781
-  - B-0784
+  - 081KSE6WT0008QG0R001H3DA90
+  - 081KSE6WT0008QG0R0018WZ7TH
 composes_with:
   - B-0741
   - B-0747
-  - B-0763
-  - B-0764
-  - B-0765
-  - B-0766
-  - B-0767
-  - B-0772
-  - B-0773
-  - B-0782
-  - B-0783
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R0009YYNP4
+  - 081KSE6WT0008QG0R00063R6HB
+  - 081KSE6WT0008QG0R00049EFBD
+  - 081KSE6WT0008QG0R0016CEE2Z
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R0008483B2
+  - 081KSE6WT0008QG0R003CMCX84
+  - 081KSE6WT0008QG0R003TBE2VB
 tags: [namespace, unified, fsharp, kubernetes, ontology, experiment-id, otel, routing, argo-rollouts, cilium, service-mesh, gateway-api]
 ---
 

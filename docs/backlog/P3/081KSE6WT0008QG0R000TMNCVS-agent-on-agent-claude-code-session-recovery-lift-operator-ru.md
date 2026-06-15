@@ -8,7 +8,7 @@ size: M
 created: 2026-05-25
 last_updated: 2026-05-25
 authors: [aaron, otto-cli]
-composes_with: [B-0628, B-0664]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R001Z7NYMV]
 depends_on: []
 labels: [claude-code, agent-coordination, safety-substrate, classifier-bypass-research, deferred-to-lift-criteria]
 ---

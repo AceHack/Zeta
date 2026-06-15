@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R000YZMXNM
 priority: P2
 status: open
 title: codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)
-parent: B-0120
+parent: 081KQDTYV0008QG0R001VJP216
 tier: factory-tooling
 effort: S
 ask: After B-0411 lands, repeat the --persona integration in codex.ts and gemini.ts using the shared loader. Same semantics, same deprecation comment. Two scripts, one row for atomicity.
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on:
-  - B-0411
+  - 081KRA5AR0008QG0R000C3P8KP
 composes_with:
   - tools/peer-call/codex.ts
   - tools/peer-call/gemini.ts

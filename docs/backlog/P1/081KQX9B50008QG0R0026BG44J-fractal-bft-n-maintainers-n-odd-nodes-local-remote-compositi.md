@@ -7,8 +7,8 @@ title: "Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote 
 created: 2026-05-06
 last_updated: 2026-05-19
 decomposition: blob
-children: [B-0211.1]
-depends_on: [B-0209]
+children: [081KRYRGG0008QG0R001JVJV0K]
+depends_on: [081KQX9B50008QG0R001MNYK61]
 type: feature
 ---
 

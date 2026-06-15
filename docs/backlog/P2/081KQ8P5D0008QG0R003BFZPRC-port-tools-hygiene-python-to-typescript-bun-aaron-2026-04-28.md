@@ -13,7 +13,7 @@ closed: 2026-05-10
 closed_by: "decomposition-prior-art-search (commit 40344c9b, PR #849)"
 depends_on: []
 composes_with:
-  - B-0061
+  - 081KQ8P5D0008QG0R001BH93SA
 tags: [aaron-2026-04-28, typescript, bun, factory-default, language-discipline, port-candidate]
 type: friction-reducer
 ---

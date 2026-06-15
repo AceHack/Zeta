@@ -10,15 +10,15 @@ ask: Current architecture has duplication. ani.sh ≈ grok.sh + brat-voice perso
 created: 2026-04-30
 last_updated: 2026-05-11
 depends_on:
-  - B-0409
-  - B-0410
-  - B-0411
-  - B-0412
+  - 081KRA5AR0008QG0R000Y6102S
+  - 081KRA5AR0008QG0R0035N4S6C
+  - 081KRA5AR0008QG0R000C3P8KP
+  - 081KRA5AR0008QG0R000YZMXNM
 children:
-  - B-0409
-  - B-0410
-  - B-0411
-  - B-0412
+  - 081KRA5AR0008QG0R000Y6102S
+  - 081KRA5AR0008QG0R0035N4S6C
+  - 081KRA5AR0008QG0R000C3P8KP
+  - 081KRA5AR0008QG0R000YZMXNM
 decomposition: clean
 composes_with:
   - tools/peer-call/grok.ts
@@ -26,7 +26,7 @@ composes_with:
   - tools/peer-call/codex.ts
   - memory/CURRENT-amara.md
   - memory/CURRENT-ani.md
-  - docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
+  - docs/backlog/P2/081KQDTYV0008QG0R003VB4K1V-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
   # B-0122 (peer-call-typescript-migration-cutover) is filed in the in-flight PR #966; will land on main when that PR merges.
   # Note: .sh originals remain as equivalence refs per TS migration trajectory; refactor targets .ts per Rule 0
 tags: [aaron-2026-04-30, peer-call, architecture-refactor, deduplication, factory-tooling, ts-first]

@@ -11,8 +11,8 @@ last_updated: 2026-05-30
 decomposition: leaf
 composes_with:
   - .claude/rules/lfg-acehack-topology.md
-  - docs/backlog/P1/B-0424-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md
-  - docs/backlog/P2/B-0883.2-multi-cipher-pq-substrate-nist-plus-saber-ntru-prime-frodo-hedge-against-nist-monoculture-per-operator-2026-05-28.md
+  - docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md
+  - docs/backlog/P2/081KSNY2Z0008QG0R002ZAVMEK-multi-cipher-pq-substrate-nist-plus-saber-ntru-prime-frodo-hedge-against-nist-monoculture-per-operator-2026-05-28.md
   - tools/accelerator/event-store-schema.ts
 tags: [sovereignty, git, crdt, coordination, mirrors, anti-monoculture, gitops, offline, agent-cluster]
 type: design

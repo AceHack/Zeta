@@ -9,8 +9,8 @@ effort: M
 ask: Otto self-derived 2026-05-03 from v0.5 substrate-claim-checker review-cycle empirics + Aaron 2026-05-03 nudge to formalize as backlog row (autonomous-loop maintainer channel)
 created: 2026-05-03
 last_updated: 2026-05-03
-depends_on: [B-0170]
-composes_with: [B-0169, B-0173]
+depends_on: [081KQNJ500008QG0R003SCWBDV]
+composes_with: [081KQJZR90008QG0R002D6XYHB, 081KQNJ500008QG0R003ZC6PK8]
 tags: [calibration, multi-harness, cross-model, frontier-ability, convergence, code-review, tool-authoring, p3-research]
 type: friction-reducer
 ---

@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - sitemap submission and discovery metrics"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0235
-depends_on: [B-0285, B-0295]
+parent: 081KQX9B50008QG0R003HVP90P
+depends_on: [081KR2E4K0008QG0R0037MW8ET, 081KR2E4K0008QG0R0038JGMJ8]
 classification: blocked-on-sitemap-and-metadata
 decomposition: atomic
 owners: [architect, docs]

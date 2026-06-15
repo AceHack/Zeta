@@ -9,14 +9,14 @@ ask: aaron+amara 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0841
-  - B-0842
+  - 081KSGS9H0008QG0R001876MP6
+  - 081KSGS9H0008QG0R003V8C86Q
 composes_with:
-  - B-0826
-  - B-0825
-  - B-0664
-  - B-0840
-  - B-0703
+  - 081KSGS9H0008QG0R001K8VPV4
+  - 081KSGS9H0008QG0R002PT5C7J
+  - 081KRW63S0008QG0R001Z7NYMV
+  - 081KSGS9H0008QG0R0006F4BGX
+  - 081KS3X9Y0008QG0R00218150M
 tags: [source-honor-ledger, basis-royalty-pool, creator-payment, rights-lanes, glass-halo-for-ip, dont-sell-compression-sell-readout, amara-ratification, no-substitute-for-source, generous-by-design, productization, data-vault-2-0, dbt-style-lineage, provenance-discipline, substrate-engineering-compression]
 ---
 

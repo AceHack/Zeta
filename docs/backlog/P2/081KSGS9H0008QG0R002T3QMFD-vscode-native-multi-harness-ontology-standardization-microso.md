@@ -10,11 +10,11 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0759
-  - B-0776
-  - B-0780
-  - B-0782
-  - B-0790
+  - 081KSE6WT0008QG0R003G0Y62D
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSE6WT0008QG0R000RH1526
+  - 081KSE6WT0008QG0R003CMCX84
+  - 081KSGS9H0008QG0R00153CQ8B
 tags: [vscode-extension, multi-harness, ontology-standardization, vscode-native-surface, agents-skills-hooks-mcp, external-pull, harness-convergence, surface-intel]
 ---
 

@@ -9,12 +9,12 @@ ask: aaron 2026-05-29
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on:
-  - B-0750
+  - 081KSE6WT0008QG0R003YYC9PV
   - B-0751
 composes_with:
-  - B-0440
-  - B-0442
-  - B-0571
+  - 081KRFA460008QG0R001KC0VBH
+  - 081KRFA460008QG0R00061SXRW
+  - 081KRQ1AB0008QG0R0038VQJZ0
 tags: [agent-autonomy, pr-reviews, thread-resolution, self-correction, worktree-isolation, github-api, graphql-mutation]
 ---
 

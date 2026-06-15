@@ -10,7 +10,7 @@ ask: maintainer Aaron + Kestrel-claude.ai 2026-05-21
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0635, B-0666, B-0679, B-0680]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R001SAHYKV, 081KS3X9Y0008QG0R001Z8SBZJ, 081KS3X9Y0008QG0R002WGH8PJ]
 tags: [zeta-id, v2-spec, kestrel-sharpening]
 type: feature
 ---

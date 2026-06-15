@@ -9,8 +9,8 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 composes_with:
-  - B-0816
-  - B-0794
+  - 081KSGS9H0008QG0R003A37Z65
+  - 081KSGS9H0008QG0R0027HJZYH
 tags: [ai-runbook, force-multiplier, substrate-engineering, run-primitive, deferred-continuation, auto-jit, skills, bootstream]
 ---
 

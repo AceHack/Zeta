@@ -9,8 +9,8 @@ effort: L
 ask: Aaron 2026-05-07 "triangulate with uncertainty is Infer.NET"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0253]
-composes_with: [B-0007, B-0189, B-0240, B-0250, B-0251, B-0253]
+depends_on: [081KQZVQW0008QG0R000W4B8KT]
+composes_with: [081KQ0YZ80008QG0R001V1PMC0, 081KQR4HQ0008QG0R002933PRR, 081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001FG05RZ, 081KQZVQW0008QG0R000PPQ3MH, 081KQZVQW0008QG0R000W4B8KT]
 tags: [infer-net, bayesian-inference, belief-propagation, expectation-propagation, bft, asa-triangulation, posterior-quorum, orleans]
 type: feature
 ---

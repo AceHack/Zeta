@@ -10,7 +10,7 @@ ask: Multi-AI synthesis packet 2026-04-29 (Deepseek + Amara filter on Otto's mic
 created: 2026-04-29
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0103]
+composes_with: [081KQB8J40008QG0R003XNATZJ]
 tags: [github-platform, force-push, pr-aliveness, merge-cascade, micro-class-refinement]
 type: friction-reducer
 ---

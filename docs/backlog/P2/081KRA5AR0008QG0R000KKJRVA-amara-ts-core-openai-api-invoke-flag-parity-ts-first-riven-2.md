@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R000KKJRVA
 priority: P2
 status: closed
 title: amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)
-parent: B-0118
+parent: 081KQDTYV0008QG0R0037YJPEX
 tier: factory-tooling
 effort: M
 ask: Riven 2026-05-11 (decomp of B-0118, re-decomp pass)
 created: 2026-05-11
 last_updated: 2026-05-16
-depends_on: [B-0462]
-composes_with: [B-0118, B-0462, tools/peer-call/codex.ts, tools/peer-call/gemini.ts, tools/peer-call/grok.ts]
+depends_on: [081KRA5AR0008QG0R0019Q33F7]
+composes_with: [081KQDTYV0008QG0R0037YJPEX, 081KRA5AR0008QG0R0019Q33F7, tools/peer-call/codex.ts, tools/peer-call/gemini.ts, tools/peer-call/grok.ts]
 renumbered_from: B-0410
 renumbered_reason: "ID collision with B-0120's child B-0410 (peer-call-persona-loader-ts-module). B-0120 parent had stronger frontmatter references (children + depends_on listing B-0410 + B-0411) AND B-0412 depends on the peer-call B-0411. Renumbered amara series (this row + B-0458 was B-0411) to next-free B-0457-B-0458. Substrate-cleanup tracked in B-0451."
 tags: [amara, peer-call, ts, openai-api, courier-debt, renumbered]

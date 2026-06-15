@@ -8,12 +8,12 @@ created: 2026-05-28
 last_updated: 2026-05-28
 ask: operator 2026-05-28
 composes_with:
-  - B-0867  # workflow-engine v1 parent
+  - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 parent
   - B-0867.5  # workflow-engine PoC
-  - B-0867.20  # ReviewLifetime DU
-  - B-0916  # Lase-as-bridge (sibling primitive at error-class-discovery scope)
-  - B-0897  # Persist-as-bridge (μένω substrate)
-  - B-0915  # CliffordWorld impl target
+  - 081KSNY2Z0008QG0R003WFDCJ9  # ReviewLifetime DU
+  - 081KSNY2Z0008QG0R00075C7CH  # Lase-as-bridge (sibling primitive at error-class-discovery scope)
+  - 081KSNY2Z0008QG0R002SZZ5Y0  # Persist-as-bridge (μένω substrate)
+  - 081KSNY2Z0008QG0R002BNQVE1  # CliffordWorld impl target
 depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisites (file-level, not row-level) — see "Substrate prerequisites" prose below.
 ---
 

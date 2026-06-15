@@ -9,7 +9,7 @@ effort: S
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-0992, B-0993, B-0994, B-0986, B-0954, B-0623, B-0997]
+composes_with: [081KT2T2J0008QG0R003872SGT, 081KT2T2J0008QG0R003C166K4, 081KT2T2J0008QG0R0000H12VT, 081KT2T2J0008QG0R002Z46D8Q, 081KSXN940008QG0R00171YAZW, 081KRW63S0008QG0R000QJR08H, 081KT2T2J0008QG0R0026XCGQM]
 tags: [positioning, naming, superfluid, zeta, agora, marketplace, product, corporate, public-surface, naming-expert, razor, aaron]
 type: research
 ---

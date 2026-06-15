@@ -7,15 +7,15 @@ priority: P2
 created: 2026-05-28
 authors: [aaron, otto, amara]
 composes_with:
-  - B-0917  # interrupt substrate in monad space; F.5 invariant origin
-  - B-0867  # workflow-engine v1 parent
+  - 081KSNY2Z0008QG0R002HB4AGT  # interrupt substrate in monad space; F.5 invariant origin
+  - 081KSKBP80008QG0R000B3Y19A  # workflow-engine v1 parent
   - B-0867.5  # workflow-engine PoC
-  - B-0867.20  # ReviewLifetime DU sibling
-  - B-0664  # NCI HC-8
-  - B-0628  # Knights Guild + Constitution-Class governance
-  - B-0703  # Aurora multi-oracle BFT (composition substrate for adversarial scenarios)
+  - 081KSNY2Z0008QG0R003WFDCJ9  # ReviewLifetime DU sibling
+  - 081KRW63S0008QG0R001Z7NYMV  # NCI HC-8
+  - 081KRW63S0008QG0R003TX8MG5  # Knights Guild + Constitution-Class governance
+  - 081KS3X9Y0008QG0R00218150M  # Aurora multi-oracle BFT (composition substrate for adversarial scenarios)
 depends_on:
-  - docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md
+  - docs/backlog/P2/081KSNY2Z0008QG0R002HB4AGT-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md
   - src/Core.TypeScript/workflow-engine/auto-loop-lifetime.ts
   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
   - .claude/agents/formal-verification-expert.md  # Soraya

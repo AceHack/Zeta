@@ -9,12 +9,12 @@ ask: aaron 2026-05-28 (Q5 decision locked: "just content right now we can think 
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 composes_with:
-  - B-0883
-  - B-0883.3
-  - B-0885
-  - B-0883.1
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0008EJDW1
+  - 081KSNY2Z0008QG0R0030V5ZVS
+  - 081KSNY2Z0008QG0R0037X4DP4
 tags:
   - metadata-encryption-follow-up
   - filename-encryption

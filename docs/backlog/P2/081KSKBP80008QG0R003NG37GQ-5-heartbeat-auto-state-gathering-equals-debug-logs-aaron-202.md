@@ -9,9 +9,9 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0858
+  - 081KSKBP80008QG0R001KK9WV6
 composes_with:
-  - B-0858
+  - 081KSKBP80008QG0R001KK9WV6
 tags: [b-0858-sub-row, agent-heartbeat, auto-state, debug-logs, observability, deferred-post-usb]
 ---
 

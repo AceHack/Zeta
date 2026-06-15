@@ -6,8 +6,8 @@ status: open
 title: "ALIGNMENT.md rewrite - definition precision and matrix-pill guardrails"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0003
-depends_on: [B-0215, B-0219]
+parent: 081KQ0YZ80008QG0R001QJJTVF
+depends_on: [081KQX9B50008QG0R00327XC6Q, 081KQX9B50008QG0R0026EHVW2]
 classification: buildable-after-rigor-floor
 type: friction-reducer
 ---

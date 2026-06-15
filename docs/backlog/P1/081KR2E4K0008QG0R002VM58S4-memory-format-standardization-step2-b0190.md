@@ -9,9 +9,9 @@ effort: S
 ask: B-0190 Step 2 decomposition
 created: 2026-05-08
 last_updated: 2026-05-09
-parent: B-0190
+parent: 081KQR4HQ0008QG0R001909FPT
 depends_on: []
-composes_with: [B-0190, B-0331, B-0334, B-0335, B-0338]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KR2E4K0008QG0R003RZFR9F, 081KR2E4K0008QG0R003MSVG42, 081KR2E4K0008QG0R000M01QVM, 081KR2E4K0008QG0R000N124VW]
 tags: [memory, format, standardization, foundation, trajectory-child]
 type: friction-reducer
 ---

@@ -7,7 +7,7 @@ title: "Layers 1-3: document meta-learning pattern adapted for Zeta"
 created: 2026-05-08
 last_updated: 2026-05-08
 depends_on: []
-parent: B-0126
+parent: 081KQGDBJ0008QG0R001JC9HCJ
 classification: buildable-now
 type: friction-reducer
 ---

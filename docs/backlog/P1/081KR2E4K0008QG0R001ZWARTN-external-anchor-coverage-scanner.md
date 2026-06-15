@@ -6,11 +6,11 @@ status: closed
 title: "External-anchor coverage scanner — per-concept anchor presence/absence audit"
 tier: substrate-quality
 effort: S
-parent: B-0060
+parent: 081KQ8P5D0008QG0R000N718AC
 created: 2026-05-08
 last_updated: 2026-05-09
-depends_on: [B-0310]
-composes_with: [B-0060, B-0310, B-0312, B-0313, B-0314, B-0315, B-0316]
+depends_on: [081KR2E4K0008QG0R003DS2XHJ]
+composes_with: [081KQ8P5D0008QG0R000N718AC, 081KR2E4K0008QG0R003DS2XHJ, 081KR2E4K0008QG0R0009QXZ77, 081KR2E4K0008QG0R00289GE8Z, 081KR2E4K0008QG0R001ADMBVW, 081KR2E4K0008QG0R000R3ZVGD, 081KR2E4K0008QG0R0032TWN5H]
 tags: [substrate-quality, tooling, external-anchors, human-lineage, beacon-safety]
 type: friction-reducer
 ---

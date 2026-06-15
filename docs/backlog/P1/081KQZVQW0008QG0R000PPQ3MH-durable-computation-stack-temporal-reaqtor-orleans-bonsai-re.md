@@ -6,11 +6,11 @@ status: open
 title: "Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0250]
+depends_on: [081KQZVQW0008QG0R001FG05RZ]
 decomposition: decomposed
-children: [B-0278, B-0279, B-0280]
+children: [081KR2E4K0008QG0R001GFXN05, 081KR2E4K0008QG0R000YTJS3Q, 081KR2E4K0008QG0R0022RVRCZ]
 owners: [architect]
-composes_with: [B-0040, B-0250]
+composes_with: [081KQ3HBZ0008QG0R000RP1WDN, 081KQZVQW0008QG0R001FG05RZ]
 tags: [durability, temporal, reaqtor, orleans, bonsai, standing-query, rx, durable-functions]
 type: feature
 ---

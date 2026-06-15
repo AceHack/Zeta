@@ -8,15 +8,15 @@ type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-17
-parent: B-0448
+parent: 081KRFA460008QG0R000CYBGKW
 depends_on:
-  - B-0507
-  - B-0508
+  - 081KRHWGX0008QG0R000E8BHQ9
+  - 081KRHWGX0008QG0R002S107P7
 composes_with:
-  - B-0448
-  - B-0507
-  - B-0508
-  - B-0510
+  - 081KRFA460008QG0R000CYBGKW
+  - 081KRHWGX0008QG0R000E8BHQ9
+  - 081KRHWGX0008QG0R002S107P7
+  - 081KRHWGX0008QG0R001VR9FNA
 tags: [routines, cloud-routines, typescript, installer, tooling]
 ---
 

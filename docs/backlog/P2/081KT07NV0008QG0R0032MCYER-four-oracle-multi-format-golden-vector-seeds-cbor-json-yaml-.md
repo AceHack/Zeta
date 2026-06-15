@@ -10,7 +10,7 @@ last_updated: 2026-06-01
 decomposition: umbrella
 depends_on: []
 composes_with:
-  - B-0638
+  - 081KRW63S0008QG0R0030F8ZXA
 tags:
   - dynamicvalue
   - golden-vectors

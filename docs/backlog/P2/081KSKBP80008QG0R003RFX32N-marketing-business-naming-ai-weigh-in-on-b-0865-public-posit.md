@@ -9,15 +9,15 @@ ask: operator + Kestrel 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0865
+  - 081KSKBP80008QG0R003NM9XEC
 composes_with:
-  - B-0623
-  - B-0761
-  - B-0850
-  - B-0852
-  - B-0857
-  - B-0859
-  - B-0864
+  - 081KRW63S0008QG0R000QJR08H
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSKBP80008QG0R003Z4C0D0
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSKBP80008QG0R002J03WGA
+  - 081KSKBP80008QG0R00146WEX1
+  - 081KSKBP80008QG0R0039RW25E
 tags: [marketing, business-strategy, naming-review, public-positioning, servicetitan-primary-audience, c-level-secondary, 24-months-ahead-mandate, ilyana-public-api-designer, open-source-positioning, b-0865-public-face, dora-benchmark-marketing]
 ---
 

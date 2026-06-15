@@ -8,8 +8,8 @@ tier: factory-infrastructure
 effort: M-L
 created: 2026-05-19
 last_updated: 2026-05-19
-depends_on: [B-0590, B-0671]
-composes_with: [B-0590]
+depends_on: [081KRQ1AB0008QG0R002G93CM7, B-0671]
+composes_with: [081KRQ1AB0008QG0R002G93CM7]
 tags: [fleet, bare-metal, automation, os-install]
 type: feature
 ---

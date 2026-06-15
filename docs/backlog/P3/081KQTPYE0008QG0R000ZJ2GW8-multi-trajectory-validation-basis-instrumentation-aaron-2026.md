@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim *"the validation is in the longitudinal orthogina
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0193, B-0196, B-0204]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KQTPYE0008QG0R001W237MZ, 081KQTPYE0008QG0R0028V263Z]
 tags: [validation-basis, longitudinal, dora, less-each-time, falsifiability-rate, bootstrap-razor, identity-preservation, engagement-gate, orthogonal-axes, drift-correlation, instrumentation, multi-decade, anti-ossification]
 type: friction-reducer
 ---

@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-05
 last_updated: 2026-06-05
 depends_on: []
-composes_with: [B-1019]
+composes_with: [081KT7YW00008QG0R001DGZQKM]
 tags: [de-finetti, exchangeability, non-correlation-boundary, bayesian, markov-chain, hidden-markov, homeostat, semiring, probability-semiring, viterbi, forward-algorithm, kleene-star, closed-semiring, belief-convergence, softvalue, traveler-frame, relative-observer, rational-arithmetic, floats-out-of-lineage, doob-convergence, semantic-security, rx-as-data, dynamicvalue, aaron]
 ---
 

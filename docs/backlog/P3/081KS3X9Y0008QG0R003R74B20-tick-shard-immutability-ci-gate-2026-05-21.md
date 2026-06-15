@@ -10,7 +10,7 @@ ask: substrate-honest catch from Codex P1 on PR #4534 (2026-05-21 cleanup arc)
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0530]
+composes_with: [081KRMEXM0008QG0R000X1PPGC]
 tags: [audit, ci-gate, immutability, hygiene-history, event-sourcing, codex-finding]
 type: feature
 ---

@@ -9,16 +9,16 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0763
-  - B-0765
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R00063R6HB
 composes_with:
-  - B-0428
-  - B-0764
-  - B-0766
-  - B-0772
-  - B-0773
-  - B-0774
-  - B-0775
+  - 081KRFA460008QG0R0018SN61J
+  - 081KSE6WT0008QG0R0009YYNP4
+  - 081KSE6WT0008QG0R00049EFBD
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R0008483B2
+  - 081KSE6WT0008QG0R001AZQA5Z
+  - 081KSE6WT0008QG0R000QXSG91
 tags: [cluster, plugins, interfaces, sequencing, redis, nats, cockroachdb, temporal, orleans, opa, incremental]
 ---
 

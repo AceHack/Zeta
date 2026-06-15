@@ -10,11 +10,11 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with:
-  - B-0855
-  - B-0850
-  - B-0851
-  - B-0400
-  - B-0812
+  - 081KSKBP80008QG0R000GPC0TB
+  - 081KSKBP80008QG0R003Z4C0D0
+  - 081KSKBP80008QG0R00248VEWT
+  - 081KR7JY10008QG0R000R503K2
+  - 081KSGS9H0008QG0R0037H3W4T
 tags: [cluster-coordination, tmp-folder-standard, per-node-state, multi-agent, marker-files, deferred-until-needed, bus-envelope-composition, ipc, lockfile-pattern]
 ---
 

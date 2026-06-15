@@ -9,13 +9,13 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0852
-  - B-0855
-  - B-0857
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSKBP80008QG0R000GPC0TB
+  - 081KSKBP80008QG0R002J03WGA
 composes_with:
-  - B-0858
-  - B-0854
-  - B-0833
+  - 081KSKBP80008QG0R001KK9WV6
+  - 081KSKBP80008QG0R002VRN56K
+  - 081KSGS9H0008QG0R003JNSVR5
 tags: [agent-rights-first, post-boot-ownership, ai-as-home-owner, environment-control, auth-advisor, paradigm-inversion, fast-track]
 ---
 

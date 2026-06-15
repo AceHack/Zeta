@@ -9,7 +9,7 @@ effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-1000, B-1004, B-1005, B-0428, B-0288, B-0824, B-0976]
+composes_with: [081KT2T2J0008QG0R000S7GHQ8, 081KT2T2J0008QG0R0038CRFJM, 081KT2T2J0008QG0R003BT1RS7, 081KRFA460008QG0R0018SN61J, 081KR2E4K0008QG0R002YE3MMD, 081KSGS9H0008QG0R0031PBNGA, 081KT07NV0008QG0R003BE6MJ2]
 tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, registry-is-bcl, codec-algebra, algebra-first-admission-procedure, registry-is-ship-gate, temporal-operator-algebra, everything-is-algebra, tick-source-folds-to-algebra, register-algebra-adapterize-sources, four-bucket-taxonomy, cross-ai-triangulation, asymmetric-exceptions, ace-distribution, cross-language-byte-lock, quality-uniqueness-composability-gate, infer-net, research, aaron]
 type: research
 ---

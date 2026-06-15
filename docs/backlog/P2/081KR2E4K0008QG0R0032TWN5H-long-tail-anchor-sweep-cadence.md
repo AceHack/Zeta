@@ -6,11 +6,11 @@ status: open
 title: "Long-tail external-anchor cadenced sweep — memory files + research docs"
 tier: substrate-quality
 effort: S
-parent: B-0060
+parent: 081KQ8P5D0008QG0R000N718AC
 created: 2026-05-08
 last_updated: 2026-05-08
-depends_on: [B-0311]
-composes_with: [B-0060, B-0090]
+depends_on: [081KR2E4K0008QG0R001ZWARTN]
+composes_with: [081KQ8P5D0008QG0R000N718AC, 081KQ8P5D0008QG0R0002TN22C]
 tags: [substrate-quality, external-anchors, cadence, memory, research-docs]
 type: friction-reducer
 ---

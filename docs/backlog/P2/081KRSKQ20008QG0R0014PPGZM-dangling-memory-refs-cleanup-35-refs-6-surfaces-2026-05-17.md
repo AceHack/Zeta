@@ -8,7 +8,7 @@ created: 2026-05-17
 last_updated: 2026-05-17
 type: chore
 composes_with:
-  - B-0510  # prior B-NNNN substrate work via Otto-CLI; uses the same audit tool surface
+  - 081KRHWGX0008QG0R001VR9FNA  # prior B-NNNN substrate work via Otto-CLI; uses the same audit tool surface
 depends_on: []
 ---
 

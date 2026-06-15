@@ -6,8 +6,8 @@ status: open
 title: "OpenSpec catch-up - author Backlog Row Schema spec"
 created: 2026-05-31
 last_updated: 2026-05-31
-parent: B-0171
-depends_on: [B-0171.2]
+parent: 081KQNJ500008QG0R001N94412
+depends_on: [081KSNY2Z0008QG0R000XVGWA8]
 classification: buildable-now
 decomposition: atomic
 owners: [codex]

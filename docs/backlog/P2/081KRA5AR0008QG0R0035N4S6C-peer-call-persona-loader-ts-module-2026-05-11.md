@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R0035N4S6C
 priority: P2
 status: open
 title: Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)
-parent: B-0120
+parent: 081KQDTYV0008QG0R001VJP216
 tier: factory-tooling
 effort: S
 ask: New TS module tools/peer-call/persona-loader.ts that exports loadPersona(name): Promise<string> — reads memory/CURRENT-${name}.md or throws typed error that callers render as an exit-1 message. No CLI parsing or process exit here. Used by all three entrypoints. Pure TS, Bun fs.
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on:
-  - B-0409
+  - 081KRA5AR0008QG0R000Y6102S
 composes_with:
   - tools/peer-call/grok.ts
   - tools/peer-call/gemini.ts

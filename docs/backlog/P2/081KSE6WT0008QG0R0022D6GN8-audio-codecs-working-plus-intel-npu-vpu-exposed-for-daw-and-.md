@@ -11,12 +11,12 @@ last_updated: 2026-05-25
 depends_on:
   - B-0754
 composes_with:
-  - B-0755
-  - B-0759
-  - B-0761
-  - B-0763
-  - B-0764
-  - B-0767
+  - 081KSE6WT0008QG0R003612WGJ
+  - 081KSE6WT0008QG0R003G0Y62D
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R0009YYNP4
+  - 081KSE6WT0008QG0R0016CEE2Z
 tags: [cluster, audio, daw, npu, vpu, intel, openvino, ai-workload, pipewire, alsa, jack]
 ---
 

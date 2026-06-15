@@ -10,7 +10,7 @@ ask: Aaron 2026-05-01 named the row in the parallelism-scaling-ladder memo (`fee
 created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0170, B-0175, B-0177]
+composes_with: [081KQNJ500008QG0R003SCWBDV, 081KQNJ500008QG0R00055XHBG, 081KQNJ500008QG0R0035QCEX9]
 tags: [pointer, anchor-link, brittle, mechanization, markdown, rename, cross-reference, auto-rewriter, tooling, decision-graph, graph-edge-preservation, prov-o]
 type: feature
 ---

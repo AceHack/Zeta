@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0622, B-0631, B-0634, B-0628]
+composes_with: [081KRW63S0008QG0R002V20TYJ, 081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R0022SFKPM, 081KRW63S0008QG0R003TX8MG5]
 tags: [safety, mika, kinetic-safeguard-sdk, ksk, type-safe-actuators, weapons-safety, sharp-edge, no-bypass-by-bayesian-models, locked-in, sacred-floor-adjacent]
 type: safety
 ---

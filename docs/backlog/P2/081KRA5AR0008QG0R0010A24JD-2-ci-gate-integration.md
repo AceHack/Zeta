@@ -10,9 +10,9 @@ ask: Extend existing hygiene CI (or new job) to invoke the TS checker from B-011
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on:
-  - B-0113.1
+  - 081KRA5AR0008QG0R002A78X5F
 composes_with:
-  - B-0113
+  - 081KQDTYV0008QG0R002424VSE
   - .github/workflows/gate.yml
 tags: [riven-2026-05-11, ci-integration, mechanical-enforcement]
 type: friction-reducer

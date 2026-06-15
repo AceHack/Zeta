@@ -8,14 +8,14 @@ type: feature
 origin: B-0448 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0448
+parent: 081KRFA460008QG0R000CYBGKW
 depends_on:
-  - B-0507
+  - 081KRHWGX0008QG0R000E8BHQ9
 composes_with:
-  - B-0448
-  - B-0507
-  - B-0509
-  - B-0510
+  - 081KRFA460008QG0R000CYBGKW
+  - 081KRHWGX0008QG0R000E8BHQ9
+  - 081KRHWGX0008QG0R0014D2T5E
+  - 081KRHWGX0008QG0R001VR9FNA
 tags: [routines, cloud-routines, schema, json, canonical]
 ---
 

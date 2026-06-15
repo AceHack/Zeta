@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0619, B-0626, B-0617]
+composes_with: [081KRW63S0008QG0R003KSHAGN, 081KRW63S0008QG0R000BH37EV, 081KRW63S0008QG0R000SGXN70]
 tags: [governance, mika, knights-guild, constitution-class, integrity-dashboard, weight-free, self-binding, sharp-edges, benevolent-dictator-exit]
 type: governance
 ---

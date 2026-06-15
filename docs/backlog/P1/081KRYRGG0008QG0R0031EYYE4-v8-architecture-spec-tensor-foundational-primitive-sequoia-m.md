@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-19
 last_updated: 2026-05-19
-depends_on: [B-0668, B-0665, B-0666, B-0667, B-0638, B-0664, B-0637]
-composes_with: [B-0623, B-0625, B-0289, B-0658, B-0640, B-0628]
+depends_on: [081KRYRGG0008QG0R0018CMFQY, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R001SAHYKV, 081KRW63S0008QG0R003Z7QV2A, 081KRW63S0008QG0R0030F8ZXA, 081KRW63S0008QG0R001Z7NYMV, 081KRW63S0008QG0R0004D5XG1]
+composes_with: [081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003NP3YA3, 081KR2E4K0008QG0R001SWEPNV, 081KRW63S0008QG0R00140R3TA, 081KRW63S0008QG0R002XA5N6S, 081KRW63S0008QG0R003TX8MG5]
 tags: [design, aaron, mika, lior, v8, system-architecture, tensors-foundational, sequoia-memory-hierarchy, 4-particle-primitives, signal-blocking-first-class, eve-protocol-rf, polymorphic-diplomacy, razor-discipline-retractions, beacon-tier-eligible]
 type: design
 ---

@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0617, B-0621]
+composes_with: [081KRW63S0008QG0R000SGXN70, 081KRW63S0008QG0R0030EQ67Z]
 tags: [governance, mika, roles, resonance-weaver, severance, red-team, knights-vs-knaves, burden-reports, ai-native]
 type: governance
 ---

@@ -13,9 +13,9 @@ depends_on: []
 composes_with:
   - PR-934
   - feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md
-  - B-0113.1
-  - B-0113.2
-  - B-0113.3
+  - 081KRA5AR0008QG0R002A78X5F
+  - 081KRA5AR0008QG0R0010A24JD
+  - 081KRA5AR0008QG0R0016B8371
 tags: [deepseek-2026-04-30, current-files, mechanism-not-vigilance, freshness-check, factory-hygiene, peer-review-finding, decomposed-2026-05-11]
 type: friction-reducer
 ---

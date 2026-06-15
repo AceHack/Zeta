@@ -9,9 +9,9 @@ effort: M
 ask: B-0190 Step 3 decomposition
 created: 2026-05-08
 last_updated: 2026-05-09
-parent: B-0190
-depends_on: [B-0330]
-composes_with: [B-0190, B-0330, B-0332]
+parent: 081KQR4HQ0008QG0R001909FPT
+depends_on: [081KR2E4K0008QG0R002VM58S4]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KR2E4K0008QG0R002VM58S4, 081KR2E4K0008QG0R002FRQZN4]
 tags: [memory, ontology, classification, audit, trajectory-child]
 type: friction-reducer
 ---

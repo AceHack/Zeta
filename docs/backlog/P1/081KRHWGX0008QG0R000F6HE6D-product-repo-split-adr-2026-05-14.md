@@ -11,13 +11,13 @@ origin: B-0425 decomposition (Otto 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on:
-  - B-0464
-  - B-0465
-  - B-0466
-  - B-0467
+  - 081KRHWGX0008QG0R000BWAXNP
+  - 081KRHWGX0008QG0R002B2P0K0
+  - 081KRHWGX0008QG0R003XHCEXT
+  - 081KRHWGX0008QG0R00394BM1G
 composes_with:
-  - B-0425
-  - B-0424
+  - 081KRFA460008QG0R003JQ46J4
+  - 081KRFA460008QG0R001H98EXJ
   - docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md
   - memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md
 ---

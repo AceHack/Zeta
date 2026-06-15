@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R0018WXP1H
 priority: P2
 status: open
 title: Promoted candidate follow-up row filing + B-0108 research-absorb closure (atomic, child of B-0108)
-parent: B-0108
+parent: 081KQDTYV0008QG0R003N15ZW2
 tier: research-absorb
 effort: S
 ask: Riven 2026-05-11 (decomp of B-0108)
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0406, B-0407]
-composes_with: [B-0108, B-0406, B-0407]
+depends_on: [081KRA5AR0008QG0R003BSHKWV, 081KRA5AR0008QG0R000GZPV7N]
+composes_with: [081KQDTYV0008QG0R003N15ZW2, 081KRA5AR0008QG0R003BSHKWV, 081KRA5AR0008QG0R000GZPV7N]
 tags: [research-absorb, immune-system, follow-up]
 type: friction-reducer
 decomposition: atomic

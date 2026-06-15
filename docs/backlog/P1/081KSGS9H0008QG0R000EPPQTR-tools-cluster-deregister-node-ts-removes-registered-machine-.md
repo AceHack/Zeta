@@ -10,10 +10,10 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0794
-  - B-0812
-  - B-0813
-  - B-0815
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R0037H3W4T
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R000JVGZKG
 tags: [cluster-tooling, deregister, gitops, gh-auth, ts-rule-0-compliant, iter-5-4-sibling]
 ---
 

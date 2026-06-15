@@ -8,9 +8,9 @@ tier: product-feature
 effort: M
 created: 2026-05-10
 last_updated: 2026-05-13
-depends_on: [B-0400]
-composes_with: [B-0401, B-0400]
-children: [B-0431, B-0432, B-0433]
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KR7JY10008QG0R001VP6JWG, 081KR7JY10008QG0R000R503K2]
+children: [081KRFA460008QG0R003C00WKR, 081KRFA460008QG0R000GVCKHE, 081KRFA460008QG0R0028CR0N9]
 decomposition: decomposed
 tags: [shadow, autocomplete, cli, product, demo, service-titan, glass-halo, trust-then-verify]
 type: feature

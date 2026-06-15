@@ -10,7 +10,7 @@ ask: surfaced during slice-15 PR #896 review on 2026-04-30
 created: 2026-04-30
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0086]
+composes_with: [081KQ8P5D0008QG0R003BFZPRC]
 tags: [ci-codeql, peer-call, by-design-suppression, missing-mechanism]
 type: friction-reducer
 ---

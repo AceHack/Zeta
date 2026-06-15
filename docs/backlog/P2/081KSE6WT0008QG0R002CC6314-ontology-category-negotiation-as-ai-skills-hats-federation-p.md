@@ -10,14 +10,14 @@ domain: agentic-organization
 ferried_by: aaron
 owners: [aaron]
 composes_with:
-  - B-0247
-  - B-0287
-  - B-0288
-  - B-0731
-  - B-0727
-  - B-0726
-  - B-0638
-  - B-0703
+  - 081KQZVQW0008QG0R000ZHEN62
+  - 081KR2E4K0008QG0R0033WVCXE
+  - 081KR2E4K0008QG0R002YE3MMD
+  - 081KSE6WT0008QG0R0004HV6RR
+  - 081KSE6WT0008QG0R0006HKTXJ
+  - 081KSE6WT0008QG0R003C9KGQE
+  - 081KRW63S0008QG0R0030F8ZXA
+  - 081KS3X9Y0008QG0R00218150M
 related_substrate:
   - docs/trajectories/ace-package-manager-skill-crystallization-pipeline/
   - .claude/rules/non-coercion-invariant.md

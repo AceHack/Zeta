@@ -10,7 +10,7 @@ last_updated: 2026-05-09
 resolved: 2026-05-09
 resolved_by: "docs(B-0365.1): spaceship math one-pager — subscribe, vision monad, cache identity"
 depends_on: []
-parent: B-0365
+parent: 081KR50HA0008QG0R002R3NVGS
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

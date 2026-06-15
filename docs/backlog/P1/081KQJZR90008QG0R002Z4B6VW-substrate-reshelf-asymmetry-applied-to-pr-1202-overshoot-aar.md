@@ -8,7 +8,7 @@ created: 2026-05-02
 last_updated: 2026-05-10
 closed: 2026-05-10
 depends_on:
-  - B-0160
+  - 081KQJZR90008QG0R000FTJ1TC
 decomposition: atomic
 type: friction-reducer
 ---

@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
-composes_with: [B-0525]
+composes_with: [081KRHWGX0008QG0R0016T9408]
 tags: [manifesto, governance, shadow-lock, grok-extraction, ani]
 type: chore
 ---

@@ -6,7 +6,7 @@ status: open
 title: "OpenSpec catch-up - author Z-Set Algebra spec"
 created: 2026-05-28
 last_updated: 2026-05-28
-parent: B-0171
+parent: 081KQNJ500008QG0R001N94412
 depends_on: []
 classification: buildable-now
 decomposition: atomic

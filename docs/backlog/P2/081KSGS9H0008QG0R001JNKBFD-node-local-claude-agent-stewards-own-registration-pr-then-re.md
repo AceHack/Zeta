@@ -9,14 +9,14 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0847
+  - 081KSGS9H0008QG0R002T0XQ50
 composes_with:
-  - B-0796
-  - B-0628
+  - 081KSGS9H0008QG0R002F04ECB
+  - 081KRW63S0008QG0R003TX8MG5
   - B-0751
-  - B-0794
-  - B-0813
-  - B-0835
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R00120EEHM
 tags: [ai-on-cluster, claude-code, node-local-agent, registration-stewardship, k8s-health-reporting, operator-interactive-login, persistence-choice-architecture, attribution-end-to-end, nixos-systempackages, post-cluster-operational]
 ---
 

@@ -9,10 +9,10 @@ ask: Aaron 2026-05-29 ("we can likly start having redudantacy checks across sata
 created: 2026-05-29
 last_updated: 2026-05-29
 decomposition: leaf
-depends_on: [B-0936]
+depends_on: [081KSRGFP0008QG0R002F5KY8Y]
 composes_with:
-  - B-0334
-  - B-0332
+  - 081KR2E4K0008QG0R003MSVG42
+  - 081KR2E4K0008QG0R002FRQZN4
   - docs/research/2026-05-29-agent-memory-architecture-design-record-loading-taxonomy-hub-satellite-mirror-beacon-convergence-aaron-otto.md
   - .claude/rules/claude-code-loading-taxonomy.md
   - .claude/rules/dv2-data-split-discipline-activated.md

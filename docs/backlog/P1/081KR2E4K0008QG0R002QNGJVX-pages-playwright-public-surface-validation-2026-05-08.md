@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - Playwright public surface validation"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0236
-depends_on: [B-0232, B-0234, B-0284, B-0285]
+parent: 081KQX9B50008QG0R001XQV4M5
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0004N4HNK, 081KR2E4K0008QG0R0028VW6B3, 081KR2E4K0008QG0R0037MW8ET]
 classification: blocked-on-pages-content-and-seo-files
 decomposition: atomic
 owners: [qa, docs]

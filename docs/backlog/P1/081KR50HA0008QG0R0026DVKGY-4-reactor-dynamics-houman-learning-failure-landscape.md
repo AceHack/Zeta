@@ -10,7 +10,7 @@ last_updated: 2026-05-09
 resolved: 2026-05-09
 resolved_by: "docs(B-0365.4): reactor dynamics model — four-stage cycle + phase transition condition"
 depends_on: []
-parent: B-0365
+parent: 081KR50HA0008QG0R002R3NVGS
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

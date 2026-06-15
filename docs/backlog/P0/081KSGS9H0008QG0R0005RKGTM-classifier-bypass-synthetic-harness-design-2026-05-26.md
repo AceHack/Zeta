@@ -6,9 +6,9 @@ status: closed
 title: "Classifier-bypass synthetic-only harness design for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-27
-parent: B-0720
-depends_on: [B-0798]
-composes_with: [B-0720, B-0807]
+parent: 081KSBMG30008QG0R00201X7EJ
+depends_on: [081KSGS9H0008QG0R00383T79V]
+composes_with: [081KSBMG30008QG0R00201X7EJ, 081KSGS9H0008QG0R001K8P0FJ]
 tags: [safety-substrate, red-team, classifier, synthetic-fixtures, harness-design]
 type: design
 ---

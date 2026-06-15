@@ -8,8 +8,8 @@ tier: product-feature
 effort: XS
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0402
-depends_on: [B-0432]
+parent: 081KR7JY10008QG0R0008NGW95
+depends_on: [081KRFA460008QG0R000GVCKHE]
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

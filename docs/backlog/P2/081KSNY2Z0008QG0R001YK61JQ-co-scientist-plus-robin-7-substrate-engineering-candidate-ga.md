@@ -9,17 +9,17 @@ ask: operator 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0867
-  - B-0865
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSKBP80008QG0R003NM9XEC
 composes_with:
   - B-0867.5
-  - B-0867.20
-  - B-0867.21
-  - B-0865.17
-  - B-0883
-  - B-0891
-  - B-0703
-  - B-0866
+  - 081KSNY2Z0008QG0R003WFDCJ9
+  - 081KSNY2Z0008QG0R000S738W3
+  - 081KSNY2Z0008QG0R0002BEZMR
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0008PN7RQ
+  - 081KS3X9Y0008QG0R00218150M
+  - 081KSKBP80008QG0R003RFX32N
 tags: [co-scientist, robin, sakana, trueskill, infer-net, multi-agent-scientific-discovery, elo-tournament, closed-loop-iteration, n-parallel-consensus, generation-reflection-pairing, evolution-mash-refine, proximity-deduplication, falcon-auto-research-doc, substrate-engineering-candidate-gaps, aaron-2026-05-28]
 ---
 

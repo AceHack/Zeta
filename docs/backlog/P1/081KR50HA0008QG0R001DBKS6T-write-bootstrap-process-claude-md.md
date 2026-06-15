@@ -9,15 +9,15 @@ title: "Write bootstrap-process CLAUDE.md (<50 lines)"
 created: 2026-05-09
 last_updated: 2026-05-10
 depends_on:
-  - B-0349
-  - B-0350
-  - B-0351
-  - B-0352
+  - 081KR50HA0008QG0R0018996J2
+  - 081KR50HA0008QG0R001F2DBRV
+  - 081KR50HA0008QG0R001ZVPYK8
+  - 081KR50HA0008QG0R0033B5KVN
 decomposition: atomic
 classification: completed
 type: friction-reducer
 owners: [architect]
-parent: B-0329
+parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
 # B-0353 — Write bootstrap-process CLAUDE.md

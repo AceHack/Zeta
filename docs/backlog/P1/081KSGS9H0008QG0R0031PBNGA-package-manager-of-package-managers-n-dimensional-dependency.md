@@ -9,18 +9,18 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-28
 decomposition: decomposed
-children: [B-0824.1, B-0824.2]
+children: [081KSKBP80008QG0R002513Q0B, 081KSNY2Z0008QG0R001MXHC99]
 depends_on:
-  - B-0247
-  - B-0288
-  - B-0821
-  - B-0822
+  - 081KQZVQW0008QG0R000ZHEN62
+  - 081KR2E4K0008QG0R002YE3MMD
+  - 081KSGS9H0008QG0R00367G209
+  - 081KSGS9H0008QG0R0018ES3R4
 composes_with:
-  - B-0666
-  - B-0742
-  - B-0819
-  - B-0820
-  - B-0823
+  - 081KRW63S0008QG0R001SAHYKV
+  - 081KSE6WT0008QG0R000YYH3DY
+  - 081KSGS9H0008QG0R0005P83AP
+  - 081KSGS9H0008QG0R00352WW0V
+  - 081KSGS9H0008QG0R003SWZF9J
 tags: [ace-feature, meta-package-manager, n-dimensional-dependency-space, reverse-holographic-generators-not-reducers, rx-stream-joins, shadow-like-automata, self-similar-substrate, ai-rate-upstream-negotiation, continuous-negotiation, strategic-architecture, b0666-keystone-compose]
 ---
 

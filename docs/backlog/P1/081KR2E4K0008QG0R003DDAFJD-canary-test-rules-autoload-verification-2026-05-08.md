@@ -8,7 +8,7 @@ closed_by: "Canary PASSED — .claude/rules/ auto-loads at session start"
 title: "Verify .claude/rules/ auto-load — run canary test"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0158
+parent: 081KQGDBJ0008QG0R003YPS5GB
 depends_on: []
 classification: buildable-now
 decomposition: atomic

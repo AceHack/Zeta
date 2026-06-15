@@ -6,9 +6,9 @@ status: open
 title: "Structure recognizer — shape-indexed catalog that distinguishes structures without labels"
 created: 2026-05-07
 last_updated: 2026-05-08
-depends_on: [B-0083]
+depends_on: [081KQ8P5D0008QG0R001590WJ3]
 decomposition: decomposed
-children: [B-0276, B-0277]
+children: [081KR2E4K0008QG0R0031E5PR8, 081KR2E4K0008QG0R000Z7EM4Y]
 owners: [architect, formal-verification-expert, performance-engineer]
 type: feature
 ---

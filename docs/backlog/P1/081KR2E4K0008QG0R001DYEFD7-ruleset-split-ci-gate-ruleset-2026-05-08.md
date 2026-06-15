@@ -8,7 +8,7 @@ closed_by: "Ruleset 'CI Gate' (id 16134995) created; 7 status checks migrated fr
 title: "GitHub ruleset split — CI gate ruleset (required status checks)"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0155
+parent: 081KQGDBJ0008QG0R0028YTDQ2
 depends_on: []
 classification: buildable-now
 decomposition: atomic

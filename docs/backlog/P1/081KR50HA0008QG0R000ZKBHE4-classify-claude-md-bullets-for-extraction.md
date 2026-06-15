@@ -11,7 +11,7 @@ decomposition: atomic
 classification: buildable-now
 type: friction-reducer
 owners: [architect]
-parent: B-0329
+parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
 # B-0348 — Classify all CLAUDE.md bullets into extraction tiers

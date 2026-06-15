@@ -8,8 +8,8 @@ tier: architecture
 effort: M
 created: 2026-05-29
 last_updated: 2026-05-29
-depends_on: [B-0861]
-composes_with: [B-0861, B-0928, B-0926, B-0929, B-0867]
+depends_on: [081KSKBP80008QG0R000N9W9XH]
+composes_with: [081KSKBP80008QG0R000N9W9XH, 081KSRGFP0008QG0R001RY8S3N, 081KSRGFP0008QG0R00091PP56, 081KSRGFP0008QG0R003VAR9X2, 081KSKBP80008QG0R000B3Y19A]
 tags: [conv-feedback, convfeedback, authorization, implicit-grant, glass-halo, du-ux, choose-your-own-adventure, shadow-auth, nci, agora, architecture, aaron]
 type: architecture
 ---

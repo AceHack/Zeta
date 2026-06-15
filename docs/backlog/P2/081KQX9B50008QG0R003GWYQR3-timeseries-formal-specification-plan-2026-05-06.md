@@ -6,8 +6,8 @@ status: open
 title: "Timeseries native-ZSet research - formal specification plan"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0147
-depends_on: [B-0133, B-0134, B-0135, B-0137, B-0142, B-0225, B-0227]
+parent: 081KQGDBJ0008QG0R0004ACHJJ
+depends_on: [081KQGDBJ0008QG0R0035M1YRC, 081KQGDBJ0008QG0R0032X1MMC, 081KQGDBJ0008QG0R002X4AFA0, 081KQGDBJ0008QG0R003NDQTBM, 081KQGDBJ0008QG0R002WY918J, 081KQX9B50008QG0R003Z7Z9EG, 081KQX9B50008QG0R002RZXEQK]
 classification: blocked-on-formal-foundation-and-crdt-semantics
 type: feature
 ---

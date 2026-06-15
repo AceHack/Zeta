@@ -8,11 +8,11 @@ created: 2026-05-28
 last_updated: 2026-05-28
 ask: operator 2026-05-28
 composes_with:
-  - B-0914  # parent decomposition (7-candidate substrate-engineering gap)
-  - B-0428  # F# fork for AI safety (composes at language-runtime layer)
-  - B-0635  # wave-particle duality (Clifford multivector substrate)
-  - B-0666  # English-as-projection (I(D(x))=x identity)
-  - B-0644  # Limit-as-simulation (pre-collapse substrate)
+  - 081KSNY2Z0008QG0R001YK61JQ  # parent decomposition (7-candidate substrate-engineering gap)
+  - 081KRFA460008QG0R0018SN61J  # F# fork for AI safety (composes at language-runtime layer)
+  - 081KRW63S0008QG0R002KC5DSR  # wave-particle duality (Clifford multivector substrate)
+  - 081KRW63S0008QG0R001SAHYKV  # English-as-projection (I(D(x))=x identity)
+  - 081KRW63S0008QG0R002ZRNDJ8  # Limit-as-simulation (pre-collapse substrate)
 depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisite (file-level, not row-level): src/Core.TypeScript/workflow-engine/world-hierarchy.ts (OPEN_QUESTION_DBSP_CLIFFORD + operator-vote ordering) — see "Substrate prerequisite" prose below.
 upstream_references:
   - dotnet/runtime (System.Numerics, System.Numerics.Tensors, System.Runtime.Intrinsics)

@@ -8,8 +8,8 @@ tier: research
 effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0983, B-0726]
-composes_with: [B-0983, B-0726, B-0982, B-0976, B-0640, B-0639, B-0646, B-0623, B-0289]
+depends_on: [081KT2T2J0008QG0R003WYPBY5, 081KSE6WT0008QG0R003C9KGQE]
+composes_with: [081KT2T2J0008QG0R003WYPBY5, 081KSE6WT0008QG0R003C9KGQE, 081KT07NV0008QG0R0032MCYER, 081KT07NV0008QG0R003BE6MJ2, 081KRW63S0008QG0R002XA5N6S, 081KRW63S0008QG0R000ZQ9WDH, 081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R000QJR08H, 081KR2E4K0008QG0R001SWEPNV]
 tags: [research, aaron, decentralized-identity, did, hd-derivation, seed-phrase, bip39, bip32, bip44, key-derivation, purpose-separation, braid, knot, topological-invariant, golden-vectors, treaty, reticulum, mesh, no-central-control, meno, dont-collapse, search-first-gated]
 type: research
 ---

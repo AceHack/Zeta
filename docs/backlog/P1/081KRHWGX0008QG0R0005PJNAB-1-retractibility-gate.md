@@ -1,7 +1,7 @@
 ---
 id: B-0058.1
 zetaid: 081KRHWGX0008QG0R0005PJNAB
-parent: B-0058
+parent: 081KQ3HBZ0008QG0R002S674CG
 priority: P1
 status: open
 title: AI ethics + safety research track — retractibility-and-log check

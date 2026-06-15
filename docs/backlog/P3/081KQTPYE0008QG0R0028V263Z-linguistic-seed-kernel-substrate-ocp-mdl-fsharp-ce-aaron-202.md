@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim *"so linquist seed open for extension closed for 
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0152, B-0196, B-0193, B-0202, B-0203, B-0205]
+composes_with: [081KQGDBJ0008QG0R00280ZEV2, 081KQTPYE0008QG0R001W237MZ, 081KQTPYE0008QG0R00392KABJ, 081KQTPYE0008QG0R002Y7X5KH, 081KQTPYE0008QG0R003H4QRMK, 081KQTPYE0008QG0R000ZJ2GW8]
 tags: [linguistic-seed, kernel-substrate, ocp, mercer-closed, carved-sentences, memes, dawkins, mdl-two-part-code, formal-verification, lean, z3, tla, f-sharp, computational-expression, kernel-builder, self-editing, value-neutrality, alignment-discipline, mom-skill-apprenticeship, bootstrap-razor]
 type: feature
 ---

@@ -8,8 +8,8 @@ closed_by: "tools/backlog/pr-publication-executor.ts — executor with push/crea
 title: "Autonomous backlog pickup - PR publication and auto-merge"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0249
-depends_on: [B-0279]
+parent: 081KQZVQW0008QG0R000C35RNY
+depends_on: [081KR2E4K0008QG0R000YTJS3Q]
 classification: buildable-now
 decomposition: atomic
 owners: [architect, codex]

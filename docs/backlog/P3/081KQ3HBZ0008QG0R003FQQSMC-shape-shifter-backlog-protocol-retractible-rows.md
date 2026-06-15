@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"shape shifer backlog"*. The backlog IS shape-shifter
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0038, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md]
+composes_with: [081KQ3HBZ0008QG0R0006NJP4K, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md]
 tags: [shape-shifter, backlog-protocol, retraction-native, chronology-preservation, witnessable-evolution]
 type: friction-reducer
 ---

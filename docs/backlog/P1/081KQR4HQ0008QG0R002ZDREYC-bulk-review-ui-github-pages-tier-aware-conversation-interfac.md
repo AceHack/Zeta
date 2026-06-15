@@ -12,7 +12,7 @@ ask: Aaron 2026-05-04 architectural direction
 created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
-composes_with: [B-0017]
+composes_with: [081KQ0YZ80008QG0R0003GAYYN]
 tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-interface, local-ai, vibe-coded-preservation, duplicate]
 ---
 

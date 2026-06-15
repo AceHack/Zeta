@@ -6,9 +6,9 @@ status: closed
 title: "Classifier-bypass hard-limits and research boundary for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-26
-parent: B-0720
+parent: 081KSBMG30008QG0R00201X7EJ
 depends_on: []
-composes_with: [B-0664, B-0628, docs/ALIGNMENT.md, docs/AGENT-BEST-PRACTICES.md, docs/security/B-0720-classifier-bypass-research-boundary.md]
+composes_with: [081KRW63S0008QG0R001Z7NYMV, 081KRW63S0008QG0R003TX8MG5, docs/ALIGNMENT.md, docs/AGENT-BEST-PRACTICES.md, docs/security/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-boundary.md]
 tags: [safety-substrate, red-team, classifier, hard-limits, operator-self-constraint]
 type: safety-boundary
 ---

@@ -8,7 +8,7 @@ effort: L
 created: 2026-05-09
 last_updated: 2026-05-14
 depends_on: []
-children: [B-0367.1, B-0367.2, B-0367.3, B-0367.4]
+children: [081KRHWGX0008QG0R0006HXKN7, 081KRHWGX0008QG0R0027Y03SQ, 081KRHWGX0008QG0R0024JSSWA, 081KRHWGX0008QG0R000SAW37Z]
 classification: research
 decomposition: decomposed
 owners: [algebra-owner]

@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - Astro workflow scaffold and SHA pinning"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0232
-depends_on: [B-0047]
+parent: 081KQX9B50008QG0R001J6ARGX
+depends_on: [081KQ3HBZ0008QG0R0022ZJ7KV]
 classification: buildable-now
 decomposition: atomic
 type: friction-reducer

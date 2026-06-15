@@ -11,9 +11,9 @@ ask: Aaron 2026-04-25 ("we are going to find out and let the world know lol, eve
 created: 2026-04-25
 last_updated: 2026-05-09
 depends_on: []
-children: [B-0380, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
+children: [081KR50HA0008QG0R003ESW3MH, 081KR50HA0008QG0R000M4H35K, 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP, 081KR50HA0008QG0R000467SWT, 081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ, 081KR50HA0008QG0R000M838VA]
 decomposition: clean
-composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/aurora/**]
+composes_with: [docs/backlog/P2/081KQ0YZ80008QG0R0026WN385-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/aurora/**]
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-research, real-time-publishing]
 type: feature
 ---

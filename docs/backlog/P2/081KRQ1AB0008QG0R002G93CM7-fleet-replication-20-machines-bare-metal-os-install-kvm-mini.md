@@ -9,7 +9,7 @@ effort: XL
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0570, B-0571, B-0580, B-0582, B-0583]
+composes_with: [081KRQ1AB0008QG0R002422Z9Q, 081KRQ1AB0008QG0R0038VQJZ0, 081KRQ1AB0008QG0R000522MPJ, 081KRQ1AB0008QG0R002469KJG, 081KRQ1AB0008QG0R003DCGHJJ]
 tags: [fleet, replication, bare-metal, kvm, hardware, infrastructure, otto-multi-machine, mini-pc, oculink, ai-cpu]
 type: feature
 ---

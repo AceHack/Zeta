@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0427, B-0572]
+composes_with: [081KRFA460008QG0R000VKJF0H, 081KRQ1AB0008QG0R000GZEMCR]
 tags: [github, rulesets, enterprise, governance, policy-as-code, dv2-smell]
 type: feature
 ---

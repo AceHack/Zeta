@@ -10,7 +10,7 @@ ask: maintainer Aaron 2026-04-25
 created: 2026-04-25
 last_updated: 2026-05-09
 depends_on: []
-composes_with: [B-0375, B-0376, B-0377, B-0378, B-0379]
+composes_with: [081KR50HA0008QG0R003PAVRT8, 081KR50HA0008QG0R0038HWCDT, 081KR50HA0008QG0R003C39GP0, 081KR50HA0008QG0R002HMCS5Y, 081KR50HA0008QG0R003DJ093T]
 tags: [governance, directory-ontology, aurora, courier-ferry, cross-ai-imports, history-surface, BP-17, BP-18]
 type: friction-reducer
 ---

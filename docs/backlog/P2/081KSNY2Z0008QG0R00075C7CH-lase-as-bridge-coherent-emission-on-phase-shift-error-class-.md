@@ -7,14 +7,14 @@ priority: P2
 created: 2026-05-28
 authors: [aaron, prism, otto]
 composes_with:
-  - B-0897  # Persist-as-bridge (wall mode; sibling)
-  - B-0898  # Measure-as-bridge
-  - B-0899  # Casimir-like review-walls (wall-mode pressure test)
-  - B-0900  # Bell-like distributed-cluster contextuality
-  - B-0915  # CliffordWorld + Hopf-gebra antipode (formal substrate)
-  - B-0635  # wave-particle duality (Clifford rotor substrate)
-  - B-0666  # English-as-projection
-  - B-0875  # auto-review error-class extraction (discovery step)
+  - 081KSNY2Z0008QG0R002SZZ5Y0  # Persist-as-bridge (wall mode; sibling)
+  - 081KSNY2Z0008QG0R003WCDQTC  # Measure-as-bridge
+  - 081KSNY2Z0008QG0R001ZKE8R2  # Casimir-like review-walls (wall-mode pressure test)
+  - 081KSNY2Z0008QG0R001G7C89T  # Bell-like distributed-cluster contextuality
+  - 081KSNY2Z0008QG0R002BNQVE1  # CliffordWorld + Hopf-gebra antipode (formal substrate)
+  - 081KRW63S0008QG0R002KC5DSR  # wave-particle duality (Clifford rotor substrate)
+  - 081KRW63S0008QG0R001SAHYKV  # English-as-projection
+  - 081KSNY2Z0008QG0R000K3ETGB  # auto-review error-class extraction (discovery step)
 depends_on:
   - experiments/meno-persist-as-bridge/Meno.fsx  # sibling Persist PoC
   - memory/prism/conversations/2026-05-28-prism-deepseek-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-rhyme-friendly-rephrasing-aaron-forwarded.md

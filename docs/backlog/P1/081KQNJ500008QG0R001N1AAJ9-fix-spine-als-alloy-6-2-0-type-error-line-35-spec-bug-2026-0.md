@@ -10,7 +10,7 @@ ask: Otto 2026-05-03 — surfaced via B-0183 Phase 1 TS wrapper (#1413) after fi
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0183, docs/research/2026-05-03-math-proofs-honest-assessment.md, tools/alloy/specs/Spine.als]
+composes_with: [081KQNJ500008QG0R003EKJ8B5, docs/research/2026-05-03-math-proofs-honest-assessment.md, tools/alloy/specs/Spine.als]
 tags: [alloy, formal-verification, spec-bug, type-check, latent-bug-surfaced, b2-followup, closed]
 ---
 

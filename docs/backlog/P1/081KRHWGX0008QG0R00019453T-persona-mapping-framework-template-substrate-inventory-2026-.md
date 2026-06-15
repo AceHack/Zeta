@@ -10,18 +10,18 @@ type: research
 origin: B-0429 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0429
+parent: 081KRFA460008QG0R002M05EY1
 depends_on: []
 composes_with:
-  - B-0429
-  - B-0486
-  - B-0487
-  - B-0488
-  - B-0489
-  - B-0490
-  - B-0491
-  - B-0492
-  - B-0493
+  - 081KRFA460008QG0R002M05EY1
+  - 081KRHWGX0008QG0R00273520P
+  - 081KRHWGX0008QG0R003WMBR3W
+  - 081KRHWGX0008QG0R001HDK688
+  - 081KRHWGX0008QG0R002N8XX6D
+  - 081KRHWGX0008QG0R003DJ092R
+  - 081KRHWGX0008QG0R00211YQJ6
+  - 081KRHWGX0008QG0R000WGP5AQ
+  - 081KRHWGX0008QG0R002XVHSG5
   - memory/user_aaron_kenji_naming_practice_this_factory_claude_instance_2026_04_22.md
   - memory/user_sister_elizabeth.md
 ---

@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"backlog meta congnition"* names meta-cognition (thin
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-children: [B-0037.1, B-0037.2, B-0037.3, B-0037.4]
+children: [081KR7JY10008QG0R0038AFS7T, 081KR7JY10008QG0R002D6VNNJ, 081KR7JY10008QG0R000XPVJ0W, 081KR7JY10008QG0R001J11M38]
 composes_with: [feedback_capture_everything_including_failure_aspirational_honesty.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_verify_target_exists_before_deferring.md, feedback_future_self_not_bound_by_past_decisions.md, feedback_never_idle_speculative_work_over_waiting.md, feedback_decohere_star_kernel_vocabulary_entry_dont_decohere_star_factory_rule_2026_04_21.md, feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, docs/AGENT-BEST-PRACTICES.md, docs/ALIGNMENT.md, docs/CONFLICT-RESOLUTION.md]
 tags: [meta-cognition, alignment-trajectory, factory-discipline, measurables, witnessable-evolution, retractible-ceiling]
 type: friction-reducer

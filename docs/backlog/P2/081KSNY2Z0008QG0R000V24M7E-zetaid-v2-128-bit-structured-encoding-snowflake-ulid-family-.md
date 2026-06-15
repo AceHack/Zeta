@@ -11,12 +11,12 @@ ask: kestrel via aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0867
+  - 081KSKBP80008QG0R000B3Y19A
 composes_with:
-  - B-0867
-  - B-0858
-  - B-0869
-  - B-0871-prior-zetaid-v1-review
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSKBP80008QG0R001KK9WV6
+  - 081KSNY2Z0008QG0R000HENSVM
+  - 081KSNY2Z0008QG0R003R0Z7D2-prior-zetaid-v1-review
 tags:
   - zetaid-v2
   - 128-bit-structured-encoding

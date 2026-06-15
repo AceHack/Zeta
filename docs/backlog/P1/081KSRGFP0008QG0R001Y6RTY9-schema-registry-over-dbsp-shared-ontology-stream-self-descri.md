@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: []
-composes_with: [B-0781, B-0784, B-0428, B-0864, B-0929, B-0640, B-0623]
+composes_with: [081KSE6WT0008QG0R001H3DA90, 081KSE6WT0008QG0R0018WZ7TH, 081KRFA460008QG0R0018SN61J, 081KSKBP80008QG0R0039RW25E, 081KSRGFP0008QG0R003VAR9X2, 081KRW63S0008QG0R002XA5N6S, 081KRW63S0008QG0R000QJR08H]
 tags: [dbsp, schema-registry, ontology, shared-ontology, self-describing, retraction-native, lightlike, rx, reaqtor, bonsai, agora, architecture, aaron]
 type: architecture
 ---

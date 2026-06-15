@@ -9,8 +9,8 @@ effort: M
 ask: Otto self-derived 2026-05-03 from v0.6 retroactive eval (PR #1329) finding 7 drift items mostly from a recurring false-positive class; subsequent 0603Z drift exploration confirmed the class
 created: 2026-05-03
 last_updated: 2026-05-03
-depends_on: [B-0170]
-composes_with: [B-0175]
+depends_on: [081KQNJ500008QG0R003SCWBDV]
+composes_with: [081KQNJ500008QG0R00055XHBG]
 tags: [substrate-claim-checker, false-positive, context-aware, hypothetical, contrastive, drift, severity-tier, tooling]
 type: friction-reducer
 ---

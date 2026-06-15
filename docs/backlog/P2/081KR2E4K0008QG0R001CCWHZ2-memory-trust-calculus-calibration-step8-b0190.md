@@ -9,9 +9,9 @@ effort: M
 ask: B-0190 Step 8 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0190
-depends_on: [B-0332]
-composes_with: [B-0190, B-0332]
+parent: 081KQR4HQ0008QG0R001909FPT
+depends_on: [081KR2E4K0008QG0R002FRQZN4]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KR2E4K0008QG0R002FRQZN4]
 tags: [memory, trust-calculus, measurement, research, trajectory-child]
 type: research
 ---

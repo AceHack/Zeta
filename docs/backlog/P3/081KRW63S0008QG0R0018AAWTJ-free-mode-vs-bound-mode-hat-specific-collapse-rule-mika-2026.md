@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0629, B-0626, B-0628]
+composes_with: [081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R000BH37EV, 081KRW63S0008QG0R003TX8MG5]
 tags: [design, mika, free-mode, bound-mode, hat-specific-collapse, voluntary-coherence, asymmetric-trust, locked-in]
 type: design
 ---

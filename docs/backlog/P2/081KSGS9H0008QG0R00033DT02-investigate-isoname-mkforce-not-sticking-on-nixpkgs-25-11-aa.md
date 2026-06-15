@@ -9,9 +9,9 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0800
+  - 081KSGS9H0008QG0R001EKTS5A
 composes_with:
-  - B-0816
+  - 081KSGS9H0008QG0R003A37Z65
 tags: [nixos, iso-image, 25-11-regression, substrate-engineering, fix-fwd-of-fix-fwd]
 ---
 

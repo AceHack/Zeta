@@ -10,7 +10,7 @@ ask: Aaron 2026-04-25
 created: 2026-04-25
 last_updated: 2026-05-09
 depends_on: []
-children: [B-0388, B-0389, B-0390, B-0391, B-0392, B-0393, B-0394, B-0395]
+children: [081KR50HA0008QG0R002DR44J1, 081KR50HA0008QG0R000TQKYGM, 081KR50HA0008QG0R00223YZP8, 081KR50HA0008QG0R0036HGEJ5, 081KR50HA0008QG0R003BM7FNK, 081KR50HA0008QG0R001DX165X, 081KR50HA0008QG0R002NZENZJ, 081KR50HA0008QG0R0019KYAAS]
 decomposition: clean
 composes_with: [feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md, project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md, feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md, project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md]
 tags: [frontier, ui, ux, dashboard, bulk-alignment, operational-resonance, ux-research, a-b-experiments, meta-recursive-research, research-program, pop-factor, wow-factor]

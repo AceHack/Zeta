@@ -8,15 +8,15 @@ type: planning
 origin: B-0429 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0429
+parent: 081KRFA460008QG0R002M05EY1
 depends_on:
-  - B-0485
+  - 081KRHWGX0008QG0R00019453T
 composes_with:
-  - B-0429
-  - B-0485
-  - B-0492
-  - B-0493
-  - docs/backlog/P3/B-0043-universal-company-government-information-substrate.md
+  - 081KRFA460008QG0R002M05EY1
+  - 081KRHWGX0008QG0R00019453T
+  - 081KRHWGX0008QG0R000WGP5AQ
+  - 081KRHWGX0008QG0R002XVHSG5
+  - docs/backlog/P3/081KQ3HBZ0008QG0R000Q4Y00F-universal-company-government-information-substrate.md
 ---
 
 # B-0491 — Dawn + Universal business templates persona map

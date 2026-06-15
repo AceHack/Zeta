@@ -10,9 +10,9 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with:
-  - B-0852.3a
-  - B-0855
-  - B-0857
+  - 081KSKBP80008QG0R003AX2A69.3a
+  - 081KSKBP80008QG0R000GPC0TB
+  - 081KSKBP80008QG0R002J03WGA
 tags: [agent-heartbeat, direct-to-main, no-pr, zetaid, 128-bit-id, externalized-counter, holding-failure-mode-mechanization, branch-protection-exception]
 ---
 

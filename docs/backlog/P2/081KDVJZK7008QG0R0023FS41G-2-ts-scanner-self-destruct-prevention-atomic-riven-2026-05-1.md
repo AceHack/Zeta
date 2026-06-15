@@ -7,10 +7,10 @@ title: TS scanner self-destruct prevention (allowlist + bypass comment)
 tier: factory-hygiene
 effort: S
 depends_on:
-  - B-0093.1
+  - 081KDVJZK7008QG0R001379Y14
 composes_with:
-  - B-0093
-  - B-0092
+  - 081KQ8P5D0008QG0R003MY8246
+  - 081KQ8P5D0008QG0R003ZF64GG
 tags: [riven-2026-05-11, ts-prefer, scanner, compliance, self-destruct]
 ---
 # B-0093.2 — Atomic child: TS scanner self-destruct prevention

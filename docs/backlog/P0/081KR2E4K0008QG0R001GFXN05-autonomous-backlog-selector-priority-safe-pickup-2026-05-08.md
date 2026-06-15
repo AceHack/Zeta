@@ -8,7 +8,7 @@ closed_by: "tools/backlog/autonomous-pickup.ts priority/age selector, open-child
 title: "Autonomous backlog pickup - priority selector"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0249
+parent: 081KQZVQW0008QG0R000C35RNY
 depends_on: []
 classification: buildable-now
 decomposition: atomic

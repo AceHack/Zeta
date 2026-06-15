@@ -9,9 +9,9 @@ effort: L
 ask: B-0193 decomposition — AC 4 (fresh-context Otto instances, 23-hour window)
 created: 2026-05-08
 last_updated: 2026-05-29
-parent: B-0193
-depends_on: [B-0342, B-0343]
-composes_with: [B-0193, B-0345]
+parent: 081KQTPYE0008QG0R00392KABJ
+depends_on: [081KR2E4K0008QG0R00322TP58, 081KR2E4K0008QG0R002JW751Y]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KR2E4K0008QG0R003KQKYTJ]
 classification: human-gated-date-required
 tags: [bootstrap-razor, experiment, recreation-test, human-gated, trajectory-child]
 type: friction-reducer

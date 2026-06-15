@@ -7,10 +7,10 @@ title: "Remote-only background agent test matrix — prove claim coordination wi
 created: 2026-05-06
 last_updated: 2026-05-06
 depends_on:
-  - B-0016
-  - B-0068
-  - B-0208
-  - B-0202
+  - 081KQ0YZ80008QG0R003A0MCHP
+  - 081KQ8P5D0008QG0R002E1G72J
+  - 081KQX9B50008QG0R0027EN1ZP
+  - 081KQTPYE0008QG0R002Y7X5KH
 type: friction-reducer
 ---
 

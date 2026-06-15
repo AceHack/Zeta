@@ -6,8 +6,8 @@ status: open
 title: "Pages discoverability - SEO metadata, JSON-LD, and social previews"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0234
-depends_on: [B-0233]
+parent: 081KQX9B50008QG0R0004N4HNK
+depends_on: [081KQX9B50008QG0R0001XDTDQ]
 classification: blocked-on-pages-content
 decomposition: atomic
 owners: [architect, docs]

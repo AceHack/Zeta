@@ -8,15 +8,15 @@ type: docs
 origin: B-0448 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0448
+parent: 081KRFA460008QG0R000CYBGKW
 depends_on:
-  - B-0507
-  - B-0511
+  - 081KRHWGX0008QG0R000E8BHQ9
+  - 081KRHWGX0008QG0R0013DSSZZ
 composes_with:
-  - B-0448
-  - B-0507
-  - B-0511
-  - B-0513
+  - 081KRFA460008QG0R000CYBGKW
+  - 081KRHWGX0008QG0R000E8BHQ9
+  - 081KRHWGX0008QG0R0013DSSZZ
+  - 081KRHWGX0008QG0R003TCDFZ5
 tags: [routines, cloud-routines, docs, readme, catch-43]
 ---
 

@@ -7,8 +7,8 @@ title: "Video-game priority tier — Super Mario + Genshin Impact"
 effort: S
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0054.2]
-parent: B-0054
+depends_on: [081KR7JY10008QG0R0018G7ZQV]
+parent: 081KQ3HBZ0008QG0R003V6B2ME
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

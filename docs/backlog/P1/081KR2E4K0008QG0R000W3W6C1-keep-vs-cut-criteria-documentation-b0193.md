@@ -9,9 +9,9 @@ effort: S
 ask: B-0193 decomposition — AC 3 (keep-vs-cut criteria documented before experiment)
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0193
+parent: 081KQTPYE0008QG0R00392KABJ
 depends_on: []
-composes_with: [B-0193, B-0340, B-0341, B-0342]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KR2E4K0008QG0R001BRHAPK, 081KR2E4K0008QG0R002PHZR58, 081KR2E4K0008QG0R00322TP58]
 tags: [bootstrap-razor, keep-vs-cut, criteria, taxonomy, foundation, trajectory-child]
 type: friction-reducer
 ---

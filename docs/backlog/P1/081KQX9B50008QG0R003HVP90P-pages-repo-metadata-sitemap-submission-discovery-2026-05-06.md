@@ -6,11 +6,11 @@ status: open
 title: "GitHub Pages discoverability - repo metadata, sitemap submission, and discovery signals"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0154
-depends_on: [B-0232, B-0234]
+parent: 081KQGDBJ0008QG0R002NV04N9
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0004N4HNK]
 classification: blocked-on-live-pages-and-sitemap
 decomposition: decomposed
-children: [B-0295, B-0296]
+children: [081KR2E4K0008QG0R0038JGMJ8, 081KR2E4K0008QG0R000GXGR6H]
 owners: [architect, docs]
 type: friction-reducer
 ---

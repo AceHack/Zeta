@@ -10,13 +10,13 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
   - B-0852.1
-  - B-0852.2a
-  - B-0852.2b
+  - 081KSKBP80008QG0R003AX2A69.2a
+  - 081KSKBP80008QG0R003AX2A69.2b
   - B-0852.5
   - B-0852.10
 composes_with:
-  - B-0852.4
-  - B-0857
+  - 081KSKBP80008QG0R002XBRGN8
+  - 081KSKBP80008QG0R002J03WGA
 tags: [b-0852-sub-row, cred-persistence, zeta-install-sh, step-6-77, picker, interactive-setup, zflash-cli-override, device-flow-at-setup-time, token-at-zflash-time]
 ---
 

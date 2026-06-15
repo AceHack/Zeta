@@ -6,7 +6,7 @@ status: open
 title: "B-0029.6 — Survey: IP and research-output licensing pathways (academic grants, training-data licensing, course/book revenue)"
 created: 2026-05-09
 last_updated: 2026-05-09
-parent: B-0029
+parent: 081KQ3HBZ0008QG0R000JRZAMM
 depends_on: []
 classification: research-now
 type: research

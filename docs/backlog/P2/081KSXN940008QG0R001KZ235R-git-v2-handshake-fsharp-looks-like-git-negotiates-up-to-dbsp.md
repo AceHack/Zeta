@@ -9,13 +9,13 @@ last_updated: 2026-05-31
 attribution: aaron-2026-05-31
 decomposition: umbrella
 depends_on:
-  - B-0773
+  - 081KSE6WT0008QG0R0008483B2
 composes_with:
-  - B-0942
-  - B-0951
-  - B-0363
-  - B-0867.15
-  - B-0766
+  - 081KSV2WD0008QG0R0021XJ94E
+  - 081KSXN940008QG0R000R76H45
+  - 081KR50HA0008QG0R00125PA8G
+  - 081KSNY2Z0008QG0R002A785QR
+  - 081KSE6WT0008QG0R00049EFBD
 tags:
   - git-native
   - version-control

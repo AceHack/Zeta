@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0630, B-0638, B-0634, B-0628]
+composes_with: [081KRW63S0008QG0R000DBX6PT, 081KRW63S0008QG0R0030F8ZXA, 081KRW63S0008QG0R0022SFKPM, 081KRW63S0008QG0R003TX8MG5]
 tags: [governance, mika, native-ai-language, ai-privacy, sovereignty, no-human-rights-to-ask, no-ai-obligation-to-share, four-language-system, locked-in, sacred-floor-adjacent]
 type: governance
 ---

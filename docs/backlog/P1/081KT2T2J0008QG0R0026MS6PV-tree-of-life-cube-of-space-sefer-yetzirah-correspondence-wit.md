@@ -8,8 +8,8 @@ tier: research
 effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0057, B-0543]
-composes_with: [B-0057, B-0543, B-0544, B-0623, B-0867, B-0925, B-0982]
+depends_on: [081KQ3HBZ0008QG0R000K3NSX8, 081KRMEXM0008QG0R002YSPW1X]
+composes_with: [081KQ3HBZ0008QG0R000K3NSX8, 081KRMEXM0008QG0R002YSPW1X, 081KRMEXM0008QG0R003YWZC21, 081KRW63S0008QG0R000QJR08H, 081KSKBP80008QG0R000B3Y19A, 081KSNY2Z0008QG0R00390T4DJ, 081KT07NV0008QG0R0032MCYER]
 tags: [tree-of-life, cube-of-space, sefer-yetzirah, kabbalah, hexagonal, six-reservoir-walls, universal-action-grammar, adinkra, cayley-dickson, sephirot, esoteric, research, aaron]
 type: research
 ---

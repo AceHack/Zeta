@@ -8,7 +8,7 @@ closed_by: "Spec landed at docs/research/2026-05-08-ace-dlc-package-format-spec.
 title: "Ace DLC — package format specification"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0247
+parent: 081KQZVQW0008QG0R000ZHEN62
 depends_on: []
 classification: buildable-now
 decomposition: atomic

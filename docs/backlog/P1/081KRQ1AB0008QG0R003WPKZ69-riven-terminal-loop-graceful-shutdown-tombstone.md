@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
 renumbered_from: B-0551
-depends_on: [B-0549]
+depends_on: [081KRMEXM0008QG0R00037RGNY]
 tags: [riven, cursor, terminal, background-service, graceful-shutdown]
 type: feature
 ---

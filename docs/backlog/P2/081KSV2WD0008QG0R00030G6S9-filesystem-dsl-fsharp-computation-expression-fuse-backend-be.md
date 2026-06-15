@@ -11,10 +11,10 @@ last_updated: 2026-05-30
 decomposition: umbrella
 composes_with:
   - src/Core/Hierarchy.fs
-  - docs/backlog/P3/B-0016-research-just-bash-vercel-labs-and-lineage-symbiotic-deps-discipline-own-fuse-fs-eventually.md
-  - docs/backlog/P2/B-0945-declarative-microkernel-substrate-in-house-trust-gradient-compression-engine-sequoia-memory-model-better-than-docker-aaron-2026-05-30.md
-  - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
-  - docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
+  - docs/backlog/P3/081KQ0YZ80008QG0R003A0MCHP-research-just-bash-vercel-labs-and-lineage-symbiotic-deps-discipline-own-fuse-fs-eventually.md
+  - docs/backlog/P2/081KSV2WD0008QG0R000WNY74Q-declarative-microkernel-substrate-in-house-trust-gradient-compression-engine-sequoia-memory-model-better-than-docker-aaron-2026-05-30.md
+  - docs/backlog/P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
+  - docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
   - .claude/skills/file-system-persistence-expert/SKILL.md
 tags: [filesystem, dsl, computation-expression, fsharp, fuse, closure-table, dst, deterministic-simulation, crdt, summonable-bft, microkernel, federation, substrate-deployment]
 type: feature

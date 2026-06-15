@@ -8,8 +8,8 @@ tier: design
 effort: S
 created: 2026-05-18
 last_updated: 2026-06-03
-depends_on: [B-0629, B-0644]
-composes_with: [B-0629, B-0644, B-0659, B-0643, B-0654, B-0631]
+depends_on: [081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R002ZRNDJ8]
+composes_with: [081KRW63S0008QG0R0015WHHG1, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R001WKJN53, 081KRW63S0008QG0R002ZRYY4F, 081KRW63S0008QG0R002WT5VTQ, 081KRW63S0008QG0R0020YP84K]
 tags: [design, aaron, mika, limit-black-by-default, deny-all-by-default, security-first, fail-closed, architectural-posture, locked-in]
 type: design
 ---

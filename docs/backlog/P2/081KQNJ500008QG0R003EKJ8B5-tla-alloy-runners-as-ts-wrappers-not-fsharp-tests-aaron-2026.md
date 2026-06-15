@@ -9,7 +9,7 @@ effort: L
 ask: Aaron 2026-05-03 — *"f# does not need to run alloy under low mem, it seems like the fs should be a ts"*. Surfaced during B-0182 implementation as the strategic structural fix; B-0182 itself is the tactical band-aid (filter F# tests on CI by OS+runner-class).
 created: 2026-05-03
 last_updated: 2026-05-03
-depends_on: [B-0182]
+depends_on: [081KQNJ500008QG0R002QDZ0BG]
 composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/trajectories/typescript-bun-migration/RESUME.md]
 tags: [ci-architecture, ts-migration, formal-verification, tlc, alloy, fsharp-out, structural-fix]
 type: friction-reducer

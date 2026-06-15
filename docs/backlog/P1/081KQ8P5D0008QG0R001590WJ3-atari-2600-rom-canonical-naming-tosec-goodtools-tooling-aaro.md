@@ -10,7 +10,7 @@ ask: maintainer Aaron 2026-04-28 (autonomous-loop ROM-drop + canonical-naming re
 created: 2026-04-28
 last_updated: 2026-05-29
 decomposition: decomposed
-children: [B-0272, B-0273, B-0083.1]
+children: [081KR2E4K0008QG0R001QZDAMQ, 081KR2E4K0008QG0R001JC6S3N, 081KSRGFP0008QG0R003ZH6DN3]
 depends_on: []
 tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0, scheduled-after-0-0-0]
 type: friction-reducer

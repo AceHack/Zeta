@@ -9,8 +9,8 @@ effort: M
 ask: Aaron 2026-05-03 verbatim *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
 created: 2026-05-03
 last_updated: 2026-05-03
-depends_on: [B-0171, B-0173]
-composes_with: [B-0169, B-0170]
+depends_on: [081KQNJ500008QG0R001N94412, 081KQNJ500008QG0R003ZC6PK8]
+composes_with: [081KQJZR90008QG0R002D6XYHB, 081KQNJ500008QG0R003SCWBDV]
 tags: [skill-domain, plugin, packaging, claude-code, foundation, p2-promotion-trigger-pending]
 type: friction-reducer
 ---

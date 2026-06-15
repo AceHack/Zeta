@@ -7,7 +7,7 @@ title: "refresh-worldview scaffold - open-PR list + recent-merges query"
 created: 2026-05-08
 last_updated: 2026-05-08
 closed_by: "tools/refresh-github-worldview/refresh.ts"
-parent: B-0159
+parent: 081KQGDBJ0008QG0R003H0G5YQ
 depends_on: []
 classification: buildable-now
 decomposition: atomic

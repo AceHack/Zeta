@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-0924, B-0925, B-0989, B-0988, B-0986, B-0954, B-0703, B-0726, B-0984, B-0772, B-0643.1, B-0883]
+composes_with: [081KSNY2Z0008QG0R001HA43GG, 081KSNY2Z0008QG0R00390T4DJ, 081KT2T2J0008QG0R002ZG89QA, 081KT2T2J0008QG0R001GE4M6A, 081KT2T2J0008QG0R002Z46D8Q, 081KSXN940008QG0R00171YAZW, 081KS3X9Y0008QG0R00218150M, 081KSE6WT0008QG0R003C9KGQE, 081KT2T2J0008QG0R003DMEKFH, 081KSE6WT0008QG0R003WMG4XV, 081KT2T2J0008QG0R001C2K4F2, 081KSNY2Z0008QG0R002JKH50A]
 tags: [dev-experience, local-cluster, multi-node-redundant, simulation, dst, billing, ui, one-laptop, itron, mesh-performance-manager, sql-server-dev-edition, appliance, distributed-load, active-redundancy, smart-meter-mesh, wireless-mesh, low-bandwidth, 128-bit-id, nation-state-resistant, reticulum, concept-not-code, full-ai-cluster, emulator-as-dst, aaron]
 type: research
 ---

@@ -9,13 +9,13 @@ ask: aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0876
+  - 081KSNY2Z0008QG0R003KG3JTG
 composes_with:
-  - B-0876
-  - B-0879
-  - B-0644
-  - B-0665
-  - B-0666
+  - 081KSNY2Z0008QG0R003KG3JTG
+  - 081KSNY2Z0008QG0R0031490KZ
+  - 081KRW63S0008QG0R002ZRNDJ8
+  - 081KRW63S0008QG0R002YAA09X
+  - 081KRW63S0008QG0R001SAHYKV
 tags:
   - time-generator-ischeduler-abstraction
   - rx-net-ischeduler-pattern

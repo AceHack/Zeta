@@ -6,8 +6,8 @@ status: open
 title: "B-0021.5 — Aurora-specific econ-primitive identification + ADR (investigate-don't-accept final synthesis, Otto-322/331)"
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0021.4]
-parent: B-0021
+depends_on: [081KR7JY10008QG0R0032QYPW5]
+parent: 081KQ0YZ80008QG0R0026WN385
 classification: buildable-after-B-0021.4
 type: research
 effort: M

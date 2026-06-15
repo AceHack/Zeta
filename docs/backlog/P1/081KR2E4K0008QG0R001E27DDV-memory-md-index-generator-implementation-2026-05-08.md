@@ -6,8 +6,8 @@ status: closed
 title: "MEMORY.md marker-vs-index - index generator implementation"
 created: 2026-05-08
 last_updated: 2026-05-14
-parent: B-0066
-depends_on: [B-0257]
+parent: 081KQ8P5D0008QG0R003KFRGJ0
+depends_on: [081KR2E4K0008QG0R001J0536V]
 classification: blocked-on-harness-contract
 decomposition: atomic
 closed_by: "feat/b0258-document-ordering-formatting-2026-05-14"

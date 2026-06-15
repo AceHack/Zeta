@@ -8,9 +8,9 @@ tier: governance
 effort: M
 created: 2026-05-14
 last_updated: 2026-05-30
-depends_on: [B-0524]
+depends_on: [081KRHWGX0008QG0R0007FG84X]
 composes_with: []
-children: [B-0707]
+children: [081KS923C0008QG0R002BKAC95]
 tags: [manifesto, governance, constitutional-promotion, critical-mass-adoption, ani]
 type: feature
 ---

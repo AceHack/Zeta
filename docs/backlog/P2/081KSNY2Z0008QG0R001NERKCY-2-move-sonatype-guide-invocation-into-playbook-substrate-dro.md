@@ -9,14 +9,14 @@ ask: aaron 2026-05-28 (Q3 decision locked: PRs not worth the vendor lockin for s
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0887
-  - B-0867.21
+  - 081KSNY2Z0008QG0R001DFZK4V
+  - 081KSNY2Z0008QG0R000S738W3
 composes_with:
-  - B-0887
-  - B-0867.21
-  - B-0867
-  - B-0890.1
-  - B-0867.15
+  - 081KSNY2Z0008QG0R001DFZK4V
+  - 081KSNY2Z0008QG0R000S738W3
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000E5KTPX
+  - 081KSNY2Z0008QG0R002A785QR
 tags:
   - sonatype-guide-into-playbook
   - drop-pr-gated-review-no-vendor-lockin

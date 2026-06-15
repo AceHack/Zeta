@@ -11,8 +11,8 @@ last_updated: 2026-05-14
 closed_by: PR that merges this row update
 depends_on: []
 composes_with:
-  - B-0425
-  - B-0424
+  - 081KRFA460008QG0R003JQ46J4
+  - 081KRFA460008QG0R001H98EXJ
   - memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md
   - memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md
   - .claude/rules/backlog-item-start-gate.md

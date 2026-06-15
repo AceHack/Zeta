@@ -11,7 +11,7 @@ created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
 composes_with:
-  - B-0113
+  - 081KQDTYV0008QG0R002424VSE
   - docs/best-practices/repo-scripting.md
 tags: [riven-2026-05-11, ts-over-bash, current-freshness, mechanical-enforcement]
 type: friction-reducer

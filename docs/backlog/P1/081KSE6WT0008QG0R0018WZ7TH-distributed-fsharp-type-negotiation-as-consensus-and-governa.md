@@ -10,15 +10,15 @@ created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
   - B-0741
-  - B-0781
+  - 081KSE6WT0008QG0R001H3DA90
 composes_with:
-  - B-0428
+  - 081KRFA460008QG0R0018SN61J
   - B-0746
   - B-0747
-  - B-0765
-  - B-0772
-  - B-0773
-  - B-0782
+  - 081KSE6WT0008QG0R00063R6HB
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R0008483B2
+  - 081KSE6WT0008QG0R003CMCX84
 tags: [fsharp, type-system, consensus, governance, distributed-compilation, namespace, mirror, beacon, ontology-negotiation]
 ---
 

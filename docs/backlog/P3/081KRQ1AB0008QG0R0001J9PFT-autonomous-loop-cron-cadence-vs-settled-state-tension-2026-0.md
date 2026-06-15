@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-16
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0440, B-0540, holding-without-named-dependency-is-standing-by-failure]
+composes_with: [081KRFA460008QG0R001KC0VBH, 081KRMEXM0008QG0R0039V4SQQ, holding-without-named-dependency-is-standing-by-failure]
 tags: [autonomous-loop, cron-cadence, brief-ack-failure-mode]
 type: design
 ---

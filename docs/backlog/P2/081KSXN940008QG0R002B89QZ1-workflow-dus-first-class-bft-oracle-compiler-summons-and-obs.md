@@ -11,8 +11,8 @@ last_updated: 2026-05-31
 type: feature
 composes_with:
   - docs/research/2026-05-31-workflow-dus-first-class-bft-oracle-summons-and-observe-keystone-design-space-aaron-otto.md
-  - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
-  - docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
+  - docs/backlog/P1/081KSV2WD0008QG0R00051XS0N-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
+  - docs/backlog/P2/081KS3X9Y0008QG0R00218150M-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
   - src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts
   - agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md

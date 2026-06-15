@@ -15,7 +15,7 @@ composes_with:
   - .claude/rules/dv2-data-split-discipline-activated.md
   - .claude/rules/additive-not-zero-sum.md
   - .claude/rules/honor-those-that-came-before.md
-  - docs/backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md
+  - docs/backlog/P2/081KRW63S0008QG0R000QJR08H-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md
 tags: [economy-substrate, creator-compensation, provenance, lineage, contribution-graph, attribution, anti-drm, openlineage, prov-o, c2pa, agora, multi-attribution, bridge-table, dv2.0]
 type: feature
 ---

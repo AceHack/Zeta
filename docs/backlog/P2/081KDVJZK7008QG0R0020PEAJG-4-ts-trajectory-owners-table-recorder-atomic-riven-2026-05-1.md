@@ -7,10 +7,10 @@ title: TS trajectory owners + triggers + recording surfaces table
 tier: factory-hygiene
 effort: S
 depends_on:
-  - B-0093.3
+  - 081KDVJZK7008QG0R001QH4W62
 composes_with:
-  - B-0093
-  - B-0092
+  - 081KQ8P5D0008QG0R003MY8246
+  - 081KQ8P5D0008QG0R003ZF64GG
 tags: [riven-2026-05-11, ts-prefer, trajectory-owners, recording-surface]
 ---
 # B-0093.4 — Atomic child: TS trajectory owners table + recorder

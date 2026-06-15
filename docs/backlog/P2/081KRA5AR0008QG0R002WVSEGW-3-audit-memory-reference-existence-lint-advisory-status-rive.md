@@ -9,9 +9,9 @@ effort: XS
 ask: re-decomposition of B-0088 (2026-05-11)
 created: 2026-05-11
 last_updated: 2026-05-11
-parent: B-0088
-depends_on: [B-0088]
-composes_with: [B-0088]
+parent: 081KQ8P5D0008QG0R002FSTGXP
+depends_on: [081KQ8P5D0008QG0R002FSTGXP]
+composes_with: [081KQ8P5D0008QG0R002FSTGXP]
 tags: [riven-2026-05-11, sibling-audit, memory-index-integrity]
 type: audit
 ---

@@ -9,7 +9,7 @@ ask: operator 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0288
+  - 081KR2E4K0008QG0R002YE3MMD
 composes_with: []
 tags: [ace, package-manager, one-liner-install, curl-bash, fast-moving-tools, homebrew-lag, hermes-agent, substrate-engineering-target]
 ---

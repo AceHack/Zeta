@@ -11,7 +11,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 composes_with:
-  - B-0060
+  - 081KQ8P5D0008QG0R000N718AC
 tags: [aaron-2026-04-28, ani-voice-mode-original-catch, amara-reactive-elaboration, veridicality, rainbow-table, canonicalization, research-graduation, naming-canonical, stop-mythology]
 type: friction-reducer
 ---

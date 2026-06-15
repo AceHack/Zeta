@@ -9,13 +9,13 @@ ask: otto pushback on parallel-tracks design 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0886
-  - B-0867.15
+  - 081KSNY2Z0008QG0R0034FR5FG
+  - 081KSNY2Z0008QG0R002A785QR
 composes_with:
-  - B-0886
-  - B-0867.15
-  - B-0884
-  - B-0887
+  - 081KSNY2Z0008QG0R0034FR5FG
+  - 081KSNY2Z0008QG0R002A785QR
+  - 081KSNY2Z0008QG0R0011XCT94
+  - 081KSNY2Z0008QG0R001DFZK4V
 tags:
   - cross-track-substrate-sync-policy
   - cloud-github-vs-usb-local-gitlab-parallel-tracks

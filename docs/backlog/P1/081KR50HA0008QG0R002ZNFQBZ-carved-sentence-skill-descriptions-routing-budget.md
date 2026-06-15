@@ -7,8 +7,8 @@ title: "Carved-sentence skill descriptions — fit 200+ skills into routing budg
 effort: M
 created: 2026-05-09
 last_updated: 2026-05-29
-depends_on: [B-0347.5]
-children: [B-0347.5, B-0347.6, B-0347.7]
+depends_on: [081KSRGFP0008QG0R0037CJXA8]
+children: [081KSRGFP0008QG0R0037CJXA8, 081KSRGFP0008QG0R00059AM3C, 081KSRGFP0008QG0R002SV9GGY]
 classification: buildable-now
 decomposition: clean
 owners: [skill-expert]

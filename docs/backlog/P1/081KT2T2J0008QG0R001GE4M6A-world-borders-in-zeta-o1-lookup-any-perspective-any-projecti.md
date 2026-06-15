@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0989, B-0986, B-0704, B-0703]
-composes_with: [B-0989, B-0986, B-0985, B-0703, B-0638, B-0704, B-0954, B-0883, B-0643.1, B-0987]
+depends_on: [081KT2T2J0008QG0R002ZG89QA, 081KT2T2J0008QG0R002Z46D8Q, 081KS3X9Y0008QG0R002MZF3A7, 081KS3X9Y0008QG0R00218150M]
+composes_with: [081KT2T2J0008QG0R002ZG89QA, 081KT2T2J0008QG0R002Z46D8Q, 081KT2T2J0008QG0R0026MS6PV, 081KS3X9Y0008QG0R00218150M, 081KRW63S0008QG0R0030F8ZXA, 081KS3X9Y0008QG0R002MZF3A7, 081KSXN940008QG0R00171YAZW, 081KSNY2Z0008QG0R002JKH50A, 081KT2T2J0008QG0R001C2K4F2, 081KT2T2J0008QG0R0013BEXG5]
 tags: [world-borders, geospatial, o1-lookup, spatial-index, h3, s2, geohash, map-projection, perspective-relative, fme, safe-fme, tiger, gadm, osm, natural-earth, sovereign-boundaries, multi-oracle, eve-protocol, bounded-sovereign, hexagonal, addressing, real-estate, market-dynamics, concept-not-code, aaron]
 type: research
 ---

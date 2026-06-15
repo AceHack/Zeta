@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
-composes_with: [B-0926, B-0628]
+composes_with: [081KSRGFP0008QG0R00091PP56, 081KRW63S0008QG0R003TX8MG5]
 tags: [governance, safety-floor, kid-safety, multi-stakeholder, capture-resistance, standards-body, constitution-class, aaron]
 type: design
 ---

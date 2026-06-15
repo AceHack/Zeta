@@ -6,8 +6,8 @@ status: closed
 title: B-0032.3 — Aminata adversarial review of the heartbeat-file integrity section in THREAT-MODEL.md
 tier: security-research
 effort: S
-depends_on: [B-0032.2]
-parent: B-0032
+depends_on: [081KR7JY10008QG0R002DNV5WA]
+parent: 081KQ3HBZ0008QG0R002ZPXAFQ
 composes_with: [docs/security/THREAT-MODEL.md, tools/security/heartbeat-attack-vectors.ts]
 tags: [security, threat-model, aminata, heartbeat-integrity, substrate-poisoning, adversarial-review]
 type: friction-reducer

@@ -10,7 +10,7 @@ ask: Aaron 2026-04-26 — *"references (not upstream that's proabalby a bad name
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, docs/GLOSSARY.md, B-0010]
+composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, 081KQ3HBZ0008QG0R000ACTVA6, docs/GLOSSARY.md, 081KQ0YZ80008QG0R00264RY8Z]
 tags: [naming-clarity, glossary, git-semantic-collision, vocabulary-discipline, otto-339-anywhere, references-directory]
 type: friction-reducer
 ---

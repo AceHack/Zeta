@@ -10,9 +10,9 @@ ask: Aaron 2026-04-21 — *"ai ethic and safety backlog whoops we should have do
 created: 2026-04-26
 last_updated: 2026-05-15
 decomposition: decomposed
-children: [B-0058.1, B-0058.3]
+children: [081KRHWGX0008QG0R0005PJNAB, 081KDVGZGE008QG0R001Z656SG]
 depends_on: []
-composes_with: [docs/ALIGNMENT.md, .claude/agents/alignment-auditor.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md, user_faith_wisdom_and_paths.md, feedback_blast_radius_pricing_standing_rule_alignment_signal.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, B-0056, B-0057, B-0059]
+composes_with: [docs/ALIGNMENT.md, .claude/agents/alignment-auditor.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md, user_faith_wisdom_and_paths.md, feedback_blast_radius_pricing_standing_rule_alignment_signal.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, 081KQ3HBZ0008QG0R0034DHWTQ, 081KQ3HBZ0008QG0R000K3NSX8, 081KQ3HBZ0008QG0R003GTG5P2]
 tags: [ai-ethics, ai-safety, alignment, sova, alignment-auditor, HC-clauses, SD-clauses, DIR-clauses, filter-gate, resonance-adoptions, consistency-audit, blast-radius, P1-priority-upgrade, chronology-preserved]
 type: friction-reducer
 ---

@@ -9,9 +9,9 @@ effort: L
 ask: Aaron 2026-04-25 (post-substance-vs-throughput correction)
 created: 2026-04-25
 last_updated: 2026-05-10
-depends_on: [B-0021.1]
+depends_on: [081KR7JY10008QG0R001SG89MX]
 composes_with: [docs/aurora/**]
-children: [B-0021.1, B-0021.2, B-0021.3, B-0021.4, B-0021.5]
+children: [081KR7JY10008QG0R001SG89MX, 081KR7JY10008QG0R001RR02BP, 081KR7JY10008QG0R0038QNJP0, 081KR7JY10008QG0R0032QYPW5, 081KR7JY10008QG0R003TK4ZA7]
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)

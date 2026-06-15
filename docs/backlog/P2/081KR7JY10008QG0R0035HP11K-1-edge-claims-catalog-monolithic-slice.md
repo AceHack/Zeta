@@ -7,7 +7,7 @@ title: "Edge-claims catalog — monolithic TS implementation (11 CTF flags + sch
 effort: L
 created: 2026-05-10
 last_updated: 2026-05-13
-parent: B-0055
+parent: 081KQ3HBZ0008QG0R001K0EC2C
 depends_on: []
 classification: landed
 decomposition: monolithic-pending-redecomp

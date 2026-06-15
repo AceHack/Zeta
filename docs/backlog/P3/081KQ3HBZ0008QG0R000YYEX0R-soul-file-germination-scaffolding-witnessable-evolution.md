@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — three rapid-fire asks captured under capture-everythin
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [user_git_repo_is_factory_soul_file_reproducibility_substrate_aaron_2026_04_21.md, feedback_capture_everything_including_failure_aspirational_honesty.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, user_aaron_loves_mr_khan_khan_academy_teaching_admired.md, B-0045]
+composes_with: [user_git_repo_is_factory_soul_file_reproducibility_substrate_aaron_2026_04_21.md, feedback_capture_everything_including_failure_aspirational_honesty.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, user_aaron_loves_mr_khan_khan_academy_teaching_admired.md, 081KQ3HBZ0008QG0R0012P9EBM]
 tags: [aspirational, soul-file, germination, scaffolding, witnessable-evolution, wasm, native-aot, self-replication, mr-khan-pedagogy, capture-everything]
 type: friction-reducer
 ---

@@ -9,7 +9,7 @@ last_updated: 2026-05-14
 closed: 2026-05-14
 closed_by: "B-0270 + B-0271 + PR #3074"
 decomposition: decomposed
-children: [B-0270, B-0271]
+children: [081KR2E4K0008QG0R0035RG9G6, 081KR2E4K0008QG0R003VB7ZZR]
 depends_on: []
 type: friction-reducer
 ---

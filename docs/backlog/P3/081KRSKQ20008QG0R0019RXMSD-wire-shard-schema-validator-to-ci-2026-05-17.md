@@ -6,8 +6,8 @@ status: open
 title: Wire tick-shard schema validator into gate.yml (non-required → required)
 created: 2026-05-17
 last_updated: 2026-05-17
-depends_on: [B-0529]
-parent: B-0529
+depends_on: [081KRMEXM0008QG0R002HBY56V]
+parent: 081KRMEXM0008QG0R002HBY56V
 type: factory-hygiene
 decomposition: atomic
 ---

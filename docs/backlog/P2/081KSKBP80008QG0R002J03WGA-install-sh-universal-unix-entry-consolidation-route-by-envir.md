@@ -10,11 +10,11 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with:
-  - B-0854
-  - B-0852
-  - B-0855
-  - B-0853
-  - B-0833
+  - 081KSKBP80008QG0R002VRN56K
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSKBP80008QG0R000GPC0TB
+  - 081KSKBP80008QG0R000Y2B7HC
+  - 081KSGS9H0008QG0R003JNSVR5
 tags: [install-sh, universal-entry, environment-routing, zeta-install-sh-retirement-short-path, rule-0-carve-out, dev-env-vs-node-install-unification, b-0854-precursor]
 ---
 

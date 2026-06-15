@@ -6,7 +6,7 @@ status: open
 title: "Ace store keyed by package identity (not files-hash) — future enhancement, only if same-files-different-identity arises"
 created: 2026-06-01
 last_updated: 2026-06-01
-depends_on: [B-0288]
+depends_on: [081KR2E4K0008QG0R002YE3MMD]
 classification: deferred-until-needed
 decomposition: atomic
 owners: [developer-experience-engineer]

@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"laern reflection backlog"*. Primary reading in conte
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [tools/lean4/Lean4/DbspChainRule.lean, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, B-0048, B-0051, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, .claude/agents/formal-verification-expert.md]
+composes_with: [tools/lean4/Lean4/DbspChainRule.lean, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, 081KQ3HBZ0008QG0R003JCR6P8, 081KQ3HBZ0008QG0R002SM3G49, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, .claude/agents/formal-verification-expert.md]
 tags: [lean4, reflection, metaprogramming, mathlib, proof-automation, tactic-authoring, custom-elaborators, formal-verification, stainback-conjecture, ceramist-port]
 type: friction-reducer
 

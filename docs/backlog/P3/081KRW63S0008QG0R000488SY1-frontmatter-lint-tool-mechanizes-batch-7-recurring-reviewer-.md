@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0650]
+composes_with: [081KRW63S0008QG0R003377JG9]
 tags: [tooling, otto-cli, backlog-frontmatter-lint, mechanizes-reviewer-findings, pre-push-discipline, closed]
 type: tooling
 ---

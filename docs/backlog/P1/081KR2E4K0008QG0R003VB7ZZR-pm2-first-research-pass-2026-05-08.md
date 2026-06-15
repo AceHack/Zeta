@@ -6,8 +6,8 @@ status: closed
 title: "PM-2 role — first research pass on Zeta feature gaps"
 created: 2026-05-08
 last_updated: 2026-05-13
-parent: B-0145
-depends_on: [B-0270]
+parent: 081KQGDBJ0008QG0R000RWAA67
+depends_on: [081KR2E4K0008QG0R0035RG9G6]
 classification: ready-for-close
 decomposition: atomic
 type: friction-reducer

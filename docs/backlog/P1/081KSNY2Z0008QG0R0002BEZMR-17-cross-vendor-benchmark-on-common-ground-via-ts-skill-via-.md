@@ -9,16 +9,16 @@ ask: operator 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0865
-  - B-0867
+  - 081KSKBP80008QG0R003NM9XEC
+  - 081KSKBP80008QG0R000B3Y19A
 composes_with:
   - B-0867.5
-  - B-0867.15
-  - B-0867.20
-  - B-0867.21
-  - B-0891
-  - B-0904
-  - B-0859
+  - 081KSNY2Z0008QG0R002A785QR
+  - 081KSNY2Z0008QG0R003WFDCJ9
+  - 081KSNY2Z0008QG0R000S738W3
+  - 081KSNY2Z0008QG0R0008PN7RQ
+  - 081KSNY2Z0008QG0R001JQABB4
+  - 081KSKBP80008QG0R00146WEX1
 tags: [ts-skill-distribution, vendor-skill-stores, cross-vendor-benchmark, common-ground-scoring, dora-metrics-cross-vendor, claude-gpt-gemini-grok-cursor-continue, additive-to-usb-cluster, default-to-both-distribution-paths, kestrel-substantive-engagement, aaron-decision-disclosure]
 ---
 

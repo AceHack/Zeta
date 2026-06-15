@@ -8,11 +8,11 @@ created: 2026-05-31
 last_updated: 2026-05-31
 author: otto-cli
 composes_with:
-  - B-0959 # sovereign-DB lane master (this is the coordination-category slice)
-  - B-0954 # git-native bus (claim currently rides Bus(6))
-  - B-0954.1 # bus-tip partition tolerance (Lock = the non-monotone CAS slice)
-  - B-0840 # thermal-forgetting / private roots (Encryption-as-property, deferred)
-  - B-0885 # agent private encrypted state (Home/Encryption considered, deferred)
+  - 081KSXN940008QG0R003FCQ7WT # sovereign-DB lane master (this is the coordination-category slice)
+  - 081KSXN940008QG0R00171YAZW # git-native bus (claim currently rides Bus(6))
+  - 081KT07NV0008QG0R000QWEKTE # bus-tip partition tolerance (Lock = the non-monotone CAS slice)
+  - 081KSGS9H0008QG0R0006F4BGX # thermal-forgetting / private roots (Encryption-as-property, deferred)
+  - 081KSNY2Z0008QG0R0030V5ZVS # agent private encrypted state (Home/Encryption considered, deferred)
 ---
 
 # B-0961 — ZetaId root-category taxonomy: gap analysis + deferral

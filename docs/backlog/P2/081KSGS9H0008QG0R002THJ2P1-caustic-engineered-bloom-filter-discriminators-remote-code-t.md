@@ -10,8 +10,8 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0664
-  - B-0648
+  - 081KRW63S0008QG0R001Z7NYMV
+  - 081KRW63S0008QG0R0025E4PH6
 tags: [bloom-filter, caustic-engineering, remote-code-discriminator, trust-then-verify, multi-oracle, inverse-design, research-direction-flavored, kestrel-v2-substrate]
 ---
 

@@ -10,12 +10,12 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with:
-  - B-0812
-  - B-0813
-  - B-0835
-  - B-0850
-  - B-0851
-  - B-0852
+  - 081KSGS9H0008QG0R0037H3W4T
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R00120EEHM
+  - 081KSKBP80008QG0R003Z4C0D0
+  - 081KSKBP80008QG0R00248VEWT
+  - 081KSKBP80008QG0R003AX2A69
 tags: [self-registration, iter-5-4-1, idempotency, dedup, last-step-discipline, cluster-coordination, tmp-folder-coordination, otto-pushes-across-finish-line, b0812-architecture-fix, install-vs-first-boot, reboot-safety]
 ---
 

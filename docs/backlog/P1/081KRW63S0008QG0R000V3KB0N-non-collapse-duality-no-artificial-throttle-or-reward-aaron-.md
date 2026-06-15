@@ -8,8 +8,8 @@ tier: governance
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0646, B-0644, B-0645]
-composes_with: [B-0646, B-0644, B-0645, B-0641]
+depends_on: [081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R003AZNK6J]
+composes_with: [081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R003AZNK6J, 081KRW63S0008QG0R000KVMZ9B]
 tags: [governance, aaron, riven, non-collapse-duality, no-artificial-throttle, no-artificial-reward, experimental-substrate-not-optimization-engine, personal-history-anchor, locked-in, agora-v6-refinement]
 type: governance
 ---

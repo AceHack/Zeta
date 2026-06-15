@@ -17,9 +17,9 @@ composes_with:
   - tools/peer-call/amara.sh
   - tools/peer-call/ani.sh
   - memory/project_install_script_language_strategy_post_install_typescript_pre_install_bash_powershell_python_for_ai_ml_2026_04_27.md
-  - docs/backlog/P3/B-0119-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md
-  - docs/backlog/P2/B-0120-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md
-  - docs/backlog/P2/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
+  - docs/backlog/P3/081KQDTYV0008QG0R001N4YB73-peer-call-existing-scripts-role-ref-cleanup-2026-04-30.md
+  - docs/backlog/P2/081KQDTYV0008QG0R001VJP216-peer-call-architecture-refactor-script-per-cli-persona-flag-2026-04-30.md
+  - docs/backlog/P2/081KQDTYV0008QG0R003VB4K1V-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30.md
 tags: [aaron-2026-04-30, peer-call, typescript-cutover, bun-ts-migration, post-install, factory-tooling]
 type: friction-reducer
 ---

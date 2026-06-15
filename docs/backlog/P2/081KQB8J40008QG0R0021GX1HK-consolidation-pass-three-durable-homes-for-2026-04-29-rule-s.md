@@ -10,7 +10,7 @@ ask: Multi-AI synthesis packet round 4 (Amara 2026-04-29 — "no new conceptual 
 created: 2026-04-29
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0098, B-0099, B-0100, B-0101, B-0102, B-0103, B-0104]
+composes_with: [081KQB8J40008QG0R003VMCFWB, 081KQB8J40008QG0R002PEP2A2, 081KQB8J40008QG0R0023DKTFJ, 081KQB8J40008QG0R002DNCSKR, 081KQB8J40008QG0R002DQ0FDR, 081KQB8J40008QG0R003XNATZJ, 081KQB8J40008QG0R0016EHY06]
 tags: [consolidation, factory-hygiene, durable-home-discipline, p2, blocks-new-substrate]
 type: friction-reducer
 ---

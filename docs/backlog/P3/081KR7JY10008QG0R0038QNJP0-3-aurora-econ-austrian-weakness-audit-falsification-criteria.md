@@ -6,8 +6,8 @@ status: open
 title: "B-0021.3 — Austrian-school honest weakness audit + falsification-criteria catalog (praxeology debate, prediction misses, intra-school splits)"
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0021.1, B-0021.2]
-parent: B-0021
+depends_on: [081KR7JY10008QG0R001SG89MX, 081KR7JY10008QG0R001RR02BP]
+parent: 081KQ0YZ80008QG0R0026WN385
 classification: buildable-after-B-0021.2
 type: research
 effort: M

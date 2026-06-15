@@ -9,12 +9,12 @@ last_updated: 2026-05-09
 closed: 2026-05-09
 closed_by: "All 6 original bullets already extracted before this item was worked"
 depends_on:
-  - B-0348
+  - 081KR50HA0008QG0R000ZKBHE4
 decomposition: atomic
 classification: buildable-now
 type: friction-reducer
 owners: [architect]
-parent: B-0329
+parent: 081KR2E4K0008QG0R001F0YB5S
 ---
 
 # B-0350 — Extract autonomy/identity bullets to `.claude/rules/`

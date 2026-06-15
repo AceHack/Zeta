@@ -9,10 +9,10 @@ attribution: aaron-2026-05-28
 depends_on:
   - B-0867.5
 composes_with:
-  - B-0867
+  - 081KSKBP80008QG0R000B3Y19A
   - B-0867.5
-  - B-0879
-  - B-0862
+  - 081KSNY2Z0008QG0R0031490KZ
+  - 081KSKBP80008QG0R0031DTHS9
 tags:
   - architectural-decision
   - naming

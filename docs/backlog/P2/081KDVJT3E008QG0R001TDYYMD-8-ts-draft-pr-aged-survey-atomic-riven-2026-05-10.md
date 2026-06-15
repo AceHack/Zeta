@@ -7,9 +7,9 @@ title: TS survey for draft PRs aged > N days + content snapshot
 tier: factory-hygiene
 effort: S
 depends_on:
-  - B-0090.5
+  - 081KDVJT3E008QG0R000SCFYN5
 composes_with:
-  - B-0090
+  - 081KQ8P5D0008QG0R0002TN22C
 last_updated: 2026-05-13
 renumbered_from: B-0090.4
 renumbered_reason: "ID collision with the second B-0090 decomposition (PR #2680). Part of Riven's earlier ts-* atomic series renumbered .1→.5/.2→.6/.3→.7/.4→.8 as a unit. Internal depends_on B-0090.1 also remapped to B-0090.5. The original body text referenced 'B-0090.5 (cadence)' which referred to a future cadence-wiring slice — note this no longer collides with the renumbered B-0090.5 (worktree survey) and that downstream cadence work would now be a new sub-row not yet filed. Substrate-cleanup tracked in B-0451."

@@ -6,8 +6,8 @@ status: open
 title: "ROM datfile-as-dependency — pin + fetch + SHA-256 verify + refresh"
 created: 2026-05-29
 last_updated: 2026-05-29
-parent: B-0083
-depends_on: [B-0272]
+parent: 081KQ8P5D0008QG0R001590WJ3
+depends_on: [081KR2E4K0008QG0R001QZDAMQ]
 classification: buildable-now
 decomposition: atomic
 type: friction-reducer

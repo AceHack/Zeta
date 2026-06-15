@@ -6,8 +6,8 @@ status: open
 title: "Pages content sources - public inventory and exclusion boundary"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0233
-depends_on: [B-0232]
+parent: 081KQX9B50008QG0R0001XDTDQ
+depends_on: [081KQX9B50008QG0R001J6ARGX]
 classification: blocked-on-pages-workflow
 decomposition: atomic
 owners: [architect, docs]

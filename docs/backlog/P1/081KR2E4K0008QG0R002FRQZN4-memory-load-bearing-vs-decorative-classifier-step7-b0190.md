@@ -9,9 +9,9 @@ effort: S
 ask: B-0190 Step 7 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0190
+parent: 081KQR4HQ0008QG0R001909FPT
 depends_on: []
-composes_with: [B-0190, B-0333, B-0336, B-0337]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KR2E4K0008QG0R00175HQR9, 081KR2E4K0008QG0R001B6K45W, 081KR2E4K0008QG0R001CCWHZ2]
 tags: [memory, classification, load-bearing, trajectory-child]
 type: friction-reducer
 ---

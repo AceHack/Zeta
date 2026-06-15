@@ -7,8 +7,8 @@ title: "Fractal BFT — Protocol doc describing local-cluster + remote-cluster c
 created: 2026-05-19
 last_updated: 2026-05-19
 decomposition: atomic
-parent: B-0211
-depends_on: [B-0209]
+parent: 081KQX9B50008QG0R0026BG44J
+depends_on: [081KQX9B50008QG0R001MNYK61]
 type: feature
 ---
 

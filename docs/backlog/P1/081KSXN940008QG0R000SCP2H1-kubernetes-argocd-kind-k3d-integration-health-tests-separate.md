@@ -12,15 +12,15 @@ created: 2026-05-31
 last_updated: 2026-06-13
 renumbered_from: "B-0951; B-0952; B-0953; B-0957; B-0958; B-0959 (2026-06-01 merge collision repairs; origin/main retains B-0953 Git-V2 row, B-0957 labels/tags row, B-0958 observe-loop row, and B-0959 sovereign distributed-DB row); B-0961 (2026-06-01 claim/main duplicate-ID repair; origin/main retains B-0961 ZetaId taxonomy row); B-0966 (2026-06-01 claim/main duplicate-ID repair; origin/main retains B-0966 Ace store row)"
 depends_on:
-  - B-0742
-  - B-0794
+  - 081KSE6WT0008QG0R000YYH3DY
+  - 081KSGS9H0008QG0R0027HJZYH
 composes_with:
-  - B-0742
-  - B-0776
-  - B-0794
-  - B-0813
-  - B-0831
-  - B-0891
+  - 081KSE6WT0008QG0R000YYH3DY
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R0011BC7T2
+  - 081KSNY2Z0008QG0R0008PN7RQ
 tags:
   - kubernetes
   - argocd

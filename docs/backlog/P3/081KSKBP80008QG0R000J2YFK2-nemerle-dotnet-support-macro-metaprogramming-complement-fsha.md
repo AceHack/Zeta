@@ -9,9 +9,9 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0428
+  - 081KRFA460008QG0R0018SN61J
 composes_with:
-  - B-0829
+  - 081KSGS9H0008QG0R000Q18PGQ
 tags: [language-extension, dotnet-substrate, macro-metaprogramming, relationship-type-inference, nemerle, fsharp-companion, jetbrains-substrate]
 ---
 

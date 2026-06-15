@@ -13,7 +13,7 @@ discovered_by: soraya
 owners: [kenji, formal-verification-expert]
 type: scope-correction
 composes_with:
-  - docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
+  - docs/backlog/P2/081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
   - tools/alloy/specs/Spine.als
   - tools/tla/specs/SpineAsyncProtocol.tla
   - tools/tla/specs/SpineMergeInvariants.tla

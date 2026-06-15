@@ -8,14 +8,14 @@ type: design
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0426
+parent: 081KRFA460008QG0R0007RWSN1
 depends_on:
-  - B-0471
+  - 081KRHWGX0008QG0R002VV6DTS
 composes_with:
-  - B-0426
-  - B-0471
-  - B-0472
-  - B-0474
+  - 081KRFA460008QG0R0007RWSN1
+  - 081KRHWGX0008QG0R002VV6DTS
+  - 081KRHWGX0008QG0R002DP6AZN
+  - 081KRHWGX0008QG0R0023FDYVE
   - docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md
   - docs/ALIGNMENT.md
   - memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md

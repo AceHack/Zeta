@@ -6,11 +6,11 @@ status: open
 title: "GitHub Pages discoverability - SEO metadata, sitemap, robots, and AI crawler access"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0154
-depends_on: [B-0232, B-0233]
+parent: 081KQGDBJ0008QG0R002NV04N9
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0001XDTDQ]
 classification: blocked-on-pages-content
 decomposition: decomposed
-children: [B-0284, B-0285]
+children: [081KR2E4K0008QG0R0028VW6B3, 081KR2E4K0008QG0R0037MW8ET]
 type: friction-reducer
 ---
 

@@ -8,15 +8,15 @@ type: feature
 origin: B-0428 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0428
+parent: 081KRFA460008QG0R0018SN61J
 depends_on:
-  - B-0480
+  - 081KRHWGX0008QG0R00187PQGZ
 composes_with:
-  - B-0428
-  - B-0480
-  - B-0482
-  - B-0483
-  - B-0484
+  - 081KRFA460008QG0R0018SN61J
+  - 081KRHWGX0008QG0R00187PQGZ
+  - 081KRHWGX0008QG0R001VKR0TH
+  - 081KRHWGX0008QG0R002GFSJC6
+  - 081KRHWGX0008QG0R002TYF2NM
 ---
 
 # B-0481 — F# project scaffold + NuGet add + connectivity smoke test

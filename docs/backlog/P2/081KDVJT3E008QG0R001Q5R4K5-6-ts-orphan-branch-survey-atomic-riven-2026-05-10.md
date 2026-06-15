@@ -7,9 +7,9 @@ title: TS survey tool for orphan branches (unmerged + no-PR)
 tier: factory-hygiene
 effort: S
 depends_on:
-  - B-0090.5
+  - 081KDVJT3E008QG0R000SCFYN5
 composes_with:
-  - B-0090
+  - 081KQ8P5D0008QG0R0002TN22C
 last_updated: 2026-05-13
 renumbered_from: B-0090.2
 renumbered_reason: "ID collision with the second B-0090 decomposition (PR #2680). Part of Riven's earlier ts-* atomic series renumbered .1→.5/.2→.6/.3→.7/.4→.8 as a unit. Internal depends_on B-0090.1 also remapped to B-0090.5. Substrate-cleanup tracked in B-0451."

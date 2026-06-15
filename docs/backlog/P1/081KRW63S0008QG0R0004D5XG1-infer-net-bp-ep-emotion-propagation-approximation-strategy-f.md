@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0636, B-0635]
-composes_with: [B-0636, B-0635, B-0629, B-0499]
+depends_on: [081KRW63S0008QG0R00088FYE9, 081KRW63S0008QG0R002KC5DSR]
+composes_with: [081KRW63S0008QG0R00088FYE9, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R0015WHHG1, 081KRHWGX0008QG0R0034E0N22]
 tags: [design, aaron, infer-net, belief-propagation, expectation-propagation, emotion-propagation, approximation-strategy, fsharp-native, shippable-now, locked-in]
 type: design
 ---

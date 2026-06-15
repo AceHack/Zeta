@@ -7,8 +7,8 @@ priority: P3
 size: L
 created: 2026-05-25
 authors: [aaron, otto-cli]
-composes_with: [B-0754, B-0755, B-0756]
-depends_on: [B-0754, B-0756]
+composes_with: [B-0754, 081KSE6WT0008QG0R003612WGJ, 081KSE6WT0008QG0R001NG9JZH]
+depends_on: [B-0754, 081KSE6WT0008QG0R001NG9JZH]
 labels: [cluster, mdns, k3s, bootstrap, ux]
 ---
 

@@ -9,7 +9,7 @@ origin: PM-2 gap-prediction pass (B-0271) 2026-05-13
 created: 2026-05-13
 last_updated: 2026-05-13
 depends_on: []
-composes_with: [B-0154]
+composes_with: [081KQGDBJ0008QG0R002NV04N9]
 tags: [nuget, package-metadata, discoverability, sourcelink, versioning, dotnet]
 ---
 

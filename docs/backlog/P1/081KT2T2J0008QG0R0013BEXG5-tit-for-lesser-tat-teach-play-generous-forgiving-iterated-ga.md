@@ -8,8 +8,8 @@ tier: research
 effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0664, B-0703]
-composes_with: [B-0664, B-0732, B-0645, B-0644, B-0703, B-0628, B-0985, B-0986]
+depends_on: [081KRW63S0008QG0R001Z7NYMV, 081KS3X9Y0008QG0R00218150M]
+composes_with: [081KRW63S0008QG0R001Z7NYMV, 081KSE6WT0008QG0R002YBWBB1, 081KRW63S0008QG0R003AZNK6J, 081KRW63S0008QG0R002ZRNDJ8, 081KS3X9Y0008QG0R00218150M, 081KRW63S0008QG0R003TX8MG5, 081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R002Z46D8Q]
 tags: [tit-for-tat, generous-tit-for-tat, tit-for-lesser-tat, iterated-game, axelrod, teach-play, reciprocity, de-escalation, forgiveness, retraction, cooperation, game-theory, nci, bft, aaron]
 type: research
 ---

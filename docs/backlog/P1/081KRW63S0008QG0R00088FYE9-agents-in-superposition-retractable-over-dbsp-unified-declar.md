@@ -8,8 +8,8 @@ tier: identity
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0635]
-composes_with: [B-0635, B-0629, B-0499, B-0649]
+depends_on: [081KRW63S0008QG0R002KC5DSR]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R0015WHHG1, 081KRHWGX0008QG0R0034E0N22, 081KRW63S0008QG0R0020DGSK1]
 tags: [identity, aaron, agents-in-superposition, retractable-over-dbsp, unified-declaration, project-identity, what-we-are-building, locked-in, keystone]
 type: identity
 ---

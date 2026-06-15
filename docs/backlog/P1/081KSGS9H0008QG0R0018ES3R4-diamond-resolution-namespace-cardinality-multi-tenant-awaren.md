@@ -9,13 +9,13 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0821
+  - 081KSGS9H0008QG0R00367G209
 composes_with:
-  - B-0247
-  - B-0288
-  - B-0742
-  - B-0816
-  - B-0820
+  - 081KQZVQW0008QG0R000ZHEN62
+  - 081KR2E4K0008QG0R002YE3MMD
+  - 081KSE6WT0008QG0R000YYH3DY
+  - 081KSGS9H0008QG0R003A37Z65
+  - 081KSGS9H0008QG0R00352WW0V
 tags: [ace-feature, dependency-graph, helm, diamond-resolution, namespace-policy, cardinality, multi-tenant, cluster-singleton, maven-for-helm]
 ---
 

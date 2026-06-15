@@ -9,7 +9,7 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-0883, B-0989, B-0982, B-0995, B-0703, B-0643.1, B-0726, B-0954, B-0993, B-0996]
+composes_with: [081KSNY2Z0008QG0R002JKH50A, 081KT2T2J0008QG0R002ZG89QA, 081KT07NV0008QG0R0032MCYER, 081KT2T2J0008QG0R002TVT60G, 081KS3X9Y0008QG0R00218150M, 081KT2T2J0008QG0R001C2K4F2, 081KSE6WT0008QG0R003C9KGQE, 081KSXN940008QG0R00171YAZW, 081KT2T2J0008QG0R003C166K4, 081KT2T2J0008QG0R002RCX5MT]
 tags: [hardening, encryption, decrypt-encrypt-invariant, referee-principle, golden-vectors, differential-testing, say-do-gap, governance-sensor, anti-cartel, anti-monopoly, defensive-propagation, local-global-cache, suppression-ladder, shields-not-cages, nullcodec, formal-proof, color-lantern-not-law, dst, algebra-under-dst, nist-kat, deterministic-at-test-time, seed, meta-internal, externally-known, open-question, amara, aaron]
 type: research
 ---

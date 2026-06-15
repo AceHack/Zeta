@@ -10,7 +10,7 @@ ask: maintainer Aaron 2026-05-21 (Kestrel sharpening closing note)
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0635, B-0682, B-0683, B-0684, B-0679, B-0680]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KS3X9Y0008QG0R000W00V73, 081KS3X9Y0008QG0R0006MQXA4, 081KS3X9Y0008QG0R003MMEAC7, 081KS3X9Y0008QG0R001Z8SBZJ, 081KS3X9Y0008QG0R002WGH8PJ]
 tags: [antlr, grammar, cross-language, codegen, description-layer, kestrel-sharpening]
 type: research
 ---

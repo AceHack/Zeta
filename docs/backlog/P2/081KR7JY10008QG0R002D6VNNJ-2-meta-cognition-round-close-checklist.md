@@ -6,8 +6,8 @@ status: closed
 title: "B-0037.2 — Per-round meta-check checklist in ROUND-HISTORY.md template"
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0037.1]
-parent: B-0037
+depends_on: [081KR7JY10008QG0R0038AFS7T]
+parent: 081KQ3HBZ0008QG0R0002RB48Q
 classification: blocked
 type: factory-discipline
 effort: S

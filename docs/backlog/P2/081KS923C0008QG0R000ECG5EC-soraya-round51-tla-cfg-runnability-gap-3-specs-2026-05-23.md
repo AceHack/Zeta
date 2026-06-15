@@ -17,7 +17,7 @@ composes_with:
   - tools/tla/specs/ConsistentHashRebalance.tla
   - tools/tla/specs/DictionaryStripedCAS.tla
   - tools/tla/specs/OperatorLifecycleRace.cfg
-  - docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
+  - docs/backlog/P2/081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
 ---
 
 # B-0714 — Author 3 missing TLA+ `.cfg` files (Soraya round-51 hand-off)

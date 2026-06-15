@@ -9,9 +9,9 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0794
+  - 081KSGS9H0008QG0R0027HJZYH
 composes_with:
-  - B-0831
+  - 081KSGS9H0008QG0R0011BC7T2
 tags: [installer, ci, gh-auth, security, interactive-vs-headless-test, credential-handling, substrate-engineering-tension]
 ---
 

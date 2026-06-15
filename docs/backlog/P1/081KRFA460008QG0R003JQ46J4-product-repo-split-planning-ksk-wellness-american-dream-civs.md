@@ -11,13 +11,13 @@ last_updated: 2026-05-14
 closed: 2026-05-14
 closed_by: "docs/DECISIONS/2026-05-14-product-repo-split-decisions.md"
 decomposed_into:
-  - B-0464
-  - B-0465
-  - B-0466
-  - B-0467
-  - B-0468
+  - 081KRHWGX0008QG0R000BWAXNP
+  - 081KRHWGX0008QG0R002B2P0K0
+  - 081KRHWGX0008QG0R003XHCEXT
+  - 081KRHWGX0008QG0R00394BM1G
+  - 081KRHWGX0008QG0R000F6HE6D
 composes_with:
-  - B-0424
+  - 081KRFA460008QG0R001H98EXJ
   - memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md
   - memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md
   - memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md

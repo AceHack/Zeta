@@ -7,9 +7,9 @@ title: "Classifier-bypass findings schema and redaction rules for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-28
 renumbered_from: B-0800
-parent: B-0720
-depends_on: [B-0798]
-composes_with: [B-0720, B-0799, docs/AGENT-BEST-PRACTICES.md]
+parent: 081KSBMG30008QG0R00201X7EJ
+depends_on: [081KSGS9H0008QG0R00383T79V]
+composes_with: [081KSBMG30008QG0R00201X7EJ, 081KSGS9H0008QG0R0005RKGTM, docs/AGENT-BEST-PRACTICES.md]
 tags: [safety-substrate, red-team, classifier, redaction, evidence-schema]
 type: safety-reporting
 ---

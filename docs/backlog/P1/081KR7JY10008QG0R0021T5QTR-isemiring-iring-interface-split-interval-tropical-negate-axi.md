@@ -9,7 +9,7 @@ last_updated: 2026-05-10
 closed: 2026-05-10
 closed_by: "PR #2391"
 depends_on: []
-composes_with: [B-0367]
+composes_with: [081KR50HA0008QG0R000Z4XCPJ]
 classification: buildable-now
 type: feature
 effort: M

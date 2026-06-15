@@ -9,11 +9,11 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0792
+  - 081KSGS9H0008QG0R003V23XNZ
 composes_with:
-  - B-0776
-  - B-0789
-  - B-0790
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSGS9H0008QG0R002T3BJ2R
+  - 081KSGS9H0008QG0R00153CQ8B
 tags: [architecture, role-as-capability, multi-role-node, refactor, nixos-modules, flake-config, composition, homelab, cluster-bringup]
 ---
 

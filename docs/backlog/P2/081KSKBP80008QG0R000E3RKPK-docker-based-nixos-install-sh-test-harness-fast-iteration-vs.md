@@ -9,11 +9,11 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0831
+  - 081KSGS9H0008QG0R0011BC7T2
 composes_with:
-  - B-0824
-  - B-0835
-  - B-0848
+  - 081KSGS9H0008QG0R0031PBNGA
+  - 081KSGS9H0008QG0R00120EEHM
+  - 081KSGS9H0008QG0R001JNKBFD
 tags: [ci-test-harness, docker, nixos, install-sh, fast-iteration, mise-bootstrap, runtime-version-validation, three-way-parity-extended-to-nixos, operator-iteration-cost, complements-qemu-full-install]
 ---
 

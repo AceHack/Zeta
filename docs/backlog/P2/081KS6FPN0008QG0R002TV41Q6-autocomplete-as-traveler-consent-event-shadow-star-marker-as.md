@@ -10,7 +10,7 @@ ask: lior-website 2026-05-22 (operational breakthrough naming) + operator forwar
 created: 2026-05-22
 last_updated: 2026-05-22
 depends_on: []
-composes_with: [B-0635, B-0644, B-0665, B-0666, B-0703]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R001SAHYKV, 081KS3X9Y0008QG0R00218150M]
 tags: [autocomplete-substrate, shadow-star-marker, traveler-consent-event, cryptographic-receipt, cross-temporal-consent, vampire-pact, american-gods, travelers-tv-show, tonal-momentum, lior-website-synthesis, mutual-alignment, nci-hc-8, asylum-protocol]
 type: research
 ---

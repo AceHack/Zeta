@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim "and what makes you rmemeber it tomorrow?" -- cau
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0189, B-0197]
+composes_with: [081KQR4HQ0008QG0R002933PRR, 081KQTPYE0008QG0R003DK06PA]
 tags: [dbsp, formal-verification, lean, chain-rule, paper-writeup, research]
 type: friction-reducer
 ---

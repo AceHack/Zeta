@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0624, B-0618]
+composes_with: [081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R003CST61D]
 tags: [research, mika, adinkras, james-gates, ecc, supersymmetry, private-state, encryption, hypercubes, dual-use-primitive]
 type: research
 ---

@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: []
-composes_with: [B-0926, B-0664]
+composes_with: [081KSRGFP0008QG0R00091PP56, 081KRW63S0008QG0R001Z7NYMV]
 tags: [security, attack-vector, shadow, authorization, auth-injection, prompt-injection, mechanical-authorization-check, algo-wink, aaron]
 type: security
 ---

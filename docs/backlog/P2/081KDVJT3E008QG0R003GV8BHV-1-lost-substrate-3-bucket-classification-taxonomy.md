@@ -7,7 +7,7 @@ title: Lost-substrate 3-bucket classification taxonomy (ALREADY-COVERED / NEEDS-
 tier: factory-hygiene
 effort: S
 depends_on: []
-composes_with: [B-0090]
+composes_with: [081KQ8P5D0008QG0R0002TN22C]
 tags: [b0090-decomp, taxonomy, classification, lost-substrate]
 type: friction-reducer
 ---

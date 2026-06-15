@@ -7,11 +7,11 @@ title: "Toffoli circuit for Z-set join — formal gate-network model"
 effort: M
 created: 2026-05-09
 last_updated: 2026-05-11
-depends_on: [B-0366.1]
-parent: B-0366
+depends_on: [081KR50HA0008QG0R0021B5J87]
+parent: 081KR50HA0008QG0R003T5MZAC
 classification: buildable-now
 decomposition: decomposed
-children: [B-0366.2.1, B-0366.2.2, B-0366.2.3]
+children: [081KR50HA0008QG0R0002PGV1N.1, 081KR50HA0008QG0R0002PGV1N.2, 081KR50HA0008QG0R0002PGV1N.3]
 owners: [architect]
 type: research
 tags: [toffoli, reversible-computing, zset, join, circuit-model, landauer]

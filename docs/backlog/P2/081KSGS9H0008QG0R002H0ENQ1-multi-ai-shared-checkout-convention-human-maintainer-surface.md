@@ -7,7 +7,7 @@ priority: P2
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
-composes_with: [B-0750]
+composes_with: [081KSE6WT0008QG0R003YYC9PV]
 ---
 
 # B-0828 — Multi-AI shared-checkout convention (Aaron 2026-05-26)

@@ -9,7 +9,7 @@ title: "Mechanical authorization check — pace-instruction extractor + test fix
 effort: S
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0160
+parent: 081KQJZR90008QG0R000FTJ1TC
 depends_on: []
 classification: buildable-now
 decomposition: atomic

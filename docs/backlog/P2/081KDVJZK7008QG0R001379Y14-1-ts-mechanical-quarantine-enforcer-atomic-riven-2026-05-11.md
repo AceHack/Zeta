@@ -8,7 +8,7 @@ tier: factory-hygiene
 effort: S
 depends_on: []
 composes_with:
-  - B-0093
+  - 081KQ8P5D0008QG0R003MY8246
 tags: [riven-2026-05-11, ts-prefer, mechanical-quarantine, compliance]
 ---
 # B-0093.1 — Atomic child: TS mechanical quarantine enforcer

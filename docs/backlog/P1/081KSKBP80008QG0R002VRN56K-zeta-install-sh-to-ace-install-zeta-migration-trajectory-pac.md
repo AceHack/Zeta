@@ -9,17 +9,17 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0288
+  - 081KR2E4K0008QG0R002YE3MMD
 composes_with:
-  - B-0824
-  - B-0816
-  - B-0742
-  - B-0821
-  - B-0822
-  - B-0777
-  - B-0247
-  - B-0852
-  - B-0853
+  - 081KSGS9H0008QG0R0031PBNGA
+  - 081KSGS9H0008QG0R003A37Z65
+  - 081KSE6WT0008QG0R000YYH3DY
+  - 081KSGS9H0008QG0R00367G209
+  - 081KSGS9H0008QG0R0018ES3R4
+  - 081KSE6WT0008QG0R000JSJ3SR
+  - 081KQZVQW0008QG0R000ZHEN62
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSKBP80008QG0R000Y2B7HC
 tags: [ace-package-manager, zeta-on-ace, declarative-install, migration-trajectory, package-json, bunfig, install-graph, zeta-install-sh-replacement, scratch-sqlsharp-pattern, bootstrap-substrate]
 ---
 

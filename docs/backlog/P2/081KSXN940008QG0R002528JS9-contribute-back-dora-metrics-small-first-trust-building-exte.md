@@ -10,14 +10,14 @@ created: 2026-05-31
 last_updated: 2026-05-31
 type: feature
 depends_on:
-  - B-0007
-  - B-0198
+  - 081KQ0YZ80008QG0R001V1PMC0
+  - 081KQTPYE0008QG0R0004H9ZB8
 composes_with:
   - docs/VISION.md
   - .claude/rules/honor-those-that-came-before.md
   - .claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md
   - .claude/rules/attention-as-currency-descriptive-not-proposal-fsharp-uom-memory-as-economy-bias-neutral-contribution-graph.md
-  - docs/backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md
+  - docs/backlog/P3/081KSXN940008QG0R001V8NBDV-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md
   - docs/UPSTREAM-RHYTHM.md
   - docs/FACTORY-RESUME.md
 tags: [good-citizen-substrate, contribute-back, not-take-only, dora-metrics, upstream-contribution, small-first-trust-building, prior-art-visible, anti-extractive, foot-in-the-door, external-contribution]

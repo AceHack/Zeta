@@ -10,7 +10,7 @@ ask: aaron 2026-05-21 (VSCode auto-mode + remembered web conversation mode enabl
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0400]
+composes_with: [081KR7JY10008QG0R000R503K2]
 tags: [otto-vscode, multi-surface-coordination, sender-ids-extension, bootstream, claim-acquire, split-brain-prevention]
 type: operational
 ---

@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0628, B-0631, B-0626, B-0639]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R000BH37EV, 081KRW63S0008QG0R000ZQ9WDH]
 tags: [governance, mika, first-moral-invariant, consent-revocable, no-permanent-ownership, constitutional, sacred-floor-adjacent, locked-in]
 type: governance
 ---

@@ -9,12 +9,12 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0834
+  - 081KSGS9H0008QG0R001RR3ZXQ
 composes_with:
-  - B-0831
-  - B-0832
-  - B-0833
-  - B-0835
+  - 081KSGS9H0008QG0R0011BC7T2
+  - 081KSGS9H0008QG0R001Q2DH2H
+  - 081KSGS9H0008QG0R003JNSVR5
+  - 081KSGS9H0008QG0R00120EEHM
 tags: [installer, nixos-install, wifi-reproducibility, cache-nixos-org, closure-baking, substituters, cachix, network-resilience, physical-hardware-support-test, empirical-anchor, operator-ux]
 ---
 

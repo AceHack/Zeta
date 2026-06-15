@@ -13,7 +13,7 @@ created: 2026-04-28
 last_updated: 2026-05-08
 decomposition: decomposed
 depends_on: []
-composes_with: [B-0060, B-0061]
+composes_with: [081KQ8P5D0008QG0R000N718AC, 081KQ8P5D0008QG0R001BH93SA]
 tags: [wallet-experiment-v0, eat, spec-logic, pr-72-deferrals, honest-tracking, build-out, no-papering-over]
 ---
 

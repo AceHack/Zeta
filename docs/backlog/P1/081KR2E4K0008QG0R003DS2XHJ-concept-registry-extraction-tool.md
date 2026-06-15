@@ -6,11 +6,11 @@ status: closed
 title: "Concept-registry extraction tool — canonical inventory of load-bearing concepts"
 tier: substrate-quality
 effort: S
-parent: B-0060
+parent: 081KQ8P5D0008QG0R000N718AC
 created: 2026-05-08
 last_updated: 2026-05-09
 depends_on: []
-composes_with: [B-0060, B-0311]
+composes_with: [081KQ8P5D0008QG0R000N718AC, 081KR2E4K0008QG0R001ZWARTN]
 tags: [substrate-quality, tooling, concept-registry, human-lineage]
 type: friction-reducer
 ---

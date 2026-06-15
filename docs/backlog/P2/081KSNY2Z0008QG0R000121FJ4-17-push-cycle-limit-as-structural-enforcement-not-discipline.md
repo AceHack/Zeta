@@ -9,10 +9,10 @@ ask: kestrel via aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0867
+  - 081KSKBP80008QG0R000B3Y19A
 composes_with:
-  - B-0867
-  - B-0867.16
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R003J3PT4V
 tags:
   - push-cycle-limit
   - structural-enforcement-not-discipline

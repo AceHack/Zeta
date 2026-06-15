@@ -11,7 +11,7 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 composes_with:
-  - B-0090
+  - 081KQ8P5D0008QG0R0002TN22C
 tags: [aaron-2026-04-28, factory-hygiene, naming-canonical, scope-of-org-access, external-ui-demo, beacon-safe-naming]
 ---
 

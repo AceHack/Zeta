@@ -9,8 +9,8 @@ effort: XS
 ask: follow-up from B-0088.5 audit (2026-05-29)
 created: 2026-05-29
 last_updated: 2026-05-29
-depends_on: [B-0088.5]
-composes_with: [B-0088, B-0088.5]
+depends_on: [081KRA5AR0008QG0R000WP3VYT]
+composes_with: [081KQ8P5D0008QG0R002FSTGXP, 081KRA5AR0008QG0R000WP3VYT]
 tags: [advisory-enforcement, github-rulesets, backlog-index-integrity]
 type: decision
 ---

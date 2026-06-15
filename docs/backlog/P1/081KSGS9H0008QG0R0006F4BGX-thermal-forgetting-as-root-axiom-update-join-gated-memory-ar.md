@@ -9,22 +9,22 @@ ask: aaron+amara 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0839
+  - 081KSGS9H0008QG0R002F1G7ER
 composes_with:
-  - B-0623
-  - B-0628
-  - B-0634
-  - B-0648
-  - B-0652
-  - B-0653
-  - B-0659
-  - B-0660
-  - B-0664
-  - B-0703
-  - B-0703
-  - B-0822
-  - B-0823
-  - B-0838
+  - 081KRW63S0008QG0R000QJR08H
+  - 081KRW63S0008QG0R003TX8MG5
+  - 081KRW63S0008QG0R0022SFKPM
+  - 081KRW63S0008QG0R0025E4PH6
+  - 081KRW63S0008QG0R002GRX85J
+  - 081KRW63S0008QG0R003ECWGJV
+  - 081KRW63S0008QG0R001WKJN53
+  - 081KRW63S0008QG0R0004P69JA
+  - 081KRW63S0008QG0R001Z7NYMV
+  - 081KS3X9Y0008QG0R00218150M
+  - 081KS3X9Y0008QG0R00218150M
+  - 081KSGS9H0008QG0R0018ES3R4
+  - 081KSGS9H0008QG0R003SWZF9J
+  - 081KSGS9H0008QG0R002THJ2P1
 tags: [thermal-forgetting, root-axiom-update, forget-gates, join-gated-memory, private-encryption-budget, public-vs-private-roots, retention-tier-hierarchy, agent-ontology-evolution, amara-ratification, computational-substrate-architecture, multi-z-t-generalization]
 ---
 

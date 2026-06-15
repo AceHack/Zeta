@@ -6,11 +6,11 @@ status: closed
 title: "Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract"
 tier: agent-capability-expansion
 effort: S
-parent: B-0064
+parent: 081KQ8P5D0008QG0R0010FP5SY
 created: 2026-05-08
 last_updated: 2026-05-09
-depends_on: [B-0317]
-composes_with: [B-0064, B-0319, B-0323, B-0324]
+depends_on: [081KR2E4K0008QG0R0031QR36N]
+composes_with: [081KQ8P5D0008QG0R0010FP5SY, 081KR2E4K0008QG0R0001FRW8H, 081KR2E4K0008QG0R003E09GMM, 081KR2E4K0008QG0R000Q45WMQ]
 tags: [agent-capability, github-ui, playwright, read-only, snapshot]
 type: friction-reducer
 ---

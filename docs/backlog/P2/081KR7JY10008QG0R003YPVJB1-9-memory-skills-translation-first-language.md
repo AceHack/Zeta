@@ -6,8 +6,8 @@ status: open
 title: "B-0004.9 — Memory + skills translation — first language (second deployment tier)"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.7, B-0004.8]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR7JY10008QG0R0022YWDVZ, 081KR7JY10008QG0R0020PM4AH]
 classification: blocked
 type: feature
 effort: M

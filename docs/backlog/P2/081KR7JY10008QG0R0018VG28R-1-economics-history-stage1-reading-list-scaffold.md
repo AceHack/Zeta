@@ -4,7 +4,7 @@ zetaid: 081KR7JY10008QG0R0018VG28R
 priority: P2
 status: closed
 title: Economics + history Stage 1 — reading-list scaffold (substrate shelf)
-parent: B-0046
+parent: 081KQ3HBZ0008QG0R0001XKNWK
 tier: substrate-knowledge-sweep
 effort: S
 ask: B-0046 Stage 1; bibliographic catalog only — no F1/F2/F3 or yin-yang analysis yet
@@ -12,7 +12,7 @@ created: 2026-05-10
 last_updated: 2026-05-16
 closed: 2026-05-16
 depends_on: []
-composes_with: [B-0046, B-0045, B-0045.1, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md]
+composes_with: [081KQ3HBZ0008QG0R0001XKNWK, 081KQ3HBZ0008QG0R0012P9EBM, 081KR50HA0008QG0R001Q071YY, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md]
 tags: [economics, history, substrate-shelf, reading-list, ammous, braudel, tainter, smith, hayek, graeber, ostrom]
 type: friction-reducer
 ---

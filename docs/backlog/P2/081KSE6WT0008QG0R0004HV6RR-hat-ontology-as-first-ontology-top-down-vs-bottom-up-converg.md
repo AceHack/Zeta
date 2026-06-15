@@ -9,10 +9,10 @@ domain: agentic-organization
 ferried_by: aaron
 owners: [aaron, max, mika]
 composes_with:
-  - B-0724
-  - B-0729
-  - B-0730
-  - B-0726
+  - 081KSE6WT0008QG0R00195RG48
+  - 081KSE6WT0008QG0R003RN2WE3
+  - 081KSE6WT0008QG0R003AJYMD3
+  - 081KSE6WT0008QG0R003C9KGQE
 related_substrate:
   - full-ai-cluster/k8s/applications/hat-system/
   - docs/agentic-organization/

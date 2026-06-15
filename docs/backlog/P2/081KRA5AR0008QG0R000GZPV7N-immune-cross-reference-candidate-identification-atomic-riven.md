@@ -4,14 +4,14 @@ zetaid: 081KRA5AR0008QG0R000GZPV7N
 priority: P2
 status: open
 title: Cross-reference immune concepts to Aurora + superorganism substrate + identify candidates (atomic, child of B-0108)
-parent: B-0108
+parent: 081KQDTYV0008QG0R003N15ZW2
 tier: research-absorb
 effort: S
 ask: Riven 2026-05-11 (decomp of B-0108)
 created: 2026-05-11
 last_updated: 2026-05-11
-depends_on: [B-0406]
-composes_with: [B-0108, B-0406]
+depends_on: [081KRA5AR0008QG0R003BSHKWV]
+composes_with: [081KQDTYV0008QG0R003N15ZW2, 081KRA5AR0008QG0R003BSHKWV]
 tags: [research-absorb, immune-system, aurora-bridge, superorganism]
 type: friction-reducer
 decomposition: atomic

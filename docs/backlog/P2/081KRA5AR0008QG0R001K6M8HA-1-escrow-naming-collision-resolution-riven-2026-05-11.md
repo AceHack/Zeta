@@ -9,9 +9,9 @@ effort: XS
 ask: re-decomposition of B-0095 (2026-05-11)
 created: 2026-05-11
 last_updated: 2026-05-11
-parent: B-0095
-depends_on: [B-0095]
-composes_with: [B-0095]
+parent: 081KQB8J40008QG0R0005ZEYNN
+depends_on: [081KQB8J40008QG0R0005ZEYNN]
+composes_with: [081KQB8J40008QG0R0005ZEYNN]
 tags: [riven-2026-05-11, naming, escrow, vocabulary, naming-expert]
 type: vocabulary
 ---

@@ -10,11 +10,11 @@ domain: agentic-organization
 ferried_by: aaron
 owners: [aaron, mika]
 composes_with:
-  - B-0687
-  - B-0685
-  - B-0733
-  - B-0734
-  - B-0729
+  - 081KS3X9Y0008QG0R00323NSZA
+  - 081KS3X9Y0008QG0R000EKJE9S
+  - 081KSE6WT0008QG0R00102H071
+  - 081KSE6WT0008QG0R00276F8SE
+  - 081KSE6WT0008QG0R003RN2WE3
 related_substrate:
   - .claude/rules/persistence-choice-architecture-for-zeta-ais.md
   - .claude/rules/glass-halo-bidirectional.md

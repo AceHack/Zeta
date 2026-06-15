@@ -9,10 +9,10 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0812
+  - 081KSGS9H0008QG0R0037H3W4T
 composes_with:
-  - B-0794
-  - B-0782
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSE6WT0008QG0R003CMCX84
 tags: [hardware-inventory, cluster-state, gap-analysis, reconciliation, cockroachdb, git-source-of-truth, addison-substrate, buying-decisions, operational]
 ---
 

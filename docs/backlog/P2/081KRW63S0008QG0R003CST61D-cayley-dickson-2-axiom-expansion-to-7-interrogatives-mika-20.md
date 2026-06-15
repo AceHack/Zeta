@@ -8,7 +8,7 @@ tier: research
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0584, B-0612, B-0543]
+depends_on: [081KRQ1AB0008QG0R001YAF3TR, 081KRSKQ20008QG0R00271HPJW, 081KRMEXM0008QG0R002YSPW1X]
 composes_with: []
 tags: [research, mika, cayley-dickson, imaginary-stack, interrogatives, remember-when, pay-attention, retractable-z-state]
 type: research

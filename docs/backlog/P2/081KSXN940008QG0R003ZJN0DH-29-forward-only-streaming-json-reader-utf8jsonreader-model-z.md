@@ -8,11 +8,11 @@ created: 2026-05-31
 last_updated: 2026-05-31
 attribution: aaron-2026-05-31
 depends_on:
-  - B-0867.27
+  - 081KSXN940008QG0R0033T2BQT
 composes_with:
-  - B-0867
-  - B-0944
-  - B-0867.28
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSV2WD0008QG0R00051XS0N
+  - 081KSXN940008QG0R0002287MP
 tags:
   - workflow-engine
   - json-parser

@@ -9,8 +9,8 @@ effort: M
 ask: aaron 2026-05-21 ("yes if yall can on bus or something that would be cool but i'm here right now")
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0400]
-composes_with: [B-0689, B-0695]
+depends_on: [081KR7JY10008QG0R000R503K2]
+composes_with: [081KS3X9Y0008QG0R000BJY3DK, 081KS3X9Y0008QG0R002EEH26Z]
 tags: [bus-envelope, cross-ai-coordination, substrate-surface-change, mechanize-coordination, multi-otto, multi-vendor, cold-boot-inheritance, claim-acquire-companion]
 type: operational
 ---

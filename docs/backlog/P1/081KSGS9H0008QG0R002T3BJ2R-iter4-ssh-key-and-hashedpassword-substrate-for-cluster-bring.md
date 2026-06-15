@@ -11,12 +11,12 @@ last_updated: 2026-05-26
 depends_on:
   - B-0754
 composes_with:
-  - B-0759
-  - B-0770
-  - B-0776
-  - B-0786
-  - B-0780
-  - B-0778
+  - 081KSE6WT0008QG0R003G0Y62D
+  - 081KSE6WT0008QG0R0029S1D5Z
+  - 081KSE6WT0008QG0R002275NDE
+  - 081KSE6WT0008QG0R000C18G5D
+  - 081KSE6WT0008QG0R000RH1526
+  - 081KSE6WT0008QG0R0004AP0ZA
 tags: [cluster-install, ssh-key, password, iter-4, nixos, credentials, b-0754-follow-on]
 ---
 

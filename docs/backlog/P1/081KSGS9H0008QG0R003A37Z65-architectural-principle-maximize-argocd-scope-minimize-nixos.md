@@ -10,17 +10,17 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0782
-  - B-0790
-  - B-0794
-  - B-0800
-  - B-0801
-  - B-0802
-  - B-0803
-  - B-0806
-  - B-0811
-  - B-0813
-  - B-0814
+  - 081KSE6WT0008QG0R003CMCX84
+  - 081KSGS9H0008QG0R00153CQ8B
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R001EKTS5A
+  - 081KSGS9H0008QG0R002T6J6FS
+  - 081KSGS9H0008QG0R003GM7TYN
+  - 081KSGS9H0008QG0R00280HHA7
+  - 081KSGS9H0008QG0R001Y9FB62
+  - 081KSE6WT0008QG0R002CC6314
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R000EPPQTR
 tags: [architectural-principle, argocd, portability, nixos-vs-argocd-tradeoff, cross-cluster-substrate, cluster-substrate, design-discipline, iter-5-iter-6-iter-7]
 ---
 

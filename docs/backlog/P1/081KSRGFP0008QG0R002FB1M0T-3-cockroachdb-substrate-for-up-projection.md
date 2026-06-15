@@ -9,9 +9,9 @@ effort: L
 ask: aaron 2026-05-26
 created: 2026-05-29
 last_updated: 2026-06-13
-parent: B-0824
-depends_on: [B-0824.1]
-composes_with: [B-0819, B-0825]
+parent: 081KSGS9H0008QG0R0031PBNGA
+depends_on: [081KSKBP80008QG0R002513Q0B]
+composes_with: [081KSGS9H0008QG0R0005P83AP, 081KSGS9H0008QG0R002PT5C7J]
 tags: [ace-feature, meta-package-manager, cockroachdb, recursive-cte, generator-db]
 ---
 

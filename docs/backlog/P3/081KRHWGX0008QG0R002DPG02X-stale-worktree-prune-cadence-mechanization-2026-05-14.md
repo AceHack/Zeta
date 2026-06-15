@@ -10,7 +10,7 @@ created: 2026-05-14
 last_updated: 2026-05-16
 closed: 2026-05-16
 depends_on: []
-composes_with: [B-0400, B-0444]
+composes_with: [081KR7JY10008QG0R000R503K2, 081KRFA460008QG0R001SXP0C2]
 tags: [worktree, hygiene, factory-cadence, multi-foreground-surface, friction-reducer]
 type: chore
 ---

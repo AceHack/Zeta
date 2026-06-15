@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0628, B-0646, B-0644, B-0648]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R0025E4PH6]
 tags: [governance, aaron, mika, two-pass-principles, lock-free, wait-free, deterministic-replayable-retractable, adversarial-review, scale-free-deferred, self-similar-deferred, substrate-honest, locked-in]
 type: governance
 ---

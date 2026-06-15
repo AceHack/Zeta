@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1000, B-1001, B-1002, B-1004]
-composes_with: [B-0999, B-1003, B-0428]
+depends_on: [081KT2T2J0008QG0R000S7GHQ8, 081KT2T2J0008QG0R000VG204F, 081KT2T2J0008QG0R002R72323, 081KT2T2J0008QG0R0038CRFJM]
+composes_with: [081KT2T2J0008QG0R0019YVX8M, 081KT2T2J0008QG0R00301P27H, 081KRFA460008QG0R0018SN61J]
 tags: [distributed-tensor-inference, sharded-factor-graph, group-is-the-tensor, bayesian-marginalization, fused-vs-non-fused, expression-tree-fusion, tension-preserving-prior, marginal-is-canonical, membranes-as-jelly, jelly-to-spine-phase-transition, schema-in-stream, message-passing-consensus, arrow-columnar, eve-transport, dbsp, indexed-zset, infer-net, research, aaron, prism]
 type: research
 ---

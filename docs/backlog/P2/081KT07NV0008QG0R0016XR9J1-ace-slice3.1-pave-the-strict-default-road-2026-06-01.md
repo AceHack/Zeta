@@ -6,8 +6,8 @@ status: open
 title: "Ace slice 3.1 — pave the strict-by-default road (lower signature friction)"
 created: 2026-06-01
 last_updated: 2026-06-01
-parent: B-0288
-depends_on: [B-0288]
+parent: 081KR2E4K0008QG0R002YE3MMD
+depends_on: [081KR2E4K0008QG0R002YE3MMD]
 classification: buildable-now
 decomposition: atomic
 owners: [developer-experience-engineer, security-researcher]

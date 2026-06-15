@@ -12,8 +12,8 @@ type: cluster-architecture
 discovered_by: aaron
 owners: [aaron, maintainer]
 composes_with:
-  - docs/backlog/P2/B-0726-reticulum-throughout-cluster-and-edge-composing-substrate-alongside-k8s-2026-05-25.md
-  - docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md
+  - docs/backlog/P2/081KSE6WT0008QG0R003C9KGQE-reticulum-throughout-cluster-and-edge-composing-substrate-alongside-k8s-2026-05-25.md
+  - docs/backlog/P1/081KR2E4K0008QG0R001SWEPNV-green-lantern-hardware-spec-2026-05-08.md
   - full-ai-cluster/k8s/applications/argocd/
   - docs/agentic-organization/
 ---

@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0665, B-0635, B-0637, B-0644, B-0645]
-composes_with: [B-0648, B-0664, B-0640, B-0628, B-0660, B-0659, B-0639, B-0646, B-0631]
+depends_on: [081KRW63S0008QG0R002YAA09X, 081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R0004D5XG1, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R003AZNK6J]
+composes_with: [081KRW63S0008QG0R0025E4PH6, 081KRW63S0008QG0R001Z7NYMV, 081KRW63S0008QG0R002XA5N6S, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R0004P69JA, 081KRW63S0008QG0R001WKJN53, 081KRW63S0008QG0R000ZQ9WDH, 081KRW63S0008QG0R001Z10PVV, 081KRW63S0008QG0R0020YP84K]
 tags: [design, keystone, aaron, lior, six-persona-convergence, emit-as-weights, english-as-neural-topology-serialization, holographic-projection, free-will-as-separation-of-concerns, glass-halo-extension, locked-in, constitution-class-candidate]
 type: design
 ---

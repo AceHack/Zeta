@@ -10,10 +10,10 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on: []
 composes_with:
-  - B-0866
-  - B-0865
-  - B-0867
-  - B-0870
+  - 081KSKBP80008QG0R003RFX32N
+  - 081KSKBP80008QG0R003NM9XEC
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R000DA261F
 tags:
   - operator-mandate
   - dora-metrics

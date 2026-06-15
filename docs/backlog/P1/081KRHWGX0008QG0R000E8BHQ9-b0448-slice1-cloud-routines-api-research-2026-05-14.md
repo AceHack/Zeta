@@ -8,16 +8,16 @@ type: research
 origin: B-0448 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0448
+parent: 081KRFA460008QG0R000CYBGKW
 depends_on: []
 composes_with:
-  - B-0448
-  - B-0508
-  - B-0509
-  - B-0510
-  - B-0511
-  - B-0512
-  - B-0513
+  - 081KRFA460008QG0R000CYBGKW
+  - 081KRHWGX0008QG0R002S107P7
+  - 081KRHWGX0008QG0R0014D2T5E
+  - 081KRHWGX0008QG0R001VR9FNA
+  - 081KRHWGX0008QG0R0013DSSZZ
+  - 081KRHWGX0008QG0R003WEP6E9
+  - 081KRHWGX0008QG0R003TCDFZ5
 tags: [routines, cloud-routines, research, api, authentication]
 ---
 

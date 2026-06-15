@@ -10,7 +10,7 @@ ask: otto-cli empirical anchor 2026-05-18 (resurfaced 2026-05-21 PR #4537 review
 created: 2026-05-18
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0650]
+composes_with: [081KRW63S0008QG0R003377JG9]
 tags: [git-network-ops, multi-agent-saturation, push-hang, fetch-hang, orphan-subprocesses, harness-shell-wrappers, claude-code-bash-tool, kill-after-discipline, dotgit-pack-contention]
 type: operational
 ---

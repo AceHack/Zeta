@@ -7,7 +7,7 @@ title: "Media-catalog schema foundation — typed TS schema + MR-001..004 seed e
 effort: S
 created: 2026-05-08
 last_updated: 2026-05-13
-parent: B-0054
+parent: 081KQ3HBZ0008QG0R003V6B2ME
 depends_on: []
 classification: landed
 decomposition: atomic

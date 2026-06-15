@@ -11,9 +11,9 @@ last_updated: 2026-05-26
 depends_on:
   - B-0754
 composes_with:
-  - B-0831
-  - B-0832
-  - B-0833
+  - 081KSGS9H0008QG0R0011BC7T2
+  - 081KSGS9H0008QG0R001Q2DH2H
+  - 081KSGS9H0008QG0R003JNSVR5
 tags: [installer, first-boot, logging, operator-ux, physical-hardware-support-test, empirical-anchor, scrollback]
 ---
 

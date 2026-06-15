@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 forwarding Claude.ai conversation that named DeepSeek V4 a
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0152, B-0196, B-0202, B-0026, B-0204]
+composes_with: [081KQGDBJ0008QG0R00280ZEV2, 081KQTPYE0008QG0R001W237MZ, 081KQTPYE0008QG0R002Y7X5KH, 081KQ0YZ80008QG0R001WZ4JE8, 081KQTPYE0008QG0R0028V263Z]
 tags: [deepseek, deepseek-v4, csa, hca, compressed-sparse-attention, heavily-compressed-attention, mla, mixture-of-experts, four-property-hodl, dbsp, zset-algebra, fp8, manifold-constrained-hyper-connections, mhc, kv-cache, attention-architecture, mit-license, open-weights]
 type: feature
 ---

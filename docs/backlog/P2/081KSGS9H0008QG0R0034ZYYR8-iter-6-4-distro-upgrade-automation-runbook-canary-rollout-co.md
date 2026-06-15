@@ -9,15 +9,15 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0800
-  - B-0801
-  - B-0802
+  - 081KSGS9H0008QG0R001EKTS5A
+  - 081KSGS9H0008QG0R002T6J6FS
+  - 081KSGS9H0008QG0R003GM7TYN
 composes_with:
-  - B-0800
-  - B-0801
-  - B-0802
-  - B-0803
-  - B-0805
+  - 081KSGS9H0008QG0R001EKTS5A
+  - 081KSGS9H0008QG0R002T6J6FS
+  - 081KSGS9H0008QG0R003GM7TYN
+  - 081KSGS9H0008QG0R00280HHA7
+  - 081KSGS9H0008QG0R002BC2ZR7
 tags: [iter-6, distro-upgrade, runbook, canary-rollout, automation, cross-channel, nixos, full-ai-cluster, no-manual-operator]
 ---
 

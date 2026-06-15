@@ -9,9 +9,9 @@ effort: S
 ask: decomposition of B-0005
 created: 2026-05-09
 last_updated: 2026-05-09
-depends_on: [B-0375, B-0376]
-composes_with: [B-0005, B-0375, B-0376, B-0378, B-0379]
-parent: B-0005
+depends_on: [081KR50HA0008QG0R003PAVRT8, 081KR50HA0008QG0R0038HWCDT]
+composes_with: [081KQ0YZ80008QG0R003GMGDRH, 081KR50HA0008QG0R003PAVRT8, 081KR50HA0008QG0R0038HWCDT, 081KR50HA0008QG0R002HMCS5Y, 081KR50HA0008QG0R003DJ093T]
+parent: 081KQ0YZ80008QG0R003GMGDRH
 tags: [governance, directory-ontology, aurora, BP-17, BP-18, otto-279, schema-doc]
 type: friction-reducer
 ---

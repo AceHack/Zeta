@@ -12,16 +12,16 @@ depends_on: []
 composes_with:
   - B-0743
   - B-0754
-  - B-0755
+  - 081KSE6WT0008QG0R003612WGJ
   - B-0758
-  - B-0759
+  - 081KSE6WT0008QG0R003G0Y62D
   - B-0760
-  - B-0761
-  - B-0763
-  - B-0769
-  - B-0770
-  - B-0771
-  - B-0772
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KSE6WT0008QG0R000WVYAJ2
+  - 081KSE6WT0008QG0R001E1F862
+  - 081KSE6WT0008QG0R0029S1D5Z
+  - 081KSE6WT0008QG0R0022D6GN8
+  - 081KSE6WT0008QG0R003WMG4XV
 tags: [cluster, hardware, sourcing, commodity, mini-pc, oculink, egpu, ai-cpu, shared-memory, npu, igpu, kvm, accessibility, home-lab]
 ---
 

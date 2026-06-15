@@ -9,9 +9,9 @@ last_updated: 2026-05-20
 type: feature
 composes_with:
   - B-0620  # multi-account + multi-vendor inventory consolidation
-  - B-0610  # amazon-orders-extract v3 design pass
+  - 081KRQ1AB0008QG0R002TZ063S  # amazon-orders-extract v3 design pass
 depends_on:
-  - B-0676 # B-0620 slice 4 consolidator script
+  - 081KS1AX70008QG0R001Y9EN85 # B-0620 slice 4 consolidator script
 ---
 
 # B-0678: B-0620 slice 5 category classifier

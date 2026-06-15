@@ -6,7 +6,7 @@ status: open
 title: Class-level lesson encoded as a verify-before-state-claim audit (decomposed from B-0139)
 created: 2026-05-16
 last_updated: 2026-05-16
-depends_on: [B-0139]
+depends_on: [081KQGDBJ0008QG0R002S9SWH6]
 type: friction-reducer
 ---
 

@@ -6,8 +6,8 @@ status: open
 title: "Pages content sources - stable route map before indexing"
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0233
-depends_on: [B-0301]
+parent: 081KQX9B50008QG0R0001XDTDQ
+depends_on: [081KR2E4K0008QG0R0035QVX6S]
 classification: blocked-on-B-0301
 decomposition: atomic
 owners: [architect, docs]

@@ -9,9 +9,9 @@ closed_by: "step 4c added to AUTONOMOUS-LOOP.md every-tick checklist"
 title: Wire reindex-memory-md.ts into autonomous-loop tick cadence
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0423
-depends_on: [B-0423.1]
-composes_with: [B-0423, B-0423.1, B-0423.2]
+parent: 081KRCQQF0008QG0R0037YYP1A
+depends_on: [081KRFA460008QG0R0006Q6BWP]
+composes_with: [081KRCQQF0008QG0R0037YYP1A, 081KRFA460008QG0R0006Q6BWP, 081KRFA460008QG0R000YPS21H]
 effort: S
 tier: factory-tooling
 authors: [otto]

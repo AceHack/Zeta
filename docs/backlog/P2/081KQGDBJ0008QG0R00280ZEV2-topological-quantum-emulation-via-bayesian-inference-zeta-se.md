@@ -7,7 +7,7 @@ title: Topological quantum emulation via Bayesian inference in Zeta seed executo
 created: 2026-05-01
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0199, B-0202, B-0204]
+composes_with: [081KQTPYE0008QG0R0028GRW88, 081KQTPYE0008QG0R002Y7X5KH, 081KQTPYE0008QG0R0028V263Z]
 type: feature
 ---
 

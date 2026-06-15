@@ -6,11 +6,11 @@ status: open
 title: "GitHub Pages discoverability - content sources and information architecture"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0154
-depends_on: [B-0232, B-0301, B-0302, B-0303, B-0304]
+parent: 081KQGDBJ0008QG0R002NV04N9
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KR2E4K0008QG0R0035QVX6S, 081KR2E4K0008QG0R000WYVJAF, 081KR2E4K0008QG0R001HV8DEG, 081KR2E4K0008QG0R001B503RK]
 classification: blocked-on-pages-workflow
 decomposition: clean
-children: [B-0301, B-0302, B-0303, B-0304]
+children: [081KR2E4K0008QG0R0035QVX6S, 081KR2E4K0008QG0R000WYVJAF, 081KR2E4K0008QG0R001HV8DEG, 081KR2E4K0008QG0R001B503RK]
 type: friction-reducer
 ---
 

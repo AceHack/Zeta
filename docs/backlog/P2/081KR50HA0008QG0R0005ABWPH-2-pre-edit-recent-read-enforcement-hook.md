@@ -11,8 +11,8 @@ effort: S
 ask: TS hook implementation for Edit-without-Read failure mode
 created: 2026-05-09
 last_updated: 2026-05-10
-depends_on: [B-0033.1]
-composes_with: [B-0033]
+depends_on: [081KR50HA0008QG0R002B3N54S]
+composes_with: [081KQ3HBZ0008QG0R0008RYCSX]
 tags: [pre-edit-hook, recent-read, mtime, otto-343]
 type: friction-reducer
 ---

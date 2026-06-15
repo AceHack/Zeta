@@ -6,8 +6,8 @@ status: open
 title: "Timeseries native-ZSet research - meta-DSL integration sketch"
 created: 2026-05-06
 last_updated: 2026-05-06
-parent: B-0147
-depends_on: [B-0148, B-0225, B-0227]
+parent: 081KQGDBJ0008QG0R0004ACHJJ
+depends_on: [081KQGDBJ0008QG0R002175ECA, 081KQX9B50008QG0R003Z7Z9EG, 081KQX9B50008QG0R002RZXEQK]
 classification: blocked-on-mdx-and-crdt-semantics
 type: feature
 ---

@@ -11,9 +11,9 @@ last_updated: 2026-05-26
 depends_on:
   - B-0751
 composes_with:
-  - B-0628
-  - B-0750
-  - B-0752
+  - 081KRW63S0008QG0R003TX8MG5
+  - 081KSE6WT0008QG0R003YYC9PV
+  - 081KSE6WT0008QG0R000E05579
 tags: [ai-identity, github, attribution, substrate-honest, audit-trail, algo-wink-fix, naming-expert-review, ilyana, post-cluster, persistence-choice-architecture]
 ---
 

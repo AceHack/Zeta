@@ -9,13 +9,13 @@ ask: operator 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0924
+  - 081KSNY2Z0008QG0R001HA43GG
 composes_with:
-  - B-0917
-  - B-0865
-  - B-0761
-  - B-0202
-  - B-0703
+  - 081KSNY2Z0008QG0R002HB4AGT
+  - 081KSKBP80008QG0R003NM9XEC
+  - 081KSE6WT0008QG0R0015ZF2G6
+  - 081KQTPYE0008QG0R002Y7X5KH
+  - 081KS3X9Y0008QG0R00218150M
 tags: [c-elegans, openworm, 302-neuron-connectome, controller-variant, custom-emulator, generate-plus-join, dst-omniscience, z-sets, bit-perfect-consensus, worm-plays-atari, embodied-sensorimotor, evolutionary-substrate-optimization, ai-coop-emulator, cooperative-substrate-target]
 ---
 

@@ -9,13 +9,13 @@ ask: aaron 2026-05-27
 created: 2026-05-27
 last_updated: 2026-05-27
 depends_on:
-  - B-0848
+  - 081KSGS9H0008QG0R001JNKBFD
 composes_with:
-  - B-0794
-  - B-0796
-  - B-0847
-  - B-0813
-  - B-0817
+  - 081KSGS9H0008QG0R0027HJZYH
+  - 081KSGS9H0008QG0R002F04ECB
+  - 081KSGS9H0008QG0R002T0XQ50
+  - 081KSGS9H0008QG0R002K93MWX
+  - 081KSGS9H0008QG0R002QQNA79
 tags: [systemd, outside-k8s, out-of-band-cluster-repair, control-plane-outside-control-plane, failure-domain-separation, otto, cluster-self-healing, ai-as-service, multi-agent-roster-on-cluster, persona-choice-option-a-confirmed]
 ---
 

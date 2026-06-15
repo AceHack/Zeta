@@ -10,9 +10,9 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0782
-  - B-0790
-  - B-0794
+  - 081KSE6WT0008QG0R003CMCX84
+  - 081KSGS9H0008QG0R00153CQ8B
+  - 081KSGS9H0008QG0R0027HJZYH
 tags: [memory-sync, local-vs-git, autonomous-loop, sometimes-task, substrate-or-it-didnt-happen, persistence-discipline, token-bounded-migration]
 ---
 

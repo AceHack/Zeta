@@ -10,7 +10,7 @@ ask: Atomic slice of B-0105 consolidation: author the memory file at memory/feed
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
-composes_with: [B-0105.1, B-0105.3]
+composes_with: [081KRA5AR0008QG0R0031VF018, 081KRA5AR0008QG0R001QT2ZXQ]
 tags: [consolidation, durable-home, reviewer-taxonomy, memory-file]
 type: friction-reducer
 ---

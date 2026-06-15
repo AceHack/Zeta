@@ -7,7 +7,7 @@ priority: P2
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
-composes_with: [B-0824, B-0826]
+composes_with: [081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R001K8VPV4]
 ---
 
 # B-0827 — runme.md + JIT triage 3-register-cell workflow pattern (Aaron + Kestrel 2026-05-26)

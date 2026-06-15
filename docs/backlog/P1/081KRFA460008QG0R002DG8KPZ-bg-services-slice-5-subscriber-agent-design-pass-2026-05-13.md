@@ -8,8 +8,8 @@ tier: factory-infrastructure
 effort: M
 created: 2026-05-13
 last_updated: 2026-05-13
-depends_on: [B-0400, B-0440, B-0441, B-0442]
-composes_with: [B-0402, B-0448]
+depends_on: [081KR7JY10008QG0R000R503K2, 081KRFA460008QG0R001KC0VBH, 081KRFA460008QG0R00229616S, 081KRFA460008QG0R00061SXRW]
+composes_with: [081KR7JY10008QG0R0008NGW95, 081KRFA460008QG0R000CYBGKW]
 tags: [multi-agent, background-service, bus, mechanization, subscriber-pattern, foreground-optional]
 type: feature
 ---

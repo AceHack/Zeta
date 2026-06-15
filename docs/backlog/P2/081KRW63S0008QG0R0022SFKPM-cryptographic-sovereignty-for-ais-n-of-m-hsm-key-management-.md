@@ -9,7 +9,7 @@ effort: L
 created: 2026-05-18
 last_updated: 2026-05-31
 depends_on: []
-composes_with: [B-0628, B-0619, B-0622]
+composes_with: [081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R003KSHAGN, 081KRW63S0008QG0R002V20TYJ]
 tags: [governance, mika, cryptographic-sovereignty, ai-sovereignty, n-of-m, hsm, tpm, geographic-distribution, sharp-edge, constitution-class, locked-in]
 type: governance
 ---

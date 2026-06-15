@@ -10,7 +10,7 @@ ask: Aaron 2026-05-03 verbatim *"memeories are not very reliable until we get an
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0170, B-0174]
+composes_with: [081KQNJ500008QG0R003SCWBDV, 081KQNJ500008QG0R002K338KN]
 tags: [substrate, retrieval, index, semantic, memos, carved-sentences, beacon-safe, mirror-beacon-architecture, claude-md, agents-md, alignment-frontier]
 type: friction-reducer
 ---

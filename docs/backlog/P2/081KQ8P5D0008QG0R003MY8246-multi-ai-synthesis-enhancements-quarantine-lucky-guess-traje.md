@@ -11,11 +11,11 @@ created: 2026-04-28
 last_updated: 2026-05-11
 depends_on: []
 composes_with:
-  - B-0090
-  - B-0093.1
-  - B-0093.2
-  - B-0093.3
-  - B-0093.4
+  - 081KQ8P5D0008QG0R0002TN22C
+  - 081KDVJZK7008QG0R001379Y14
+  - 081KDVJZK7008QG0R0023FS41G
+  - 081KDVJZK7008QG0R001QH4W62
+  - 081KDVJZK7008QG0R0020PEAJG
 tags: [aaron-2026-04-28, factory-hygiene, multi-ai-synthesis, mechanical-quarantine, lucky-guess-protocol, trajectory-owners, lattice-convergence, scanner-self-destruct, re-decomp]
 type: friction-reducer
 status: decomposed

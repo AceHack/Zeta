@@ -6,11 +6,11 @@ status: closed
 title: "Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing"
 tier: peer-call-substrate
 effort: S
-parent: B-0065
+parent: 081KQ8P5D0008QG0R002M5A2M7
 created: 2026-05-08
 last_updated: 2026-05-09
-depends_on: [B-0325]
-composes_with: [B-0065, B-0121]
+depends_on: [081KR2E4K0008QG0R0005E727X]
+composes_with: [081KQ8P5D0008QG0R002M5A2M7, 081KQDTYV0008QG0R003VB4K1V]
 tags: [peer-call, claude, self-call, cold-boot-self-test, cross-cli-verify]
 type: friction-reducer
 ---

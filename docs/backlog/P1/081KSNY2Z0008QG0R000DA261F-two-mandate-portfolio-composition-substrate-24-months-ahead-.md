@@ -9,12 +9,12 @@ ask: aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0866
-  - B-0869
+  - 081KSKBP80008QG0R003RFX32N
+  - 081KSNY2Z0008QG0R000HENSVM
 composes_with:
-  - B-0867
-  - B-0868
-  - B-0865
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSNY2Z0008QG0R0036KH026
+  - 081KSKBP80008QG0R003NM9XEC
 tags:
   - portfolio-composition
   - operator-self-management

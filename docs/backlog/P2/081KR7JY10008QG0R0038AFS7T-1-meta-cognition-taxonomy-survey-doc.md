@@ -7,7 +7,7 @@ title: "B-0037.1 — Meta-cognition taxonomy survey doc"
 created: 2026-05-10
 last_updated: 2026-05-16
 depends_on: []
-parent: B-0037
+parent: 081KQ3HBZ0008QG0R0002RB48Q
 classification: buildable-now
 type: research
 effort: S

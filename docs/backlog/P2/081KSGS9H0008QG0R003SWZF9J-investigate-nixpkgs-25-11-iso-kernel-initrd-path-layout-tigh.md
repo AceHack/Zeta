@@ -9,10 +9,10 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-05-26
 depends_on:
-  - B-0800
+  - 081KSGS9H0008QG0R001EKTS5A
 composes_with:
-  - B-0816
-  - B-0818
+  - 081KSGS9H0008QG0R003A37Z65
+  - 081KSGS9H0008QG0R00033DT02
 tags: [nixos, iso-image, 25-11-regression, ci-audit, fix-fwd-of-fix-fwd, kernel-path, initrd-path]
 ---
 

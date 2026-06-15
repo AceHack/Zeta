@@ -17,9 +17,9 @@ composes_with:
   - .claude/agents/formal-verification-expert.md
   - .claude/rules/holding-without-named-dependency-is-standing-by-failure.md
   - memory/soraya/NOTEBOOK.md
-  - docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
-  - docs/backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md
-  - docs/backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md
+  - docs/backlog/P2/081KS923C0008QG0R0032VJZPF-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md
+  - docs/backlog/P3/081KS923C0008QG0R0009JFVSE-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md
+  - docs/backlog/P2/081KSBMG30008QG0R003B46GWG-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md
 ---
 
 # B-0718 — Audit Soraya's four-trigger routing-tick framework (forced-decomposition round 61)

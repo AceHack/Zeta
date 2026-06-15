@@ -10,8 +10,8 @@ domain: ops-tooling
 ferried_by: aaron
 owners: [aaron]
 composes_with:
-  - B-0728
-  - B-0732
+  - 081KSE6WT0008QG0R0005XASX2
+  - 081KSE6WT0008QG0R002YBWBB1
 related_substrate:
   - full-ai-cluster/tools/flash-usb.ts
   - full-ai-cluster/tools/zflash.ts

@@ -9,9 +9,9 @@ closed_by: "implemented in PR #2991 (31243aaf)"
 title: Extend reindex-memory-md.ts test coverage — collectEntries + renderIndex
 created: 2026-05-13
 last_updated: 2026-05-13
-parent: B-0423
+parent: 081KRCQQF0008QG0R0037YYP1A
 depends_on: []
-composes_with: [B-0423]
+composes_with: [081KRCQQF0008QG0R0037YYP1A]
 effort: XS
 tier: factory-tooling
 authors: [otto]

@@ -1,7 +1,7 @@
 ---
 id: B-0367.1
 zetaid: 081KRHWGX0008QG0R0006HXKN7
-parent: B-0367
+parent: 081KR50HA0008QG0R000Z4XCPJ
 priority: P1
 status: open
 title: "Semiring slice 1: Implement concrete ISemiring<'W> instances (IntegerRing, TropicalSemiring, IntervalRing)"

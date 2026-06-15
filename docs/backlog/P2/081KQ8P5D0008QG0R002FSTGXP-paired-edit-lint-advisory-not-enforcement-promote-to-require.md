@@ -14,7 +14,7 @@ last_updated: 2026-05-13
 decomposed: true
 depends_on: []
 composes_with:
-  - B-0087
+  - 081KQ8P5D0008QG0R000JHD7AB
 tags: [otto-2026-04-28, github-actions, branch-protection, advisory-vs-enforcement, factory-hygiene, memory-index-integrity]
 type: friction-reducer
 ---

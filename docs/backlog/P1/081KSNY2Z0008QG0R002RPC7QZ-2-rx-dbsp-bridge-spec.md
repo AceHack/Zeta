@@ -8,8 +8,8 @@ tier: implementation
 effort: L
 created: 2026-05-28
 last_updated: 2026-05-28
-parent: B-0668
-depends_on: [B-0668, B-0668.1]
+parent: 081KRYRGG0008QG0R0018CMFQY
+depends_on: [081KRYRGG0008QG0R0018CMFQY, 081KSNY2Z0008QG0R001TMM2HY]
 composes_with: []
 tags: [dbsp, fsharp, rx, bridge-spec]
 ---

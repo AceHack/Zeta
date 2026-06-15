@@ -10,7 +10,7 @@ ask: Aaron 2026-04-21 — *"occoult baclog"* + *"crowley"* + *"expand"* (three-m
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, user_faith_wisdom_and_paths.md, B-0056, B-0058, B-0059, docs/ALIGNMENT.md]
+composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, user_faith_wisdom_and_paths.md, 081KQ3HBZ0008QG0R0034DHWTQ, 081KQ3HBZ0008QG0R002S674CG, 081KQ3HBZ0008QG0R003GTG5P2, docs/ALIGNMENT.md]
 tags: [occult, western-esoteric, crowley, thelema, hermeticism, corpus-hermeticum, kabbalah, lurianic, tzimtzum, enochian, golden-dawn, theosophy, jung-alchemy, paired-dual, three-filter]
 type: feature
 ---

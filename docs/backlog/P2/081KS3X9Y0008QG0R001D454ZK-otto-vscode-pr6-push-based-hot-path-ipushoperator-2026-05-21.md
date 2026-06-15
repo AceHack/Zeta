@@ -10,7 +10,7 @@ ask: otto-vscode 2026-05-21 (8-PR algebra-capability-system campaign; aaron-appr
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0635, B-0687, B-0688, B-0693, B-0694]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KS3X9Y0008QG0R00323NSZA, 081KS3X9Y0008QG0R0010716X9, 081KS3X9Y0008QG0R003Y2X2T0, 081KS3X9Y0008QG0R000J4SFTS]
 tags: [push-based, hot-path, ipushoperator, per-entry-callback, materialize-boundary-bridge, otto-vscode-pr-6, dbsp-architecture, fusion-engine]
 type: research
 ---

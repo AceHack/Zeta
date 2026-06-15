@@ -6,8 +6,8 @@ status: open
 title: "B-0004.2 — Precision glossary anchor set extraction (precondition for consistent translation)"
 created: 2026-05-09
 last_updated: 2026-05-09
-depends_on: [B-0004.1]
-parent: B-0004
+depends_on: [081KR50HA0008QG0R000YTJE8Q]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
 classification: buildable-now
 type: research
 effort: S

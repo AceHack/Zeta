@@ -8,8 +8,8 @@ tier: design
 effort: S
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0624]
-composes_with: [B-0623, B-0624]
+depends_on: [081KRW63S0008QG0R003J8HR6K]
+composes_with: [081KRW63S0008QG0R000QJR08H, 081KRW63S0008QG0R003J8HR6K]
 tags: [design, mika, boot-stream, interrogatives, cost-loss-model, resource-accounting, what-you-lose]
 type: design
 ---

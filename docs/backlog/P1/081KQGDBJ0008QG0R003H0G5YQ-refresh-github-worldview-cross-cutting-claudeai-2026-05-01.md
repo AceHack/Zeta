@@ -9,8 +9,8 @@ last_updated: 2026-05-16
 closed: 2026-05-16
 decomposition: decomposed
 depends_on:
-  - B-0156
-children: [B-0262, B-0263, B-0264]
+  - 081KQGDBJ0008QG0R000A4EZS5
+children: [081KR2E4K0008QG0R001DYCKNH, 081KR2E4K0008QG0R000HG2CAT, 081KR2E4K0008QG0R001H9W2HQ]
 type: friction-reducer
 ---
 

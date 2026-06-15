@@ -11,7 +11,7 @@ created: 2026-04-25
 last_updated: 2026-05-09
 resolved: 2026-05-09
 depends_on: []
-composes_with: [B-0190, B-0193]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KQTPYE0008QG0R00392KABJ]
 tags: [memory-hygiene, MEMORY.md, distillation, compression, otto-291-pacing, otto-294-smooth-shape, otto-295-monoidal-manifold, factory-maintenance]
 type: friction-reducer
 ---

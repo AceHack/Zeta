@@ -10,8 +10,8 @@ domain: ops-tooling
 ferried_by: aaron
 owners: [aaron]
 composes_with:
-  - B-0530
-  - B-0558
+  - 081KRMEXM0008QG0R000X1PPGC
+  - 081KRQ1AB0008QG0R001KQ9S4B
 related_substrate:
   - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md
   - .claude/rules/claim-acquire-before-worktree-work.md

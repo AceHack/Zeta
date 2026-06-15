@@ -9,13 +9,13 @@ ask: aaron 2026-05-28 (Q4 explanation deferred)
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 composes_with:
-  - B-0883
-  - B-0885
-  - B-0884
-  - B-0852
-  - B-0883.1
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0030V5ZVS
+  - 081KSNY2Z0008QG0R0011XCT94
+  - 081KSKBP80008QG0R003AX2A69
+  - 081KSNY2Z0008QG0R0037X4DP4
 tags:
   - content-addressed-store
   - retroactive-revocation

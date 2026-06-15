@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim "rom are in a gitignore rom folder" + "you can pu
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0026, B-0052, B-0053, B-0152, B-0198, B-0202]
+composes_with: [081KQ0YZ80008QG0R001WZ4JE8, 081KQ3HBZ0008QG0R000FQ69NN, 081KQ3HBZ0008QG0R000JWFD37, 081KQGDBJ0008QG0R00280ZEV2, 081KQTPYE0008QG0R0004H9ZB8, 081KQTPYE0008QG0R002Y7X5KH]
 tags: [roms, public-domain, abandonware, license-verification, absorb-and-contribute, citizenship, emulator, arc3]
 type: feature
 ---

@@ -10,9 +10,9 @@ ask: maintainer Aaron 2026-04-28 ("tools/peer-call/{gemini,codex,grok}.sh → ki
 created: 2026-04-28
 last_updated: 2026-05-08
 decomposition: clean
-children: [B-0325, B-0326, B-0327, B-0328]
+children: [081KR2E4K0008QG0R0005E727X, 081KR2E4K0008QG0R001HQF27C, 081KR2E4K0008QG0R002KNZ29V, 081KR2E4K0008QG0R00393D6YF]
 depends_on: []
-composes_with: [B-0060]
+composes_with: [081KQ8P5D0008QG0R000N718AC]
 tags: [peer-call, multi-harness, kiro-cli, self-call, cold-boot-self-test, otto-347, cross-cli-verify]
 type: friction-reducer
 ---

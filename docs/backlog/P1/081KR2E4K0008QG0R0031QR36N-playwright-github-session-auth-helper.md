@@ -6,11 +6,11 @@ status: closed
 title: "Playwright GitHub session/auth helper — cookie-based login for agent UI access"
 tier: agent-capability-expansion
 effort: S
-parent: B-0064
+parent: 081KQ8P5D0008QG0R0010FP5SY
 created: 2026-05-08
 last_updated: 2026-05-09
 depends_on: []
-composes_with: [B-0064]
+composes_with: [081KQ8P5D0008QG0R0010FP5SY]
 tags: [agent-capability, github-ui, playwright, auth, friction-reduction]
 type: friction-reducer
 ---

@@ -12,7 +12,7 @@ created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
 composes_with:
-  - B-0425
+  - 081KRFA460008QG0R003JQ46J4
   - memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md
   - memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md
   - .claude/rules/glass-halo-bidirectional.md

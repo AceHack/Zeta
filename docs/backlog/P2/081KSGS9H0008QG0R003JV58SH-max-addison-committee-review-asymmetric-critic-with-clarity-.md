@@ -10,7 +10,7 @@ created: 2026-05-26
 last_updated: 2026-05-26
 depends_on: []
 composes_with:
-  - B-0628
+  - 081KRW63S0008QG0R003TX8MG5
 tags: [committee-review, rule-draft, max-addison, kestrel-v3-substrate, society-committee, asymmetric-critic, multi-oracle-governance]
 ---
 

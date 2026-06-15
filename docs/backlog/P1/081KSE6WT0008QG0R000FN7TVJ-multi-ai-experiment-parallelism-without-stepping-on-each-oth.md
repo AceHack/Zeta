@@ -9,17 +9,17 @@ ask: aaron 2026-05-25
 created: 2026-05-25
 last_updated: 2026-05-25
 depends_on:
-  - B-0773
-  - B-0784
-  - B-0785
+  - 081KSE6WT0008QG0R0008483B2
+  - 081KSE6WT0008QG0R0018WZ7TH
+  - 081KSE6WT0008QG0R000R8CPFX
 composes_with:
-  - B-0428
+  - 081KRFA460008QG0R0018SN61J
   - B-0746
-  - B-0762
-  - B-0772
-  - B-0780
-  - B-0781
-  - B-0786
+  - 081KSE6WT0008QG0R003FG3E8R
+  - 081KSE6WT0008QG0R003WMG4XV
+  - 081KSE6WT0008QG0R000RH1526
+  - 081KSE6WT0008QG0R001H3DA90
+  - 081KSE6WT0008QG0R000C18G5D
 tags: [multi-ai, parallelism, experiments, event-store, projections, cqrs, namespace, velocity, ai-agents]
 ---
 

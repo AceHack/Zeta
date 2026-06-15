@@ -10,7 +10,7 @@ ask: derived from B-0112
 created: 2026-05-11
 last_updated: 2026-05-11
 depends_on: []
-composes_with: [B-0112]
+composes_with: [081KQDTYV0008QG0R003MV3WAR]
 tags: [discipline-cleanup, no-copy, audit]
 type: friction-reducer
 ---

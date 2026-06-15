@@ -14,7 +14,7 @@ last_updated: 2026-05-02
 decomposition: clean
 depends_on: []
 decided_by: maintainer-delegated 2026-04-30 (Path 2 of three originally surfaced; rationale in Decision section below)
-composes_with: [B-0109]
+composes_with: [081KQDTYV0008QG0R002H74QXZ]
 tags: [doctrine-drift, acehack, mirror-refresh, branch-protection, host-vs-doctrine, decided]
 ---
 

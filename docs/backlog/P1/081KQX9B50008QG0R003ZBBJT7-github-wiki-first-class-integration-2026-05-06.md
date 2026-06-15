@@ -6,11 +6,11 @@ status: open
 title: "GitHub Wiki first-class integration after Pages launch"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0154
-depends_on: [B-0232, B-0233, B-0234]
+parent: 081KQGDBJ0008QG0R002NV04N9
+depends_on: [081KQX9B50008QG0R001J6ARGX, 081KQX9B50008QG0R0001XDTDQ, 081KQX9B50008QG0R0004N4HNK]
 classification: blocked-on-pages-primary-surface
 decomposition: decomposed
-children: [B-0299, B-0300]
+children: [081KR2E4K0008QG0R00286HGNK, 081KR2E4K0008QG0R002MFK6AW]
 owners: [docs, architect]
 type: friction-reducer
 ---

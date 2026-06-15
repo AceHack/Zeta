@@ -10,9 +10,9 @@ ask: B-0193 decomposition — AC 1 (test repo created and seeded)
 created: 2026-05-08
 last_updated: 2026-05-29
 closed_at: 2026-05-29
-parent: B-0193
-depends_on: [B-0341]
-composes_with: [B-0193, B-0344]
+parent: 081KQTPYE0008QG0R00392KABJ
+depends_on: [081KR2E4K0008QG0R002PHZR58]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KR2E4K0008QG0R0035HNPG1]
 tags: [bootstrap-razor, tooling, typescript, seeding, trajectory-child]
 type: friction-reducer
 ---

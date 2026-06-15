@@ -12,8 +12,8 @@ completed_by: otto-cli
 depends_on: []
 composes_with:
   - "memory/feedback_b0451_per_collision_renumber_procedure_external_references_rule_trumps_first_merged_2026_05_14.md"
-  - "B-0498-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14"
-  - "B-0549-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15"
+  - "081KRHWGX0008QG0R001XFRAHC-substrate-evolution-algebra-rule-promotion-after-cooling-period-2026-05-14"
+  - "081KRMEXM0008QG0R00037RGNY-riven-cursor-terminal-background-loop-ide-native-autonomous-gate-2026-05-15"
 ---
 
 # B-0545 — B-0498 ID collision renumber sweep

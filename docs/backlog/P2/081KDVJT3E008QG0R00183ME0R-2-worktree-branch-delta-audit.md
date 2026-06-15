@@ -6,8 +6,8 @@ status: open
 title: Worktree-branch delta audit (locked .claude/worktrees/ only, last-N-days)
 tier: factory-hygiene
 effort: S
-depends_on: [B-0090.1]
-composes_with: [B-0090]
+depends_on: [081KDVJT3E008QG0R003GV8BHV]
+composes_with: [081KQ8P5D0008QG0R0002TN22C]
 tags: [b0090-decomp, worktree, delta-scan, lost-substrate]
 type: friction-reducer
 ---

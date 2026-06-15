@@ -4,7 +4,7 @@ zetaid: 081KRA5AR0008QG0R000Y6102S
 priority: P2
 status: open
 title: Peer-call TS audit — duplication surface after TS migration (B-0120 child)
-parent: B-0120
+parent: 081KQDTYV0008QG0R001VJP216
 tier: factory-tooling
 effort: S
 ask: Post-TS port (#896/#898/#900), inspect tools/peer-call/*.ts for persona-bootstrap duplication (ani/amara patterns now in TS). Produce 1-page inventory of duplicated blocks, call sites, and persona-load sites. Output feeds B-0410 design. TS-only, no bash.

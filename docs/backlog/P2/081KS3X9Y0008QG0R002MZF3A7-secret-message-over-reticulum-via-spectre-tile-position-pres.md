@@ -8,8 +8,8 @@ tier: design
 effort: L
 created: 2026-05-21
 last_updated: 2026-05-21
-depends_on: [B-0289, B-0623, B-0703]
-composes_with: [B-0543, B-0562, B-0624, B-0666]
+depends_on: [081KR2E4K0008QG0R001SWEPNV, 081KRW63S0008QG0R000QJR08H, 081KS3X9Y0008QG0R00218150M]
+composes_with: [081KRMEXM0008QG0R002YSPW1X, 081KRQ1AB0008QG0R001F7DE2D, 081KRW63S0008QG0R003J8HR6K, 081KRW63S0008QG0R001SAHYKV]
 tags: [design, aaron, reticulum, spectre-tile, aperiodic, no-copy-theorem, adinkra, generator, position-pressure, holographic, self-similar, secret-message]
 type: design
 ---

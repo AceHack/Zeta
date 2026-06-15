@@ -5,8 +5,8 @@ priority: P1
 status: open
 title: "Concordance AI — local GPU inference for structure recognition"
 created: 2026-05-08
-parent: B-0244
-depends_on: [B-0291]
+parent: 081KQZVQW0008QG0R001PS4F8G
+depends_on: [081KR2E4K0008QG0R000DK0BFY]
 classification: buildable-now
 decomposition: decomposed
 type: feature

@@ -6,8 +6,8 @@ status: in-progress
 title: "ALIGNMENT.md rewrite - bidirectional clause audit and tightening"
 created: 2026-05-06
 last_updated: 2026-05-08
-parent: B-0003
-depends_on: [B-0215]
+parent: 081KQ0YZ80008QG0R001QJJTVF
+depends_on: [081KQX9B50008QG0R00327XC6Q]
 decomposition: atomic
 classification: buildable-now
 type: friction-reducer

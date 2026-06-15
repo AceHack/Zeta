@@ -11,7 +11,7 @@ decomposition: atomic
 owners: [lior, formal-verification-expert]
 type: backlog-tracking
 composes_with:
-  - B-0002
+  - 081KQ0YZ80008QG0R002T6TM7Z
 ---
 
 # B-0753 — B-0002 Noether decomposition land via PR: track integration of lior-decompose-4781-shadow-log onto main

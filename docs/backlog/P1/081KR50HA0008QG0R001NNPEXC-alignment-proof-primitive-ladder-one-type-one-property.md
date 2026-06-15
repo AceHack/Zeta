@@ -9,7 +9,7 @@ title: "Alignment proof primitive ladder — one type, one falsifiable property"
 effort: M
 created: 2026-05-09
 last_updated: 2026-05-09
-depends_on: [B-0357]
+depends_on: [081KR50HA0008QG0R0033TN4H9]
 classification: buildable-now
 decomposition: atomic
 owners: [architect]

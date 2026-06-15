@@ -6,8 +6,8 @@ status: open
 title: "B-0037.4 — ADR for distributed-vs-concentrated meta-cognition framework"
 created: 2026-05-10
 last_updated: 2026-05-10
-depends_on: [B-0037.1, B-0037.2, B-0037.3]
-parent: B-0037
+depends_on: [081KR7JY10008QG0R0038AFS7T, 081KR7JY10008QG0R002D6VNNJ, 081KR7JY10008QG0R000XPVJ0W]
+parent: 081KQ3HBZ0008QG0R0002RB48Q
 classification: blocked
 type: decision
 effort: S

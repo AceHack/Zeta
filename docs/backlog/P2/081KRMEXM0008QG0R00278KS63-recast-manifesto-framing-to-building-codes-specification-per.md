@@ -10,7 +10,7 @@ ask: Aaron
 effort: M
 tags: [governance, manifesto, building-codes, naming-correction, ai-name-inflation, kestrel-asymmetric-critic, framing-discipline]
 depends_on: []
-composes_with: [B-0543]
+composes_with: [081KRMEXM0008QG0R002YSPW1X]
 last_updated: 2026-05-15
 ---
 

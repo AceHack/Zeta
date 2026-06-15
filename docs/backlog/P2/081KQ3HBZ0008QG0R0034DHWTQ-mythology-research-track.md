@@ -10,8 +10,8 @@ ask: Aaron 2026-04-21 — *"hemdal"* (Heimdallr, single-word candidate) then *"m
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-children: [B-0056.1-mythology-resonance-catalog-v0]
-composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, B-0057, B-0058, B-0059, docs/ALIGNMENT.md]
+children: [081KR7JY10008QG0R001NXS6DQ-mythology-resonance-catalog-v0]
+composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, 081KQ3HBZ0008QG0R000K3NSX8, 081KQ3HBZ0008QG0R002S674CG, 081KQ3HBZ0008QG0R003GTG5P2, docs/ALIGNMENT.md]
 tags: [mythology, heimdallr, hermes, mercury, janus, iris, ratatoskr, thoth, garuda, quetzalcoatl, loki, bridge-figures, messenger, paired-dual, three-filter, F1-F2-F3]
 type: feature
 ---

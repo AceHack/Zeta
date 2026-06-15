@@ -9,10 +9,10 @@ attribution: aaron-2026-05-31
 depends_on:
   - B-0867.5
 composes_with:
-  - B-0867
-  - B-0867.26
-  - B-0944
-  - B-0703
+  - 081KSKBP80008QG0R000B3Y19A
+  - 081KSXN940008QG0R000ZAQT3W
+  - 081KSV2WD0008QG0R00051XS0N
+  - 081KS3X9Y0008QG0R00218150M
 tags:
   - workflow-engine
   - cross-language-parity

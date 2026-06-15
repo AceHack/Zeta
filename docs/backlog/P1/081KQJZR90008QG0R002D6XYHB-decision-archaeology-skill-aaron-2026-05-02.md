@@ -12,7 +12,7 @@ last_updated: 2026-05-11
 depends_on: []
 decomposition: atomic
 classification: buildable-now
-composes_with: [B-0058, B-0170]
+composes_with: [081KQ3HBZ0008QG0R002S674CG, 081KQNJ500008QG0R003SCWBDV]
 tags: [skill, onboarding, contributor-experience, dx, ux, ax, git-blame, lineage, intent-reconstruction]
 type: friction-reducer
 ---

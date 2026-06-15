@@ -11,7 +11,7 @@ last_updated: 2026-05-26
 depends_on:
   - B-0754
 composes_with:
-  - B-0831
+  - 081KSGS9H0008QG0R0011BC7T2
 tags: [installer, first-boot, networkmanager, nmtui, wifi, physical-hardware-support-test, empirical-anchor, operator-ux]
 ---
 

@@ -9,7 +9,7 @@ effort: M
 created: 2026-05-15
 last_updated: 2026-05-15
 depends_on: []
-composes_with: [B-0535, B-0536]
+composes_with: [081KRMEXM0008QG0R000HHAG77, 081KRMEXM0008QG0R001BH94PS]
 tags: [memory, index, hygiene, mechanization]
 type: feature
 ---

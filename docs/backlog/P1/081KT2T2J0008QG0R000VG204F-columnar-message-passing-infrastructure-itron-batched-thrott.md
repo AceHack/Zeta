@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-1000]
-composes_with: [B-1000, B-0638, B-0883, B-0885, B-0829, B-0842, B-0985, B-0999]
+depends_on: [081KT2T2J0008QG0R000S7GHQ8]
+composes_with: [081KT2T2J0008QG0R000S7GHQ8, 081KRW63S0008QG0R0030F8ZXA, 081KSNY2Z0008QG0R002JKH50A, 081KSNY2Z0008QG0R0030V5ZVS, 081KSGS9H0008QG0R000Q18PGQ, 081KSGS9H0008QG0R003V8C86Q, 081KT2T2J0008QG0R0026MS6PV, 081KT2T2J0008QG0R0019YVX8M]
 tags: [infer-net, columnar, apache-arrow, recordbatch, message-passing, batched-throttled-processor, itron, concept-not-code, serialization, security-surface, eve-protocol, polymorphic-deployment, encryption, trust-boundary, reservoir-computing, hex-core, bcl-interface-boundary, research, aaron]
 type: research
 ---

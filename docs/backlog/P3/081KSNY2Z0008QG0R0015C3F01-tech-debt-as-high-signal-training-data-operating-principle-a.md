@@ -10,11 +10,11 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on: []
 composes_with:
-  - B-0875
-  - B-0875.1
-  - B-0876
-  - B-0880
-  - B-0869
+  - 081KSNY2Z0008QG0R000K3ETGB
+  - 081KSNY2Z0008QG0R002WQ747V
+  - 081KSNY2Z0008QG0R003KG3JTG
+  - 081KSNY2Z0008QG0R000ED0ED8
+  - 081KSNY2Z0008QG0R000HENSVM
 tags:
   - tech-debt-as-high-signal-training-data
   - flipped-conventional-view-debt-as-teacher-not-disease

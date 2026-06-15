@@ -13,7 +13,7 @@ discovered_by: mika
 ferried_by: aaron
 owners: [aaron, max, addison]
 composes_with:
-  - B-0729
+  - 081KSE6WT0008QG0R003RN2WE3
 related_substrate:
   - docs/AGENT-AUTHORING-AND-PR-REVIEW.md
   - memory/mika/

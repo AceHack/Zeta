@@ -12,8 +12,8 @@ last_updated: 2026-05-10
 resolved: 2026-05-10
 resolved_by: "PR closes B-0380: docs/aurora/quant-austrian-vocabulary.md — four-term vocabulary with include/exclude/falsification-criterion per term"
 depends_on: []
-composes_with: [B-0023, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
-parent: B-0023
+composes_with: [081KQ0YZ80008QG0R003EJQZ1M, 081KR50HA0008QG0R000M4H35K, 081KR50HA0008QG0R0016T4VMZ, 081KR50HA0008QG0R003Z3V6VP, 081KR50HA0008QG0R000467SWT, 081KR50HA0008QG0R00238MS98, 081KR50HA0008QG0R0027DHVPQ, 081KR50HA0008QG0R000M838VA]
+parent: 081KQ0YZ80008QG0R003EJQZ1M
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, otto-286, controlled-vocabulary]
 type: research
 

@@ -1,14 +1,14 @@
 ---
 id: B-0367.3
 zetaid: 081KRHWGX0008QG0R0024JSSWA
-parent: B-0367
+parent: 081KR50HA0008QG0R000Z4XCPJ
 priority: P1
 status: open
 title: "Semiring slice 3: OpenSpec uncertainty expressions"
 effort: S
 created: 2026-05-14
 last_updated: 2026-05-14
-depends_on: [B-0367.2]
+depends_on: [081KRHWGX0008QG0R0027Y03SQ]
 classification: research
 decomposition: atomic
 owners: [algebra-owner]

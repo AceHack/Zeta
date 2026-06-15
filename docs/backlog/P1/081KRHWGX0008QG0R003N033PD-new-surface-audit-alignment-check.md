@@ -10,7 +10,7 @@ ask: Peel off from B-0058 — "New-surface audit" into atomic slice.
 created: 2026-05-14
 last_updated: 2026-05-14
 renumbered_from: "B-0329 (2026-05-14, ID collision with B-0329-claude-md-as-process-not-doctrine.md caught by Copilot review on PR #3247)"
-depends_on: [B-0058]
+depends_on: [081KQ3HBZ0008QG0R002S674CG]
 composes_with: [docs/ALIGNMENT.md, docs/GLOSSARY.md]
 tags: [ai-ethics, alignment, new-surface-audit, decomposed, B-0058-slice]
 type: friction-reducer

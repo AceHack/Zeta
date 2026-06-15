@@ -8,8 +8,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0982]
-composes_with: [B-0982, B-0986, B-0988, B-0985, B-0703, B-0638, B-0704, B-0883]
+depends_on: [081KT07NV0008QG0R0032MCYER]
+composes_with: [081KT07NV0008QG0R0032MCYER, 081KT2T2J0008QG0R002Z46D8Q, 081KT2T2J0008QG0R001GE4M6A, 081KT2T2J0008QG0R0026MS6PV, 081KS3X9Y0008QG0R00218150M, 081KRW63S0008QG0R0030F8ZXA, 081KS3X9Y0008QG0R002MZF3A7, 081KSNY2Z0008QG0R002JKH50A]
 tags: [geospatial, geospatial-algebra, geometry, crs, projection, ogc-simple-features, geojson, wkt, wkb, epsg, proj, de-9im, 4x4-bond, golden-vectors, store-once-canonical, no-redundancy, generic-math, dbsp, z-set, hexagonal, high-priority, aaron]
 type: research
 ---

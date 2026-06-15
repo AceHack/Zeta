@@ -10,7 +10,7 @@ ask: PR #1593 cross-check finding -- the "Prop 3.5 unspoken precondition" framin
 created: 2026-05-05
 last_updated: 2026-05-16
 depends_on: []
-composes_with: [B-0195]
+composes_with: [081KQTPYE0008QG0R0015SK08H]
 tags: [lean, formal-verification, dbsp, citation-correction, hygiene]
 type: friction-reducer
 ---

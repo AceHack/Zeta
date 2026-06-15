@@ -9,11 +9,11 @@ ask: aaron 2026-05-26
 created: 2026-05-26
 last_updated: 2026-06-14
 depends_on:
-  - B-0812
-  - B-0813
+  - 081KSGS9H0008QG0R0037H3W4T
+  - 081KSGS9H0008QG0R002K93MWX
 composes_with:
-  - B-0814
-  - B-0816
+  - 081KSGS9H0008QG0R000EPPQTR
+  - 081KSGS9H0008QG0R003A37Z65
 tags: [ci, qemu, cluster-bringup, auto-install, cluster-join, eliminates-human-physical-test, cascade-6]
 ---
 

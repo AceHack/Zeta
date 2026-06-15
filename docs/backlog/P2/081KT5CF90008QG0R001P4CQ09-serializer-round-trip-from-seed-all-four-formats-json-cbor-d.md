@@ -9,7 +9,7 @@ effort: M
 created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
-composes_with: [B-1006, B-1007, B-0982]
+composes_with: [081KT2T2J0008QG0R0008TFHJT, 081KT2T2J0008QG0R000YZ3NMY, 081KT07NV0008QG0R0032MCYER]
 tags: [codec, codec-algebra, serializer, round-trip, homeostat, proven-from-seed, canonical, json, cbor, yaml, xml, formal-proof-first, infer-net, aaron]
 type: design
 ---

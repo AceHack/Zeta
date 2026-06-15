@@ -8,8 +8,8 @@ tier: product
 effort: L
 created: 2026-05-11
 last_updated: 2026-05-14
-depends_on: [B-0400, B-0401, B-0403]
-composes_with: [B-0294, B-0321]
+depends_on: [081KR7JY10008QG0R000R503K2, 081KR7JY10008QG0R001VP6JWG, 081KR7JY10008QG0R0021F5609]
+composes_with: [081KR2E4K0008QG0R00009QQJM, 081KR2E4K0008QG0R000YH9DC6]
 renumbered_from: B-0409
 renumbered_reason: "Was in a 3-way ID collision with B-0120 child B-0409 (peer-call-ts-audit) + B-0118 child B-0409 (amara-persona-bootstrap). Per B-0451 sweep: B-0120 frontmatter `children: [B-0409, ...]` + `depends_on: [B-0409, ...]` are the strongest references, so peer-call B-0409 keeps the ID. This row + the amara B-0409 (→ B-0462) renumbered. No incoming references to wallet-immune-B-0409 from other rows beyond composes_with B-0294 + B-0321 (which are unaffected — those refs point FROM here). NOTE: skipped B-0459/0460/0461 — those were reserved for B-0449 slice 5+ follow-up work per PR #3070 (merged 2026-05-14)."
 tags: [wallet, immune-system, security, lfg, clifford, poucc, antifragile, renumbered]

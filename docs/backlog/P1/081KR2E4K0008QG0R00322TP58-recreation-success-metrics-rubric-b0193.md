@@ -9,9 +9,9 @@ effort: S
 ask: B-0193 decomposition — AC 6 (falsifies the regenerable claim; needs measurable criteria)
 created: 2026-05-08
 last_updated: 2026-05-10
-parent: B-0193
-depends_on: [B-0339]
-composes_with: [B-0193, B-0344, B-0345]
+parent: 081KQTPYE0008QG0R00392KABJ
+depends_on: [081KR2E4K0008QG0R000W3W6C1]
+composes_with: [081KQTPYE0008QG0R00392KABJ, 081KR2E4K0008QG0R0035HNPG1, 081KR2E4K0008QG0R003KQKYTJ]
 tags: [bootstrap-razor, metrics, evaluation, falsifiability, trajectory-child]
 type: friction-reducer
 ---

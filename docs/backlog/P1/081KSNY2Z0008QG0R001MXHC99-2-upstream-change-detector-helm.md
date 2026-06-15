@@ -8,9 +8,9 @@ effort: S
 ask: lior 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
-parent: B-0824
+parent: 081KSGS9H0008QG0R0031PBNGA
 depends_on:
-  - B-0821
+  - 081KSGS9H0008QG0R00367G209
 tags: [ace-feature, meta-package-manager, upstream-negotiation, helm]
 ---
 

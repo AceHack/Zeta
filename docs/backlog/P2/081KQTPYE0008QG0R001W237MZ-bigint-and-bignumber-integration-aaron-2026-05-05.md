@@ -10,7 +10,7 @@ ask: Aaron 2026-05-05 verbatim "oh backlog bigint and other bitnumbers integrati
 created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0140, B-0156, B-0189, B-0194, B-0198, B-0202, B-0204, B-0205]
+composes_with: [081KQGDBJ0008QG0R0022EW5ZE, 081KQGDBJ0008QG0R000A4EZS5, 081KQR4HQ0008QG0R002933PRR, 081KQTPYE0008QG0R001W1PS86, 081KQTPYE0008QG0R0004H9ZB8, 081KQTPYE0008QG0R002Y7X5KH, 081KQTPYE0008QG0R0028V263Z, 081KQTPYE0008QG0R000ZJ2GW8]
 tags: [numerics, bigint, bigrational, bigdecimal, bigfloat, mpfr, dbsp, generic-numerics, srtp, research, alignment]
 type: friction-reducer
 ---

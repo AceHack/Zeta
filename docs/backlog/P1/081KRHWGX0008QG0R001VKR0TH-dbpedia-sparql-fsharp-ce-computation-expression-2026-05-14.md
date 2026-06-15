@@ -8,14 +8,14 @@ type: feature
 origin: B-0428 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0428
+parent: 081KRFA460008QG0R0018SN61J
 depends_on:
-  - B-0481
+  - 081KRHWGX0008QG0R003MTMBGR
 composes_with:
-  - B-0428
-  - B-0481
-  - B-0483
-  - B-0484
+  - 081KRFA460008QG0R0018SN61J
+  - 081KRHWGX0008QG0R003MTMBGR
+  - 081KRHWGX0008QG0R002GFSJC6
+  - 081KRHWGX0008QG0R002TYF2NM
   - src/Core/Dsl.fs
   - .claude/rules/fsharp-anchor-dotnet-build-sanity-check.md
 ---

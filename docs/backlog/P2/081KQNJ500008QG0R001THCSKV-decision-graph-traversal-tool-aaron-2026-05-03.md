@@ -10,7 +10,7 @@ ask: Aaron 2026-05-03 named the tool in the decision-graph memo (`memory/feedbac
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [B-0141, B-0170, B-0175, B-0177]
+composes_with: [081KQGDBJ0008QG0R0015RNK3P, 081KQNJ500008QG0R003SCWBDV, 081KQNJ500008QG0R00055XHBG, 081KQNJ500008QG0R0035QCEX9]
 tags: [decision-graph, provenance, prov-o, datavault, traversal, query, graph-invariant, mechanization, tooling, fourth-audit-hit]
 type: friction-reducer
 ---

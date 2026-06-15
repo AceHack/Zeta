@@ -8,8 +8,8 @@ tier: design
 effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
-depends_on: [B-0635]
-composes_with: [B-0635, B-0637, B-0499, B-0623]
+depends_on: [081KRW63S0008QG0R002KC5DSR]
+composes_with: [081KRW63S0008QG0R002KC5DSR, 081KRW63S0008QG0R0004D5XG1, 081KRHWGX0008QG0R0034E0N22, 081KRW63S0008QG0R000QJR08H]
 tags: [design, aaron, bonsai-trees, rx-reactive-extensions, real-time-integration, integrate-implementation, fsharp-native, dotnet-native, locked-in, keystone-implementation]
 type: design
 ---

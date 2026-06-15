@@ -6,11 +6,11 @@ status: open
 title: "ARC-4 adversarial self-play — structure recognizer at real-time tick speed"
 created: 2026-05-07
 last_updated: 2026-05-07
-depends_on: [B-0240, B-0083]
+depends_on: [081KQZVQW0008QG0R002QZAFB2, 081KQ8P5D0008QG0R001590WJ3]
 decomposition: decomposed
-children: [B-0285, B-0286]
+children: [081KR2E4K0008QG0R0037MW8ET, 081KR2E4K0008QG0R000F6XXFT]
 owners: [architect]
-composes_with: [B-0240, B-0250, B-0251]
+composes_with: [081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001FG05RZ, 081KQZVQW0008QG0R000PPQ3MH]
 tags: [arc4, selfplay, adversarial, structure-recognizer, game, rpg, realtime]
 type: feature
 ---

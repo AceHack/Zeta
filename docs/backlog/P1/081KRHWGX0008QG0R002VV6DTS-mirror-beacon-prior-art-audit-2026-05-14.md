@@ -8,12 +8,12 @@ type: research
 origin: B-0426 decomposition (Otto, 2026-05-14)
 created: 2026-05-14
 last_updated: 2026-05-14
-parent: B-0426
+parent: 081KRFA460008QG0R0007RWSN1
 composes_with:
-  - B-0426
-  - B-0472
-  - B-0473
-  - B-0474
+  - 081KRFA460008QG0R0007RWSN1
+  - 081KRHWGX0008QG0R002DP6AZN
+  - 081KRHWGX0008QG0R0031EGYA7
+  - 081KRHWGX0008QG0R0023FDYVE
   - memory/feedback_otto_356_mirror_internal_vs_beacon_external_language_register_discipline_2026_04_27.md
   - memory/feedback_aaron_repo_split_orthogonal_mirror_beacon_axis_speculative_fast_forks_vs_governance_citation_gated_another_orthogonality_2026_05_13.md
   - docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md

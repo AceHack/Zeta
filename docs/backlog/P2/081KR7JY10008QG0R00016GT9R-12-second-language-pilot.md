@@ -6,8 +6,8 @@ status: open
 title: "B-0004.12 — Second language pilot: validate process reproducibility across a different language family"
 created: 2026-05-10
 last_updated: 2026-05-10
-parent: B-0004
-depends_on: [B-0004.9, B-0004.10, B-0004.11]
+parent: 081KQ0YZ80008QG0R002HWBHKJ
+depends_on: [081KR7JY10008QG0R003YPVJB1, 081KR7JY10008QG0R001XQ6N71, 081KR7JY10008QG0R002VN6707]
 classification: blocked
 type: feature
 effort: M

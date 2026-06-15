@@ -9,7 +9,7 @@ effort: S
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0614]
+composes_with: [081KRSKQ20008QG0R0028VN0KR]
 tags: [holding-discipline, autonomous-loop, counter-escalation, aggregate-tier]
 type: substrate-engineering
 ---

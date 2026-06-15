@@ -6,8 +6,8 @@ status: open
 priority: P2
 created: 2026-05-26
 last_updated: 2026-05-26
-depends_on: [B-0824]
-composes_with: [B-0824, B-0826, B-0703]
+depends_on: [081KSGS9H0008QG0R0031PBNGA]
+composes_with: [081KSGS9H0008QG0R0031PBNGA, 081KSGS9H0008QG0R001K8VPV4, 081KS3X9Y0008QG0R00218150M]
 ---
 
 # B-0829 — Schemas-as-rows + cluster-fork-as-trust-boundary + F# type providers from live cluster (Aaron + Kestrel 2026-05-26)

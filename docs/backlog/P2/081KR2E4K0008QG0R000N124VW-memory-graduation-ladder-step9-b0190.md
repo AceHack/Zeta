@@ -9,9 +9,9 @@ effort: M
 ask: B-0190 Step 9 decomposition
 created: 2026-05-08
 last_updated: 2026-05-08
-parent: B-0190
-depends_on: [B-0330, B-0332, B-0333]
-composes_with: [B-0190, B-0330, B-0332, B-0333]
+parent: 081KQR4HQ0008QG0R001909FPT
+depends_on: [081KR2E4K0008QG0R002VM58S4, 081KR2E4K0008QG0R002FRQZN4, 081KR2E4K0008QG0R00175HQR9]
+composes_with: [081KQR4HQ0008QG0R001909FPT, 081KR2E4K0008QG0R002VM58S4, 081KR2E4K0008QG0R002FRQZN4, 081KR2E4K0008QG0R00175HQR9]
 tags: [memory, graduation, meta-discipline, trajectory-child]
 type: friction-reducer
 ---

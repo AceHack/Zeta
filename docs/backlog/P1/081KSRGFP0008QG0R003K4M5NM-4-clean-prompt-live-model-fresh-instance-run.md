@@ -7,12 +7,12 @@ title: "Clean-prompt live-model fresh-instance run for bootstrap CLAUDE.md"
 created: 2026-05-29
 last_updated: 2026-05-29
 depends_on:
-  - B-0354
+  - 081KR50HA0008QG0R001CNS20T
 decomposition: atomic
 classification: buildable-now
 type: friction-reducer
 owners: [architect]
-parent: B-0354
+parent: 081KR50HA0008QG0R001CNS20T
 ---
 
 # B-0354.4 — Clean-prompt live-model fresh-instance run

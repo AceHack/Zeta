@@ -10,7 +10,7 @@ domain: agentic-organization
 ferried_by: aaron
 owners: [aaron]
 composes_with:
-  - B-0750
+  - 081KSE6WT0008QG0R003YYC9PV
   - B-0751
 related_substrate:
   - .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md

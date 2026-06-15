@@ -4,7 +4,7 @@ zetaid: 081KR50HA0008QG0R00257PHRR
 priority: P2
 status: closed
 title: Mystery schools Stage 1 — Eleusinian mysteries bibliographic scaffold
-parent: B-0049
+parent: 081KQ3HBZ0008QG0R0007CAGSP
 tier: gentle-catalog-research-no-claims
 effort: S
 ask: B-0049 Stage 1 first family; CATALOG-ONLY register — no filters, no claim-staking, no operational-resonance promotion
@@ -12,7 +12,7 @@ created: 2026-05-09
 last_updated: 2026-05-16
 closed: 2026-05-16
 depends_on: []
-composes_with: [B-0049, user_faith_wisdom_and_paths.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md]
+composes_with: [081KQ3HBZ0008QG0R0007CAGSP, user_faith_wisdom_and_paths.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md]
 tags: [mystery-schools, eleusinian, demeter, persephone, kore, ancient-greece, initiation, catalog-only, bibliography]
 type: friction-reducer
 ---

@@ -7,7 +7,7 @@ title: "Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup"
 created: 2026-05-08
 last_updated: 2026-05-16
 closed: 2026-05-16
-parent: B-0083
+parent: 081KQ8P5D0008QG0R001590WJ3
 depends_on: []
 classification: buildable-now
 decomposition: atomic

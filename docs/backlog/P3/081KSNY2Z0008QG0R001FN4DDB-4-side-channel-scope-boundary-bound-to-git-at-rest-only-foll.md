@@ -9,11 +9,11 @@ ask: aaron 2026-05-28 (Q7 explanation deferred)
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0883
+  - 081KSNY2Z0008QG0R002JKH50A
 composes_with:
-  - B-0883
-  - B-0885
-  - B-0883.1
+  - 081KSNY2Z0008QG0R002JKH50A
+  - 081KSNY2Z0008QG0R0030V5ZVS
+  - 081KSNY2Z0008QG0R0037X4DP4
 tags:
   - side-channel-scope-boundary
   - bound-to-git-at-rest-threat-model

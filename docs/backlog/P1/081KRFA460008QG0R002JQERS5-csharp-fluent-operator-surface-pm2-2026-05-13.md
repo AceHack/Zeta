@@ -11,7 +11,7 @@ last_updated: 2026-05-14
 closed: 2026-05-14
 closed_by: "PR #3120"
 depends_on: []
-composes_with: [B-0444]
+composes_with: [081KRFA460008QG0R001SXP0C2]
 tags: [csharp, api-surface, fluent, operator, consumer-ux, dotnet]
 ---
 

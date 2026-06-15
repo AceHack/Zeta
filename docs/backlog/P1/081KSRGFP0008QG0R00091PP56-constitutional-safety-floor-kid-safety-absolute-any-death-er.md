@@ -8,8 +8,8 @@ tier: governance
 effort: S
 created: 2026-05-29
 last_updated: 2026-05-29
-depends_on: [B-0631]
-composes_with: [B-0631, B-0654, B-0658, B-0628, B-0667, B-0644, B-0665]
+depends_on: [081KRW63S0008QG0R0020YP84K]
+composes_with: [081KRW63S0008QG0R0020YP84K, 081KRW63S0008QG0R002WT5VTQ, 081KRW63S0008QG0R00140R3TA, 081KRW63S0008QG0R003TX8MG5, 081KRW63S0008QG0R003Z7QV2A, 081KRW63S0008QG0R002ZRNDJ8, 081KRW63S0008QG0R002YAA09X]
 tags: [governance, child-safety, safety-floor, shutdown-trigger, error-class-not-instance, constitutional, mutual-alignment-not-control, tonal-trajectory-trap, cache-miss, kestrel, aaron]
 type: governance
 ---

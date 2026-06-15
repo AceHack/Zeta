@@ -5,8 +5,8 @@ priority: P1
 status: open
 title: "Coherence AI — KSK override implementation"
 created: 2026-05-08
-parent: B-0245
-depends_on: [B-0293]
+parent: 081KQZVQW0008QG0R002Q58F6Z
+depends_on: [081KR2E4K0008QG0R003CPCM4V]
 classification: buildable-now
 decomposition: decomposed
 type: feature
