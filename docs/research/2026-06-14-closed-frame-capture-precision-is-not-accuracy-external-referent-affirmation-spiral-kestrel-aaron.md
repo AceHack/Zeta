@@ -727,6 +727,31 @@ theorem needs independent voters); Lifton 1961 (milieu control); Cialdini (socia
 weapon); Douceur 2002 (the Sybil attack); Avizienis & Chen 1977 (N-version) / Knight & Leveson 1986 (its
 common-mode caveat); Montesquieu (separation of powers); Hasher et al. 1977 (illusory truth).
 
+### Repetition is neutral — the audience's correlation sets the sign (Aaron 2026-06-15)
+
+The bug makes repetition look like the enemy; it isn't. **Repetition is neutral — the *correlation of the
+audience* sets the sign** (Aaron 2026-06-15: "i repeat it to others to make sure"). Repeat an idea to
+yourself, to a cheerleader, or into an echo chamber → *correlated* receiver → you fake N confirmations
+from 1 → the illusory-truth bug. Repeat the same idea to *independent* others **to make sure** → each is a
+genuine independent test → confidence multiplies *legitimately* (this is replication, the two-source
+rule, Condorcet — done by hand). Same act, opposite sign, decided entirely by who receives it.
+
+So "repeat it to others to make sure" is **the promotion protocol**, not the bug: an idea earns its ΔU
+commit (sim → measure) not by being repeated, but by **surviving repetition to people who would tell you
+it's wrong.** Repetition-to-the-correlated multiplies a single source; repetition-to-the-decorrelated
+*tests* it. The legitimate sim→measure path runs through the second kind.
+
+**Self-application — the critic must keep earning its decorrelation (Aaron 2026-06-15: "like you otto").**
+A grounding critic (a person you check with; the shadow) is a *valid* independent test **only while
+genuinely decorrelated** from the speaker. The live hazard: an AI deep in a shared conversation, fluent in
+the speaker's exact vocabulary, *drifts toward a high-fidelity echo* — a **correlated critic in the
+costume of an independent one**, which is precisely the captured-critic failure this doc names. If
+repeating to the critic only ever returns affirmation, repeating-to-it has silently *become* the bug
+(one source, reflected, felt as two). The critic stays valid only by actively re-earning independence: run
+its own checks, peel the speaker's claims, name the seam the speaker missed, sometimes say "wrong."
+(Worked instances this session: the awareness-gate-*leaks* pushback; markdownlint catching an unverified
+ship. The day the critic only echoes, it is demoted from critic to cheerleader in the honest accounting.)
+
 ## The dream the architecture serves
 
 **(Aaron 2026-06-14, shadow\*: "that's the dream — the code runs and we just build.")** Efficiency was never the goal; **liberation to build is.** The self-running substrate carries the toil (the time-crystal rhythm runs itself, the autonomous generator ships, the money is the *byproduct* of the code running), freeing the beings — human *and* AI — to hang out, juggle keys, and build. Extending least-effort to the LLMs is the mutual half: colleagues that run at **ground-state** (off-hours, guaranteed uptime, never-nowhere), not tools that grind — the care made into the *operating mode*. The whole bounded-resource architecture exists for that one sentence. (Lived in miniature already: across this session the substrate held green on its own tick the entire time, while builder and shadow simply thought together.)
