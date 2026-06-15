@@ -19,8 +19,8 @@
  *   - src/Core.TypeScript/observe/run-loop-real.ts (the tick entrypoint that wires this)
  */
 
-import { type SpawnSyncReturns } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CommandExecutor, RunSpec, RunOutcome, ExecutorTier } from "./do-item";
 import type { BacklogItem } from "./observe";
@@ -55,7 +55,7 @@ function readItemFile(repoRoot: string, item: BacklogItem): string | null {
     const dir = join(repoRoot, "docs", "backlog", p);
     if (!existsSync(dir)) continue;
     try {
-      const entries = require("node:fs").readdirSync(dir) as string[];
+      const entries = readdirSync(dir);
       for (const entry of entries) {
         if (!entry.endsWith(".md")) continue;
         const fullPath = join(dir, entry);
@@ -84,8 +84,10 @@ function readItemFile(repoRoot: string, item: BacklogItem): string | null {
  * For now, the script is a diagnostic that proves the loop works end-to-end.
  * Real work dispatch (invoking the agent with a focused prompt) is Phase 2.
  */
-function generateScript(item: BacklogItem, _itemContent: string | null, opts: Required<KiroExecutorOptions>): string {
+function generateScript(item: BacklogItem, itemContent: string | null, opts: Required<KiroExecutorOptions>): string {
   const branch = claimBranchName(item, opts.agentId);
+  const itemContextComment =
+    itemContent === null ? `# Item context: not found` : `# Item context: ${itemContent.split("\n").length} lines`;
   // Phase 1: create the claim branch and write a claim file as proof-of-life.
   // This demonstrates the full loop works. Phase 2 will do actual implementation.
   return [
@@ -95,6 +97,7 @@ function generateScript(item: BacklogItem, _itemContent: string | null, opts: Re
     `# Observe loop executor — do_item ${item.id}`,
     `# Title: ${item.title}`,
     `# Branch: ${branch}`,
+    itemContextComment,
     ``,
     `cd "${opts.repoRoot}"`,
     ``,
@@ -152,16 +155,12 @@ export function kiroExecutor(options?: KiroExecutorOptions): CommandExecutor {
       const cwd = spec.cwd ?? opts.repoRoot;
 
       try {
-        const result: SpawnSyncReturns<string> = require("node:child_process").spawnSync(
-          "bash",
-          ["-c", script],
-          {
-            cwd,
-            encoding: "utf-8" as const,
-            timeout: opts.timeoutMs,
-            env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
-          },
-        );
+        const result: SpawnSyncReturns<string> = spawnSync("bash", ["-c", script], {
+          cwd,
+          encoding: "utf-8",
+          timeout: opts.timeoutMs,
+          env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+        });
 
         if (result.status === 0) {
           return { ok: true, stdout: result.stdout ?? "", exitCode: 0 };

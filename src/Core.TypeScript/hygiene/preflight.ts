@@ -46,7 +46,7 @@ const CHECKS: readonly Check[] = [
   { label: "no-empty-dirs", cmd: ["bun", "src/Core.TypeScript/lint/no-empty-dirs.ts"] },
   // The glob is REQUIRED: the config has no `globs` key, so a bare invocation
   // lints zero files (a false pass). Matches the gate: markdownlint-cli2 "**/*.md".
-  { label: "markdownlint", cmd: ["npx", "markdownlint-cli2", "**/*.md"] },
+  { label: "markdownlint", cmd: ["npx", "--yes", "markdownlint-cli2", "**/*.md"] },
   // Per-language code lints — the set the gate short-circuits over.
   { label: "lint: TypeScript (tsc)", cmd: ["bun", "src/Core.TypeScript/lint/lint-typescript.ts"] },
   { label: "lint: F#", cmd: ["bun", "src/Core.TypeScript/lint/lint-fsharp.ts"] },

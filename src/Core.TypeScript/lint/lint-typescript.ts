@@ -27,16 +27,31 @@ const STEPS: readonly Step[] = [
 function run(step: Step): boolean {
   console.log(`=== ${step.label} ===`);
   const [bin, ...args] = step.cmd;
-  const result = spawnSync(bin, args, { cwd: REPO_ROOT, stdio: "inherit" });
-  if (result.error) {
-    console.error(`✗ ${step.label}: failed to start — ${result.error.message}`);
-    return false;
-  }
-  if (result.status !== 0) {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const result = spawnSync(bin, args, {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 64 * 1024 * 1024,
+    });
+    process.stdout.write(result.stdout ?? "");
+    process.stderr.write(result.stderr ?? "");
+
+    if (result.error) {
+      console.error(`✗ ${step.label}: failed to start — ${result.error.message}`);
+      return false;
+    }
+    if (result.status === 0) {
+      return true;
+    }
+    if (attempt === 1 && result.signal !== null) {
+      console.warn(`↻ ${step.label}: retrying once after child process signal ${result.signal}`);
+      continue;
+    }
+
     console.error(`✗ ${step.label}: exited with code ${result.status ?? "signal"}`);
     return false;
   }
-  return true;
+  return false;
 }
 
 function main(): number {

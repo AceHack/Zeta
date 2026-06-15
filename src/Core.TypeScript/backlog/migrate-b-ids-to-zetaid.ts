@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * tools/migrate-b-ids-to-zetaid.ts — erase the B-xxxx sequential coordinate primitive.
+ * src/Core.TypeScript/backlog/migrate-b-ids-to-zetaid.ts — erase the B-xxxx sequential coordinate primitive.
  *
  * Replaces all B-xxxx references across the repo with their ZetaId equivalents.
  * The B-xxxx numbering is a hidden coordination primitive (agents must agree on
@@ -14,8 +14,8 @@
  * 5. Rewrites `depends_on:` arrays from B-xxxx refs to ZetaIds
  *
  * Usage:
- *   bun tools/migrate-b-ids-to-zetaid.ts --dry-run   # show what would change
- *   bun tools/migrate-b-ids-to-zetaid.ts             # apply changes
+ *   bun src/Core.TypeScript/backlog/migrate-b-ids-to-zetaid.ts --dry-run   # show what would change
+ *   bun src/Core.TypeScript/backlog/migrate-b-ids-to-zetaid.ts             # apply changes
  */
 
 import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
