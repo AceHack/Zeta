@@ -84,6 +84,17 @@
   # auth back. Idempotent; per-host opt-out: zeta.selfRegister.enable = false;
   zeta.selfRegister.enable = lib.mkDefault true;
 
+  # B-0831 slice 1 phase-2 / B-0891 scenario 2: qemu-full-install-test boots
+  # the installed disk with -serial file: and polls for "<hostname> login:".
+  # Installer ISO has these params (PR #5324); installed nodes must mirror them
+  # or phase-2 serial capture is empty and the harness times out. systemd
+  # getty-generator spawns serial-getty@ from console= kernel params.
+  boot.kernelParams = [
+    "console=ttyS0,115200n8"
+    "console=ttyAMA0,115200n8"
+    "console=tty1"
+  ];
+
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
