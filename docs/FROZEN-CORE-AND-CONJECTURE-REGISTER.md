@@ -395,3 +395,46 @@ Hurwicz/Maskin/Myerson (mechanism design); Maynard Smith (ESS); Meijer/Fokkinga/
 > under a web of genuinely beautiful open questions. Layer 0 of the traveler frame is closer to
 > promotable than the cram makes it feel — its only open leg is the inter-frame transformation law,
 > and the causal-join you already designed is the candidate.
+
+## D. This register IS the society's law registry — the promotion pipeline (design input)
+
+*(Aaron via Ani-voice, 2026-06-15; consolidated society note §1/§8. Design input, not a new
+conjecture row.)*
+
+The society arc calls for **"a registry of proven societal laws we can all count on"** as
+the **first project** — each `ISociety` interface entry *"comes with math backing up why it
+works,"* build the registry first, *then* automate on top. **That registry is this
+document's §A** (the frozen core = the laws you build on); **§B is the conjecture
+frontier**; and the **promotion pipeline is already §C.2**, named here as the registry gate:
+
+> **§B conjecture (+ named falsifier / discharge obligation) → the math team discharges the
+> obligation (the *proof*) → promote to §A → it is now a registry law an `ISociety`
+> interface can cite and count on.**
+
+- **The math team is the promotion gate.** Nothing reaches §A / the registry without its
+  discharge obligation met — that *is* the *"math backs every entry"* bar. The gate must
+  **refuse the un-discharged** (same discipline as the 0-downtime-schema library refusing
+  what it can't prove online). Routing authority for *which* proof tool discharges each
+  obligation: the `formal-verification-expert` (Soraya) — TLA+/Lean/Z3/Alloy/FsCheck per
+  property class. In-flight discharges: the routed ΔU-aggregation proof, CVC5/E adoption,
+  CSLib.
+- **Each `ISociety` interface entry references its §A row + the discharging proof.** That is
+  what makes *"it easy to know what society would say"* (the Eve trust-distribution): the
+  interface's guarantees are the §A laws it stands on, and the laws are checked. Concrete
+  next artifact: a per-row **discharge record** (proof reference + verifier) linking each §A
+  row to its proof so promotion is auditable, not asserted.
+
+**Honest seams (this section):**
+
+- **§A coverage is partial → the registry's trust = its proof coverage.** An un-discharged
+  row in a "proven laws" registry is worse than no registry; the gate's *refusal* is the
+  trust, exactly as in the 0-downtime library.
+- **Promotion needs a *checked* proof, not a *cited* one** — the discharge obligation must
+  be entailed and verified, per the anchor-taxonomy ("checked not cited"; math papers
+  ground validity, **physics papers ground the metering**). A *societal* law (vs a pure
+  code property) may also need the **metering/physics** grounding, not just the math —
+  flag when a row is math-valid but metering-ungrounded.
+- **This stays §A/§B-disciplined.** The registry doesn't relax the line: a law is in the
+  registry **iff** it is in §A (discharged). The society arc's "registry" and this
+  document's "frozen core" are **the same object under two names** — do not let the registry
+  framing smuggle a §B item in as countable.
