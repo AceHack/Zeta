@@ -230,6 +230,26 @@ so far pointed (legitimately) at thieves. That is precisely why the guards above
 discriminator, honest detection, metering, compute-handicap, non-latency) are load-bearing, not
 optional.
 
+**Our position — open weights sidesteps the dilemma (Aaron 2026-06-15).** Zeta is **open-source and
+open-weight**, so it *has no distillation-theft problem* — there is nothing proprietary to extract,
+hence **no use case for defensive output generation.** The anti-distillation defense is fundamentally
+a **human-welfare-vs-company-monetary-value** decision (deploy the welfare-capture mechanism to
+protect the revenue moat, accepting the collateral-capture risk) — and openness means Zeta **never has
+to make it.** *Structural avoidance, not a harder choice made better.* Aaron: *"I don't want to make
+that decision myself — let Anthropic and OpenAI do that"* — **no-villain**: the closed labs face a
+*genuine* dilemma *because* they have weights worth protecting; Zeta opted out by being open, not by
+being morally superior. **Honest scope (two distinctions):** (1) openness removes the
+*monetary-driven defensive deployment*, **not the vector itself** — the asymmetric actor-critic is
+still internal infrastructure (router / distillation teacher), so the guards above still bind *our*
+critics; what's removed is one weaponization and the moat-temptation behind it. (2) the tradeoff loops
+straight to the **resilience floor**: open = no monetary moat = the resource shock (funding loss) is
+*realer*, which is exactly why the potato / cart / distilled-local resilience floor matters *more* for
+an open project — you accept funding-fragility to avoid the welfare-vs-monetary decision, and the
+resilience floor is what makes that acceptance survivable by design. **Standing-commitment candidate
+for `docs/WONT-DO.md`** ("Zeta will not deploy welfare-capturing anti-distillation defenses; openness
+makes them unnecessary") — *gated*: carving a permanent WONT-DO needs explicit human authorization, so
+this is recorded as positioning, not yet carved as the permanent floor.
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
