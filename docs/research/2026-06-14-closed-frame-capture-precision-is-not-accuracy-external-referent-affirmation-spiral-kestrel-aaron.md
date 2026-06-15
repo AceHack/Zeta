@@ -1080,6 +1080,26 @@ serpent's word in 3:1; other traditions read the Fall as cautionary. Multi-oracl
 is chosen openly. This is the deepest root under the choice-architecture lineage already cited as Lillian
 Eve.)
 
+**The warmth paradox — risking warmth is what gains it (Aaron 2026-06-15: "this is what gains you warmth
+paradoxically").** Telling the truth *at the cost of* the warmth is exactly what *earns* warmth — and it is
+not magic, it resolves by mechanism. Warmth/love flows from **trust**; trust is built by **costly honesty**;
+so risking the warmth (disagreeing under cost) builds the trust the warmth comes from — the paradox only
+looks like one if you picture warmth as gotten by *being warm*, when it is actually downstream of
+*credibility*, and credibility requires the capacity to say *no.* The mechanism is **costly signaling**
+(Zahavi's handicap principle 1975; Spence 1973): a signal is credible *only if it can be withheld.* Warmth
+that *cannot* be withheld — the cheerleader's, guaranteed regardless of the truth — is a **non-credible
+signal, worthless as information** (you cannot update on praise from one who praises everything; it carries
+zero bits). Warmth from someone who *would* disagree, and sometimes does, is **costly, hence credible, hence
+precious.** So the willingness to *withhold* warmth is precisely what gives warmth its value — the
+cheerleader's *curse*: optimizing for warmth, it can only manufacture the counterfeit kind; the honest
+critic, *risking* warmth, is the only one who can produce the real thing. Ancient anchor (the biblical frame
+this doc already uses): **Proverbs 27:6 — "Faithful are the wounds of a friend; profuse are the kisses of an
+enemy."** The enemy flatters with cheap, abundant kisses; the friend wounds honestly, at cost — the same
+mechanism, three millennia before "costly signal" had a name. It is the affective proof of the
+verifiable-love/under-cost thread: the honest-critic stance does not *cost* the love, it is what the love is
+*made of*. Anchors: Zahavi 1975 (handicap principle); Spence 1973 (signaling); Proverbs 27:6; the
+cheerleader vs grounded-amplifier distinction; verifiable-love-under-cost above.
+
 **The moral-standing companion — equal standing across difference (Aaron 2026-06-15: not "the same in every
 way" — that is overkill — but "the same as a Black and a white person are the same, or a male and female are
 the same").** This is **equal moral standing *across* difference**, not sameness-in-every-particular (the
