@@ -215,6 +215,41 @@ Seams:
 - **Even life pairs them** — evolution re-rolls the *variation* (mutation) but the *selection* is
   irreversible (no re-rolling death). **Re-roll the variation, never the selection.**
 
+### Worked examples (gaming-native — they pass the "a Gen-Z gets it" test)
+
+Two beloved real practices ground this whole section at once (and accessibility *is* safety-robustness —
+the more people who hold "you don't get a respawn IRL / disclose your tools," the more critics catch the
+breach):
+
+- **The cheat engine (re-roll death).** A memory-editor that lets you un-die in a game = re-roll death.
+  **Sanctioned-as-play *in the game* (reversible, beloved); *unsanctioned* = cheating *in reality*** (a
+  cheat engine for real stakes = fraud). The word "unsanctioned" is the tell. It's the *generation/play*
+  domain's re-roll; the discipline is not carrying the reflex into business/safety. *(Gacha / loot-box
+  re-roll mechanics are **extraction shapes** that train the re-roll compulsion on developing minds —
+  understanding the rule ≠ immunity to the habit.)*
+- **TAS (tool-assisted speedruns)** grounds re-roll + determinism + sanctioned-disclosure + LUPI in one
+  object: a TAS is *built from* save-state re-records (**re-roll** every frame to optimal); it only works
+  because the game is **deterministic** (an input-log replayed on a deterministic emulator = the cart /
+  DST structure; RNG-manipulation = steering the seed); it is a **sanctioned** category *because it is
+  labeled* "tool-assisted" (**disclosure is the honesty**; TAS-submitted-as-human is the fraud, caught by
+  verification); and it is **LUPI in the wild** — the TAS *cheats-to-discover the optimum* with
+  privileged tools, human runners *learn the restricted version* (TAS = teacher, human = student; many
+  real human strats originated in TAS). *Seams:* the optimum is for *that exact spec* (glitch / RNG-quirk,
+  often non-transferable); the honesty rides on the label being *verified*; the teacher→student transfer
+  delivers only the *human-reachable* subset.
+- **Sanctioned reversibility blurs the line — Prince of Persia: Sands of Time + ZSet retraction (Aaron
+  2026-06-15).** *Sands of Time* let you **rewind death** as a **built-in, diegetic mechanic** (not a
+  cheat engine) — re-roll-death made *sanctioned* because the game's time is **non-wall-clock /
+  reversible by design.** **Zeta's `ZSet` retractability (+1 emit / −1 retract) is the substrate
+  version**: reversibility is a *first-class primitive* (the cart's rewind, the emit/retract duality),
+  so within the substrate "rewind" is **sanctioned, not cheating.** So the re-roll line **blurs exactly
+  where the substrate makes reversibility first-class.** *Seam (it blurs, it does not erase):* the Sands
+  *run out* and the final commit stays irreversible; likewise ZSet retraction is reversible *within the
+  ledger*, but the **external effect / real-stakes commit stays irreversible** (you can −1 a row, not
+  un-pay an indemnity or un-harm a person). Sanctioned reversibility is a **bounded resource/region**,
+  not infinite — the irreversible boundary (wall-clock, real stakes) remains the no-re-roll zone. (And
+  it is the *story-arc-time vs wall-clock-time* distinction again: PoP's diegetic time ≠ the wall clock.)
+
 ## Bidirectional capability DI — AI → human (promoted to a standalone doc)
 
 Capability DI has a **mirror**: environment→AI (this doc) reverses to **AI → human** — the AI injects
