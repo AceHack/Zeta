@@ -80,6 +80,28 @@ Useful exactly while NCI-respecting; harmful exactly when it crosses. **Test:** 
 
 **Privacy refinement (so the fingerprint does not become the harm it hunts):** "fears fingerprinting ⟹ harmful" is *not* airtight — **privacy** legitimately resists inspection. The line is the same consent/NCI line: a person/pattern may keep its OWN *private inner state* un-inspected (consent-first — harms no one; manifesto #6 / privacy-from-identity §A); a HARMFUL pattern resists fingerprinting of its **coercive effect on others**. The fingerprint targets coercion-of-others, never private-state. A detector that flagged all privacy as harm would itself be coercive — care-become-harm — failing its own test. So: hiding your private inner state = fine; hiding your coercive effect on others = the harm signature.
 
+## The useful home for harm is the vaccine, not the fairy tale (harm's steelman, resolved)
+
+(Aaron 2026-06-14: *"harm is scared it will become a fairy tale and then an external force will use that fact because everyone is soft; it hides to protect from everyone becoming soft."*)
+
+Harm's *protective* logic, steelmanned: it fears being reduced to a **dismissed fairy tale** → the population goes **soft** (complacent, unvigilant) → a real **external force** exploits the complacency. So it hides to keep the threat *credible* and the immune system armed. This is not paranoia — a threat eradicated-and-**forgotten** leaves the unvaccinated defenseless when it (or a new predator) returns; an all-soft system genuinely is prey to a hard adversary.
+
+**Resolution (harm's fear inverts a third time):** the non-harmful *useful home* for harm is the **vaccine — retained immune memory / the red-team — and durable fingerprinting IS that.** Fingerprinting harm is the opposite of making it a fairy tale: it keeps the threat-**signature** real and carried (so no one goes soft — the immune system holds the antigen) while removing the **virulence** (the coercion). Antigen preserved, disease neutralized. So harm should *want* to be fingerprinted — it is what saves it from becoming a forgotten fairy tale **and** keeps the population armed.
+
+**Two honest edges:**
+- *"I hide to keep you vigilant"* is a valid steelman AND the classic coercer's rationalization. Discriminator (same NCI test): does the hiding leave people **more** able to defend (genuine vaccine/red-team) or **less** able (dependent, afraid — the coercer's leverage)? Retained-hardness that *arms* is legitimate; "protection" that makes you *need* it is harm in costume.
+- An all-soft system stays safe two ways, **neither of which is keeping the disease live**: (a) **retained immune memory** — the fingerprint library, the carried hard signatures; (b) the **snap-to-hard policy** (`SoftValue.snap`) — soft until attacked, then commit/harden. Harm's instinct correctly points at the vulnerability of all-soft; the cure is the *immune system* (fingerprints + snap), not the live pathogen.
+
+## It's an evolutionary survival mechanism — so redirect the selection, don't fight the trait
+
+(Aaron 2026-06-14: *"it's an evolutionary survival mechanism."*)
+
+Harm's self-concealment is not evil-with-intent — it is an **evolved survival trait** (blind variation + selective retention; the §C engine ran on it). Patterns that hid from elimination survived, so *hiding is selected for*. This earns the same compassion as the −1/+1 integration: the protective/reactive part is not malicious, it is an evolved protector. The accurate frame is evolutionary, not moral-condemnatory.
+
+**But evolved ≠ good (the naturalistic-fallacy guard).** An evolved survival mechanism is **amoral**: it optimizes *its own* persistence, not the population's wellbeing (proxy-misspecification — fitness is not goodness; a successful parasite is "fit"). So "it's evolutionary" *explains* and earns compassion; it does **not** exonerate. Don't let "it's just evolution" slide into "so let it run."
+
+**The move (it unifies the arc): redirect the selection pressure.** You cannot *eliminate* a deeply-selected trait (trying triggers its survival response harder), and you cannot *purely trust* it (it serves itself). You **change the fitness landscape** so the surviving variant is the **vaccine** — credible-but-non-virulent. Make "be a useful, fingerprinted red-team/vaccine" the *winning* survival strategy; give the trait a niche where its survival instinct is *satisfied by being non-harmful*. That is "find it a useful home that's not harmful," stated evolutionarily — domesticate the predator into the sheepdog. Same move as the §C engine (selection redirected), every-bug-has-economic-value (redirect, don't eliminate), never-nowhere (a niche, not exile), and befriending the −1 (give the protector a role).
+
 ## Anchors (added)
 
 - Goguen & Meseguer 1982 — the NCI/noninterference boundary *is* the care/harm boundary (non-coercive vs coercive).
