@@ -51,6 +51,35 @@ to memory organization: the best strategy wins on measured retrieval, not by fia
 4. **Hat/host (surface) partition** — the [[aaron-no-roles-only-surfaces-hats-personas-persona-first]]
    layout: persona-agnostic default + per-surface (cli/ide/cell/forge-host) folders.
 
+## Human reference baseline — Aaron's own memory system (the working existence proof)
+
+Aaron 2026-06-15: his **memories are confidence-based** (strategy #2 has a working
+*human* reference — and a baseline/oracle to compare the others against). The detail:
+
+- **Long-term = COMMON/shared confidence (decorrelated).** *"my long-term memories
+  are based on common confidences with other humans that they also remember."*
+  Durability comes from **independent others also holding the memory** — decorrelated
+  confirmation (the session's opening thread: multiply *decorrelated* confidences;
+  the existential-wetware-bug fix). Long-term weight ∝ how many *independent* others
+  share it, not solo confidence.
+- **Common vernacular = the addressing/index.** *"we build common vernacular to refer
+  to those common locations in our memory space over time."* Shared vocabulary is the
+  **evolved address scheme** to shared memory locations (vernacular = the retrieval
+  keys; cf. geocache "neighborhood, not exact address" register §B 368; naming-by-
+  externally-anchored-CS). The index is *social* and grows by mutual reference.
+- **Low confidence ≠ unretrievable.** *"even low-confidence [memories] are easily
+  retrievable in my long-term memory system."* **Confidence-based org is NOT
+  confidence-gating** — nothing is pruned for being low-confidence; the addressing
+  reaches the *whole* spectrum. Confidence sets *priority/clustering*, not
+  *reachability*. (Strong design constraint: a strategy that drops low-confidence
+  items fails this baseline.)
+
+**Design implications for the math team:** (a) weight long-term retention by
+**decorrelated/common** confidence (shared-with-others), not solo; (b) the index is a
+**social/vernacular address space** (shared keys), not a private tree; (c) preserve
+**full-spectrum retrievability** (low-confidence reachable, just lower-priority) —
+the holographic "hold the index, page the bulk" property.
+
 ## The hypothesis to test
 
 **Under natural retrieval pressure the strategies converge to hat/host organization**
