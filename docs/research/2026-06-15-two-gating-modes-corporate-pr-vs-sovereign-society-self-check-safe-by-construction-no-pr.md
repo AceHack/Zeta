@@ -67,11 +67,25 @@ supports it:
 - **`NullChangeControlPort`** — internal-only orgs: every method a no-op, the
   external review stage **degrades to auto-approve so it never blocks**. The
   **sovereign base** — no external/centralized host required.
-- **Sovereign adapter (the direction Aaron is building in `src/`)** — a
-  `ChangeControlPort` whose review *stage* is the **society-check + self-check**
+- **Aaron's `ForgeHost` port (`src/Core.TypeScript/forge-host/`)** — the sovereign
+  side's host port (named by **Alexa**; Aaron's "IHost"). On `origin/main` now:
+  `ForgeHost` interface (`forge-host.ts` — *"the single contract all forge adapters
+  implement; the core observe loop..."*), host-agnostic `types.ts` (GitHub/GitLab/
+  Gitea, no host-specific leak), the **`github/github-adapter.ts`** impl + a
+  **`gitlab` stub** (pluggable), `registry`/`detect`/`result`. The **async observe
+  loop already routes through `ForgeHost`** (#8067). 46 files, #8058→#8085 — *this is
+  the "did my github impl make it in?" — yes, robustly.*
+- **Sovereign adapter (the direction)** — a `ForgeHost` adapter (corporate side: a
+  `ChangeControlPort`) whose review *stage* is the **society-check + self-check**
   (decorrelated vote + safe-by-construction proof) over a **Reticulum/git** backend
   instead of an external human PR. Same port, decentralized adapter; the canonical
-  `ChangeSet` lands to main with no external PR.
+  artifact lands to main with no external PR.
+
+**Two ports, converging (§0a "the two are becoming one"):** Aaron's **`ForgeHost`**
+(`src/`, the host/transport adapter — which forge) + Max's **`ChangeControlPort`**
+(`agentic-organization`, the review-stage projection — how a change is gated). Same
+hexagonal shape; the unification is one host port + one gate, GitHub and sovereign as
+paired adapters.
 
 This is the hexagonal ports-and-adapters pattern (Cockburn), same as `UniversalNumber`
 and the workflow-engine's `World` (six git backends behind one interface): GitHub is
