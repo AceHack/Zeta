@@ -66,6 +66,7 @@ key is a resolvable alias with weight -1 pending). After drop, only the new key 
 ### Quorum condition for Phase 5 (drop)
 
 All of:
+
 1. `depends_on` arrays in all P0-P2 items resolve on ZetaId alone
 2. No in-flight branches reference B-xxxx in active code paths
 3. Golden vectors regenerated and byte-lock checksums pass

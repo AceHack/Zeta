@@ -19,7 +19,7 @@
  *   - src/Core.TypeScript/observe/run-loop-real.ts (the tick entrypoint that wires this)
  */
 
-import { execFileSync, type SpawnSyncReturns } from "node:child_process";
+import { type SpawnSyncReturns } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CommandExecutor, RunSpec, RunOutcome, ExecutorTier } from "./do-item";
@@ -32,16 +32,6 @@ export interface KiroExecutorOptions {
   readonly timeoutMs?: number;
   /** Agent identity for branch naming (default: "alexa"). */
   readonly agentId?: string;
-}
-
-/**
- * Run a git command in the repo, returning stdout. Throws on failure.
- */
-function git(repoRoot: string, args: readonly string[]): string {
-  return execFileSync("git", ["-C", repoRoot, ...args], {
-    encoding: "utf-8",
-    timeout: 30_000,
-  }).trim();
 }
 
 /**
@@ -94,7 +84,7 @@ function readItemFile(repoRoot: string, item: BacklogItem): string | null {
  * For now, the script is a diagnostic that proves the loop works end-to-end.
  * Real work dispatch (invoking the agent with a focused prompt) is Phase 2.
  */
-function generateScript(item: BacklogItem, itemContent: string | null, opts: Required<KiroExecutorOptions>): string {
+function generateScript(item: BacklogItem, _itemContent: string | null, opts: Required<KiroExecutorOptions>): string {
   const branch = claimBranchName(item, opts.agentId);
   // Phase 1: create the claim branch and write a claim file as proof-of-life.
   // This demonstrates the full loop works. Phase 2 will do actual implementation.

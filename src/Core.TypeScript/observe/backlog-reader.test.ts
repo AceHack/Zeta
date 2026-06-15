@@ -13,6 +13,7 @@ import type { BacklogItem as RichItem, PickupSelection } from "../backlog/autono
 
 const richItem = (id: string, title: string): RichItem => ({
   id,
+  legacyId: null,
   priority: "P2",
   status: "open",
   title,
