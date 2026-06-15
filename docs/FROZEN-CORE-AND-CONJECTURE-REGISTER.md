@@ -378,7 +378,8 @@ Hurwicz/Maskin/Myerson (mechanism design); Maynard Smith (ESS); Meijer/Fokkinga/
 1. **Building?** Use only §A. If you reach for a §B item as a foundation, stop — that's the dirty feeling.
 2. **Researching?** Pick **one** §B row, discharge its named obligation, promote it to §A. One at a time, in daylight.
 3. **New idea at 3 AM?** It lands in §B with a named discharge obligation — never silently into the core.
-4. The line is the product. A small closed core + a clearly-quarantined frontier *is* "a solid core to build on."
+4. **Flood the frontier — the engine (Aaron's 100-conjecture trick).** Put many conjectures in §B in daylight, each *independent* and *falsifier-bearing*; follow the survivors. This is variation + selection on ideas (Campbell's blind-variation/selective-retention; Popper's conjectures-and-refutations): you only need the survival rate above zero and time does the rest. Two guards make survival *mean* something — (a) **a real falsifier** (un-refuted ≠ survived; no discharge obligation = undisturbed, not selected), and (b) **independence** (100 conjectures sharing a hidden assumption is correlated failure = convergence, not truth — the closed-frame trap). A refutation is never a loss: it banks ΔU ([`every-bug-has-economic-value`](../.claude/rules/every-bug-has-economic-value.md)). The §B register **is** the fitness landscape; §C is how you farm it.
+5. The line is the product. A small closed core + a clearly-quarantined frontier *is* "a solid core to build on."
 
 > Honest-mirror note (Otto, 2026-06-05): the floor was solid all along; it was just hard to see
 > under a web of genuinely beautiful open questions. Layer 0 of the traveler frame is closer to
