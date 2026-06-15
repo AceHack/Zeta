@@ -5,6 +5,7 @@ open Zeta.Core
 
 module PS = ProbabilitySemiring
 module RH = RoomHorizon
+module PI = PredictionInference
 
 let private mustOk =
     function
@@ -30,6 +31,13 @@ let private candidate key label state attention gravity bytes : RH.Candidate<int
       Priority =
         { Attention = PS.rat attention 1L
           Gravity = PS.rat gravity 1L } }
+
+let private inferredCandidate label state prior likelihood bytes : PI.Candidate<string> =
+    { Label = label
+      State = state
+      Prior = PS.rat prior 1L
+      Likelihood = PS.rat likelihood 1L
+      Cost = cost bytes }
 
 [<Fact>]
 let ``attention and gravity change boarding order while byte cost stays honest`` () =
@@ -97,3 +105,54 @@ let ``negative attention is feedback not an ordering trick`` () =
     | Error(RH.NegativeAttention("bad", value)) ->
         Assert.Equal(0, PS.compare value (PS.rat -1L 1L))
     | other -> Assert.Fail(sprintf "expected NegativeAttention feedback, got %A" other)
+
+[<Fact>]
+let ``inference projection keeps posterior truth separate from attended boarding`` () =
+    let inference =
+        [ inferredCandidate "likely" "A" 3L 1L 6L
+          inferredCandidate "attended" "B" 1L 1L 6L ]
+        |> PI.infer
+        |> mustOk
+
+    let keyOf (scored: PI.Scored<string>) =
+        if scored.Candidate.Label = "attended" then 2 else 1
+
+    let priorityOf (scored: PI.Scored<string>) =
+        if scored.Candidate.Label = "attended" then
+            { PI.neutralPriority with Attention = PS.rat 10L 1L }
+        else
+            PI.neutralPriority
+
+    let report =
+        inference
+        |> RH.admitInference (config 2 BoundedGSetRetention.KeepHighest) (SoftThrottle.tank 6.0 0.0) keyOf priorityOf
+        |> mustOk
+
+    Assert.Equal("likely", report.Inference.Best.Candidate.Label)
+    Assert.Equal<string list>([ "attended"; "likely" ], report.Horizon.Ordered |> List.map _.Branch.Label)
+    Assert.Equal<string list>([ "attended" ], report.Horizon.Boarded |> List.map _.Branch.Label)
+    Assert.Equal<string list>([ "likely" ], report.Horizon.Deferred |> List.map _.Branch.Label)
+    Assert.Equal<int list>([ 2 ], report.Horizon.RetainedKeys |> GSet.toList)
+    Assert.Equal(Vision.PartiallyAdmitted, report.Horizon.Prediction.Outcome)
+
+[<Fact>]
+let ``inference projection reports finite horizon rejection after byte admission`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 2 BoundedGSetRetention.KeepHighest) [ 2; 3 ]
+        |> mustOk
+
+    let inference =
+        [ inferredCandidate "older" "A" 1L 1L 1L ]
+        |> PI.infer
+        |> mustOk
+
+    let report =
+        inference
+        |> RH.updateInference current (SoftThrottle.tank 1.0 0.0) (fun _ -> 1) (fun _ -> PI.neutralPriority)
+        |> mustOk
+
+    Assert.Equal(Vision.Admitted, report.Horizon.Prediction.Outcome)
+    Assert.Equal<string list>([ "older" ], report.Horizon.Boarded |> List.map _.Branch.Label)
+    Assert.Equal<int list>([ 2; 3 ], report.Horizon.HorizonAfter |> BoundedGSet.toList)
+    Assert.Empty(report.Horizon.RetainedKeys |> GSet.toList)
+    Assert.Equal<int list>([ 1 ], report.Horizon.RejectedByHorizon |> GSet.toList)

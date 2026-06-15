@@ -22,6 +22,7 @@ module RoomHorizon =
     type Feedback =
         | NegativeAttention of label: string * value: PS.Rational
         | NegativeGravity of label: string * value: PS.Rational
+        | InferenceFeedback of PredictionInference.Feedback
         | VisionFeedback of Vision.GrowthFeedback
         | HorizonFeedback of BoundedGSetError
 
@@ -35,6 +36,11 @@ module RoomHorizon =
           RejectedByHorizon: GSet<'K>
           EvictedByHorizon: GSet<'K>
           Prediction: Vision.PredictionReport<'S> }
+
+    type InferenceReport<'K, 'S when 'K : comparison> =
+        { Inference: PredictionInference.Inference<'S>
+          Ranked: PredictionInference.RankedBranch<'S> list
+          Horizon: Report<'K, 'S> }
 
     let private nonNegative (r: PS.Rational) : bool =
         PS.compare r PS.zero >= 0
@@ -103,16 +109,12 @@ module RoomHorizon =
 
         loop current GSet.empty GSet.empty GSet.empty boarded
 
-    /// Update an existing finite horizon with a newly ordered, byte-budgeted
-    /// set of candidate futures.
-    let update
+    let private reportFromOrdered
         (current: BoundedGSet<'K>)
         (tank: SoftThrottle.Tank)
-        (candidates: Candidate<'K, 'S> list)
+        (orderedCandidates: Candidate<'K, 'S> list)
         : Result<Report<'K, 'S>, Feedback> =
         result {
-            let! orderedCandidates = ordered candidates
-
             let! prediction =
                 orderedCandidates
                 |> List.map _.Branch
@@ -135,6 +137,18 @@ module RoomHorizon =
                   Prediction = prediction }
         }
 
+    /// Update an existing finite horizon with a newly ordered, byte-budgeted
+    /// set of candidate futures.
+    let update
+        (current: BoundedGSet<'K>)
+        (tank: SoftThrottle.Tank)
+        (candidates: Candidate<'K, 'S> list)
+        : Result<Report<'K, 'S>, Feedback> =
+        result {
+            let! orderedCandidates = ordered candidates
+            return! reportFromOrdered current tank orderedCandidates
+        }
+
     /// Start from an empty bounded horizon and admit the affordable visible
     /// prefix of candidates.
     let admit
@@ -148,4 +162,51 @@ module RoomHorizon =
                 |> Result.mapError HorizonFeedback
 
             return! update empty tank candidates
+        }
+
+    /// Project exact inference into a finite room view. Posterior truth stays
+    /// on the inference record; attention/gravity only decide the budgeted
+    /// boarding order, and the bounded G-set reports the finite exterior view.
+    let updateInference
+        (current: BoundedGSet<'K>)
+        (tank: SoftThrottle.Tank)
+        (keyOf: PredictionInference.Scored<'S> -> 'K)
+        (priorityOf: PredictionInference.Scored<'S> -> PredictionInference.BranchPriority)
+        (inference: PredictionInference.Inference<'S>)
+        : Result<InferenceReport<'K, 'S>, Feedback> =
+        result {
+            let! ranked =
+                PredictionInference.rankWithPriority priorityOf inference
+                |> Result.mapError InferenceFeedback
+
+            let orderedCandidates =
+                ranked
+                |> List.map (fun rankedBranch ->
+                    { Key = keyOf rankedBranch.Scored
+                      Branch = rankedBranch.Scored.Branch
+                      Priority = rankedBranch.Priority })
+
+            let! horizon = reportFromOrdered current tank orderedCandidates
+
+            return
+                { Inference = inference
+                  Ranked = ranked
+                  Horizon = horizon }
+        }
+
+    /// Start from an empty bounded room view and project exact inference into
+    /// the affordable visible prefix.
+    let admitInference
+        (config: BoundedGSetConfig)
+        (tank: SoftThrottle.Tank)
+        (keyOf: PredictionInference.Scored<'S> -> 'K)
+        (priorityOf: PredictionInference.Scored<'S> -> PredictionInference.BranchPriority)
+        (inference: PredictionInference.Inference<'S>)
+        : Result<InferenceReport<'K, 'S>, Feedback> =
+        result {
+            let! empty =
+                BoundedGSet.empty<'K> config
+                |> Result.mapError HorizonFeedback
+
+            return! updateInference empty tank keyOf priorityOf inference
         }

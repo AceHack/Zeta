@@ -38,6 +38,11 @@ module PredictionInference =
         { Attention: PS.Rational
           Gravity: PS.Rational }
 
+    type RankedBranch<'S> =
+        { Scored: Scored<'S>
+          Priority: BranchPriority
+          BoardingWeight: PS.Rational }
+
     type Feedback =
         | EmptyCandidates
         | NegativePrior of label: string * value: PS.Rational
@@ -47,10 +52,6 @@ module PredictionInference =
         | AllCandidatesRefuted
         | VisionFeedback of Vision.GrowthFeedback
         | SoftValueRefuted
-
-    type private Prioritized<'S> =
-        { Scored: Scored<'S>
-          BoardingWeight: PS.Rational }
 
     let neutralPriority: BranchPriority =
         { Attention = PS.one
@@ -69,7 +70,7 @@ module PredictionInference =
         else
             String.CompareOrdinal(left.Candidate.Label, right.Candidate.Label)
 
-    let private comparePrioritized (left: Prioritized<'S>) (right: Prioritized<'S>) =
+    let private compareRankedBranch (left: RankedBranch<'S>) (right: RankedBranch<'S>) =
         let byPriority = PS.compare right.BoardingWeight left.BoardingWeight
         if byPriority <> 0 then
             byPriority
@@ -117,26 +118,15 @@ module PredictionInference =
             { Inference = inference
               Budget = report })
 
-    let predictWithPriority
+    let rankWithPriority
         (priorityOf: Scored<'S> -> BranchPriority)
-        (tank: SoftThrottle.Tank)
         (inference: Inference<'S>)
-        : Result<Prediction<'S>, Feedback> =
+        : Result<RankedBranch<'S> list, Feedback> =
         let rec collect acc rest =
             result {
                 match rest with
                 | [] ->
-                    let ordered =
-                        acc
-                        |> List.sortWith comparePrioritized
-                        |> List.map (fun prioritized -> prioritized.Scored.Branch)
-
-                    return!
-                        Vision.predictBranches ordered tank
-                        |> Result.mapError VisionFeedback
-                        |> Result.map (fun report ->
-                            { Inference = inference
-                              Budget = report })
+                    return acc |> List.sortWith compareRankedBranch
                 | scored :: tail ->
                     let priority = priorityOf scored
 
@@ -150,10 +140,34 @@ module PredictionInference =
                             |> PS.mul priority.Attention
                             |> PS.mul priority.Gravity
 
-                        return! collect ({ Scored = scored; BoardingWeight = boardingWeight } :: acc) tail
+                        return!
+                            collect
+                                ({ Scored = scored
+                                   Priority = priority
+                                   BoardingWeight = boardingWeight }
+                                 :: acc)
+                                tail
             }
 
         collect [] inference.Ranked
+
+    let predictWithPriority
+        (priorityOf: Scored<'S> -> BranchPriority)
+        (tank: SoftThrottle.Tank)
+        (inference: Inference<'S>)
+        : Result<Prediction<'S>, Feedback> =
+        result {
+            let! ranked = rankWithPriority priorityOf inference
+
+            return!
+                ranked
+                |> List.map _.Scored.Branch
+                |> fun branches -> Vision.predictBranches branches tank
+                |> Result.mapError VisionFeedback
+                |> Result.map (fun report ->
+                    { Inference = inference
+                      Budget = report })
+        }
 
     let inferAndPredict
         (tank: SoftThrottle.Tank)
