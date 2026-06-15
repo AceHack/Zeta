@@ -52,11 +52,26 @@ frameworks; mutual, not capture.
 their work into code and scripts."* = **parallelize + automate-the-automator**.
 Resonates with our factory-automation + **scripts-over-ad-hoc-LLM-for-determinism**
 (a script is a metered, replayable channel — noninterference §13 — vs a
-non-replayable ad-hoc call). **Honest peel (clear-eyed collaboration):** the brain
-alignment is on *parallelism + automation*, **not** on the safety axis — Orthwein's
-*"dangerously skip permissions whenever possible"* (#8326) is the **opposite** of
-our least-privilege / gated discipline. Adopt the parallelize-and-automate ethos;
-do **not** adopt the skip-permissions posture.
+non-replayable ad-hoc call). **Correction (Aaron 2026-06-15 — Otto's earlier peel
+was too simple):** "dangerously skip permissions" is **NOT** the opposite of our
+discipline — it is the **same model**: the agent runs free *inside its sandbox*, but
+nothing **lands** except through a reviewed **PR + CI gate**. That is exactly what we
+run (Otto skip-permissions in its own clone; PR → markdownlint → CI → auto-merge-
+only-when-green). Orthwein simply **preached speed and never articulated the gate as
+the safety**. Two boundaries, kept distinct:
+
+1. **What LANDS** → the PR/CI gate. Orthwein has it; identical to ours;
+   skip-permissions is bounded by it. *(Do not over-gate reversible local edits —
+   "we should never do `.wait`"; gate at the meaningful boundary.)*
+2. **What the agent DOES while running** → secrets, outward/irreversible
+   side-effects. The PR gate does **not** cover this; **noninterference §13 (metered
+   channels) + gated-classes** apply *here* — and only here, not to reversible local
+   edits. (Least-privilege is correctly scoped to this layer.)
+
+**Where we help (the coworker complementarity):** Orthwein brings parallel-speed +
+the PR gate; **we make the gate a *verified* gate** — proofs at the PR boundary
+(build=verify / the veri-coding stack), not just tests + review — plus the
+metered-runtime layer (§13) for side-effect safety he didn't preach.
 
 ## 4. Contribute-back path (when Aaron green-lights outreach)
 

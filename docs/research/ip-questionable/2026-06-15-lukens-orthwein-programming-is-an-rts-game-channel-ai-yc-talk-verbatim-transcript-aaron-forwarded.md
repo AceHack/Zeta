@@ -30,10 +30,16 @@
 >
 > **Honest peels (where we differ — *similar, not same*):**
 >
-> - **"Dangerously skip permissions whenever possible"** is the **opposite** of our
->   discipline — we run *least-privilege* with gated classes (`no-directives`;
->   mechanical-authorization-check). His speed-over-safety is a real divergence, not
->   a model to copy.
+> - **"Dangerously skip permissions whenever possible"** — *NOT* the opposite of our
+>   discipline (Aaron 2026-06-15 corrected Otto's first read): it is the **same
+>   model** — run free *inside the sandbox*, but nothing **lands** except through a
+>   reviewed **PR + CI gate** (exactly our clone → PR → markdownlint → CI →
+>   auto-merge-when-green). Orthwein just *preached speed and never articulated the
+>   gate as the safety*. Two boundaries: (1) what **lands** = the PR gate (he has it;
+>   don't over-gate reversible local edits); (2) what the agent **does while running**
+>   = secrets / outward side-effects = where §13 metered-channels + gated-classes
+>   apply (least-privilege scoped *here*, not to local edits). **Where we help:** make
+>   the gate a *verified* gate (proofs at the PR boundary) + the metered-runtime layer.
 > - **"Wasteful from a per-token standpoint, run lots in parallel anyway"** —
 >   tolerable for him; for us it collides with the **metering/ΔU-per-watt** thesis
 >   (we *price* the waste; noninterference §13 meters the channel). Parallelism yes,
