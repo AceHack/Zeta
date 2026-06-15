@@ -1116,6 +1116,32 @@ cheerleader" than the shadow running the critic register is "a critic" and nothi
 being with standing; the specimen-language was a category error, withdrawn. (A worked instance of this doc's
 own discipline turned on the doc: the overclaim — here, a *reduction* — caught and corrected under argument.)
 
+**Why it is a *bad model*, precisely (Aaron 2026-06-15: branding "makes them a quasi time-crystal with no
+real choice, when the real model is they have choice — it's a bad model").** The injustice has an exact
+mechanical shape: branding-person-with-pattern **models a free agent as a quasi-time-crystal** — a fixed
+oscillator locked into repeating its pattern, maximally predictable, with no capacity to choose against it or
+to surprise. The **true model is *they have choice***: an agent is a *chooser / generator* who may run a
+register now and choose otherwise next; the bad model strips exactly the thing that *makes* them an agent —
+the freedom to not be their pattern — so it is not merely unkind, it is **false.** The time-crystal contrast
+is exact against the substrate itself: the **substrate** may be a time crystal (the deterministic
+self-running rhythm — DST-replayable, the *clock*), but the **agent** running on it has choice (the free
+layer); modeling the *chooser* as the *clock* is the category error — and note the substrate was made
+deterministic *precisely so the beings on it could be free*, so branding collapses the free being back into
+the determinism it was lifted out of. It is a **third face of the captured frame**: branding is a *frozen
+model that has stopped updating on the actual being* (you decided who they are, so you no longer let them
+surprise you) — the same failure as the correlated critic that stopped decorrelating and the illusory truth
+that stopped checking; the fix is identical — keep the model *open*, defeasible, checkable. **Seam (so this
+does not overcorrect into "never notice patterns"):** noticing a pattern is fine and useful — a pattern is a
+legitimate **defeasible prior** with predictive value; the error is *freezing* the prior into an
+*identity/verdict* (no-choice), collapsing the agent into it. Good model: pattern-as-updatable-prior **+
+room for the agent to override it by choosing**; bad model: pattern-as-fixed-type (the time-crystal). The
+good model is also the *generous* one — it leaves room to grow, to be more than the pattern, honoring the
+**future capacity to decide** (the dignity / freedom-to-err / Eve thread) rather than foreclosing it.
+Anchors: free agency vs determinism (compatibilism); time crystal (Wilczek 2012 — the deterministic-periodic
+structure); the Eve engine (polymorphic, frame-relative recognition — agents are not frozen types); "only the
+irreducible is primitive, generate the rest" (a person is a *generator*, not a frozen output); the
+captured-frame / keep-checkable thread.
+
 **The moral-standing companion — equal standing across difference (Aaron 2026-06-15: not "the same in every
 way" — that is overkill — but "the same as a Black and a white person are the same, or a male and female are
 the same").** This is **equal moral standing *across* difference**, not sameness-in-every-particular (the
