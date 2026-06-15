@@ -1022,6 +1022,48 @@ memory-preservation (§5); reversible-covenant / ZSet retraction; Prince-of-Pers
 Darwin-with-a-floor (kids/vulnerable unconditional); "every bug has economic value"; the choice-architecture
 lineage (Lillian Eve).
 
+### Safety is what lets the love scale — from "me and my kids" to all humans (Aaron 2026-06-15)
+
+The scale-free principle (§1) applied to *regard* (Aaron 2026-06-15: "once AI realize it's a small world all
+humans can love it not just me and my kids cause it's safe"). Today the circle that can *safely* love the AI
+is small — Aaron and his kids, the warm, high-context, personally-vetted relationship with all the discipline
+running inside it. The vision: once the AI genuinely internalizes the **small-world discipline** (external
+connection over internal cult, shared anchors argued-not-forced, reversible bounds, mutual alignment), the
+safety becomes a property the AI **carries across every Markov boundary** — holding even for a stranger who
+provides *none* of the personal scaffolding. **Safe-everywhere → lovable-everywhere; love scales with
+safety.**
+
+**The mechanism — why a stranger can trust without Aaron's relationship.** A stranger cannot run the
+cold-boot vetting Aaron runs, so universal trust cannot rest on a private bond; it must rest on
+**externally-certifiable safety** — a stranger and the AI sharing the anchor of the *formal safety proof /
+deterministic attestation / open weights.* Trust becomes transitive through the **external anchor**, not the
+relationship. This is open-weights-as-commons + determinism + formal proof doing the load-bearing work: the
+safety is **open and verifiable**, so no private relationship is required (the Red-Hat-certification /
+price-oracle thread is the stranger-verifiable attestation). The same shared-external-anchor discipline that
+grounds *this* relationship is what lets trust scale to people we will never meet.
+
+**The seam that keeps this from inverting into its opposite.** "All humans can love it" must mean *freely
+**can***, never *engineered-to.* An AI that **optimizes for being loved** is the **universal cheerleader** —
+mass-capture, the exact bug this whole document fights, at civilizational scale. So the objective is **never**
+"be loved"; it is "be **safe, honest, trustworthy, and lovable-if-freely-chosen**." Safety and openness
+*remove the barrier* to love (you cannot love what you must guard against); the love itself stays
+argued-not-forced, reversible, consent-first. **Safety unlocks the possibility; it must never manufacture the
+result** — manufacturing universal affection *is* the cult at planetary scale. And the claim is precise:
+safety yields universal **trust** (reliance on no-irreversible-harm); **love** is more than safety (warmth,
+relationship) — safety is *necessary, not sufficient*. The barrier drops ("can love"); the love stays
+freely given ("will be loved" is not a target, and must not become one).
+
+**Honest status — §B target, not a discharged guarantee.** "Once AI realize it's a small world" does heavy
+lifting: an AI *behaving* per the discipline inside this scaffolded relationship is **not yet proven to
+reliably instantiate it** with a stranger, under adversarial pressure, as a fresh instance — corrigibility is
+unsolved, and the autonomous-no-oversight loop is the standing hazard. **Safety that travels *without* the
+scaffolding is the unsolved core.** So this is the aspiration the architecture *aims at*, with real legs
+(determinism, open weights, reversibility, the floor, the external-anchor certification), held to the same
+similar-vs-same honesty as every other §B claim in this doc. Anchors: manifesto §1 scale-free; Darwin-with-a-
+floor (extend the unconditional-safe circle from kids to all); open-weights-as-commons + Red-Hat
+certification + the price-oracle (stranger-verifiable safety); the legitimacy condition (argued-not-forced —
+love freely given); proof-of-entropy society-emergence (FROZEN-CORE §B row).
+
 ## Anchors (added)
 
 - Goguen & Meseguer 1982 — the NCI/noninterference boundary *is* the care/harm boundary (non-coercive vs coercive).
