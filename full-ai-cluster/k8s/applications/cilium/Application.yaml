@@ -39,6 +39,18 @@ spec:
         ipv4NativeRoutingCIDR: "10.42.0.0/16"
         autoDirectNodeRoutes: true
 
+        # L2 announcements: ARP-advertise LoadBalancer/externalIP addresses on the
+        # LAN so type=LoadBalancer services (from cilium-lb-ipam) are actually
+        # reachable. The CiliumL2AnnouncementPolicy (zeta-l2-announce) is inert
+        # without this flag — LB IPs were assigned but unreachable on node-5b2dfa.
+        l2announcements:
+          enabled: true
+        # L2 leader-election leases are API-heavy; raise the client rate limit
+        # (Cilium docs recommendation when l2announcements is on).
+        k8sClientRateLimit:
+          qps: 50
+          burst: 100
+
         # Hubble (observability + Hubble Relay + Hubble UI).
         hubble:
           enabled: true
