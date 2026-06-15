@@ -2,15 +2,16 @@
 // post-write-memory-reindex.ts — PostToolUse hook: regenerates memory/MEMORY.md
 // after any Write or Edit to a memory heap file.
 //
-// Wired via .claude/settings.json PostToolUse matchers "Write" and "Edit".
+// Wired via .claude/settings.json PostToolUse matcher "Write|Edit".
 // Part of B-0259 (MEMORY.md drift enforcement).
 //
-// Trigger conditions (mirrors the generator's own exclusion list):
-//   - Path matches memory/*.md
-//   - Path is NOT memory/MEMORY.md   (the generated index itself)
-//   - Path is NOT memory/CURRENT-*.md (persona fast-path files)
-//   - Path is NOT memory/README.md   (convention doc)
-//   - Path is NOT memory/<persona>/**  (per-persona notebooks)
+// Trigger conditions (mirrors the generator's own exclusion list in
+// src/Core.TypeScript/memory/reindex-memory-md.ts collectEntriesRecursive):
+//   - Path matches memory/**/*.md  (RECURSIVE — the reindexer walks
+//     subdirectories incl. memory/<persona>/conversations/*.md)
+//   - Path is NOT a MEMORY.md   (generated index — root OR per-persona hub)
+//   - Path is NOT a CURRENT-*.md (persona fast-path files)
+//   - Path is NOT a README.md   (convention doc)
 //
 // When a trigger-qualifying path is written, runs:
 //   bun src/Core.TypeScript/memory/reindex-memory-md.ts
@@ -30,16 +31,20 @@ const EXCLUDED_FILENAMES = new Set(["MEMORY.md", "README.md"]);
 
 function isMemoryHeapFile(rawPath: string): boolean {
   // Resolve to absolute so relative paths from different CWDs work.
-  // Then recompute relative-to-cwd to match against memory/*.md pattern.
+  // Then recompute relative-to-cwd to match against memory/**/*.md.
   const abs = resolve(rawPath);
   const rel = relative(process.cwd(), abs);
 
-  // Must be directly under memory/ — not in a subdirectory.
+  // Must be anywhere under memory/ — INCLUDING subdirectories. The reindexer
+  // walks recursively (memory/<persona>/conversations/*.md etc.), so the hook
+  // must fire for those too or MEMORY.md drifts when a subtree file changes.
   const parts = rel.split("/");
-  if (parts.length !== 2) return false;
+  if (parts.length < 2) return false;
   if (parts[0] !== MEMORY_DIR) return false;
 
-  const filename = parts[1]!;
+  // Match on the basename, at any depth (mirrors the reindexer's per-file
+  // exclusions, which key off item.name regardless of directory).
+  const filename = parts[parts.length - 1]!;
   if (!filename.endsWith(".md")) return false;
   if (EXCLUDED_FILENAMES.has(filename)) return false;
   if (filename.startsWith("CURRENT-")) return false;

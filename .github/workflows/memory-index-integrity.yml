@@ -101,11 +101,16 @@ jobs:
               memory/CURRENT-*.md)
                 :
                 ;;
-              memory/persona/*)
-                # Note: bash case `*` matches slashes (unlike
-                # pathname globbing). So this single pattern
-                # correctly covers ALL nested persona notebook
-                # paths including memory/persona/<name>/NOTEBOOK.md.
+              memory/*/*)
+                # Persona subtree: memory/<persona>/... (hubs, NOTEBOOK.md,
+                # OFFTIME.md, conversations/*.md, ferries). bash case `*`
+                # matches slashes, so this single pattern covers ALL nested
+                # persona paths at any depth. These are persona substrate —
+                # indexed opportunistically by the reindexer when they carry
+                # frontmatter, but NOT gated for frontmatter completeness here
+                # (matches the real layout memory/<persona>/, fixing the stale
+                # memory/persona/* pattern that matched nothing). Only the flat
+                # memory/*.md heap is gated.
                 :
                 ;;
               memory/*.md)
