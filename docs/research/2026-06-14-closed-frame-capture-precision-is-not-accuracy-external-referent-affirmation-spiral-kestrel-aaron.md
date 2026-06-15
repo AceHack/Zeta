@@ -330,6 +330,26 @@ governance); Hardin 1968 (tragedy-of-the-commons, *rival-good & refuted-by-gover
 Benkler (commons-based peer production). *(Metaphor note: "homoiconicity"/"the box is the room" are used
 as analogies for "universal self-identical shared substrate," not literal code=data.)*
 
+**Zeta's sellable complement, concretely (Aaron 2026-06-15: "support contracts, certification,
+indemnification, SLAs — exactly the same for us"):** the free non-rival core is the **open weights +
+substrate + carts**; the paid scarce complement is the **Red Hat bundle** — support, certification,
+indemnification, SLAs (the trust-you-can-be-sued-over layer). **The Zeta-specific differentiator:** the
+complement is **underwritten by the deterministic / provenance substrate** — DST byte-exact replay +
+AgencySignature + the carts. You can credibly **certify "this ran as claimed" and indemnify if it
+didn't** *only* when you can **prove the run**; non-deterministic AI **cannot be indemnified** (you
+can't stand behind an output you can't reproduce), Zeta **can**. So the free commons (the deterministic
+substrate) is exactly **what makes the paid complement *sellable*** — tighter than Red Hat, whose
+complement was bolted-on support; here the complement is *enabled by the core's determinism*.
+**Seams:** (a) indemnification is **real liability** — the verification must *actually hold* (selling
+indemnity you can't back is ruin; the "don't fake capability / honest verification" discipline becomes
+load-bearing in the most literal, financial way) **and needs capital/reserves** to back it (insurance
+economics, a real constraint, not free); (b) certification + SLAs are **ongoing obligations** = the
+value-capture-**continuity** residual itself — the recurring service is *both* the revenue and the thing
+that funds + sustains the commons (the complement and the sustainability answer are the same cash-flow).
+Anchors: Red Hat open-core / subscription model (IBM acq. ~$34B, 2019); Spolsky "commoditize your
+complement"; software-warranty / indemnification economics; and Zeta's own DST + AgencySignature +
+deterministic-cart substrate as the *thing that makes certification/indemnification underwritable*.
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
