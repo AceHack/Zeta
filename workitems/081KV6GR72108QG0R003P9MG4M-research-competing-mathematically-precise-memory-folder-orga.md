@@ -93,6 +93,19 @@ for priority/clustering, **never as the routing key**; (c) the index is a
 (d) preserve **full-spectrum retrievability** — reachability from the coincidence
 address is independent of the confidence value (hold-the-index, page-the-bulk).
 
+## External study reference — Hindsight (memory/context provider)
+
+Aaron 2026-06-15: *"we are going to implement and use **Hindsight** — I think it's a
+Hermes harness plugin; it's good learning for our memory layout / interfaces."*
+In-repo already (Max's `agentic-organization`): `ContextPackSourcePointerKind.HindsightMemory`,
+providers `hindsight` / `cockroach_hindsight` — an **external memory/context backend
+behind a Memory port** (a context-pack pointer `hindsight_memory:<provider>:<memoryId>`).
+**Study it as prior art for the Memory-port / memory-layout interface** (the same
+bind-to-external + hexagonal shape as CSLib/ForgeHost): how it keys, retrieves,
+weights (the test shows `governance=… weight=0.81 floor=0.35` — a confidence/weight
+*value contained in* the memory, consistent with confidence≠routing). Pair with the
+`change-control-port` note's "Memory port + Hindsight adapter" comment.
+
 ## Reference substrate — `db/` (Aaron's brain-org, becoming a universal interface)
 
 Aaron 2026-06-15: *"our `db/` folder is roughly how I organize my memories in my
