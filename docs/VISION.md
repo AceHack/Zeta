@@ -157,6 +157,25 @@ homeostat self-stabilize at its own equilibrium**; and the spread is a **homeost
 alignment guarantee (frictionless ⇒ consensual). *Make the right thing the default; let it spread by being the
 easiest good; its payload is freedom.* (Full treatment: `docs/research/2026-06-09-the-polite-virus-close-over-the-world-…-the-design-telos.md`.)
 
+### Prove it, then give it away — the engineering instance of "give freedom"
+
+The polite virus's payload (*give freedom*) at the engineering layer is a discipline —
+and a **method for *earning* coherence** (Aaron 2026-06-15): **(1) write code so the
+ideas crystallize** (build = verify; the concrete, checkable form — memories are
+load-bearing only until mechanized into code); **(2) anchor each to named external
+shoulders** (CALM · CRDT · DBSP · MUMPS · … — the Beacon discipline); **(3) the math
+team is the ref that makes sure we did it right** (the proof — *"ask the math team what
+laws we can count on"*). *"Mostly us writing code so ideas crystallize, and finding
+external anchors we can anchor to."* That is **why the vision compresses at all**: it
+has already been made concrete, grounded, and proven, so the compression only reads it
+back. Then **publish it glass-halo so anyone can adopt it** — nothing of ours held back.
+**Worked exemplar — zero-downtime schema change:** proven on monotone `GSet` (expand,
+CALM-coordination-free) + retraction `ZSet` (contract), given away as a reproducible
+pattern on named shoulders. The library **refuses what it can't prove and gives away
+what it can** — a proven pattern, freely given, leaving the adopter better off (zero
+friction = consensual = aligned). (Detail:
+`docs/research/2026-06-15-zero-downtime-schema-change-a-proven-reproducible-pattern-gset-expand-zset-contract-calm.md`.)
+
 ## The moral reading of retraction-native — structural forgiveness (the atonement engine)
 
 The foundational principle has a moral reading, and it is part of the vision
