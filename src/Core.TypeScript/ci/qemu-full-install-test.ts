@@ -46,6 +46,7 @@ const FAILURE_MARKERS: readonly string[] = [
 ];
 
 const IDLE_INSTALLER_SHELL_MARKER = "nixos@zeta-installer:~";
+const CONTROL_PLANE_LOGIN_PROMPT = "control-plane login:";
 
 const CONSOLE_MIRROR_HINT =
   "serial log shows idle installer shell without install progress — " +
@@ -72,6 +73,21 @@ interface InstallResult {
 export function extractGeneratedHostname(serialOutput: string): string | null {
   const match = serialOutput.match(/\[iter-5\.2\.2\]\s+generated:\s+([a-z0-9-]+)/i);
   return match?.[1] ?? null;
+}
+
+/** Exported for unit tests. */
+export function detectUnexpectedControlPlaneLogin(
+  serialOutput: string,
+  expectedHostname: string | null,
+): string | null {
+  if (
+    expectedHostname &&
+    expectedHostname !== "control-plane" &&
+    serialOutput.includes(CONTROL_PLANE_LOGIN_PROMPT)
+  ) {
+    return `phase 2 FAILURE — B-0835 Bug 1 regression: saw "${CONTROL_PLANE_LOGIN_PROMPT}" but expected "${expectedHostname}"`;
+  }
+  return null;
 }
 
 function usage(): never {
@@ -266,6 +282,16 @@ async function waitForInstalledLogin(
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
         ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
+      };
+    }
+
+    const unexpectedControlPlaneReason = detectUnexpectedControlPlaneLogin(content, expectedHostname);
+    if (unexpectedControlPlaneReason) {
+      return {
+        exitCode: 1,
+        reason: unexpectedControlPlaneReason,
+        serialLogTail: content.slice(-2000),
+        elapsedSeconds: elapsedSec,
       };
     }
 
