@@ -82,3 +82,45 @@ module SoftValue =
     let resolve (threshold: float) (sv: SoftValue) : DynamicValue option =
         let best, p = sv.Candidates |> List.maxBy snd
         if p >= threshold then Some best else None
+
+    /// The weight `sv` assigns to candidate `d` (0 if `d` is absent from the support).
+    let weightOf (d: DynamicValue) (sv: SoftValue) : float =
+        sv.Candidates
+        |> List.tryPick (fun (c, w) -> if c = d then Some w else None)
+        |> Option.defaultValue 0.0
+
+    /// **combine — independent-evidence product of two soft values.** The commutative + associative
+    /// monoid that lets a soft fold **banana-split and fuse in uncertainty space** without ever
+    /// collapsing to a definite value: `combine a b ∝ aᵢ · bᵢ`, renormalized. `None` if their supports
+    /// are disjoint (a contradiction — no fabricated certainty, the same discipline as `observe`).
+    ///
+    /// It is literally `observe` with the other value as the likelihood, so it inherits `observe`'s
+    /// normalization and honesty. Because real multiplication commutes and associates, `combine` is a
+    /// commutative associative (partial) monoid — therefore folding a node's children with `combine`
+    /// is **order-independent** (the soft / NCI analogue of the eager `cata`-fusion law). The carrier
+    /// for a `DynamicValueFold.DvAlgebra<SoftValue>` is exactly this: soft cata/bananaSplit/fusion are
+    /// the generic schemes at `'r = SoftValue`, and `combine` is the order-free child-combiner.
+    let combine (a: SoftValue) (b: SoftValue) : SoftValue option =
+        observe (fun d -> weightOf d b) a
+
+    // ── Snap: the policy-gated soft → hard boundary ──
+    // The soft model runs entirely in uncertainty space (combine/observe, never collapsing); a *policy*
+    // is the one place it is allowed to leave that space and snap to a hard `DynamicValue` that
+    // represents the exact (math-provable) value. Bayesian is how we approximate; snap is how we commit.
+
+    /// A **snap policy**: the soft → hard decision. Collapse a soft value to a definite `DynamicValue`,
+    /// or hold (`None`) if the policy judges the collapse unwarranted. This is the *only* sanctioned exit
+    /// from uncertainty space — everything upstream of it stays soft.
+    type SnapPolicy = SoftValue -> DynamicValue option
+
+    /// Snap a soft value to a hard one under a policy. `snap (threshold t)` is calibration-gated (never
+    /// falsely certain); `snap best` always takes the argmax. `snap _ (certain dv) = Some dv` — with no
+    /// genuine uncertainty the soft layer reproduces exactly the hard value the math team proves.
+    let snap (policy: SnapPolicy) (sv: SoftValue) : DynamicValue option = policy sv
+
+    /// Policy: collapse iff confidence ≥ `t` (this is `resolve`, named as a policy).
+    let threshold (t: float) : SnapPolicy = resolve t
+
+    /// Policy: always collapse to the most-likely candidate (argmax); never holds.
+    let best: SnapPolicy =
+        fun sv -> sv.Candidates |> List.maxBy snd |> fst |> Some

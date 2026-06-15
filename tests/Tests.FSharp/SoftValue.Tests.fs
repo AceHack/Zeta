@@ -118,3 +118,49 @@ let ``SoftValue: independent-evidence Bayesian updates COMMUTE (order-independen
 let ``SoftValue: a refuting observation that zeroes all candidates returns None (no fabricated certainty)`` () =
     let sv = (SV.ofWeighted [ cand 0, 1.0; cand 1, 1.0 ]).Value
     Assert.Equal(None, SV.observe (fun _ -> 0.0) sv)
+
+// ═══════════════════════════════════════════════════════════════════
+// combine — the soft order-free child-combiner (soft banana-split / fuse in uncertainty space).
+// Commutative + associative (multiplication is) ⇒ reducing a node's children with `combine` is
+// order-independent: the soft / NCI analogue of the eager cata-fusion law. genSoft has full shared
+// support (cand 0/1/2 all positive) ⇒ every combine here is Some.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Property(Arbitrary = [| typeof<SoftArb> |])>]
+let ``combine commutes`` (a: SV.SoftValue) (b: SV.SoftValue) =
+    match SV.combine a b, SV.combine b a with
+    | Some ab, Some ba -> sameDist ab ba
+    | None, None -> true
+    | _ -> false
+
+[<Property(Arbitrary = [| typeof<SoftArb> |])>]
+let ``combine associates`` (a: SV.SoftValue) (b: SV.SoftValue) (c: SV.SoftValue) =
+    let lhs = SV.combine a b |> Option.bind (fun ab -> SV.combine ab c)
+    let rhs = SV.combine b c |> Option.bind (fun bc -> SV.combine a bc)
+    match lhs, rhs with
+    | Some l, Some r -> sameDist l r
+    | None, None -> true
+    | _ -> false
+
+[<Property(Arbitrary = [| typeof<SoftArb> |])>]
+let ``combine reduce is order-independent (soft fold child-combine)`` (a: SV.SoftValue) (b: SV.SoftValue) (c: SV.SoftValue) =
+    let red xs = xs |> List.reduce (fun acc x -> (SV.combine acc x).Value) // shared support ⇒ Some
+    let r1 = red [ a; b; c ]
+    let r2 = red [ c; a; b ]
+    let r3 = red [ b; c; a ]
+    sameDist r1 r2 && sameDist r2 r3
+
+// ═══════════════════════════════════════════════════════════════════
+// snap — the policy-gated soft → hard boundary (the one sanctioned exit from uncertainty space).
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``snap best of a certain value returns that exact value (soft reproduces hard when certain)`` () =
+    Assert.Equal(Some(cand 7), SV.snap SV.best (SV.certain (cand 7)))
+
+[<Fact>]
+let ``snap threshold holds below confidence and collapses above (calibration-gated)`` () =
+    let sv = (SV.ofWeighted [ cand 0, 0.6; cand 1, 0.4 ]).Value // confidence 0.6
+    Assert.Equal(None, SV.snap (SV.threshold 0.9) sv) // 0.6 < 0.9 → hold
+    Assert.Equal(Some(cand 0), SV.snap (SV.threshold 0.5) sv) // 0.6 ≥ 0.5 → snap argmax
+    Assert.Equal(Some(cand 0), SV.snap SV.best sv) // best always snaps to argmax
