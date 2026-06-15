@@ -367,7 +367,15 @@ risk (the ledger's literal job), so Zeta can price *more* than anyone — but th
 power/capture position** (trust monopoly + manipulation surface — the DeFi oracle problem) — *being*
 the price authority is itself a moat/chokepoint, the very capture the open-commons move dissolved, so
 the oracle must be **auditable + open-methodology** (oracle-as-commons, prices whose basis anyone can
-verify via the determinism), not a black-box moat; (c) **calibration is earned** — the oracle needs a
+verify via the determinism), not a black-box moat. **Structurally Zeta already has this (Aaron
+2026-06-15): the Multi-Oracle Principle** (manifesto) makes *competing oracles encouraged* — so there
+is **no single chokepoint to capture** (multi-oracle = forkable/pluralistic oracle = the same
+anti-capture as open weights; aggregating/medianing many also **resists single-oracle manipulation** —
+the DeFi medianizer answer). Multi-oracle price-discovery **is the decorrelated-ensemble vote**
+(Condorcet / 1000-brains / `Reconcile`) applied to risk-pricing — many oracles, each price verifiable
+via determinism, aggregated to consensus. *Sub-seam (carries over):* it escapes capture only if the
+oracles stay **decorrelated + non-colluding + each-verifiable** — correlated oracles share a blind spot
+(the ρ-low requirement again), colluding oracles re-form the cartel/chokepoint; (c) **calibration is earned** — the oracle needs a
 *proven* track record (prices verified against realized losses) or an indemnity on a miscalibrated
 oracle is ruin.
 
@@ -397,6 +405,15 @@ mechanism design / incentive compatibility (Hurwicz, Myerson, Maskin, Nobel 2007
 game); Knight 1921 (risk vs uncertainty); the DeFi oracle problem; `db/uncertainty/` +
 [`every-bug-has-economic-value`](../../.claude/rules/every-bug-has-economic-value.md); SoftValue
 calibration; the DST + AgencySignature substrate.
+
+**The one-line thesis (Aaron 2026-06-15): "honesty is what I'm selling, basically."** The product *is*
+the safety property — verifiable, attested, calibrated honesty — which is *why* safety = revenue
+(honesty isn't bolted on; it's the good). And it is the rare product whose **sale strengthens the thing
+sold:** selling honesty *under real liability* forces you to *be* honest (or get sued), so a market for
+honesty **produces more honesty** — the virtuous inverse of selling *engagement*, which degrades its
+own object (the Mad-Men shape). **Seam:** only **verifiable** honesty is sellable-without-degrading;
+unverifiable "honesty" decays into marketing (claims of honesty are the cheapest lie) — so the
+un-gameable proof stays load-bearing under all of it.
 
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
