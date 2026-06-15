@@ -12,7 +12,7 @@
 # root sends gigabytes of references/prior-art/ even if the Dockerfile
 # only needs MB of tools/setup/.
 
-# Curated prior-art / mirrors (per references-upstreams-* rule)
+# Curated prior-art / mirrors (per references-prior-art-* rule)
 references/prior-art/
 
 # Node deps (npm + bun caches)

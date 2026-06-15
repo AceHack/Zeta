@@ -817,5 +817,21 @@
     "path": "references/prior-art/chip8-roms",
     "categories": ["emulator", "chip8", "roms", "reference-corpus"],
     "notes": "CHIP-8/SuperChip/MegaChip8 program collection (games/demos/tests; curated by Revival Studios, 2011) — ROM corpus for the DarkHall cell emulator (#6986) and the rom: ZetaId-pointer scheme (#6987). LICENSE CAVEAT: informal — README says 'can be freely distributed in its original form'; NO formal OSS license, modification/commercial rights not granted, individual-ROM copyright varies. LOCAL reference/study mirror only (references/prior-art is gitignored, read-only — NOT redistributed by us); for actually running, use freely-distributable/PD entries or the user's own legal copies, verified by signature (reference-not-copy, #6925/#6987). Many CHIP-8 programs are PD/freeware (cleaner than copyrighted console ROMs)."
+  },
+  {
+    "name": "TorchLean",
+    "url": "https://github.com/lean-dojo/TorchLean.git",
+    "branch": "main",
+    "path": "references/prior-art/TorchLean",
+    "categories": ["formal-verification", "lean4", "neural-network-verification", "certified-robustness"],
+    "notes": "Lean 4 framework for NN spec/execution/verification (lean-dojo; arXiv:2602.22631). Typed tensors, op-tagged SSA/DAG graph IR, IEEE finite-precision + interval/affine scalar semantics, autograd, certificate checkers (IBP/CROWN/α,β-CROWN = certified robustness), explicit CUDA trust boundary (untrusted). Spec-level flash-attn ≡ standard-attn = the template for OUR cross-oracle byte-lock equivalence (the E8Lattice.fs F#-side parity seam). Surfaced via Robert George's YC talk; study-not-copy."
+  },
+  {
+    "name": "cslib",
+    "url": "https://github.com/leanprover/cslib.git",
+    "branch": "main",
+    "path": "references/prior-art/cslib",
+    "categories": ["formal-verification", "lean4", "computer-science-library"],
+    "notes": "Official leanprover 'Mathlib for computer science' (Barrett et al.; arXiv:2602.04846). Real modules: Computability/Distributed/FLP, Automata(Büchi), MachineLearning/PACLearning (VC dimension, version space), Probability/PMF, Crypto, Logics, CombinatoryLogic. PACLearning + Probability are candidate Lean substrate for the ΔU-aggregation proof (workitem 081KV6B1MBM); FLP anchors consensus. CAVEAT: the Boole sub-language is a PLACEHOLDER ('Placeholder for the Boole language') — the Rust/C++→Lean auto-verification is a VISION, not shipping. Addable as a Lean dep (lakefile.toml require cslib scope leanprover); study + potential dependency."
   }
 ]

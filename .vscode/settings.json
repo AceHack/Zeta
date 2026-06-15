@@ -1,7 +1,7 @@
 {
   // Shape mirrors SQLSharp's `.vscode/settings.json` so
   // contributors get consistent editor behaviour around Zeta's
-  // build outputs + vendored upstreams.
+  // build outputs + vendored prior-art mirrors.
   "dotnet.defaultSolution": "Zeta.sln",
 
   "files.exclude": {

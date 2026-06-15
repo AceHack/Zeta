@@ -57,7 +57,7 @@ is never destructive; retiring one requires an ADR in
 | 12 | Memory frontmatter discipline | Every memory write | Memory authoring agent | factory | `name` / `description` / `type` / `originSessionId` present + accurate | Memory-linter flag | `CLAUDE.md` auto-memory section |
 | 13 | Persona-notebook invisible-char lint | Every notebook edit + pre-commit | Prompt-Protector | factory | Same BP-10 charset as source | Notebook edit blocked | `.claude/skills/prompt-protector/SKILL.md` |
 | 14 | `.github/copilot-instructions.md` audit | Same cadence as SKILL.md files (5-10 rounds) | Aarav | both | Factory-managed contract, BP-NN citations | Finding in notebook | GOVERNANCE.md §31 |
-| 15 | Upstream-sync cadence | Every round close | Architect | project | `docs/PRIOR-ART-LIST.md` — what's new in tracked upstreams | Round-history row | GOVERNANCE.md §23 |
+| 15 | Prior-art-sync cadence | Every round close | Architect | project | `docs/PRIOR-ART-LIST.md` — what's new in tracked prior-art repos | Round-history row | GOVERNANCE.md §23 |
 | 16 | Verification-drift audit | Round cadence (in-progress) | verification-drift-auditor skill | project | Lean / TLA+ / Z3 / FsCheck spec alignment with code | Finding in notebook | `project_verification_drift_auditor.md` |
 | 17 | Public-API review | Every public-surface change | Ilyana (public-api-designer) | project | Internal→public flips + new public members | Finding / ADR | `feedback_public_api_review.md` |
 | 18 | BP-NN promotion cadence | Round cadence | Architect | factory | Stable rules vs. scratchpad findings; ADR-gated promotion | ADR under `docs/DECISIONS/` | `docs/AGENT-BEST-PRACTICES.md` |

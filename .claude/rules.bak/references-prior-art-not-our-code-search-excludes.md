@@ -11,7 +11,7 @@ Carved sentence:
 > with patterns that match in protobuf docs, gRPC tests, Redis
 > manifests, etc. **Default to ripgrep** (`rg`) which respects
 > `.gitignore` automatically. For plain `grep -r`, use
-> `--exclude-dir=upstreams` (basename glob, NOT a path) or an
+> `--exclude-dir=prior-art` (basename glob, NOT a path) or an
 > explicit allowlist (`memory/ docs/ .claude/ tools/`). For
 > `find`, use `-not -path './references/prior-art/*'` (the `find`
 > command does NOT support `--exclude-dir`).
@@ -70,13 +70,13 @@ rg "pattern" docs/ memory/  # explicit allowlist
 
 ```bash
 # GNU grep --exclude-dir takes a BASENAME glob, not a path —
-# so --exclude-dir=upstreams excludes any directory named
-# 'upstreams' anywhere in the tree (currently only references/prior-art/).
-# If a second 'upstreams/' ever appears that we DO want to search,
+# so --exclude-dir=prior-art excludes any directory named
+# 'prior-art' anywhere in the tree (currently only references/prior-art/).
+# If a second 'prior-art/' ever appears that we DO want to search,
 # this approach overreaches and we need the explicit-allowlist
 # approach below instead.
 grep -rn "pattern" \
-  --exclude-dir=upstreams \
+  --exclude-dir=prior-art \
   --exclude-dir=node_modules \
   --exclude-dir=.git \
   --exclude-dir=bin --exclude-dir=obj \
@@ -86,7 +86,7 @@ grep -rn "pattern" \
 **Caveat**: GNU `grep`'s `--exclude-dir=GLOB` matches directory
 *names* (basename), NOT slash-delimited paths. So
 `--exclude-dir=references/prior-art` does NOT work (silently
-matches nothing). Use the basename `upstreams` instead, OR use
+matches nothing). Use the basename `prior-art` instead, OR use
 explicit-allowlist sub-paths (`memory/ docs/ .claude/ tools/`)
 which sidestep the issue entirely.
 
@@ -155,7 +155,7 @@ upstream(s) is encouraged and composes with
 | Mode | Pattern | Treatment |
 |---|---|---|
 | **Backlog prior-art research** (explicit-target) | `rg "pattern" references/prior-art/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row |
-| **Unconstrained repo scan with plain `grep -r`** or `find . \| xargs grep` | (`grep -rn "pattern" .`) | MUST exclude `--exclude-dir=upstreams`; otherwise runaway-scan failure mode |
+| **Unconstrained repo scan with plain `grep -r`** or `find . \| xargs grep` | (`grep -rn "pattern" .`) | MUST exclude `--exclude-dir=prior-art`; otherwise runaway-scan failure mode |
 | **Unconstrained repo scan with ripgrep** | `rg "pattern" .` | Safe-by-default — ripgrep respects `.gitignore`, and `references/prior-art/*` is already gitignored |
 
 Other legitimate explicit-target reasons:

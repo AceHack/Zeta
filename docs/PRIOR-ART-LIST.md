@@ -214,6 +214,27 @@ with a ⭐ below and add a row there.
   2008-2012); the historical F#-native refinement-type checker.
   Dormant (download artefact dated 2012). Listed for lineage;
   not a live dependency.
+- **CSLib — The Lean Computer Science Library** — `leanprover/cslib`;
+  Barrett et al., arXiv:2602.04846 (Feb 2026). "Mathlib for computer
+  science." Real modules: `Computability/Distributed/FLP`, `Automata`
+  (Büchi), `MachineLearning/PACLearning` (VC dimension, version space),
+  `Probability/PMF`, `Crypto`, `Logics`, `CombinatoryLogic`. PACLearning +
+  Probability are candidate Lean substrate for the **ΔU-aggregation /
+  generalized-Condorcet** proof (workitem `081KV6B1MBM`); FLP anchors our
+  consensus/decorrelated-society work. Addable as a Lean dep (`lakefile.toml`
+  `require cslib`). **CAVEAT:** the `Boole` sub-language is a *placeholder* —
+  the Rust/C++→Lean auto-verification is a vision, not shipping. Surfaced via
+  Robert George's YC "Lean for Science" talk. (Pairs with CVC5/E-prover route
+  `081KV6BW42K`.)
+- **TorchLean — Formalizing Neural Networks in Lean** — `lean-dojo/TorchLean`;
+  arXiv:2602.22631 (2026). Lean 4 framework for NN spec/execution/verification:
+  typed tensors, op-tagged SSA/DAG IR, IEEE finite-precision + interval/affine
+  scalar semantics, autograd, **certificate checkers (IBP/CROWN/α,β-CROWN =
+  certified robustness)**, explicit CUDA trust boundary (untrusted). Its
+  **spec-level flash-attention ≡ standard-attention** proof is the template for
+  our **cross-oracle byte-lock** equivalence (the `E8Lattice.fs` F#-side parity
+  seam); interval/affine bounds = the pattern for `SoftValue`/`UniversalNumber`
+  certified bounds. (From Robert George / Max Tegmark "veri coding"; study-not-copy.)
 - **Boost (C++)** — deep, composable primitive collection; the
   "C++ Boost for any language" prior-art for our cross-language
   primitive effort (study the design, not the C++ — ideas-not-code;

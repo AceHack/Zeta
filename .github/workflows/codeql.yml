@@ -45,7 +45,7 @@
 #      Running the full suite on every PR would slow feedback
 #      and explode the alert queue.
 #   5. A config file (.github/codeql/codeql-config.yml) carries
-#      paths-ignore for vendored upstreams, bench harness, and
+#      paths-ignore for vendored prior-art mirrors, bench harness, and
 #      external-tool trees where any C# is incidental.
 #   6. `concurrency: cancel-in-progress` cuts stale runs on
 #      force-push; 30-minute timeout caps the CodeQL DB-build

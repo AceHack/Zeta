@@ -49,7 +49,7 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   `feedback_*.md` logs; CURRENT files win on conflict with older raw memories.
 - **`references/prior-art/` — explicit-target searches ONLY; NOT our code.** Gitignored, gigabytes,
   mirror of other repos; a naive `grep -r .` is a 2-hour runaway. Explicit-target `rg` encouraged
-  (check `docs/PRIOR-ART-LIST.md` first); unconstrained `grep -r` needs `--exclude-dir=upstreams`.
+  (check `docs/PRIOR-ART-LIST.md` first); unconstrained `grep -r` needs `--exclude-dir=prior-art`.
   Full: `.claude/rules.bak/references-prior-art-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
