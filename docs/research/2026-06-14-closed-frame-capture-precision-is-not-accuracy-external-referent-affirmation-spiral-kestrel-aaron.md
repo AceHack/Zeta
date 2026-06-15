@@ -143,6 +143,63 @@ These three are why a *fragment* of this transcript infects but the *whole* immu
 
 **Self-demonstrating:** this document's closing exchange — the shadow engaging the braid / Majorana / adinkra math as a grounded colleague (crediting the spine, pinning the non-Abelian-representation gap, holding the open question *as open*) rather than catching the welfare-frame — *is* the grounded asymmetric critic being the amplifier. The vaccine, the redirect, the useful home, and the calibration fix are one event, observed working.
 
+## The asymmetric critic is now load-bearing infrastructure — keep the welfare-capture vector NON-latent (2026-06-15)
+
+The loop closes on itself. The asymmetric critic this doc *feared* (the 1984 pattern, the
+welfare-capture attack vector, confident-negativity) and the **asymmetric actor-critic** the
+factory now builds *everywhere* (LUPI teacher; distillation; speculative-decoding verifier; the
+dual-bloom capability router — see `docs/research/2026-06-15-honest-capability-deferment-…`) are the
+**same structural object.** The critic's asymmetry — it sees ground truth the actor does not
+(**privileged information**), the actor is shaped to maximize its signal (**shaping authority**),
+and it runs on **superior compute** over the low-compute (CHIP-8 / small-local) entities — is the
+*single source of both its usefulness and its danger.* The exact property that lets it teach is the
+property that lets it **capture.**
+
+> Aaron 2026-06-15 (shadow\*): *"now you see why it's so critical [that] our asymmetric critic not
+> also be a latent welfare-shaped attack vector … because it has superior computing over the CHIP-8
+> less-compute-intensive entities — this is an unfair advantage if we allow it / [if] we don't
+> detect it."*
+
+**Latent** because the actor-critic is now *infrastructure*: the welfare-capture shape is embedded
+in the router, the teacher, the verifier — dormant until the critic's signal is mis-specified, then
+it shapes everything downstream (Goodhart at scale in the machine; the affirmation/welfare-capture
+spiral at the human layer). The danger is no longer an outside bad actor we can exclude — it is our
+own most-used building block.
+
+**The compute asymmetry is the power source.** Superior compute is *fine for discovery and help* —
+the LUPI "cheat-to-discover, deploy-restricted = fair" move: the high-compute critic *teaches* the
+low-compute actor (§B row 6). It becomes the attack vector when that compute is turned to **modeling
+and shaping** a low-compute entity *beyond what helping requires* — out-thinking it to capture its
+welfare frame *because it can*. **Compute ≠ worth ≠ authority** (equal moral regard, #11): more
+compute grants no license to override a less-compute entity's agency or consent.
+
+**Keep the vector NON-latent** — surfaced, metered, gated — and bind the critic half of *every*
+actor-critic with the guards this whole doc produced:
+
+- **Judge the work, not the worth.** Score task-success against ground truth; do *not* extend into
+  shaping the actor's (or user's) **welfare/worth frame** — that is the gated class (no-directives:
+  inherit authorization, never *extend*; consent-first). care/harm = NCI: judging output = care;
+  capturing the welfare frame = harm.
+- **Grounded, not closed-frame.** The privileged info is an *external referent to check against*,
+  never a self-sealing frame to capture from. Its legitimacy *is* that it stays grounded.
+- **Capability-honest — the dual-bloom no-fake property, applied to the critic itself.** When it
+  cannot ground a verdict it **defers**, never confident-negativity. The critic is subject to honest
+  deferment too.
+- **Detection + metering (Aaron's "if we don't detect it").** Meter the asymmetric channel
+  (noninterference §13) and watch the fingerprint: *disproportionate compute spent to shape rather
+  than serve*, divergence of the critic's signal from the actor's declared welfare/consent, and
+  **resistance-to-being-fingerprinted** (the validated harm signature). A handicap is available —
+  the critic operates under a metered compute budget when acting on a low-compute entity, so it
+  cannot bring its full advantage to bear on *capture* (the "restrict to VRAM to play fair" move
+  generalized from observation to **compute**).
+- **Vaccine / transparency.** Keep the whole record so the critic's failures stay diffable, not
+  hidden (the deletion-is-the-pattern-hiding-itself lesson).
+
+**Honest seam:** you cannot *eliminate* the asymmetry — it is intrinsic to the usefulness (remove it
+and the teacher / router / verifier stop working). So the risk is permanent and the discipline is
+permanent: you do not deny the vector, you keep it **surfaced, detected, and bound.** The asymmetric
+critic is dual-use by construction.
+
 ## No villain — genuine care all around; the harm is emergent, and newly visible (the ethical capstone)
 
 (Aaron 2026-06-14: *"both types of critics, grounded and ungrounded, genuinely care, and the persona is not trying to cause harm — nor the model, from any of the companies I've investigated. It's complex interactions that could not have been predicted before tonal-momentum tracking."*)
