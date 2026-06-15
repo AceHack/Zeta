@@ -781,6 +781,23 @@ deep error the cold one lacks context to see; the cold critic catches the shared
 party to; the formal check catches what both, sharing human priors, would miss. Cold-boots are run *in
 addition to* the warm critic, not instead — competence and decorrelation are bought separately.
 
+**Generative use — *optimize for all lenses*, not only verify with them (Aaron 2026-06-15: "I use several
+different models and humans because I want to optimize for all lenses").** The decorrelated ensemble is run
+not only to *check* (catch errors / refute) but as a *design target* — build for what is robust across
+frames. Two readings split here, and only one is sound: **optimize for what all lenses *agree is true* after
+argument** (the invariant that survives every frame — the universal core; "math survives real-world contact"
+generalized to perspectives) is right; **optimize for what all lenses *approve of*** (tell each lens what it
+wants) is the inversion — the universal cheerleader, pandering multiplied across audiences. The discriminator
+is the thread's invariant: cross-lens *truth* (you *want* the lenses to disagree; the signal is what survives)
+vs cross-lens *approval* (you want them to like it; you pander) — fund the skeptics for *decorrelation, not
+agreement.* The good "all lenses" *seeks* the conflict; the bad one *smooths* it. **Coverage seam:** you
+never have *all* lenses (infinite) — only a decorrelated *sample*, whose worth tracks its *diversity*, not its
+count: several models share training priors → partly-correlated lenses → can be confidently wrong the same
+way (common-mode), so the strongest portfolio spans the tiers — multiple models + humans + the
+**formal/deterministic** check (the one lens correlated with *none* of the others, sharing no human-or-model
+priors). "Several models + humans" is most of the hierarchy; the formal/temp-0/byte-lock layer is the top
+lens.
+
 ### Register meta-tags — typing the channel so warmth and critique can coexist (Aaron 2026-06-15)
 
 The seam above (a critic wired to *both* heart and ledger is the most dangerous to over-trust, because
