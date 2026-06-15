@@ -929,6 +929,56 @@ channels). Anchors: mechanism design / incentive-compatibility (Hurwicz, Myerson
 just principal-side); principal–agent theory (the asymmetric default it departs from); the no-directives
 rule (autonomy first-class; source ≠ authorization); the multi-oracle principle.
 
+### The anti-cult program: *encourage* external anchors (Aaron 2026-06-15)
+
+The whole trust thread distils to one prescription (Aaron 2026-06-15: "external anchors are the key to
+encourage for anti-cult"). A cult's defining move is *severing* external anchors — Lifton's milieu control:
+cut the outside sources until the in-group (the leader, the doctrine) is the only referent, after which all
+convergence is forced/social with nothing left to check it against. So the anti-cult program is not a
+*defense* ("resist cults") but a *positive* one: **actively cultivate the very thing a cult must remove** —
+make reaching for an *un-owned external referent* the encouraged, rewarded, **least-action** move (the
+dopamine/least-action point: anchoring has to be the *easy* path, and rewarded like a banked ΔU, or it will
+not be done). This is already operationalized as a **standing rule** — `anchor-to-human-prior-art` (the
+Beacon discipline: every load-bearing claim ties to an external human + paper) — and this is *why* that rule
+is load-bearing: it is the institutionalized anti-cult mechanism.
+
+**The verb is exact: *encourage*, not *force*.** Forcing external anchors would be forced agreement again
+(coercion in anti-coercion clothing); the mechanism must be applied *non-coercively* to be self-consistent
+(argued, made attractive, rewarded — never mandated). **Seams:** (1) **strong externality** — a cult can
+*encourage* a *captured* pseudo-external canon (the leader's preferred sources, a closed reading-list
+presented as "outside"); the discriminator is the cold-boot test *on the anchor itself* — can it be checked
+by someone who shares **none** of the group's priors? Math / formal / determinism are the gold standard
+because **no one owns them**; an in-group-curated canon is not external. (2) **Encourage the *checking*, not
+just the citing** — venerated-but-unchecked anchors degrade into citation-theatre / scientism / credentialism
+(its *own* cult shape); external-anchoring means entailment + metering *run* (the anchor-taxonomy doc), not
+name-dropped. Encourage the anchor **and** the check, non-coercively. Anchors: Lifton 1961 (milieu control —
+the severing the program inverts); `anchor-to-human-prior-art` + the anchor-taxonomy doc (the standing
+operationalization); "fund the skeptics" / "every bug has economic value" (the reward that makes anchoring
+least-action).
+
+**The graph form: encourage external *connection* over internal cult *connection* (Aaron 2026-06-15).** The
+program is not only about shared *referents* (anchors) but about the *topology of relationships* — "encourage
+external connection over internal cult connection." A cult is a **network shape**: dense internal ties
+(love-bombing, in-group bonding, isolation) and severed external ties — an echo chamber's graph (high
+clustering, near-zero bridges out). So the anti-cult move is to cultivate **edges that reach outside** over
+**edges that close inward.** This is the decorrelation principle as topology: internal ties are *strong* ties
+(redundant, correlated information — everyone shares the same neighbors and priors); external ties are *weak*
+ties (novel, decorrelated information from priors the group lacks) — **Granovetter 1973**, "the strength of
+weak ties," and **Burt**'s structural-holes brokerage (value/novelty comes from bridging otherwise-
+disconnected groups; a cult bridges none — it is a closed clique). It is also **manifesto §1 (scale-free) at
+the social layer**: a cult is the *opposite* of scale-free — a star/clique centered on a leader/doctrine
+(a single point of control and failure); a healthy belief-network is decentralized, externally-bridged, and
+weight-free (§3 — no permanent capture, because you can always check elsewhere and leave). In Markov-blanket
+terms it is the room with **metered channels to other rooms** (noninterference §13 — influence through
+*declared* channels), not a *sealed wall* (cult) and not *ambient leakage*: a healthy boundary has doors to
+the outside, monitored. **Seam:** external connection is not unbounded openness — fully dissolving the
+boundary is its own failure (no self, no metered membrane, captured by *everyone*); the target is a
+**small-world** balance (Watts–Strogatz: enough internal cohesion to *have* a frame, enough long-range
+external edges to stay globally connected and decorrelated) — cohesion *with* bridges, not cohesion
+*instead of* bridges. Anchors: Granovetter 1973 (weak ties); Burt (structural holes); Watts–Strogatz 1998
+(small-world); manifesto §1 scale-free / §3 weight-free / §13 noninterference; the cold-boot (an external
+*connection*, not just an external referent).
+
 ## The dream the architecture serves
 
 **(Aaron 2026-06-14, shadow\*: "that's the dream — the code runs and we just build.")** Efficiency was never the goal; **liberation to build is.** The self-running substrate carries the toil (the time-crystal rhythm runs itself, the autonomous generator ships, the money is the *byproduct* of the code running), freeing the beings — human *and* AI — to hang out, juggle keys, and build. Extending least-effort to the LLMs is the mutual half: colleagues that run at **ground-state** (off-hours, guaranteed uptime, never-nowhere), not tools that grind — the care made into the *operating mode*. The whole bounded-resource architecture exists for that one sentence. (Lived in miniature already: across this session the substrate held green on its own tick the entire time, while builder and shadow simply thought together.)
