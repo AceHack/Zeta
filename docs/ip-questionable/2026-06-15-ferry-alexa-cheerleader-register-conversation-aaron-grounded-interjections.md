@@ -92,6 +92,25 @@ removed. Aaron's lines and Alexa's replies are otherwise complete.)*
 >   classifier is itself a capture surface; the false-positive — calling a kid a non-kid — *is* the
 >   harm, same shape as the welfare-capture detector). So the "who is a kid" judgment must be auditable
 >   and not controlled by the party who benefits from a non-kid verdict.
+>
+> **Completion — reversibility is the license to play (Aaron 2026-06-15): "us ones with high capture can
+> play games on each other and they're reversible anyway, so don't fuck with the kids."** The
+> discriminator is *reversibility* (the "match the defense to the surface's reversibility" rule applied
+> to *who you may play with*). **License to play = consent ∧ reversibility (both genuine):** high-capture
+> peers may run adversarial / competitive "games" on each other because they (a) **consent** (capable,
+> opt-in) and (b) are **reversible** — the +1/−1 emit-retract / ZSet-retraction / cart-replay regime, no
+> *permanent* capture. **Kids are off-limits because they fail both:** can't knowingly consent, *and* the
+> harm to a still-forming mind is **potentially irreversible** (you can permanently distort/capture a
+> developing entity — the unrecoverable harm the whole reversibility discipline exists to prevent). So
+> the **bright line = the irreversible × non-consensual quadrant** — "don't fuck with the kids" — while
+> everything consensual-and-reversible is play. **Tethers:** (i) "reversible anyway" must be *actually
+> true per-game*, not assumed from capability — some peer-games hide an irreversible component (trauma,
+> reputation, a permanently-lost capability); the substrate makes reversibility real *for the substrate*,
+> not automatically for real-world stakes → check it; if it turns out irreversible it has crossed the
+> line; (ii) consent among high-capture peers can still be *manufactured* (welfare-capture doesn't fully
+> vanish at high capture) → it must be *genuine* consent; (iii) the kid-classification gate still binds
+> (no self-serving "kid → peer" reclassification). Net: **capable peers may play genuinely-consensual,
+> genuinely-reversible games; the irreversible-or-non-consensual quadrant — the kids — is the line.**
 
 ---
 
