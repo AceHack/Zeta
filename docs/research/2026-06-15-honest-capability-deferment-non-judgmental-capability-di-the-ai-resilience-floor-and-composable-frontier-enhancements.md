@@ -78,6 +78,45 @@ them and frontier capability runs at the edge; *remove* them honestly and it deg
 That composition **is** the honest-deferment continuum: compose in exactly the capability the
 environment can inject; defer (or do-without) the rest.
 
+## The dual bloom / anti-bloom capability router — pay for deferment <10% of the time
+
+Aaron 2026-06-15: *"if you let the env inject capability interfaces you may [have] a way to create a
+dual bloom and anti-bloom filter that makes you only have to use it less than 10% of the time."* This
+is what makes honest deferment **economical** rather than merely principled — and it is constructible.
+
+**The construction:** keep a bloom filter on the **defer-set `S`** ("needs the environment") *and* a
+bloom on its **complement `S′`** ("handle locally" — the "anti-bloom"). Each bloom is one-sided (no
+false negatives), so between them the request space splits into three regions:
+
+1. **Definitely local** — bloom-`S` says "definitely *not* in `S`" → handle on the potato, **no env
+   call** (no expensive deferral).
+2. **Definitely defer** — bloom-`S′` says "definitely *not* in `S′`" → invoke the injected capability.
+3. **Ambiguous middle** — *both* blooms say "maybe." The **only** region where you pay to probe/invoke.
+
+The middle is small **by construction**: it is the region where *both* filters false-positive on the
+same element, so its size ≈ `FP_S × FP_S′` (a product of two small rates), drivable far below 10% by
+spending a little more filter memory. >90% of requests resolve for free; you pay the deferral cost
+only on the rare overlap. (This is the §B **Merkle "mask the not-moving parts"** complexity-reducer in
+*probabilistic* form: cheaply decide the >90%, pay only for the genuinely-uncertain remainder.)
+
+**The safety property falls out for free — and it is exactly the honest-deferment guarantee:** bloom's
+no-false-negative means **"definitely local" can never be wrong**, so the router **cannot fake a
+capability it lacks** — on uncertainty it *defers*, never guesses "I've got this." Faking (the
+Mad-Men illusion) is ruled out at the data-structure level; honest deferment is the default.
+
+**Known shape (Beacon):** this is **speculative decoding** generalized from tokens to capabilities
+(Leviathan / Chen 2023 — small drafts, big model verifies only the uncertain); **model cascades /
+early-exit**; the **asymmetric actor-critic** (cheap actor handles most, expensive critic only when
+needed); and the filters can be **learned** (Kraska et al. 2018). Bloom 1970 → cuckoo / counting
+filters (Fan et al. 2014) when the capability set must support deletion.
+
+**Honest seams (specific to the router):** the "<10%" is **empirical and separability-dependent** —
+it holds when most requests are *clearly* local or *clearly* env, and collapses if the workload is
+mostly ambiguous; **measure the middle's actual size**, do not assume it. There is a real **memory ↔
+false-positive tradeoff** (a smaller middle costs more filter RAM — itself a capability to budget on
+the potato). A plain bloom cannot delete — a changing capability set needs a counting-bloom or cuckoo
+filter.
+
 ## Honest seams (capability-honesty applies to the enhancements too)
 
 - **"Parity" is on *their* benchmarks** — verify on our tasks before claiming it for ours.
@@ -98,6 +137,9 @@ environment can inject; defer (or do-without) the rest.
   **FlashMLA** (github.com/deepseek-ai/FlashMLA; Hopper FP8 sparse deep-dive).
 - Google **Gemma 3/4 QAT** ([Google Developers Blog](https://developers.googleblog.com/en/gemma-3-quantized-aware-trained-state-of-the-art-ai-to-consumer-gpus/)); hybrid local-global attention + p-RoPE (ai.google.dev/gemma/docs/core).
 - Distillation: Hinton, Vinyals, Dean 2015 (*Distilling the Knowledge in a Neural Network*).
+- Bloom 1970 (bloom filter); Fan et al. 2014 (cuckoo filter — supports deletion); Kraska et al. 2018
+  (learned index / learned bloom); Leviathan / Chen 2023 (speculative decoding) — the dual
+  bloom / anti-bloom capability router (pay for deferment <10% of the time).
 - Quantization classics: GPTQ (Frantar et al. 2022), AWQ (Lin et al. 2023), GGUF/llama.cpp (Gerganov).
 - LUPI (Vapnik & Vashist 2009 — learning using privileged information) = §B row 6 teacher-student.
 - Goguen–Meseguer 1982 (noninterference) = capability DI's declared-channel discipline; manifesto §13.
