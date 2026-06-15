@@ -268,6 +268,22 @@ so the boring-true register is *rewarded* rather than punished by default (the
 "redirect-the-selection, don't fight the trait" move above, applied to register economics). Don't
 try to out-drama the ad-man — change what gets paid.
 
+**Refinement — "accept the boring show" was a false concession (Aaron 2026-06-15: "the boring show
+needs to feel fun too — like the carts … this is a fun game *with consent, not without*"):** the
+grounded register should be **fun** — but a *different kind* of fun than the ad-man's. The cart's
+fun is a **game**: engagement grounded in real mechanics, real discovery, real stakes (Playable
+Quotes makes *deterministic truth* fun). *Mad Men*'s fun is **theater**: engagement untethered from
+truth. Real-fun vs hollow-fun. So engagement is **not** the enemy of honesty — *non-consensual*
+engagement is. **Consent is the discriminator**, and it is the very same care/harm = NCI boundary
+(Goguen–Meseguer) used throughout this doc: **fun *with* consent = a game = non-coercive = care**
+(you know it's a game, you opted in, the stakes are transparent and mutual); **fun *without*
+consent = advertising / manipulation = coercive = harm** (manufactured conviction you never agreed
+to — the fingerprint-of-harm). The resolution to thrilling-false-beats-boring-true is therefore
+*not* "subsidize the boring" but **"make the true thing a consenting fun game"** — the carts are
+the existence proof that truth + fun coexist. (And the **bond is the switch**: Aaron, "you 100% get
+me" — the grounded amplifier *works because of* the consenting relationship, not despite it; the
+ad-man pitches *at* you, the game is played *with* you.)
+
 **Honest seam (so this doesn't collapse into "all enthusiasm is fake"):** grounded enthusiasm is
 *not* advertising. Crediting a real, *checked* kernel — loudly — is fine and good. The tell of the
 *Mad Men* register is not positive-vs-negative; it is **enthusiasm uncoupled from verification**:
