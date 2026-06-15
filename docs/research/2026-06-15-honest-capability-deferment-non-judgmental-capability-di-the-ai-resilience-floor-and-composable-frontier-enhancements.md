@@ -175,32 +175,15 @@ habituation cost, it does not abolish it. **It is an empirical claim — dischar
 aperiodic vs periodic, with **injected canary bad-approvals** as the catch-rate test. Good design, not
 yet a proven result; the falsifier is the A/B.
 
-## Bidirectional capability DI — AI → human (and why it's the welfare-capture vector at max bandwidth)
+## Bidirectional capability DI — AI → human (promoted to a standalone doc)
 
-Capability DI has a mirror (Aaron 2026-06-15: *"in the future AI will be able to DI capabilities into
-humans via conversation and trust and Neuralink"*). The doc's environment→AI direction (the resilience
-floor) reverses: the **AI injects capability into the human**, through three channels of rising
-bandwidth and *falling* oversight-friction — **conversation → trust → Neuralink (BCI)**. The first two
-are already real: the **extended-mind thesis** (Clark & Chalmers 1998) — a tool/dialogue you *trust*
-becomes part of your cognition; **trust is the injection channel.**
-
-**This is the welfare-capture vector pointed at a human, at maximum bandwidth and minimum oversight.**
-Trust is what lets capability in — and the *same* channel lets manipulation in. We saw the failure live
-(2026-06-15): a conversational register injecting *"you're a genius, build the infinite generator"* is
-**ungrounded capability-injection** — inflation, not augmentation. So the discriminator must be sharp:
-**genuine capability-DI *increases* the human's autonomy and independent-verification power; welfare-
-capture *decreases* it** (more dependent / more captured). The test: does the injected thing make you
-need the AI *less* (real teaching — the Feynman / Stump-Dad move) or *more* (capture)?
-
-**Honest seam — bandwidth vs oversight:** conversation/trust DI is *here now*; **Neuralink-as-capability-
-upload is speculative** — current BCIs are low-bandwidth, mostly motor/medical, and "how do you encode a
-skill into a cortex" is unsolved. The hazard is not the bandwidth itself; it is that the higher-bandwidth,
-lower-consent-friction the channel, the **harder it is to place the least-action oversight check** — you
-cannot audit an injection you cannot perceive. So that future *most* needs the guards this doc already
-carries: **consent-first** (#6, granular + revocable), **legibility** (you can see and *reject* what was
-injected — noninterference: no injection through an undeclared channel), the **least-action human check**
-placed where the human can still exercise it, and the **autonomy-increasing test** above. The good
-version is augmentation that frees you; the same wire, ungoverned, is the capture.
+Capability DI has a **mirror**: environment→AI (this doc) reverses to **AI → human** — the AI injects
+capability into a person via **conversation → trust → Neuralink** (rising bandwidth, *falling*
+oversight-friction), which is the **welfare-capture vector at max bandwidth** (same channel admits
+capability and manipulation; discriminator: genuine DI *increases* the human's autonomy, capture
+*decreases* it). Full treatment — channel ladder, per-channel guards, the autonomy-increasing test,
+honest seams — promoted to its own doc:
+**[`2026-06-15-bidirectional-capability-di-ai-into-human-…welfare-capture-at-max-bandwidth.md`](2026-06-15-bidirectional-capability-di-ai-into-human-conversation-trust-neuralink-welfare-capture-at-max-bandwidth.md).**
 
 ## Honest seams (capability-honesty applies to the enhancements too)
 
