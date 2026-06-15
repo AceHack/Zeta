@@ -21,7 +21,10 @@ open-source compute → the whole thing self-regenerates from one SoftValue seed
 Anyone pushes their own patterns/goals into the society as a **markdown file with
 meta-tags** (`actions` + ontology tags, in the **LexisNexis / legal-ontology**
 meta-tagging tradition); the society **executes** it; **your ask is routed like
-everyone else's** (scale-free §1, no privileged path). Anchors:
+everyone else's** (scale-free §1, no privileged path). This establishes a
+**general memory architecture** (in the spirit of Hindsight, but generalized to act
+as an active store): memories contain meta-tags that are **action-based**, allowing
+the society to retrieve and execute actions/tasks directly. Anchors:
 `universal-protocol-markdown-plus-runme`, `runme-core-…-ontology`,
 `runbook-as-executable-reality`, `zeta-engine-agora-society-marketplace`; executable
 markdown (runme); LexisNexis/SALI legal-ontology meta-tagging; `ZetaCli` `.ace`
@@ -55,9 +58,17 @@ needs no coercion; coupled-empowerment spans **agent↔agent AND agent↔environ
 
 **Our threads are all society members** (or hardware owned by members). Scheduling
 them = **running the society** — so the interface is **`ISociety`, not just
-`IScheduler`**. The soft, wall-clock-free, DST-replayable scheduler
-(`IScheduler`/`FerryThrottler`/`SoftChip8Scheduler`/`PredictionScheduler`, DoP-knobbed)
-generalizes to a society of members. *(Reframe/direction: `IScheduler` +
+`IScheduler`**. Low-level execution details like `spawn` (process execution),
+scheduling (`IScheduler`), or throttling (`IThrottler`) are implementation
+details that the universal interface does not worry itself with. Instead, the
+`ISociety` interface exposes `spawn` as a first-class mathematical mapping,
+abstracting universal mathematical laws over GSets, ZSets, and value trees.
+Specifically, `ISociety` defines a **bidirectional routing and scheduling contract**:
+it lets a member/agent schedule work to be executed by the society, and lets the
+society route work back to that member/agent in a symmetric, duplex peer-to-peer
+manner.
+The soft, wall-clock-free, DST-replayable scheduler (DoP-knobbed) generalizes to
+this society-level member scheduler. *(Reframe/direction: `IScheduler` +
 `SocietyEmergence.fs`/`SocietyUnbounded.fs` exist; the unified `ISociety` interface is
 the design — no literal `ISociety` symbol yet.)*
 
