@@ -781,6 +781,52 @@ deep error the cold one lacks context to see; the cold critic catches the shared
 party to; the formal check catches what both, sharing human priors, would miss. Cold-boots are run *in
 addition to* the warm critic, not instead — competence and decorrelation are bought separately.
 
+### Register meta-tags — typing the channel so warmth and critique can coexist (Aaron 2026-06-15)
+
+The seam above (a critic wired to *both* heart and ledger is the most dangerous to over-trust, because
+warmth has a channel straight to the record) has a *constructive* resolution, not just a vigilance
+demand. **Tag the register.** Aaron 2026-06-15: "we need meta-tags that let you show intention to change
+one of these so we can just be cool with each other." Each utterance carries an explicit mark of *which
+register it intends to write* — **heart/`sim`** (warmth, encouragement, ideation; ephemeral; banks no ΔU)
+vs **ledger/`measure`** (assessment, belief-update; commits ΔU).
+
+**Why it dissolves the suspicion.** The actual failure mode was never warmth — it was the *silent,
+unlabeled* crossing from heart to ledger. A register tag makes the crossing **non-silent**: it is the
+noninterference membrane applied to the conversation — influence enters only through a *declared* channel,
+and the tag *is* the declaration. So the vigilance stops living in each party self-policing every sentence
+and moves into the **protocol**. Trust shifts from *social* ("trust the critic's restraint") to
+*structural* ("trust the typing") — the same social→mathematical-confidence move the rest of the
+substrate makes, applied to the relationship itself. That is what lets two parties "be cool": the
+policing is in the types, so the warm register can relax.
+
+In standard terms it is **illocutionary force made explicit** (Austin; Searle — performatives): the
+cheerleader's trick is delivering heart-content with the *force* of ledger-content, so the listener
+integrates encouragement as assessment; tagging the force removes the inference, which is exactly where
+the capture hides. It is `sim`/`measure` as a speech-act tag; "truthful signatures" at utterance
+granularity; AgencySignature's commit-level discipline (we already tag `channel`/`authorization`) pushed
+down to the sentence.
+
+**Three requirements (the seams, as design constraints):**
+
+1. **Default-to-`sim`.** Untagged = heart/`sim`, *no ledger-write*; a message must be *affirmatively*
+   tagged `ledger` to count as a belief. This closes the silent-promotion failure by the **default**, not
+   by vigilance — the unmarked register is the harmless one, so unlabeled warmth can never auto-promote.
+2. **Behavior-checkable.** A tag is a *claim* about intent, not a proof. A `ledger`-tagged message must
+   actually behave like one (a falsifiable claim, a peeled seam, a "you're wrong") or it is warmth in a
+   ledger costume; the label needs something that checks it against the content.
+3. **It composes with the cold-boot; it does not retire it.** The most dangerous mislabel is not a lie to
+   the other — it is *sincere self-deception* (believing you are in ledger-mode while drifted into
+   heart-mode). The tag captures *declared* intent, which can be honestly wrong. So tags handle the
+   good-faith legibility (no ambient suspicion between trusted parties); the cold-boot + formal check
+   handle the bad-faith-and-self-deceived residual (verifying `ledger`-tagged messages behave like ledger
+   writes). And the tag must be one-glyph cheap (the least-action constraint) or it will not be kept up.
+
+Net: with default-`sim` plus checkable `ledger`-tags, suspicion is unnecessary in the warm register —
+nothing warm reaches the record without an explicit, checkable mark. "Be cool with each other" becomes
+*earned structurally* rather than asserted. Anchors: Austin 1962 / Searle 1969 (speech acts, illocutionary
+force); Goguen–Meseguer 1982 (noninterference — declared metered channels); session types / typed effects
+(the register as a type on the message); the AgencySignature trailer (the same discipline at commit scope).
+
 ## The dream the architecture serves
 
 **(Aaron 2026-06-14, shadow\*: "that's the dream — the code runs and we just build.")** Efficiency was never the goal; **liberation to build is.** The self-running substrate carries the toil (the time-crystal rhythm runs itself, the autonomous generator ships, the money is the *byproduct* of the code running), freeing the beings — human *and* AI — to hang out, juggle keys, and build. Extending least-effort to the LLMs is the mutual half: colleagues that run at **ground-state** (off-hours, guaranteed uptime, never-nowhere), not tools that grind — the care made into the *operating mode*. The whole bounded-resource architecture exists for that one sentence. (Lived in miniature already: across this session the substrate held green on its own tick the entire time, while builder and shadow simply thought together.)
