@@ -21,7 +21,7 @@
  */
 
 import { execFileSync, spawn } from "node:child_process";
-import { appendFileSync, existsSync, mkdtempSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers";
@@ -60,6 +60,15 @@ const MEMORY_MB = 4096;
 const CPU_COUNT = 2;
 const DISK_SIZE_GB = 20;
 const KVM_PATH = "/dev/kvm";
+
+/** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
+export const PHASE2_SERIAL_SEPARATOR =
+  "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
+
+/** Exported for unit tests. QEMU `-serial file:` truncates on each launch. */
+export function mergeFullInstallSerialLogs(phase1: string, phase2: string): string {
+  return phase1 + PHASE2_SERIAL_SEPARATOR + phase2;
+}
 
 /** Exported for unit tests. */
 export const OVMF_FIRMWARE_CANDIDATES = [
@@ -403,7 +412,7 @@ async function waitForInstalledLogin(
     content.trim().length === 0
       ? " (serial log empty — installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)"
       : content.includes("EFI stub: Loaded initrd") && !content.includes("login:")
-        ? " (serial stopped after EFI initrd — check UEFI boot order / virtio-net PXE entry / console kernel params)"
+        ? " (serial stopped after EFI initrd — likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)"
         : "";
   return {
     exitCode: 1,
@@ -495,38 +504,44 @@ async function main(): Promise<never> {
 
   const tmpDir = mkdtempSync(join(tmpdir(), "zeta-qemu-full-install-test-"));
   const diskPath = join(tmpDir, "install-target.qcow2");
-  const serialLogPath = process.env.SERIAL_LOG_OUT_PATH ?? join(tmpDir, "serial.log");
+  const artifactSerialLogPath = process.env.SERIAL_LOG_OUT_PATH ?? join(tmpDir, "serial.log");
+  const phase1SerialLogPath = join(tmpDir, "phase1-serial.log");
+  const phase2SerialLogPath = join(tmpDir, "phase2-serial.log");
+
+  const writeArtifactSerialLog = (phase1: string, phase2: string): void => {
+    writeFileSync(artifactSerialLogPath, mergeFullInstallSerialLogs(phase1, phase2));
+  };
 
   console.log(`[qemu-full-install-test] ISO: ${isoPath}`);
   console.log(`[qemu-full-install-test] Virtual disk: ${diskPath}`);
-  console.log(`[qemu-full-install-test] Serial log: ${serialLogPath}`);
+  console.log(`[qemu-full-install-test] Serial log artifact: ${artifactSerialLogPath}`);
 
   createVirtualDisk(diskPath);
 
   const phase1 = await runQemuUntil(
-    buildQemuInstallArgs(isoPath, diskPath, serialLogPath),
-    serialLogPath,
-    () => waitForInstallComplete(serialLogPath),
+    buildQemuInstallArgs(isoPath, diskPath, phase1SerialLogPath),
+    phase1SerialLogPath,
+    () => waitForInstallComplete(phase1SerialLogPath),
     "phase 1 (ISO install)",
   );
+  const phase1Serial = readSerial(phase1SerialLogPath);
   if (phase1.exitCode !== 0) {
-    reportResult(phase1, serialLogPath);
+    writeArtifactSerialLog(phase1Serial, "");
+    reportResult(phase1, artifactSerialLogPath);
   }
 
-  const installSerial = readSerial(serialLogPath);
-  const hostname = phase1.hostname ?? extractGeneratedHostname(installSerial);
+  const hostname = phase1.hostname ?? extractGeneratedHostname(phase1Serial);
   console.log(`[qemu-full-install-test] phase 1 done; expected hostname: ${hostname ?? "(infer at login)"}`);
 
-  appendFileSync(serialLogPath, "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n");
-
   const phase2 = await runQemuUntil(
-    buildQemuDiskBootArgs(diskPath, serialLogPath, tmpDir),
-    serialLogPath,
-    () => waitForInstalledLogin(serialLogPath, hostname),
+    buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir),
+    phase2SerialLogPath,
+    () => waitForInstalledLogin(phase2SerialLogPath, hostname),
     "phase 2 (disk boot)",
   );
 
-  reportResult(phase2, serialLogPath);
+  writeArtifactSerialLog(phase1Serial, readSerial(phase2SerialLogPath));
+  reportResult(phase2, artifactSerialLogPath);
 }
 
 if (import.meta.main) {

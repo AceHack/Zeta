@@ -346,3 +346,17 @@ describe("iter-5.4 substrate-honest framing (defense-in-depth assertions)", () =
     );
   });
 });
+
+describe("iter-5.1 hardware-configuration copy (B-0891 phase-2 initrd)", () => {
+  test("nixos-generate-config output is copied into flake host tree before nixos-install", () => {
+    const genIdx = SCRIPT.indexOf("nixos-generate-config --root /mnt");
+    const copyIdx = SCRIPT.indexOf("installing probe-generated hardware-configuration.nix");
+    const installIdx = SCRIPT.indexOf("nixos-install --flake");
+    expect(genIdx).toBeGreaterThan(0);
+    expect(copyIdx).toBeGreaterThan(genIdx);
+    expect(installIdx).toBeGreaterThan(copyIdx);
+    expect(SCRIPT).toContain(
+      'HW_DST="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}/hardware-configuration.nix"',
+    );
+  });
+});

@@ -126,6 +126,9 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       // iter-5.4.1 hardware-probe sentinels (catches MAC parsing regression from #5352).
       "/proc/cpuinfo", // CPU_MODEL extraction
       "link/ether", // MAC_ADDR parses field AFTER link/ether (not before)
+      // B-0891 phase-2: probe-generated hardware-configuration must land in flake host tree
+      "installing probe-generated hardware-configuration.nix",
+      'hosts/${HOST}/hardware-configuration.nix',
     ],
     rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. B-0835 Bug 2a/2b fixes) substrate must be present in installer script",
   },
@@ -171,6 +174,24 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
     ],
     rationale: "B-0855.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces",
+  },
+  {
+    path: "full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix",
+    mustContain: [
+      "virtio_pci",
+      "virtio_blk",
+      "boot.initrd.kernelModules",
+    ],
+    rationale: "B-0891 QEMU phase-2 initrd floor: virtio modules in host stub until probe copy at install",
+  },
+  {
+    path: "full-ai-cluster/nixos/hosts/worker-gpu/hardware-configuration.nix",
+    mustContain: [
+      "virtio_pci",
+      "virtio_blk",
+      "boot.initrd.kernelModules",
+    ],
+    rationale: "B-0891 QEMU phase-2 initrd floor: virtio modules in worker stub until probe copy at install",
   },
   {
     path: "full-ai-cluster/nixos/modules/injected-hostname.nix",

@@ -4,7 +4,9 @@ import {
   buildQemuDiskBootArgsPure,
   detectUnexpectedControlPlaneLogin,
   extractGeneratedHostname,
+  mergeFullInstallSerialLogs,
   OVMF_FIRMWARE_CANDIDATES,
+  PHASE2_SERIAL_SEPARATOR,
 } from "./qemu-full-install-test.ts";
 
 describe("validateSelfRegCiCoherent", () => {
@@ -55,6 +57,18 @@ describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
     expect(args.join(" ")).not.toContain("netdev");
     expect(args).toContain("-vga");
     expect(args).toContain("none");
+  });
+});
+
+describe("qemu-full-install-test serial log artifact merge", () => {
+  it("preserves phase 1 output when phase 2 QEMU truncates its serial file", () => {
+    const merged = mergeFullInstallSerialLogs(
+      "phase1: ZETA CLUSTER NODE INSTALL COMPLETE\n",
+      "phase2: node-abc123 login:",
+    );
+    expect(merged).toContain("ZETA CLUSTER NODE INSTALL COMPLETE");
+    expect(merged).toContain(PHASE2_SERIAL_SEPARATOR.trim());
+    expect(merged).toContain("node-abc123 login:");
   });
 });
 

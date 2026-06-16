@@ -4,8 +4,8 @@ Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-2
 Last refreshed: 2026-06-16
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: B-0891 scenario 2 phase-2 disk boot — kernel reaches earlycon then hangs (likely initrd missing virtio_blk; stub hardware-configuration never replaced at install). Scenario 2 advisory again on main while iterating (#8461 stack merged: OVMF 4M, virtio-blk bootindex, no NIC).
-Next concrete action: merge initrd virtio + hardware-configuration copy fix; re-promote scenario 2 hard gate when login prompt green
+Current blocker: B-0891 scenario 2 phase-2 disk boot — initrd virtio root fix (#8478) on main; verifying on build-iso run 27602908527. Scenario 2 advisory while iterating.
+Next concrete action: confirm phase-2 reaches `node-XXXXXX login:` post-#8478; re-promote scenario 2 hard gate when green
 
 ## Why This Exists
 
@@ -59,4 +59,4 @@ bringup.
 
 ## Current Next Action
 
-Merge initrd virtio + `hardware-configuration.nix` copy-at-install fix; verify scenario 2 phase-2 reaches `node-XXXXXX login:` on build-iso, then re-promote hard gate. B-0835 installer bugs + scenarios 3/4 promotion follow.
+Merge initrd virtio + `hardware-configuration.nix` copy-at-install fix (#8478); verify scenario 2 phase-2 reaches `node-XXXXXX login:` on build-iso, then re-promote hard gate. Serial-log artifact preserves phase-1 install output for CI diagnosis.
