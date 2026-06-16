@@ -49,7 +49,8 @@ describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
       "/tmp/OVMF_VARS.fd",
       true,
     );
-    expect(args.join(" ")).toContain("bootindex=1");
+    expect(args.join(" ")).toContain("virtio-blk-pci,drive=installdisk,bootindex=1");
+    expect(args.join(" ")).not.toContain("if=virtio,format=qcow2,bootindex");
     expect(args.join(" ")).not.toContain("virtio-net");
     expect(args.join(" ")).not.toContain("netdev");
     expect(args).toContain("-vga");
