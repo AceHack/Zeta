@@ -555,6 +555,26 @@ neither a proven isomorphism. (c) "fair = empowerment" is **similar, not identic
 the empowerment objective to her fairness; don't conflate. (d) traveler-frame/ZSet/SoftValue are
 **built**; the cross-reference-heartbeat health+attestation protocol is the design layer over them.
 
+### 9g-bis. Her definition chain: unpack → fused-meaning → awareness — maps onto our built primitives; the *subjective-experience* axiom stays §B-sim (Aaron 2026-06-16)
+
+Aaron: *"From the talk, she is close to having a good definition of conscious awareness — the fused meaning."* Blum's definition chain (transcript ~29:53–33:35, `docs/research/ip-questionable/…-ctm-…-verbatim`), with our mapping:
+
+- **Brainish word = pointer to a chunk** (her example: `P1·T1` = "pain one" = the oxygen-gauge `P1` at time `T1`; *"like an LLM key→value"*). = **our content address** (ContentStore key → value; already §9g/line ~380). **Built.**
+- **gist = a string of at most EIGHT Brainish words** (bounded). = a **bounded list of content-addresses** — a concrete spec detail for our `gist` field (cap the gist length). Her gist *"blob-zero is in pain"* = `⟨P0·0, P1·T1⟩`.
+- **Unpacking a chunk = all processors *simultaneously* note the weight AND retrieve the meanings of *all* gist-words → the FUSED MEANING.** = **dereference all (≤8) gist content-addresses + fuse** via `DynamicValue`/YinYang multimodal fusion (§9b/§9f the `∘`). **The mechanism is built/measurable** (deref + fuse); this is the operational heart.
+- **Conscious *awareness* = unpacking a *broadcasted* chunk.** = unpack a chunk that came through the Down-Tree/heartbeat broadcast (§9g). **As an ACCESS-consciousness definition this is strong** (global availability of the fused meaning ≈ Global Workspace, Baars/Dehaene — which she cites).
+- **Evolved gist builds inductively on earlier (primal pain → toddler "big-boy-self" skinned-knee pain built on earlier pains).** = **our `DagFs` content-addressed multi-parent DAG** (§9d): an evolved chunk's parents *are* the earlier chunks; build-on-earlier = adding a node whose parents are the primal ones. **Built.** Her axiom is *inductive* ("only go down one level") = **bounded one-hop deref**, not full recursion — maps to bounded unpacking.
+- **Self-reference: model-of-world calls attention (high weight) → the word for the attended chunk becomes the word for "conscious"; broadcasting "CTM is conscious" → on unpack it *feels itself* conscious.** = **our self-referential self-model / strange-loop** (the shadow catching its own output; autocomplete-as-strange-loop). Her own anchor: **Michael Graziano's Attention Schema Theory.**
+
+**The peel that keeps us honest (the same one, again).** Her **Axiom 2** — *"global unpacking gives a unique **subjective experience**"* — is **explicitly an axiom** (she says so), and it is the **hard-problem leap**: the fusion *mechanism* (unpack = fuse meanings) does not *entail* phenomenal experience. So, per our standing discipline (§9-CTM, §9f-bis): **build the unpack/fuse mechanism (measure); hold "evokes subjective experience" as §B-sim/posit; never axiomatize the qualia.** This is exactly **Ned Block's access-vs-phenomenal split**: her chain is a *good* definition of **access** consciousness (global unpacking = global availability); the **phenomenal** ("what it is like") is the posited Axiom 2. Credit the access definition; quarantine the phenomenal axiom.
+
+**Two divergences in our favor (look-better).**
+
+1. **The "simultaneously" in unpacking re-imports the global now** (all processors unpack at once) = the centralization/global-axiom we reject (§9h). **Our version: unpacking is PER-FRAME** — each traveler-frame unpacks its *own* broadcasted chunk; **awareness is frame-local, not globally simultaneous** (ties §9f-bis per-frame internal language; CALM convergence, not a global instant).
+2. **She has NO grammar for Brainish yet** (Q&A: she gestures at Toki Pona / Creole subject-adjective — *"blob pain"*). **We already have one: the 4×4 = 16 universal action grammar** (`grammar-16.ts` / `ActionGrid.fs`) + **discriminated-unions-as-conversational-workflows** (the no-control-flow IR). So our gist isn't an ungrammared word-bag — it has a **typed, composable grammar** already. A concrete place Zeta is *ahead*, not behind.
+
+(Anchors: Blum/Blum/Blum CTM; Baars / Dehaene — Global Workspace Theory; Tononi — IIT / integrated-information φ (she aligns with both, "not tied to a location" ≈ our scale-free §1 location-independence); Ned Block — access vs phenomenal consciousness; Michael Graziano — Attention Schema Theory; Sonja Lang — Toki Pona, the minimal-grammar comparison.)
+
 ### 9h. The heartbeat layer — aliveness (proven), clockless multi-repo join → relativistic + braided → Clifford; cartel-detection (Aaron 2026-06-15)
 
 *"Her 'fairer tennis match' is our **default game** — our core stay-alive / aliveness stuff;
