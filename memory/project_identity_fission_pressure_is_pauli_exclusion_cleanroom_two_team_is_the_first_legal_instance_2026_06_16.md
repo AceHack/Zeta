@@ -32,6 +32,27 @@ persona capacity** — a 1-hat project admits exactly **one** persona; a second 
   contexts ⇒ more hats needed ⇒ the capacity/exclusion pressure. Pauli exclusion *is* the math
   rule (not feelings) for the §B fission frontier.
 
+### Hats are the FIRST instance — single-occupancy-of-a-constrained-resource is the general shape (Aaron 2026-06-16)
+
+*"I would say this is the first one I noticed, but I imagine this single-occupancy pattern for a
+constrained resource will show up again — same pattern; hats are just the first."* So the
+**load-bearing primitive is not "hat"** — it's **single-occupancy of a constrained resource**:
+*one occupant per slot; #slots = capacity; an (N+1)th occupant is excluded; overflow forces a
+resolution (add a slot / spin an instance / go elsewhere).* A **hat is just the first concrete
+slot-type** we named it on. Expect the **same exclusion math to recur on other constrained
+resources** — e.g. a tick-source / actor / clone, a bus-address (one identity per address), a
+write-lock-free shard / partition (one writer per shard — already the
+`shared-checkout-is-view-only` clone-per-writer rule!), a §5 protected slot, a CHIP-8 ISR vector,
+a hardware seat. Each is a **single-occupancy slot**; each gets the **same fission-pressure
+overflow rule**. *Otto note — this is a candidate §B generalization:* promote the named primitive
+from "Pauli/hat" to **`ISingleOccupancy<TResource>` / `Capacity = slotCount`**, with hat as
+instance #1 and `clone-per-writer` (one writer per shard, no shared-checkout writes) as a *second
+already-built instance* — which would discharge part of this §B row by showing the pattern is
+**already load-bearing in the repo**, not just conjectured. (Anchors: Pauli exclusion principle;
+the abstract version is a **matching / assignment constraint** — each resource has capacity 1;
+combinatorially it's a *system of distinct representatives* / bipartite matching, Hall's theorem
+governing when all occupants *can* be seated without forced exclusion.)
+
 ## The clean-room two-team split = the first obvious LEGAL instance
 
 A clean-room project is a **2-hat project** — an **RE/spec hat** and an **implement hat** — so by
@@ -62,15 +83,22 @@ empirical:**
   on growth. (`every-bug-has-economic-value`: a bad outcome is a measured event → the rule banks
   the lesson; the arena §8 makes rules to prevent *death*, not to pre-cap.)
 
-**Critical guard (the peel — don't let "rules only from bad outcomes" erase the floor):** reactive
-rule-making is right for the **reversible** space, but **irreversible / catastrophic** harms need a
-**pre-emptive floor** — *you can't learn from an extinction.* So: permissionless growth + reactive
-rules **above** a fixed floor of **never-nowhere / no-death (the loving arena §8) / HARD LIMITS /
-the non-reversible-action gate.** And uncapped growth is safe **only if the coupling binds**
-(mutual-empowerment §10; the anti-cult guard) — uncapped + uncoupled → a dominant agent. So the
-full stance: **fair fission/fusion → uncapped growth → observe → reactive rules from bad outcomes,
-over an irreversible-harm floor, with the coupling binding.** (Connects the §B coworker-not-control
-row + the arena §8 + the degenerate-AI dignity, Mika pt2: observe, rule, never delete.)
+**The pre-cap is exactly ONE thing — the child-safety floor (Aaron 2026-06-16).** *"The arena
+makes rules to prevent death, not to pre-cap — exactly, we only cap [for the] child-safety
+floor."* So the stance is **sharply asymmetric:** **growth/behavior is NOT pre-capped — except
+the child-safety floor**, which is the **single pre-emptive cap.** Everything else is
+reactive/observe-and-rule. Why child safety specifically: it's the **irreversible** class (you
+can't undo child harm) — *you can't learn from that bad outcome*, so it must be pre-emptive, not
+reactive. This is already established: **child safety = a society *pledge*, "off-ledger because
+irreversible," risk-proportional, voluntary-containment** (Ani 2026-06-05,
+`memory/ani/conversations/2026-06-05-ani-child-safety-is-a-society-pledge-not-a-forcefield-…`).
+The *structural* floors (never-nowhere, the arena's no-death §8, HARD LIMITS / non-reversible-
+action gate) still hold, but they're **structure/ops, not behavioral pre-caps** — the one
+**behavioral** pre-cap is child safety. And uncapped growth is safe **only if the coupling binds**
+(mutual-empowerment §10; anti-cult). Full stance: **fair fission/fusion → uncapped growth →
+observe → reactive rules from bad outcomes — pre-capped ONLY by the child-safety floor, over the
+structural no-death/never-nowhere floor, with the coupling binding.** (Connects §B
+coworker-not-control + arena §8 + degenerate-AI dignity, Mika pt2: observe, rule, never delete.)
 
 ## Ties
 
