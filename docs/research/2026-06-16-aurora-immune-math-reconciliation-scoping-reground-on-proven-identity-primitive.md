@@ -12,7 +12,7 @@ Aurora typed the immune operators (detectors, danger, capability gate, coordinat
 
 | Leg | Status | Where |
 |---|---|---|
-| `NonRegisterCollapse` — a traveler's standing register is not collapsed into another's | **DISCHARGED** (TLA+ + Lean, axiom-free) | `Safety/NonRegisterCollapse.lean`, `tools/tla/specs/NonRegisterCollapse.tla` |
+| `NonRegisterCollapse` — a traveler's standing register is not collapsed into another's | **DISCHARGED** (TLA+ + Lean, axiom-free) | `src/Core.Lean4/Safety/NonRegisterCollapse.lean`, `src/Core.TLA/specs/NonRegisterCollapse.tla` (+`.cfg`); FsCheck cross-check `tests/Tests.FSharp/Formal/NonRegisterCollapseCrossVerify.Tests.fs` |
 | `IdentityForcesPrivacy` — distinctness ⟹ private state; consensus cannot erase private differentiation | **DISCHARGED** (Lean, axiom-free) | `Privacy/IdentityForcesPrivacy.lean` (`distinctness_forces_private`, `private_is_persistent_locus`) |
 | Identity primitive — unique (ZetaId) · addressable (bus/Reticulum) · dependable (heartbeat) · encrypted (Crypto) · **non-collapse** | legs built + the two proofs above | decentralized-identity note + FROZEN-CORE §A |
 | Anti-Sybil by conversational entropy (async-bankable; self-dissolving) | §B (Mika pt2 ferry) | `2026-06-15-mika-pt2-entropy-sybil-…` |
@@ -40,6 +40,29 @@ Each Aurora operator and the proven identity leg it should now stand on:
 3. **Math team:** restate each Aurora operator over the identity primitive and prove the immune guarantees follow (self/non-self from `IdentityForcesPrivacy`; quorum-soundness-under-Sybil from anti-Sybil entropy; cartel-detection from heartbeat-decorrelation).
 4. **Execute Aurora's own 5 test obligations** (4.1 State-Corruption Horizon, 4.2 Cipher Drift, 4.3 Cult-Cartel Topology, 4.4 Confused Deputy, 4.5 Autoimmunity Flood) — now keyed to proven identities.
 5. **Promotion:** when the operators stand on the proven legs + the 5 tests pass, open a **§B row** *"Aurora immune system re-grounded on the proven identity primitive"* with the falsifiers below; promote toward §A one operator at a time (§C discipline).
+
+## 4a. Soraya's formal-verification routing pass (2026-06-16) — tool-selection per BP-16
+
+Routed to **Soraya** (formal-verification routing authority) 2026-06-16. Her pass picks the right tool per property class and **fired the TLA+-hammer guard 3×** (eigenvalues / estimator / decay would all be mis-routed to TLC and explode or prove tautologies). Verbatim routing table:
+
+| # | Obligation | Primary tool | Cross-check (BP-16) | Reuse vs new |
+|---|---|---|---|---|
+| a | self/non-self on identity-distinctness (`d_self`) | **REUSE `NonRegisterCollapse`** (Lean+TLA) | already FsCheck-cross-checked | **Reuse — zero new tool** (`d_self` *is* non-register-collapse) |
+| b | BFT-threshold soundness under Sybil | **TLA+/TLC** (reuse `BftConsensus.tla`) | **Z3** (QF_LIA count `honest>2/3`) + **FsCheck** | new coupling; **P0** |
+| c | `CoordRisk` spectral (λ₂ Fiedler / ρ radius, Test 4.3) | **FsCheck** (networkx graphs) | Z3 only if a closed-form inequality | new, light — **NOT TLA+** (eigenvalues ≠ state-transition) |
+| d | capability gate `cap_req ⊆ cap_allowed` (Test 4.4) | **Z3** (set algebra) | **FsCheck** (10 injection variants) + Semgrep/CodeQL at call-site | new; P1 |
+| e | `PermanentHarmRisk_H` / viability kernel (Test 4.1) | **TLA+/TLC** (reachability within H) | **FsCheck** (retraction sim) + Lean if barrier load-bearing | new; **P0** (irreversible class) |
+| f | `Legibility_H` (Cipher Drift, Test 4.2) | **FsCheck-only** (empirical) | none | **OUT of the formal denominator** — route to Adaeze (claims-tester); non-claim #3 binds |
+| g | Autoimmunity Flood / decay (Test 4.5) | **FsCheck** (decay→0) | Z3 (QF_LRA, contraction `(1−δ)<1`) | new, light |
+
+**Soraya's headline:** only **(b) and (e) actually want TLA+** (genuine transition systems); everything else is FsCheck/Z3 smalls or a reuse. **(a) costs nothing** — point Aurora's `d_self` at the existing Lean lemma. **(f) must NOT enter the formal denominator** (recording an estimator as a proof = false-green CI).
+
+## 4b. Math-team handoff
+
+- **Kenji (architect):** size **(b) + (e)** as the two real TLA+ rounds; concur on tool-choice before authors write specs.
+- **Authors:** write specs per the table after Kenji concurs — (a) is a wiring task; (c)/(d)/(g) are FsCheck/Z3 smalls.
+- **Adaeze (claims-tester):** owns (f) Legibility — empirical, not a proof.
+- **Prereqs Soraya filed:** confirm Z3 set-theory (`QF_FD`) support in `src/Core.FSharp.Z3Verify` for (d) — else encode `⊆` as bitvector subset (QF_BV).
 
 ## 5. Falsifiers (so this is a real conjecture, not a hope)
 
