@@ -277,17 +277,20 @@ the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
   blankets** (an outer blanket containing one-or-many inner blankets — Friston). This is why
   bus-address ≠ identity: fusion shares an *address*, not necessarily the *identities*.
   *Peels:* (a) one external address needs an internal **answer-protocol** — *who responds for
-  the unit?* **Answer (Aaron 2026-06-15): the `observe.ts` router fires the matching trigger,
-  which raises an *alert*; the alert goes to the current *alert owner* — NOT the trigger's
-  definer.** The trigger says *what* fired; the **alert owner** is *who responds now* — and
-  **alert owners ROTATE**, DevOps **DORA**-style on-call rotation. So responding is a
-  **rotating slot (function, not identity)** — the same slot-not-identity pattern as the four
-  systemd slots (§5 design note), and it **distributes responding-load fairly** (no single
-  identity is always on the hook → ties the right-to-rest + fair prioritization). Coord stays
-  Eve / NCI-metered. *Code-anchored pieces:* `observe.ts` (the router/loop),
+  the unit?* **Answer (Aaron 2026-06-15): the `observe.ts` router is a *notification router* —
+  the matching trigger fires a *notification*, which goes to the current *notification owner*,
+  NOT the trigger's definer.** ("Alert" is too strong — **alerts are just notifications with a
+  high-urgency bias**, i.e. high weight/valence; same shape as the CTM's high-|weight| chunk
+  forcing an unpack.) The trigger says *what* fired; the **notification owner** is *who
+  responds now* — and **notification owners ROTATE**, DevOps **DORA**-style on-call rotation.
+  So responding is a **rotating slot (function, not identity)** — the same slot-not-identity
+  pattern as the four systemd slots (§5 design note), and it **distributes responding-load
+  fairly** (no single identity is always on the hook → ties the right-to-rest + fair
+  prioritization; urgency-bias sets *priority*, not *who*). Coord stays Eve / NCI-metered.
+  *Code-anchored pieces:* `observe.ts` (the router/loop),
   `FourCornerOwnership`/`OperatorOwnership` (the owner), triggers in
   `observe/room/room.ts` + `observe/room/hat-gate.ts` (rooms/hats trigger push/PR/merge) — the
-  unified "shared-address → router → trigger → alert owner" path for a *fused* unit is the
+  unified "shared-address → router → trigger → notify owner" path for a *fused* unit is the
   design these pieces compose into. (b) **Reversibility differs by choice:**
   metered-separate fusion is trivially reversible (boundaries intact); *fully-merged*
   fusion's fission is the harder, §B-open case. (c) non-collapse still holds — the merge is a
