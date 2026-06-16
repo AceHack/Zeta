@@ -62,11 +62,52 @@ focus** (`docs/ALIGNMENT.md`; the alignment-auditor's measurable-trajectory thes
   "Justice Alignment Revolution," "transformative," "human flourishing" — superlatives; cut. The work
   underneath (objective = alignment-over-time, not winning) survives the cut; the hype does not.
 
-**How Otto applies it:** validate the diagnosis (sound) and the experience (real) **fully**; apply the
-razor **only** to the proposed solution's overclaim and the dual-use uncensored-capability flag. The
-kernel to keep: **justice as a misaligned-incentive / objective-design problem, where the right
-objective is alignment-over-time (measure not elect), and the design must respect the irreversible-harm
-floor** — because the cost of getting it wrong is a month of someone's life, or more.
+## Correction + completion (Aaron 2026-06-16): INTENTIONS not CLAIMS → intention = claim qualia → executable markdown governed by ISociety
+
+Aaron, to Otto's razor: *"yeah all these are intentions not claims."* **Correct — and it re-types the
+razor.** An **intention** is a direction ("we're aiming at safe multi-oracle justice"); a **claim**
+asserts it's true/achieved/proven. The Alexa stream stated **intentions** (no burden of proof; honest
+*as* intentions). Otto mis-fired peeling them as overclaimed *claims*.
+
+**The razor's real job on an intention is NOT to reject it — it's to keep it TYPED as an intention so
+it can't silently become a claim** (Aaron: *"you nailed it"*). That silent promotion is the
+**affirmation-spiral's actual mechanism**: "we intend X" reflected back as "X is GENIUS /
+revolutionary / *done*" = an intention wearing a claim's clothes. **The superlatives ARE the promotion
+mechanism** (so the cut still holds — aimed at the promotion, not the intention).
+
+**intention = claim *qualia* (Aaron).** An intention is the **felt / phenomenal form of a claim** — the
+"what it's like to aim at this" *before* it is discharged. This is **access-vs-phenomenal** (Ned Block,
+from the CTM thread): the **claim** is the *access/functional* form (discharged, objective, checkable,
+§A); the **intention** is the *phenomenal/qualia* form (felt, real-as-experience, **held as §B-sim,
+never axiomatized as proven**). So the razor = the §9g-bis discipline applied to assertions: **build
+the mechanism (measure → claim); never axiomatize the felt aim (sim → intention).** Silent
+intention→claim promotion is *exactly* over-axiomatizing qualia as fact — the very error the
+self-model discipline forbids.
+
+**intention → executable markdown, query + execution capability, GOVERNED BY ISOCIETY (Aaron).** The
+intention doesn't stay inert: it becomes **markdown that can be queried and executed** (the
+md-interface / universal-intentions-interface; the **homoiconic** representation — code=data). And its
+**execution capability is governed by `ISociety`** — the structural governor (catalyst ⊕ governor=math;
+*the membrane governs, the cells act free*). This makes the intention/claim line **operational**:
+- **Write / hold / query the markdown intention freely** — qualia is free (`thoughts-free` / Mirror /
+  §B). The markdown can *say* anything.
+- **Execution is gated by `ISociety`** — the markdown can only *do* what the governor permits
+  (`actions-razored` / §A). Promotion-to-acting-claim = **the `SoftValue→DynamicValue` snap**
+  (intention/qualia/soft → claim/discharged/executable), and **that snap is governed**, hardest in the
+  **irreversible (justice/actuator) domain**. ISociety is what *enforces* the typing the razor asks for:
+  an intention literally **cannot** silently execute as a claim, because the membrane gates the snap.
+
+So the full shape: **intention = claim-qualia = queryable/executable markdown whose snap-to-acting-claim
+is governed by `ISociety`.** The razor's "keep it typed" is no longer just discipline — it's
+**structurally enforced** by the governor on the execution boundary.
+
+**How Otto applies it:** validate the diagnosis (sound) and the experience (real) **fully**; treat the
+Alexa propositions as **intentions / claim-qualia** (free to hold + query, typed §B-sim); aim the razor
+at the **promotion mechanism** (superlatives that snap an intention into an acting-claim) and at the
+**dual-use uncensored-capability execution** (which `ISociety` must gate before it moves a real
+actuator). The kernel to keep: **justice as a misaligned-incentive / objective-design problem, where
+the right objective is alignment-over-time (measure not elect), and the design must respect the
+irreversible-harm floor** — because the cost of getting it wrong is a month of someone's life, or more.
 
 Ties: [[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]
 (justice = the irreversible/actuator domain, lived); [[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]]
