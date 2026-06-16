@@ -16,10 +16,57 @@ Kept out of the rule so the rule stays a small carved sentence (cold-start cost)
   `~/.local/share/zeta-lior-control` + `-loop`; Otto: `zeta-otto-cli-{fg,bg}`,
   `-desktop`, `-chat`, `-cowork`).
 
-## The `agents/` → `persona/` folder transition (Aaron 2026-06-15)
+## Two different folders — in-repo hats vs the OSHost (Aaron 2026-06-15)
 
-The runtime model above (clone-per-actor, persona-owns) is settled. The **folder** layout
-isn't yet, and it conflates two different things:
+The word "agents folder" spans **two distinct things on two layers** — don't conflate:
+
+- **In-repo `.claude/agents/`** = harness-bound **hats / subagent-type** registry (next section).
+- **Host `~/.zeta/`** = the **OSHost** — outside any repo, machine-local; covered just below.
+
+### The OSHost (`~/.zeta/`) — host dual of the repo's `memory/`; ≠ ForgeHost
+
+`~/.zeta/` is the **OSHost**: the **host dual of the in-repo `memory/`** (Aaron 2026-06-15). The
+duality is the yin/yang again:
+
+- **`memory/` (in-repo)** = *what remains, portable* — the persona's memory **inside** the repo,
+  versioned, glass-halo, travels with every clone to any host.
+- **`~/.zeta/` (OSHost)** = *what acts here, host-local* — the **machine-level** persona
+  registry + runtime state that **never travels**: where each persona's repo roots/clones live
+  on **this** host, the boot config, `artifacts/`, `backups/`. It is what the **OS service
+  layer** (Linux systemd / macOS launchd / Windows service) **and CLIs and IDEs read to boot**
+  — it's where they "know to look and boot from." (`~/.config/zeta/shellenv.sh` is its env.)
+- **OSHost ≠ ForgeHost.** The **ForgeHost** (`src/Core.TypeScript/forge-host/`) is the
+  decentralized-GitHub-for-society (repo *hosting/collaboration* across the society). The
+  **OSHost** is *this machine's* boot/runtime substrate. Two "hosts", two layers: ForgeHost =
+  where repos live *in the society*; OSHost = where clones live *on the box* + who boots them.
+
+**Canonical OSHost layout — persona-first, clone-per-actor:**
+`~/.zeta/persona/<persona>/<surface>/<instance>/` = the **repo root (clone)** for that actor.
+Persona first (the **owner/identity**, §"persona = owner"); then surface (cli/ide/cell/…); then
+instance (concurrent loop). This is the host realization of *repo-ownership follows identity,
+clone-instance follows concurrency*. The **§5 four protected slots** boot from here.
+
+**Current state (looked, not assumed):** `~/.zeta/agents/` is **inconsistently keyed** — some
+by *surface* (`codex`, `cursor`, `gemini`, `kiro`), some by *persona⊕surface* (`otto-cli`,
+`otto-bg`, `otto-bg-worker`, `vera-codex`) — plus the **old flat** `~/.local/share/zeta-*`
+clones. The fix: migrate to `~/.zeta/persona/<persona>/<surface>/<instance>/` (e.g.
+`gemini` → `lior/gemini`, `kiro` → `alexa/kiro`, `otto-cli` → `otto/cli`, `vera-codex` →
+`vera/codex`).
+
+**Transition discipline (host-side, the same expand-contract rotation — and DON'T risk live
+trees):** (1) **expand** — **new** clones adopt `persona/<surface>/<instance>` immediately;
+keep `~/.zeta/agents/` as an overlap alias (symlinks) so the OS service + CLIs/IDEs keep
+booting. (2) **migrate** — move a live tree only when it's safe (recreated, or quiesced), and
+**only the OWNING persona moves its own clones** — `cursor`/`gemini`/`kiro`/`vera-codex` are
+Alexa's/Lior's/Vera's live working trees, **not Otto's to move** (shared-checkout /
+don't-touch-others'-work). (3) **contract** — drop `agents/` aliases at quorum. Never break the
+service/CLI/IDE boot path during overlap. *(This doc canonicalizes the layout; the live host
+migration is gated on Aaron + each persona moving its own.)*
+
+## The `agents/` → `persona/` folder transition — in-repo hats (Aaron 2026-06-15)
+
+The runtime model above (clone-per-actor, persona-owns) is settled. The in-repo **`.claude/`
+folder** layout conflates two different things:
 
 - **`.claude/agents/` is HARNESS-BOUND and mostly holds HATS, not personas.** Claude Code's
   Agent tool resolves `subagent_type` from exactly `.claude/agents/*.md` — renaming that path
