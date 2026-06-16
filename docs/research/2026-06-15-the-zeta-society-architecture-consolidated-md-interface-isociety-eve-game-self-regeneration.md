@@ -280,6 +280,36 @@ ergonomically heavy; use it on the load-bearing boundary (the CTM/ISociety type)
 lightweight-HKT note's own caution. (d) Still **design** — the type hierarchy is a reframe;
 the math team formalizes the subtyping + the recursion's soundness.
 
+### 9b. The duality IS the yin/yang cell — (suspected) homoiconic-isomorphic to DynamicValue/Bonsai (Aaron 2026-06-15)
+
+*"This becomes very similar, almost homoiconic-isomorphic, to our DynamicValue/Bonsai yin/yang
+cell duality."* The CTM ⊣ ISociety duality is **the same self-dual, mutually-containing shape**
+as the **YinYang cell** (`src/Core/YinYang.fs`, *verified*): *"the self-contained dynamical
+cell — **'what remains' + 'what acts' in one `DynamicValue`**; **yin = `Remains`** (the static
+canonical value tree — the data) · **yang = `Acts`** (the reactive engine, a `Bonsai.Expr` —
+what acts); serializes to a `DynamicValue.Object` with two reserved keys (the yin-yang
+**dots**)."* The mapping: **a CTM *is* a YinYang cell** — `Remains` = the world-model/state
+(yin), `Acts` = the world-model loop / ISR (yang, a `Bonsai.Expr`). Two consequences:
+
+- **Homoiconic (code = data):** the cell — and thus the CTM, and the §1 intention/playbook —
+  **serializes to a `DynamicValue` tree** (`Acts` is *itself a value* in the tree). The
+  interface is representable as the data it operates on; this is why §1's "spec = contract =
+  executable" works and why `gen(gen)=gen` closes.
+- **`ISociety <: CTM` recursion = yin/yang cell-of-cells:** a cell whose `Remains` contains
+  cells — the nested-Markov-blanket / Composite recursion (§9a) expressed as DynamicValue
+  nesting. *Same duality, every scale.*
+
+So multiple "discovered-not-designed" dualities — CTM/ISociety, member/society, data/behavior,
+GSet/ZSet, Remains/Acts — keep resolving to **one yin/yang**, evidence it's a deep self-dual
+structure (the adinkra self-dual ECC lineage). *Peels:* (a) Aaron hedged — *"almost"*,
+*"suspected"*: a **structural correspondence**, with a literal **isomorphism** (a
+structure-preserving bijection CTM⊣ISociety ≅ Remains⊣Acts) a **math-team conjecture**, not
+asserted. (b) Keep the claims distinct: **homoiconic** (code=data — strongly supported by the
+cell↔DynamicValue serialization) vs **isomorphic** (same structure — the conjecture). (c)
+"all dualities are one" is a **§B grand-synthesis** — each piece real + code-anchored
+(`YinYang.fs`/`DynamicValue`/`Bonsai.fs`/`DynamicValueFold.fs`/`DurableYinYang.fs`); the unified
+whole is the open prize. Lineage: Bart DeSmet (Nuqleon/Bonsai), Erik Meijer (Applied Duality).
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
