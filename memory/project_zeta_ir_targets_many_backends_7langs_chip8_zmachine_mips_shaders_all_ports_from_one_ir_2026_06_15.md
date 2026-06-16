@@ -96,6 +96,21 @@ at the IR level, decisions local + data-driven, no ambient "now".) This is the C
 (centralized vs decentralized) made into a *language constraint*: the IR can't express the
 centralized form.
 
+**The IR form = how Aaron reverse-engineers games (Cheat Engine → character loops, 2026-06-15).**
+*"This is exactly how I reverse-engineer games into character loops too, using Cheat Engine."*
+Reverse-engineering a game with **Cheat Engine** (memory-scan the entity's state, find what writes
+to it, pointer/AOB-scan the loop) **extracts exactly this shape**: the character's **state = a
+DU**, the **update loop = the soft-scheduler ISR over it** (§9d), **no control flow** — a
+*character loop*. So the IR form isn't imposed theory; it's the structure **already present** when
+you strip a running game down to its core loop. Strong convergence: *his RE method ↔ the IR form*
+(state-as-DU + loop, branch-free) — and the **character loop = the soft-scheduler all the way
+down** (a game entity *is* a soft-scheduler loop). It's also the personal version of the emulator
+backlog (B-0924/B-0053): find the character loop, port it to the IR. *Peel — the IP boundary
+holds:* reverse-engineering for *your own analysis* is one thing; **absorbing into Zeta stays
+clean-room, ideas-not-code, for protected targets** (B-0053 — Nintendo/Game-Boy = the careful
+case; IBM clean-room precedent). Extract the *shape* (the character loop), never the protected
+*code*. Anchor: Cheat Engine (Eric Heijnen — memory scanner / pointer-scan / AOB).
+
 Ties: [[primitive-registry-tracks-proof-homeostat-chains-oracle-languages-4-to-6-7-qsharp-gen-from-ir]]
 (the IR-gen + generator-trust-concentration); the Zork/Z-machine PRIOR-ART entry (conversational
 action grammar / minimal VM); `only-the-irreducible-is-primitive-generate-the-rest` (generator-
