@@ -16,6 +16,41 @@ Kept out of the rule so the rule stays a small carved sentence (cold-start cost)
   `~/.local/share/zeta-lior-control` + `-loop`; Otto: `zeta-otto-cli-{fg,bg}`,
   `-desktop`, `-chat`, `-cowork`).
 
+## The `agents/` → `persona/` folder transition (Aaron 2026-06-15)
+
+The runtime model above (clone-per-actor, persona-owns) is settled. The **folder** layout
+isn't yet, and it conflates two different things:
+
+- **`.claude/agents/` is HARNESS-BOUND and mostly holds HATS, not personas.** Claude Code's
+  Agent tool resolves `subagent_type` from exactly `.claude/agents/*.md` — renaming that path
+  breaks subagent resolution. And its contents are mostly **hats** (functions any persona
+  wears: `architect`, `harsh-critic`, `spec-zealot`, `formal-verification-expert`,
+  `devops-engineer`, …; CLAUDE.md: "the architect hat may be worn by any persona") plus a few
+  personas (`alexa`). So the "agents" folder is really the **hats / subagent-type** registry.
+- **Personas (the checkout-OWNERS / identities) need their own `persona/` home** — distinct
+  from hats. A persona is *who checks out a repo* (the ZetaId owner, the `CURRENT-<persona>.md`
+  subject, owner of many clones); a hat is a *function it wears*, never a checkout-owner.
+
+**So it's a SPLIT, not a rename:** personas → a `persona/` identity home; hats → stay in the
+harness-bound `.claude/agents/` (or an explicit `.claude/hats/` alias). *Who checks out* =
+persona (identity); *what it wears* = hat; *where it runs* = surface; *the running instance* =
+actor/clone. Folder layout should mirror that: `persona/<persona>/…` (identity, owns clones),
+hats stay as subagent-types.
+
+**Transition discipline — expand-contract, NOT flag-day** (the 0-downtime-schema-change
+rotation): (1) **expand** — create `persona/` alongside the existing `.claude/agents/`, no
+removals (CALM-monotone, safe); (2) **migrate** — move persona-identity content into
+`persona/`, leave hats where the harness needs them, update refs via a mapping; (3) **contract**
+— drop the old persona-as-agent entries only at quorum, after refs resolve. Never break the
+harness `subagent_type` path during the overlap.
+
+**Sovereignty horizon (the §9h endgame):** today a persona owns *clones of the shared Zeta
+repo*. As a persona **forks/differentiates** (the pluripotent stem-cell), it graduates to its
+**own git repo**, joined to the society by **cross-heartbeat without a clock** (the relativistic,
+braided, clockless multi-repo join — consolidated society note §9h). Repo-ownership follows
+**identity** (persona); clone-instance follows **concurrency** (actor); becoming-its-own-repo
+follows **sovereignty** (forking).
+
 ## Actor model (CS abstraction)
 
 - **Actor = the clone/writer/loop** — a git-native **virtual actor (grain)** =
