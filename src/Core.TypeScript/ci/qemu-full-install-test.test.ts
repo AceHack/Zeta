@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
+  buildQemuDiskBootArgsPure,
   detectUnexpectedControlPlaneLogin,
   extractGeneratedHostname,
   OVMF_FIRMWARE_CANDIDATES,
@@ -36,6 +37,23 @@ describe("qemu-full-install-test OVMF firmware paths", () => {
       code: "/usr/share/OVMF/OVMF_CODE_4M.fd",
       vars: "/usr/share/OVMF/OVMF_VARS_4M.fd",
     });
+  });
+});
+
+describe("qemu-full-install-test phase 2 disk boot QEMU args", () => {
+  it("prefers virtio disk bootindex and omits virtio-net (UEFI PXE boot trap)", () => {
+    const args = buildQemuDiskBootArgsPure(
+      "/tmp/disk.qcow2",
+      "/tmp/serial.log",
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS.fd",
+      true,
+    );
+    expect(args.join(" ")).toContain("bootindex=1");
+    expect(args.join(" ")).not.toContain("virtio-net");
+    expect(args.join(" ")).not.toContain("netdev");
+    expect(args).toContain("-vga");
+    expect(args).toContain("none");
   });
 });
 

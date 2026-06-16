@@ -93,6 +93,10 @@
     "console=ttyS0,115200n8"
     "console=ttyAMA0,115200n8"
     "console=tty1"
+    # Headless QEMU phase-2 (B-0891): avoid fbcon/GPU stall with -display none.
+    "nomodeset"
+    # Early printk to the same 8250 UART as -serial file: (q35 COM1 / ttyS0).
+    "earlycon=uart8250,io,0x3f8,115200n8"
   ];
 
   nix.settings = {

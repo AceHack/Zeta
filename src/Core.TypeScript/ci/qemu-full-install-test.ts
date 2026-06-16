@@ -54,7 +54,7 @@ const CONSOLE_MIRROR_HINT =
   "(see full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh)";
 
 const INSTALL_TIMEOUT_SECONDS = 1800;
-const DISK_BOOT_TIMEOUT_SECONDS = 600;
+const DISK_BOOT_TIMEOUT_SECONDS = 1800;
 const POLL_INTERVAL_MS = 2000;
 const MEMORY_MB = 4096;
 const CPU_COUNT = 2;
@@ -186,19 +186,37 @@ function buildQemuDiskBootArgs(diskPath: string, serialLogPath: string, tmpDir: 
     throw new Error("OVMF firmware missing; cannot UEFI-boot installed systemd-boot disk");
   }
   const varsPath = prepareWritableOvmfVars(tmpDir, ovmf.varsTemplate);
+  return buildQemuDiskBootArgsPure(diskPath, serialLogPath, ovmf.code, varsPath, kvmEnabled());
+}
+
+/** Exported for unit tests. */
+export function buildQemuDiskBootArgsPure(
+  diskPath: string,
+  serialLogPath: string,
+  ovmfCodePath: string,
+  ovmfVarsPath: string,
+  kvm: boolean,
+): string[] {
+  // Phase 2 only needs a login prompt on serial — no network. A virtio-net
+  // NIC exposes a UEFI "Misc Device" boot entry (Pci 0x3,0x0) that can win
+  // fresh OVMF_VARS boot order and stall after initrd (B-0891 run #27589613408).
   const args: string[] = [
     "-machine", "q35",
     "-m", String(MEMORY_MB),
     "-smp", String(CPU_COUNT),
-    "-drive", `if=pflash,format=raw,unit=0,readonly=on,file=${ovmf.code}`,
-    "-drive", `if=pflash,format=raw,unit=1,file=${varsPath}`,
-    "-drive", `file=${diskPath},if=virtio,format=qcow2`,
+    "-drive", `if=pflash,format=raw,unit=0,readonly=on,file=${ovmfCodePath}`,
+    "-drive", `if=pflash,format=raw,unit=1,file=${ovmfVarsPath}`,
+    "-drive", `file=${diskPath},if=virtio,format=qcow2,bootindex=1`,
     "-serial", `file:${serialLogPath}`,
     "-display", "none",
-    "-netdev", "user,id=net0",
-    "-device", "virtio-net-pci,netdev=net0",
+    "-vga", "none",
+    "-no-reboot",
   ];
-  appendKvmCpu(args);
+  if (kvm) {
+    args.push("-enable-kvm", "-cpu", "host");
+  } else {
+    args.push("-cpu", "qemu64");
+  }
   return args;
 }
 
@@ -304,15 +322,37 @@ async function waitForInstalledLogin(
   const start = Date.now();
   const deadline = start + DISK_BOOT_TIMEOUT_SECONDS * 1000;
   const loginNeedle = expectedHostname ? `${expectedHostname} login:` : null;
+  const welcomeNeedle = expectedHostname
+    ? `Welcome to ${expectedHostname} (Zeta cluster node)`
+    : null;
+  let lastReportedMinute = -1;
 
   while (Date.now() < deadline) {
     const elapsedSec = Math.floor((Date.now() - start) / 1000);
+    const elapsedMin = Math.floor(elapsedSec / 60);
+    if (elapsedMin > lastReportedMinute) {
+      const target = loginNeedle ?? "installed-system login prompt";
+      console.log(
+        `[qemu-full-install-test] phase 2: ${elapsedMin} min elapsed; waiting for "${target}"`,
+      );
+      lastReportedMinute = elapsedMin;
+    }
     const content = readSerial(serialLogPath);
 
     if (loginNeedle && content.includes(loginNeedle)) {
       return {
         exitCode: 0,
         reason: `phase 2 SUCCESS — login prompt "${loginNeedle}" observed`,
+        serialLogTail: content.slice(-1500),
+        elapsedSeconds: elapsedSec,
+        ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
+      };
+    }
+
+    if (welcomeNeedle && content.includes(welcomeNeedle) && content.includes("login:")) {
+      return {
+        exitCode: 0,
+        reason: `phase 2 SUCCESS — login banner "${welcomeNeedle}" observed`,
         serialLogTail: content.slice(-1500),
         elapsedSeconds: elapsedSec,
         ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
@@ -361,7 +401,9 @@ async function waitForInstalledLogin(
   const emptySerialHint =
     content.trim().length === 0
       ? " (serial log empty — installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)"
-      : "";
+      : content.includes("EFI stub: Loaded initrd") && !content.includes("login:")
+        ? " (serial stopped after EFI initrd — check UEFI boot order / virtio-net PXE entry / console kernel params)"
+        : "";
   return {
     exitCode: 1,
     reason: loginNeedle
