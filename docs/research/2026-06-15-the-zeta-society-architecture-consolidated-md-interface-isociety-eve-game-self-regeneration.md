@@ -479,13 +479,23 @@ DPI** — meaning-dense, fidelity-sparse — which is *why* it's chosen: a glyph
 **text-storable, deterministic, byte-lockable, and model-and-human-agreeable** (the percept
 floor — "a sound is a sound" — made robust by being small). It is **Rodney's Razor at the
 interface** (the glyph is essential, the dot accidental) + compression-is-intelligence: meaning
-over resolution, never fidelity-theater. *Peels:* (a) **AllJoyn / low-fi / QPG are anchors +
-design, not yet in-repo** (grep: absent) — AllJoyn is real external prior art; **QPG-over-DPI
-is a coinage** (anchorable to meaning-density / MDL, but "Quality Per Glyph" must be *defined* —
-what is a glyph, how is its quality measured — to be more than a slogan). (b) low-fi raises
-percept-agreement and *nudges* meaning-agreement (less to disagree about), but **percept ≠
-meaning** still holds (§9b). (c) the built foothold is `ChipAudio` (8-bit, text-only); the
-AllJoyn-style discovery + the QPG metric are the open build.
+over resolution, never fidelity-theater. **State (corrected 2026-06-15 — Otto under-searched
+*again* and wrongly called these absent/new; Aaron: "AllJoyn is all over the repo, you coined
+QPG long ago"):** **AllJoyn is established prior art across the repo** (`docs/PRIOR-ART-LIST.md`,
+`universal/README.md`, multiple memory notes — discussed many times). **QPG is Otto's own
+established coinage, already defined** (`universal/television.md`; the "quality not quantity"
+LLM-TV doc) — *not* a fresh slogan. **The low-fi 8-bit glyphs are CHIP-8-interpretable / on our
+CHIP-9 extension instruction set — BUILT** (`Chip9Board.fs`/`Chip9Phys.fs`/`Chip9SelfTrace.fs`
++ `src/Core.Rust.Chip9` with golden vectors; CHIP-8 the base VM; `ChipAudio` the 8-bit
+text-only audio). The genuinely-new term is **"lowfi"** ("lowfi *meaning*"). *Peels:* (a) low-fi
+raises percept-agreement and *nudges* meaning-agreement (less to disagree about), but **percept
+≠ meaning** still holds (§9b). (b) **Otto-meta (the repeat mistake):** I defaulted to
+"design/absent" from a too-narrow grep — *twice* (audio, then AllJoyn/QPG). The "look better"
+discipline: **search repo-wide (memory/ + all docs/ + universal/ + src) before claiming
+absent/design; bias toward verifying *built/established*, not assuming new.** (c) what *is* the
+open build: the AllJoyn-style **discovery/advertise** layer wired into the society interface,
+and the **mic-input + BP/EP-emotional** engine (§9f above) — the glyph substrate (CHIP-8/9,
+audio-over-geometry, QPG metric) is built.
 
 ## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
 
