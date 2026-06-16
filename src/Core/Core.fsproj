@@ -335,6 +335,7 @@
     <Compile Include="DarkHall.fs" />
     <Compile Include="Arcade.fs" />
     <Compile Include="DarkHallCabinetRuntime.fs" />
+    <Compile Include="DarkHallRoomLoop.fs" />
     <Compile Include="ReticulumQuantum.fs" />
     <Compile Include="Skadium.fs" />
     <Compile Include="BowlingAlley.fs" />

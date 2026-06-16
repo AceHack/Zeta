@@ -40,11 +40,18 @@ module DarkHallCabinetRuntime =
           FeedbackVariants: string list
           Address: MachineAddress option }
 
-    type Readout =
+    /// The Dark Hall's projection onto the universal controller surface.
+    ///
+    /// `Grid` is the 4x4 placement primitive (`GridBinding`). The readout is the
+    /// larger controller/menu observation: available action grammar entries,
+    /// deterministic construction rules, and the room being observed.
+    type ControllerReadout =
         { RoomName: string
           Grid: GridBinding.GridBinding<CabinetAction>
           Actions: CabinetAction list
           DeterministicRulesApplied: string list }
+
+    type Readout = ControllerReadout
 
     type MetaCartLaunch =
         { Goal: int
@@ -184,7 +191,7 @@ module DarkHallCabinetRuntime =
 
     /// observe.ts-shaped readout: reduce the whole room to the 4x4 controller
     /// labels plus the deterministic rules used to build that menu.
-    let observeWithPriority (priority: Map<string, float>) (room: DarkHall.Room) : Readout =
+    let observeWithPriority (priority: Map<string, float>) (room: DarkHall.Room) : ControllerReadout =
         let actions = machineActions priority room @ [ escapeHatch; editGrammar ]
 
         { RoomName = room.Name
@@ -195,12 +202,14 @@ module DarkHallCabinetRuntime =
               "salience.display top-14 machines"
               "escape-hatch always available"
               "grammar-extension always available"
+              "actiongrid 4x4 geometry"
+              "gridbinding labels controller cells"
               "gridbinding 4x4" ] }
 
-    let observe (room: DarkHall.Room) : Readout =
+    let observe (room: DarkHall.Room) : ControllerReadout =
         observeWithPriority defaultPriority room
 
-    let actionAt (cell: int) (readout: Readout) : CabinetAction option =
+    let actionAt (cell: int) (readout: ControllerReadout) : CabinetAction option =
         GridBinding.labelAt cell readout.Grid
 
     let private findCabinet (room: DarkHall.Room) (cabinetName: string) =
