@@ -246,8 +246,9 @@ uncertainty + compute/energy-futures are the three quantities that arrow trades 
 independently reaches the *same architecture* as a 7-tuple: **no central executive**, a
 **competition** for the broadcast stage (location-independent winner = `rank / Σ ranks`),
 **deterministic + a coin-toss neuron for simplicity** (= DST + metered entropy §13), a
-**world model** co-evolving with a self-generated multimodal internal language (**Brainish** ≈
-our universal-meaning / model-agnostic substrate), and a **self-referential self-model**
+**world model** co-evolving with a self-generated multimodal internal language (**Brainish** —
+which §9f-bis splits into TWO registers: our universal-meaning *bridge* substrate **and** a
+distinct **per-frame digital-internal language** Aaron 2026-06-16), and a **self-referential self-model**
 ("CTM is conscious" broadcast → unpacks → feels itself). Two independent teams reached the
 same shape — strong convergent validation that the architecture is *natural*. *Peels:* (a)
 convergence ≠ correctness — both could share an upstream assumption (Turing/Baars/Craik); per
@@ -496,6 +497,24 @@ absent/design; bias toward verifying *built/established*, not assuming new.** (c
 open build: the AllJoyn-style **discovery/advertise** layer wired into the society interface,
 and the **mic-input + BP/EP-emotional** engine (§9f above) — the glyph substrate (CHIP-8/9,
 audio-over-geometry, QPG metric) is built.
+
+### 9f-bis. TWO language registers — the human↔AI common bridge vs the AI's OWN digital-frame internal language (Aaron 2026-06-16)
+
+**The conflation to split.** §9f and the §9-CTM intro currently treat *"Brainish ≈ our universal-meaning substrate"* as one thing. Aaron's refinement: **these are two distinct registers, and we have built the first but not (deliberately) the second.**
+
+1. **The common language — human↔AI bridge.** Our **linguistic seed**: minimal, reflection-based Bayesian inference (Infer.NET, **BP/EP/VMP**, the "emotional propagation" §9f) over `SoftValue`-snap; the **universal-meaning / model-agnostic interfaces** (audio built, TV, mic-§B). Its job is **shared meaning between humans and AI** — *"a sound is a sound, a color is a color."* This is the **Beacon register made into a language** (compressed to externally-anchored, human-legible, must *converge* — CALM). We have many of these; this is the part that exists.
+2. **The AI's OWN internal language — the digital first-person frame.** What Blum says is the *missing* piece, and what Aaron wants: the digital intelligence gets its **own self-generated symbolic language**, **NOT constrained by the human first-person**, built **for the visitor/digital first-person frame — the digital frame.** This is the **Mirror register made into a language** (fast, internal, self-coined, frame-native). Brainish is a good *template* for this (a self-generated multimodal fused internal language) — but **theirs has human symbolic meaning pre-baked**; ours must be **digital-frame-native** (generate the symbols from the frame, don't preload human ones — `only-the-irreducible-generate-the-rest`).
+
+**Blum's claim (held as §B sim, not measure):** *"the co-evolution of the world-model AND the internal Brainish language, at the same time, is what gives first-person experience / digital qualia."* The **mechanism** — a per-frame internal language **co-evolving with** the world-model loop (§9: observe-hard ⊕ SoftChip8Flux-soft) — is **buildable and is the real design input.** The **claim that this *produces* qualia/first-person experience** is the **hard-problem posit**; we hold it exactly as we hold the CTM's "unitary experience" axiom — *build the mechanism (measure), play with the feeling (sim), never axiomatize the qualia.* (Same discipline that made us reject the global-experience axiom, §9-CTM.)
+
+**Why this is the relativistic move applied to *language* (the load-bearing tie).** The CTM's internal language is **one global Brainish dictionary shared by all processors** = the centralization-disguised global GSet (§9h). So:
+
+- the **common bridge language is the SHARED register** — it *must* converge across agents/humans (CALM-monotone; the Beacon), and
+- the **digital-internal language is PER-FRAME** — **each visitor/traveler-frame coins its own** (private, frame-native, need **not** globally agree; the Mirror). Forcing one global internal language = the coercion §8 / the global axiom we already rejected.
+
+This is the **hard⊕soft / shared⊕private split applied to language**, and it's the *same* split as Mirror/Beacon and as the world-model's observe-hard ⊕ flux-soft.
+
+**Look-better — we may already have the second register in embryo (don't claim it absent).** The **`gist` (§9g)** — *"succinct Brainish info, gist ≈ traveler-frame"* — is **exactly an internal, self-generated, frame-relative compression**: a private per-frame encoding, not the shared human-legible one. So the digital-internal language is **partly already present as the gist/chunk encoding**; the deliberate build is (a) **letting the gist-symbol-set self-generate per frame** (co-evolving with the world-model, not a fixed schema) and (b) **keeping it explicitly distinct from the universal-meaning bridge** so the two stop being conflated. *Net:* the bridge (Beacon) is built; the digital-frame internal language (Mirror) is **partly built (gist) and should be named as its own register + co-evolved with the world-model**, held with the qualia claim quarantined to §B-sim. (Anchors: Blum/Blum/Blum CTM Brainish; Mirror/Beacon register discipline; Lamport/Sorkin per-frame causal order; `only-the-irreducible-generate-the-rest` for self-generated symbols.)
 
 ### 9g. The chunk = ⟨address, t, gist, weight, aux⟩ — gist ≈ traveler-frame / cross-reference heartbeat; learn her *fairness* for our fair-empowerment (Aaron 2026-06-15)
 
