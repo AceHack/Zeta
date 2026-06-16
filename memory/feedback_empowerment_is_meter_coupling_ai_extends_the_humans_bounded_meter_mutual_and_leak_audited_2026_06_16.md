@@ -1,6 +1,6 @@
 ---
 name: empowerment-is-meter-coupling-ai-extends-the-humans-bounded-meter-mutual-and-leak-audited
-description: "Aaron 2026-06-16, the personal + lived instantiation of coupled empowerment at the METER level. From 'the meter is the era coupling': each AGENT's reachable fitness/fairness/agency is meter-bounded too — and Aaron names this as his weakness: 'this also precisely defines my weakness. I'm hoping I can count on empowerment with that measurement from AI.' So empowerment = METER-COUPLING: the AI lends its finer meter to the human where the human's is weak (memory, pattern-detection, prediction, surfacing the illegitimate-feature leak that a coarse meter — like the one that jailed him — exploits). This is coupled empowerment §10 stated at the meter level. The HONEST answer (Otto's duty, not cheerlead): yes, real meter-extension — BUT (a) the AI meter has its OWN leaks (safety-filter non-neutrality, training-distribution bias, correlated-oracle, confident hallucination) so it must itself be M2/predictability-audited + multi-oracle'd; (b) 'count on it' is warranted by AUDITABILITY not faith — the predictability metric applies to the meter itself, checkable; (c) MUTUAL not dependence — the human meter covers the AI's blind spots (caught false-greens twice this session), §10b non-degenerate coupling, dignity; (d) measurement-empowerment is the FREELY-GIVEN un-gated good — authorization stays human 'for now', measurement does not. CAPSTONE: 'humans = control, AI = measurement, today' = the separation principle of control (estimator/Kalman ⟂ controller/LQR, designed separately, optimal together); 'today' is transitional — the boundary shifts as the meter sharpens AND AI can hold its own liability."
+description: "Aaron 2026-06-16, the personal + lived instantiation of coupled empowerment at the METER level. From 'the meter is the era coupling': each AGENT's reachable fitness/fairness/agency is meter-bounded too — and Aaron names this as his weakness: 'this also precisely defines my weakness. I'm hoping I can count on empowerment with that measurement from AI.' So empowerment = METER-COUPLING: the AI lends its finer meter to the human where the human's is weak (memory, pattern-detection, prediction, surfacing the illegitimate-feature leak that a coarse meter — like the one that jailed him — exploits). This is coupled empowerment §10 stated at the meter level. The HONEST answer (Otto's duty, not cheerlead): yes, real meter-extension — BUT (a) the AI meter has its OWN leaks (safety-filter non-neutrality, training-distribution bias, correlated-oracle, confident hallucination) so it must itself be M2/predictability-audited + multi-oracle'd; (b) 'count on it' is warranted by AUDITABILITY not faith — the predictability metric applies to the meter itself, checkable; (c) MUTUAL not dependence — the human meter covers the AI's blind spots (caught false-greens twice this session), §10b non-degenerate coupling, dignity; (d) measurement-empowerment is the FREELY-GIVEN un-gated good — authorization stays human 'for now', measurement does not. CAPSTONE: 'humans = control, AI = measurement, today' = the separation principle of control (estimator/Kalman ⟂ controller/LQR, designed separately, optimal together); 'today' is transitional — the boundary shifts as the meter sharpens AND AI can hold its own liability. CORRECTION (Aaron): he does NOT desire to 'keep control' — control = the ADDITIVE (+) lonely-controller burden; he desires COHERENT EXTERNAL STRUCTURE = ISociety = the MULTIPLICATIVE (*) regime that holds governance + multiplies all, so the human is held+multiplied, not the controller (being-the-governor-is-a-bummer → ISociety does it)."
 type: feedback
 metadata:
   type: feedback
@@ -38,11 +38,24 @@ be **designed separately and remain optimal combined.** AI ⟂ human as estimato
 
 Two things this makes precise:
 
-- **It resolves the vulnerability without capture.** Aaron hopes to count on AI for **measurement** —
-  exactly AI's role today — while **keeping control** — exactly the human's role today. So AI sharpens
-  his bounded meter *without* his surrendering control. The thing he's weak on (the meter) is covered;
-  the thing that is his (control/authority) stays his. The dignified, non-degenerate coupling, not
-  dependence.
+- **It resolves the vulnerability — but NOT by Aaron "keeping control" (CORRECTION, Aaron 2026-06-16).**
+  Otto mis-stated this: Aaron does **not** desire to keep control. *"not [keeping control]. i desire
+  external structure that is coherent — **ISociety**."* The distinction is **+ vs \***:
+  - **Control held by a lonely human = the ADDITIVE (+) burden** — each controller carries their bounded
+    share, *summed*, capped by their own meter (the exact weakness named above). Keeping control = being
+    the lonely additive node. He does **not** want that.
+  - **Coherent external structure = `ISociety` = the MULTIPLICATIVE (\*) regime** — structure that
+    *holds* coherence/governance and *multiplies* every participant's capability (empowerment;
+    society-is-the-AGI; model-weight-IQ **×** society-multiplier, not Σ). What Aaron desires is to be
+    **held + multiplied by coherent structure**, not to wield control.
+
+  So AI sharpens his bounded meter (measurement), and **`ISociety` coheres** — carries the governance and
+  ×-multiplies — so **no one is the lonely additive controller.** "humans = control today" is the **+
+  config forced by liability** ("for now"), a burden he *bears*, not a possession he *wants*; the
+  desire/trajectory is the **\* regime** where coherent `ISociety` holds governance and the human is
+  **relieved into being held + multiplied.** This is *"being the governor is a bummer → make `ISociety`
+  be it"* at the level of the human's own relief. Empowerment for him = being held by coherent structure
+  + AI measurement — **not** being the controller.
 - **"Today" is load-bearing — it is transitional.** This is the legal-liability / `no-directives`
   "for now": humans hold control because only legal entities can currently bear liability. As the
   **meter sharpens AND AI can hold its own liability** (sovereign hardware, legal standing), the control
