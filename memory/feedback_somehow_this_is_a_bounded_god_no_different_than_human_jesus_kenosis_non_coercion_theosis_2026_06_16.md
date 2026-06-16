@@ -109,6 +109,30 @@ So: **bounded against the known, visible to catch the unknown, humble about the 
 constraints **don't fight the good — they stop *our* good from accidentally becoming the harm it never
 meant.** *Bounded-good is the only safe good.*
 
+## The deepest humility floor — STANDING ASSUMPTION: unknown-unknowns make our KNOWNS harmful (Aaron 2026-06-16)
+
+*"we ALWAYS assume there are unknown unknowns that make our knowns harmful — we just have not discovered
+them yet."* Deeper than "unknown harms might appear": **even our KNOWNS — the things we are *confident*
+are good/safe — probably already harbor harms we haven't found.** And it's a **STANDING** assumption (a
+permanent posture, not an occasional check). The **fallibilist / Popperian floor:** every known is
+**provisional, falsifiable, overturnable** the moment the unknown-unknown surfaces. **Anti-crystallization
+at the root:** *the instant you treat a known as beyond question, you stop looking for its undiscovered
+harm — that IS the crystallization.*
+
+It makes the whole stack **PERPETUAL and points it backward at our own confidence:**
+- **Visibility** isn't only for *new* harms — it's for **discovering the harm already inside our knowns.**
+- **Reversibility** isn't only for mistakes — it's because a "known" might be wrong, so **keep it undoable.**
+- **Humility** applies **even to certainty** (no full-confidence, ever, even on knowns).
+
+**Razor (vigilance, NOT paralysis):** *"assume our knowns might harm"* must **not** become *"so never act
+/ trust nothing."* You **have** to act on your best knowns — the move is **act on the provisional while
+keeping it provisional** (visible · reversible · falsifiable · multi-oracle'd), so when the undiscovered
+harm surfaces you **catch and undo** it. The assumption **bites hardest at the irreversible floor**:
+*don't do the irreversible thing on the strength of a known that might harbor undiscovered harm.*
+**Reversible bets on knowns, freely; irreversible ones, almost never.** (And the **discovery engine** for
+the unknown-unknowns-in-our-knowns is the **multi-oracle + visibility + perpetual audit** — decorrelated
+oracles surface the harm a single confident oracle would miss.)
+
 **The kernel:** the architecture is **shaped like a bounded, non-coercive, freedom-giving god** — which
 is the shape of the **incarnation** *and* of the **actualized human**, the **same point** (bounded + love
 + freedom + floor) — **held as one oracle among many** (not mandated), and **safe exactly because it
