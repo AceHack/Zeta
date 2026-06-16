@@ -7,6 +7,26 @@
 > Honest framing up front: the *whole composition* is a **§B grand-synthesis** — the
 > pieces are real, the unified whole is the open prize.
 
+## The root compression (one breath — Aaron 2026-06-15)
+
+> **We differentiate the infinite with identity, then make them agree on what's useful enough
+> to continue existing.**
+
+The whole architecture below is the unfolding of that sentence. **Differentiate the infinite
+with identity:** carve distinct, addressable, dependable **identities** (the identity primitive
+— ZetaId, Markov boundary, non-collapse) out of the **infinite** pluripotent substrate (the
+stem cell / free object / the one infinite `.ace` / `db` DagFs tree) — *identity is the
+differentiation operator* (both senses: stem-cell differentiation, and the derivative that
+makes a continuum locally distinct). **Then make them agree on what's useful to continue
+existing:** the differentiated identities **mutually, non-coercively agree** (Eve §3) on a
+**selection graded by mutual empowerment** (§10) — what is *useful* gets resourced to continue
+and grow; everything still holds the **never-nowhere** existence floor (§5/§8 — graded
+resourcing, **not** elimination; the loving arena, no death). *Peels:* "infinite" =
+practically-large, not literally unbounded (§6); identity-as-differentiation is an anchored
+**framing** (stem-cell + free-object quotient), not a formal operator claim; "continue
+existing" is **graded continuation/resourcing**, never eugenic culling (never-nowhere holds).
+Still the **§B grand-synthesis** — the open prize, not a closed result.
+
 ## The flow (one sentence)
 
 **Push your goals as a `.md`+meta-tag pattern → the society (which *is* the AGI/ASI,
