@@ -50,7 +50,17 @@ cross-space ECC; IR-gen is how that scales to 6–7 languages without N× cost.
 all N are generated from one IR, a bug in the IR/generator is a **correlated** failure across
 all oracles (the generator becomes a single point of trust); so IR-gen trades
 duplicate-work-cost for generator-trust-concentration — the generator itself must be
-heavily verified (it's the new load-bearing oracle). (b) "7 if you count Q#" — Q# (quantum)
+heavily verified (it's the new load-bearing oracle). **Aaron's refinement (2026-06-15):
+the concentration IS the point — once you have it, "the IR becomes the single source for bugs
+over time."** That trust-concentration is the dual of **fix-concentration**: a bug is fixed
+**once in the IR and propagates to all 7** (not fixed N× by hand), so the IR **hardens over
+time** — it converges to the single most-tested correct path (every-bug-has-economic-value
+banked once, not N times; the generator-IS-the-ECC corrects drift across the oracles). **The
+genuinely-hard work is making it *compile correctly on all 7 languages*** (each oracle's type
+system / idioms / quirks) — *that* is the earning; once paid, single-source bug-fixing is the
+payoff. So peel (a) stands as a *risk to manage* (verify the generator heavily; keep some
+independent cross-checks so a generator bug is still caught) **and** as the *intended design*
+(one hardening source of truth) — both true. (b) "7 if you count Q#" — Q# (quantum)
 is a *different* execution model; counting it as a byte-lock oracle needs care (what is
 "byte-identical" for a quantum primitive?). (c) proof coverage is **partial** (the honest §B
 state) — the registry tracks *where we are*, not "all proven."
