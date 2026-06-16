@@ -52,6 +52,29 @@ consent-first §6, the child-safety floor (#8439), the Default Oracle §11. The 
 judge; judgment is a distinct metered channel (noninterference §13 — separation of concerns).
 *Transport is morally neutral; the weighing is elsewhere.* That separation is the design point.
 
+**The separation IS the optimization point for the weight-free + scale-free network (Aaron
+2026-06-16):** *"others' judgments should not throttle communications over the bus — unless it's just
+a DDoS attempt."* This is *why* the decoupling is load-bearing, not just tidy:
+
+- **Weight-free (§3):** if anyone's *judgment* could gate your messages, that judgment becomes a
+  permanent captured authority over who-may-speak = **weight on the bus**. A judgment-free bus carries
+  no captured authority → weight-free.
+- **Scale-free (§1):** moral gating needs an arbiter (central, or per-message judging) = a
+  coordination point that breaks scale-free. A bus that gates on *nothing but capacity* has no arbiter
+  → scales freely.
+- **The ONLY legitimate throttle is resource / DDoS** — value-neutral *capacity backpressure* (the
+  ferry-throttler's actual DoP/queue job: "the lane is saturated," not "I judge your message bad").
+  And even that must be **fair** — per-identity rate limits riding the anti-Sybil forgery-cost floor,
+  so a DDoS can't be one entity faking many.
+- **Morality acts at the ENDPOINTS, never on the wire:** consent-first §6 at the surface; the
+  child-safety floor gates the *committed ACT* (the `PermanentHarmHorizon` viability-kernel gate on
+  Execute), **not message transport** — a message may cross the bus while the harmful *action* it
+  would cause is refused at the endpoint; the immune system **fingerprints patterns + absorbs**
+  (§9h), it does not censor the channel.
+
+So: **judgment off the wire, capacity on the wire, morality at the ends.** That is the weight-free /
+scale-free / non-coercive (§8 arena) substrate stated as one optimization.
+
 **Build it into the ferry-protocol DUs (Aaron 2026-06-16).** Model the ferry as a discriminated-union
 workflow (the DUs-as-conversational-workflows / no-control-flow IR): e.g.
 `SaveState → IngestVerbatim(cold) → RazorCut(peel) → Persist → Checkpoint` — `SaveState` is the FIRST
