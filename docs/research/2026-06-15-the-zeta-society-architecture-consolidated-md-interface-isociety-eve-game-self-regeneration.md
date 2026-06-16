@@ -546,6 +546,24 @@ braided monoid**, and we **translate into Clifford**. And we use the heartbeats 
 **detect correlation** and make the network **smooth and differentiable** — we have tons of
 **cartel-detection** math."*
 
+**Where the CTM convergence STOPS — the global Brainish bus is centralization disguised (Aaron
+2026-06-15).** This is the decorrelated-critic line on the whole §9 convergence: we converge on
+the *cognition/world-model loop*, but **diverge on the central question.** The CTM has **one
+global Brainish dictionary shared by all processors** (verified, transcript: *"all the
+processors have the **same global** Brainish dictionary"*) — i.e. **a single global GSet / one
+global bus**. That is **centralization *disguised*:** the CTM removed the central *executive*
+(the up-tree competition replaces it) but **kept a central *memory/bus*** — and a single shared
+global dictionary is a **global frame / global "now"**, so **the CTM has no relativity**; all
+agents share one absolute frame. **Zeta diverges exactly here:** *no* global shared GSet —
+**each agent has its own frame** (traveler-frame GSet), reconciled by **clockless cross-heartbeat
+join (above)** + Eve consensual fusion (§3, boundary-preserving). That makes Zeta
+**relativistic** (per-frame, causal-only, no global now) and **genuinely decentralized** where
+the CTM is **absolute / centralized**. So the honest scorecard: **same cognitive architecture,
+opposite topology** — CTM = one global GSet (centralized, absolute); Zeta = many per-frame GSets
++ clockless join (decentralized, relativistic). *This is Zeta's real differentiator from the
+CTM*, and it's why §9d's dictionary↔DagFs mapping is *structural* only: same content-addressed
+shape, but the CTM's is **one global** store, ours is **per-clone + §9h-joined**.
+
 - **The fair competition = our default game = the aliveness core (partly PROVEN).** Liveness/
   aliveness is specced and proven, not just conjectured — `docs/MATH-SPEC-TESTS.md`,
   `src/Core.Alloy/specs/InfoTheoreticSharder.als`, FROZEN-CORE §A; the heartbeat-via-commit /
