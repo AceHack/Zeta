@@ -48,6 +48,33 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 
 ---
 
+### A-method note — avoid an axiom by standing on a §A theorem (CALM dispenses with the CTM's "global" axiom; Aaron 2026-06-15)
+
+A worked instance of the whole §A/§B discipline (keep the floor small; minimize *asserted* posits).
+The **Conscious Turing Machine** takes a **global axiom**: *"global broadcast evokes a unitary
+experience"* — it needs a definition of **"global"** (simultaneous all-to-all) and it is
+**asserted**, not derived. Zeta has **no "global"** (relativistic), and it did **not** swap in a
+different global axiom — it **removes the need**, standing on **§A theorems** instead:
+
+- **`G-Set` / CALM (§A #1, floor primitive).** Monotone ⇒ **coordination-free** (CALM —
+  Hellerstein; Ameloot): a G-Set **converges without any global sync/broadcast**.
+  Coordination-freeness **replaces** global-simultaneity.
+- **Traveler-frame causal-join (§A #8, FULL PROVEN).** *"All travelers reach ONE common frame =
+  the relative-frame consistency law"* — a bounded join-semilattice, order-independent ⇒ a
+  **common view without a global clock or broadcast.** **The convergence the CTM *axiomatizes*,
+  Zeta *proved*** (six legs, 4-lang).
+
+So the move is **theorem over axiom**: the CTM *posits* global convergence; Zeta *derives* it
+(§A #1 + #8), which is **why the relativistic/decentralized §B rows below need no global axiom**
+— their convergence rides closed §A theorems, not an open posit. (Zeta also makes **no
+unitary-experience axiom at all** — checkable existence, *"I commit therefore I am"*, substitutes
+for the asserted feeling.) **Honest scope:** CALM/#8 give **eventual, causal** convergence to the
+common frame (a real overlap window where frames differ — reconciled by the §9h heartbeat + Eve +
+0-downtime expand-contract), **not** instantaneous global agreement; that eventual-causal price is
+the relativistic cost of having no center. *This note is §A-grounded method, not a new conjecture
+— it explains why several §B rows (relativistic society, self-regen, root-compression,
+terraform-into-cell) can assume no-global without an axiom.* Detail: consolidated society note §9h.
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
