@@ -5,22 +5,9 @@ open Zeta.Core
 
 let private child = Cart.firstCart
 
-let private loopRom = [| 0x6Auy; 0x0Cuy; 0x12uy; 0x02uy |]
-let private inputRom = [| 0xEAuy; 0x9Euy; 0x12uy; 0x00uy |]
-
-let private testCart title rom : Cart.Cart =
-    { Meta =
-        { Title = title
-          Author = "Vera test"
-          Description = "small meta-cart child" }
-      Seed = 1UL
-      Rom = rom
-      CyclesPerTick = 1
-      Ticks = 1
-      Recording = { Crossings = Map.empty } }
-
-let private loopCart = testCart "loopy" loopRom
-let private inputCart = testCart "waity" inputRom
+let private loopCart = CartFixtures.cart CartFixtures.loop
+let private inputCart = CartFixtures.cart CartFixtures.inputFork
+let private chip9Green = CartFixtures.cart CartFixtures.chip9GreenDot
 
 let private selectedParent (idx: int) =
     Chip8Cow.create 1UL |> Chip8Arcade.commitChoice idx
@@ -135,6 +122,19 @@ let ``playChosenCarried commits the reflected choice into the parent cell and la
         Assert.True(result.Play.Rows |> List.exists (fun row -> row.Key = "cart.sha256" && row.Value = expected.Fingerprint.Sha256))
         Assert.Equal(0, sink.Signatures.Count)
     | Error feedback -> Assert.True(false, sprintf "expected reflected child launch, got %A" feedback)
+
+[<Fact>]
+let ``host-assisted meta-cart can launch a source-owned CHIP9 child cart`` () =
+    let sink = RecordingHeatSink()
+
+    match MetaCart.playSelectedCarried "parent-cart" (sink :> IHeatSink) [ chip9Green ] (selectedParent 0) with
+    | Ok result ->
+        Assert.Equal(MetaCart.slotOfCart chip9Green, result.Slot)
+        Assert.Equal(2uy, result.FinalFrame.Plane)
+        Assert.False(Chip8Cow.pixel 0 0 result.FinalFrame)
+        Assert.Equal(2uy, Chip8Cow.colorAt 0 0 result.FinalFrame)
+        Assert.Equal(0, sink.Signatures.Count)
+    | Error feedback -> Assert.True(false, sprintf "expected CHIP9 child cart to play, got %A" feedback)
 
 [<Fact>]
 let ``empty reflected child library is a cold no-selection refusal`` () =

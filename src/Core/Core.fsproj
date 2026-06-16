@@ -237,6 +237,7 @@
     <Compile Include="Chip8Citizen.fs" />
     <Compile Include="Chip8Quote.fs" />
     <Compile Include="Cart.fs" />
+    <Compile Include="CartFixtures.fs" />
     <Compile Include="SwarmBoard.fs" />
     <Compile Include="SwarmBoardAnsi.fs" />
     <Compile Include="ZetaMax.fs" />
