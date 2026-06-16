@@ -34,7 +34,7 @@ module RoomHorizon =
           Deferred: Candidate<'K, 'S> list
           RetainedKeys: GSet<'K>
           RejectedByHorizon: GSet<'K>
-          EvictedByHorizon: GSet<'K>
+          HorizonHeat: BoundedGSetHeat<'K>
           Prediction: Vision.PredictionReport<'S> }
 
     type InferenceReport<'K, 'S when 'K : comparison> =
@@ -81,11 +81,17 @@ module RoomHorizon =
     let private applyVisible
         (current: BoundedGSet<'K>)
         (boarded: Candidate<'K, 'S> list)
-        : Result<BoundedGSet<'K> * GSet<'K> * GSet<'K> * GSet<'K>, Feedback> =
-        let rec loop state retained rejected evicted rest =
+        : Result<BoundedGSet<'K> * GSet<'K> * GSet<'K> * BoundedGSetHeat<'K>, Feedback> =
+        let rec loop state retained rejected forgotten rest =
             result {
                 match rest with
-                | [] -> return state, retained, rejected, evicted
+                | [] ->
+                    return
+                        state,
+                        retained,
+                        rejected,
+                        { Forgotten = forgotten
+                          Units = GSet.count forgotten }
                 | candidate :: tail ->
                     let! addResult =
                         BoundedGSet.add candidate.Key state
@@ -103,8 +109,8 @@ module RoomHorizon =
                         | BoundedGSetAdmission.Admitted
                         | BoundedGSetAdmission.AlreadyPresent -> rejected
 
-                    let evicted' = GSet.union evicted addResult.Evicted
-                    return! loop addResult.State retained' rejected' evicted' tail
+                    let forgotten' = GSet.union forgotten addResult.Heat.Forgotten
+                    return! loop addResult.State retained' rejected' forgotten' tail
             }
 
         loop current GSet.empty GSet.empty GSet.empty boarded
@@ -123,7 +129,7 @@ module RoomHorizon =
 
             let boarded = orderedCandidates |> List.truncate prediction.Boarded.Length
             let deferred = orderedCandidates |> List.skip prediction.Boarded.Length
-            let! horizonAfter, retained, rejected, evicted = applyVisible current boarded
+            let! horizonAfter, retained, rejected, heat = applyVisible current boarded
 
             return
                 { HorizonBefore = current
@@ -133,7 +139,7 @@ module RoomHorizon =
                   Deferred = deferred
                   RetainedKeys = retained
                   RejectedByHorizon = rejected
-                  EvictedByHorizon = evicted
+                  HorizonHeat = heat
                   Prediction = prediction }
         }
 
