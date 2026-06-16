@@ -437,9 +437,55 @@ empowerment, aggregated how?** "Mutual" still needs an aggregation choice — **
 protect the worst-off), **sum** (utilitarian), or **product** (Nash) give different grades;
 this is where the Arrow/fair-prioritization tension (§1) re-enters, so mutual-empowerment is a
 strong **default oracle** (§11), not an escape from social choice. (c) gameable — an interface
-can *inflate measured* empowerment without real option-gain (Goodhart); the estimator must
-resist proxy-gaming. (d) §B: the grading *engine* is design; empowerment primitives exist
+can *inflate measured* empowerment without real option-gain (Goodhart). Two responses, and
+**Aaron 2026-06-15 prefers the second:** *try to build a gaming-resistant estimator* OR
+**just assume it and price it in** — *"assume everyone you route work to is lazy and
+inefficient at anything that's not their own priority and within their current skillset (or
+just outside it)."* That is **robust mechanism design**: model **bounded-rational,
+self-interested** agents (principal–agent / Simon's bounded rationality), grade for the
+*realistic* agent, not an idealized altruist — a **conservative lower bound** that holds under
+gaming instead of a detector that must out-run it. Two layers: **(1) align first** — use the
+*mutual* coupling to make the routed work *serve the agent's own empowerment*, so it **becomes
+their priority** and they aren't lazy at it (the cure, not the patch); **(2) price the
+residual** — for whatever stays misaligned, debit the expected inefficiency. *Sub-peel:* the
+skill bound is **"current skillset OR just outside it"** — "just outside" is the **ZPD growth
+edge** (Vygotsky; the teacher↔turbo dial), so pricing isn't *"never route stretch work"* but
+*"price more inefficiency for the just-outside region, accept it because that's where learning
+happens."* Don't let conservative pricing become never-stretch (that would freeze growth).
+(d) §B: the grading *engine* is design; empowerment primitives exist
 (`SoftDrive`/`Salience`), the interface-grader is the open build.
+
+### 10b. At society scale, mutual empowerment has nowhere to become degenerate (conjecture) (Aaron 2026-06-15)
+
+*"Mutual empowerment at a society level enables some interesting phenomena, because the
+empowerment has nowhere to become degenerate if defined correctly."* At the **individual**
+level, empowerment-maximization has well-known **degenerate attractors** — *power-seeking*
+(grab control), *wireheading* (collapse to a trivial high-reward state). The claim: at the
+**society** level, with **mutual** empowerment **defined correctly**, those basins are
+**structurally closed** — the degeneracy has nowhere to go:
+
+- **Power-seeking** takes empowerment *from* others → lowers their term → lowers *mutual*
+  empowerment → scored out by the coupling.
+- **Wireheading / self-collapse** shrinks your own reachable futures → lowers empowerment by
+  definition → scored out.
+- **Monoculture / groupthink** collapses the society's decorrelation (§8) → fewer distinct
+  reachable futures collectively → lowers empowerment → scored out.
+
+**The interesting phenomenon:** with the degenerate optima removed, the **cooperative,
+pluripotent equilibrium is the only attractor** — no coercion needed (it's not the *best*
+move, it's the *only non-degenerate* one), no collapse into tyranny/monoculture, and
+**open-ended growth** because there is no degenerate optimum to get stuck in (the §10
+stem-cell "stay able-to-be-anything" follows: nowhere to degenerate = nowhere to stop being a
+stem cell). *Peels:* (a) **"if defined correctly" carries the entire claim** — this is a
+**conjecture**, not a result: *there exists a definition of society-level mutual empowerment
+whose landscape has no degenerate optima*. Its **existence + proof is the open prize** (the
+math team's §10a job); do not state it as closed (§9b/grand-synthesis discipline). (b) The
+aggregation choice matters here too — **`min` / Nash** plausibly close the degeneracies that
+**`sum`** leaves open (a utilitarian sum can be gamed by sacrificing a minority's empowerment;
+a Rawlsian min cannot) — so "defined correctly" likely *means* a non-sum aggregation, to be
+shown. (c) Pin "degenerate" = a **pathological collapse-attractor** (power-seek / wirehead /
+monoculture), not just any local optimum. Discharge: prove the chosen definition's landscape is
+free of those attractors.
 
 ## Collected honest seams
 
