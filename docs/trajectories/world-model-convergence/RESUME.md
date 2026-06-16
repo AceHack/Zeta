@@ -25,6 +25,13 @@ set of **named §B discharges** — the prove-its — listed below so they aren'
    *Discharge:* a worked, **DST-replayable multi-level plan that beats flat planning on a real
    task** (Zeta analogue of MPC-over-abstractions). *Falsifier:* no abstraction advantage / can't
    bound per-level expansion / least-action picks wrong level.
+   - ✅ **SCOPED 2026-06-16** → `docs/research/2026-06-16-hierarchical-planning-discharge-scoping-…md`.
+     Key find: the **flat baseline is already built** (`StateSpace.fs` = DST-replayable goal-directed
+     BFS with a transposition table). **First slice (MVP):** a **2-level planner over a small
+     `ActionGrid` task** — coarse `StateSpace` BFS over regions → fine `StateSpace` BFS within each
+     region → concatenate; assert flattened plan reaches goal, **states-explored ≪ flat**, and
+     byte-identical replay. **Build is an author/Vera job** (new code = level-composition +
+     compare-harness; everything else built). Liveness routes via observe.ts (out of scope here).
 2. **Homoiconic representation-learning** (§B row #8474) — our rep = the `SoftValue→DynamicValue`
    snap, **homoiconic** (code=data, the JEPA-differentiator + the mechanism behind #1).
    *Discharge:* (a) features-at-scale vs JEPA; (b) homoiconicity actually helps planning;
