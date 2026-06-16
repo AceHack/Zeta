@@ -56,12 +56,39 @@ set of **named §B discharges** — the prove-its — listed below so they aren'
   "good upper bound, cross our fingers"). *Honest residual:* his info-max also does feature-
   learning at scale — our soft/snap is the mechanism, the at-scale quality is unproven.
 
-## Next concrete step (recommendation)
+## Next concrete step — GREENLIT (Aaron 2026-06-16): build the hierarchical-planning MVP
 
-**Close the Aurora v2 re-review loop first** (#4 — a pending gate on done work; Viktor+Kira owe the
-verdict on the rebuilt specs), **then** scope the **hierarchical-planning discharge** (#1 — the big
-prize, the Zeta MPC-over-abstractions demo, leaning on homoiconicity #2c). gen(gen) Phase A (#3) is
-the IR-freeze prerequisite for the broader generator work.
+Both prior gates are **done**: Aurora v2 re-review **CLOSED** (Viktor+Kira both PASS); the
+hierarchical-planning discharge is **SCOPED** (#8480, with the MVP slice). Aaron greenlit the build.
+
+**ACTIVE TASK — the hierarchical-planning MVP (discharges §B #8467, the big prize):** a 2-level
+planner demo as a **DST-replayable `Tests.FSharp` test** —
+coarse `StateSpace` BFS over `ActionGrid` regions → fine `StateSpace` BFS within each region →
+concatenate; **assert** (1) the flattened plan reaches the goal, (2) states-explored ≪ a flat
+`StateSpace` BFS on the same task, (3) byte-identical replay from the seed. New code = the
+level-composition + the compare-harness; `StateSpace`/`ActionGrid`/`SoftChip8Scheduler` are built.
+**Build-gated** (`dotnet build -c Release` 0-warn + `dotnet test`). Scoping doc:
+`docs/research/2026-06-16-hierarchical-planning-discharge-scoping-…md`. *Otto can take this as an
+F# test, or it's Vera's lane — either way it's the active task.*
+
+## Completeness checklist — the FULL open board (don't forget anything)
+
+1. **[ACTIVE, greenlit] Hierarchical-planning MVP build** → discharges §B #8467. (this trajectory)
+2. **Homoiconic-representation §B** (#8474): (a) features-at-scale vs JEPA; (b) homoiconicity-helps-
+   planning *(joint with #1)*; (c) **formal round-trip cert `apply(reify x)=x`** over the IR/AST —
+   Kestrel/Lawvere method → **route to Soraya** (`memory/kestrel/2026-06-16-kestrel-homoiconic-proof-method-…`).
+3. **Aurora → §A** (`aurora-immune-reground`): (a) `d_self` wiring → `NonRegisterCollapse`; the
+   FsCheck/Z3 smalls (c/d/g); Z3 `QF_FD` prereq; then promote.
+4. **gen(gen)==gen** (`gen-gen-self-hosting-bytelock`): **Phase A = freeze `zeta-ir-v1-layout.yaml`**,
+   then the diverse-double-compiling capstone (Face 3).
+5. **observe.ts = the liveness path** for the harm-floor (round e is safety-only) — deferred + tracked
+   in the Aurora trajectory; revisit once observe⊕soft lands (WorkspacePort in active build).
+6. **Scheduled:** cooling-tag GC cloud routine fires **2026-06-20** (double-checks before deleting the
+   `archive/2026-06-13*` recovery tags). Self-running.
+7. **Baseline:** the autonomous CI-green steward (every-minute tick).
+
+*(Not ours, not forgotten — other actors' open feature PRs: #8478 QEMU, #8477 darkhall, #8458/#8433
+observe WorkspacePort. Left to their owners.)*
 
 ## Honest framing (carry it)
 
