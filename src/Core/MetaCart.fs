@@ -97,6 +97,18 @@ module MetaCart =
         Chip8Arcade.choose reflections
         |> Option.bind (fun index -> reflected |> List.tryItem index)
 
+    /// Choose under the parent room's declared CHIP-9 policy. The manifest
+    /// does not change arithmetic truth: it only decides how much flux funds
+    /// the reflection before the choice crosses the host boundary.
+    let chooseSlotWithCapabilities
+        (goal: int)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        : ReflectedChoice option =
+        let reflectedGoal, costPerStep, tank = Chip9Capabilities.reflectionBudget goal parentCapabilities
+        chooseSlot reflectedGoal costPerStep tank seed children
+
     /// Read the parent VM's choice using the same one-byte treaty as
     /// `Chip8Arcade.readChoice`, but return the fingerprint slot rather than
     /// raw ROM bytes.
@@ -311,6 +323,34 @@ module MetaCart =
                       Play = play }
             | Error feedback -> Error feedback
 
+    /// Capability-aware reflection path. The parent manifest funds the
+    /// lookahead and gates host-child-launch; the child manifest gates the
+    /// selected cart's own CHIP-9 extensions.
+    let playChosenByReflectionWithCapabilities
+        (source: string)
+        (sink: IHeatSink)
+        (goal: int)
+        (seed: uint64)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (childCapabilitiesBySha: Map<string, Chip9Capabilities.Manifest>)
+        (children: Cart.Cart list)
+        (parent: Chip8Cow.Frame)
+        : Result<ReflectedPlayResult, Feedback> =
+        match chooseSlotWithCapabilities goal parentCapabilities seed children with
+        | None -> Error(Feedback.NoSelection source)
+        | Some choice ->
+            let slots = slotsOfCarts children
+            let host = CapabilityCartHost(children, childCapabilitiesBySha) :> ICartHost
+            let parentWithChoice = commitChoice choice parent
+
+            match playSelectedWithCapabilities source sink parentCapabilities slots host parentWithChoice with
+            | Ok play ->
+                Ok
+                    { Choice = choice
+                      ParentWithChoice = parentWithChoice
+                      Play = play }
+            | Error feedback -> Error feedback
+
     /// Convenience for the common carried-cart mode: reflect over the bundled
     /// children and resolve the selected child from the same bundle.
     let playChosenCarried
@@ -325,3 +365,26 @@ module MetaCart =
         : Result<ReflectedPlayResult, Feedback> =
         let host = LocalCartHost children :> ICartHost
         playChosenByReflection source sink goal costPerStep tank seed children host parent
+
+    /// Capability-aware carried-cart mode for the host-assisted meta-cart
+    /// experiment. This is the source-owned room boundary: no file IO, no
+    /// exceptions, and denied launch/extension asks become heat.
+    let playChosenCarriedWithCapabilities
+        (source: string)
+        (sink: IHeatSink)
+        (goal: int)
+        (seed: uint64)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (childCapabilitiesBySha: Map<string, Chip9Capabilities.Manifest>)
+        (children: Cart.Cart list)
+        (parent: Chip8Cow.Frame)
+        : Result<ReflectedPlayResult, Feedback> =
+        playChosenByReflectionWithCapabilities
+            source
+            sink
+            goal
+            seed
+            parentCapabilities
+            childCapabilitiesBySha
+            children
+            parent

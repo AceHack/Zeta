@@ -8,6 +8,12 @@ let private child = Cart.firstCart
 let private loopCart = CartFixtures.cart CartFixtures.loop
 let private inputCart = CartFixtures.cart CartFixtures.inputFork
 let private chip9Green = CartFixtures.cart CartFixtures.chip9GreenDot
+let private classicCaps =
+    MetaCart.capabilityMap
+        [ loopCart, CartFixtures.loop.Capabilities
+          inputCart, CartFixtures.inputFork.Capabilities ]
+
+let private chip9Caps = MetaCart.capabilityMap [ chip9Green, CartFixtures.chip9GreenDot.Capabilities ]
 
 let private selectedParent (idx: int) =
     Chip8Cow.create 1UL |> Chip8Arcade.commitChoice idx
@@ -182,3 +188,76 @@ let ``missing reflected child emits heat after the soft selector chooses it`` ()
         Assert.Equal("meta-cart.missing", sink.Signatures.[0].Kind)
         Assert.Contains(expected.Fingerprint.Sha256, sink.Signatures.[0].Detail)
     | other -> Assert.True(false, sprintf "expected reflected MissingCart feedback, got %A" other)
+
+[<Fact>]
+let ``capability-aware reflected launch emits heat when parent lacks host launch`` () =
+    let sink = RecordingHeatSink()
+
+    match
+        MetaCart.playChosenCarriedWithCapabilities
+            "parent-cart"
+            (sink :> IHeatSink)
+            10
+            1UL
+            Chip9Capabilities.chip8Default
+            classicCaps
+            [ loopCart; inputCart ]
+            (Chip8Cow.create 1UL)
+    with
+    | Error(MetaCart.Feedback.HostDenied(denied, reason)) ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(expected, denied)
+        Assert.Contains("meta-cart.host-child-launch", reason)
+        Assert.Equal(1, sink.Signatures.Count)
+        Assert.Equal("meta-cart.denied", sink.Signatures.[0].Kind)
+        Assert.Contains(expected.Fingerprint.Sha256, sink.Signatures.[0].Detail)
+        Assert.Contains(reason, sink.Signatures.[0].Detail)
+    | other -> Assert.True(false, sprintf "expected reflected host-child-launch denial, got %A" other)
+
+[<Fact>]
+let ``capability-aware reflected launch emits heat when child lacks CHIP9 color grant`` () =
+    let sink = RecordingHeatSink()
+    let childCaps = MetaCart.capabilityMap [ chip9Green, Chip9Capabilities.chip8Default ]
+
+    match
+        MetaCart.playChosenCarriedWithCapabilities
+            "parent-cart"
+            (sink :> IHeatSink)
+            3
+            1UL
+            Chip9Capabilities.metaHost
+            childCaps
+            [ chip9Green ]
+            (Chip8Cow.create 1UL)
+    with
+    | Error(MetaCart.Feedback.HostDenied(denied, reason)) ->
+        Assert.Equal(MetaCart.slotOfCart chip9Green, denied)
+        Assert.Contains("chip9.color-planes", reason)
+        Assert.Equal(1, sink.Signatures.Count)
+        Assert.Equal("meta-cart.denied", sink.Signatures.[0].Kind)
+        Assert.Contains(reason, sink.Signatures.[0].Detail)
+    | other -> Assert.True(false, sprintf "expected reflected child color denial, got %A" other)
+
+[<Fact>]
+let ``capability-aware reflected launch runs granted CHIP9 child`` () =
+    let sink = RecordingHeatSink()
+
+    match
+        MetaCart.playChosenCarriedWithCapabilities
+            "parent-cart"
+            (sink :> IHeatSink)
+            3
+            1UL
+            Chip9Capabilities.chip9MetaHost
+            chip9Caps
+            [ chip9Green ]
+            (Chip8Cow.create 1UL)
+    with
+    | Ok result ->
+        Assert.Equal(MetaCart.slotOfCart chip9Green, result.Choice.Slot)
+        Assert.Equal(MetaCart.slotOfCart chip9Green, result.Play.Slot)
+        Assert.Equal(Some(MetaCart.slotOfCart chip9Green), MetaCart.readSlot [ MetaCart.slotOfCart chip9Green ] result.ParentWithChoice)
+        Assert.Equal(2uy, result.Play.FinalFrame.Plane)
+        Assert.Equal(2uy, Chip8Cow.colorAt 0 0 result.Play.FinalFrame)
+        Assert.Equal(0, sink.Signatures.Count)
+    | Error feedback -> Assert.True(false, sprintf "expected granted reflected CHIP9 launch, got %A" feedback)
