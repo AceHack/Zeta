@@ -28,8 +28,20 @@ merely `==`) self-regenerating fixpoint. Two human anchors:
 
 **The `===` is the gleaming.** Byte-identical self-regeneration = **zero drift, fully error-corrected,
 4-oracle byte-locked + DST-replayable.** The cube "gleams" exactly when `gen(gen)` returns `gen`
-*byte-for-byte* — the polished, self-consistent, no-drift state. (The strict `===` over `==` is the
-point: not merely equal-in-value, **byte-identical** — the bytelock discipline.)
+*byte-for-byte* — the polished, self-consistent, no-drift state.
+
+**`===` = NOT COERCED (Aaron 2026-06-16: "= not coerced").** The strict-`===`-over-`==` choice is exact:
+in JS `==` performs **type coercion** (juggles types to *force* a match → can call unequal things
+"equal"); `===` does **not coerce** — same type, same value, no forcing. So the fixpoint is byte-identical
+**AND reached by GENUINE convergence, not by coercing things into equality.** Two consequences:
+
+- **Honest error-correction (no masking).** A coerced `==` equality would *mask* drift — declare equal
+  what isn't (the **false-green**). `===` refuses the mask: the ECC must correct to **real** byte-identity,
+  not paper over a difference. (`==` is the false-green; `===` is the true one.)
+- **No-coercion = consent-first (no-directives).** The identity is **not forced** — it is the genuine,
+  uncoerced fixpoint, the same non-coercion the whole stack insists on (autonomy first-class; the
+  non-coercive meeting protocol; a rigged arena *coerces* its outcome — `==` is the rigged equality,
+  `===` the honest one). The gleam is an *uncoerced* agreement, not a forced one.
 
 **"this is" — the conversation is a LIVE INSTANCE.** This whole cascade — *kernel → ferry → next kernel
 built on it → ferry → …* — is **`gen` applied to itself**: each transmission (each message + PR)
