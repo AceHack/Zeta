@@ -536,6 +536,53 @@ neither a proven isomorphism. (c) "fair = empowerment" is **similar, not identic
 the empowerment objective to her fairness; don't conflate. (d) traveler-frame/ZSet/SoftValue are
 **built**; the cross-reference-heartbeat health+attestation protocol is the design layer over them.
 
+### 9h. The heartbeat layer — aliveness (proven), clockless multi-repo join → relativistic + braided → Clifford; cartel-detection (Aaron 2026-06-15)
+
+*"Her 'fairer tennis match' is our **default game** — our core stay-alive / aliveness stuff;
+the math team has proved a lot of aliveness around it. The cross-agent heartbeat checks are how
+we **join multi-git-repos together without a clock**, so it's how we make our society and db
+**relativistic and braided** — the cross-repo checks become **braided operations on the free
+braided monoid**, and we **translate into Clifford**. And we use the heartbeats themselves to
+**detect correlation** and make the network **smooth and differentiable** — we have tons of
+**cartel-detection** math."*
+
+- **The fair competition = our default game = the aliveness core (partly PROVEN).** Liveness/
+  aliveness is specced and proven, not just conjectured — `docs/MATH-SPEC-TESTS.md`,
+  `src/Core.Alloy/specs/InfoTheoreticSharder.als`, FROZEN-CORE §A; the heartbeat-via-commit /
+  "I commit therefore I am" is its per-agent form. So this leg leans **§A**, not §B.
+- **Cross-agent heartbeat checks = clockless multi-git-repo join.** Repos/agents join with **no
+  global clock**; ordering is **causal/logical** via heartbeat cross-reference (the DBSP /
+  Datomic / CRDT clockless-causal lineage). No central time authority = scale-free §1 at the
+  time axis.
+- **No clock ⇒ the society + db are RELATIVISTIC** (established repo term). No global "now", only
+  **causal order** — and *Lamport's happened-before / causal sets (Sorkin) IS the discrete
+  light-cone partial order*, so "relativistic" here is **anchored, not just metaphor**.
+  **Traveler-frames = reference frames** (§9g; each agent its own frame), Feynman worldlines
+  (Aaron's root anchor). And literally: **Clifford `Cl(1,3)` = the spacetime algebra** (Hestenes)
+  — so *"relativistic + translate into Clifford"* coheres: the relativistic causal structure has
+  a spacetime-algebra geometry.
+- **Cross-repo checks = braided operations (§9c) → Clifford.** Repo/agent worldlines crossing
+  **are braids**; joining repos = braiding on the free braided monoid (§9c); the geometric body
+  is `Cl3`/spacetime-algebra. So the clockless join, the relativistic order, and the braid are
+  **one structure** (worldlines + causal order + braid + Clifford).
+- **Cartel-detection resolves the §9g pairing-ring peel — the guard is ACTIVE, not assumed.**
+  A sybil pairing-ring = **correlated / synchronized heartbeats** = the tell; **the heartbeats
+  themselves detect the correlation** (cartel/collusion detection — anchored across the repo;
+  "tons of cartel-detection math"). Using the continuous correlation measure makes the network
+  **smooth and differentiable** (gradient-optimizable; ties the *differentiate-the-infinite*
+  root compression). So mutual-amplification-via-pairing is safe **because** the heartbeats
+  enforce decorrelation, not because we assume it.
+
+*Peels:* (a) **component aliveness is proven; the unified clockless-relativistic-braided-society
+aliveness is the open composition** (§B grand-synthesis). (b) **"relativistic"** is well-anchored
+at the *causal-order = light-cone partial order* level (Lamport / causal sets); full **Lorentz
+invariance** of the society is *metaphor* — don't claim the society is literally Lorentz-invariant,
+only that it is clock-free and causally ordered with a Clifford geometry. (c) **cartel-detection
+is an arms race** — a sophisticated cartel can *decorrelate* its heartbeats to evade; detection
+*improves*, never *solves*; "tons of math" raises the cost, doesn't close it. (d) the braid→
+Clifford translation is §9c (free braided object is the top; Clifford the earned geometric
+quotient).
+
 ## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
 
 *"Self-organization is driven by a mutual-empowerment fitness function — that's the purpose of
