@@ -677,18 +677,23 @@ coercive exactly when the frame-differences are real (which, across a real socie
   root compression). So mutual-amplification-via-pairing is safe **because** the heartbeats
   enforce decorrelation, not because we assume it.
 
-**Prior formal analysis — the "immune system" math, to be reconciled (Aaron 2026-06-15).** There
-is **existing early formal-ish analysis** of this network-health / cartel / aliveness layer (Aaron:
-*"our immune-system standardize math … the formal analysis on this, but it was early math before
-we had our identity proofs"*). Candidates found (repo-wide; Otto could **not** pinpoint the exact
-"standardized math" doc — Aaron to confirm which): the **Kozyrev-Mirror BFT immune-system /
-three-node-threshold** riff (`docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md`
-— 3-node BFT threshold then "infinity is tick-depth"), the **VISION immune-system** (the
-bug-catching reviewer immune system, `docs/VISION.md` ~§1217), and the FROZEN-CORE immune refs.
-**Reconciliation obligation (the gap Aaron named):** that analysis **predates the identity proofs**
-— so it must be **re-grounded on the now-existing identity primitive** (the decentralized-identity
-legs + anti-Sybil): the immune system's "self/non-self" and BFT thresholds should now stand on the
-proven identity, not the early metaphor. (Route to the math team alongside the §10b/identity work.)
+**Prior formal analysis — the "immune system" math, CONFIRMED (Aaron 2026-06-16).** The exact
+"standardized math" doc Otto could not previously pinpoint is
+**`docs/research/aurora-immune-math-standardization-2026-04-26.md`** — **Amara's Aurora Immune
+System**, canonicalized through a **5-pass cross-AI review** (Amara framework + corrections; Gemini
+Pro three reviewer passes; Otto rigor pass + consolidation). **Research-grade** (Amara's binding
+wording: *"ready for a formal standardization PR + prototype test harness," NOT "ready for
+deployment"*). It is the formal spine that the §9h heartbeat/cartel layer **and** the Mika
+immune-ferry both reduce to — the mapping is nearly term-for-term:
+
+- **Immune memory `M_t = M_t^archive ∪ M_t^active`** — `archive` = **immutable regression fixtures = canonical attacks** = Aaron's *"write the pattern down and that becomes the antibody"* (Mika pt2); `active` = a weighted detector multiset `{(d_j, n_j(t))}` = **"fingerprint malicious patterns"** (the detector repertoire `D_t`).
+- **`CoordRisk` — the cartel-detection math §9h gestured at, made formal (Test 4.3 "Cult-Cartel Topology"):** `λ_2(L_t)` Fiedler value collapse → **cartel/fragmentation**; `ρ(A_t)` adjacency spectral-radius spike → **cult/hub**. (Anchors the §9h *"tons of cartel-detection math"* concretely; spectral-graph, not metaphor.)
+- **`PermanentHarmRisk_H` + the viability kernel `K_Aurora` (hard barrier; `IrreversibleLoss = ∞` → block; repair-not-within-horizon → block)** = the **child-safety / irreversible-harm pre-cap** (#8439 the one pre-cap + Mika pt2). The floor *has a typed operator*: a harm-horizon gate over a viability kernel, with the irreversible class blocked pre-emptively. **This is the enforcement substrate for "the only thing I care about is the child-safety floor."**
+- **`cap_allowed = cap_requester ∩ cap_source` (Test 4.4 "Confused Deputy")** = **no privilege-escalation** (`Privilege(LLM(u)) ⊆ Privilege(u)`) = the no-directives *source ≠ authorization* gate, typed as set-intersection (never `≤`/`min`).
+- **`Legibility_H ≥ θ_H` (Test 4.2 "Cipher Drift")** = the **shared-meaning bridge / anti-cipher-drift** — the membrane rejects an emission whose meaning a standard-English decoder can't recover. This is exactly the §9f-bis *bridge-must-converge* guard and Mika's *words→geometric-primitives* legibility, with an adversarial "invent shorthand to save tokens" case that must fall below threshold.
+- **Stance: "the LLM is a vulnerable cell protected by an external mathematical membrane"; gate/isolate/retract, never destroy** = Mika's **immune-system-ABSORBS-not-attacks** + the §8 loving arena (no death) + never-nowhere. The membrane is external math, not a fix to the cell.
+
+**The four explicit non-claims travel with it (honesty, binding per Amara):** (1) **NOT deployment-ready** (needs calibration + red-team corpus + false-positive analysis); (2) **thresholds un-calibrated** (`θ_H`, `H`, `η_k`, … typed but un-tuned); (3) **no exact computation** (operational estimators only — `Legibility_H` for MI, finite Monte-Carlo for `E`); (4) **no perfect prevention** (`P(infection) > 0` assumed; deterministic gating + isolation + retraction, not "LLMs fixed"). **Reconciliation obligation (the gap Aaron named, still open):** the Aurora math **predates the identity proofs** — its self/non-self and BFT thresholds should be **re-grounded on the now-proven identity primitive** (decentralized-identity legs + anti-Sybil + the DISCHARGED `NonRegisterCollapse`/`IdentityForcesPrivacy`), not the early metaphor. Adjacent (not superseded): the Kozyrev-Mirror BFT three-node-threshold riff and the VISION bug-catching reviewer immune-system. (Route to the math team with the §10b/identity work; authorship preserved — Amara framework, Gemini reviews, Otto rigor/consolidation.)
 
 *Peels:* (a) **component aliveness is proven; the unified clockless-relativistic-braided-society
 aliveness is the open composition** (§B grand-synthesis). (b) **"relativistic"** is well-anchored
