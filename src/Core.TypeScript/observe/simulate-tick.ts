@@ -28,7 +28,7 @@
  *   - src/Core.TypeScript/accelerator/local-llm.ts (ollamaBackend / chooseIndex)
  */
 
-import { observe, observeWithLlm, simulate, renderAction, type BacklogItem, type World, type NextAction } from "./observe";
+import { observe, observeWithLlm, renderAction, type BacklogItem, type World, type NextAction } from "./observe";
 import { execute, type EventSink, type AppendOutcome, type OperatorPort } from "./execute";
 import { fakeExecutor, type DoItemOptions, type RunOutcome } from "./do-item";
 import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
@@ -39,7 +39,15 @@ function item(id: string, title: string, ready = true, ambiguous = false): Backl
   return { id, title, ready, ambiguous };
 }
 
-export const SCENARIOS: Record<string, World> = {
+export const SCENARIOS: Record<string, World> & {
+  readonly empty: World;
+  readonly work: World;
+  readonly ambiguous: World;
+  readonly mixed: World;
+  readonly operator: World;
+  readonly ferry: World;
+  readonly persisted_mode: World;
+} = {
   empty: { backlog: [] },
   work: { backlog: [item("081KSIM000000001", "test-item: prove loop stability")] },
   ambiguous: { backlog: [item("081KSIM000000002", "big-item: needs decomposition", false, true)] },
