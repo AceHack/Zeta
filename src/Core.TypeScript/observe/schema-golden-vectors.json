@@ -1,0 +1,386 @@
+{
+  "description": "schema-zset cross-language conformance (zero-downtime-schema-evolution). Every impl applies DELTAS in order over INITIAL_FIELDS and must value-match expectedReplayStates[i] after delta i AND expectedFinalState after consolidation. 10 oracles: TS (reference), F#, C#, Rust, Go, Python, Q#, Lean4, TLA+, Alloy.",
+  "oracles": [
+    "TypeScript",
+    "F#",
+    "C#",
+    "Rust",
+    "Go",
+    "Python",
+    "Q#",
+    "Lean4",
+    "TLA+",
+    "Alloy"
+  ],
+  "initialFields": [
+    {
+      "name": "contentHash",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "paths",
+      "type": "string[]",
+      "required": true
+    },
+    {
+      "name": "executable",
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    {
+      "name": "binary",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "created",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "modified",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "deltas": [
+    {
+      "retract": [],
+      "insert": [
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": false
+        }
+      ]
+    },
+    {
+      "retract": [
+        {
+          "name": "modified",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "insert": []
+    },
+    {
+      "retract": [
+        {
+          "name": "created",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "insert": [
+        {
+          "name": "created",
+          "type": "number",
+          "required": false
+        }
+      ]
+    },
+    {
+      "retract": [],
+      "insert": [
+        {
+          "name": "checksum",
+          "type": "string",
+          "required": false
+        }
+      ]
+    },
+    {
+      "retract": [
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": false
+        }
+      ],
+      "insert": [
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "expectedReplayStates": [
+    {
+      "activeFields": [
+        {
+          "name": "contentHash",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "paths",
+          "type": "string[]",
+          "required": true
+        },
+        {
+          "name": "executable",
+          "type": "boolean",
+          "required": true,
+          "default": true
+        },
+        {
+          "name": "binary",
+          "type": "boolean",
+          "required": true,
+          "default": false
+        },
+        {
+          "name": "created",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "modified",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": false
+        }
+      ],
+      "entryCount": 7
+    },
+    {
+      "activeFields": [
+        {
+          "name": "contentHash",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "paths",
+          "type": "string[]",
+          "required": true
+        },
+        {
+          "name": "executable",
+          "type": "boolean",
+          "required": true,
+          "default": true
+        },
+        {
+          "name": "binary",
+          "type": "boolean",
+          "required": true,
+          "default": false
+        },
+        {
+          "name": "created",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": false
+        }
+      ],
+      "entryCount": 6
+    },
+    {
+      "activeFields": [
+        {
+          "name": "contentHash",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "paths",
+          "type": "string[]",
+          "required": true
+        },
+        {
+          "name": "executable",
+          "type": "boolean",
+          "required": true,
+          "default": true
+        },
+        {
+          "name": "binary",
+          "type": "boolean",
+          "required": true,
+          "default": false
+        },
+        {
+          "name": "created",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": false
+        }
+      ],
+      "entryCount": 6
+    },
+    {
+      "activeFields": [
+        {
+          "name": "contentHash",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "paths",
+          "type": "string[]",
+          "required": true
+        },
+        {
+          "name": "executable",
+          "type": "boolean",
+          "required": true,
+          "default": true
+        },
+        {
+          "name": "binary",
+          "type": "boolean",
+          "required": true,
+          "default": false
+        },
+        {
+          "name": "created",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": false
+        },
+        {
+          "name": "checksum",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "entryCount": 7
+    },
+    {
+      "activeFields": [
+        {
+          "name": "contentHash",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "paths",
+          "type": "string[]",
+          "required": true
+        },
+        {
+          "name": "executable",
+          "type": "boolean",
+          "required": true,
+          "default": true
+        },
+        {
+          "name": "binary",
+          "type": "boolean",
+          "required": true,
+          "default": false
+        },
+        {
+          "name": "created",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "owner",
+          "type": "zetaid",
+          "required": true
+        },
+        {
+          "name": "checksum",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "entryCount": 7
+    }
+  ],
+  "expectedFinalState": {
+    "activeFields": [
+      {
+        "name": "contentHash",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "paths",
+        "type": "string[]",
+        "required": true
+      },
+      {
+        "name": "executable",
+        "type": "boolean",
+        "required": true,
+        "default": true
+      },
+      {
+        "name": "binary",
+        "type": "boolean",
+        "required": true,
+        "default": false
+      },
+      {
+        "name": "created",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "owner",
+        "type": "zetaid",
+        "required": true
+      },
+      {
+        "name": "checksum",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "fieldNames": [
+      "binary",
+      "checksum",
+      "contentHash",
+      "created",
+      "executable",
+      "owner",
+      "paths"
+    ],
+    "fieldCount": 7
+  },
+  "commutativePairs": [
+    {
+      "deltaA": 0,
+      "deltaB": 1,
+      "commutes": true,
+      "reason": "owner vs modified — disjoint"
+    },
+    {
+      "deltaA": 0,
+      "deltaB": 3,
+      "commutes": true,
+      "reason": "owner vs checksum — disjoint"
+    },
+    {
+      "deltaA": 1,
+      "deltaB": 3,
+      "commutes": true,
+      "reason": "modified vs checksum — disjoint"
+    }
+  ]
+}
