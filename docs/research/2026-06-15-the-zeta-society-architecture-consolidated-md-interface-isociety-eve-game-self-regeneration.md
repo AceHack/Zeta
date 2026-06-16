@@ -343,6 +343,38 @@ pieces real + code-anchored (`Braid.fs`, `Cl3.fs`, `GeneratorRegistry.fs`, `Adin
 (monoidal categories/PROPs), Joyal–Street (braided / string diagrams), May (operads), Feynman
 (worldlines), Pratt (geometry of concurrency), S. James Gates Jr. (adinkras / Clifford / E8).
 
+### 9d. The CTM 7-tuple's memory architecture IS our `db/` = DagFs + ContentStore (Aaron 2026-06-15)
+
+*"This is basically my db folder, our DagFs."* The CTM spec is the 7-tuple
+**`CTM = ⟨STM, LTM, Up-Tree, Down-Tree, Links, Input, Output⟩`**; its **memory** components map
+**component-for-component, code-anchored**, onto `db/`:
+
+- **LTM** (the audience — all processors; the **global Brainish dictionary** where every
+  processor stores every broadcast chunk) = **`db/` = the DagFs `store`** (the content-addressed
+  node store) backed by **`ContentStore`** (*verified: "a value is stored ONCE, keyed by the
+  hash of its content — **the key IS the content address**"*) — single-instance = the *shared*
+  dictionary, dedup by construction.
+- **Links** (CTM's Hebbian path/association: broadcast-together → link-together) =
+  **`DagFs.links`** (*verified: "a `links` map from **path → content address**"*; multi-parent
+  DAG — "same file in many folders"). The CTM's Links **are** DagFs.links.
+- **"Brainish word = pointer to a chunk"** = the **content address** (ContentStore key → value);
+  word `PT` → chunk is exactly content-addressing. (Already noted §1; here it's the dictionary.)
+- **STM** (the stage — one chunk, broadcast) = the **active broadcast slice**; **Up-Tree**
+  (competition onto the stage) = the prioritization/selection; **Down-Tree** (global broadcast
+  all-to-all) = the **notification router** (§9a peel). **Input/Output** = the observe input /
+  actuator-commit surfaces.
+
+So the **memory half of the CTM convergence is concrete and built**: LTM/Links/dictionary =
+DagFs/ContentStore (COW Merkle-DAG; immutable; multi-parent), and this is *also* the
+coincidence-routed memory model (path→address routing decoupled from confidence). *Peels:* (a)
+the **memory** components (LTM/Links/dictionary) map cleanly to *built* code (DagFs/ContentStore);
+the **active/scheduling** components (STM/Up-Tree/Down-Tree) map to observe.ts / the
+notification-router / prioritization — *more design than built* for the fused-society case. (b)
+"db IS the CTM" is true of the **memory architecture**; the full CTM (the loop) is §9's
+in-progress observe⊕soft. (c) §B grand-synthesis — pieces real (`DagFs.fs`/`ContentStore.fs`),
+the unified CTM=db=DagFs is the open prize, not closed. Anchors: content-addressed storage /
+Merkle DAG (Git, IPFS); Baars GWT (the 7-tuple's broadcast architecture); Hebb (Links).
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
