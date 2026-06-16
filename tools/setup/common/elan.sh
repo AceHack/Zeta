@@ -21,6 +21,29 @@ REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 # shellcheck source=tools/setup/common/curl-fetch.sh
 source "$REPO_ROOT/tools/setup/common/curl-fetch.sh"
 
+run_elan_init_with_retry() {
+  local installer="$1"
+  local max_attempts=4
+  local attempt=1
+  local sleep_s=5
+
+  while true; do
+    if sh "$installer" -y --default-toolchain none; then
+      return 0
+    fi
+
+    if [ "$attempt" -ge "$max_attempts" ]; then
+      echo "error: elan installer failed after ${max_attempts} attempts" >&2
+      return 1
+    fi
+
+    echo "  elan installer attempt ${attempt}/${max_attempts} failed; retrying in ${sleep_s}s" >&2
+    sleep "$sleep_s"
+    attempt=$((attempt + 1))
+    sleep_s=$((sleep_s * 2))
+  done
+}
+
 if ! command -v elan >/dev/null 2>&1; then
   echo "↓ installing elan (Lean 4 toolchain manager)..."
   # Pinned to v4.2.1 commit SHA + verified SHA256 of elan-init.sh.
@@ -50,7 +73,14 @@ if ! command -v elan >/dev/null 2>&1; then
   else
     echo "${ELAN_INIT_SHA256}  ${ELAN_INIT_TMP}" | shasum -a 256 -c -
   fi
-  sh "${ELAN_INIT_TMP}" -y --default-toolchain none
+  # elan-init.sh performs its own second-stage download from GitHub
+  # releases (for example
+  # /leanprover/elan/releases/latest/download/elan-*.tar.gz). That
+  # inner curl is controlled by upstream and has returned transient
+  # HTTP 500 in CI. Retry the installer invocation itself so both the
+  # pinned script download and the upstream second-stage tarball fetch
+  # get bounded resilience without weakening the gate.
+  run_elan_init_with_retry "${ELAN_INIT_TMP}"
   # Tmp file cleanup happens via the EXIT trap above.
 fi
 
