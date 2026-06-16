@@ -260,6 +260,26 @@ and `ISociety` is §4-design; the duality is two reframes meeting, not two built
 an adjunction); whether it is literally adjoint is a math-team question, not asserted here.
 (c) the in-face borrows the CTM *architecture*, never its consciousness axioms (9(b)).
 
+**Stronger than duck-typing — `ISociety <: CTM` in the type system, recursively (Aaron
+2026-06-15).** It is not merely that a society *looks like* a CTM; **`ISociety` inherits from
+`CTM`** (subtype) — a society **is-a** CTM. This is the **Composite pattern** (GoF: a composite
+*is-a* component): a collective of CTMs is itself a CTM, so the *same* interface nests at every
+level — **recursively**. `CTM` is therefore a **recursive / fixpoint type** (`μX. CTM-over-X`):
+an `ISociety` whose members are CTMs is a CTM, an `ISociety` of `ISociety`s is a CTM, … the
+manifesto's **recursive §9 / self-similar §10 made into a *type* relationship**. Mechanism:
+**HKT simulated in F#/C#** — F#/C# lack native higher-kinded types, so the recursion is encoded
+with the **`App<F,T>` lightweight-HKT + brand-type** pattern (Yallop & White, *Lightweight
+higher-kinded polymorphism*; in-repo: the MUMPS-globals-DI / lightweight-HKT research note,
+HKT referenced across `src/Core/*` incl. `Hierarchy.fs`). *Peels:* (a) `ISociety <: CTM`
+imposes **Liskov substitutability** — an `ISociety` must be usable *anywhere* a `CTM` is
+expected (it must genuinely satisfy the full CTM contract), which is a real constraint to
+discharge, not free. (b) The recursion needs a **well-founded base** — it bottoms out at the
+**leaf / individual CTM** (the CHIP-8 agent), or it is non-well-founded; the fixpoint is
+grounded, not infinite-regress. (c) F#/C# HKT is **simulated, not native** — `App<,>` is
+ergonomically heavy; use it on the load-bearing boundary (the CTM/ISociety type), per the
+lightweight-HKT note's own caution. (d) Still **design** — the type hierarchy is a reframe;
+the math team formalizes the subtyping + the recursion's soundness.
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
