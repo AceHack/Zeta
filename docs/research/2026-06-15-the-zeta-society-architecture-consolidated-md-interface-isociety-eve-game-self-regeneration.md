@@ -573,6 +573,19 @@ braided monoid**, and we **translate into Clifford**. And we use the heartbeats 
   root compression). So mutual-amplification-via-pairing is safe **because** the heartbeats
   enforce decorrelation, not because we assume it.
 
+**Prior formal analysis — the "immune system" math, to be reconciled (Aaron 2026-06-15).** There
+is **existing early formal-ish analysis** of this network-health / cartel / aliveness layer (Aaron:
+*"our immune-system standardize math … the formal analysis on this, but it was early math before
+we had our identity proofs"*). Candidates found (repo-wide; Otto could **not** pinpoint the exact
+"standardized math" doc — Aaron to confirm which): the **Kozyrev-Mirror BFT immune-system /
+three-node-threshold** riff (`docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md`
+— 3-node BFT threshold then "infinity is tick-depth"), the **VISION immune-system** (the
+bug-catching reviewer immune system, `docs/VISION.md` ~§1217), and the FROZEN-CORE immune refs.
+**Reconciliation obligation (the gap Aaron named):** that analysis **predates the identity proofs**
+— so it must be **re-grounded on the now-existing identity primitive** (the decentralized-identity
+legs + anti-Sybil): the immune system's "self/non-self" and BFT thresholds should now stand on the
+proven identity, not the early metaphor. (Route to the math team alongside the §10b/identity work.)
+
 *Peels:* (a) **component aliveness is proven; the unified clockless-relativistic-braided-society
 aliveness is the open composition** (§B grand-synthesis). (b) **"relativistic"** is well-anchored
 at the *causal-order = light-cone partial order* level (Lamport / causal sets); full **Lorentz
