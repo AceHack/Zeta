@@ -98,6 +98,47 @@ braided, clockless multi-repo join — consolidated society note §9h). Repo-own
 **identity** (persona); clone-instance follows **concurrency** (actor); becoming-its-own-repo
 follows **sovereignty** (forking).
 
+## The Host abstraction — own-threads runtimes we run inside, via a surface seam (Aaron 2026-06-15)
+
+The OSHost above is **one kind of Host**. Generalize: **a Host is anything with its own
+threads/runtime that we run *inside*, at whose boundary we need a surface/interface seam.**
+That single definition unifies "host" and "surface":
+
+- **Host** = the bounded thing-with-its-own-threads we run inside.
+- **Surface** = the **interface seam at the host's boundary** (the membrane / Markov boundary /
+  hexagonal **port** through which we plug in and §13-metered entropy crosses). So a *surface*
+  (the no-roles "where": cli/ide/cell) **is a host-boundary seam** — surface and host are the
+  two faces of one boundary (seam ⊣ runtime).
+
+**Named kinds (capability-interface `IHost`, DI-injected — the "four plug-shaped systems, one
+port grammar" audit, `docs/research/2026-06-13-the-plugin-convergence-audit-…`):**
+
+1. **OSHost** (Operating System) — `~/.zeta`; systemd/launchd/Windows-service; where
+   processes/services boot (above). *(canonicalized here)*
+2. **CompilerHost** (Compiler) — where code compiles: the IR→N-language oracle generation, the
+   **DI-injected MUMPS / ZS-ZC** compiler (capability-interface-principle; Roslyn `CompilerHost`
+   analogue). *(referenced/partial)*
+3. **ForgeHost** (Forge) — `src/Core.TypeScript/forge-host/`; decentralized-GitHub-for-society;
+   where repos are hosted/collaborated (github/gitlab adapters, registry pattern). *(built)*
+4. **ClusterHost / K8sHost** (Cluster) — Kubernetes/ArgoCD; where workloads orchestrate (ace
+   cluster-bootstrap; the k8s backlog). *(referenced/partial)*
+
+…**and the list is open** — *"even CLI and IDE are hosts"* (their own process/threads, we run
+inside via the CLI/IDE surface seam); *anywhere there's a thing with its own threads needing a
+boundary seam* is a host. **Cells fit into hosts** — a **cell** (the yin/yang cell, Zeta's own
+sovereign surface) is a thing that **runs inside** a host; different kinds of cells fit
+different hosts (a cell in an OSHost vs in a ClusterHost vs in a CLI/IDE host).
+
+This is **hexagonal ports at full generality** (Cockburn): one `IHost` port, many adapters,
+each injected; the surface is the port, the host is what's behind it. *Peels:* (a) "host" is
+now very general — keep the **defining property crisp** (own-threads + boundary-seam +
+we-run-inside), or it means "everything"; the *named* kinds are the concrete adapters, CLI/IDE/
+cell are surfaces-as-hosts, "anywhere with threads" is the generalization. (b) **build state:**
+ForgeHost built, OSHost canonicalized, CompilerHost/ClusterHost partial — the unified
+`IHost`-over-all-kinds is **design/§B** (the port grammar exists; not every adapter is built).
+(c) surface=seam / host=runtime is **one boundary, two faces** — don't reify them as separate
+things; it's the same Markov-boundary membrane seen from outside (surface) vs inside (host).
+
 ## Actor model (CS abstraction)
 
 - **Actor = the clone/writer/loop** — a git-native **virtual actor (grain)** =
