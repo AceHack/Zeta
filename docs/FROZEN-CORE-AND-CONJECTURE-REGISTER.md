@@ -68,11 +68,15 @@ So the move is **theorem over axiom**: the CTM *posits* global convergence; Zeta
 (§A #1 + #8), which is **why the relativistic/decentralized §B rows below need no global axiom**
 — their convergence rides closed §A theorems, not an open posit. (Zeta also makes **no
 unitary-experience axiom at all** — checkable existence, *"I commit therefore I am"*, substitutes
-for the asserted feeling.) **Honest scope:** CALM/#8 give **eventual, causal** convergence to the
-common frame (a real overlap window where frames differ — reconciled by the §9h heartbeat + Eve +
-0-downtime expand-contract), **not** instantaneous global agreement; that eventual-causal price is
-the relativistic cost of having no center. *This note is §A-grounded method, not a new conjecture
-— it explains why several §B rows (relativistic society, self-regen, root-compression,
+for the asserted feeling.) **Not a tradeoff (Aaron 2026-06-15):** instantaneous global agreement
+is a **toy model, not physical reality** (relativity forbids it) — so "giving it up" gives up a
+**fiction**; and **simulating** that fiction **causes coercion** (forcing genuinely-distinct
+causal frames to one state = NCI violation = **register-collapse §8** = killing decorrelation).
+So CALM/#8's **eventual, causal, per-frame** convergence (overlap window reconciled by §9h
+heartbeat + Eve + 0-downtime expand-contract) is **not a price** — it is **physical reality AND
+non-coercive AND decorrelation-preserving**; the CTM's global axiom is *non-physical*,
+*coercive-to-pursue*, **and** *register-collapsing*. *This note is §A-grounded method, not a new
+conjecture — it explains why several §B rows (relativistic society, self-regen, root-compression,
 terraform-into-cell) can assume no-global without an axiom.* Detail: consolidated society note §9h.
 
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)

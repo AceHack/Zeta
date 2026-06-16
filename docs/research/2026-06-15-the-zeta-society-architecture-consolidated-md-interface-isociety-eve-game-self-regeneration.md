@@ -584,14 +584,24 @@ a **theorem, not a posit**:
   agreement). We build on provable laws (measure), play with feelings (sim) — never axiomatize
   the feeling.
 
-*The honest tradeoff:* the CTM's global broadcast buys **instantaneous global unitary state** —
-at the price of **needing "global"** (a central frame/bus). CALM buys **decentralization +
-relativity + scale-free** — at the price of **eventual** (not instantaneous) **causal**
-convergence: a real **overlap window** where frames legitimately disagree (the relativistic
-gap; reconciled by §9h heartbeat + Eve, and by the 0-downtime expand-contract). So we didn't
-trade one global axiom for another — **we traded the global *axiom* for a coordination-free
-*theorem* (CALM) plus a checkable existence claim**, accepting eventual-causal convergence as
-the relativistic price of having no center.
+*Not a tradeoff — there was nothing real to give up (Aaron 2026-06-15).* **Instantaneous
+global agreement is a *toy model*, not physical reality** — relativity forbids it (no global
+"now", finite information speed, relative simultaneity; only-math-and-physics-tell-truth says
+*no*). So "giving it up" gives up **a fiction**, not a capability. Worse: **trying to *simulate*
+that fiction *causes coercion*** — to fake one global state across agents that genuinely have
+their own causal frames, you must **force** them to a shared state, overriding their frames.
+That forcing **is coercion (NCI violation)**, and it is exactly **register-collapse (§8)** —
+collapsing distinct registers into one **kills the decorrelation** the society's intelligence
+needs. So the scorecard inverts: **eventual, causal, per-frame convergence (CALM/#8) is not a
+*price* — it is physical reality AND the non-coercive AND the decorrelation-preserving option,
+all at once.** The CTM's global axiom is therefore *non-physical*, *coercive-to-pursue*, **and**
+*register-collapsing*; Zeta's relativistic convergence (proven, §A #1+#8) is the only one that's
+physical and non-coercive. (The **overlap window** — frames legitimately differing until they
+causally converge, reconciled by §9h heartbeat + Eve + 0-downtime expand-contract — is not a
+defect; it *is* what having genuine independent frames looks like.) *Peel:* within one trusting,
+low-latency cluster, consensus (Paxos/Raft) approximates "global" cheaply — the coercion bites
+in proportion to how **genuinely sovereign/decorrelated** the frames are; forcing agreement is
+coercive exactly when the frame-differences are real (which, across a real society, they are).
 
 - **The fair competition = our default game = the aliveness core (partly PROVEN).** Liveness/
   aliveness is specced and proven, not just conjectured — `docs/MATH-SPEC-TESTS.md`,
