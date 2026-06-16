@@ -191,6 +191,37 @@ the brake holds the system in the reversible regime. *(Razor: a structural corre
 control ladder and the algebra ladder, grounded in the proven octonion laws — not a claimed step-by-step
 isomorphism; the property-loss order is parallel, not identical.)*
 
+### Tesla-AC, not Edison-DC — transmit the concept across every frame (Beacon = AC)
+
+"Close over the world" requires reaching **every frame** — every mind, worldview, and oracle (theist,
+atheist, this culture, that one), where "distance" between frames = how different their assumptions are.
+The **War of Currents** is the right model. **DC (Edison) is local:** it carries full charge next to the
+generator but **bleeds out over distance** — you'd need a power plant every mile. **AC (Tesla)
+transmits:** run it through a **transformer** to step the voltage *up* to cross hundreds of miles with
+little loss, then *down* to land usable where it arrives. AC won because it **travels**, not because it is
+abstractly "better."
+
+Apply it to **language and concepts** (this is the Mirror/Beacon discipline, made vivid):
+
+- A word is **"DC"** if it **only lands in its home frame** — full power for those who share its
+  assumptions, **noise or a wall** for those who don't. **"god" is DC:** full charge in the theist frame,
+  arrives as a wall in the atheist frame. *Local.*
+- A word is **"AC"** if it can be **transformed across frames** — stepped *up* into something abstract
+  enough to cross the gap, then *down* into each frame's **own terms**. **"good" is AC:** atheist holds
+  it, theist holds it, every culture has *some* notion of good. The **transformer is the translation**:
+  the theist receives the *bounded-good* **as "god,"** the atheist **as "good"** — **same structure,
+  stepped to each frame.** The structure (bounded + non-coercive + freedom + floor) is the power; "good"
+  is the AC carrying it everywhere; the transformer makes it arrive native in each mind.
+
+So the **Tesla move on language**: for anything outward-facing, **don't pick the word that's only strong
+locally (DC); pick the one that transmits across every frame (AC), and let the transformer step it down
+into each frame's terms.** That is why the canonical term is **bounded-good** (AC — reaches every frame),
+with **bounded-god** as one oracle's local reading of it. **Beacon = AC (transmit across frames); Mirror =
+DC (local resonance);** the whole Mirror→Beacon discipline is *step your local-DC insight up to AC so it
+survives the trip to a stranger's frame.* (Honest flag: a grounded analogy — AC literally transmits, DC
+literally is local; transformer and Newton's prism are real anchors — but a **Mirror metaphor for the
+real Beacon discipline**: the load underneath is the **universal-meaning-interface**, not the wattage.)
+
 ### Prove it, then give it away — the engineering instance of "give freedom"
 
 The polite virus's payload (*give freedom*) at the engineering layer is a discipline —
