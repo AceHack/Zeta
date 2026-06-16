@@ -95,6 +95,7 @@
     <Compile Include="SplitMix64.fs" />
     <Compile Include="SocietyEmergence.fs" />
     <Compile Include="SocietyUnbounded.fs" />
+    <Compile Include="SocietyUsefulWork.fs" />
     <Compile Include="Sketch.fs" />
     <Compile Include="CountMin.fs" />
     <Compile Include="BloomFilter.fs" />

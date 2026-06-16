@@ -55,6 +55,7 @@
     <Compile Include="Chip8PredictionRoom.Tests.fs" />
     <Compile Include="SocietyEmergence.Tests.fs" />
     <Compile Include="SocietyUnbounded.Tests.fs" />
+    <Compile Include="SocietyUsefulWork.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="TriBoolean/CrossVerifyTests.fs" />
