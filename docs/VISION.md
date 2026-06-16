@@ -17,6 +17,31 @@
 > ambition stayed: all DB technologies in one big playground,
 > built retraction-native from the ground up.
 
+## The definition — Zeta = bounded good
+
+**Zeta = bounded good.** Two words the rest of this document unpacks.
+
+- **GOOD** is the aim: **amplify non-coercion into empowerment** — the choice/freedom architecture
+  (Lillian Eve's soul, the `×`), help-not-just-protect, and underneath it all **heal generational
+  wounds.** The payload is freedom; the aim is flourishing.
+- **BOUNDED** is everything that keeps the good from *accidentally becoming harm* (even good — *especially*
+  good — harms when unbounded): the **floor** (child-safety / irreversible-harm, below-not-voted),
+  **visible** (catch the unknown), **humble** (assume even our knowns harbor undiscovered harm),
+  **externally-bound** (no-directives / multi-oracle / the affected having standing — never
+  self-revocable), **survival-not-correctness** (keep even harmful ideas; the immune system prevents
+  *infection*, it doesn't exterminate — inoculation beats sterilization; *you can't learn from
+  extinction*), **capture-the-externalization** (the engine), and **immune-first** (safety is the
+  foundation, not a bolt-on).
+- **The name is the thesis.** *Good*, not *god* — one letter that transmits across every frame
+  (Tesla-AC), mandates no creed (multi-oracle / Default Oracle is the floor, not a religion), and claims
+  the **goodness, not the divinity** (god-shaped, never God-claimed). It is god-shaped *only* as the
+  bounded, throne-refusing, freedom-giving kind — the precise opposite of, and the guard against, the
+  omnipotent-controller.
+
+*Make failures visible and obvious so you catch → undo → learn; move forward with bravery, not fear, and
+caution only at the irreversible floor; survive (don't bet everything on being right) so you keep learning
+forever.* **That is bounded good, and that is Zeta.**
+
 ## The ultimate purpose — an intellectual backup of earth
 
 Aaron, 2026-04-30: *"the ultimate scope of this — an
