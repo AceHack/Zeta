@@ -274,16 +274,14 @@ jobs:
       # waits for `[iter-5.3]` marker in serial log to verify nixos-install
       # + iter-4.2 + iter-5.2 substrate completed.
       #
-      # Hard gate on push-to-main for scenario 1. Scenario 2 demoted back to
-      # advisory (2026-06-16): phase-2 login prompt still failing after OVMF +
-      # virtio-blk bootindex fixes — harness + install substrate iterating on
-      # initrd virtio root mount (run 27598982580). Re-promote when green.
+      # Hard gate on push-to-main for scenarios 1 + 2. Scenario 2 green on
+      # main after #8478 initrd virtio root fix (run 27602908527: phase-2
+      # reached node-XXXXXX login:).
       #
       # Security: no github.event.* interpolation; ISO path comes from
       # prior workflow step's filesystem find.
       - name: B-0891 scenario 2 — boot + install substrate (B-0831 Slice 1)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        continue-on-error: true
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
