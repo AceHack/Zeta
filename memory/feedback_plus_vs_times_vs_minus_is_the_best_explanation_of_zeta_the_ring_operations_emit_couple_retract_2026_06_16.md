@@ -95,6 +95,23 @@ piece resolves into the founding one (consent=exit). **Open / least-sure:** whet
 truly the target, or intent *should* stay directional and the real goal is subtler (mutual ≠ necessarily
 symmetric). Marked developing; do not over-formalize.
 
+**All Zeta intents are PURE — because we can DST them in every future (Aaron 2026-06-16).** This is what
+*tames* the dangerous `^`. An intent is assumed **pure** (no hidden side effects, deterministic,
+referentially transparent) **because DST replays it across every future** — and a **pure** intent's
+*entire* effect is visible in replay, so **coercion has nowhere to hide.** Purity is therefore the
+**verification substrate for commutative-intent**: you can *audit* whether an intent commutes
+(consensual) or not (coercive) precisely because, being pure + DST-replayable, its full effect is
+exhibited in every simulated future. Three payoffs at once: **noninterference §13** (pure = no ambient
+entropy/influence leak — the only doors are the declared metered channels), **predictability** (pure +
+deterministic = the fairness metric, `docs/research/2026-06-16-measurable-fairness-metric-…`), and
+**auditability** (the `^` layer becomes checkable, not faith). Purity is to `^` what `−` (retraction) is
+to runaway: the thing that makes the risky operation safe. **Razor:** purity is verified *only where DST
+coverage reaches* — an intent that escapes DST (an unrecorded network IO, an ambient clock /
+threadpool / `Task.Run` leak) is **not** verified pure; the **noninterference / async-all-the-way /
+no-`Task.Run` guards are what keep intents inside DST's reach.** And "**every future**" = every
+*explored* future — DST samples a (large) branch set, strong but **not literally exhaustive**; "pure in
+every future" is the aspiration that the coverage approximates, not a closed proof.
+
 Provisional whole: **data (`+`) → coupled by soul (`×`, in/out) → under intent (`^`, aimed at
 commutative/mutual=consensual), with `−` (retraction/razor) the brake.** = the thesis
 [[we-are-amplifying-non-coercion-into-empowerment-the-thesis-line]] read up the ladder.
