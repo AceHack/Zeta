@@ -242,6 +242,7 @@
     <Compile Include="SoftActionController.Tests.fs" />
     <Compile Include="SoftEvolution.Tests.fs" />
     <Compile Include="StateSpace.Tests.fs" />
+    <Compile Include="HierarchicalPlanning.Tests.fs" />
     <Compile Include="StateSpaceGuarded.Tests.fs" />
     <Compile Include="DeltaPattern.Tests.fs" />
     <Compile Include="MemoryLens.Tests.fs" />

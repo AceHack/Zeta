@@ -73,7 +73,12 @@ F# test, or it's Vera's lane — either way it's the active task.*
 
 ## Completeness checklist — the FULL open board (don't forget anything)
 
-1. **[ACTIVE, greenlit] Hierarchical-planning MVP build** → discharges §B #8467. (this trajectory)
+1. **[MVP BUILT ✅ 2026-06-16] Hierarchical-planning** → §B #8467 *algorithm-level* discharge landed:
+   `tests/Tests.FSharp/HierarchicalPlanning.Tests.fs` — a 2-level planner (coarse region BFS → fine
+   within-region BFS → concatenate) **reaches the goal exploring < ½ the states of flat** (assertion
+   `hier*2 < flat`; ~5× by estimate) AND **replays byte-identically**; both tests PASS, build 0-warn.
+   *Remaining for §A:* production wiring (`StateSpace.exploreKeyed` over a CHIP-8 nav ROM / `ActionGrid`)
+   + a non-trivial (non-grid) task + the homoiconic gist-unpack as the level mechanism (#2c).
 2. **Homoiconic-representation §B** (#8474): (a) features-at-scale vs JEPA; (b) homoiconicity-helps-
    planning *(joint with #1)*; (c) **formal round-trip cert `apply(reify x)=x`** over the IR/AST —
    Kestrel/Lawvere method → **route to Soraya** (`memory/kestrel/2026-06-16-kestrel-homoiconic-proof-method-…`).
