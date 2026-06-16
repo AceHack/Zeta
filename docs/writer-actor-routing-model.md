@@ -166,6 +166,35 @@ them.)
   is the open prize; and "decentralized on top of centralized" must keep the layer honest
   (coordination decentral, substrate central).
 
+### It's soft-schedulers all the way down — back to the CHIP-8 ISR (Aaron 2026-06-15)
+
+Every `IHost` above **is a scheduler** — OS schedules threads, Cluster schedules nodes,
+Society schedules members, the CTM schedules chunks (up-tree competition). *"This all maps back
+to our CHIP-8 ISR interrupt handler — it's schedulers all the way down, **soft-schedulers**."*
+The whole tower collapses to **one irreducible primitive**: the **soft scheduler** — the
+CHIP-8 **ISR** `SoftChip8Scheduler.signalIfStarved : SpeculationReport -> InterruptKind option`
+(gauge starved → interrupt → grow budget / lower goal / book ΔU, §9d). *Built and anchored:*
+`SoftChip8Scheduler.fs` ("CHIP-8 as the soft `IScheduler`'s **first client**"); the soft
+`IScheduler` is wall-clock-free, DST-replayable, **DoP-knobbed** (the ferry-throttle).
+
+- **Self-similar (§9a/§10, scale-free §1):** the same soft-scheduler shape at every scale —
+  the host hierarchy is *schedulers scheduling schedulers*, **well-founded at the CHIP-8 ISR
+  leaf** (the §9a recursion's base case).
+- **`only-the-irreducible`:** the soft-scheduler is the *irreducible*; the hosts are
+  **generated/adapted from it**, not separate inventions (the generator-IS-the-ECC).
+- **`async-all-the-way` made literal:** *beautiful on 1, scales to N* = the soft-scheduler at
+  **DoP=1** (the CHIP-8 ISR on one machine, deterministic/FDB-style) **= the same code** at
+  **DoP=N** (`ISociety` over the society). One knob, one scheduler, every scale.
+
+*Peels:* (a) the named hosts are **scheduler-*shaped***, not literal `SoftChip8Scheduler`
+instances — `ICluster` wraps the K8s scheduler, `ForgeHost` wraps git; they're **adapted to the
+soft `IScheduler`/`ISociety` port**, conforming to the shape, not re-implementing it. "All the
+way down" = *same shape*, with the CHIP-8 ISR as the reference/leaf, not "everything is one
+object." (b) "soft" is load-bearing: SoftValue/Bayesian, wall-clock-free, DST, DoP-knobbed
+(the BNN-mix — soft until snap); a *hard* scheduler is the snapped special case. (c) the unified
+"every host is the one soft-scheduler" is the §B self-similar claim — the leaf is built
+(CHIP-8↔soft `IScheduler`), the all-the-way-up adaptation is the open prize.
+
 ## Actor model (CS abstraction)
 
 - **Actor = the clone/writer/loop** — a git-native **virtual actor (grain)** =
