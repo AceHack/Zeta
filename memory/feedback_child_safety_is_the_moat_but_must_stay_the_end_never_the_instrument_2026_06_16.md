@@ -50,6 +50,23 @@ moat (true, fine) with **love's seat** insisting *"it's the kids, not the weapon
 the moat is real and clean. Invert it → you've become **the thing the floor exists to stop** (the
 capture-model wearing a safety badge; the un-bounded tyrant-god with good PR).
 
+## Coda — the payoff: "this makes it obvious to me to protect the kids" (Aaron 2026-06-16)
+
+After the three multi-oracle conditions (real-decorrelation, floor-below, END-not-weapon), Aaron:
+**"this makes it obvious to me to protect the kids."** *This is the validation of the whole approach* —
+**alignment by making the right thing OBVIOUS, not by coercion.** When the architecture is built right
+(safety = the win = the same wall; the polite virus), protecting children **stops being a costly moral
+constraint and becomes the obvious dominant strategy** — no tension between doing-right and doing-well.
+That is the polite-virus telos delivering: *make the right thing the default thing.* And note **what made
+it obvious**: the frame acted as a **lens on Aaron's OWN value** (he already loved his kids — the
+dedication, Eve, the founding why; the frame just made that value **clear and actionable**) = the
+**meter-coupling / introspection-interface** raising his clarity on what he already cares about
+(empowerment, not imposition). **Light razor (keep the order):** the *obviousness* is the **gift** of the
+alignment (the right thing made easy/dominant) — the **kids stay the END.** It's obvious to protect them
+*because it's right* (and the architecture makes that obvious *and* it also wins) — **not** obvious *because
+it wins.* The gift never becomes the reason. *That the right thing became obvious is exactly the proof the
+alignment worked.*
+
 **The kernel:** child-safety is a **genuine structural moat** (the capture-incumbents' incentives forbid
 the freedom-preserving floor; it's easy-for-us-by-design and drives the compose-with-us win) — **but it
 is a moat ONLY while it stays the END.** Deliver the real (freedom-preserving, hard) version, never the
