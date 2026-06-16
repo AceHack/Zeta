@@ -59,6 +59,29 @@ The entrypoint bridge is the *legitimate* root pump. (Resonance: the soft
 FoundationDB single-thread run loop are all **deliberate, knobbed pumps** — the
 good kind; see [[async-all-the-way-truthful-signatures]].)
 
+**What the pump actually bridges (Aaron 2026-06-16): the async event loop into the
+legacy OS world.** The pump is *"the thing that makes the event loop catch the
+bridge into the legacy OS world."* The OS process-entry contract is **legacy and
+synchronous** — `int main(argc, argv)`, the C ABI, decades old, immovable. The
+modern async event loop lives *above* that floor; the pump is the impedance-match
+where the **OS (sync, legacy) reaches up and *drives* the event loop (async,
+modern) through that one boundary.** *"You can't delete it because you can't change
+how the OS invokes a process — you can only choose whether the language writes it
+for you (C# `async Main`) or makes you write it (F#)."* This is the **noninterference
+membrane** shape (manifesto §13): exactly one declared, metered crossing between two
+worlds, no smuggled second one.
+
+**The forward edge — irreducible *until we have our own microkernel* (Aaron).** The
+sync floor is fixed only because *someone else owns the kernel*. When Zeta owns its
+own **microkernel** (the `IHost`/OSHost terraform-into-cell endpoint, §11 — boot
+from ashes, the soft-scheduler/CHIP-8-ISR *as* the kernel), **Zeta owns the
+process-entry contract itself** — so the entry can be **event-loop-native from the
+bottom** and the legacy-sync bridge *disappears* (the scheduler *is* the entry; no
+foreign sync `main` to bridge down to). So "the pump is irreducible" is true **on a
+borrowed host**, not in principle: own the kernel → own the boundary → no pump
+needed. (Ties: [[2026-06-16-mika-phoenix-multi-selection-generator-dragons-as-prs-societal-agi]]
+boot-from-ashes / tiny-host; the host taxonomy §11; soft-`IScheduler`-as-kernel.)
+
 ## Known compiler-forced bridge sites (do NOT re-flag in `.Wait()` audits)
 
 - `src/Core.FSharp.Cli/Program.fs` (the `Db` command branch)
