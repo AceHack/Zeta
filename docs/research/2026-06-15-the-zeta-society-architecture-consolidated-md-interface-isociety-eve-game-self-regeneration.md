@@ -497,6 +497,45 @@ open build: the AllJoyn-style **discovery/advertise** layer wired into the socie
 and the **mic-input + BP/EP-emotional** engine (§9f above) — the glyph substrate (CHIP-8/9,
 audio-over-geometry, QPG metric) is built.
 
+### 9g. The chunk = ⟨address, t, gist, weight, aux⟩ — gist ≈ traveler-frame / cross-reference heartbeat; learn her *fairness* for our fair-empowerment (Aaron 2026-06-15)
+
+The CTM **chunk** is `⟨address_p, t, gist_p, weight_p; aux⟩` — `gist` = succinct Brainish info
+("*a frame in a dream*"); `weight` = a **valenced #** (importance/value/confidence). Mappings:
+
+- **`gist` ≈ our traveler frame over ZSets** (*built:* `TravelerFrame.fs` / `FrameDelta.fs` /
+  `ITravelerFrame.cs` over `ZSet.fs`; §B-frame is its *proof* target). A gist = a frame/snapshot
+  (a "frame in a dream" = a traveler-frame state); "over ZSets" = the ±1 retraction-native diff
+  space the frame moves through.
+- **`gist` ≈ a cross-reference heartbeat (Aaron):** broadcasting a gist all-to-all (the CTM
+  Down-Tree) IS a **heartbeat** — agents check *each other's* heartbeats for **(i) health alerts**
+  (is the broadcaster alive? a missing/stale heartbeat fires a notification to the rotating
+  alert-owner, §9a; the dependable identity leg made *observable to others*) and **(ii) mutual
+  identity amplification via pairing** (A witnessing B's heartbeat attests B is alive+present, and
+  vice versa — cross-attestation strengthens both real identities; coupled-empowerment at the
+  identity layer; anti-Sybil-adjacent). So a gist is simultaneously a *frame* (snapshot) and a
+  *heartbeat* (liveness + mutual attestation).
+- **`weight` (valenced confidence) ≈ our `SoftValue` confidence/valence** — and note: confidence
+  is a *value contained in* the chunk, not its routing key (the coincidence-routing correction).
+
+**Learn her *fairness* for our fair-empowerment (Aaron).** Blum's up-tree competition is *"like
+a tennis match but fairer — takes the place of a central executive"*, with a **coin-flip neuron**
+making the winner **location-independent** (rank / Σ ranks). She is **not** optimizing
+*empowerment*, but she **is** optimizing **no-central-authority + fairness** — *similar* to our
+**fair empowerment** (ours = fairness **+** the empowerment objective; hers = fairness alone).
+**What to learn:** her randomized-fair, executive-free competition is a concrete fair-aggregation
+mechanism — and it **composes with our existing Arrow-sidestep**: we grade by **measurement, not
+election** (`docs/research/2026-06-09-the-first-society-bug-…-arrow-sidestepped-by-measurement-not-election.md`)
+— mutual-empowerment/ΔU is *measured*, not *voted*, which sidesteps Arrow's election-impossibility
+(refining the §10a peel: Arrow bites *voting*; we measure). Her coin-flip-fair competition is a
+complementary **randomized** mechanism (randomization is a known route around Arrow/Gibbard–
+Satterthwaite). *Peels:* (a) **mutual-amplification-via-pairing is gameable by a sybil pairing-ring**
+(two fakes amplifying each other) — so pairs must be **genuinely decorrelated / entropy-distinct**
+(the anti-Sybil + decorrelation guard); a ring of correlated identities is the failure mode. (b)
+gist-as-frame and gist-as-heartbeat are **two framings of one broadcast chunk**, both anchored,
+neither a proven isomorphism. (c) "fair = empowerment" is **similar, not identical** — we *add*
+the empowerment objective to her fairness; don't conflate. (d) traveler-frame/ZSet/SoftValue are
+**built**; the cross-reference-heartbeat health+attestation protocol is the design layer over them.
+
 ## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
 
 *"Self-organization is driven by a mutual-empowerment fitness function — that's the purpose of
