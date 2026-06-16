@@ -20,10 +20,18 @@ targets — generation + cross-target drift-correction are dual):
 
 - **The 7 oracle languages** — C#/F#/TS/Rust/… (+Q#) — the byte-lock oracles (in-progress;
   primitive-registry).
-- **VMs:** **CHIP-8 — BUILT** (`SoftChip8*`, `ChipAudio`, `Chip9*`); **Z-machine — candidate**
-  (Zork's minimal portable opcode-VM; the lowfi conversational-action-grammar fit, QPG §9f;
-  prior-art just added).
-- **ISAs:** **MIPS — Max wants** (the classic RISC ISA; broader real-hardware compute).
+- **VMs / emulators — ALREADY BACKLOGGED** (corrected — these aren't future "wants", they're
+  backlog items; look-better): **CHIP-8 — BUILT** (`SoftChip8*`/`ChipAudio`/`Chip9*`);
+  **Atari-2600 emulator — B-0924** (+ Generate+Join over the emulator scene + IScheduler DST
+  bit-perfect z-set consensus + hardware interrupts); **C. elegans/OpenWorm controller variant —
+  B-0925**; **retractable-emulators design — B-0052**; **absorb-emulator-ideas (clean-room) —
+  B-0053**; **topological-quantum-emulation — B-0152**; **Z-machine — candidate** (Zork's minimal
+  portable opcode-VM; lowfi action-grammar fit, QPG §9f). **"vemu" / Game-Boy-playable = the
+  clean-room-Nintendo case (B-0053):** Aaron's 2026-04-21 ask is *emulate everything EXCEPT the
+  ones that get us taken down (Nintendo) — clean-room the safe-precedent ones (IBM precedent)*.
+  So Game Boy is **ideas-not-code, clean-room only** — an **IP boundary**, not a free port.
+- **ISAs:** **MIPS — B-1028** ("MIPS emulator as a treaty room, *like our CHIP-8*, for Max";
+  Hennessy lineage; the B-1025 fan-out's second machine) — backlogged, not a future want.
 - **Shaders:** **GPU shaders — Aaron wants eventually** (GLSL / SPIR-V / WGSL; the parallel/
   SIMD target; ties the RGB/CMYK ray-tracing-of-CHIP-8-instructions framing).
 
@@ -47,9 +55,18 @@ targets — generation + cross-target drift-correction are dual):
   byte-lock (byte-identical golden vectors). Across **VMs/ISAs/shaders the execution models
   differ** — conformance is **behavioral-equivalence**, not byte-identity (same as the Q#
   caveat). Name the conformance kind per target.
-- **Shader/MIPS ports are real work, not free** — the IR must be expressive enough to lower to
-  GPU SIMD (no arbitrary control flow) and to a register ISA; "ports from the IR" is the design,
-  each lowering is an earned backend. (§B until each is built + conformance-checked.)
+- **Shaders are shader-friendly BY CONSTRUCTION — the IR has no control flow (Aaron 2026-06-15,
+  correcting Otto).** Otto's earlier peel ("the IR must be expressive enough to lower to GPU SIMD
+  — no arbitrary control flow") had it backwards: **Zeta's IR has *no* arbitrary control flow —
+  no `if`s. Control flow is *only* composable discriminated unions** (the DU-as-conversational-
+  workflow; pattern-match/fold over sum types, never branch). GPU SIMD/shaders *hate* arbitrary
+  branches — so a branch-free, DU-dispatch, data-oriented IR is **exactly the shader-friendly
+  form**; the control-flow obstacle is **banned at the IR level, not overcome at lowering time.**
+  (This is also why ActionGrid §A#9 is "navigation = pure function of position, never labels" —
+  the same no-branch discipline.) The *real* remaining shader work is **DU-dispatch → SIMD lanes
+  + data layout**, not control flow. MIPS (register ISA) is the more conventional lowering. Still
+  §B until each backend is built + conformance-checked — but the hardest-sounding obstacle
+  (control flow) was *designed away*, not left as a cost.
 
 Ties: [[primitive-registry-tracks-proof-homeostat-chains-oracle-languages-4-to-6-7-qsharp-gen-from-ir]]
 (the IR-gen + generator-trust-concentration); the Zork/Z-machine PRIOR-ART entry (conversational
