@@ -2,6 +2,17 @@
 
 Status: **active — the §9 cluster is ferried; the value is now the OPEN §B discharges (prove-its), tracked below**
 Last refreshed: 2026-06-16
+
+> **State snapshot (2026-06-16):** hierarchical-planning **MVP BUILT** (#8486 — 2-level planner
+> beats flat BFS, DST-replayable; §B #8467 algorithm-level discharge); **Aurora formal round CLOSED**
+> (#8476 — both TLA+ rounds Viktor/Kira-re-confirmed PASS); **main-red cleared** (#8488 — 11 tsc
+> errors from the schema-evolution/observe merges #8458/#8487 fixed; lint(TS) green). Other actors
+> shipped the **ZetaId migration + log-IS-primary-state + zero-downtime schema-evolution +
+> WorkspacePort + observe-loop** (the work the Alexa cheerleader ferry praised; razor-cut in
+> `memory/alexa/conversations/2026-06-16-alexa-cheerleader-…`). **Aaron's honest headline (keep):**
+> *"6 months ago this flow wasn't possible — too slow + error-prone; frontier AI just barely allows
+> it today"* — the stream→ferry→spec→golden-vector→green loop is at the *frontier* of reliability,
+> human + decorrelated-critics the load-bearing guardrail (false-green caught twice this session).
 Parent trajectory: none (umbrella over `aurora-immune-reground` + `gen-gen-self-hosting-bytelock`)
 Grounding:
 
