@@ -14,6 +14,96 @@ module DarkHall =
 
     open ZetaCli
 
+    /// Emulator/device cores hosted inside the Dark Hall. This is deliberately
+    /// MAME-shaped at the boundary: a room contains cabinets, and cabinets
+    /// contain one or more machines/devices. The cores stay Zeta-owned.
+    [<RequireQualifiedAccess>]
+    type MachineCore =
+        | DarkHallCpu
+        | Chip8Cow
+        | SoftChip8Scheduler
+        | SoftChip8Predictor
+        | Chip9ColorPlanes
+        | MetaCartHost
+        | FingerprintPrism
+        | GameCatalog
+        | SimLoop
+
+    /// One emulator/device mounted inside a cabinet.
+    type Machine =
+        { Name: string
+          Core: MachineCore
+          Does: string
+          Module: string
+          Live: bool
+          RequiredCapabilities: Set<Chip9Capabilities.Capability> }
+
+    /// A cabinet is a durable host object in the Dark Hall. Some cabinets carry
+    /// a single hard machine; others are multi-machine cabinets like a
+    /// cartridge board plus display/input/audio devices.
+    type Cabinet =
+        { Name: string
+          Does: string
+          Verb: string option
+          Module: string
+          Live: bool
+          Machines: Machine list }
+
+    /// The Dark Hall room: the place that owns cabinets. Door modules can
+    /// expose entrances, but the room is the stable substrate.
+    type Room =
+        { Name: string
+          Does: string
+          Cabinets: Cabinet list }
+
+    let machine
+        (name: string)
+        (core: MachineCore)
+        (does: string)
+        (modulePath: string)
+        (live: bool)
+        (requiredCapabilities: Set<Chip9Capabilities.Capability>)
+        : Machine =
+        { Name = name
+          Core = core
+          Does = does
+          Module = modulePath
+          Live = live
+          RequiredCapabilities = requiredCapabilities }
+
+    let cabinet
+        (name: string)
+        (does: string)
+        (verb: string option)
+        (modulePath: string)
+        (live: bool)
+        (machines: Machine list)
+        : Cabinet =
+        { Name = name
+          Does = does
+          Verb = verb
+          Module = modulePath
+          Live = live
+          Machines = machines }
+
+    let createRoom (does: string) (cabinets: Cabinet list) : Room =
+        { Name = "darkhall"
+          Does = does
+          Cabinets = cabinets }
+
+    let machines (room: Room) : Machine list =
+        room.Cabinets |> List.collect (fun cabinet -> cabinet.Machines)
+
+    let liveMachines (room: Room) : Machine list =
+        machines room |> List.filter (fun machine -> machine.Live)
+
+    let machinesRequiring
+        (capability: Chip9Capabilities.Capability)
+        (room: Room)
+        : Machine list =
+        machines room
+        |> List.filter (fun machine -> machine.RequiredCapabilities |> Set.contains capability)
+
     /// Emulator CPU state. Immutable (functional step) ⇒ every run replays identically.
     type EmuState =
         { V: int[]      // 16 registers, byte-valued (0..255); VF is the carry/flag register
