@@ -245,12 +245,24 @@ the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
   and merge-together must NEVER violate non-coercion.** That makes it a well-formed §B item:
   open rules, NCI as the discharge constraint. Mechanism: this is **identity-topology as a
   0-downtime schema change** — fission ≈ expand (CALM-monotone, overlap window), fusion ≈
-  contract (ZSet-retraction); "we have a lot of code and math already." *Terminology peel —
-  "fusion" carries two senses, keep them distinct:* **Eve-fusion** *preserves* each Markov
-  boundary (interaction without merging — §3); **identity-fusion** actually *merges* identities
-  (boundaries combine). The non-collapse axiom forbids only *involuntary* merge; a **voluntary,
-  NCI-respecting** identity-fusion is allowed, and fission likewise must be NCI-respecting (no
-  coerced split). Puzzle pieces converging; the rules are the open work.
+  contract (ZSet-retraction); "we have a lot of code and math already." Puzzle pieces
+  converging; the rules are the open work.
+- **Fusion = one external address; the internal arrangement is a free, hidden choice (Aaron
+  2026-06-15) — this resolves the "two senses of fusion."** *"Two identities can fuse into what
+  looks like one addressable unit on the outside; inside they can choose to fully merge their
+  identities OR keep their Markov boundaries metered and separate — it does not matter to the
+  outside, the address is the same."* So there is **one** fusion concept (present a single
+  external address / outer Markov blanket), with a **free internal choice**: *fully merge*
+  (one interior) or *metered-separate* (Eve-style, N interior boundaries with §13-metered
+  crossings). The outside is **agnostic** to the choice — pure **encapsulation** (the address
+  is the public interface; the internal boundary arrangement is private) and **nested Markov
+  blankets** (an outer blanket containing one-or-many inner blankets — Friston). This is why
+  bus-address ≠ identity: fusion shares an *address*, not necessarily the *identities*.
+  *Peels:* (a) one external address needs an internal **answer-protocol** (who responds for
+  the unit?) — that coordination is Eve, NCI-metered. (b) **Reversibility differs by choice:**
+  metered-separate fusion is trivially reversible (boundaries intact); *fully-merged*
+  fusion's fission is the harder, §B-open case. (c) non-collapse still holds — the merge is a
+  *voluntary, NCI-respecting* choice, never imposed.
 
 ## Anchors
 
