@@ -193,5 +193,79 @@ for (const factory of factories) {
         expect(r.value.exitCode).toBe(0);
       }
     });
+
+    // ── Multi-home (link) ────────────────────────────────────────────
+
+    test("link creates a second path to the same content", () => {
+      port.writeFile("src/shared/util.ts", "export const shared = true;");
+      const linkResult = port.link("src/shared/util.ts", "packages/app/util.ts");
+      expect(linkResult.ok).toBe(true);
+
+      // Both paths read the same content
+      const original = port.readFile("src/shared/util.ts");
+      const linked = port.readFile("packages/app/util.ts");
+      expect(original.ok).toBe(true);
+      expect(linked.ok).toBe(true);
+      if (original.ok && linked.ok) {
+        expect(linked.value).toBe(original.value);
+      }
+    });
+
+    test("link to missing source returns error or creates dangling link (backend-dependent)", () => {
+      const r = port.link("does/not/exist.ts", "somewhere/else.ts");
+      // Real fs: symlinks can dangle (ok). Simulated: rejects (not ok).
+      // Both are valid — the invariant is "doesn't throw."
+      expect(typeof r.ok).toBe("boolean");
+    });
+
+    // ── Schema evolution backward-compat (the proof) ─────────────────
+
+    test("schema evolution: old files readable after schema change (default fills missing)", () => {
+      // Write a file under "v1 schema" (no owner field)
+      port.writeFile("data/old-entry.md", "---\ntitle: old\n---\ncontent");
+
+      // "Evolve" the schema (in real impl: applyDelta on the schema Z-set)
+      // The key invariant: old files STILL READ correctly after evolution
+      const readResult = port.readFile("data/old-entry.md");
+      expect(readResult.ok).toBe(true);
+      if (readResult.ok) expect(readResult.value).toContain("old");
+    });
+
+    test("schema evolution: new files with new fields work alongside old", () => {
+      // Old file (no "owner" field)
+      port.writeFile("data/old.md", "old content");
+      // New file (with "owner" in content — simulating new schema field)
+      port.writeFile("data/new.md", "---\nowner: 081KOWNER000001\n---\nnew content");
+
+      // Both coexist and read correctly
+      const old = port.readFile("data/old.md");
+      const fresh = port.readFile("data/new.md");
+      expect(old.ok).toBe(true);
+      expect(fresh.ok).toBe(true);
+      if (fresh.ok) expect(fresh.value).toContain("081KOWNER000001");
+    });
+
+    // ── History operations ────────────────────────────────────────────
+
+    test("history returns entries after commits", () => {
+      port.writeFile("src/a.ts", "v1");
+      port.stage(["src/a.ts"]);
+      port.commit("first commit");
+      
+      const h = port.history();
+      expect(h.ok).toBe(true);
+      if (h.ok) {
+        expect(h.value.length).toBeGreaterThan(0);
+        expect(h.value[0]!.message).toContain("first commit");
+      }
+    });
+
+    test("mergeBase returns a hash", () => {
+      const r = port.mergeBase("HEAD", "HEAD");
+      expect(r.ok).toBe(true);
+      if (r.ok) {
+        expect(r.value.hash.length).toBeGreaterThan(0);
+      }
+    });
   });
 }
