@@ -65,7 +65,14 @@ a DDoS attempt."* This is *why* the decoupling is load-bearing, not just tidy:
 - **The ONLY legitimate throttle is resource / DDoS** — value-neutral *capacity backpressure* (the
   ferry-throttler's actual DoP/queue job: "the lane is saturated," not "I judge your message bad").
   And even that must be **fair** — per-identity rate limits riding the anti-Sybil forgery-cost floor,
-  so a DDoS can't be one entity faking many.
+  so a DDoS can't be one entity faking many. **Beacon — where Zeta extends the prior art (Aaron
+  2026-06-16):** the named prior art for the ferry-throttle is the maintainer's **Itron**
+  `Platform.DotNet Threading.Tasks.Throttling` (`MaxDegreeOfParallelism` / `MaxQueueSize`
+  backpressure; see `async-all-the-way-truthful-signatures`). Itron did capacity backpressure but
+  **NOT per-identity anti-Sybil fairness** (Aaron: *"mine from Itron didn't do that"*). Binding the
+  rate-share to **proven-distinct identities** (the `AntiSybil` forgery-cost floor: DistinctCount ≤
+  real sources) is the Zeta extension — the *same* ratio proof that stops quorum-forging (`SybilCannotForge`)
+  also stops lane-hogging-by-Sybil. *Honest peel: a design point, not yet load-tested at scale.*
 - **Morality acts at the ENDPOINTS, never on the wire:** consent-first §6 at the surface; the
   child-safety floor gates the *committed ACT* (the `PermanentHarmHorizon` viability-kernel gate on
   Execute), **not message transport** — a message may cross the bus while the harmful *action* it
