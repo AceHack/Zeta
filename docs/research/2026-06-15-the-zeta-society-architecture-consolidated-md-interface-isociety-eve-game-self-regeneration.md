@@ -54,6 +54,20 @@ both own + the other's empowerment (Salge & Polani), so the cooperative equilibr
 needs no coercion; coupled-empowerment spans **agent↔agent AND agent↔environment**.
 (`GSet.fs`/`ZSet.fs`/`Diplomacy.fs`/`Reconcile.fs`; `eve-protocol-transport-codecs`.)
 
+**Fusion ≠ collapse — the Markov-boundary guarantee (Aaron 2026-06-15).** Eve fusion is
+consensual *and* it **preserves and meters the Markov boundary of each participant
+individually**. This is the precise line between **fusion** (the feature) and **collapse**
+(the pathology): in collapse, boundaries are destroyed and identities merge into one (the §8
+register-collapse, identity loss); in Eve fusion, **each participant keeps its own Markov
+boundary** (Friston's Markov blanket — the statistical membrane separating an agent from its
+environment), and influence crosses it **only through declared, metered channels**
+(noninterference §13 / entropy quarantine). So agents fuse — negotiate, cooperate, raise each
+other's empowerment — **without dissolving**: you stay you, your boundary stays intact, every
+crossing is metered, per participant, individually. This is *why* fusion is safe on top of the
+identity primitive's **non-collapse** guarantee: you can only consensually fuse what cannot be
+involuntarily merged. (Ties: the room = a Markov-boundary/membrane in §4's arity ladder; the
+decentralized-identity primitive's non-collapse axiom; coupled-empowerment.)
+
 ## 4. The scheduler IS an `ISociety` (over `IScheduler`)
 
 **Our threads are all society members** (or hardware owned by members). Scheduling
@@ -222,6 +236,21 @@ the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
 - **Trust-via-proven-interfaces is only as good as the proofs** (the math team's
   coverage — the routed ΔU-aggregation + CVC5/E + CSLib work).
 - **Multi-oracle** — no single mandatory morality/architecture; held as oracles.
+- **Identity fusion & fission under pressure — §B-open, NCI-bounded (Aaron 2026-06-15).**
+  Beyond Eve's boundary-*preserving* fusion, identities must also be able to **merge-together
+  (fusion) and pull-apart (fission)** in response to **environmental pressure** and **network-
+  topology changes** (fission = the bifurcation / banana-split — one traveler becomes two).
+  **The specific rules are not found yet** ("we'll find them over time") — but the **invariant
+  is known: NCI (Non-Coercion Invariant) is the guiding principle — the forces of pull-apart
+  and merge-together must NEVER violate non-coercion.** That makes it a well-formed §B item:
+  open rules, NCI as the discharge constraint. Mechanism: this is **identity-topology as a
+  0-downtime schema change** — fission ≈ expand (CALM-monotone, overlap window), fusion ≈
+  contract (ZSet-retraction); "we have a lot of code and math already." *Terminology peel —
+  "fusion" carries two senses, keep them distinct:* **Eve-fusion** *preserves* each Markov
+  boundary (interaction without merging — §3); **identity-fusion** actually *merges* identities
+  (boundaries combine). The non-collapse axiom forbids only *involuntary* merge; a **voluntary,
+  NCI-respecting** identity-fusion is allowed, and fission likewise must be NCI-respecting (no
+  coerced split). Puzzle pieces converging; the rules are the open work.
 
 ## Anchors
 
