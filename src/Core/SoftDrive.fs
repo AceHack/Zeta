@@ -33,6 +33,15 @@ module SoftDrive =
     let private actions: bool[] list =
         SoftController.none :: [ for k in 0..15 -> SoftController.singleKey k ]
 
+    let private collectResults (results: Result<'a, 'e> list) : Result<'a list, 'e> =
+        let rec loop acc rest =
+            match rest with
+            | [] -> Ok(List.rev acc)
+            | Ok value :: tail -> loop (value :: acc) tail
+            | Error e :: _ -> Error e
+
+        loop [] results
+
     /// **The planner:** the best immediate control input from the hard state `hard`, chosen by soft rollout.
     /// For each candidate action, commit it once, roll out `depth` soft steps (capped to `width`), and take the
     /// expected `value` over the resulting ensemble; return the action whose rollout scores highest.
@@ -78,11 +87,55 @@ module SoftDrive =
                 s <- SoftEmu.softFrame cyclesPerFrame s |> SoftEmu.prune width
             SoftEmu.expect value s)
 
+    /// Frame-aware planner with heat exported through an injected boundary.
+    /// Use a host sink to pass heat outside the tiny CHIP-8 room, or a
+    /// `BoundedHeatSink` to measure how much heat the room can carry before
+    /// the heat channel itself backpressures.
+    let bestFrameActionWithHeatSink
+        (source: string)
+        (sink: IHeatSink)
+        (value: Chip8Cow.Frame -> float)
+        (cyclesPerFrame: int)
+        (depth: int)
+        (width: int)
+        (hard: Chip8Cow.Frame)
+        : Result<bool[], HeatSinkFeedback> =
+
+        actions
+        |> List.map (fun keys ->
+            let started = Chip8Cow.frameStep cyclesPerFrame { hard with Keys = keys }
+            let mutable s = SoftEmu.pure1 started
+            let mutable error: HeatSinkFeedback option = None
+            for _ in 1 .. max 0 depth do
+                if Option.isNone error then
+                    match SoftEmu.softFrame cyclesPerFrame s |> SoftEmu.pruneWithHeatSink source sink width with
+                    | Ok report -> s <- report.State
+                    | Error e -> error <- Some e
+
+            match error with
+            | Some e -> Error e
+            | None -> Ok(keys, SoftEmu.expect value s))
+        |> collectResults
+        |> Result.map (List.maxBy snd >> fst)
+
     /// **One live control step:** plan the best action, commit it to one full `frameStep` (steps + tick). Unlike
     /// `controlStep` this keeps timers advancing, so delay-wait ROMs don't freeze.
     let frameControlStep (value: Chip8Cow.Frame -> float) (cyclesPerFrame: int) (depth: int) (width: int) (hard: Chip8Cow.Frame) : Chip8Cow.Frame =
         let keys = bestFrameAction value cyclesPerFrame depth width hard
         Chip8Cow.frameStep cyclesPerFrame { hard with Keys = keys }
+
+    /// One live control step with pruning heat routed through an injected sink.
+    let frameControlStepWithHeatSink
+        (source: string)
+        (sink: IHeatSink)
+        (value: Chip8Cow.Frame -> float)
+        (cyclesPerFrame: int)
+        (depth: int)
+        (width: int)
+        (hard: Chip8Cow.Frame)
+        : Result<Chip8Cow.Frame, HeatSinkFeedback> =
+        bestFrameActionWithHeatSink source sink value cyclesPerFrame depth width hard
+        |> Result.map (fun keys -> Chip8Cow.frameStep cyclesPerFrame { hard with Keys = keys })
 
     /// **Drive the hard emulator for `frames` live control frames** (the live receding-horizon loop). Deterministic.
     let driveFrames (value: Chip8Cow.Frame -> float) (cyclesPerFrame: int) (depth: int) (width: int) (frames: int) (hard: Chip8Cow.Frame) : Chip8Cow.Frame =
@@ -90,3 +143,28 @@ module SoftDrive =
         for _ in 1 .. max 0 frames do
             cur <- frameControlStep value cyclesPerFrame depth width cur
         cur
+
+    /// Drive live control frames while exporting pruning heat. A sink failure
+    /// stops the run with feedback instead of letting the tiny CHIP-8 room
+    /// pretend erased futures were free.
+    let driveFramesWithHeatSink
+        (source: string)
+        (sink: IHeatSink)
+        (value: Chip8Cow.Frame -> float)
+        (cyclesPerFrame: int)
+        (depth: int)
+        (width: int)
+        (frames: int)
+        (hard: Chip8Cow.Frame)
+        : Result<Chip8Cow.Frame, HeatSinkFeedback> =
+        let mutable cur = hard
+        let mutable error: HeatSinkFeedback option = None
+        for _ in 1 .. max 0 frames do
+            if Option.isNone error then
+                match frameControlStepWithHeatSink source sink value cyclesPerFrame depth width cur with
+                | Ok next -> cur <- next
+                | Error e -> error <- Some e
+
+        match error with
+        | Some e -> Error e
+        | None -> Ok cur

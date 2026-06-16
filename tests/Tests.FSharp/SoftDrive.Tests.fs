@@ -37,6 +37,9 @@ let ``a control step advances exactly one hard step (PC moves once)`` () =
 // delay-wait ROM: 6305 F315 F207 3200 1206 — step-based drive would freeze; frame-aware keeps it live
 let private delayWait = [| 0x63uy; 0x05uy; 0xF3uy; 0x15uy; 0xF2uy; 0x07uy; 0x32uy; 0x00uy; 0x12uy; 0x06uy |]
 
+// 6000 E09E 6001 — first frame reaches an input branch; the soft rollout then forks.
+let private inputAfterOne = [| 0x60uy; 0x00uy; 0xE0uy; 0x9Euy; 0x60uy; 0x01uy |]
+
 [<Fact>]
 let ``frame-aware driveFrames stays LIVE on a delay-wait ROM (ticks the timer down)`` () =
     let setup = Chip8Cow.run 2 (Chip8Cow.create 1UL |> Chip8Cow.loadRom delayWait) // delay = 5, in wait loop
@@ -54,3 +57,20 @@ let ``frame-aware drive is deterministic (DST)`` () =
 let ``bestFrameAction returns a valid 16-key vector`` () =
     let keys = SoftDrive.bestFrameAction SoftDashboard.sumMemory 8 2 4 (hard ())
     Assert.Equal(16, keys.Length)
+
+[<Fact>]
+let ``frame-aware driveFramesWithHeatSink exports prune heat to host`` () =
+    let setup = Chip8Cow.create 1UL |> Chip8Cow.loadRom inputAfterOne
+    let recorder = RecordingHeatSink()
+
+    match SoftDrive.driveFramesWithHeatSink "chip8-room" (recorder :> IHeatSink) SoftDashboard.sumMemory 1 1 1 1 setup with
+    | Error e -> Assert.True(false, sprintf "unexpected heat sink feedback: %A" e)
+    | Ok _ ->
+        let signatures = recorder.Signatures |> Seq.toList
+        Assert.NotEmpty signatures
+        Assert.All(
+            signatures,
+            fun heat ->
+                Assert.Equal("chip8-room", heat.Source)
+                Assert.Equal("soft-emu.prune", heat.Kind)
+                Assert.Equal(1, heat.Units))

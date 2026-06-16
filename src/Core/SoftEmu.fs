@@ -1,5 +1,7 @@
 namespace Zeta.Core
 
+open System
+
 /// **`SoftEmu` — the WHOLE CHIP-8 emulator as one soft value (Aaron 2026-06-08, shadow*).**
 ///
 /// Aaron: *"we have a CAS-less, lockless, purely soft emulator — this is insane to have the whole emu soft."*
@@ -23,7 +25,9 @@ namespace Zeta.Core
 ///
 /// **Honest scope (peel):** branching doubles the ensemble at each input opcode → unbounded growth; `prune`
 /// (the throttle / `FerryThrottler` breadth knob) caps it by keeping the top-weighted members — a *lossy*
-/// truncation (the dropped tail is logged by `support` shrinking, not silently). No per-cell factoring here
+/// truncation. The typed pruning APIs report the dropped tail as heat: if the room cannot afford to keep
+/// all futures, that information loss must be visible instead of hiding inside a smaller support count.
+/// No per-cell factoring here
 /// (that is the further mean-field compression; this ensemble keeps correlations exact at the cost of width).
 /// Prior art anchors: symbolic execution (KLEE/angr — fork-on-branch), probabilistic-program semantics (Kozen),
 /// planning over emulator state (ALE/MuZero — take-every-branch-score-collapse). The *synthesis* (exact
@@ -35,7 +39,65 @@ module SoftEmu =
     /// weights > 0, weights sum to 1 after `normalize`). CAS-less (a plain list), lockless (immutable frames).
     type Soft = (Chip8Cow.Frame * float) list
 
+    /// How a finite soft room handles an ensemble wider than its support budget.
+    [<RequireQualifiedAccess>]
+    type SoftPrunePolicy =
+        /// Keep every current branch and report backpressure instead of erasing futures.
+        | RejectNew
+        /// Keep the highest-weight branches and report the dropped tail as heat.
+        | KeepHighestWeight
+
+    /// Feedback for cold/no-forget pruning.
+    [<RequireQualifiedAccess>]
+    type SoftPruneFeedback =
+        | SupportExceeded of limit: int * support: int
+
+    /// Heat emitted by lossy soft-ensemble pruning.
+    ///
+    /// `DroppedBranches` carries the pre-renormalization branch weights that no
+    /// longer participate in the ensemble. `DroppedMass` is the probability mass
+    /// that had to be redistributed over the retained branches.
+    type SoftEmuHeat =
+        { DroppedBranches: (Chip8Cow.Frame * float) list
+          DroppedSupport: int
+          DroppedMass: float
+          RenormalizationGain: float }
+
+    type SoftPruneReport =
+        { State: Soft
+          Heat: SoftEmuHeat }
+
     let private EPS = 1e-12
+
+    let emptyHeat =
+        { DroppedBranches = []
+          DroppedSupport = 0
+          DroppedMass = 0.0
+          RenormalizationGain = 1.0 }
+
+    let private heatOf (keptMass: float) (dropped: Soft) : SoftEmuHeat =
+        let droppedMass = dropped |> List.sumBy snd
+
+        { DroppedBranches = dropped
+          DroppedSupport = List.length dropped
+          DroppedMass = droppedMass
+          RenormalizationGain = if keptMass <= EPS then 0.0 else 1.0 / keptMass }
+
+    let private millionths (value: float) : int64 =
+        if Double.IsNaN value || Double.IsInfinity value then
+            0L
+        else
+            int64 (Math.Round(max 0.0 value * 1_000_000.0))
+
+    /// Compact host-facing heat signature for a lossy soft-ensemble prune.
+    let heatSignature (source: string) (heat: SoftEmuHeat) : HeatSignature =
+        let detail =
+            sprintf
+                "droppedSupport=%d;renormalizationGainPpm=%d"
+                heat.DroppedSupport
+                (millionths heat.RenormalizationGain)
+
+        HeatSignature.ofMass source "soft-emu.prune" heat.DroppedSupport heat.DroppedMass detail
 
     /// Renormalize weights to sum to 1 (drops non-positive). Empty input ⇒ empty (no fabricated certainty).
     let normalize (s: Soft) : Soft =
@@ -73,14 +135,80 @@ module SoftEmu =
             cur <- softStep cur
         cur
 
-    /// **The throttle / breadth knob:** keep at most `k` highest-weighted branches, renormalize. Lossy by
-    /// design — the dropped tail shows up as `support` no longer doubling (not silent). `k ≤ 0` ⇒ unchanged.
+    /// **The throttle / breadth knob with an explicit policy.**
+    ///
+    /// `RejectNew` is the cold/no-forget option: if the ensemble is too wide,
+    /// it returns typed backpressure and keeps the caller's state untouched.
+    /// `KeepHighestWeight` is lossy by design, but emits the dropped tail as
+    /// heat before renormalizing the retained branches.
+    let pruneWithPolicy (policy: SoftPrunePolicy) (k: int) (s: Soft) : Result<SoftPruneReport, SoftPruneFeedback> =
+        if k <= 0 || List.length s <= k then
+            Ok { State = s; Heat = emptyHeat }
+        else
+            match policy with
+            | SoftPrunePolicy.RejectNew -> Error(SoftPruneFeedback.SupportExceeded(k, List.length s))
+            | SoftPrunePolicy.KeepHighestWeight ->
+                let sorted = s |> List.sortByDescending snd
+                let kept = sorted |> List.truncate k
+                let dropped = sorted |> List.skip k
+                let keptMass = kept |> List.sumBy snd
+
+                Ok
+                    { State = normalize kept
+                      Heat = heatOf keptMass dropped }
+
+    /// Lossy pruning with a heat report.
+    let pruneWithHeat (k: int) (s: Soft) : SoftPruneReport =
+        match pruneWithPolicy SoftPrunePolicy.KeepHighestWeight k s with
+        | Ok report -> report
+        | Error _ -> { State = s; Heat = emptyHeat }
+
+    /// Emit pruning heat through an injected host/in-room IO port. No heat is
+    /// emitted for cold no-op prunes; sink backpressure stays on the feedback
+    /// channel so the CHIP-8 room never has to swallow its own lost futures.
+    let emitHeat (source: string) (sink: IHeatSink) (report: SoftPruneReport) : Result<SoftPruneReport, HeatSinkFeedback> =
+        if report.Heat.DroppedSupport = 0 then
+            Ok report
+        else
+            sink.Emit(heatSignature source report.Heat)
+            |> Result.map (fun () -> report)
+
+    /// Lossy prune and immediately export the heat signature through the
+    /// injected boundary.
+    let pruneWithHeatSink
+        (source: string)
+        (sink: IHeatSink)
+        (k: int)
+        (s: Soft)
+        : Result<SoftPruneReport, HeatSinkFeedback> =
+        pruneWithHeat k s |> emitHeat source sink
+
+    /// Cold/no-forget pruning: returns backpressure instead of erasing futures.
+    let pruneOrBackpressure (k: int) (s: Soft) : Result<SoftPruneReport, SoftPruneFeedback> =
+        pruneWithPolicy SoftPrunePolicy.RejectNew k s
+
+    /// Compatibility state projection. Prefer `pruneWithHeat` when a caller can
+    /// carry debugging heat forward.
     let prune (k: int) (s: Soft) : Soft =
-        if k <= 0 || List.length s <= k then s
-        else s |> List.sortByDescending snd |> List.truncate k |> normalize
+        (pruneWithHeat k s).State
 
     /// One throttled soft step: advance, then cap width to `k` (the `FerryThrottler` breadth budget per tick).
-    let throttledStep (k: int) (s: Soft) : Soft = softStep s |> prune k
+    let throttledStepWithHeat (k: int) (s: Soft) : SoftPruneReport =
+        softStep s |> pruneWithHeat k
+
+    /// One throttled step with heat exported through an injected boundary.
+    let throttledStepWithHeatSink
+        (source: string)
+        (sink: IHeatSink)
+        (k: int)
+        (s: Soft)
+        : Result<SoftPruneReport, HeatSinkFeedback> =
+        throttledStepWithHeat k s |> emitHeat source sink
+
+    /// One throttled soft step projected to state only. Prefer `throttledStepWithHeat`
+    /// when the dropped branch tail is diagnostically relevant.
+    let throttledStep (k: int) (s: Soft) : Soft =
+        (throttledStepWithHeat k s).State
 
     /// **Collapse — the ONE legitimate definite choice (never silent):** the single frame maximizing `value`
     /// (a fitness / empowerment fn). This is "take every branch, score, collapse to the best" (Aaron #7090).
