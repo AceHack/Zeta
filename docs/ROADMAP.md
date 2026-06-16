@@ -179,9 +179,12 @@ using DynamicValue's byte-locked per-format serializer:
    declarative dep files — the file-type plugin model applied to dependency manifests; the first real
    *second application* on the substrate (forces a clean cell-injection API). Composes B-0824
    (package-manager-of-package-managers) + the Ace seed `081KTFKQGZP`.
-9. *(later)* multi-key txn/isolation; general query/index; **geo pattern libraries** (geo-replication,
-   geodes, governance, provenance, residency, data-near-customer, within/cross-cell — Bounded-Mobility §4);
-   then **agents over cells** (local-LLM experiments, over time).
+9. **BFT Quorum Transition (Wallet Prerequisite)** — transition the BFT consensus from the fixed `Members`
+   configuration to a rolling, window-based estimate of distinct sources derived dynamically from the stream
+   correlation matrix. **This must precede and gate any Web3 wallet / transactional ledger integration.**
+10. *(later)* multi-key txn/isolation; general query/index; **geo pattern libraries** (geo-replication,
+    geodes, governance, provenance, residency, data-near-customer, within/cross-cell — Bounded-Mobility §4);
+    then **agents over cells** (local-LLM experiments, over time).
 
 ### Honest reliability (single-node): ~55-65%
 
