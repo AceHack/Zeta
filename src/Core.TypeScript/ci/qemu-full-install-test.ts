@@ -61,14 +61,14 @@ const CPU_COUNT = 2;
 const DISK_SIZE_GB = 20;
 const KVM_PATH = "/dev/kvm";
 
-const OVMF_CODE_CANDIDATES = [
-  "/usr/share/OVMF/OVMF_CODE.fd",
-  "/usr/share/qemu/OVMF_CODE.fd",
-] as const;
-
-const OVMF_VARS_TEMPLATE_CANDIDATES = [
-  "/usr/share/OVMF/OVMF_VARS.fd",
-  "/usr/share/qemu/OVMF_VARS.fd",
+/** Exported for unit tests. */
+export const OVMF_FIRMWARE_CANDIDATES = [
+  // Ubuntu 24.04+ / Debian 12+ (2MB images removed from ovmf package)
+  { code: "/usr/share/OVMF/OVMF_CODE_4M.fd", vars: "/usr/share/OVMF/OVMF_VARS_4M.fd" },
+  { code: "/usr/share/qemu/OVMF_CODE_4M.fd", vars: "/usr/share/qemu/OVMF_VARS_4M.fd" },
+  // Legacy 2MB images (older distros)
+  { code: "/usr/share/OVMF/OVMF_CODE.fd", vars: "/usr/share/OVMF/OVMF_VARS.fd" },
+  { code: "/usr/share/qemu/OVMF_CODE.fd", vars: "/usr/share/qemu/OVMF_VARS.fd" },
 ] as const;
 
 interface InstallResult {
@@ -129,12 +129,12 @@ function checkDependencies(): string | null {
 }
 
 function resolveOvmfFirmware(): { readonly code: string; readonly varsTemplate: string } | null {
-  const code = OVMF_CODE_CANDIDATES.find((candidate) => existsSync(candidate));
-  const varsTemplate = OVMF_VARS_TEMPLATE_CANDIDATES.find((candidate) => existsSync(candidate));
-  if (!code || !varsTemplate) {
-    return null;
+  for (const candidate of OVMF_FIRMWARE_CANDIDATES) {
+    if (existsSync(candidate.code) && existsSync(candidate.vars)) {
+      return { code: candidate.code, varsTemplate: candidate.vars };
+    }
   }
-  return { code, varsTemplate };
+  return null;
 }
 
 function prepareWritableOvmfVars(tmpDir: string, varsTemplate: string): string {

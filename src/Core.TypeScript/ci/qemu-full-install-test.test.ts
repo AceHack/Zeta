@@ -3,6 +3,7 @@ import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   detectUnexpectedControlPlaneLogin,
   extractGeneratedHostname,
+  OVMF_FIRMWARE_CANDIDATES,
 } from "./qemu-full-install-test.ts";
 
 describe("validateSelfRegCiCoherent", () => {
@@ -26,6 +27,15 @@ describe("qemu-full-install-test hostname extraction", () => {
 
   it("returns null when marker absent", () => {
     expect(extractGeneratedHostname("zeta-installer login:")).toBeNull();
+  });
+});
+
+describe("qemu-full-install-test OVMF firmware paths", () => {
+  it("prefers Ubuntu 24.04 4M OVMF pair before legacy 2M paths", () => {
+    expect(OVMF_FIRMWARE_CANDIDATES[0]).toEqual({
+      code: "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      vars: "/usr/share/OVMF/OVMF_VARS_4M.fd",
+    });
   });
 });
 
