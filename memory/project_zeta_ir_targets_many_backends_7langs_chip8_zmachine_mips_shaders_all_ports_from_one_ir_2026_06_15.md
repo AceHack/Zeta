@@ -68,6 +68,34 @@ targets — generation + cross-target drift-correction are dual):
   §B until each backend is built + conformance-checked — but the hardest-sounding obstacle
   (control flow) was *designed away*, not left as a cost.
 
+## Why no control flow — it's the hidden centralized control again (Aaron 2026-06-15)
+
+The deep reason the IR bans control flow: **control flow IS hidden centralized control — the
+same centralization the relativistic design rejects, now at the instruction level.** An
+`if`/branch is a **central decision point** — one locus that sequences the path; it implies a
+**"now"** (a sequencer/clock). That is *exactly* the §9h critique of the CTM's global-broadcast
+("centralization disguised; needs a global now"), one level down. **We are clockless — so the IR
+*forces* us into clockless/decentralized compute by banning control flow**, allowing only:
+
+- **composable discriminated unions** — control-as-*data* (pattern-match/fold over sum types),
+  branch-free, legible, exhaustively-checkable;
+- **Rx / reactive dataflow** — coordination-free, no central sequencer (events flow; CALM-friendly);
+- **interfaces, not classes** (`interfaces-free-classes-earned`) — no captured state/weight.
+
+So the IR is a **forcing function for good code**: *"wherever we can make it where we have to
+write good code (only interfaces and Rx), our IR only allows this too."* You **can't** write the
+centralized/imperative pattern (no `if`s, no unearned classes, no ambient control) — the
+**pit-of-success** / make-illegal-architecture-unrepresentable (Wlaschin's "make illegal states
+unrepresentable", lifted from values to *control*). And it's **one property serving two ends:**
+branch-free ⇒ **shader-friendly** AND **clockless/relativistic** — the same no-central-controller
+discipline that makes the society decentralized (§9h) makes the *compute* decentralized. *Peel:*
+not "no decisions" — decisions become **data-driven DU-dispatch / reactive flow**, not a central
+imperative sequencer; control is **decentralized into the data/types + the dataflow**, not
+abolished. (Some algorithms lean on branches; the IR pushes them into DU-dispatch/Rx — branch-free
+at the IR level, decisions local + data-driven, no ambient "now".) This is the CTM-divergence
+(centralized vs decentralized) made into a *language constraint*: the IR can't express the
+centralized form.
+
 Ties: [[primitive-registry-tracks-proof-homeostat-chains-oracle-languages-4-to-6-7-qsharp-gen-from-ir]]
 (the IR-gen + generator-trust-concentration); the Zork/Z-machine PRIOR-ART entry (conversational
 action grammar / minimal VM); `only-the-irreducible-is-primitive-generate-the-rest` (generator-
