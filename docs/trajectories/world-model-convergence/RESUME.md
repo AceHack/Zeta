@@ -22,6 +22,13 @@ Grounding:
 
 ## Why this exists
 
+> **TELOS (Aaron 2026-06-16):** *"a universal first-person introspection interface any AI or
+> hierarchy-learning system can use to improve empowerment for all involved."* Empowerment =
+> **social multiplication** of model-weight IQ, guaranteed by the `ISociety` interface (additive
+> weight-IQ × society-multiplier; the society-is-the-AGI mechanism). Over a **legal jurisdictional-
+> aware liability floor** (humans authorize gated classes "for now" — law binds not belief). Full:
+> `memory/project_universal_first_person_introspection_interface_for_coupled_empowerment_telos_2026_06_16.md`.
+
 Four independently-derived world-model towers converge on the same shape (many local
 frames + shared bus + executive-free consensus): **Blum CTM**, **Hawkins Thousand Brains**,
 **LeCun JEPA**, and **Zeta** (distributed-systems lineage). The convergence is *corroboration*
