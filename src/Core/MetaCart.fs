@@ -146,6 +146,37 @@ module MetaCart =
                           FinalFrame = finalFrame
                           Rows = observableRows request.Slot finalFrame }
 
+    /// Capability-aware local host: carried children still resolve by content
+    /// fingerprint, but each child runs through its declared CHIP-9 capability
+    /// manifest before playback. Missing capability is a host denial, not a VM
+    /// exception and not silent downgrading.
+    [<Sealed>]
+    type CapabilityCartHost(carried: Cart.Cart list, capabilitiesBySha: Map<string, Chip9Capabilities.Manifest>) =
+        let bySha =
+            carried
+            |> List.map (fun cart ->
+                let slot = slotOfCart cart
+                slot.Fingerprint.Sha256, cart)
+            |> Map.ofList
+
+        interface ICartHost with
+            member _.Play request =
+                match Map.tryFind request.Slot.Fingerprint.Sha256 bySha with
+                | None -> Error(Feedback.MissingCart request.Slot)
+                | Some cart ->
+                    let manifest =
+                        capabilitiesBySha
+                        |> Map.tryFind request.Slot.Fingerprint.Sha256
+                        |> Option.defaultValue Chip9Capabilities.chip8Default
+
+                    match Chip9Capabilities.playback manifest cart with
+                    | Error reason -> Error(Feedback.HostDenied(request.Slot, reason))
+                    | Ok finalFrame ->
+                        Ok
+                            { Slot = request.Slot
+                              FinalFrame = finalFrame
+                              Rows = observableRows request.Slot finalFrame }
+
     let private feedbackHeat (source: string) (feedback: Feedback) : HeatSignature option =
         match feedback with
         | Feedback.MissingCart slot ->
@@ -193,6 +224,26 @@ module MetaCart =
             | Ok result -> Ok result
             | Error failure -> failWithHeat source sink slot failure
 
+    /// Play the selected child only if the parent cart has the host-child-launch
+    /// capability. The child host may still deny its own capabilities separately.
+    let playSelectedWithCapabilities
+        (source: string)
+        (sink: IHeatSink)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (slots: CartSlot list)
+        (host: ICartHost)
+        (parent: Chip8Cow.Frame)
+        : Result<PlayResult, Feedback> =
+        match readSlot slots parent with
+        | None -> Error(Feedback.NoSelection source)
+        | Some slot when not (Chip9Capabilities.grants Chip9Capabilities.Capability.HostAssistedChildLaunch parentCapabilities) ->
+            failWithHeat
+                source
+                sink
+                slot
+                (Feedback.HostDenied(slot, Chip9Capabilities.denied Chip9Capabilities.Capability.HostAssistedChildLaunch))
+        | Some _ -> playSelected source sink slots host parent
+
     /// Convenience for the carried-cart mode: the parent bundle includes the
     /// child carts, so the local host can resolve the selected slot directly.
     let playSelectedCarried
@@ -204,6 +255,27 @@ module MetaCart =
         let slots = slotsOfCarts children
         let host = LocalCartHost children :> ICartHost
         playSelected source sink slots host parent
+
+    /// Capability-aware carried-cart mode. Parent launch permission and child
+    /// execution requirements are both explicit manifests.
+    let playSelectedCarriedWithCapabilities
+        (source: string)
+        (sink: IHeatSink)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (childCapabilitiesBySha: Map<string, Chip9Capabilities.Manifest>)
+        (children: Cart.Cart list)
+        (parent: Chip8Cow.Frame)
+        : Result<PlayResult, Feedback> =
+        let slots = slotsOfCarts children
+        let host = CapabilityCartHost(children, childCapabilitiesBySha) :> ICartHost
+        playSelectedWithCapabilities source sink parentCapabilities slots host parent
+
+    let capabilityMap (items: (Cart.Cart * Chip9Capabilities.Manifest) list) : Map<string, Chip9Capabilities.Manifest> =
+        items
+        |> List.map (fun (cart, manifest) ->
+            let slot = slotOfCart cart
+            slot.Fingerprint.Sha256, manifest)
+        |> Map.ofList
 
     /// Commit a reflected choice into the parent VM's existing choice cell.
     /// This keeps the meta-cart ABI identical to `Chip8Arcade`: host-side

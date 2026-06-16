@@ -16,6 +16,7 @@ module CartFixtures =
 
     type Fixture =
         { Dialect: Dialect
+          Capabilities: Chip9Capabilities.Manifest
           Cart: Cart.Cart }
 
     let private b (value: int) : byte = byte (value &&& 0xFF)
@@ -52,8 +53,16 @@ module CartFixtures =
     let selectPlane (mask: int) : byte[] =
         op (0xF0 ||| (mask &&& 0x0F)) 0x01
 
-    let private cartWith (dialect: Dialect) (title: string) (rom: byte[]) (cyclesPerTick: int) (ticks: int) : Fixture =
+    let private cartWith
+        (dialect: Dialect)
+        (capabilities: Chip9Capabilities.Manifest)
+        (title: string)
+        (rom: byte[])
+        (cyclesPerTick: int)
+        (ticks: int)
+        : Fixture =
         { Dialect = dialect
+          Capabilities = capabilities
           Cart =
             { Meta =
                 { Title = title
@@ -90,11 +99,19 @@ module CartFixtures =
               jp 0x206
               [| 0x80uy |] ]
 
-    let loop: Fixture = cartWith Dialect.Chip8 "fixture-loop" loopRom 1 1
-    let inputFork: Fixture = cartWith Dialect.Chip8 "fixture-input-fork" inputForkRom 1 1
-    let keyWait: Fixture = cartWith Dialect.Chip8 "fixture-key-wait" keyWaitRom 1 1
-    let chip9GreenDot: Fixture = cartWith Dialect.Chip9 "fixture-chip9-green-dot" (colorDotRom 2) 3 1
-    let chip9WhiteDot: Fixture = cartWith Dialect.Chip9 "fixture-chip9-white-dot" (colorDotRom 7) 3 1
+    let loop: Fixture = cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-loop" loopRom 1 1
+
+    let inputFork: Fixture =
+        cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-input-fork" inputForkRom 1 1
+
+    let keyWait: Fixture =
+        cartWith Dialect.Chip8 Chip9Capabilities.chip8Default "fixture-key-wait" keyWaitRom 1 1
+
+    let chip9GreenDot: Fixture =
+        cartWith Dialect.Chip9 Chip9Capabilities.chip9ColorUnthrottled "fixture-chip9-green-dot" (colorDotRom 2) 3 1
+
+    let chip9WhiteDot: Fixture =
+        cartWith Dialect.Chip9 Chip9Capabilities.chip9ColorUnthrottled "fixture-chip9-white-dot" (colorDotRom 7) 3 1
 
     let cart (fixture: Fixture) : Cart.Cart = fixture.Cart
 

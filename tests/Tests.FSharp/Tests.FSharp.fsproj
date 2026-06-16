@@ -212,6 +212,7 @@
     <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
+    <Compile Include="Chip9Capabilities.Tests.fs" />
     <Compile Include="Chip8Quote.Tests.fs" />
     <Compile Include="CartFixtures.Tests.fs" />
     <Compile Include="Cart.Tests.fs" />
