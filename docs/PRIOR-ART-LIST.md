@@ -600,3 +600,29 @@ these are the lineage and the standard interfaces to anchor against / interop wi
 learned approximation); **control-theory survival-veto / subsumption** (`ControlMerge`, stay-alive has final say);
 **DST-deterministic** (seed-replayable, the omniscient-observer caveat #7125); **lens/sense abstraction**
 (`MemoryLens`/`MemorySense`) + **delta-pattern** state (content-address the change, #7121) to keep the space finite.
+
+## Conversational action grammar — Zork · ELIZA · the Z-machine; discriminated-unions-as-workflows (Aaron 2026-06-15)
+
+Anchors for the **universal action grammar (the 4×4 / 16-cell grid — `grammar-16.ts`; `ActionGrid.fs`,
+§A #9 navigation-label-independent)** and for **conversation-as-workflow**. *"We should look at the source"*
+— added here so they're on the reading list to study (the anchor-to-human-prior-art discipline). All three are
+**lowfi / minimal / CHIP-8-runnable-adjacent** (QPG-over-DPI, §9f).
+
+- **Zork** (Lebling, Blank, Anderson — MIT Dynamic Modeling Group → Infocom, 1977–79; MDL → ZIL). A parser
+  (verb-object grammar) + a **world model** + **the Z-machine** — a *minimal portable VM* the game runs on.
+  **The Z-machine is the standout anchor:** a tiny portable opcode-VM for an interactive-action-grammar = exactly
+  our **CHIP-8-runnable lowfi** target. Zork's parser = a constrained action grammar ≈ our 4×4.
+- **ELIZA** (Joseph Weizenbaum, 1966; the DOCTOR script) — the OG chatbot: **pattern-match → transform** rules.
+  Anchor for the *pattern→response* minimal grammar. *Peel:* ELIZA is **shallow pattern-match, no world model** —
+  Weizenbaum himself warned against over-reading it (the "ELIZA effect"); anchor it for the *grammar form*, NOT for
+  intelligence. (Zork has the world-model ELIZA lacks; ours adds the **proven** label-independence + the §9 loop.)
+- **Discriminated unions as conversational workflows for intelligence (Aaron 2026-06-15).** A conversation/action
+  grammar is a **discriminated union** (sum type — the cases = the verbs/commands/states), and **intelligence is the
+  *workflow* navigating the DU-cases** (each turn snaps to a case; the workflow is the DU state-machine). Zork's
+  parser → a DU-of-commands; ELIZA's patterns → a DU-of-transforms; the **Z-machine opcodes** → a DU-of-ops; our
+  **`grammar-16` 4×4 = the DU of actions**, the conversation = the workflow over them. Prior art for the pattern:
+  F#/TS DUs + "make illegal states unrepresentable" (Wlaschin, domain modeling), Erlang/Akka FSMs, parser
+  combinators. *Peel:* a DU-workflow models the *grammar/state-machine* (the legible skeleton); the *intelligence*
+  is the policy choosing among cases (the soft-scheduler / world-model loop §9), not the DU itself — the DU makes
+  the workflow **legible and exhaustively-checkable**, it doesn't supply the smarts. Ties: the DU = the yin/yang
+  type-discriminator (`DynamicValue`); the conversation-workflow = `observe.ts` over the action grammar.
