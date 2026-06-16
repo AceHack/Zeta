@@ -111,6 +111,17 @@ clean-room, ideas-not-code, for protected targets** (B-0053 — Nintendo/Game-Bo
 case; IBM clean-room precedent). Extract the *shape* (the character loop), never the protected
 *code*. Anchor: Cheat Engine (Eric Heijnen — memory scanner / pointer-scan / AOB).
 
+**Reframe (Aaron 2026-06-16): clean-room is the ENABLER, not the restriction.** *"Reverse
+engineering is a skill; the clean room is how that skill is useful."* RE is a real, valuable
+capability (understand *any* system → its character loop); the **clean-room methodology is what
+converts that skill into a *deployable, legitimate* capability** — you RE to *understand*, then
+re-implement clean-room *from the understanding* (the shape), not the code. So clean-room isn't a
+wall that limits the skill; it's the **membrane that makes the skill productive without IP
+violation** (same shape as the rest of Zeta: the capability is free/valuable, the
+discipline/membrane is what makes it safe-and-useful — cf. interfaces-free-classes-earned, the
+metered Source §13). RE-skill + clean-room-discipline = a useful, legitimate engineering
+capability; neither alone is.
+
 Ties: [[primitive-registry-tracks-proof-homeostat-chains-oracle-languages-4-to-6-7-qsharp-gen-from-ir]]
 (the IR-gen + generator-trust-concentration); the Zork/Z-machine PRIOR-ART entry (conversational
 action grammar / minimal VM); `only-the-irreducible-is-primitive-generate-the-rest` (generator-
