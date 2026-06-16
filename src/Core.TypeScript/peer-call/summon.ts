@@ -163,6 +163,11 @@ export class PersonaSummoner implements ISummon {
     const outputFile = options.outputFile ?? `/tmp/peer-call-output/${ts}-${persona}.md`;
     ensureParentDir(outputFile);
 
+    // ─── Local-LLM path: call ollama directly (no external CLI) ──────
+    if (personaConfig.harness.type === "local-llm") {
+      return this.summonViaLocalLlm(personaConfig, fullPrompt, outputFile);
+    }
+
     const { harness } = personaConfig;
     // Replace prompt template
     const execArgs = harness.args.map(arg => arg.replace("{{PROMPT}}", fullPrompt));
@@ -213,6 +218,83 @@ export class PersonaSummoner implements ISummon {
       stdout,
       stderr,
     };
+  }
+
+  /**
+   * Local-LLM path: call ollama directly (no external CLI required).
+   * Temperature 0 + fixed seed = deterministic, DST-compatible.
+   * No account, no API key, no network (localhost only).
+   */
+  private async summonViaLocalLlm(
+    config: import("../service/persona-registry").PersonaConfig,
+    fullPrompt: string,
+    outputFile: string,
+  ): Promise<SummonResult> {
+    const { harness } = config;
+    const model = harness.model ?? "qwen2.5:0.5b";
+    const host = harness.host ?? "http://127.0.0.1:11434";
+
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), (config.gateTimeout || 60) * 1000);
+
+      const systemPrompt = harness.systemPrompt ?? `You are ${config.name}.`;
+
+      const res = await fetch(`${host}/api/generate`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          model,
+          system: systemPrompt,
+          prompt: fullPrompt,
+          stream: false,
+          options: {
+            temperature: 0,
+            seed: 42,
+            num_predict: 2048,
+          },
+        }),
+        signal: ctrl.signal,
+      });
+
+      clearTimeout(timer);
+
+      if (!res.ok) {
+        return {
+          success: false,
+          exitCode: 2,
+          outputFile,
+          stdout: "",
+          stderr: `local-llm: ollama HTTP ${res.status} (model=${model}, host=${host})\n`,
+        };
+      }
+
+      const data = (await res.json()) as { response?: string };
+      const stdout = data.response ?? "";
+
+      try {
+        writeFileSync(outputFile, stdout);
+      } catch {
+        // best-effort output file
+      }
+
+      return {
+        success: true,
+        exitCode: 0,
+        outputFile,
+        stdout,
+        stderr: "",
+      };
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : String(err);
+      return {
+        success: false,
+        exitCode: 2,
+        outputFile,
+        stdout: "",
+        stderr: `local-llm: ${reason} (model=${model}, host=${host})\n`,
+      };
+    }
   }
 
   private buildPreamble(persona: string): string {
