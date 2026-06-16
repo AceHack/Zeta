@@ -5,6 +5,23 @@ open Zeta.Core
 
 let private child = Cart.firstCart
 
+let private loopRom = [| 0x6Auy; 0x0Cuy; 0x12uy; 0x02uy |]
+let private inputRom = [| 0xEAuy; 0x9Euy; 0x12uy; 0x00uy |]
+
+let private testCart title rom : Cart.Cart =
+    { Meta =
+        { Title = title
+          Author = "Vera test"
+          Description = "small meta-cart child" }
+      Seed = 1UL
+      Rom = rom
+      CyclesPerTick = 1
+      Ticks = 1
+      Recording = { Crossings = Map.empty } }
+
+let private loopCart = testCart "loopy" loopRom
+let private inputCart = testCart "waity" inputRom
+
 let private selectedParent (idx: int) =
     Chip8Cow.create 1UL |> Chip8Arcade.commitChoice idx
 
@@ -74,3 +91,94 @@ let ``no selected child is a cold refusal and does not spend heat`` () =
         Assert.Equal("parent-cart", source)
         Assert.Equal(0, sink.Signatures.Count)
     | other -> Assert.True(false, sprintf "expected NoSelection feedback, got %A" other)
+
+[<Fact>]
+let ``chooseSlot reuses arcade reflection and picks the most knowable child`` () =
+    let choice =
+        MetaCart.chooseSlot
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+
+    match choice with
+    | Some c ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(1, c.Index)
+        Assert.Equal(expected, c.Slot)
+        Assert.True(c.Reflection.Report.HitBranch)
+        Assert.Equal(1.0, c.Reflection.Report.Confidence, 12)
+        Assert.Equal((GameFingerprint.fingerprint inputCart.Rom).Sha256, c.Slot.Fingerprint.Sha256)
+    | None -> Assert.True(false, "expected a reflected child choice")
+
+[<Fact>]
+let ``playChosenCarried commits the reflected choice into the parent cell and launches the child`` () =
+    let sink = RecordingHeatSink()
+
+    match
+        MetaCart.playChosenCarried
+            "parent-cart"
+            (sink :> IHeatSink)
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+            (Chip8Cow.create 1UL)
+    with
+    | Ok result ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(expected, result.Choice.Slot)
+        Assert.Equal(Some expected, MetaCart.readSlot [ MetaCart.slotOfCart loopCart; expected ] result.ParentWithChoice)
+        Assert.Equal<Chip8Cow.Frame>(Cart.playback inputCart, result.Play.FinalFrame)
+        Assert.True(result.Play.Rows |> List.exists (fun row -> row.Key = "cart.sha256" && row.Value = expected.Fingerprint.Sha256))
+        Assert.Equal(0, sink.Signatures.Count)
+    | Error feedback -> Assert.True(false, sprintf "expected reflected child launch, got %A" feedback)
+
+[<Fact>]
+let ``empty reflected child library is a cold no-selection refusal`` () =
+    let sink = RecordingHeatSink()
+    let host = MetaCart.LocalCartHost [] :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenByReflection
+            "parent-cart"
+            (sink :> IHeatSink)
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            []
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Error(MetaCart.Feedback.NoSelection source) ->
+        Assert.Equal("parent-cart", source)
+        Assert.Equal(0, sink.Signatures.Count)
+    | other -> Assert.True(false, sprintf "expected reflected NoSelection feedback, got %A" other)
+
+[<Fact>]
+let ``missing reflected child emits heat after the soft selector chooses it`` () =
+    let sink = RecordingHeatSink()
+    let host = MetaCart.LocalCartHost [ loopCart ] :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenByReflection
+            "parent-cart"
+            (sink :> IHeatSink)
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Error(MetaCart.Feedback.MissingCart missing) ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(expected, missing)
+        Assert.Equal(1, sink.Signatures.Count)
+        Assert.Equal("meta-cart.missing", sink.Signatures.[0].Kind)
+        Assert.Contains(expected.Fingerprint.Sha256, sink.Signatures.[0].Detail)
+    | other -> Assert.True(false, sprintf "expected reflected MissingCart feedback, got %A" other)

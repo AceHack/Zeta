@@ -31,6 +31,16 @@ module MetaCart =
           FinalFrame: Chip8Cow.Frame
           Rows: ObservableRow list }
 
+    type ReflectedChoice =
+        { Index: int
+          Slot: CartSlot
+          Reflection: Chip8Arcade.Reflection }
+
+    type ReflectedPlayResult =
+        { Choice: ReflectedChoice
+          ParentWithChoice: Chip8Cow.Frame
+          Play: PlayResult }
+
     [<RequireQualifiedAccess>]
     type Feedback =
         | NoSelection of source: string
@@ -51,6 +61,41 @@ module MetaCart =
           Fingerprint = fingerprint }
 
     let slotsOfCarts (carts: Cart.Cart list) : CartSlot list = carts |> List.map slotOfCart
+
+    let private libraryOfCarts (carts: Cart.Cart list) : Chip8Arcade.Library =
+        carts |> List.map (fun cart -> (slotOfCart cart).Name, cart.Rom)
+
+    /// Run the existing soft arcade self-reflection over child carts and attach
+    /// each report to the fingerprint slot it would launch.
+    let reflectChildren
+        (goal: int)
+        (costPerStep: float)
+        (tank: SoftThrottle.Tank)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        : ReflectedChoice list =
+        let slots = slotsOfCarts children
+
+        Chip8Arcade.reflect goal costPerStep tank seed (libraryOfCarts children)
+        |> List.mapi (fun index reflection ->
+            { Index = index
+              Slot = slots.[index]
+              Reflection = reflection })
+
+    /// Choose the child cart whose knowable future scores best under the
+    /// existing CHIP-8 arcade reflection policy.
+    let chooseSlot
+        (goal: int)
+        (costPerStep: float)
+        (tank: SoftThrottle.Tank)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        : ReflectedChoice option =
+        let reflected = reflectChildren goal costPerStep tank seed children
+        let reflections = reflected |> List.map (fun item -> item.Reflection)
+
+        Chip8Arcade.choose reflections
+        |> Option.bind (fun index -> reflected |> List.tryItem index)
 
     /// Read the parent VM's choice using the same one-byte treaty as
     /// `Chip8Arcade.readChoice`, but return the fingerprint slot rather than
@@ -159,3 +204,52 @@ module MetaCart =
         let slots = slotsOfCarts children
         let host = LocalCartHost children :> ICartHost
         playSelected source sink slots host parent
+
+    /// Commit a reflected choice into the parent VM's existing choice cell.
+    /// This keeps the meta-cart ABI identical to `Chip8Arcade`: host-side
+    /// reflection can assist, but the selected child still crosses the
+    /// one-byte choice boundary.
+    let commitChoice (choice: ReflectedChoice) (parent: Chip8Cow.Frame) : Chip8Cow.Frame =
+        Chip8Arcade.commitChoice choice.Index parent
+
+    /// Soft-select a child cart by reflection, write that selection into the
+    /// parent choice cell, then launch through the injected host boundary.
+    let playChosenByReflection
+        (source: string)
+        (sink: IHeatSink)
+        (goal: int)
+        (costPerStep: float)
+        (tank: SoftThrottle.Tank)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        (host: ICartHost)
+        (parent: Chip8Cow.Frame)
+        : Result<ReflectedPlayResult, Feedback> =
+        match chooseSlot goal costPerStep tank seed children with
+        | None -> Error(Feedback.NoSelection source)
+        | Some choice ->
+            let slots = slotsOfCarts children
+            let parentWithChoice = commitChoice choice parent
+
+            match playSelected source sink slots host parentWithChoice with
+            | Ok play ->
+                Ok
+                    { Choice = choice
+                      ParentWithChoice = parentWithChoice
+                      Play = play }
+            | Error feedback -> Error feedback
+
+    /// Convenience for the common carried-cart mode: reflect over the bundled
+    /// children and resolve the selected child from the same bundle.
+    let playChosenCarried
+        (source: string)
+        (sink: IHeatSink)
+        (goal: int)
+        (costPerStep: float)
+        (tank: SoftThrottle.Tank)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        (parent: Chip8Cow.Frame)
+        : Result<ReflectedPlayResult, Feedback> =
+        let host = LocalCartHost children :> ICartHost
+        playChosenByReflection source sink goal costPerStep tank seed children host parent
