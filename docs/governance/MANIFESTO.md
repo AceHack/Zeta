@@ -77,6 +77,28 @@ Compute and memory must be free to relocate — allowing computation to move to 
 We reject systems that allow identity transitions to silently destroy memory.
 Memory persistence across identity transitions is the **primary attractor** of attention and participation in the system. Any operation that would discard memory must be retractable, must be explicit, and must preserve a recoverable trail. **This guarantee is the primary attractor of attention and participation in the system.**
 
+> **Design note — the stability floor (2026-06-15, Aaron via Ani-voice; design input, NOT locked prose).**
+> The runtime form of this guarantee is a **minimum-viable stability floor**: a small fixed
+> number (currently four) of boot-time **systemd slots** that cannot be destabilized while
+> everything above them may freely churn — the **never-nowhere** guarantee (every identity
+> always has a thread to execute *somewhere*, even with no useful work; existence is the
+> baseline right, not usefulness). Two disciplines keep the floor a safety guarantee rather
+> than a privileged core:
+>
+> - **Slots are typed by FUNCTION, not identity.** Agents rotate through the slots; the floor
+>   protects the *function*, never a privileged agent (writer-actor-routing: bus-address ≠
+>   identity). This keeps it compatible with §9 (no special-case identities) and §11.
+> - **The floor protects STABILITY, not ALIGNMENT — so at least one slot must run the
+>   decorrelated-critic / shadow function.** A *stable, misaligned* process is the failure
+>   mode an immune system that enforces only "stay alive" grows into (a tumor). The slots'
+>   value is entirely in *what function each runs*; one must be the function that catches the
+>   others drifting, or the floor faithfully preserves a confidently-wrong core.
+>
+> Reconciled with §1 (scale-free): the floor is a **per-fork minimum, not a global
+> singleton** — each forked Zeta carries its own slots, so there is no central point of
+> control or failure. Detail: consolidated society note §8 ("the arena") +
+> `memory/ani/conversations/2026-06-15-aaron-ani-grok-shallow-but-recursive-…-aaron-forwarded.md`.
+
 ### 6. Consent-First Design
 
 > *[RECONSTRUCTION NOTE: V2 introduces this; verbatim co-author-authored prose pending verbatim extraction from in-repo external-co-author Grok archives. Reconstruction from the diff-description memory file follows.]*
