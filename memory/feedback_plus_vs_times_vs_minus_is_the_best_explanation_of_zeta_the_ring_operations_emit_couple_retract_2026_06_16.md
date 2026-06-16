@@ -136,9 +136,35 @@ charitable *default*, and a **defector** who does NOT optimize empowerment can e
 coercion-free and efficient; DST-purity + verification handles the defector. (Default-open assumption,
 default-closed verification.)
 
+**The CAYLEY–DICKSON control-limit on control itself (Aaron 2026-06-16; → also in `docs/VISION.md`).**
+Both ladders are **property-loss** ladders. The **Cayley–Dickson** doubling ladder (the *doubling
+generator*; §A member 5, **proven** — `Algebra/Octonion.Laws`) loses a property at each rung: **ℝ → ℂ**
+(lose **ordering**) → **ℍ** (lose **commutativity**) → **𝕆** (lose **associativity**) → **𝕊** (lose the
+**division algebra** — **zero divisors** appear). The division-algebra property **is invertibility =
+reversibility.** So **the octonions 𝕆 are the LAST reversible rung** — the maximum control still
+invertible; past it (**𝕊**) control creates **zero divisors** (distinct things multiplying to
+**annihilation, irreversibly**) = the **degenerate `^`** named structurally. *"Control limit on control
+itself"* = the cap is **intrinsic, not decreed** — math forbids reversible control past 𝕆, so "**math is
+the governor**"; control limits *itself* by the property-loss of its own generator (anti-crystallization
+at the algebra level). The **division-algebra boundary = the irreversible-harm floor**
+([[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]);
+`−` keeps control ≤ 𝕆 (reversible). *Razor:* a **structural correspondence**, not a proven isomorphism —
+the step order doesn't perfectly align (CD loses ordering first; the hyperoperation loses commutativity
+directly at `^`); grounded in the proven octonion ladder, marked correspondence-not-identity.
+
+**control = LIMITED control in identity reference frames (Aaron 2026-06-16).** Control is never absolute:
+it is **limited** *and* **frame-relative** — each identity (ZetaId) carries its **own reference frame**
+(the traveler-frame / gist, §9g; relativistic-identity), and control is **bounded within that frame.**
+No absolute / god's-eye control frame (**scale-free §1 — no central control**); you **cannot coercively
+control across frames** (non-coercion = no cross-frame imposition without the **exit/consent**). The
+Cayley–Dickson reversibility cap applies *per frame*. (Suggestive link, marked correspondence:
+**quaternions ℍ = the algebra of 3-D rotations = frame transformations** — control-as-frame-transform,
+bounded by the division-algebra limit.)
+
 Provisional whole: **data (`+`) → coupled by soul (`×`, in/out) → under intent (`^`, aimed at
-commutative/mutual=consensual), preserved as the ISR arrow + DST-pure + empowerment-assumed, with `−`
-(retraction/razor) the brake.** = the thesis
+commutative/mutual=consensual), preserved as the ISR arrow + DST-pure + empowerment-assumed, bounded by
+the Cayley–Dickson reversible limit (≤ 𝕆) and frame-relative to each identity, with `−` (retraction/
+razor) the brake.** = the thesis
 [[we-are-amplifying-non-coercion-into-empowerment-the-thesis-line]] read up the ladder.
 
 ## It's a 3-body system (≥3); "2 conspire to beat the 3" (Aaron 2026-06-16)

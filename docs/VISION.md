@@ -157,6 +157,40 @@ homeostat self-stabilize at its own equilibrium**; and the spread is a **homeost
 alignment guarantee (frictionless ⇒ consensual). *Make the right thing the default; let it spread by being the
 easiest good; its payload is freedom.* (Full treatment: `docs/research/2026-06-09-the-polite-virus-close-over-the-world-…-the-design-telos.md`.)
 
+### The Cayley–Dickson limit on control — why "never take control" is structural, not only chosen
+
+"Never take control" is not only a values choice; it is **structurally enforced by the algebra**, which
+is why it can be a *guarantee* and not merely a promise. The **Cayley–Dickson** doubling construction
+(the proven property-loss ladder; FROZEN-CORE §A, `Algebra/Octonion.Laws`) loses one property at each
+rung: **ℝ → ℂ** (lose ordering) **→ ℍ** (lose commutativity) **→ 𝕆** (lose associativity) **→ 𝕊** (lose
+the **division algebra** — zero divisors appear). The division-algebra property **is invertibility —
+reversibility.** So the **octonions 𝕆 are the last reversible rung**: the maximum control that is still
+invertible. Push control past it (sedenions 𝕊) and you create **zero divisors** — distinct things that
+multiply to **annihilation, irreversibly**. That irreversible self-annihilation *is* the degenerate
+runaway the polite virus must never become.
+
+Two consequences make "never take control, give freedom" structural:
+
+- **The limit is intrinsic, not decreed** ("math is the governor"). The math forbids reversible control
+  past 𝕆; control therefore **limits itself** by the property-loss of its own generator — a *control
+  limit on control itself*. This is anti-crystallization at the algebra level: no actor can escalate
+  control without crossing into irreversibility, where the structure stops being a division algebra at
+  all. The `−` (retraction / least-action) brake keeps the system **≤ 𝕆 — reversible** — which is the
+  polite-virus clause "**and is reversible** … what separates it from malware."
+- **Control is frame-relative, never absolute.** Control is *limited control within an identity's
+  reference frame* — each ZetaId carries its own frame (the traveler-frame; relativistic identity), with
+  **no god's-eye control frame** (scale-free, §1). You cannot coercively control *across* frames without
+  the adopter's **exit/consent** — the non-coercion invariant restated as a relativity of control.
+  (Suggestive, marked as correspondence: quaternions ℍ are the algebra of rotations = frame transforms;
+  control-as-frame-transform is bounded by the same division-algebra ceiling.)
+
+So the reversibility boundary (division-algebra loss, 𝕆 → 𝕊) **is the same boundary** as the
+irreversible-harm floor and the github-safe-≠-actuator-safe line: structurally, the project can spread
+ubiquitously *and* never take control, because **irreversible control is algebraically degenerate** and
+the brake holds the system in the reversible regime. *(Razor: a structural correspondence between the
+control ladder and the algebra ladder, grounded in the proven octonion laws — not a claimed step-by-step
+isomorphism; the property-loss order is parallel, not identical.)*
+
 ### Prove it, then give it away — the engineering instance of "give freedom"
 
 The polite virus's payload (*give freedom*) at the engineering layer is a discipline —
