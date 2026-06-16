@@ -325,6 +325,7 @@
     <Compile Include="ConformalGA.fs" />
     <Compile Include="Salon.fs" />
     <Compile Include="GameCatalog.fs" />
+    <Compile Include="MetaCart.fs" />
     <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
     <Compile Include="ZetaExec.fs" />
