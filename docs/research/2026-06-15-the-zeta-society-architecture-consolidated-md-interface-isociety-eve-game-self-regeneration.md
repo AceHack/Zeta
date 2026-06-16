@@ -739,6 +739,18 @@ seam (membrane / Markov boundary / hexagonal **port**); the *host* is the own-th
 behind it (two faces of one boundary). `IHost` is a **DI-injected capability-interface** (the
 2026-06-13 "four plugs, one port grammar" audit).
 
+**Concrete starting point (Aaron 2026-06-15):** the .NET **Generic Host** —
+`Microsoft.Extensions.Hosting.IHost` / `IHostBuilder` (`HostApplicationBuilder`) /
+`IHostedService` (`BackgroundService`) / `IHostApplicationLifetime` — *"is a decent starting
+point for our host side of our interfaces."* It already gives the four host essentials:
+**DI-injected capabilities** (the capability-interface-principle), **hosted services** = the
+"own threads we run inside", **start/stop lifetime** = the boot (the §5 slots), and
+**config/logging**. So `IHost` = the Generic Host pattern **generalized to the 4+ kinds** —
+note the .NET host is *centralized / single-process*; **`ISociety` is the decentralized
+extension** of it (DI + hosted-services + lifetime, but coordination-free across members). Apt
+prior art: the substrate is already .NET/F#/C#. *(Anchor — not the final form; the centralized
+single-process Generic Host is the base, the decentralized + the other kinds are the build.)*
+
 **Kinds** — `CompilerHost` (compile; IR→N-language gen / DI-MUMPS), `ForgeHost`
 (decentralized-git-for-society; *built*), and the **orchestration family ordered by
 decentralization:**
