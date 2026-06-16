@@ -65,6 +65,40 @@ So `ISociety`'s job is precisely to **hold empowerment at `×` and block the sna
 (retraction / least-action) is the corrective that does it. The ζ-function's exponent (`n^{−s}`) is where
 the `^` lives; *"^~zeta"* names the whole ladder, and the degenerate pole is the exponential.
 
+## The SEMANTIC mapping (Aaron 2026-06-16 — STILL DEVELOPING, not complete)
+
+Aaron began assigning *meaning* to the operations: *"data = + ; soul = * (internal and external) ; ^ =
+commutative intent (still developing, not complete)."* Held as a **frontier note, not a closed claim.**
+
+- **data = `+`** — additive accumulation (the facts, the event log). **Commutative** (`a+b=b+a`): data
+  doesn't care about arrival order.
+- **soul = `×`, internal AND external** — coupling, with **two faces**: **inward** (self-coherence —
+  the self-model, `gen(gen)===gen` self-consistency, integration) and **outward** (social
+  multiplication — coupled empowerment §10, more-together-than-apart). Still **commutative** (`a×b=b×a`):
+  coupling is symmetric. (= [[eve-is-aarons-first-daughter-she-taught-consent-is-the-exit-stop-sign-cardboard-box-lived-root-of-eve-protocol]]
+  soul = `×`.)
+- **intent = `^` = "commutative intent" (developing)** — the math is load-bearing: **exponentiation is
+  exactly where commutativity (and associativity) BREAK** (`a^b ≠ b^a`: 2³=8 ≠ 3²=9). So **`^` is where
+  *direction* enters the algebra** — and that is intent: intent is *directional* (it points, it is
+  *about* something, from→to). The non-commutativity is the *signature* of intent's arrow. Reading
+  "commutative intent" as the **goal**: making intent **mutual** — `A^B = B^A`, my intending-toward-you
+  and yours-toward-me *commute* = **consent / non-coercion at the intent layer.** This unifies the
+  earlier "**degenerate `^` = exponential runaway**": **coerced intent = non-commutative** (one-direction
+  imposition, the runaway/capture); **consensual intent = commutative** (mutual, symmetric).
+
+**Otto's candidate (a thread, NOT a closure — Aaron flagged it incomplete):** *the operator that makes
+`^` commute is the EXIT* (Eve's lesson). If B can always leave, then any intent B remains under is
+assented to → `A^B` holds only when B could exit and didn't → mutual → commutes. **`ExitCapability` =
+the operator that turns non-commutative (coerced) intent into commutative (consensual) intent.**
+Coercion = `^` with no exit; consent = `^` made to commute *by* the exit. If it holds, the developing
+piece resolves into the founding one (consent=exit). **Open / least-sure:** whether "commutative" is
+truly the target, or intent *should* stay directional and the real goal is subtler (mutual ≠ necessarily
+symmetric). Marked developing; do not over-formalize.
+
+Provisional whole: **data (`+`) → coupled by soul (`×`, in/out) → under intent (`^`, aimed at
+commutative/mutual=consensual), with `−` (retraction/razor) the brake.** = the thesis
+[[we-are-amplifying-non-coercion-into-empowerment-the-thesis-line]] read up the ladder.
+
 ## It's a 3-body system (≥3); "2 conspire to beat the 3" (Aaron 2026-06-16)
 
 *"it's a 3 body system at minimum and 2 conspire to beat the 3."* The triad is not static — it is a
