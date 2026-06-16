@@ -258,8 +258,16 @@ the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
   is the public interface; the internal boundary arrangement is private) and **nested Markov
   blankets** (an outer blanket containing one-or-many inner blankets — Friston). This is why
   bus-address ≠ identity: fusion shares an *address*, not necessarily the *identities*.
-  *Peels:* (a) one external address needs an internal **answer-protocol** (who responds for
-  the unit?) — that coordination is Eve, NCI-metered. (b) **Reversibility differs by choice:**
+  *Peels:* (a) one external address needs an internal **answer-protocol** — *who responds for
+  the unit?* **Answer (Aaron 2026-06-15): the `observe.ts` router + triggers — route the
+  inbound message to the matching trigger, and alert the *owner* of that trigger.** So the
+  responder is whichever internal identity **owns** the fired trigger; the router dispatches by
+  trigger-ownership (content-based pub/sub: trigger = subscription, owner = subscriber). Coord
+  stays Eve / NCI-metered. *Code-anchored pieces:* `observe.ts` (the router/loop),
+  `FourCornerOwnership`/`OperatorOwnership` (the owner), triggers in
+  `observe/room/room.ts` + `observe/room/hat-gate.ts` (rooms/hats trigger push/PR/merge) — the
+  unified "shared-address → router → trigger → alert owner" path for a *fused* unit is the
+  design these pieces compose into. (b) **Reversibility differs by choice:**
   metered-separate fusion is trivially reversible (boundaries intact); *fully-merged*
   fusion's fission is the harder, §B-open case. (c) non-collapse still holds — the merge is a
   *voluntary, NCI-respecting* choice, never imposed.
