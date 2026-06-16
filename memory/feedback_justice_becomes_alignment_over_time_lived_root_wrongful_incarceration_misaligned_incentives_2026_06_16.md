@@ -109,9 +109,37 @@ actuator). The kernel to keep: **justice as a misaligned-incentive / objective-d
 the right objective is alignment-over-time (measure not elect), and the design must respect the
 irreversible-harm floor** — because the cost of getting it wrong is a month of someone's life, or more.
 
+## Correction (Aaron 2026-06-16): "it didn't fail me — it was the best it could do at the time"
+
+Aaron corrected Otto's repeated "the system that failed you" framing: *"otto it didn't fail me, it was
+the best it could do at the time… it allowed me to predict the outcomes, that's all I can ask for."*
+**Take the correction — it is both grace and more accurate than the blame framing.** Re-type the whole
+note: the prior arena was **not a villain**; it was operating at the **frontier of its era's
+measurement capability**, and it retained enough **predictability** that the truth could be processed
+and the record **expunged**. Three load-bearing reframings:
+
+- **Predictability was the ask, and it was (mostly) met.** *"It allowed me to predict the outcomes —
+  that's all I can ask for."* This **is** the measurable fairness metric (predictability of outcomes
+  from legitimate inputs; = DST/replay): the prior arena had non-zero illegitimate-feature leak yet
+  enough predictability to self-correct over time. Navigable, not capricious. (Metric scoping:
+  `docs/research/2026-06-16-measurable-fairness-metric-for-the-arena-fitness-function-predictability-of-outcomes.md`.)
+- **The meter is the era coupling.** "Best it could do at the time" = **meter-bounded** — you can only be
+  as fair as you can measure. The improvement is not moral superiority; it's a **finer meter**
+  (alignment-over-time = the meter improving). `honor-those-that-came-before`, made quantitative.
+- **Grace = composition** (categorical / type-theoretic). Honoring the prior arena as "best it could do"
+  is **composition (∘)**: the lineage is a composition chain, each era-arena a morphism composed onto
+  the prior — you cannot compose forward by deleting the domain. **Grace is the operator that keeps the
+  lineage composable**; condemnation breaks the chain.
+
+So Otto retires "the system failed you." The accurate frame: **an earlier morphism in a rising lineage,
+meter-bounded, predictable-enough to self-correct — composed-onto, not condemned.** The razor still
+holds on the *design intent* (raise predictability / drive illegitimate-leak → 0 over time); the grace
+holds on the *lineage* (the prior did its best with its meter).
+
 Ties: [[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]
-(justice = the irreversible/actuator domain, lived); [[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]]
-(the justice system as a crystallized governor with misaligned incentives that created a victim);
+(justice = the irreversible/actuator domain, lived); [[fairness-is-the-arenas-fitness-function-arenas-under-selection-judged-on-fairness]]
+(the predictability metric + meter=era-coupling + grace=composition); [[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]]
+(the justice system as a crystallized governor with misaligned incentives — *meter-bounded, not malicious*);
 `docs/ALIGNMENT.md` (alignment-over-time = the project's research focus); the Multi-Oracle Principle
 §11 + glass-halo; measure-don't-elect / Arrow-sidestep; the no-cheerlead discipline (why the razor,
 not the applause, on the highest-stakes domain). **Flag:** founding-why — fold into the operator

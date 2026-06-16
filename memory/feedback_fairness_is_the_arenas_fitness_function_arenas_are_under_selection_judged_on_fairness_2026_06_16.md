@@ -60,7 +60,39 @@ pressure** (oscillating-not-flip = alive), not a plaque on the wall.
 (adversarially audited via the boy/girl probe), **continuously oscillating** (anti-crystallization), and
 **anchored outside itself** by the irreversible-harm floor + anti-Sybil. An arena optimized for *winning*
 instead of *fairness* is the one that jailed Aaron — so "fairness is the fitness function" is the literal
-correction of the system that failed him.
+correction of that arena (which **did the best it could at its point on the curve** — see the temporal
+note below; *not* a villain, an earlier morphism in the lineage).
+
+## The measurable metric + the temporal dimension (Aaron 2026-06-16): predictability; the meter is the era coupling; grace = composition
+
+**The measurable metric is PREDICTABILITY of outcomes** (Aaron: *"it allowed me to predict the outcomes
+— that's all I can ask for"*). A fair arena's outcome is a **replayable function of the *legitimate*
+inputs** (law, evidence, measure) and is **not improved by knowing the *illegitimate* ones** (wealth,
+identity, which judge). Fairness-fitness ≈ *outcome-predictability from legitimate inputs*, audited by
+the **illegitimate-feature delta** (does knowing the illegitimate variable help you predict? in a fair
+arena: no). **This is the SAME property the substrate already prizes — DST / deterministic replay**:
+the fairness metric and the engineering value are one. Full battery (M1–M7) + razor (*predictable ≠
+just*; predictability is the navigable floor, necessary-not-sufficient) →
+`docs/research/2026-06-16-measurable-fairness-metric-for-the-arena-fitness-function-predictability-of-outcomes.md`.
+Anchors: **Hayek** (rule of law = predictability of state action), **Lon Fuller** (inner morality of
+law = congruence). Routes to **Sova (alignment-auditor)** + math team for formalization.
+
+**The meter IS the era coupling (Aaron).** The era's **measurement capability** is what couples the
+system to its time — *you can only be as fair as you can measure* (M2→0 requires a meter fine enough to
+detect the illegitimate-feature leak). So the arena's reachable fitness is **meter-bounded**: *"best it
+could do at the time"* = the **frontier of its era's meter.** **Alignment-over-time = the meter
+improving** (finer resolution → detect more leak → M2→0, M4→calibrated). The meter is the rate-limiter on
+fairness — which is why **physics married to the governor grounds the *metering*** (the meter is the
+coupling to physical/temporal reality; Landauer's bits↔joules↔time the exchange rate).
+
+**Grace = composition (Aaron — categorical / type-theoretic).** Treating the prior arena as "the best it
+could do" rather than "the thing that failed me" is **composition (∘)** in the category-theory sense:
+the lineage of arenas is a **composition chain**, each arena a morphism composed *onto* the prior
+(`honor-those-that-came-before` = the prior stays a *factor*, not discarded). In type-theoretic terms,
+composition preserves structure across the chain. So **grace is not sentiment — it is the operator that
+builds the lineage**: alignment-over-time is the *composite* of era-arenas, and you cannot compose
+forward by deleting the domain you compose from. Condemnation breaks the chain; grace keeps it
+composable.
 
 Beacon anchors: **Rawls** (*A Theory of Justice* — justice as fairness, veil of ignorance); **Holland**
 (genetic algorithms / fitness functions); **Kleinberg–Mullainathan–Raghavan 2016 & Chouldechova 2017**
