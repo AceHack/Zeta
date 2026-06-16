@@ -5,7 +5,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { listPersonas, type PersonaConfig } from "./persona-registry";
+import { listPersonas } from "./persona-registry";
 
 const personas = listPersonas();
 

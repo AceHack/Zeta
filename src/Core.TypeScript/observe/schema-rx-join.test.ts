@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { SchemaAwareJoin, deltasCommute, type SchemaView } from "./schema-rx-join";
-import { schemaZSet, FS_METADATA_SCHEMA_V1, type SchemaEvolutionDelta, type SchemaZSet as SchemaZSetType } from "./schema-zset";
+import { schemaZSet, FS_METADATA_SCHEMA_V1, type SchemaEvolutionDelta } from "./schema-zset";
 
 // A simple view that projects specific fields from the schema
 const fileInfoView: SchemaView<string[]> = {

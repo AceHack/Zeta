@@ -23,10 +23,8 @@ import {
   applyDelta,
   currentSchema,
   consolidate,
-  deltaFromSchemas,
   type SchemaField,
   type SchemaEvolutionDelta,
-  type SchemaZSet as SchemaZSetType,
 } from "./schema-zset";
 
 // ─── The canonical scenario ──────────────────────────────────────────────────

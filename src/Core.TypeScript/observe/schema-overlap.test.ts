@@ -53,10 +53,6 @@ describe("schema-overlap — state machine", () => {
 
   test("readers_migrating when some (not all) readers migrated", () => {
     const schema = schemaZSet(FS_METADATA_SCHEMA_V1);
-    const delta: SchemaEvolutionDelta = {
-      retract: [{ name: "modified", type: "string", required: false }],
-      insert: [],
-    };
     const evolved = [...schema, { field: { name: "modified", type: "string" as const, required: false }, weight: -1 }];
 
     const partiallyMigrated = migrateReader(READERS, "otto");

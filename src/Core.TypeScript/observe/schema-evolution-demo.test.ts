@@ -19,7 +19,6 @@ import {
   deltaFromSchemas,
   currentSchema,
   resolveField,
-  consolidate,
   FS_METADATA_SCHEMA_V1,
   FS_METADATA_SCHEMA_V2,
 } from "./schema-zset";
@@ -32,7 +31,6 @@ import {
   overlapStatus,
   tryConsolidate,
   migrateReader,
-  registerReader,
   type SchemaReader,
 } from "./schema-overlap";
 
@@ -103,7 +101,7 @@ describe("schema evolution worked example: FS metadata v1 → v2", () => {
   test("lifecycle with field REMOVAL (the harder case)", () => {
     // Remove "modified" field — this creates a real overlap window
     let schema = schemaZSet(FS_METADATA_SCHEMA_V1);
-    let readers: SchemaReader[] = [
+    let readers: readonly SchemaReader[] = [
       { id: "otto", migrated: false },
       { id: "alexa", migrated: false },
     ];

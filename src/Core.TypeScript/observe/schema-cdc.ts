@@ -86,7 +86,7 @@ export function emitSchemaEvent(
     type: "schema.evolved",
     specversion: "1.0",
     time: new Date(now()).toISOString(),
-    subject: opts.subject,
+    ...(opts.subject !== undefined ? { subject: opts.subject } : {}),
     datacontenttype: "application/json",
     data: {
       before,

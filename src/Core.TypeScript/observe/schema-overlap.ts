@@ -14,7 +14,7 @@
  *   - docs/specs/zero-downtime-schema-evolution/design.md (the spec)
  */
 
-import { type SchemaZSet, type SchemaField, currentSchema, isInOverlap, consolidate } from "./schema-zset";
+import { type SchemaZSet, currentSchema, isInOverlap, consolidate } from "./schema-zset";
 
 // ─── State machine ───────────────────────────────────────────────────────────
 
