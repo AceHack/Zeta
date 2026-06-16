@@ -487,6 +487,28 @@ shown. (c) Pin "degenerate" = a **pathological collapse-attractor** (power-seek 
 monoculture), not just any local optimum. Discharge: prove the chosen definition's landscape is
 free of those attractors.
 
+**The proof's load-bearing dependencies (Aaron 2026-06-15): Eve + the ISociety⟷CTM coupling.**
+*"That proof completely matters on the Eve protocol and the ISociety⟷CTM coupling."* The
+degeneracy-free conjecture is **not free-floating — it factors through two earlier §B pieces**,
+and the discharge runs through them:
+
+- **Eve (§3) is the *binding mechanism*.** What forces the empowerment term to stay genuinely
+  *mutual* (so power-seeking actually scores worse) is Eve's **NCI / consensual, boundary-
+  preserving, §13-metered** fusion. If Eve doesn't bind, the coupling leaks and a degenerate
+  (coercive) basin re-opens. So *prove Eve enforces non-coercion* ⇒ the power-seeking basin
+  stays closed.
+- **The ISociety⟷CTM coupling (§9a) makes empowerment mutual *at every scale*.** Because
+  `ISociety <: CTM` recursively, the same member⟷society coupling repeats up the hierarchy — so
+  if the coupling makes empowerment mutual at one level, the recursion carries degeneracy-
+  freeness to all levels (and conversely, a break in the coupling re-admits degeneracy at that
+  scale). So *prove the coupling is mutual-empowerment-preserving* ⇒ degeneracy-freeness lifts
+  through the recursion.
+
+**Net (dependency map, all §B):** §10b (degeneracy-free) ⟵ §3 (Eve binds) + §9a
+(ISociety⟷CTM coupling). The conjecture **closes only when those two discharge** — which is
+exactly why they're the load-bearing interfaces the math team grades first (§10a). This is a
+*factoring of an open conjecture into its dependencies*, not a closure.
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
