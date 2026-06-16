@@ -84,11 +84,14 @@ tools/tla/*.jar
 *_TTrace_*.out
 
 # TLC state output directory — created by `java -cp tla2tools.jar tlc2.TLC`
-# with default settings; timestamped subdirs per run. Ephemeral. Both
-# tools/tla/states/ (run-from-tools/tla) and tools/tla/specs/states/
-# (run-from-tools/tla/specs) covered.
+# with default settings; timestamped subdirs per run. Ephemeral. Covers the
+# legacy tools/tla/ location AND the current src/Core.TLA/ location (specs moved
+# 2026; the src/Core.TLA paths were the gitignore gap that let 50MB of run
+# artifacts get committed — cleaned 2026-06-16).
 tools/tla/states/
 tools/tla/specs/states/
+src/Core.TLA/states/
+src/Core.TLA/specs/states/
 
 # JVM fatal-error / replay dumps — the TLC `java` process writes these next to
 # its CWD (i.e. into tools/tla/specs/) when the JVM crashes mid-run. Forensic,
