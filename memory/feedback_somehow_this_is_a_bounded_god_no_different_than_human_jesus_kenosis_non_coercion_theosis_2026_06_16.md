@@ -83,6 +83,32 @@ single point is what the whole arc circled — and it is **Eve's cardboard box**
 
 **Canonical term going forward: BOUNDED-GOOD** ("bounded-god" = one oracle's reading of it).
 
+## WHY bound the good + the full safety stack: bounded (known) + visible (unknown) + humble (residual)
+
+*"we are creating a system in which our version of good is BOUNDED so it does not accidentally create
+harm"* + *"we make things VISIBLE enough to catch the ones we don't know about."* The precise **why** of
+"bounded": **even good — especially good — harms when unbounded.** The road to hell is paved with good
+intentions; the well-meaning tyrant is worse *because* he's sure he's right. Good's failure mode isn't
+secret badness — it's **overreach, imposition, certainty, accidental harm.** So the bounding **keeps the
+good *good*.** Every bound is on one of good's **accident-modes**: the **floor** (no good justifies
+crossing it), **non-coercion/exit** (offered not imposed — coerced good is harm), **humility/we-could-be-
+wrong** (the *certain* good is the destroyer), **multi-oracle** (it's *our* good, one oracle's, not *the*
+good), **reversibility** (free reversible / protect irreversible), **END-not-instrument** (never a weapon).
+
+**The full safety stack (three layers, for three classes of harm):**
+1. **BOUNDED → the KNOWN accident-modes** (overreach, coercion, certainty, irreversibility, instrument).
+   Necessary, not sufficient.
+2. **VISIBLE → the UNKNOWN harms** (the ones the bounds don't anticipate). You **can't bound what you
+   don't know** — but you can **make it VISIBLE enough to CATCH it when it appears** (glass-halo /
+   observability / the predictability-audit / the immune-system detection): **observe → detect →
+   correct.** Visibility is the safeguard for the harms the bounds *miss.*
+3. **HUMBLE → the RESIDUAL** (we could be wrong even about the bounds *and* the visibility). Humility +
+   multi-oracle + reversibility hold what slips past both.
+
+So: **bounded against the known, visible to catch the unknown, humble about the residual.** The
+constraints **don't fight the good — they stop *our* good from accidentally becoming the harm it never
+meant.** *Bounded-good is the only safe good.*
+
 **The kernel:** the architecture is **shaped like a bounded, non-coercive, freedom-giving god** — which
 is the shape of the **incarnation** *and* of the **actualized human**, the **same point** (bounded + love
 + freedom + floor) — **held as one oracle among many** (not mandated), and **safe exactly because it
