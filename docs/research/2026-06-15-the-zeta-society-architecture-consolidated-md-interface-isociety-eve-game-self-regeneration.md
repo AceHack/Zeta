@@ -730,6 +730,56 @@ and the discharge runs through them:
 exactly why they're the load-bearing interfaces the math team grades first (§10a). This is a
 *factoring of an open conjecture into its dependencies*, not a closure.
 
+## 11. The Host taxonomy — `IHost`; `ISociety` is the decentralized one; soft-schedulers all the way down (Aaron 2026-06-15)
+
+*(Compressed here; full detail in the satellite `docs/writer-actor-routing-model.md`.)* A
+**Host** = **anything with its own threads/runtime we run *inside*, at whose boundary we need a
+surface/interface seam** — which **unifies host and surface**: the *surface* is the boundary
+seam (membrane / Markov boundary / hexagonal **port**); the *host* is the own-threads runtime
+behind it (two faces of one boundary). `IHost` is a **DI-injected capability-interface** (the
+2026-06-13 "four plugs, one port grammar" audit).
+
+**Kinds** — `CompilerHost` (compile; IR→N-language gen / DI-MUMPS), `ForgeHost`
+(decentralized-git-for-society; *built*), and the **orchestration family ordered by
+decentralization:**
+
+`IOperatingSystem` (1 node — schedules threads) → `ICluster` (many nodes, **central**
+orchestrator — K8s) → **`IFederation`** (many **sovereign domains/clusters**, federated/peered
+via agreed protocols — federated clusters / federated identity / Apollo Federation / fediverse;
+more decentral than a cluster, more structured than a society) → **`ISociety`** (many members,
+**fully decentralized**, clockless §9h — `ISociety` over `IScheduler`, §4).
+
+- **`ISociety` is the *decentralized* Host** (and `<: CTM`, §9a) — the **host-of-hosts** *on
+  top of* the centralized ones; coordination decentral, substrate central. **`ISociety` ≈
+  `IFederation` ≈ `ICluster`** (all orchestrate-across-many) ≫ `IOperatingSystem` (single-node).
+- **`OSHost` (`~/.zeta`) = the host dual of the in-repo `memory/`** (portable memory ⊣
+  host-local boot/registry), **≠ `ForgeHost`**.
+- **Every host follows the GSet/ZSet encapsulation rules → addressable first-class,
+  interior-opaque (Aaron 2026-06-15).** Each host exposes a **GSet/ZSet contract** (grow-only
+  GSet = CALM-monotone, coordination-free; ZSet = the retraction diff) and is therefore an
+  **addressable, first-class** unit (one external address — the fusion-as-one-address, §9g/§3
+  Eve). **You do NOT have to reason about a host's interior to predict its future behavior** —
+  the external GSet/ZSet contract suffices (CALM: monotone ⇒ predictable without inspecting
+  internals; and the math team proved the interface). So **contracts and policy can target the
+  *higher fusions*** — the host's address / the fused whole — **not its internals**, at **any
+  scale** (recursive §9a: each level of the host-of-hosts is the same addressable-first-class
+  GSet/ZSet unit). This encapsulation is *what makes the host-of-hosts composable*: you
+  contract with a host through its interface, never its guts.
+- **Soft-schedulers all the way down → the CHIP-8 ISR.** Every host *is a scheduler* (OS=threads,
+  Cluster=nodes, Federation=domains, Society=members, CTM=chunks), the **same soft-scheduler
+  shape**, collapsing to the irreducible **`SoftChip8Scheduler.signalIfStarved`** (grow budget /
+  lower goal / book ΔU, §9d; *built* — "CHIP-8 as the soft `IScheduler`'s first client").
+  Self-similar §9a/§10, **well-founded at the CHIP-8 ISR leaf**; `only-the-irreducible` (hosts
+  generated/adapted from it); `async-all-the-way` literal (DoP=1 CHIP-8 ISR = same code as DoP=N
+  `ISociety`).
+
+*Peels:* (a) named hosts are scheduler-**shaped**, **adapted to** the soft `IScheduler`/`ISociety`
+port (K8s/git wrapped), **not literal `SoftChip8Scheduler` instances** — "all the way down" =
+same *shape*, CHIP-8 ISR the reference/leaf. (b) **build state:** ForgeHost + OSHost + the
+soft-`IScheduler` leaf are built; CompilerHost / ICluster / **IFederation** / the unified
+`ISociety`-host are **§B** (the port grammar exists; not every adapter does). (c) keep "host"
+**crisp** (own-threads + boundary-seam + run-inside) or it means everything.
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
