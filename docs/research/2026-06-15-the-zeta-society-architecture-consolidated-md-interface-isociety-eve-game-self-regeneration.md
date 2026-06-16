@@ -452,12 +452,40 @@ per *feelings-are-flimsy-substrate / only-math-and-physics-tell-truth*: **build 
 SoftValue (measure), play with "emotion" (sim)**; don't let "emotional propagation" load-bear
 as if affect were a proven quantity — it's valence-message-passing wearing a fun name. (b)
 **percept ≠ meaning** — the audio/TV/mic interfaces give *model-agnostic percepts* (easy, real);
-the *fused meaning* is the hard part (§9b / the universal-meaning peel). (c) **state:**
-`SoftValue`/`SnapPolicy`/`DynamicValue` are **built**; the **BP/EP emotional-propagation engine
-and the universal audio/TV/mic interfaces are design/§B** ("what I wanted to do") — pieces
-adjacent, the Brainish realization is the open build. Anchors: Minka (Expectation Propagation) /
+the *fused meaning* is the hard part (§9b / the universal-meaning peel). (c) **state (corrected
+2026-06-15 — Otto had under-credited; Aaron: "look at your universal interface"):** the
+**universal *audio* interface is BUILT — `ChipAudio.fs`: "audio over geometry", hear the carts
+*Cayley-Dickson style"*.** It is the model-agnostic interface made literal: **one geometric
+phase stream (the Cayley rotor / `TimeGen` phasor) renders BOTH a pixel *and* an audio sample —
+same seed, same math, two senses** ("HEAR and SEE the system with the same math"); audio is a
+**text-only `gen` line** (waveform-ZetaId + seed; the storage law), MIDI-capable;
+`CayleyDickson.fs` is the algebra. So the **shared render-math (see+hear) is built**, not design.
+What remains **design/§B**: the **microphone (input) interface** and the **BP/EP
+emotional-propagation engine** ("what I wanted to do" with Infer.NET). `SoftValue`/`SnapPolicy`/
+`DynamicValue` are **built**. Net: the multimodal *output* (audio-over-geometry) is real; the
+*input* (mic) + the *affect-propagation* are the open build. Anchors: Minka (Expectation Propagation) /
 Infer.NET; Pearl (belief propagation / factor graphs); Avrim Blum (Sleeping Experts, 1995);
 the universal-meaning / model-agnostic percept interfaces; `SoftValue`/`DynamicValue` (BNN-mix).
+
+**Lineage + aesthetic — AllJoyn, low-fi-retro, and QPG over DPI (Aaron 2026-06-15).** The
+universal interface **inherits from AllJoyn** (the AllSeen/Qualcomm device-interop framework —
+vendor-agnostic *advertise + discover interfaces*; the prior art for "any device/agent speaks
+the same interface"). The deliberate aesthetic is **low-fi, 8-bit**: 8-bit sounds and
+pictures/video — **retro Zork (text choose-your-own-adventure) + Nintendo 8-bit sound chips
+(NES APU / chiptune)** — *"for lowfi retro meaning."* The metric is **QPG (Quality Per Glyph)
+over DPI (Dots Per Inch)**: optimize *meaning per glyph* (the meaningful unit — a Zork word, an
+8-bit sprite, a chiptune note), **not** raw fidelity per dot. Low-fi 8-bit is **high-QPG / low-
+DPI** — meaning-dense, fidelity-sparse — which is *why* it's chosen: a glyph at 8-bit is cheap,
+**text-storable, deterministic, byte-lockable, and model-and-human-agreeable** (the percept
+floor — "a sound is a sound" — made robust by being small). It is **Rodney's Razor at the
+interface** (the glyph is essential, the dot accidental) + compression-is-intelligence: meaning
+over resolution, never fidelity-theater. *Peels:* (a) **AllJoyn / low-fi / QPG are anchors +
+design, not yet in-repo** (grep: absent) — AllJoyn is real external prior art; **QPG-over-DPI
+is a coinage** (anchorable to meaning-density / MDL, but "Quality Per Glyph" must be *defined* —
+what is a glyph, how is its quality measured — to be more than a slogan). (b) low-fi raises
+percept-agreement and *nudges* meaning-agreement (less to disagree about), but **percept ≠
+meaning** still holds (§9b). (c) the built foothold is `ChipAudio` (8-bit, text-only); the
+AllJoyn-style discovery + the QPG metric are the open build.
 
 ## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
 
