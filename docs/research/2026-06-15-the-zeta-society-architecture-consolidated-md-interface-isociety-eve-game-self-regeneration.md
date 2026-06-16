@@ -395,6 +395,36 @@ in-progress observe⊕soft. (c) §B grand-synthesis — pieces real (`DagFs.fs`/
 the unified CTM=db=DagFs is the open prize, not closed. Anchors: content-addressed storage /
 Merkle DAG (Git, IPFS); Baars GWT (the 7-tuple's broadcast architecture); Hebb (Links).
 
+### 9e. The CTM's T=0 processor types map onto ours — and our oracles are homeostat chains (Aaron 2026-06-15)
+
+*"They even have homeostats/gauges like us, and input/output and bus processors, then
+pluripotent generic processors at T=0. Insane how similar — our own oracle things are
+homeostat chains."* The CTM's built-in processor types at **T=0** (the rest **generic**) map
+across:
+
+- **Gauge / homeostat (fuel gauge)** ↔ **our oracles = homeostat chains.** A homeostat holds a
+  variable in range (Ashby, *Design for a Brain* — ultrastability); the CTM's gauge raises its
+  chunk's weight until it crosses threshold → forces corrective action (the oxygen-gauge →
+  "pain" primal word). **That loop IS our ISR arrow** — `SoftChip8Scheduler.signalIfStarved`
+  (gauge starved → interrupt → grow budget / lower goal / book ΔU, §9d/Craik). **Oracles
+  chained** = the multi-oracle system as composed regulators (each holds a value; the chain is
+  the composition).
+- **Input (sensory) / Output (motor)** ↔ our observe-input / actuator-commit surfaces.
+- **Bus processors** ↔ our bus / Reticulum routing (the notification router §9a; bus-address ≠
+  identity, the writer-actor-routing model).
+- **Generic / pluripotent at T=0** ↔ **our pluripotent stem-cell generic agents (§10)** — and
+  the CTM's *"links emerge over time"* (generic → specialized) **is differentiation over
+  time** = the root-compression's *differentiate the infinite (generic) with identity (links /
+  specialization / boundary)*. The CTM **independently** starts pluripotent-generic and
+  differentiates — direct convergent support for §10 + the root compression.
+
+*Peels:* (a) **convergence ≠ correctness** — both likely share cybernetics/GWT ancestry (Ashby
+homeostat; Baars GWT), so it confirms the shape is *natural*, not that either is right. (b)
+**"oracles = homeostat chains" is an anchored *framing*** (Ashby ultrastability) — the **ISR
+arrow `signalIfStarved` is the clean *built* homeostat**; a single `HomeostatChain` type isn't
+built (gauge/oracle support is scattered across `src/Core/*`), so the chain-of-oracles is
+design. (c) §B grand-synthesis; the convergence is motivation, not the prize won.
+
 ## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
 
 *"Self-organization is driven by a mutual-empowerment fitness function — that's the purpose of
