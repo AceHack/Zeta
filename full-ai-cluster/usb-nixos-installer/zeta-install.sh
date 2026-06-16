@@ -405,6 +405,18 @@ sudo git clone "$REPO_URL" /mnt/etc/zeta
 
 echo "Generating hardware-configuration.nix ..."
 sudo nixos-generate-config --root /mnt --force
+# B-0891 / B-0831: flake hosts import ./hardware-configuration.nix from the
+# repo tree (stub until replaced). Without this copy, nixos-install bakes the
+# placeholder (no virtio_blk in initrd) and QEMU phase-2 UEFI boot hangs after
+# earlycon when root is on virtio (CI run 27598982580).
+HW_SRC="/mnt/etc/nixos/hardware-configuration.nix"
+HW_DST="/mnt/etc/zeta/full-ai-cluster/nixos/hosts/${HOST}/hardware-configuration.nix"
+if [ -f "$HW_SRC" ] && [ -e "$HW_DST" ]; then
+  echo "[iter-5.1] installing probe-generated hardware-configuration.nix for ${HOST} ..."
+  sudo cp "$HW_SRC" "$HW_DST"
+else
+  echo "[iter-5.1] WARN: hardware-configuration not copied (src=${HW_SRC} dst=${HW_DST})" >&2
+fi
 
 # ── Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey ────
 # Per B-0789: zflash on macOS writes ~/.ssh/id_ed25519.pub to the
