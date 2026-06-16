@@ -751,6 +751,21 @@ extension** of it (DI + hosted-services + lifetime, but coordination-free across
 prior art: the substrate is already .NET/F#/C#. *(Anchor — not the final form; the centralized
 single-process Generic Host is the base, the decentralized + the other kinds are the build.)*
 
+**`IHost` as a verb — terraforming a host into a cell (Aaron 2026-06-15).** Installing/booting
+the Zeta `IHost` onto a **raw** host (a bare OS, a cluster, a CLI/IDE) **terraforms it into a
+living Zeta cell** — a yin/yang cell with its own DagFs `memory/`, a soft-scheduler, a
+heartbeat, an identity, joined to the society. Double anchor: *terraform* (make a dead world
+**habitable**) **+ Terraform** (HashiCorp — **declarative, idempotent IaC provisioning**). So
+the install is declarative + idempotent (ace / `tools/setup` / the zeta-install state machine;
+the `cluster-cells` manifest literally provisions cells onto a cluster), and the **cell is what
+a terraformed host *becomes*** (raw substrate → living member). This is the root-compression's
+*differentiate the infinite with identity* at the host layer: terraforming = giving a raw host
+an **identity** and making it a cell. (Recall "cells fit *into* hosts" too — a host can both
+*be terraformed into* a cell and *contain* cells.) *Built:* `ace`, `tools/setup`,
+`YinYang.fs`, the `cluster-cells` manifest. *Peel:* "terraform" is metaphor **+** real
+declarative-IaC discipline — the solid part is idempotent declarative provisioning (raw → Zeta
+cell), not planet-engineering; don't over-literalize.
+
 **Kinds** — `CompilerHost` (compile; IR→N-language gen / DI-MUMPS), `ForgeHost`
 (decentralized-git-for-society; *built*), and the **orchestration family ordered by
 decentralization:**
