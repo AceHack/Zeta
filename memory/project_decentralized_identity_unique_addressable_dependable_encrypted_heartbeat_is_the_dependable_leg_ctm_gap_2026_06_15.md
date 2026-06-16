@@ -1,8 +1,9 @@
 ---
 name: decentralized-identity-unique-addressable-dependable-encrypted-heartbeat-dependable-leg
 description: "Aaron 2026-06-15: decentralized identity is one of Zeta's hardest INITIAL problems — proving you are a UNIQUE, ADDRESSABLE, DEPENDABLE identity with no central authority, plus encryption. The heartbeat ('I commit therefore I am') is the DEPENDABLE leg. Ours is half-built and mapped out (ZetaId = unique; bus-address/Reticulum = addressable; heartbeat-via-commit + never-nowhere = dependable; Crypto.fs = encrypted). The CTM/consciousness framework does NOT solve this — different scope (single-machine mind, not multi-agent decentralized identity)."
+type: project
+created: 2026-06-15
 metadata:
-  type: project
   node_type: memory
   originSessionId: a9bca54f-fdf0-41b7-8def-cb33ee1bec26
 ---

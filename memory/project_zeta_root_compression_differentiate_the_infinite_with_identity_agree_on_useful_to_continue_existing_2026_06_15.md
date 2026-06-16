@@ -1,8 +1,9 @@
 ---
 name: zeta-root-compression-differentiate-the-infinite-with-identity
 description: "Aaron 2026-06-15: the one-breath root compression of the whole Zeta society arc — 'we differentiate the infinite with identity, then make them agree on what's useful enough to continue existing.' Identity = the differentiation operator on the infinite pluripotent substrate (stem cell/free object/db-DagFs); mutual-empowerment-graded, Eve-mediated agreement = the selection for continued existence (graded resourcing, never-nowhere floor, NO culling). The umbrella over the entire society arc; §B grand-synthesis, open prize."
+type: project
+created: 2026-06-15
 metadata:
-  type: project
   node_type: memory
   originSessionId: a9bca54f-fdf0-41b7-8def-cb33ee1bec26
 ---
