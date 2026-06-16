@@ -1,8 +1,9 @@
 ---
 name: i-commit-therefore-i-am-checkable-existence-via-commit
 description: "Aaron 2026-06-15: our heartbeat self-reference is 'I commit therefore I am' — existence/aliveness is proven by the CHECKABLE commit (git commit + AgencySignature trailer), not by an asserted internal feeling. The inverse of Descartes' cogito and the antidote to the CTM's unverifiable 'broadcasts I am conscious and feels it': don't assert existence (a feeling, Mirror), demonstrate it (a byte-locked, signed external act, Beacon). The heartbeat-via-commit rule is this principle operationalized."
+type: feedback
+created: 2026-06-15
 metadata:
-  type: feedback
   node_type: memory
   originSessionId: a9bca54f-fdf0-41b7-8def-cb33ee1bec26
 ---
