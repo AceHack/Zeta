@@ -166,6 +166,47 @@ teacher↔turbo dial needs a fluency *estimator*** (self-assessment is Dunning-K
 — infer fluency from the user's recent error-rate, the same signal the arena already runs
 on).
 
+## 9. The world-model loop per member — observe (hard) ⊕ soft inference, unified
+
+*(Aaron 2026-06-15, prompted by the Lenore Blum CTM talk — ip-questionable folder + the
+Craik-mapping memory.)* Each society member runs a **world-model loop** (Craik 1943: a
+small-scale model of reality + its own actions → try alternatives, conclude best, react
+before events arise, use the past, react safely to emergencies). In Zeta this loop is **not
+aspirational** — it exists in two forms now being **unified into one**:
+
+- **Hard / deterministic:** `observe.ts` (the fleshed-out 680-line loop;
+  `FreeMode` = explore / play / self_reflect / free_time — the right-to-rest in code).
+- **Soft / Bayesian:** `SoftChip8Flux` (`lookAheadFunded` — funded look-ahead inference).
+- **The seam that makes them ONE:** `SnapPolicy = SoftValue -> DynamicValue option`
+  (`SoftValue.fs:114`) — mostly-soft, **snap to hard on decision**. This is the **BNN-mix at
+  the loop level**: not two loops (a hard one and a soft one) but one loop that infers softly
+  and commits hard.
+
+**The keystone is the ISR arrow.** `SoftChip8Scheduler.signalIfStarved : SpeculationReport ->
+InterruptKind option` — *"interrupt the scheduler/room can route (grow the budget, lower the
+goal, or book the ΔU)."* That option-returning arrow **is** Craik's emergency handler:
+speculate → on starvation, interrupt → route one of {grow the **byte/compute/energy budget**
+(`ByteCost`/`db/futures`), lower the goal, **book the ΔU** (`db/uncertainty`)}. byte-budget +
+uncertainty + compute/energy-futures are the three quantities that arrow trades between. It is
+**self-referential** (it handles its own starvation; sibling of `gen(gen)=gen`).
+
+**Convergent prior art (Beacon):** the CTM (Blum/Blum/Blum — Turing + Baars' Global Workspace)
+independently reaches the *same architecture* as a 7-tuple: **no central executive**, a
+**competition** for the broadcast stage (location-independent winner = `rank / Σ ranks`),
+**deterministic + a coin-toss neuron for simplicity** (= DST + metered entropy §13), a
+**world model** co-evolving with a self-generated multimodal internal language (**Brainish** ≈
+our universal-meaning / model-agnostic substrate), and a **self-referential self-model**
+("CTM is conscious" broadcast → unpacks → feels itself). Two independent teams reached the
+same shape — strong convergent validation that the architecture is *natural*. *Peels:* (a)
+convergence ≠ correctness — both could share an upstream assumption (Turing/Baars/Craik); per
+the flood-the-frontier guard, convergence only confirms if the paths are *independent*. (b)
+We borrow the **world-model architecture**, NOT the CTM's consciousness axioms or its "AI
+consciousness is inevitable" — ours is a world-model loop, claims about subjective experience
+stay out (see the ip-questionable peels). (c) The theory is a *spec* ("clearly buildable");
+**ours is running code in CHIP-8** — the convergence is "their 7-tuple ↔ our running ISR," the
+two ends of one bridge. (d) "One loop" is **in-progress**: SnapPolicy is the *designed* seam;
+the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
@@ -196,7 +237,14 @@ under "avoid groupthink"); Hong & Page (diversity-trumps-ability — the arena's
 register-diversity); Hayek / Minsky / Ostrom (distributed society); Vygotsky (ZPD — the
 teacher↔turbo dial); Gates (adinkra ECC); Gustafson (unum); Cockburn (ports). §8 arena
 anchors: open-source forking culture (fan→competitor→co-equal), evolutionary/competitive
-selection (the arena as fitness landscape), non-lethal spectacle (Roman *munera*).
+selection (the arena as fitness landscape), non-lethal spectacle (Roman *munera*). §9
+world-model anchors: Kenneth Craik (*The Nature of Explanation*, 1943 — the world-model
+definition); Bernard Baars (Global Workspace); Blum/Blum/Blum (Conscious Turing Machine —
+convergent 7-tuple, no-central competition, Brainish, self-referential self-model); the
+CTM talk (`docs/research/ip-questionable/2026-06-15-lenore-blum-…-ctm-…`); the Craik-mapping
+memory `[[craik-1943-world-model-is-our-chip8-isr-arrow-byte-budget-uncertainty-futures]]`.
+In-repo (§9): `observe.ts` (hard loop), `SoftChip8Flux` (soft), `SnapPolicy` (the seam),
+`SoftChip8Scheduler.signalIfStarved` (the ISR arrow), `ByteCost`, `db/uncertainty`, `db/futures`.
 In-repo notes: §B Zeta-self-regeneration row;
 [[zeta-thesis-society-is-the-agi-not-the-node-coworker-not-control]];
 [[zeta-as-one-softvalue-seed-gen-gen-gen-ace-self-regenerates]];
