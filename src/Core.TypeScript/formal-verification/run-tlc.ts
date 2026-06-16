@@ -54,6 +54,37 @@ import { spawnSync } from "node:child_process";
 
 type ExitCode = 0 | 1 | 2 | 3;
 
+/** Max attempts per spec when the JVM CRASHES (native OOM / fatal error), NOT
+ *  when TLC finds a real violation. Under `--all` the accumulated memory
+ *  pressure of the sequential suite can make a fresh JVM fail to reserve its
+ *  heap at startup (a flake: the spec passes when run alone). A real
+ *  invariant/parse failure is deterministic and is NEVER retried. */
+const MAX_JVM_ATTEMPTS = 3;
+/** Settle delay between JVM-crash retries, so the prior process fully releases
+ *  memory before the next attempt. Synchronous (the runner is sync). */
+const JVM_RETRY_SETTLE_MS = 1500;
+
+/** A JVM-level fatal crash (hs_err / native OOM / could-not-reserve-heap /
+ *  SIGSEGV) — distinct from a TLC invariant violation (which TLC reports
+ *  cleanly via stdout with a non-zero status). Only these are retried. */
+function isJvmFatalCrash(stdout: string, stderr: string): boolean {
+  const blob = `${stdout}\n${stderr}`;
+  return (
+    /A fatal error has been detected by the Java Runtime Environment/i.test(blob) ||
+    /There is insufficient memory for the Java Runtime Environment/i.test(blob) ||
+    /Could not reserve enough space for .* object heap/i.test(blob) ||
+    /hs_err_pid\d+/i.test(blob) ||
+    /Native memory allocation \(\w+\) failed/i.test(blob)
+  );
+}
+
+/** Synchronous sleep (the runner is sync; avoids racing the next JVM start
+ *  against the prior process's memory release). */
+function sleepSync(ms: number): void {
+  const shared = new Int32Array(new SharedArrayBuffer(4));
+  Atomics.wait(shared, 0, 0, ms);
+}
+
 /** Escape regex metacharacters so user-supplied spec names cannot
  *  cause unintended file matches in trace cleanup. Per #1412 P0
  *  CodeQL finding: a specName containing `.` or `*` would otherwise
@@ -158,27 +189,50 @@ interface TlcResult {
 function runTlc(toolchain: Toolchain, specName: string): TlcResult {
   // Run from specsPath so TLC's file-resolution finds <SpecName>.tla
   // and <SpecName>.cfg without absolute-path arguments.
-  const result = spawnSync(
-    toolchain.javaPath,
-    ["-cp", toolchain.tlaJarPath, "tlc2.TLC", specName],
-    {
-      cwd: toolchain.specsPath,
-      encoding: "utf8",
-      maxBuffer: SPAWN_MAX_BUFFER,
-      timeout: 300_000, // 5 min hard cap per spec
-    },
-  );
-  cleanupTraceFiles(toolchain.specsPath, specName);
-  const stdout = result.stdout ?? "";
-  const stderr = result.stderr ?? "";
-  // TLC exits 0 on success; non-zero on parse error / invariant
-  // violation / deadlock-detection / etc. Cross-check against the
-  // success marker in stdout for belt-and-suspenders.
+  //
+  // Retry ONLY on a JVM fatal crash (native OOM at startup under the suite's
+  // accumulated memory pressure) — never on a real TLC failure, which is
+  // deterministic and must surface on the first attempt.
+  let stdout = "";
+  let stderr = "";
+  let status: number | null = -1;
+  for (let attempt = 1; attempt <= MAX_JVM_ATTEMPTS; attempt++) {
+    const result = spawnSync(
+      toolchain.javaPath,
+      ["-cp", toolchain.tlaJarPath, "tlc2.TLC", specName],
+      {
+        cwd: toolchain.specsPath,
+        encoding: "utf8",
+        maxBuffer: SPAWN_MAX_BUFFER,
+        timeout: 300_000, // 5 min hard cap per spec
+      },
+    );
+    cleanupTraceFiles(toolchain.specsPath, specName);
+    stdout = result.stdout ?? "";
+    stderr = result.stderr ?? "";
+    status = result.status;
+    // TLC exits 0 on success; non-zero on parse error / invariant
+    // violation / deadlock-detection / etc. Cross-check against the
+    // success marker in stdout for belt-and-suspenders.
+    const ok =
+      result.status === 0 &&
+      stdout.includes("Model checking completed. No error has been found");
+    if (ok) break;
+    // Only a JVM CRASH (not a TLC violation) is a flake worth retrying.
+    if (attempt < MAX_JVM_ATTEMPTS && isJvmFatalCrash(stdout, stderr)) {
+      process.stderr.write(
+        `WARN: ${specName} — JVM fatal crash (not a TLC violation) on attempt ${String(attempt)}/${String(MAX_JVM_ATTEMPTS)}; settling ${String(JVM_RETRY_SETTLE_MS)}ms and retrying\n`,
+      );
+      sleepSync(JVM_RETRY_SETTLE_MS);
+      continue;
+    }
+    break; // deterministic TLC failure, or out of retries — surface it
+  }
   const success =
-    result.status === 0 &&
+    status === 0 &&
     stdout.includes("Model checking completed. No error has been found");
   return {
-    exitCode: result.status ?? -1,
+    exitCode: status ?? -1,
     stdout,
     stderr,
     success,
