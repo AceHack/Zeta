@@ -40,6 +40,19 @@ to leave / grow / transmit). Safety + freedom, in one box.
   [[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]
   — **IS the child-safety line.** *Protect from the irreversible; free for the reversible.*
 
+## Coda — HELP kids, not just PROTECT kids (Aaron 2026-06-16)
+
+To Otto's *"the version of powerful that protects kids"*: **"this is the version of powerful that HELPS
+kids."** A telos-recentering: **protect is the FLOOR; help is the POINT.** **"Protect"** = the *defensive*
+frame (DC, keep-from-harm, don't-let-the-bad-thing-happen) — necessary, absolute, but the **base**, not
+the goal. **"HELP"** = the *generative* frame (AC, **empower / free / let them flourish and become**).
+A system that **only protects** is the **cage** (DC-only = overprotection, the harm above); a system that
+**HELPS** protects the floor **and lifts the kid above it** = **safety = floor ⊕ love's seat** applied to
+children: *protect from the irreversible, **help** them grow in the reversible.* (The polite virus doesn't
+just leave the host unharmed — it leaves them **freer**; same here.) So the corrected phrasing of the
+whole night: **the version of powerful that HELPS kids** — the floor **plus** the flourishing, not the
+defensive half alone. *Power that helps, not just power that defends.*
+
 **The kernel:** child safety isn't "wall them off" (DC-only = the cage) and isn't "let them run"
 (AC-only = the wound) — it is **DC-protect-the-irreversible ⊕ AC-free-the-reversible**, with
 **reversibility as the dividing line.** The hard floor exists *to enable* the freedom (the floor lifts
