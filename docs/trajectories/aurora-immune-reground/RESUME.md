@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — scoped + Soraya-routed; awaiting Kenji sizing of the 2 TLA+ rounds**
+Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. Next: the FsCheck/Z3 smalls + (a) d_self wiring → §A promotion.**
 Last refreshed: 2026-06-16
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
@@ -39,20 +39,24 @@ theorems, not metaphor.
     observable state; horizon H genuinely gates repair; HarmFloor's `~irreversible` clause is
     independent of the Commit guard. All three §4.1 cases probe-verified reachable
     (accept / irreversible-block / past-horizon-block).
-- ⏳ **Reviewer RE-confirmation pending:** Viktor (b) + Kira (e) found v1 false-green (correctly);
-  v2 addresses every named P0. Re-review the v2 specs before §A promotion.
+- ✅ **Reviewer RE-confirmation DONE (2026-06-16) — both PASS:** Viktor (b) + Kira (e) found v1
+  false-green (correctly); **v2 RE-CONFIRMED PASS by both** (fold pivotal + RawQuorum load-bearing +
+  equivocation-exclusion correct/non-degenerate, b; HarmFloor non-circular + block branches
+  reachable + H load-bearing + partition derived, e). Two non-blocking **P2s addressed in-spec**:
+  (b) the `"none"`=abstain-neutral assumption is now stated; (e) the safety-only scope is stated
+  (Refuse is *enabled* not *forced*; liveness via `WF_vars(Refuse)` is a v3 option). **The formal
+  round is CLOSED.**
 
 ## Next concrete steps (in order)
 
-1. **Viktor / Kira:** re-confirm the v2 specs are non-vacuous + model the real property.
-2. **(a) wiring task:** point Aurora's `d_self` predicate at `NonRegisterCollapse` (no new proof).
-3. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16): the Aurora §4.1 retraction sim (e) +
+1. **(a) wiring task:** point Aurora's `d_self` predicate at `NonRegisterCollapse` (no new proof).
+2. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16): the Aurora §4.1 retraction sim (e) +
    the Z3 honest-count side (b).
-4. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
-5. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
-6. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
+3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
+4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
+5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
    (e) multi-claim substrate + multi-hop kernel reachability is the v3.
-7. **Promotion:** when operators stand on proven legs + Aurora's 5 tests pass → open a §B row
+6. **Promotion:** when operators stand on proven legs + Aurora's 5 tests pass → open a §B row
    *"Aurora immune re-grounded on the proven identity primitive"*; promote one operator at a time (§C).
 
 ## Hygiene flag (separate, not bundled here)

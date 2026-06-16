@@ -86,6 +86,12 @@ Commit ==
 
 \* REFUSE (block): a REACHABLE state where the gate fired and said no — irreversible,
 \* or harm could not reach the kernel within the horizon (R_H = {}).
+\* SCOPE (Kira v2 P2 — safety-only, stated honestly): this spec proves the SAFETY
+\* floor — a harmful/irreversible/over-horizon insert is NEVER COMMITTED (HarmFloor).
+\* It does NOT prove LIVENESS — a `pending` over-horizon insert is *enabled* to Refuse
+\* (with Commit disabled), not *forced* to: absent fairness it may Stutter. §4.1 is a
+\* safety floor, so this is in-scope; banking "it IS refused" would need `WF_vars(Refuse)`
+\* + a `<>(phase # "pending")` liveness check (v3, alongside the multi-hop refinement).
 Refuse ==
     /\ phase = "pending"
     /\ ( irrevFlag \/ (clock >= H /\ curHarm > 0) )

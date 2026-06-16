@@ -53,6 +53,10 @@ VotersOf(v) == { n \in Nodes : votes[n] = v }
 \* twice) supports NOTHING — self-exclusion, the BFT treatment of double-voting.
 \* (TLC surfaced the v2a bug: without this, one ring votes both sides → conflicting
 \* quorums. This is the stronger anti-Sybil result: equivocation forfeits the vote.)
+\* ASSUMPTION (Viktor v2 P2, made explicit): "none" is NEUTRAL — a class with some
+\* nodes voting v and the rest still "none" SHALL count as support for v (a
+\* not-yet-voted node neither blocks nor splits). This is a deliberate design choice
+\* (abstain = neutral, not dissent); it is load-bearing and stated, not drift.
 SupportsValue(c, v) ==
     /\ \E n \in c : votes[n] = v
     /\ \A n \in c : votes[n] \in {v, "none"}
