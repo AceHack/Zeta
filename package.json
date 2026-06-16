@@ -20,7 +20,8 @@
     "hygiene:sort-tick-history": "bun ./tools/hygiene/sort-tick-history-canonical.ts",
     "hygiene:fix-markdown": "bun ./tools/hygiene/fix-markdown-md032-md026.ts",
     "hygiene:check-bash-retirement-inventory": "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
-    "shadow": "bun src/Core.TypeScript/shadow/zeta-shadow.ts"
+    "shadow": "bun src/Core.TypeScript/shadow/zeta-shadow.ts",
+    "summon": "bun ./src/Core.TypeScript/peer-call/summon.ts"
   },
   "bin": {
     "ace": "src/Core.TypeScript/ace/ace.ts",

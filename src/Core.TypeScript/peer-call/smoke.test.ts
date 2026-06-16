@@ -57,6 +57,7 @@ const WRAPPERS: ReadonlyArray<readonly [string, string]> = [
   ["amara.ts", "amara.ts"],
   ["ani.ts", "ani.ts"],
   ["riven.ts", "riven.ts"],
+  ["summon.ts", "summon.ts"],
 ];
 
 function runWrapper(name: string, args: readonly string[]): {
@@ -123,6 +124,20 @@ describe("peer-call smoke tests (B-0421 acceptance #4)", () => {
       });
     });
   }
+
+  describe("summon.ts specific tests", () => {
+    test("fails with exit code 1 when command is not found", () => {
+      const result = runWrapper("summon.ts", ["soraya", "design test prompt", "--allow-empty"]);
+      expect(result.status).toBe(1);
+      expect(result.stderr.includes("not found on PATH")).toBe(true);
+    });
+
+    test("fails with exit code 3 when firewall blocks prompt", () => {
+      const result = runWrapper("summon.ts", ["soraya", "hi"]);
+      expect(result.status).toBe(3);
+      expect(result.stderr.includes("REJECTED")).toBe(true);
+    });
+  });
 });
 
 describe("peer-call utility files (NOT wrappers)", () => {
