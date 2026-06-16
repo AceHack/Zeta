@@ -61,6 +61,11 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Same install path + retry as gate.yml so the heal uses the SAME
         # mise-pinned markdownlint-cli2 / bun the gate uses (version parity).
+        # Pass only mise's read-only GitHub release-metadata token, matching
+        # memory-index-* lints. The privileged apply workflow remains separate
+        # and still executes no PR-controlled code.
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do

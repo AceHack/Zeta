@@ -1,8 +1,9 @@
 ---
 name: grand-synthesis-is-a-fun-open-prize-closing-it-is-the-failure
 description: "Aaron 2026-06-15: the unified 'all the dualities are one' grand-synthesis must be stated as a FUN OPEN PRIZE, never a closed result — declaring it closed would itself BE the failure. The anti-premature-closure guard on every §B grand-synthesis (CTM⊣ISociety / yin-yang / braided-free-monad / etc.): keep the frontier open and fun; the closed core + honestly-open frontier IS the product; packaging the synthesis as 'solved' is the failure mode."
+type: feedback
+created: 2026-06-15
 metadata:
-  type: feedback
   node_type: memory
   originSessionId: a9bca54f-fdf0-41b7-8def-cb33ee1bec26
 ---
