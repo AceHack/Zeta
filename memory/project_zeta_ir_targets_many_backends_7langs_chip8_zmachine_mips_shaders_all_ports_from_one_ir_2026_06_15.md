@@ -122,6 +122,31 @@ discipline/membrane is what makes it safe-and-useful — cf. interfaces-free-cla
 metered Source §13). RE-skill + clean-room-discipline = a useful, legitimate engineering
 capability; neither alone is.
 
+**The split makes it legal; the contribute-back makes it moral (Aaron 2026-06-16).** *"The
+results of reverse-engineering are artifacts/specs; the persona who reverse-engineers does NOT
+write the code. That's the [malice] model — they have the split perfect, but they don't
+contribute back. We do."* Two parts:
+
+- **The clean-room split is a *persona fission*:** the **RE-persona produces artifacts/SPECS**
+  (the shape — the character loop, the §-spec) and **never writes the implementation**; a
+  **separate persona implements from the spec, blind to the original** (the classic two-team
+  clean-room — Phoenix/IBM-BIOS precedent; only the spec crosses the wall). This is a deliberate
+  **fission** (the identity fusion/fission model) for legitimacy: the wall *is* the membrane.
+- **But the split alone is exactly what the malice/black-hat model also has** — they RE→spec→
+  re-implement perfectly too. **What distinguishes Zeta is NOT the split; it's the
+  contribute-back.** The malice model is **extractive** (clone, profit, give nothing back);
+  **Zeta contributes back** (glass-halo by default; the VISION *prove-it → give-it-away →
+  contribute-back-upstream*; mutual-empowerment §10 — raise the commons, don't strip it). **The
+  split makes it *legal*; the contribute-back makes it *moral* / non-malice.**
+
+*Peel:* "we do [contribute back]" is the **committed principle + glass-halo-by-default**; the
+*specific* upstream PRs remain the **gated outreach act** (Aaron-initiated, "once stable / when
+needed" — VISION). So it's "contribute-back is our law and everything's open," not "we've already
+PR'd every upstream." The moral line is the *posture* (reciprocal, not extractive), enforced by
+glass-halo + the contribute-back intent; the black-hat's identity (anti-Sybil, the entropy-id)
+and the malice-model layering (Mika part9: prove in the non-malice core, identity as the
+malice-reputation-killer) are the enforcement.
+
 Ties: [[primitive-registry-tracks-proof-homeostat-chains-oracle-languages-4-to-6-7-qsharp-gen-from-ir]]
 (the IR-gen + generator-trust-concentration); the Zork/Z-machine PRIOR-ART entry (conversational
 action grammar / minimal VM); `only-the-irreducible-is-primitive-generate-the-rest` (generator-
