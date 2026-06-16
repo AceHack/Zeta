@@ -92,6 +92,11 @@ Commit ==
 \* (with Commit disabled), not *forced* to: absent fairness it may Stutter. §4.1 is a
 \* safety floor, so this is in-scope; banking "it IS refused" would need `WF_vars(Refuse)`
 \* + a `<>(phase # "pending")` liveness check (v3, alongside the multi-hop refinement).
+\* LIVENESS PATH (Aaron 2026-06-16): the route from this safety floor TO liveness is
+\* **observe.ts** — the flushed-out *hard*-observe being unified with the *soft* inference
+\* (the observe⊕soft unification; observe.ts WorkspacePort is in active build). Progress/
+\* fairness ("the over-horizon insert IS refused", not merely can-be) is reached there, not
+\* by bolting WF onto this toy. Deferred + tracked — come back to it once observe⊕soft lands.
 Refuse ==
     /\ phase = "pending"
     /\ ( irrevFlag \/ (clock >= H /\ curHarm > 0) )

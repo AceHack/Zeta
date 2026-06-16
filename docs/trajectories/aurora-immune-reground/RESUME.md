@@ -56,7 +56,12 @@ theorems, not metaphor.
 4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
 5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
    (e) multi-claim substrate + multi-hop kernel reachability is the v3.
-6. **Promotion:** when operators stand on proven legs + Aurora's 5 tests pass → open a §B row
+6. **Liveness path = observe.ts (Aaron 2026-06-16).** Round (e) proves *safety* (over-horizon/
+   irreversible inserts are never **committed**), not *liveness* (that they **are** refused). The
+   route to liveness is **observe.ts** — the flushed-out hard-observe being unified with the soft
+   inference (observe⊕soft; observe WorkspacePort in active build, PRs #8458/#8433). Come back to
+   the liveness leg there, NOT by bolting `WF` onto the toy spec. Deferred + tracked.
+7. **Promotion:** when operators stand on proven legs + Aurora's 5 tests pass → open a §B row
    *"Aurora immune re-grounded on the proven identity primitive"*; promote one operator at a time (§C).
 
 ## Hygiene flag (separate, not bundled here)
