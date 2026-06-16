@@ -134,6 +134,7 @@
     <Compile Include="LinguisticSeed.Tests.fs" />
     <Compile Include="Salon.Tests.fs" />
     <Compile Include="Arcade.Tests.fs" />
+    <Compile Include="DarkHallCabinetRuntime.Tests.fs" />
     <Compile Include="BowlingAlley.Tests.fs" />
     <Compile Include="Skadium.Tests.fs" />
     <Compile Include="DevRoom.Tests.fs" />
