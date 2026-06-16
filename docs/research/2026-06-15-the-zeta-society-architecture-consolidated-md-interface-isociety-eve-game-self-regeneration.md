@@ -239,6 +239,27 @@ stay out (see the ip-questionable peels). (c) The theory is a *spec* ("clearly b
 two ends of one bridge. (d) "One loop" is **in-progress**: SnapPolicy is the *designed* seam;
 the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
 
+### 9a. The duality — CTM ⊣ ISociety (the two faces of the membrane) (Aaron 2026-06-15)
+
+*"CTM is the interface Society expects individual or collective units to look like; ISociety
+is the interface that CTMs expect."* So **CTM and ISociety are dual interfaces across one
+membrane** (the Markov boundary, §3): looking **in**, every member must present a **CTM**
+(the world-model-loop shape — accepts scheduled work, runs the loop, emits intentions/
+notifications, presents one address); looking **out**, every member sees an **`ISociety`**
+(the two-way scheduler — §4: schedule work *for* society, receive work routed *to* you). This
+is **hexagonal ports** (Cockburn): CTM = the port the society drives; ISociety = the port the
+CTM drives — two adapters on the same boundary. **Self-similar / scale-free (§9/§10):** a
+*collective* (fused unit, §-seams) presents the **same CTM interface** as an *individual* —
+one external address, internally merged-or-metered — so "unit" is CTM at every scale, and a
+society can itself be a CTM in a larger ISociety, recursively. The fusion duality (one
+external address) is *why* individual and collective look identical to the society: both are
+just "a CTM." *Peels:* (a) both sides are still **reframes** — the CTM-as-member-contract must
+be *defined* (the 7-tuple is their model; ours is the world-model-loop's external contract),
+and `ISociety` is §4-design; the duality is two reframes meeting, not two built ports. (b)
+**don't over-claim a formal adjunction** — "CTM ⊣ ISociety" is a *port-duality* (suggestive of
+an adjunction); whether it is literally adjoint is a math-team question, not asserted here.
+(c) the in-face borrows the CTM *architecture*, never its consciousness axioms (9(b)).
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
