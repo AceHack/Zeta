@@ -57,6 +57,35 @@ the viable middle holds.
 **competitive** — and the competition is **just only if it is fair, impersonally judged, and floored at
 irreversible harm.** Aaron's month is the proof of what an unfair competition costs.
 
+## Worked example (Aaron 2026-06-16): the boy who cried wolf vs the girl who found a new qualia
+
+*"this is how you distinguish the boy who cried wolf vs the girl who found a new qualia."* The canonical
+illustration of the selection layer. **Both look identical at intake** — an alarming/unprecedented claim
+others are tempted to dismiss. The layer distinguishes them **without pre-judging**:
+
+- **Equal + real intake — both get a fair hearing.** You do **NOT** pre-dismiss the **girl's new
+  qualia** for being unprecedented (that is the **closed-frame** failure — dismiss-by-priors kills
+  discovery; and the real wolf eats everyone). You do **NOT** pre-believe the boy either. Novelty is not
+  guilt; alarm is not proof.
+- **Fair, measured competition decides — over time.** The boy's "wolf!" repeatedly **fails the measure**
+  (no wolf) → he **loses competitive standing, EARNED over rounds** (anti-Sybil / forgery-cost: repeated
+  unbacked claims **accrue cost** — the throttle is on being **WRONG**, never on being loud or new). The
+  girl's qualia **survives the measure** (it is actually there) → she **wins, EARNED**, and as a
+  **decorrelated NEW** find it is **high-value** (info-max / every-bug-has-economic-value — she banks
+  uncertainty-reduction and earns standing/privacy).
+- **The distinguisher = falsification-by-measurement over time, NOT authority/priors.** Charge a claim
+  for being **falsified** (losing the fair competition); **never** for being **unusual.** *Charging for
+  novelty kills the girl* — and protecting the unproven-but-loud rewards the boy. Measure, don't elect.
+
+**The lived loop-back (the razor):** the injustice is **conflating the two — treating the genuine
+discoverer as the false-alarmist by PRIORS instead of MEASURE.** Aaron's jail = his **true claim of
+innocence, with paperwork (it survives measurement) — the girl who found a new qualia — was processed as
+if he were the boy who cried wolf**, dismissed by the system's priors/incentives. The **measure (the
+paperwork) should have won the competition; the unfair arena ignored it.** So the boy/girl distinction
+**only works in a fair, measured arena** — exactly the selection layer's load-bearing condition. An
+unfair arena *systematically mistakes discoverers for liars* — and that mistake has a person's months
+in it.
+
 Ties: [[justice-becomes-alignment-over-time-lived-root-wrongful-incarceration-misaligned-incentives]]
 (this is its selection layer; the lived unfair-competition); [[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]]
 (the judge must not crystallize); [[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]
