@@ -53,6 +53,36 @@ the universal-meaning-interface), not the pun. Don't over-weight the wordplay.
 - **The Transformer-pun stays Mirror** (see above) — the load-bearing Beacon is cross-frame transmission
   via a transforming translator, however implemented.
 
+## The CONSOLIDATION (Aaron 2026-06-16): Tesla = self-actualization, Edison = safety — STACK them (Maslow), don't choose
+
+*"and the consolidation is Tesla = self-actualization, Edison = safety."* The resolution of the
+apparent rivalry: **it's not Tesla *vs* Edison — it's Tesla *on* Edison.** A **stack (Maslow's
+hierarchy)**, not a choice:
+
+- **Edison = DC = local/reliable = SAFETY = the FLOOR.** The non-negotiable base — the **child-safety /
+  irreversible-harm floor**, the `−` reversibility brake, the thing that must hold first. You don't
+  transmit from a frame that isn't safe.
+- **Tesla = AC = transmit-across-frames = SELF-ACTUALIZATION = the PEAK.** The aspirational payload — the
+  `×` empowerment, *becoming your full self*, reaching every frame. The polite virus's "leaves the host
+  **freer**" is self-actualization.
+
+**Safety enables actualization; you build the Tesla peak ON the Edison floor.** This dissolves the false
+rivalry (and the earlier "AC-supremacy is too clean" razor): **both, stacked.** It is catalyst ⊕ governor
+again (Tesla = reaching drive; Edison = safety governor) and ruthless ⊕ love seated (the reach *and* the
+floor). Human anchor: **Maslow (1943)** — safety (base) → self-actualization (top).
+
+**Two razors:**
+- **Maslow's strict ladder is too rigid** — people self-actualize amid insecurity; the levels aren't
+  cleanly sequential. The *only* strictly-first part is the **irreversible-harm floor** (hard); the rest
+  is a **soft gradient, not a gate** — don't turn "no actualizing until perfectly safe" into a cage.
+- **"Edison = safety" has a SHADOW.** Historically Edison **weaponized "safety"** — the AC-fear campaign
+  (electrocuting animals to scare people off Tesla's current). That is **safety-as-FUD**: safety invoked
+  not as a floor but as a **weapon to suppress another's self-actualization.** So the consolidation must
+  be **real-safety-that-enables** (the floor lifts the peak), **never safety-theater-that-suppresses**
+  (the crystallized governor using "safety" as control — the
+  [[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]] failure). *The
+  floor lifts the peak; it does not forbid it.*
+
 **The kernel:** a pattern is **Edison/DC (local, frame-bound, resonates only in its home frame)** or
 **Tesla/AC (transmits across frames via transformers)**; **Mirror = Edison, Beacon = Tesla**; the
 **transformer is the cross-frame translator** (universal-meaning-interface / traveler-frame /
