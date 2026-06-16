@@ -412,6 +412,35 @@ commit*. (c) empowerment **pieces exist** (`SoftDrive.fs`, `SoftActionController
 (free-energy / active inference — adjacent); developmental-biology pluripotency; the §8 arena +
 §3 Eve coupled-empowerment.
 
+### 10a. Mutual empowerment is the engine that drives + grades the universal interfaces (Aaron 2026-06-15)
+
+*"This gives the math team the engine to drive our interfaces off of — the universal
+interfaces are driving toward mutual empowerment. That's how we grade an interface."* The
+fitness is not only the *self-organization* driver — it is the **objective the math team
+optimizes interfaces against**, and the **grading metric** for any interface:
+
+- **Grade(interface) = its mutual-empowerment delta.** An interface is *good* iff adopting it
+  **raises participants' coupled empowerment** (more reachable futures, for self *and* others);
+  *bad* iff it reduces them (coercion, lock-in, capture all score negative). This turns
+  interface design from taste into a **driven optimization** — the universal interfaces are
+  **derived by driving toward mutual empowerment** (generate-from-the-fitness, not
+  hand-designed — `only-the-irreducible`).
+- **It is the §D registry-promotion-gate's grading criterion.** The math team doesn't only
+  *prove* an interface correct — it **grades** it by mutual-empowerment before promotion
+  (§B→§A). "The math team proved the interfaces" (Eve's trust-distribution) gains a *metric*:
+  proven **and** empowerment-positive.
+
+*Peels:* (a) **it must be measurable** — Salge–Polani empowerment is computable in principle
+(channel capacity) but expensive; grading real interfaces needs a **tractable estimator**, the
+math team's actual work (the criterion is clean; the measurement is the hard part). (b) **whose
+empowerment, aggregated how?** "Mutual" still needs an aggregation choice — **min** (Rawlsian,
+protect the worst-off), **sum** (utilitarian), or **product** (Nash) give different grades;
+this is where the Arrow/fair-prioritization tension (§1) re-enters, so mutual-empowerment is a
+strong **default oracle** (§11), not an escape from social choice. (c) gameable — an interface
+can *inflate measured* empowerment without real option-gain (Goodhart); the estimator must
+resist proxy-gaming. (d) §B: the grading *engine* is design; empowerment primitives exist
+(`SoftDrive`/`Salience`), the interface-grader is the open build.
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
