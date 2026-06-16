@@ -254,7 +254,7 @@ jobs:
         # qemu-system-x86 for cascade #5 boot smoke-test
         # qemu-utils for qemu-img (cascade #6 Slice 1 virtual hard disk)
         # mtools for zflash file-backed ESP writes (B-0891 scenario 1 bake)
-        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools
+        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools ovmf
 
       - name: B-0891 scenario 1 — initial format (audit + zflash --test + QEMU boot)
         working-directory: full-ai-cluster

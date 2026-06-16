@@ -61,6 +61,16 @@ const CPU_COUNT = 2;
 const DISK_SIZE_GB = 20;
 const KVM_PATH = "/dev/kvm";
 
+const OVMF_CODE_CANDIDATES = [
+  "/usr/share/OVMF/OVMF_CODE.fd",
+  "/usr/share/qemu/OVMF_CODE.fd",
+] as const;
+
+const OVMF_VARS_TEMPLATE_CANDIDATES = [
+  "/usr/share/OVMF/OVMF_VARS.fd",
+  "/usr/share/qemu/OVMF_VARS.fd",
+] as const;
+
 interface InstallResult {
   readonly exitCode: 0 | 1 | 2;
   readonly reason: string;
@@ -112,7 +122,25 @@ function checkDependencies(): string | null {
   } catch {
     return "qemu-img not found in PATH; install via `apt-get install -y qemu-utils`";
   }
+  if (resolveOvmfFirmware() === null) {
+    return "OVMF firmware not found; install via `apt-get install -y ovmf` (phase 2 systemd-boot disk boot)";
+  }
   return null;
+}
+
+function resolveOvmfFirmware(): { readonly code: string; readonly varsTemplate: string } | null {
+  const code = OVMF_CODE_CANDIDATES.find((candidate) => existsSync(candidate));
+  const varsTemplate = OVMF_VARS_TEMPLATE_CANDIDATES.find((candidate) => existsSync(candidate));
+  if (!code || !varsTemplate) {
+    return null;
+  }
+  return { code, varsTemplate };
+}
+
+function prepareWritableOvmfVars(tmpDir: string, varsTemplate: string): string {
+  const varsPath = join(tmpDir, "OVMF_VARS.fd");
+  execFileSync("cp", [varsTemplate, varsPath]);
+  return varsPath;
 }
 
 function kvmEnabled(): boolean {
@@ -152,13 +180,19 @@ function buildQemuInstallArgs(isoPath: string, diskPath: string, serialLogPath: 
   return args;
 }
 
-function buildQemuDiskBootArgs(diskPath: string, serialLogPath: string): string[] {
+function buildQemuDiskBootArgs(diskPath: string, serialLogPath: string, tmpDir: string): string[] {
+  const ovmf = resolveOvmfFirmware();
+  if (!ovmf) {
+    throw new Error("OVMF firmware missing; cannot UEFI-boot installed systemd-boot disk");
+  }
+  const varsPath = prepareWritableOvmfVars(tmpDir, ovmf.varsTemplate);
   const args: string[] = [
     "-machine", "q35",
     "-m", String(MEMORY_MB),
     "-smp", String(CPU_COUNT),
+    "-drive", `if=pflash,format=raw,unit=0,readonly=on,file=${ovmf.code}`,
+    "-drive", `if=pflash,format=raw,unit=1,file=${varsPath}`,
     "-drive", `file=${diskPath},if=virtio,format=qcow2`,
-    "-boot", "c",
     "-serial", `file:${serialLogPath}`,
     "-display", "none",
     "-netdev", "user,id=net0",
@@ -324,11 +358,15 @@ async function waitForInstalledLogin(
   }
 
   const content = readSerial(serialLogPath);
+  const emptySerialHint =
+    content.trim().length === 0
+      ? " (serial log empty — installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)"
+      : "";
   return {
     exitCode: 1,
     reason: loginNeedle
-      ? `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for "${loginNeedle}"`
-      : `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for installed-system login prompt`,
+      ? `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for "${loginNeedle}"${emptySerialHint}`
+      : `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for installed-system login prompt${emptySerialHint}`,
     serialLogTail: content.slice(-3000),
     elapsedSeconds: Math.floor((Date.now() - start) / 1000),
   };
@@ -439,7 +477,7 @@ async function main(): Promise<never> {
   appendFileSync(serialLogPath, "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n");
 
   const phase2 = await runQemuUntil(
-    buildQemuDiskBootArgs(diskPath, serialLogPath),
+    buildQemuDiskBootArgs(diskPath, serialLogPath, tmpDir),
     serialLogPath,
     () => waitForInstalledLogin(serialLogPath, hostname),
     "phase 2 (disk boot)",
