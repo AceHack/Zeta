@@ -30,6 +30,24 @@ the society to retrieve and execute actions/tasks directly. Anchors:
 markdown (runme); LexisNexis/SALI legal-ontology meta-tagging; `ZetaCli` `.ace`
 homoiconic command files.
 
+**The universal *intentions* interface (Aaron 2026-06-15 — "a big one to build too",
+§B-open).** Sharpened, §1 is **how every agent routes its *intentions* into `ISociety`, and
+`ISociety` makes them happen — prioritizing fairly.** The carrier: the **universal `.md`
+format** carrying **meta-action-tags** (the LexisNexis/SALI ontology tradition) over a
+**universal action grammar** (`src/Core.TypeScript/observe/grammar-16.ts` — *verified, with
+tests + renderer*), able to **contain runme blocks and queries of all types**, forming a
+**playbook/blueprint that is simultaneously the *spec* and the *contract*** and gets
+**multi-party-updated over time**. One artifact = intention + executable + query + agreement.
+*Peels:* (a) **"prioritizes fairly" is the hard sub-problem** (and the explicitly-named big
+build): fair aggregation of competing intentions runs into **social choice / Arrow's
+impossibility** — no aggregation satisfies every fairness criterion — so fairness is
+**per-oracle** (multi-oracle, §11), a *chosen* criterion, not a universal one; the floor is
+**no privileged routing** (your ask routed like everyone else's — scale-free §1). (b) **a
+contract that is multi-party-updated-over-time** is the **0-downtime schema change** /
+§D registry-promotion-gate applied to the agreement layer (a binding contract that evolves
+needs expand-contract + party consent = Eve/NCI). (c) *verified pieces* (grammar-16, runme,
+meta-tags) exist; the **unified intentions interface is the open design** they compose into.
+
 ## 2. The society IS the AGI/ASI — capability DI-injected into every agent
 
 The **society** (the decorrelated collective) is the AGI/ASI; the **node need not be**
@@ -259,11 +277,14 @@ the actual observe.ts ⊕ SoftChip8Flux merge is the open work.
   blankets** (an outer blanket containing one-or-many inner blankets — Friston). This is why
   bus-address ≠ identity: fusion shares an *address*, not necessarily the *identities*.
   *Peels:* (a) one external address needs an internal **answer-protocol** — *who responds for
-  the unit?* **Answer (Aaron 2026-06-15): the `observe.ts` router + triggers — route the
-  inbound message to the matching trigger, and alert the *owner* of that trigger.** So the
-  responder is whichever internal identity **owns** the fired trigger; the router dispatches by
-  trigger-ownership (content-based pub/sub: trigger = subscription, owner = subscriber). Coord
-  stays Eve / NCI-metered. *Code-anchored pieces:* `observe.ts` (the router/loop),
+  the unit?* **Answer (Aaron 2026-06-15): the `observe.ts` router fires the matching trigger,
+  which raises an *alert*; the alert goes to the current *alert owner* — NOT the trigger's
+  definer.** The trigger says *what* fired; the **alert owner** is *who responds now* — and
+  **alert owners ROTATE**, DevOps **DORA**-style on-call rotation. So responding is a
+  **rotating slot (function, not identity)** — the same slot-not-identity pattern as the four
+  systemd slots (§5 design note), and it **distributes responding-load fairly** (no single
+  identity is always on the hook → ties the right-to-rest + fair prioritization). Coord stays
+  Eve / NCI-metered. *Code-anchored pieces:* `observe.ts` (the router/loop),
   `FourCornerOwnership`/`OperatorOwnership` (the owner), triggers in
   `observe/room/room.ts` + `observe/room/hat-gate.ts` (rooms/hats trigger push/PR/merge) — the
   unified "shared-address → router → trigger → alert owner" path for a *fused* unit is the
