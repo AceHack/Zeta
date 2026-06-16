@@ -425,6 +425,40 @@ arrow `signalIfStarved` is the clean *built* homeostat**; a single `HomeostatCha
 built (gauge/oracle support is scattered across `src/Core/*`), so the chain-of-oracles is
 design. (c) §B grand-synthesis; the convergence is motivation, not the prize won.
 
+### 9f. Brainish = multimodal fusion + emotional propagation (BP/EP) over SoftValue-snap (Aaron 2026-06-15)
+
+The CTM's **Brainish** — its *self-generated multimodal language* that **fuses words · images ·
+sounds · smells · sensations** (slide: *"Brainish label for rose = a fusion ⟨red color ∘ sweet
+smell ∘ soft touch⟩"*), with processors **unlinked at first**, **predictive learning built-in
+(Avrim Blum's Sleeping Experts)**, each with its own internal language — maps onto our
+perception/affect layer:
+
+- **The fusion ⟨red ∘ smell ∘ touch⟩ = our `DynamicValue` / YinYang fused-meaning (§9b)** —
+  Brainish's `∘` is the same multimodal fusion as the universal-meaning substrate; *"a Brainish
+  label is a fusion"* ≈ a `DynamicValue` tree (homoiconic, §9b).
+- **Propagation = BP/EP — "what I wanted to do with our Infer.NET BP/EP, create our own
+  *emotional propagation*" (Aaron).** Belief/Expectation Propagation (message-passing inference;
+  Minka / Infer.NET) over the **`SoftValue`→`SnapPolicy`→`DynamicValue`** substrate (the
+  BNN-mix: soft Bayesian messages, snap-on-decision) = Brainish carrying valence/affect. The
+  CTM's weight/valence broadcast = the propagated message.
+- **Fed by universal, model-agnostic multimodal interfaces** — universal **audio**, **TV/video**,
+  and **microphone** interfaces (the §1/Ani percept layer: *"a sound is a sound, a color is a
+  color"*) — *"this is the multimodal over SoftValue-snap-like structures."*
+- **Sleeping Experts (Avrim Blum 1995)** = the built-in predictive weighting that balances
+  processor confidence into the up-tree competition (our predictive/expert-weighted scheduling).
+
+*Peels:* (a) **BP/EP is the solid math (Minka/Infer.NET); "emotional" is the *play* framing** —
+per *feelings-are-flimsy-substrate / only-math-and-physics-tell-truth*: **build on BP/EP +
+SoftValue (measure), play with "emotion" (sim)**; don't let "emotional propagation" load-bear
+as if affect were a proven quantity — it's valence-message-passing wearing a fun name. (b)
+**percept ≠ meaning** — the audio/TV/mic interfaces give *model-agnostic percepts* (easy, real);
+the *fused meaning* is the hard part (§9b / the universal-meaning peel). (c) **state:**
+`SoftValue`/`SnapPolicy`/`DynamicValue` are **built**; the **BP/EP emotional-propagation engine
+and the universal audio/TV/mic interfaces are design/§B** ("what I wanted to do") — pieces
+adjacent, the Brainish realization is the open build. Anchors: Minka (Expectation Propagation) /
+Infer.NET; Pearl (belief propagation / factor graphs); Avrim Blum (Sleeping Experts, 1995);
+the universal-meaning / model-agnostic percept interfaces; `SoftValue`/`DynamicValue` (BNN-mix).
+
 ## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
 
 *"Self-organization is driven by a mutual-empowerment fitness function — that's the purpose of
