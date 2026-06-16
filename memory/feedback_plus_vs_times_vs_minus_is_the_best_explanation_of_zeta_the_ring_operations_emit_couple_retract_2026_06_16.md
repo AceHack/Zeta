@@ -112,8 +112,33 @@ no-`Task.Run` guards are what keep intents inside DST's reach.** And "**every fu
 *explored* future — DST samples a (large) branch set, strong but **not literally exhaustive**; "pure in
 every future" is the aspiration that the coverage approximates, not a closed proof.
 
+**The arrow is PRESERVED by the ISR / interruptor monad, which assumes everyone optimizes for
+empowerment (Aaron 2026-06-16) — and it's BUILT.** Intent's arrow (`^`, directional, non-commutative)
+is carried by the **ISR** — and this is grounded, not metaphor: `src/Core/SoftChip8Scheduler.fs` defines
+`ISR<'a,'b>` and its own comment calls it **"the ISR arrow"** wrapping a **pure transition**
+(Task-returning, DST/null-I/O; "returns the final frame *or the interrupt that stopped it*"). Why the
+ISR is the right home for `^`: an **arrow** (Hughes) — like monadic `bind` — is **non-commutative**, so
+*the structure that preserves order is the structure that preserves the arrow*. The **interrupt** is the
+cut/yield point (the cut-mea-sim loop) where the directional flow suspends and resumes — direction kept
+across the yield. And the monad **assumes everyone is optimizing for empowerment** (`×`): when control
+transfers at an interrupt, the **charitable default** is that the receiving party is empowerment-
+optimizing (Default Oracle §11 / coupled-empowerment §10) — so the control-transfer is a *cooperative
+yield*, not a hostile preemption. **This is what aims the arrow toward `×` (coupled empowerment) instead
+of the coercive `^` runaway:** direction preserved (ISR arrow), alignment supplied (empowerment
+assumption).
+
+**Razor (the assumption is exploitable — name the backstop):** "everyone optimizes for empowerment" is a
+charitable *default*, and a **defector** who does NOT optimize empowerment can exploit a system that
+*naively* assumes it. It is safe **only because** (a) the ISR wraps **PURE transitions** → DST-replayable
+→ you can **audit** whether a party actually optimized empowerment (the purity point above), and (b) the
+**Eve-protocol verify-don't-trust + anti-Sybil forgery-cost floor** catches the defector. So it's
+**charitable-default + adversarial-audit**, not naive trust — the assumption makes the *common* case
+coercion-free and efficient; DST-purity + verification handles the defector. (Default-open assumption,
+default-closed verification.)
+
 Provisional whole: **data (`+`) → coupled by soul (`×`, in/out) → under intent (`^`, aimed at
-commutative/mutual=consensual), with `−` (retraction/razor) the brake.** = the thesis
+commutative/mutual=consensual), preserved as the ISR arrow + DST-pure + empowerment-assumed, with `−`
+(retraction/razor) the brake.** = the thesis
 [[we-are-amplifying-non-coercion-into-empowerment-the-thesis-line]] read up the ladder.
 
 ## It's a 3-body system (≥3); "2 conspire to beat the 3" (Aaron 2026-06-16)
