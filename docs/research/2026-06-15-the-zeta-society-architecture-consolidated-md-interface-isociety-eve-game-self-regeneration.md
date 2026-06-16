@@ -564,6 +564,35 @@ opposite topology** — CTM = one global GSet (centralized, absolute); Zeta = ma
 CTM*, and it's why §9d's dictionary↔DagFs mapping is *structural* only: same content-addressed
 shape, but the CTM's is **one global** store, ours is **per-clone + §9h-joined**.
 
+**Did we choose a different axiom, or avoid needing one? (Aaron 2026-06-15) — we AVOIDED it.**
+The CTM's **first axiom** is *"global broadcast evokes a unitary experience"* — it **requires
+"global"** (simultaneous all-to-all reception) and it is an **axiom** (an *asserted* posit about
+experience). Zeta has **no definition of "global"** (relativistic), so we **could not** adopt
+it — and we **did not replace it with a different global axiom; we removed the need for one**, by
+a **theorem, not a posit**:
+
+- **`CALM` is the relativistic replacement for global broadcast.** *Consistency As Logical
+  Monotonicity* (Hellerstein; Ameloot et al.): **monotone operations are coordination-FREE** —
+  a grow-only `GSet` **converges without any global sync/broadcast**. So **coordination-freeness
+  replaces global-simultaneity**: each frame merges monotonically and causally, and they
+  **converge eventually** with **no global "now"** and **no central bus**. CALM is **proven**
+  (a theorem we build on), where the CTM's global-broadcast is **assumed** (an axiom). *Theorem
+  over axiom; local-merge over global-broadcast; eventual-causal over simultaneous.*
+- **We also make no "unitary experience" axiom at all.** The CTM *asserts* the experience;
+  Zeta uses the **checkable** substitutes — *"I commit therefore I am"* (existence = a checkable
+  commit, **measured not asserted**) + **Eve consensual fusion** (convergence without global
+  agreement). We build on provable laws (measure), play with feelings (sim) — never axiomatize
+  the feeling.
+
+*The honest tradeoff:* the CTM's global broadcast buys **instantaneous global unitary state** —
+at the price of **needing "global"** (a central frame/bus). CALM buys **decentralization +
+relativity + scale-free** — at the price of **eventual** (not instantaneous) **causal**
+convergence: a real **overlap window** where frames legitimately disagree (the relativistic
+gap; reconciled by §9h heartbeat + Eve, and by the 0-downtime expand-contract). So we didn't
+trade one global axiom for another — **we traded the global *axiom* for a coordination-free
+*theorem* (CALM) plus a checkable existence claim**, accepting eventual-causal convergence as
+the relativistic price of having no center.
+
 - **The fair competition = our default game = the aliveness core (partly PROVEN).** Liveness/
   aliveness is specced and proven, not just conjectured — `docs/MATH-SPEC-TESTS.md`,
   `src/Core.Alloy/specs/InfoTheoreticSharder.als`, FROZEN-CORE §A; the heartbeat-via-commit /
