@@ -375,6 +375,43 @@ in-progress observe⊕soft. (c) §B grand-synthesis — pieces real (`DagFs.fs`/
 the unified CTM=db=DagFs is the open prize, not closed. Anchors: content-addressed storage /
 Merkle DAG (Git, IPFS); Baars GWT (the 7-tuple's broadcast architecture); Hebb (Links).
 
+## 10. The fitness function — self-organization driven by mutual empowerment (the stem cell's purpose)
+
+*"Self-organization is driven by a mutual-empowerment fitness function — that's the purpose of
+the stem cell, so it can be anything."* This is the **single driver** under §3 (Eve), §8 (the
+arena), the fusion/fission frontier, and the pluripotent-stem-cell framing: the society
+**self-organizes** (scale-free §1, no central control) by maximizing **mutual / coupled
+empowerment** — Salge & Polani / Klyubin: *empowerment* = the info-theoretic channel capacity
+from an agent's actions to its future states, i.e. **how many futures it can reach / its
+control over its own future**; *coupled* = each move raises **own + others'** empowerment.
+
+- **The stem cell's purpose (the fixpoint).** Zeta is a **pluripotent stem cell** — kept
+  undifferentiated *so it can be anything*. And **empowerment ≈ option-keeping ≈ pluripotency**:
+  the capacity to reach many futures *is* "can be anything." So **maximizing empowerment =
+  staying maximally pluripotent = staying a stem cell** — the fitness function and the
+  stem-cell property are the **same thing**, self-referentially (maximize the measure of
+  *able-to-become-anything*, stay *able-to-become-anything*).
+- **NCI by construction.** Because the fitness is **mutual** (raise the other's options too),
+  self-organization under it is **automatically non-coercive** — coercion *reduces* the other's
+  empowerment/options, so it scores worse. This is the one driver that **explains** the arena
+  (forks raise the whole), Eve (coupled-empowerment is the key), non-collapse / boundary-
+  preservation (preserve others' boundaries = preserve their empowerment), fusion/fission's
+  NCI bound, and fair prioritization — all are *mutual-empowerment-maximizing self-organization*.
+
+*Peels:* (a) **"mutual" is load-bearing — pure self-empowerment is power-seeking** (the
+classic AI-safety failure mode); only the *coupled* form is cooperative, and the coupling must
+**actually bind** (collusion / a dominant agent / weak coupling re-opens the pathology — the
+anti-cult guard). (b) **Pure option-keeping never differentiates** — a system that only
+preserves options never commits, so it never acts; resolution: **differentiate locally and
+reversibly** (fission/fusion, 0-downtime expand-contract) while staying **globally
+pluripotent**, with **`SnapPolicy`** as the governor (soft/pluripotent until decision →
+snap/differentiate on commit = the BNN-mix). Empowerment-fitness decides *when to stay open vs
+commit*. (c) empowerment **pieces exist** (`SoftDrive.fs`, `SoftActionController.fs`,
+`Salience.fs`, `SoftEmu.fs`); the unified *mutual-empowerment self-organization fitness* is
+**design / §B** — the open prize. Anchors: Salge & Polani / Klyubin (empowerment); Friston
+(free-energy / active inference — adjacent); developmental-biology pluripotency; the §8 arena +
+§3 Eve coupled-empowerment.
+
 ## Collected honest seams
 
 - **The whole composition is §B** — pieces exist + code-anchored; the unified
