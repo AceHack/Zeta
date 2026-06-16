@@ -139,6 +139,33 @@ ForgeHost built, OSHost canonicalized, CompilerHost/ClusterHost partial — the 
 (c) surface=seam / host=runtime is **one boundary, two faces** — don't reify them as separate
 things; it's the same Markov-boundary membrane seen from outside (surface) vs inside (host).
 
+### `ISociety` is the decentralized Host — and is closest to `ICluster` (Aaron 2026-06-15)
+
+**`ISociety` fits `IHost` too — it is the *decentralized* host, sitting *on top of* the
+*centralized* ones** (OS/Compiler/Forge/Cluster). The centralized hosts are each a **bounded,
+single point** (one machine, one compiler, one forge, one cluster); `ISociety` is the
+**scale-free §1, no-central-point** host **composed over** them, joined by the **clockless
+cross-heartbeat** (the relativistic, braided multi-repo join — society note §9h). So `ISociety`
+is **both a CTM (§9a) and an `IHost`** — the host-of-hosts. (Honest: the decentralization is at
+the **coordination** layer — no central coordinator — while execution still rides centralized
+substrate; you never escape physical OS/cluster hosts, you decentralize the *coordination* over
+them.)
+
+**They're all schedulers at different scales — and `ISociety` ≈ `ICluster`, more than either ≈
+`IOperatingSystem`:**
+
+- **`IOperatingSystem`** schedules **one machine's** threads/processes (single-node). The
+  odd-one-out.
+- **`ICluster`** schedules workloads across **many nodes, centrally** (K8s scheduler/ArgoCD).
+- **`ISociety`** schedules work across **many members, decentrally** (`ISociety` over
+  `IScheduler`, §4). **`ISociety` = the *decentralized* `ICluster`** (or `ICluster` = the
+  *centralized* `ISociety`) — both are **orchestrate-across-many**, differing only on the
+  central/decentral axis; that's why they're **similar to each other, and both unlike the
+  single-node OS host**. *Peels:* `ISociety <: IHost` is the same kind of design/§B subtyping as
+  `ISociety <: CTM` (§9a) — the port is real, the unified decentralized-host-over-centralized
+  is the open prize; and "decentralized on top of centralized" must keep the layer honest
+  (coordination decentral, substrate central).
+
 ## Actor model (CS abstraction)
 
 - **Actor = the clone/writer/loop** — a git-native **virtual actor (grain)** =
