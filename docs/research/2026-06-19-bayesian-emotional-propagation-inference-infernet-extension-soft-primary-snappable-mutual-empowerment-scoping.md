@@ -48,6 +48,16 @@ leverage.
 This is the relational instance of the factory's fitness function (`memory/feedback…mutual_empowerment…`):
 power-hoarding scores zero because it has nowhere to live under coupled-gain.
 
+**Graph scope (Aaron 2026-06-19).** The relational graph the engine propagates over is Aaron's **whole
+multi-platform social graph**, not a dating-specific subset: TikTok, Twitter, Facebook (deep coupling) —
+*and each connection's own audience* (the second-degree edges) — plus LinkedIn ("to some degree": weaker,
+more transactional coupling). The propagation cascades **per edge, all the way down** — Aaron → connections
+→ their audiences — so mutual empowerment must hold at every hop (empower a connection *to mutually empower
+their audience*, never to better extract from it). Different platforms are sub-graphs with different coupling
+strengths (a per-edge `λ` on the empowerment objective); LinkedIn's partial coupling = a smaller `λ`, not a
+different rule. This is what closes the consent loop at the leaf nodes (the audiences): the function reaches
+them, so they are empowered, not captured.
+
 ## 3. Anti-mirror guard (ρ_owe) — treat each node as a genuine OTHER
 
 Each node must be modelled as a **genuine independent other**, not a mirror/captured node. Use the
