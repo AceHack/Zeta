@@ -102,11 +102,31 @@ Two framings make "not alive" exact:
   *new/live* data, that is an *update* (state changed, lock broken). So the precise statement is **not "not
   DST"** but **"not state-evolving DST; deterministic-render DST is exactly what 'animate' means."**
 
-> **OPEN for the math team (flagged):** is *deterministic-render-of-the-locked-state* the exact boundary
-> between legal "animate" and illegal "update"? Candidate formalization: an animation is legal iff it is a
-> pure function `render(frozenState, displayClock)` with **no** dependency on any input outside the committed
-> `H_AB` slice (the display clock is a parameter, not new state). Math team to confirm/sharpen the boundary
-> and whether "displayClock as a parameter" smuggles in live state.
+### Resolving the displayClock (Aaron 2026-06-19) — capture the clock at mint, with uncertainty bounds
+
+The flagged worry was real: *a live `displayClock` smuggles in live state.* Aaron's resolution — **capture
+the clock INTO the committed state at mint time**, so the relevant clock is frozen, not live:
+
+- At mint (when the pair *mutually recorded*), capture **each party's UTC time `± an uncertainty bound`,
+  their timezone DST offset, and bind it into our deterministic-simulation DST phase-generated time** — so the
+  record reads: *"at sim-**phase** time `φ`, this pair saw these UTC times (± uncertainty) at these
+  daylight-saving offsets."* The two senses of **DST fuse**: the pair's *Daylight-Saving* offset is captured
+  into our *Deterministic-Simulation* phase clock. (Time is captured **soft** — `UTC ± uncertainty` — never
+  an exact hard timestamp; consistent with "emit the measurement *and* its uncertainty so the packet is
+  commutative." The phase `φ` is the shared simultaneity reference; the per-party UTC offsets differ, the
+  phase is one — the common seed S=4.)
+- **Two clocks, cleanly separated:** (1) the **relationship clock** — captured-frozen at mint into `H_AB`
+  (UTC ± uncertainty + offset, indexed by phase `φ`); committed, immutable. (2) the **render clock** — the
+  live "now" a viewer animates against; it drives **display only** and **never touches the committed state**.
+  So **"animate"** = a render loop over the *frozen* captured clock (+ a live render-clock that mutates *no*
+  committed state); **"update"** = mutating the committed state. The smuggling is closed because the
+  relationship's own clock is *captured-frozen*, and the live render-clock is quarantined to display
+  (noninterference: the render-clock is not a declared channel into `H_AB`).
+
+> **Residual for the math team:** confirm the render-clock cannot leak into committed state (the
+> noninterference proof: `H_AB` depends only on the captured-at-mint soft clock, never on any post-mint
+> "now"); and that the captured `UTC ± uncertainty` interval is itself part of what the commitment binds (so
+> the bound can't be retro-narrowed). The phase-time capture is the mechanism; the metering proof is the lemma.
 
 ## 2. Cross-verify mechanism
 
