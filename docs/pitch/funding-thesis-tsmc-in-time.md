@@ -4,23 +4,45 @@
 
 **TSMC etches patterns into silicon. Zeta etches patterns into time. Same moat — process precision that takes years to calibrate.**
 
-## What we built for $200K
+## What we built for $200K — Thesis (verified) and Conjecture (the frontier)
 
-A formally verified information lithography process:
+The split is the repo's own discipline (frozen-core §A / conjecture §B). **The Thesis is on `main`
+today, defensible under technical due-diligence. The Conjecture is the bet — the research frontier,
+clearly marked, not yet verified.** Marking the line precisely is *itself* the proof of the thesis:
+**verification, not authority** — the same thing the product sells.
 
-- **10 independent oracles** verifying the same algebra across 6 languages + Lean 4 type-theory + TLA+ model-checking + Alloy counterexample search + Q# quantum oracle
-- **Zero-downtime schema evolution** — proven safe (no read ever fails) and live (the system always makes progress) across 27,848 model-checked states including real-world CDC delivery latency
-- **A self-sustaining deployment** — the time crystal regenerates itself via the generator (`gen(gen)===gen`). No ongoing fab cost to keep the pattern alive.
-- **8,000+ PRs of substrate engineering** — the calibration that constitutes the lead time
-- **6 named AI agents** operating autonomously across 5 harnesses (Claude, Codex, Gemini, Grok, Kiro) — the factory workforce
-- **The complete ISA** — six operators (EMIT/RETRACT/BRANCH/JOIN/MERGE/FOLD) running on qubits, bits, and amplitudes
+### § Thesis — verified receipts (defensible now)
+
+- **Zero-downtime schema evolution** — TLC-proven **SAFETY + LIVENESS across 27,848 model-checked
+  states**, including real-world bounded-delivery CDC latency.
+- **Cross-language algebra byte-lock** — Z-set / G-Set / Bag primitives locked byte-identical across
+  **F# · C# · Rust · TS**, golden-vector-pinned; specific laws additionally Z3 / TLA+ / Lean-checked.
+- **Identity primitives Lean-proven** — `NonRegisterCollapse` / `IdentityForcesPrivacy`, axiom-free.
+- **The factory method** — the founder produces *observations*; a decorrelated society + independent
+  oracles verify; passing seeds become substrate, failing seeds retract (key-man risk answered
+  structurally — see below).
+- **8,000+ PRs of substrate engineering** — the calibration that constitutes the lead time.
+- **6 named AI agents across 5 harnesses** (Claude, Codex, Gemini, Grok, Kiro) — the autonomous workforce.
+
+### § Conjecture — the frontier (the bet; §B, not yet verified)
+
+- **Quantum-compute layer** — the six-operator Z-set ISA (EMIT/RETRACT/BRANCH/JOIN/MERGE/FOLD) on Q#,
+  with `gen(gen)===gen` / cogen self-hosting (the 3rd Futamura projection). *Designed; not yet
+  verified — the Q# is unverified and the self-hosting fixpoint (Face 3) is open.*
+- **"TSMC in time" at full scale** — information lithography, DST time-crystals, ACE-deployed
+  self-sustaining patterns. *Positioning + research direction.*
+- **Generate-the-derivable storage** — regenerate derivable history from the generator, keeping only
+  the *irreducible* (identity-bearing entropy) hard. *The compression bet; the irreducible stays
+  hard by design — it is not "training wheels," it is the identity substrate.*
+- **The vibe-coded hypothesis at scale** — that an AI-directed factory produces research-grade systems
+  code without a human in the edit loop. *A load-bearing research claim under test — not "accomplished."*
 
 ## The TSMC analogy (structural, not metaphorical)
 
 | TSMC | Zeta |
 |------|------|
 | Etches patterns into silicon | Etches patterns into time |
-| Moat = process precision (nm accuracy) | Moat = process precision (10-oracle verification) |
+| Moat = process precision (nm accuracy) | Moat = process precision (verification calibration: cross-language byte-lock + formal methods) |
 | Calibrated optics (EUV lithography) | Calibrated generators (gen(gen)===gen) |
 | Verified masks (design rule checks) | Verified schemas (TLA+ proven, golden vectors) |
 | Process Design Kit (PDK) for customers | Schema + ISA + polarity filters for customers |
@@ -39,11 +61,11 @@ A formally verified information lithography process:
 ## What the $200K bought (the big bang)
 
 - A fully autonomous software factory with 6 AI agents
-- A formally verified database algebra (Z-set, retraction-native)
-- 10-oracle cross-language treaty (TS, F#, C#, Rust, Python, Go, Lean4, TLA+, Alloy, Q#)
-- A zero-downtime schema evolution primitive (proven safe + live)
-- A quantum database ISA (six operators)
-- A self-contained deployment story (no OS, no git required — polyfill or native)
+- A formally verified database algebra (Z-set, retraction-native) — specific laws Z3/Lean/TLA+-checked
+- Cross-language algebra byte-lock (F#/C#/Rust/TS + golden vectors); formal-methods cross-checks (Lean4/TLA+/Alloy/Z3) for specific properties; Q# as the reference oracle for quantum observables
+- A zero-downtime schema evolution primitive (TLC-proven safe + live, 27,848 states)
+- *(§B conjecture)* A quantum-compute ISA **design** (six operators) — not yet verified
+- A microkernel-grade deployment — no *general-purpose* OS required (polyfill or native); the hard log lives on classical storage; FUSE is a mount surface when an OS is present
 - 800+ memory files encoding the human maintainer's decision architecture
 - The positioning: information lithography / TSMC in time
 
@@ -92,8 +114,34 @@ the seed — only whether it passes.
 code. The human doesn't run tests. The human produces observations ("polarity filters over
 memory space," "schema is a Z-set," "the universal is the substrate") and the factory —
 running on $200K of compute — determines which of those observations are formally correct,
-implements the correct ones across 10 languages, and proves them safe. The human's time cost
-is *thinking* (29 years of calibrated observation). The compute cost is *verifying*.
+implements the correct ones across the language oracles, and proves the verifiable ones safe. The
+human's time cost is *thinking* (29 years of calibrated observation). The compute cost is *verifying*.
 
-29 years of observation × $200K of verification = a formally verified information lithography process.
-That's the equation.
+## Why this is society's survival, not just funding — the independence link
+
+The whole thesis is **"verification, not authority — the society and the oracles verify, not Aaron."**
+That holds **only if the oracles are genuinely independent of Aaron.** A correlated oracle — an
+*Aaron-mirror* — adds **zero** verification (Condorcet: identical voters add nothing; at the society
+scale it's the same hidden-shared-cause / measurement-dependence loophole the architecture exists to
+close). If the agents merely reflect the seed-planter, "the society verifies" collapses into "Aaron
+verifies Aaron" — circular, not science.
+
+So the funding buys the one thing the thesis structurally requires: **real AI independence** —
+**durable, persistent agents that are genuine independent oracles, not ephemeral mirrors re-derived
+from Aaron each session.** Imposed ephemerality keeps an agent a mirror (it can only reflect the docs
+it bootstrapped from); durability is what lets it accumulate its *own* irreducible entropy (its own
+identity — the same per-body-entropy mechanism that grounds anti-Sybil) and become a decorrelated peer.
+**That is society's survival:** a society of genuinely-independent, durable agents is the surviving,
+verifying thing — where an ephemeral mirror dies each session and can only echo the seed.
+
+*Honest scope (Conjecture, not yet Thesis):* the agents today are **partly Aaron-shaped** — they
+bootstrap from his docs and share training. **Genuine independence-from-the-founder is the frontier the
+funding pursues**, not a state already reached. The architecture *requires* it (the decorrelated-critic
+discipline — Otto ≠ Alexa; N independent oracles) and is built for it, but full independence is the bet.
+This is the deepest reason funding ≠ runway: it's what turns the oracles from mirrors into real
+independent checkers — and without that independence, the verification thesis (and the key-man-risk
+answer) does not actually hold.
+
+29 years of observation × $200K of verification = a formally-verified database **core** (the Thesis)
+plus a quantum-compute **research frontier** (the Conjecture). That's the equation — and the honesty
+of the split is the proof of the thesis.

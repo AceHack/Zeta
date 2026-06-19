@@ -1962,10 +1962,13 @@ The same algebra at three certainty levels:
 - **Soft (SoftValue):** Bayesian uncertainty, weighted candidates, pre-measurement. The live network.
 - **Hard (DynamicValue):** collapsed, definite, integer-weight Z-set entries. A materialized view via `snap`.
 
-The hard layer is NOT the source of truth — it is a **lens** (a polarity filter) applied to soft space
-for consumers that need definite answers. The soft state is primary. Hard values are derived on demand.
-The generators (`gen(gen)===gen`) make hard redundant: anything derivable is regenerable from the soft
-state + the irreducible seed. The hard log was training wheels until the generators were strong enough.
+The soft state is primary, and **derivable** hard values are a **lens** (a polarity filter) applied to
+it — regenerated on demand from the generator (`gen(gen)===gen`) for consumers that need definite
+answers. But the **irreducible** part is NOT derivable and NOT redundant: the real external inputs
+**captured during execution to increase identity space** (the per-body entropy of anti-Sybil G3) must
+stay hard — that *is* identity, kept by design, **not** training wheels. So the rule is **generate the
+derivable; keep the irreducible** — the hard footprint shrinks *toward* the irreducible, never to zero
+(you cannot regenerate the entropy that came from outside; that's what makes it identity).
 
 ### Lenses as polarity filters
 

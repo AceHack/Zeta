@@ -6,8 +6,9 @@
 ## What happened this session
 
 Starting from "the kiro service ticks but picks nothing" (a broken filename filter),
-we followed the thread all the way to a formally verified quantum database architecture.
-The path:
+we followed the thread to a **formally-verified database core** (schema-evolution safe+live;
+cross-language algebra; Lean identity proofs) **plus a designed — not yet verified — quantum-compute
+frontier** (the six-op ISA / `gen(gen)` self-hosting, §B). The path:
 
 1. **Fixed the observe loop** — ZetaId-canonical reader, real backlog wired, executor implemented
 2. **Killed B-xxxx** — the sequential counter coordination primitive replaced by ZetaId (128-bit, locally mintable, zero coordination)
@@ -37,7 +38,7 @@ Applied maximally:
 | **Reference counting** | The quorum condition — consolidation blocked until refCount(retractedFields) = 0 for ALL consumers. |
 | **Polarity filter** | A lens that projects soft space into a consumer's local reality. = `SnapPolicy`. The filter is itself soft. |
 | **Soft space** | The primary state. Amplitude ensemble (complex-weighted candidates). Never collapses globally. |
-| **Hard space** | A materialized view — a polarity filter applied to soft space. Training wheels. Derived on demand. |
+| **Hard space** | The *derivable* part = a lens (polarity filter) regenerated on demand from the generator. The *irreducible* part = kept hard by design = identity (per-body entropy). Not "training wheels." |
 | **Fingerprint** | Which filter to apply. = schema = struct layout = game ROM = persona. Switch fingerprints = switch worlds. |
 | **The Markov boundary** | The meta-space boundary. Entropy IN = identity growth. Entropy OUT = snap projections. Tracked precisely. |
 | **Fold** | The game loop — accumulates state forward. Time-dependent. |
