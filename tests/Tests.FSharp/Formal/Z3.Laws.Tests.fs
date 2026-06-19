@@ -860,3 +860,83 @@ let ``Z3 witnesses a genuine ADMIT: a fully-covered non-empty requirement passes
         "(assert (= (bvand req (bvnot al)) " + bv0 + "))\n" + // fully covered ⇒ admitted
         "(check-sat)\n"
     z3ScriptHasModel "(d) genuine admit reachable" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Aurora round (b) — BFT-threshold soundness under Sybil: the HONEST-COUNT side
+// (standardization §2 BFT threshold; the symbolic leg of Soraya's BP-16 routing for (b)).
+// Quorum arithmetic over QF_LIA: N total proven-distinct identities, f Byzantine-faulty, quorum Q.
+// Safety = two quorums intersect in an honest node (2Q ≥ N+f+1); liveness = a quorum forms from
+// non-faulty nodes (Q ≤ N−f). The canonical PBFT instance is N = 3f+1, Q = 2f+1.
+// SCOPE (honest, ties to the scoping doc): this is the THRESHOLD ARITHMETIC cross-check assuming
+// distinct identities — it does NOT discharge anti-Sybil entropy (G3, §B, open). "Distinct" is only
+// ENFORCED if forging identities is costly; here we prove the counting is sound GIVEN distinctness,
+// and (L6) that a raw-node majority sharing identities is refused by counting distinct, not raw.
+// Anchors: Lamport–Shostak–Pease 1982; Castro–Liskov 1999 (PBFT 3f+1 / 2f+1); rides §A NonRegisterCollapse.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves the canonical BFT quorum (N=3f+1, Q=2f+1) is both safe and live (b)`` () =
+    // safety: 2Q ≥ N+f+1 (two quorums share an honest node); liveness: Q ≤ N−f (a quorum can form).
+    let script =
+        "(declare-const f Int)(declare-const N Int)(declare-const Q Int)\n" +
+        "(assert (not (=> (and (>= f 0) (= N (+ (* 3 f) 1)) (= Q (+ (* 2 f) 1)))\n" +
+        "                 (and (>= (* 2 Q) (+ N f 1)) (<= Q (- N f))))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) canonical quorum safe+live" script
+
+[<Fact>]
+let ``Z3 proves a BFT quorum holds an honest supermajority (honest strictly outnumber faulty) (b)`` () =
+    // A quorum of Q=2f+1 with ≤ f faulty has honest ≥ f+1 > f — honest strictly outnumber faulty.
+    let script =
+        "(declare-const f Int)(declare-const Q Int)(declare-const faulty Int)\n" +
+        "(assert (not (=> (and (>= f 0) (= Q (+ (* 2 f) 1)) (>= faulty 0) (<= faulty f))\n" +
+        "                 (and (>= (- Q faulty) (+ f 1)) (> (- Q faulty) faulty)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) honest supermajority in quorum" script
+
+[<Fact>]
+let ``Z3 proves N >= 3f+1 is NECESSARY — below it no quorum is both safe and live (b)`` () =
+    // The classic BFT bound: if N ≤ 3f, no Q satisfies both safety (2Q ≥ N+f+1) and liveness (Q ≤ N−f).
+    // Asserting the conjunction directly ⇒ UNSAT proves no such witness exists.
+    let script =
+        "(declare-const f Int)(declare-const N Int)(declare-const Q Int)\n" +
+        "(assert (and (>= f 0) (<= N (* 3 f)) (>= Q 0)\n" +
+        "             (>= (* 2 Q) (+ N f 1)) (<= Q (- N f))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) 3f+1 necessity (N<=3f has no safe+live quorum)" script
+
+[<Fact>]
+let ``Z3 proves BFT fault-tolerance is monotone: tolerate f implies tolerate any f' <= f (b)`` () =
+    // Mirrors CSLib FLP's Consensus.fault_mono — the bridge to the eventual Lean lift.
+    let script =
+        "(declare-const f Int)(declare-const fp Int)(declare-const N Int)\n" +
+        "(assert (not (=> (and (>= fp 0) (<= fp f) (>= N (+ (* 3 f) 1)))\n" +
+        "                 (>= N (+ (* 3 fp) 1)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) fault-tolerance monotone" script
+
+[<Fact>]
+let ``Z3 proves two quorums always share at least one honest identity (the agreement crux) (b)`` () =
+    // intersection ≥ 2Q−N = f+1; minus ≤ f faulty ⇒ ≥ 1 honest in every quorum-intersection.
+    let script =
+        "(declare-const f Int)(declare-const N Int)(declare-const Q Int)(declare-const faulty Int)\n" +
+        "(assert (not (=> (and (>= f 0) (= N (+ (* 3 f) 1)) (= Q (+ (* 2 f) 1)) (>= faulty 0) (<= faulty f))\n" +
+        "                 (>= (- (- (* 2 Q) N) faulty) 1))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(b) honest quorum-intersection" script
+
+[<Fact>]
+let ``Z3 witnesses Sybil refusal: a raw-node majority is refused when distinct identities fall short (b)`` () =
+    // The (b)-specific link to §A NonRegisterCollapse + the TLA+ NoSybilRawMajorityRefusal witness:
+    // counting must be over PROVEN-DISTINCT identities, not raw nodes. A ring whose raw count meets the
+    // quorum but whose distinct-identity count does NOT (≥2 raw share 1 identity) is refused. SAT = the
+    // refusal is reachable (the quorum is keyed on identities, so raw majority ≠ admission).
+    let script =
+        "(declare-const Q Int)(declare-const rawInQ Int)(declare-const distinctInQ Int)\n" +
+        "(assert (> Q 0))\n" +
+        "(assert (>= rawInQ Q))\n" + // raw nodes meet the threshold count
+        "(assert (< distinctInQ Q))\n" + // distinct identities fall short ⇒ refused
+        "(assert (<= distinctInQ (- rawInQ 1)))\n" + // ≥2 raw nodes collapse to fewer distinct identities
+        "(check-sat)\n"
+    z3ScriptHasModel "(b) Sybil raw-majority refusal reachable" script

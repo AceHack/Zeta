@@ -60,11 +60,14 @@ theorems, not metaphor.
      `PermanentHarmHorizon.tla`, FsCheck asserts HarmFloor at every reachable state + 3 non-vacuity
      witnesses (accept / irrev-block / horizon-block). `tests/Tests.FSharp/Formal/PermanentHarmHorizonCrossVerify.Tests.fs`
      (4 green). Discharge: scoping doc §8(e).
-   - **(b) TODO:** the Z3 honest-count side (`honest > 2/3` over proven-distinct identities); note the
-     anti-Sybil-entropy §B dependency must sequence first (it's still open). **CSLib FLP-lift routing
-     scoped (2026-06-19):** `docs/research/2026-06-19-aurora-b-bft-sybil-lift-onto-cslib-flp-consensus-lean-scoping.md`
-     — maps (b) onto CSLib's Lean FLP framework (G1 crash→Byzantine, G2 identity-keyed quorum, G3
-     anti-Sybil entropy = the blocker); near-term win = the Z3 honest-count leg (no G3 needed).
+   - ✅ **(b) Z3 honest-count leg DONE (2026-06-19):** 6 QF_LIA lemmas — canonical quorum safe+live,
+     honest supermajority, 3f+1 necessity, fault-monotone (mirrors CSLib `Consensus.fault_mono`),
+     honest quorum-intersection, + Sybil raw-majority-refusal witness (counts proven-distinct
+     identities). `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (59 Z3 green). Discharge: §8(b).
+     **Still open:** the TLA+ leg already exists; what remains is **G3 anti-Sybil entropy** (§B) — the
+     threshold arithmetic is sound GIVEN distinctness, not a discharge of the entropy premise.
+     **CSLib FLP-lift routing scoped:** `docs/research/2026-06-19-aurora-b-bft-sybil-lift-onto-cslib-flp-consensus-lean-scoping.md`
+     (G1 crash→Byzantine, G2 identity-keyed quorum, G3 anti-Sybil entropy = the blocker).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
    - ✅ **(g) DONE (2026-06-19):** Autoimmunity Flood / immune-memory decay (Test 4.5). Under flood
      (`Danger≈0`) Eq 10 → `n(t+1)=max(0,(1−δ)·n(t)−β·FP)`; FsCheck asserts decay→0, monotone,

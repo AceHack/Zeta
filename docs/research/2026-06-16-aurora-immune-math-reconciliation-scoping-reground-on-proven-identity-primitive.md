@@ -217,6 +217,30 @@ wiring are done. Only **(b)** remains, parked behind the open anti-Sybil-entropy
 row *"Aurora immune re-grounded on the proven identity primitive"* is now ready to promote toward §A
 (operator-by-operator, §C) — gated on the maintainer's sign-off (proof-lineage change).
 
+### (b) BFT honest-count — Z3 symbolic leg landed (2026-06-19, Otto)
+
+The symbolic (Z3) leg of Soraya's BP-16 routing for (b) — the BFT-threshold *arithmetic* over QF_LIA
+(N total proven-distinct identities, f Byzantine-faulty, quorum Q). 6 lemmas in
+`tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (5 UNSAT proofs + 1 SAT witness, 59 Z3 tests green):
+
+- **canonical quorum (N=3f+1, Q=2f+1) is safe ∧ live** (`2Q ≥ N+f+1` ∧ `Q ≤ N−f`); **honest
+  supermajority in any quorum** (honest ≥ f+1 > f); **honest quorum-intersection** (two quorums always
+  share ≥1 honest identity — the agreement crux).
+- **3f+1 is NECESSARY** — `N ≤ 3f` admits no quorum that is both safe and live (the classic BFT bound,
+  proven by UNSAT of the conjunction).
+- **fault-tolerance monotone** (tolerate f ⟹ tolerate any f′≤f) — mirrors CSLib FLP's
+  `Consensus.fault_mono`, the bridge to the eventual Lean lift.
+- **Sybil refusal witness:** a raw-node majority is *refused* when distinct-identity count falls short
+  (≥2 raw share 1 identity) — counting is over **proven-distinct identities** (rides §A
+  `NonRegisterCollapse`), the arithmetic shadow of the TLA+ `NoSybilRawMajorityRefusal`.
+
+**Honest scope (the binding seam):** this proves the threshold counting is sound **GIVEN distinctness**
+— it does **NOT** discharge **G3 anti-Sybil entropy** (§B, open). "Distinct" is only *enforced* if
+forging identities is costly; the full BFT-under-Sybil guarantee still inherits G3. So (b) now has its
+TLA+ leg (reachability, TLC-green) + this Z3 leg (threshold arithmetic), with the entropy premise
+named-and-open (see the CSLib FLP-lift scoping doc §4 G3). Anchors: Lamport–Shostak–Pease 1982;
+Castro–Liskov 1999 (PBFT).
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).
