@@ -47,3 +47,23 @@ module SocietalDoraSvg =
             "<text x=\"10\" y=\"22\">Societal DORA — mutual-empowerment health</text>",
             gauges,
             "</svg>")
+
+    /// Wrap the dashboard SVG in a complete **static HTML page** — pure HTML + CSS, **no JavaScript** (the
+    /// `HtmlCssBinding` ethos). A viewable artifact: open the string as `.html` in any browser, no runtime.
+    /// Deterministic ⇒ byte-lockable. Slice 1.5 of the demo UX/UI.
+    let renderPage (m: SocietalDora.Metrics) : string =
+        System.String.Concat(
+            "<!DOCTYPE html>",
+            "<html lang=\"en\"><head><meta charset=\"utf-8\"/>",
+            "<title>Zeta — Societal DORA</title>",
+            "<style>",
+            "body{font-family:system-ui,sans-serif;background:#0f1115;color:#e6e6e6;margin:0;padding:32px}",
+            "main{max-width:640px;margin:0 auto}",
+            "h1{font-size:18px;font-weight:600;margin:0 0 4px}",
+            "p{color:#9aa0a6;margin:0 0 24px;font-size:13px}",
+            "svg text{fill:#e6e6e6;font-family:system-ui,sans-serif;font-size:13px}",
+            "</style></head><body><main>",
+            "<h1>Zeta — Societal DORA</h1>",
+            "<p>mutual-empowerment health, rendered declaratively (no JS). The feels are the alarm; the numbers are the backing.</p>",
+            render m,
+            "</main></body></html>")

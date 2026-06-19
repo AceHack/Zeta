@@ -49,3 +49,13 @@ let ``empty graph renders all-zero bars (no false health on the dashboard)`` () 
     // every gauge reads 0% (unambiguous percent label); none reads 100%
     svg.Contains ">0<" |> should equal true
     svg.Contains ">100<" |> should equal false
+
+[<Fact>]
+let ``renderPage is a complete, scriptless, deterministic HTML document embedding the SVG`` () =
+    let m = SocietalDora.compute 0.5 [ SocietalDora.edgeHealth "a->b" indep [ c 1.0 1.0 ] ]
+    let page = SocietalDoraSvg.renderPage m
+    page.Contains "<!DOCTYPE html>" |> should equal true
+    page.Contains "</html>" |> should equal true
+    page.Contains "<svg" |> should equal true // the dashboard is embedded
+    page.Contains "<script" |> should equal false // pure HTML/CSS, no JS
+    SocietalDoraSvg.renderPage m |> should equal page // deterministic ⇒ byte-lockable
