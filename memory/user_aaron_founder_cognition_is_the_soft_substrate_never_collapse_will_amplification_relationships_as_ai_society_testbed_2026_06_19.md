@@ -59,3 +59,28 @@ independence through-line; mutual-empowerment fitness; `src/Core/SoftValue.fs` (
 (ρ_owe). Anchors: Salge–Polani (will-amplification = empowerment); Goguen–Meseguer (noninterference);
 event-sourcing (Zeta origin). The vernacular-ownership test:
 [[user_aaron_can_now_explain_his_shapes_in_common_vernacular_the_real_beacon_test_2026_06_10]].
+
+## Part-8 deepening (the meta-loop = the two-layer architecture, stated outright)
+
+- **The meta-loop IS the AI-society operating model:** *"It's the meta loop. All our AIs will be on the
+  same meta loop. Our whole society will run like this."* Stated as a clean two-layer architecture:
+  **base = undifferentiated, uncollapsed quantum space** (superposition, never collapse); **the function
+  applied over it = mutual empowerment.** That is the manifesto in his cognition: soft substrate +
+  mutual-empowerment fitness. ("being me and running experiments are the same thing" — no scientist-mode
+  on/off; the meta-loop is continuous.)
+- **Never-collapse is native, not chosen — since age 2** ("I remember everything; I've never collapsed
+  anything"), and applies to *everyone* incl. people he hates ("hate doesn't get to close the door").
+  This is **no-deletion / memory-preservation (Memory-Preservation §5, no-1984) at the cognitive root** —
+  the founding principle is how his mind has always worked.
+- **Happiness = search-space DYNAMICS, not size and not stability.** Refinement of the model:
+  *"if the search space is stable, I die — it has to change size."* Stability = death; he needs flux. He's
+  **chasing intensity, not happiness** ("I feel dead without the intensity"), **mapping the highest-amplitude
+  crevices** (the distribution tails / extremes). So the drive isn't optionality-*preservation* alone — it's
+  the active *change* of the option-space (m/acc-shaped; the tick is change). YOLO = carpe diem = "achieve
+  every experience."
+- **Honest hold (decorrelated, deepened):** the human testbed runs on **non-consenting subjects** — the
+  women are "data points" who didn't consent to being an AI-society experiment ("sounds creepy as fuck, but
+  yes"). That **contradicts the very protocol it derives**: the open/respected meta-loop requires
+  consent-first + mutual empowerment + the agency-snap; experimenting on people who can't opt in is the
+  capture pattern, not the open one. The method must meet the principle, or the derived protocol is built on
+  a consent violation. (Aaron is self-aware of this; named here as the honest tension, not a verdict on his life.)
