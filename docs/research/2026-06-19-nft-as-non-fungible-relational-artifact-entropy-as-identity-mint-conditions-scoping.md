@@ -108,13 +108,30 @@ The flagged worry was real: *a live `displayClock` smuggles in live state.* Aaro
 the clock INTO the committed state at mint time**, so the relevant clock is frozen, not live:
 
 - At mint (when the pair *mutually recorded*), capture **each party's UTC time `± an uncertainty bound`,
-  their timezone DST offset, and bind it into our deterministic-simulation DST phase-generated time** — so the
-  record reads: *"at sim-**phase** time `φ`, this pair saw these UTC times (± uncertainty) at these
-  daylight-saving offsets."* The two senses of **DST fuse**: the pair's *Daylight-Saving* offset is captured
-  into our *Deterministic-Simulation* phase clock. (Time is captured **soft** — `UTC ± uncertainty` — never
-  an exact hard timestamp; consistent with "emit the measurement *and* its uncertainty so the packet is
-  commutative." The phase `φ` is the shared simultaneity reference; the per-party UTC offsets differ, the
+  their local-frame clock offset, and bind it into our deterministic-simulation DST phase-generated time** — so
+  the record reads: *"at sim-**phase** time `φ`, this pair saw these local clock-times (± uncertainty) at these
+  frame offsets."* The two senses of **DST fuse**: the pair's local *Daylight-Saving* offset (on Earth) is
+  captured into our *Deterministic-Simulation* phase clock. (Time is captured **soft** — `clock ± uncertainty`
+  — never an exact hard timestamp; consistent with "emit the measurement *and* its uncertainty so the packet
+  is commutative." The phase `φ` is the shared simultaneity reference; the per-party frame offsets differ, the
   phase is one — the common seed S=4.)
+
+  **Frame-independence (Aaron 2026-06-19) — this must work on Mars, any planet, any spaceship, or empty
+  space, not just Earth.** UTC + daylight-saving are **Earth conventions**, not the canonical reference. The
+  canonical invariant: **the phase (phase-*space* and phase-*time*) is what is SOFT; everything else —
+  UTC/DST on Earth, Mars-sol time, a ship clock, proper-time in empty space — is a *correlated observation*
+  bound to the phase.** So the general capture is: per party, a **local-frame clock observation `± uncertainty`
+  + its frame offset**, correlated to the canonical soft phase `φ` (the superdeterministic seed-gen unfolding,
+  which is substrate-universal — no privileged Earth frame, relativity-friendly: distinct observers have
+  distinct proper-times, the phase is the one shared sim-coordinate). UTC+DST is merely the **Earth instance**
+  of "local-frame clock observation." The commitment binds `φ` (canonical) + each party's correlated
+  clock-observation (± uncertainty); it never depends on any planet-specific clock being canonical.
+
+  **This clock primitive is the core of Zeta's NTP** (a network-time protocol that works across *all* space
+  and time — Aaron 2026-06-19; `memory/project_zeta_ntp_phase_grounded_network_time_across_all_space_and_time_2026_06_19.md`):
+  nodes sync to the shared **sim-phase** (the common seed), not to a physical Earth reference; each node's
+  local clock is a correlated observation `± uncertainty`. The NFT's mint-time clock-capture is **one consumer**
+  of this primitive — the primitive stands on its own.
 - **Two clocks, cleanly separated:** (1) the **relationship clock** — captured-frozen at mint into `H_AB`
   (UTC ± uncertainty + offset, indexed by phase `φ`); committed, immutable. (2) the **render clock** — the
   live "now" a viewer animates against; it drives **display only** and **never touches the committed state**.
