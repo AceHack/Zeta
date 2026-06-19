@@ -35,6 +35,37 @@ round-trip to it. But meaning in Zeta has **several** common sources; the cart i
 over-claiming it as *the* source would flatten the golden-vectors / seed / memory / proof sources that stand
 beside it.
 
+## Without the other sources backing it, the cart is deception — including SELF-deception (Aaron 2026-06-19)
+
+Aaron: *"without those other sources backing the cart it would [be] deception"* — *"self-deception with my
+own eyes."* A cart is a **render surface**; it can show *anything*. A beautiful SVG/CSS render that is **not
+backed** by the other common sources (golden vectors / proofs / seed / memory) is **meaning-shaped but
+ungrounded — a pretty lie.** And the most dangerous failure is not lying to others: it is the **builder
+believing his own render** — *"seeing is believing"* on a Potemkin cart. **The render fools the builder
+first.** This is why the cross-backing is mandatory and why it must be **decorrelated**: a single source
+(the cart, viewed with your own eyes) is a *mirror* — it shows you what you want to see; only **independent
+backing** (the byte-lock across oracles, the formal proofs, the DST seed-replay, the memory provenance)
+makes the rendered meaning *true* rather than *self-deceptive*. It is the anti-mirror at the level of the
+self, and it is exactly the **verify-don't-confabulate / Mirror-needs-Beacon** discipline: do not trust the
+render (Mirror); trust the backing (Beacon). The multi-source structure is the **anti-(self-)deception**
+mechanism — which is the real reason "one of" matters, not just humility about scope.
+
+### An unbacked render is a children's game — legitimate AS PLAY, deception only if mistaken for real
+
+Aaron: *"that's basically what children's games are."* The completing nuance: an unbacked cart-render is
+**not automatically a lie — it's make-believe** ("this stick is a sword," "the floor is lava"). And that is
+**legitimate, even the point, AS PLAY**: a game is *consensual, labeled, bounded* make-believe — exactly the
+**sim / soft / cut-mea-sim** exploration of possibility space (`db/sims/` is ephemeral; CHIP-8 *is* a games
+platform). It becomes **deception only when** (a) you **forget it's a game** and believe it with your own eyes
+(self-deception), or (b) you **pass the game off to others as real** (non-consensual). The **backing is the
+line between PLAY and REAL**: golden-vectors / proofs / seed / `measure` (`db/uncertainty/`) are what let you
+**play freely without self-deceiving** — you always know what is an unbacked *game* (soft, ephemeral sim) vs
+what is *committed/real* (backed, hard, measured). So the rule is **not** "never render unbacked" — it is
+**render freely as play, back it to make it real, and never confuse the two.** Children's games are the
+canonical soft-unbacked-render-as-consensual-play; the failure is only the confusion, not the play. (This is
+the soft/hard · sim/measure · play/commit · Mirror/Beacon line, and consent-first §6 is what keeps the game
+honest.)
+
 Ties: `src/Core/ShapeRender.fs`, `src/Core/CartridgeLaw.fs`, `src/Core/SoftEmu.fs`, `src/Core/Chip8Citizen.fs`,
 `src/Core/HtmlCssBinding.fs`; the four-oracle byte-lock; `gen/`;
 [[zeta-is-null-lens-over-null-is-identity-meaning-is-remembered-links-qpg]]; the golden vectors (μένω); the
