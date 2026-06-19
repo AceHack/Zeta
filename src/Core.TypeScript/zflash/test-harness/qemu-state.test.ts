@@ -308,13 +308,13 @@ describe("B-0891 QEMU state-preservation planner", () => {
           return "";
         }
         if (managedObserved.length === 1) {
-          return "[iter-5.1] install reached post-nixos-install marker";
+          return "ZETA CLUSTER NODE INSTALL COMPLETE";
         }
         if (serialReadCount === 3) {
-          return "[iter-5.1] install reached post-nixos-install marker";
+          return "ZETA CLUSTER NODE INSTALL COMPLETE";
         }
         return [
-          "[iter-5.1] install reached post-nixos-install marker",
+          "ZETA CLUSTER NODE INSTALL COMPLETE",
           "zeta-creds-restore: reading preserved ESP blob",
           "zeta-creds-restore: already-present, skipping credential rewrite",
         ].join("\n");
@@ -339,7 +339,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
         "/tmp/serial.log",
       ]);
       expect(stoppedPids).toEqual([4201, 4202]);
-      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("[iter-5.1]");
+      expect(result.ok.commandExecutions[1]?.serialStop?.matchedMarkers).toContain("ZETA CLUSTER NODE INSTALL COMPLETE");
       expect(result.ok.commandExecutions[5]?.serialStop?.matchedMarkers).toContain("already-present");
       expect(result.ok.serialAssertion.matchedMarkers).toContain("already-present");
     }
@@ -347,7 +347,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
 
   test("scans only new serial output for each lifecycle-managed QEMU phase", () => {
     const managedObserved: QemuCommand[] = [];
-    const staleSerial = ["[iter-5.1] install reached post-nixos-install marker", "nixos@zeta-installer:~]$"].join("\n");
+    const staleSerial = ["ZETA CLUSTER NODE INSTALL COMPLETE", "nixos@zeta-installer:~]$"].join("\n");
     const readsByManagedCount = new Map<number, number>();
     const executor = createSpawnSyncQcow2RetentionExecutor({
       pollIntervalMs: 1,
@@ -425,10 +425,10 @@ describe("B-0891 QEMU state-preservation planner", () => {
           return "";
         }
         if (managedObserved.length === 1) {
-          return "[iter-5.1] install reached post-nixos-install marker";
+          return "ZETA CLUSTER NODE INSTALL COMPLETE";
         }
         return [
-          "[iter-5.1] install reached post-nixos-install marker",
+          "ZETA CLUSTER NODE INSTALL COMPLETE",
           "zeta-creds-restore: reading preserved ESP blob",
           "zeta-creds-restore: already-present, skipping credential rewrite",
         ].join("\n");
@@ -462,7 +462,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
       if (result.error.kind === "command-failed") {
         expect(result.error.step).toBe("initial-install-from-iso-with-disk");
         expect(result.error.stderr).toContain("terminal marker observed before required serial markers");
-        expect(result.error.stderr).toContain("[iter-5.1]");
+        expect(result.error.stderr).toContain("ZETA CLUSTER NODE INSTALL COMPLETE");
       }
     }
   });
@@ -483,10 +483,10 @@ describe("B-0891 QEMU state-preservation planner", () => {
           return "";
         }
         if (managedObserved.length === 1) {
-          return "[iter-5.1] install reached post-nixos-install marker";
+          return "ZETA CLUSTER NODE INSTALL COMPLETE";
         }
         if (serialReadCount === 3) {
-          return "[iter-5.1] install reached post-nixos-install marker";
+          return "ZETA CLUSTER NODE INSTALL COMPLETE";
         }
         return "nixos@zeta-installer:~]$";
       },

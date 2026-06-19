@@ -19,8 +19,11 @@ export const B0891_FRESH_USB_SERIAL_MARKER =
 /** Post-install first-boot cred restore idempotency markers (installed OS path). */
 export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
 
-/** Initial nixos-install completion boundary inside the installer environment. */
-export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = ["[iter-5.1]"];
+/** zeta-install.sh success banner — full install finished (same boundary as scenario 2 phase 1). */
+export const INSTALL_COMPLETE_SERIAL_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
+
+/** Baseline snapshot boundary for scenarios 3/4 — must not stop at mid-install [iter-5.1]. */
+export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [INSTALL_COMPLETE_SERIAL_MARKER];
 
 export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "panic",

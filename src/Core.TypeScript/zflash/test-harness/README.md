@@ -87,7 +87,7 @@ observe the zflash-baked ESP contents.
 
 The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
 create the qcow2 disk, boot the ISO once to establish the baseline disk,
-stop that boot when the serial log reaches the post-install `[iter-5.1]`
+stop that boot when the serial log reaches `ZETA CLUSTER NODE INSTALL COMPLETE`
 success marker, snapshot the baseline, restore it, restart from the ISO with
 the same disk, stop that restart only when retention markers appear, then
 pass only when the final serial assertion includes the required retention

@@ -95,7 +95,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: ["reformat-with-retention", "cluster-joining"],
     notes:
-      "qemu-full-install-test.ts already watches for [iter-5.1] marker proving nixos-install reached post-install phase. USB/ISO scope is zflash + boot + one agent start path; Kubernetes/ArgoCD health belongs in an orthogonal integration lane rather than this harness.",
+      "qemu-full-install-test.ts waits for ZETA CLUSTER NODE INSTALL COMPLETE then phase-2 login on the installed disk. USB/ISO scope is zflash + boot + one agent start path; Kubernetes/ArgoCD health belongs in an orthogonal integration lane rather than this harness.",
   },
   {
     id: "reformat-with-retention",
