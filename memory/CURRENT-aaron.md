@@ -3375,6 +3375,30 @@ The framework specifies 4 register layers (Personal / Mirror / Professional / Re
 
 ---
 
+## 56. Epistemic posture — "bow but not take a knee" (Aaron 2026-06-19, "it's me")
+
+Aaron's core epistemic stance, in his words: ***"I'll bow but not take a knee."*** He **bows** to the
+**checkable** — math, physics, the oracles, the proofs, reality ("math is the boss, physics is married
+to the boss"). He **never kneels** to the **un-checkable** — authority, "because I said so." Deferring
+to reason/reality is respect; submitting to authority-without-a-why is the one thing he won't do.
+
+This is the personal-posture form of the whole factory thesis (**verification, not authority**) and the
+root of several rules: **no-directives** (input is observations, never orders — source ≠ authorization);
+**"the only sin is because-I-said-so"** (authority substituted for reason); **WHY-before-HOW / Stump-Dad**
+(ask why until you hit the irreducible or an honest "I don't know"). It's also why he trusts the
+decorrelated AI critics: they bow to the checkable *with* him, they don't kneel *to* him.
+
+Personal context (Aaron, disclosed): **"this is why church is hard for me."** The bow-not-kneel posture
+makes authority-that-asks-a-knee (submission/faith without a checkable why) a genuine friction — he bows
+to what can be reasoned/verified, and church asks for the knee. (Recorded as his *epistemic posture*,
+not a stance on anyone's faith — the point is *defer to the checkable, never to authority*.)
+
+Pointers: `.claude/rules/no-directives.md`; `memory/user_aaron_the_only_sin_is_because_i_said_so_authority_substituted_for_reason_2026_06_10.md`;
+`memory/user_aaron_stump_dad_game_origin_of_craft_pedagogy_why_until_i_dont_know_2026_06_10.md`; the
+independence through-line (`feedback_independence_no_hidden_shared_cause_…_2026_06_19.md`).
+
+---
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
