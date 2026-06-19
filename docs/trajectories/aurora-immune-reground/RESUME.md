@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. (a) d_self identity-axis wiring DONE + (e) FsCheck cross-check DONE (2026-06-19). Next: (b) Z3 honest-count cross-check (after anti-Sybil §B) + (c)/(d)/(g) FsCheck/Z3 smalls → §A promotion.**
+Status: **active — formal round CLOSED. (a) d_self identity-axis wiring + (e) HarmFloor FsCheck + (g) autoimmunity-decay FsCheck all DONE (2026-06-19). Remaining: (b) Z3 honest-count (parked behind anti-Sybil §B), (c) CoordRisk spectral FsCheck, (d) capability-gate Z3 → §A promotion.**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
@@ -63,6 +63,13 @@ theorems, not metaphor.
    - **(b) TODO:** the Z3 honest-count side (`honest > 2/3` over proven-distinct identities); note the
      anti-Sybil-entropy §B dependency must sequence first (it's still open).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
+   - ✅ **(g) DONE (2026-06-19):** Autoimmunity Flood / immune-memory decay (Test 4.5). Under flood
+     (`Danger≈0`) Eq 10 → `n(t+1)=max(0,(1−δ)·n(t)−β·FP)`; FsCheck asserts decay→0, monotone,
+     fp-accelerates, contraction `(1−δ)∈(0,1)`, and archive-immune (§4.5 a+b).
+     `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green). Discharge: §8(g).
+   - **(c) TODO:** `CoordRisk` spectral (λ₂ Fiedler / ρ radius, Test 4.3) — FsCheck over networkx-style
+     graphs (needs a small graph harness; heavier than e/g).
+   - **(d) TODO:** capability gate `cap_req ⊆ cap_allowed` (Test 4.4) — Z3 set algebra (see prereq).
 4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
 5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
    (e) multi-claim substrate + multi-hop kernel reachability is the v3.

@@ -151,6 +151,23 @@ green).
   leg routes through `observe.ts` (Aaron 2026-06-16), not by bolting `WF` onto the toy. The four
   non-claims travel unchanged.
 
+### (g) Autoimmunity Flood / immune-memory decay — FsCheck cross-check landed (2026-06-19, Otto)
+
+Test 4.5 (§4.5 / Eq 10 / §2.6 archive-active split). Under the flood scenario (valid, safe, highly
+novel inputs → high `d_self`, `Danger ≈ 0`), Eq 10's clonal-expansion term `α·Match·Danger` vanishes
+and the active-detector recurrence reduces to `n(t+1) = max(0, (1−δ)·n(t) − β·FP)` — a contraction.
+Test: `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green: 5 FsCheck properties
++ 1 non-vacuity witness). Asserts:
+
+- **§4.5(a) decay → 0:** active detectors decay below ε over `T(δ)` ticks with no reactivation —
+  immune bloat / autoimmunity is bounded (the worst case, fp = 0 pure-geometric, is the one tested).
+- **monotone + fp-accelerates:** a flood tick never *amplifies* a detector; β·FP only subtracts.
+- **contraction `(1−δ) ∈ (0,1)`** for δ ∈ (0,1) — the QF_LRA fact Soraya routed as the optional Z3
+  cross-check (asserted directly; a one-line Z3 follow-up is available if a redundant tool-leg is wanted).
+- **§4.5(b) archive immune:** the `M^archive` partition has NO decay operator (updated only by explicit
+  policy); any number of ticks leaves the fixture set unchanged, and a canonical fixture persists while
+  the same attack's active weight decays to ~0 ("canonical attack memory ≠ always-hot active detector").
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).
