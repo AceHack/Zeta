@@ -27,16 +27,30 @@ observations."**
   sim-phase `φ`; their local clocks differ (different frames/offsets) and each is recorded `± uncertainty`
   against `φ`. The "packet" carries the measurement *and* its uncertainty (commutative).
 
-## UTC is a fool's game — leap seconds — so it is NOT the base; soft phase spacetime is
+## Both references are politically mutable (leap seconds / borders) — so BOTH space and time are soft
 
 Aaron 2026-06-19: *"all my nerd friends told me UTC is a fool's game"* — *"leap seconds"* — *"this [is] not
-the base"* — *"soft phase spacetime is."* The concrete reason UTC cannot be the base: **leap seconds** are
-**discontinuous, politically-decided insertions** (27 since 1972; IERS-announced, not derivable), making UTC
-**non-monotonic and mutable by committee** — you cannot build a clean time base on a clock that jumps and
-whose jumps are voted on (the real systems-engineering pain: Google's leap-smear hack; the 2035 plan to
-abolish leap seconds). So **UTC is a correlated observation you READ but never BUILD ON.** **The base is
-SOFT PHASE SPACETIME** — the seed-derived phase over spacetime: monotonic, frame-independent, derivable from
-the common seed, immune to leap-second politics. Read UTC; ground on the phase.
+the base"* — *"soft phase spacetime is"* — *"and borders can't be counted on either, that's why space and
+time both are soft."*
+
+The symmetry is the whole point: the physical references for **both** axes are **politically mutable**, so
+neither can be the base.
+
+- **TIME — UTC / leap seconds.** Leap seconds are **discontinuous, committee-decided insertions** (27 since
+  1972; IERS-announced, not derivable), making UTC **non-monotonic and mutable by vote** — you cannot build a
+  base on a clock that jumps and whose jumps are decided politically (Google's leap-smear hack; the 2035 plan
+  to abolish leap seconds).
+- **SPACE — borders.** Borders are the **spatial leap seconds**: redrawn by war and treaty, contested,
+  committee-decided, non-stable — and meaningless off-Earth (no borders on Mars / a ship / empty space). You
+  cannot ground spatial identity or coordinates on political geography (nationality, jurisdiction) any more
+  than on UTC.
+
+So **both UTC (time) and borders (space) are correlated observations you READ but never BUILD ON.** **The base
+is SOFT PHASE SPACETIME** — the seed-derived phase over *both* space and time: monotonic, frame-independent,
+derivable from the common seed, immune to leap-second *and* border politics. Read the wall clock and the map;
+ground on the phase. (This is also why identity is relational/entropy-based, not geographic — see the NFT /
+remembered-links thesis: identity isn't where you are or what passport you hold; it's the irreducible entropy
+of your links.)
 
 ## Why it matters / ties
 
