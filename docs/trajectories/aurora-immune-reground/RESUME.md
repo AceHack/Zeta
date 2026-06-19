@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **READY TO PROMOTE — formal round CLOSED; (a) d_self wiring + ALL FOUR test-obligation cross-checks (c/d/e/g) + (b) TLA+ AND Z3 honest-count legs all done (2026-06-19). The one remaining open premise is anti-Sybil entropy: G3a (cost-floor / no-economy-of-scale) LANDED in Z3; G3b (the floor is real + non-forgeable) is the open crux + a research fork (model + prover choice, surfaced for Soraya/maintainer). NEXT: (i) §B→§A promotion row (drafted, awaits maintainer sign-off — proof-lineage); (ii) G3b model+prover call; (iii) CSLib G1 lane (decided). See scoping docs: aurora-b-…cslib-flp + g3-anti-sybil-entropy-cost.**
+Status: **§B ROW LANDED in the register (2026-06-19, maintainer-signed-off "multiple towers not changes") — (a) RIDES §A `NonRegisterCollapse`; ALL FOUR cross-checks (c/d/e/g) + (b) TLA+ & Z3 honest-count + G3a cost-floor DONE. Partial promotion (§C); NOT a full §A member (research-grade; four non-claims bind). One open premise: G3b anti-Sybil entropy non-forgeability (≡ Bell measurement-independence). Aaron greenlit all three: §A row (done), CSLib bump (multiple-towers framing), G3b. NEXT (sequenced): CSLib toolchain tower (v4.31.0+cslib, parallel-not-in-place) → G3b (model+prover) → the CSLib FLP-lift G1. Scoping: aurora-b-…cslib-flp + g3-anti-sybil-entropy-cost.**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
