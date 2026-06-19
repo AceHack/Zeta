@@ -11,7 +11,11 @@ The core architectural requirement for mutual empowerment is the prevention of c
 
 Zeta prevents this by defining the network itself as **soft**. The distributed network transmits packets of the form `(value, ε)`, where `ε` is the explicit uncertainty window. Because the uncertainty travels with the value, the merge operation is a **commutative associative monoid** [4]. This commutativity is proven in-tree (e.g., `SoftValue.fs` and `schema-rx-join.test.ts`), establishing that disjoint deltas commute regardless of arrival order. 
 
-By remaining soft and commutative, the network is **classically soft** — a CRDT / join-semilattice, not a quantum superposition. Commutativity is precisely the *classical* tell, so the soft network earns no quantum gloss; the mutual-empowerment payoff (no coerced global consensus) stands on the CRDT property alone. Collapse to a single decision occurs only *locally*, inside a **Room**, when its specific time-bound (horizon) fires — and only that local, bounded-time indeterminacy carries the (scare-quoted) "quantum" framing. Mutual empowerment survives precisely because agents share soft beliefs (preserving channel capacity [5]), rather than forcing hard consensus on each other.
+By remaining soft and commutative, the **network-merge layer** is **classically soft** — a CRDT / join-semilattice. At this layer commutativity is precisely the *classical* tell, so the network earns no quantum gloss, and the mutual-empowerment payoff (no coerced global consensus) stands on the CRDT property alone.
+
+This must be distinguished from a **separate, genuinely quantum operator** that also lives in the codebase: `src/Core/AmplitudeEmu.fs` is a **complex-amplitude superposition** whose state `Amp = (Frame * Complex) list` is a branch list that **grows in bits/branches on demand** ("support growing un-merged IS the exponential, logged not hidden"). Its `merge` step **interferes** — opposite-phase amplitudes cancel, equal-phase reinforce — with Born-rule (`|amplitude|²`) collapse. So the architecture carries *two* distinct operators: a real-weight **commutative** packet merge (`SoftValue`, classical/CRDT, the network) and a complex-amplitude **superposition with interference** (`AmplitudeEmu`, genuinely quantum-like). The honest peel the operator states about itself still holds: *complex amplitudes buy interference, not non-locality* — entanglement and the Bell 2√2 violation remain a separate resource (the superdeterminism channel), so the superposition operator alone is not a claim of non-locality.
+
+Collapse to a single decision occurs *locally*, inside a **Room**, when its time-bound (horizon) fires. Mutual empowerment survives because agents share soft beliefs at the network layer (preserving channel capacity [5]) rather than forcing hard consensus on each other.
 
 ## 2. Addressing the Four Objections: Tiers and External Anchors
 
@@ -53,7 +57,7 @@ The mathematical anchors below are load-bearing and confident: the NPA hierarchy
 [1] *(forwarded, to-verify)* N. Polson, V. Sokolov, and D. Zantedeschi, "Bell's Inequality, Causal Bounds, and Quantum Bayesian Computation: A Unified Framework," arXiv preprint arXiv:2603.28973, 2026.
 [2] *(forwarded, to-verify)* M. Padovan et al., "Secure and robust randomness with sequential quantum measurements," npj Quantum Information, 2024.
 [3] *(forwarded, to-verify — source-to-claim entailment unchecked)* M. Ioannou and D. Rosset, "Noncommutative polynomial optimization under symmetry," arXiv preprint arXiv:2112.10803, 2021.
-[4] Zeta Repository, `src/Core/SoftValue.fs` and `src/Core.TypeScript/observe/schema-rx-join.test.ts`.
+[4] Zeta Repository, `src/Core/SoftValue.fs`, `src/Core.TypeScript/observe/schema-rx-join.test.ts`, and `src/Core/AmplitudeEmu.fs` (complex-amplitude superposition with interference).
 [5] A. S. Klyubin, D. Polani, and C. L. Nehaniv, "Keep your options open: An information-based driving principle for sensorimotor systems," PLoS one, 2008.
 [6] Di Lavore et al., "Monoidal Streams for Dataflow Programming," arXiv:2202.02061, 2022.
 [7] M. Navascués, S. Pironio, and A. Acín, "A convergent hierarchy of semidefinite programs characterizing the set of quantum correlations," New Journal of Physics, 10(7), 073013, 2008.
