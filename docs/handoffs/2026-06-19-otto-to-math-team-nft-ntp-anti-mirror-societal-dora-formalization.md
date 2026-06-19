@@ -41,6 +41,7 @@ channel changes.*
 | 5 | P1 | **NTP noninterference**: `H_AB` depends only on the captured-at-mint **soft** clock (`clock ± uncertainty`), never on a post-mint "now"; render-clock quarantined to display | **Lean/Z3** (metering lemma) | FsCheck | Tariq |
 | 6 | P1 | **mutual-empowerment = coupled-empowerment minimizer** for the manipulation pattern | info-theoretic (Lean) | `SocietalDora` FsCheck | Adaeze |
 | 7 | P2 | **animation/displayClock boundary**: legal "animate" = pure `render(frozenState, displayClock)`; does `displayClock`-as-param smuggle live state? + the `± uncertainty` interval is itself bound (no retro-narrowing) | open — **boundary question first** | — | Soraya to scope |
+| 8 | **P1 (Aaron-flagged)** | **Find a more OBJECTIVE moral lens** than the current Zeta default — or characterize whether it *is* the most-objective measurable one (don't-collapse). Current default = **co-empowerment + diversity-preservation (non-coercion) vs coercion + diversity-collapse** (measurable: diversity-entropy / coupled-empowerment / `ρ_owe` / `CoEmpowerField`; grounded in the NCI keystone #7146). Honest scope: an objective *measure of a chosen value*, not value-free morality (§11 Default Moral Regard + Multi-Oracle = the DEFAULT lens, not mandatory). Full: `memory/project_zeta_moral_lens_…` | info-theoretic / decision-theoretic (Lean/Z3) | `CoEmpowerField`/`Diversity` FsCheck | Soraya → math team |
 
 ## Judgment calls the math team must preserve (don't lose in formalization)
 
