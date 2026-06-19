@@ -940,3 +940,56 @@ let ``Z3 witnesses Sybil refusal: a raw-node majority is refused when distinct i
         "(assert (<= distinctInQ (- rawInQ 1)))\n" + // ≥2 raw nodes collapse to fewer distinct identities
         "(check-sat)\n"
     z3ScriptHasModel "(b) Sybil raw-majority refusal reachable" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Aurora G3a — anti-Sybil entropy COST-FLOOR (the distinctness-enforcement structure for (b)).
+// Scoping: docs/research/2026-06-19-g3-anti-sybil-entropy-cost-the-distinctness-enforcement-under-aurora-b-scoping.md
+// Model: an identity costs a floor `c > 0` of captured entropy; holding N distinct identities costs
+// N·c; captured entropy E affords at most floor(E/c) distinct identities. This makes "no economy of
+// scale in forging" explicit — the structural heart of anti-Sybil (Douceur 2002: needs a costly
+// resource; Dwork–Naor / proof-of-work pricing shape).
+// SCOPE (the binding honesty — do NOT read as closing G3): this is G3a (cost-LINEARITY) only. It is
+// CONDITIONAL on G3b — that the entropy floor `c` is a REAL, conserved, non-forgeable resource — which
+// is the open crux (§B), NOT proven here. So: structure CI-enforced, premise (G3b) named-and-open,
+// exactly the "arithmetic proven, premise named" shape (b) itself has. And (L4): Sybil is made
+// prohibitive-by-COST, not impossible — a funded adversary CAN pay (the four non-claims bind).
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves the cost barrier: you cannot afford Q distinct identities below Q*c (G3a)`` () =
+    // c>0 ∧ N≥Q ∧ E < Q·c ⇒ N·c > E — affording N≥Q identities is impossible under-funded.
+    let script =
+        "(declare-const c Int)(declare-const N Int)(declare-const Q Int)(declare-const E Int)\n" +
+        "(assert (not (=> (and (> c 0) (>= N Q) (< E (* Q c))) (> (* N c) E))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(G3a) cost barrier below Q*c" script
+
+[<Fact>]
+let ``Z3 proves NO economy of scale: entropy for one identity (E=c) yields at most ONE distinct (G3a)`` () =
+    // The anti-Sybil heart: a ring of any number of raw nodes funded for one capture (E=c) can hold
+    // ≤ 1 distinct identity — it cannot manufacture N>1 distinct identities for one identity's cost.
+    let script =
+        "(declare-const c Int)(declare-const N Int)(declare-const E Int)\n" +
+        "(assert (not (=> (and (> c 0) (= E c) (>= N 0) (<= (* N c) E)) (<= N 1))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(G3a) no economy of scale (E=c ⇒ ≤1 distinct)" script
+
+[<Fact>]
+let ``Z3 proves identity cost is monotone/linear in the count (G3a)`` () =
+    let script =
+        "(declare-const c Int)(declare-const N1 Int)(declare-const N2 Int)\n" +
+        "(assert (not (=> (and (> c 0) (<= N1 N2)) (<= (* N1 c) (* N2 c)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(G3a) cost monotone/linear" script
+
+[<Fact>]
+let ``Z3 witnesses prohibitive-by-COST not impossible: a funded adversary CAN buy a quorum (G3a)`` () =
+    // The honest seam made executable: G3 makes Sybil prohibitive-by-cost, NOT impossible. A
+    // sufficiently-funded adversary (E ≥ Q·c) can pay for Q distinct identities — SAT. (This is why
+    // the four non-claims bind: P(infection) > 0; cost raises the bar, it does not close the door.)
+    let script =
+        "(declare-const c Int)(declare-const N Int)(declare-const Q Int)(declare-const E Int)\n" +
+        "(assert (> c 0))(assert (>= Q 3))(assert (>= N Q))(assert (<= (* N c) E))\n" +
+        "(check-sat)\n"
+    z3ScriptHasModel "(G3a) funded adversary can pay (prohibitive-by-cost, not impossible)" script

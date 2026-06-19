@@ -69,9 +69,11 @@ theorems, not metaphor.
      **CSLib FLP-lift routing scoped:** `docs/research/2026-06-19-aurora-b-bft-sybil-lift-onto-cslib-flp-consensus-lean-scoping.md`
      (G1 crash→Byzantine, G2 identity-keyed quorum, G3 anti-Sybil entropy = the blocker).
      **G3 scoped (2026-06-19):** `docs/research/2026-06-19-g3-anti-sybil-entropy-cost-the-distinctness-enforcement-under-aurora-b-scoping.md`
-     — splits G3 into G3a (cost-linearity `cost(N)≥N·c`, tractable Z3 near-term win) + G3b (the
-     entropy floor is real + non-forgeable — the open crux; Douceur: needs a costly resource). Next
-     concrete deed = land G3a's Z3 cost-floor lemmas.
+     — splits G3 into G3a (cost-linearity) + G3b (entropy floor real + non-forgeable = open crux).
+     ✅ **G3a LANDED (2026-06-19):** 4 Z3 cost-floor lemmas (cost barrier, **no economy of scale**
+     `E=c⇒≤1 distinct`, monotone, prohibitive-by-cost-not-impossible witness) in `Z3.Laws.Tests.fs`
+     (63 Z3 green) — structure CI-gated, conditional on G3b. **Open = G3b** (model choice + non-forgeability;
+     a research fork — Soraya routing + CSLib Crypto/Lean decision; surface, don't auto-pick).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
    - ✅ **(g) DONE (2026-06-19):** Autoimmunity Flood / immune-memory decay (Test 4.5). Under flood
      (`Danger≈0`) Eq 10 → `n(t+1)=max(0,(1−δ)·n(t)−β·FP)`; FsCheck asserts decay→0, monotone,

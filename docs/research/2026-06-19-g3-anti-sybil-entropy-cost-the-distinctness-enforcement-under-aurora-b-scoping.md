@@ -93,10 +93,17 @@ faking it is provably as expensive as earning it. Until then G3b stays §B.
 
 ## 7. Next concrete step (one, small)
 
-**Land G3a** — the QF_LRA cost-floor lemmas (`cost(N) ≥ N·c` for `c>0`; ring-of-`s`-sharing-one-capture
-yields 1 distinct identity, not `s`) as Z3 lemmas beside (b)'s honest-count set. It makes the
-distinctness-enforcement *structure* explicit and CI-gated, with G3b named as the open premise it rests
-on — the same "arithmetic proven, premise named" shape (b) itself now has.
+✅ **G3a LANDED (2026-06-19):** the cost-floor Z3 lemmas are in
+`tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (63 Z3 green) — cost barrier (can't afford Q identities
+below `Q·c`), **no economy of scale** (`E=c` ⇒ ≤1 distinct identity, the anti-Sybil heart), cost
+monotone/linear, and the **prohibitive-by-cost-not-impossible witness** (a funded adversary CAN pay —
+the honest seam executable). The distinctness-enforcement *structure* is now CI-gated, **conditional on
+G3b** (the floor `c` being a real, conserved, non-forgeable resource — still the open crux).
+
+**Now the open work is G3b** — choose the entropy-capture model (info-theory-of-individuality vs
+fingerprint-by-measurement vs the per-room metering floor) and prove the floor is non-forgeable. That
+is a genuine research fork (the model choice is Soraya's BP-16 routing + needs the CSLib `Crypto`/Lean
+decision) — surface it rather than auto-pick.
 
 ## Composes with
 
