@@ -2,11 +2,13 @@
 id: B-0366.2
 zetaid: 081KR50HA0008QG0R0002PGV1N
 priority: P1
-status: open
+status: closed
 title: "Toffoli circuit for Z-set join — formal gate-network model"
 effort: M
 created: 2026-05-09
-last_updated: 2026-05-11
+last_updated: 2026-06-19
+resolved: 2026-06-19
+resolved_by: "lior/proof-yaml-locks"
 depends_on: [081KR50HA0008QG0R0021B5J87]
 parent: 081KR50HA0008QG0R003T5MZAC
 classification: buildable-now

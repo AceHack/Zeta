@@ -2,11 +2,13 @@
 id: B-0366.2.2
 zetaid: 081KRA5AR0008QG0R001GQSVWE
 priority: P1
-status: open
+status: closed
 title: "Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)"
 effort: S
 created: 2026-05-11
-last_updated: 2026-05-11
+last_updated: 2026-06-19
+resolved: 2026-06-19
+resolved_by: "lior/proof-yaml-locks"
 depends_on: [081KR50HA0008QG0R0002PGV1N.1]
 parent: 081KR50HA0008QG0R0002PGV1N
 classification: buildable-now

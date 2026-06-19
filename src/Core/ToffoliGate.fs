@@ -286,3 +286,72 @@ module ToffoliGate =
           IntermediateWires = intermediateWires
           CarryWires = carryWires |> Seq.toList
           PeresChains = peresChains }
+
+    /// Model a Z-set join as a Toffoli-gate network.
+    ///
+    /// The join of two Z-sets A and B on equal keys computes:
+    ///   join(A, B) = { (key) -> w_A(key) * w_B(key) }
+    ///
+    /// For each key present in both A and B, we allocate a weight multiplication
+    /// fragment using `modelWeightMul w_A w_B`.
+    ///
+    /// Wires from different fragments are mapped to disjoint global wire IDs.
+    /// The total Ancilla capacity of the circuit is the sum of the capacities of all fragments.
+    let modelJoinCircuit<'K when 'K : comparison> (a: ZSet<'K>) (b: ZSet<'K>) : ToffoliCircuit =
+        let sa = a.AsSpan()
+        let sb = b.AsSpan()
+        if sa.IsEmpty || sb.IsEmpty then
+            emptyCircuit
+        else
+            let cmp = KeyComparerCache<'K>.Instance
+            let mutable i = 0
+            let mutable j = 0
+            let fragments = ResizeArray<ToffoliCircuitFragment>()
+            while i < sa.Length && j < sb.Length do
+                let c = cmp.Compare(sa.[i].Key, sb.[j].Key)
+                if c < 0 then
+                    i <- i + 1
+                elif c > 0 then
+                    j <- j + 1
+                else
+                    let wA = sa.[i].Weight
+                    let wB = sb.[j].Weight
+                    let frag = modelWeightMul wA wB
+                    fragments.Add frag
+                    i <- i + 1
+                    j <- j + 1
+
+            if fragments.Count = 0 then
+                emptyCircuit
+            else
+                let mutable globalGates = []
+                let mutable globalWires = Map.empty
+                let mutable offset = 0
+
+                for frag in fragments do
+                    // Shift the gate wire IDs
+                    let shiftedGates =
+                        frag.Circuit.Gates
+                        |> List.map (fun step ->
+                            { ControlA = step.ControlA + offset
+                              ControlB = step.ControlB + offset
+                              Target = step.Target + offset })
+
+                    // Shift the wire map keys
+                    let shiftedWires =
+                        frag.Circuit.Wires
+                        |> Map.toSeq
+                        |> Seq.map (fun (wireId, bitValue) -> (wireId + offset, bitValue))
+                        |> Map.ofSeq
+
+                    globalGates <- globalGates @ shiftedGates
+
+                    // Merge wires
+                    for KeyValue(wireId, bitValue) in shiftedWires do
+                        globalWires <- Map.add wireId bitValue globalWires
+
+                    offset <- offset + frag.Circuit.Ancilla
+
+                { Gates = globalGates
+                  Wires = globalWires
+                  Ancilla = offset }

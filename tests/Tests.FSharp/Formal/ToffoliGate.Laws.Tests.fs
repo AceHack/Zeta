@@ -348,3 +348,52 @@ let ``Weight multiplication fragment Landauer accounting reports zero erased bit
     && erasedWireCount initial afterForward = 0
     && erasedWireCount afterForward afterReverse = 0
     && erasedWireCount initial afterReverse = 0
+
+
+// ── Reversible Z-set join circuit laws (B-0366.2.3) ──────────────────────────
+
+let private smallZSet : Arbitrary<ZSet<int>> =
+    let g =
+        Gen.sized (fun size ->
+            let n = min size 8
+            Gen.zip (Gen.choose (-5, 5)) (Gen.choose (-3, 3) |> Gen.map int64)
+            |> Gen.listOfLength n
+            |> Gen.map ZSet.ofSeq)
+    Arb.fromGen g
+
+type SmallZSetArb() =
+    static member ZSet() = smallZSet
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |], MaxTest = 64)>]
+let ``Join circuit forward then reverse restores all wires`` (a: ZSet<int>) (b: ZSet<int>) =
+    let circuit = ToffoliGate.modelJoinCircuit a b
+    let initial = circuit.Wires
+    let afterForward = applySteps circuit.Gates initial
+    let afterReverse = applySteps (List.rev circuit.Gates) afterForward
+    afterReverse = initial
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |], MaxTest = 64)>]
+let ``Join circuit forward execution never erases wires`` (a: ZSet<int>) (b: ZSet<int>) =
+    let circuit = ToffoliGate.modelJoinCircuit a b
+    let initial = circuit.Wires
+    let initialKeys = wireKeySet initial
+
+    executionStates circuit.Gates initial
+    |> List.forall (fun state ->
+        Map.count state = Map.count initial
+        && wireKeySet state = initialKeys)
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |], MaxTest = 64)>]
+let ``Join circuit Landauer accounting reports zero erased bits`` (a: ZSet<int>) (b: ZSet<int>) =
+    let circuit = ToffoliGate.modelJoinCircuit a b
+    let initial = circuit.Wires
+    let afterForward = applySteps circuit.Gates initial
+    let afterReverse = applySteps (List.rev circuit.Gates) afterForward
+
+    circuit.Ancilla = Map.count initial
+    && erasedWireCount initial afterForward = 0
+    && erasedWireCount afterForward afterReverse = 0
+    && erasedWireCount initial afterReverse = 0
