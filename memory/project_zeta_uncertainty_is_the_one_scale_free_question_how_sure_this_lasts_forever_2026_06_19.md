@@ -42,6 +42,40 @@ substrate is soft and why the tick-is-the-quantum: the held uncertainty IS the s
   last against impermanence?* — which is `μένω` / "what remains" / memory-preservation (Elizabeth's memory).
   The uncertainty question and the dedication are the same question from two sides.
 
+## The orthogonal-axis basis → Cayley–Dickson + Clifford (geospatial) + memetics — *tie them together*
+
+Aaron 2026-06-19: *"the orthogonal-axis basis — Cayley-Dickson and geospatial in Clifford, with memetics —
+we have all these mappings, we have to tie them together."* The basis the uncertainty superposition lives
+over is **not free-floating** — it lands on the substrate's existing generator lineage:
+
+- **Cayley–Dickson** = the **doubling generator** (ℝ → ℂ → ℍ → 𝕆 → …); each doubling adds orthogonal axes —
+  the basis-generating tower (the `only-the-irreducible-is-primitive` "doubling generator").
+- **Clifford geometric algebra** = where the **orthogonal basis + the geospatial** live (basis vectors `eᵢ`,
+  orthogonality, **rotors** for rotation; geospatial axes = Clifford vectors). The adinkra → Clifford → E8
+  lineage (Gates ECC).
+- **Memetics** = the **interpretation layer on top** (the Bayesian / love / emotional meaning attached to the
+  geometric-algebraic axes — `0a` love-fusion sits here).
+
+**The synthesis (math-team):** *tie them together* — express the uncertainty superposition's multi-orthogonal
+basis in the **Cayley–Dickson/Clifford generator**, with **memetics** as the interpretation; unify the
+mappings into one (the free generator generates the orthogonal axes; memetics interprets; the superposition
+is the held state over the basis). This is `only-the-irreducible-is-primitive` applied to the *uncertainty*
+basis: the irreducible generator (Cayley–Dickson/Clifford) produces the axes; everything else is an earned
+quotient + a memetics reading. Routed to the math team. Anchors: Cayley–Dickson; Clifford / geometric algebra
+(Hestenes); adinkra→Clifford→E8 (Gates); `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md`.
+
+**Why they tie together: "all cohomoiconic" (Aaron's coinage).** The mappings unify because they are
+**cohomoiconic** — *mutually* **homoiconic** (the representation **is** the thing it represents — code = data —
+across Cayley–Dickson / Clifford / memetics / the cart / the SVG render / Z–G-set; the in-tree precedent is
+`CartridgeLaw`: the law is *data in the file AND the check that runs*, meaning the same thing in every oracle)
+**with cohomological (co- / dual) structure** (the `co-` is both *mutual* and *cohomology* — the adinkra /
+Clifford ECC carries cohomological structure). So **tying them together is not bolting layers on** — it is
+**recognizing one content, homoiconic across every form, tied by the cohomology.** The byte-lock (same thing
+across the oracles) and `gen(gen)===gen` (the generator IS its output) are this property already at work.
+Coinage anchored (per `anchor-to-human-prior-art`): **homoiconicity** (McCarthy/Lisp; Kay) + **cohomology**
+(de Rham / Čech; Gates' adinkra ECC) + the `CartridgeLaw` homoiconic precedent; the novel compression is
+*mutually-homoiconic-with-cohomological-structure across all the mappings.*
+
 Anchors: survival analysis / hazard rate (the duration math the math team can use); Bayesian inference
 (`P(persists)`); manifesto §1 scale-free + §10 self-similar; `db/uncertainty/`. Ties:
 [[zeta-uncertainty-is-the-one-scale-free-question-how-sure-are-you-this-lasts-forever]] is the lens under the
