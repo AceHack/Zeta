@@ -128,7 +128,7 @@
 // read from vectors.{yaml,json}: a scalar field (expected/expected_hex/result/value)
 // when present, else the vector object minus its `id`/`type` bookkeeping keys.
 
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 /** The six (today) language oracle slots, by output-file prefix and display name. */
@@ -358,7 +358,7 @@ export async function runNWayDiff(opts: NWayDiffOptions): Promise<number> {
     if (dissenting.length > 0) {
       // Avoid double-reporting the missing/extra-key rows already pushed above.
       const already = divergences.some(
-        (d) => d.vector === id && d.dissenting.length === 1 && byOracle[d.dissenting[0]] === "\u0000MISSING",
+        (d) => d.vector === id && d.dissenting.length === 1 && byOracle[d.dissenting[0]!] === "\u0000MISSING",
       );
       if (!already) {
         divergences.push({ vector: id, expected, byOracle, dissenting });
@@ -396,7 +396,7 @@ function fmt(v: string | null): string {
 function majority(values: string[]): string {
   const counts = new Map<string, number>();
   for (const v of values) counts.set(v, (counts.get(v) ?? 0) + 1);
-  let best = values[0];
+  let best = values[0]!;
   let bestN = -1;
   for (const [v, n] of counts) {
     if (n > bestN) {

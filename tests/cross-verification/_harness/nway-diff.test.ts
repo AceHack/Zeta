@@ -63,7 +63,7 @@ test("a one-byte mutation in ONE oracle is caught, exits non-zero, names the cul
     const goPath = join(dir, "go-output.json");
     const go = JSON.parse(readFileSync(goPath, "utf8")) as Record<string, string>;
     const firstValueKey = Object.keys(go).find((k) => k !== "_source")!;
-    const original = go[firstValueKey];
+    const original = go[firstValueKey]!;
     // Change exactly one character (last digit), keeping the same shape/length.
     const lastChar = original.at(-1)!;
     const flipped = lastChar === "0" ? "1" : "0";
