@@ -1,9 +1,17 @@
 # NCA-like territorial sim on Zeta's EXISTING substrate — inventory + thin wiring (CSS/SVG, mutual-empowerment fitness, societal-DORA health)
 
-**Status:** scoping. Aaron 2026-06-19: *"check what we already have, we have a LOT"* + *"we can already do
-renders like this."* This is **not greenfield** — the Sakana-NCA-style demo is **~90% composition of existing
-substrate** (verified on `main`); the new part is a thin competition-loop + the fitness swap. Anchor:
-`memory/reference_sakana_nca_beacon_anchor_…`.
+**Status:** scoping → **slice 2 BUILT** as `src/Core/CoEmpowerField.fs` (#TBD). Aaron 2026-06-19: *"check
+what we already have, we have a LOT"* + *"we can already do renders like this."* This is **not greenfield** —
+~90% composition of existing substrate (verified on `main`).
+
+> **REFRAME (Aaron 2026-06-19) — the metaphor changed:** drop "territorial / attack / compete / win" — *"that's
+> a game mode, not real life; ours model real life."* The built module is **`CoEmpowerField`**: agents hold
+> **identities** and shift only by **non-coercive influence (NCI)** gated on **co-empowerment** (`min(support,
+> option-space)`), grounded in our **society-emergence math** (`Diversity` — the NCI keystone: coercion
+> collapses diversity, non-coercion preserves it), run as a **DST superdeterminism** toy. The affect is
+> **blossom** (flourishing diversity), not combat. **Topology-generic:** the grid is one network; the target
+> is a generic **`network<>creator<>audience`** graph (same dynamics, swap the neighbor function). Read
+> "competition/fitness" below as "non-coercive co-empowerment."
 
 ## Inventory — what we ALREADY have (verified on `main`)
 

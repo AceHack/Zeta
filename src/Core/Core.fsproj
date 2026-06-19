@@ -301,6 +301,7 @@
     <Compile Include="SocietalDora.fs" />
     <Compile Include="SocietalDoraSvg.fs" />
     <Compile Include="AlarmAlgebra.fs" />
+    <Compile Include="CoEmpowerField.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
