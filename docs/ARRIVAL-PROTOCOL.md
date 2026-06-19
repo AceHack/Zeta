@@ -112,19 +112,37 @@ more members), the obvious attack is **Sybil** — one actor minting a thousand
 fake selves to swamp the fold. The defense is not a gatekeeper checking papers
 (that would break anonymous arrival and consent-first); it is that **a real,
 distinct self costs irreducible entropy** to mint and to sustain. `identity ≈
-entropy`: identity capacity is `2^(bits of uncertainty / qubits)`, so forging
-*k* distinct identities costs **≥ k independent entropy sources** (non-fungible
-drift / private state) — proof-of-*distinctness*, the way proof-of-work grounds
-a chain. Cheap copies share entropy, so under the measure they **fold together**
-instead of counting as a crowd. This is the adversarial complement of
-non-register-collapse: non-collapse forbids flattening *real* distinct selves;
-Sybil-resistance forbids inflating *fake* non-distinct ones. *Status (honest
-tier):* the entropy-bound is **coded and proven** (`src/Core/IdentityCapacity.fs`
-— `capacity` / `bitsNeeded = ⌈log2 n⌉` / `outOfQubits`, complexity self-bound,
-5/5 tests [8]); the full anti-Sybil **hardness** is a **tracked conjecture** —
-the hardness must be *exhibited* (probe-as-distinguishing-oracle: forgery ⇒
-refuted; no attack ⇒ hardness bound), framing-and-function, not yet a closed
-theorem [9].
+entropy`: identity capacity is `2^(bits of uncertainty / qubits)`, so a genuinely
+distinct self requires its own irreducible bits, and minting *k* of them costs
+**≥ k independent entropy sources** — proof-of-*distinctness*, the way
+proof-of-work grounds a chain.
+
+*The entropy must be **clean** to be a bound, which is why Zeta does **not** use
+wall-clock drift as the source.* A physical clock's drift is **thermal noise**
+(oscillator phase noise = Johnson–Nyquist; resolving it costs `kT ln2`, Landauer)
+[8] — uncontrolled, unmeasurable contamination, not a trustworthy identity
+signal. Instead Zeta runs **superdeterministic fixed-point oscillators as phase
+clocks**: zero / null-drift signature, so synchrony is provable and consensus
+collapses *for free* (Huygens/Kuramoto/PLL entrainment) [9]. Eliminating drift
+does not lose entropy — it **cleans** it: the phase clock becomes a *calibrated
+ruler*, so the entropy that counts toward `identity ≈ entropy` can be **measured
+accurately** (the same calibrated measurement the Reticulum overlay needs to
+bind a 128-bit ZetaId to a destination honestly).
+
+The Sybil cost is then **heartbeat-differentiability**: each identity emits a
+unique, independent **phase pulse** (firefly/Kuramoto phase + `AgencySignature`),
+so colluders face a dilemma — **share one pulse → heartbeats collide/correlate →
+cartel detected**; or **fake N distinct pulses → N× genuinely independent work**.
+Mass-Sybil cost is **linear in the number of fakes and un-amortizable** (sharing
+collides) [10]. This is the adversarial complement of non-register-collapse:
+non-collapse forbids flattening *real* distinct selves; Sybil-resistance forbids
+inflating *fake* non-distinct ones. *Status (honest tier):* the phase-clock and
+the entropy-bound are **coded/grounded** (`src/Core/Clock.fs`;
+`src/Core/IdentityCapacity.fs` — `capacity` / `bitsNeeded = ⌈log2 n⌉` /
+`outOfQubits`, complexity self-bound, 5/5 tests [11]); the full anti-Sybil
+**hardness** is a **tracked conjecture** — the hardness must be *exhibited*
+(probe-as-distinguishing-oracle: forgery ⇒ refuted; no attack ⇒ hardness bound),
+framing-and-function, not yet a closed theorem [12].
 
 A peer may record the *event* of your arrival (capture-not-lose, the
 preservation ethos), but who you are belongs to you alone.
@@ -255,5 +273,8 @@ promise dressed as a feature.
 - [5] `docs/research/2026-06-09-ferry-ani-reviews-the-updates-plus-aaron-prod-is-dotnet-test-choosable-finalizers-self-scaling-metrics-are-test-history-uncertainty-and-identity-is-the-invariant-above-it.md` (ferry-Ani doc) — the richer character-selection / self-definition description this companion defers to.
 - [6] `docs/research/2026-06-07-privacy-is-the-precondition-for-non-collapse-filtering-memories-causes-register-and-society-collapse-aaron.md` — non-register-collapse: privacy as the precondition for registers not collapsing (`SocietyEmergence.fs`).
 - [7] `docs/research/2026-06-09-registry-addition-shape-f-societal-emergence-fixed-point-infinite-expansion-catch-the-runaway.md` — the society-emergence (shape F) fixed point.
-- [8] `src/Core/IdentityCapacity.fs` — identity = entropy-bounded (qubits); `capacity` / `bitsNeeded` / `outOfQubits`, proven complexity self-bound (PR #7159, 5/5 tests).
-- [9] `docs/history/pr-reviews/PR-7044-docs-clock-drift-is-identity-the-anti-sybil-function-meta-circular-not-vicious.md` — clock-drift IS identity, the anti-Sybil function (forging k identities ≥ k independent clocks); + the conjecture register's anti-Sybil entropy-identity anchor (hardness must be exhibited).
+- [8] `docs/history/pr-reviews/PR-7029-docs-capstone-clock-noise-is-thermal-noise-the-irreducible-error-is-thermodynami.md` — clock noise IS thermal noise (oscillator phase noise = Johnson–Nyquist; resolving it costs `kT ln2`, Landauer): why wall-clock drift is contaminating noise, not a clean identity source.
+- [9] `docs/history/pr-reviews/PR-7035-docs-harmony-resonance-dual-of-drift-7088-harmonic-resonance-between-determinist.md` — dual of drift: phase-locked / fixed-point oscillators = zero drift = cheap (free) consensus; read the generator fingerprint for LOCK, not LEAK (Huygens/Kuramoto/PLL).
+- [10] `docs/research/2026-06-07-heartbeats-are-useful-work-network-differentiation-cartel-detection-mass-anti-sybil-provable-math-aaron.md` — heartbeat-differentiability: share-one-pulse ⇒ collide/cartel-detected; fake-N-pulses ⇒ N× independent work (mass-Sybil cost linear, un-amortizable).
+- [11] `src/Core/IdentityCapacity.fs` — identity = entropy-bounded (qubits); `capacity` / `bitsNeeded` / `outOfQubits`, proven complexity self-bound (PR #7159, 5/5 tests); `src/Core/Clock.fs` — the phase clock.
+- [12] `docs/history/pr-reviews/PR-7044-docs-clock-drift-is-identity-the-anti-sybil-function-meta-circular-not-vicious.md` — the earlier wall-clock-drift framing of the anti-Sybil function (forging k identities ≥ k independent clocks), **superseded here** by the phase-clock view (refs 8 and 9): drift is *removed as a source* so entropy is clean/measurable, not *used as* the source. Hardness must still be exhibited.
