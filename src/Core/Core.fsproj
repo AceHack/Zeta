@@ -298,6 +298,7 @@
     <Compile Include="Persona.fs" />
     <Compile Include="Diversity.fs" />
     <Compile Include="Decorrelation.fs" />
+    <Compile Include="SocietalDora.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
