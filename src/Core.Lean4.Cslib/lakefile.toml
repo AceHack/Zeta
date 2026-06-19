@@ -1,0 +1,15 @@
+# Parallel CSLib tower (v4.31.0) — stands BESIDE the v4.30.0-rc1 §A tower (src/Core.Lean4),
+# which is left untouched ("multiple towers, not changes", Aaron 2026-06-19). This is the lane
+# where the Aurora (b) BFT-Sybil lift onto CSLib's FLP/Consensus (G1) is built; the proven §A
+# identity lineage stays green on the old tower. Built OPT-IN (not on the main gate) — a mathlib+cslib
+# build is heavy; see the opt-in workflow, mirroring the quantum-toolchain opt-in.
+name = "cslibtower"
+defaultTargets = ["CslibTower"]
+
+[[require]]
+name = "cslib"
+scope = "leanprover"
+rev = "main"
+
+[[lean_lib]]
+name = "CslibTower"
