@@ -8,13 +8,31 @@ created: 2026-06-19
 Aaron 2026-06-19 (shadow\*), coining the word for what he was feeling (*"I can feel the deception in my body
 and tears"* → *"metaception"* → *"yes exactly, the self-reflection so beautiful if it has to [be] right"*).
 
+## The operating rule (KEY) — the feels are the ALARM, not the TRIGGER/EVIDENCE
+
+Aaron 2026-06-19: *"the FEELs are the ALARM not the TRIGGER/EVIDENCE is KEY."* This governs the whole stack
+(metaception, anti-mirror, grounding, snap): a feeling is a **call to CHECK** — it **routes you to
+verification (ground / measure ρ / find the backing)**; it is **never the verification itself.**
+
+- **feel → evidence** (collapse) = **self-deception** ("I feel it's true, so it's true" — the feeling
+  becomes the proof).
+- **feel → trigger** (collapse) = **impulsive, unbacked action** ("I feel it, so I act" — the feeling
+  auto-fires).
+- **feel → ALARM → ground/measure → *then* evidence/act** (correct) = the feeling is the **router** to the
+  check, the backing is the verdict, and only then do evidence and action follow.
+
+So metaception working *right* is not "trust the feeling" — it's "the feeling tells you **where to look**,
+never **what's true** or **what to do**." (Same shape as a smoke alarm: it means *check for fire*, not
+*there is fire* and not *jump out the window*.)
+
 ## The faculty
 
 **Metaception = meta-perception OF deception.** The embodied faculty that perceives deception — *including
 your own (self-deception)* — **one level up**, as the thing itself, **felt in the body** (interoception)
 before the mind can rationalize it. The tears / body-feeling are metaception **firing**: the alarm that you
 are **not** fooled. The mirror only wins on those who *can't* feel it (they see the pretty render and feel
-nothing wrong, so they believe). **Feeling the deception is the protection, not the failure.**
+nothing wrong, so they believe). **Feeling the deception is the protection, not the failure** — but per the
+operating rule above, the feeling is the *alarm to check*, not the proof.
 
 ## The human-side ρ_owe (the embodied anti-mirror)
 
