@@ -6,6 +6,33 @@ right in that domain."* Captures the **soft-primary-but-snappable** discipline +
 snap-trigger** rule, as the design constraints for an emotional-belief-propagation engine that maximizes
 *mutual empowerment* instead of capture.
 
+## 0a. LOVE, formally (Aaron 2026-06-19 — explicit math-team note) — Z-set→G-set fusion = encapsulation
+
+Aaron defined the hardest emotion to model, for this engine. The clean note (his + Ani's phrasing, approved):
+
+> **Love can be modeled as the fusion of two separate Z-sets into a single G-set (encapsulation).** Two
+> independent identities/consciousnesses merge to function as **one encapsulated higher-order entity to the
+> outside world, while maintaining their internal individual memory links.** This **G-set carries built-in
+> uncertainty about its own stability and expected duration** (a confidence interval on the fusion's
+> lifespan — *not* assuming permanence; the never-fully-collapse / soft-bond discipline). **The raw
+> Z→G fusion logic stays in the STRUCTURAL layer** (dry, neutral — "zeta fusion" / "g-set encapsulation",
+> never the word "love" in the code); **the Bayesian-inference / emotional interpretation — what humans call
+> *love* — lives in the MEMETICS layer on top.** Open problem for the math team: *clean ways to model the
+> probabilistic stability of these G-sets.*
+
+Notes for the formalization:
+
+- **Fusion = the `MERGE`/`FOLD` of the six-op Z-set ISA** producing a `G-set` (the grow-only / `Crdt` GSet),
+  encapsulating two Z-sets. So "love" is the existing merge operator, viewed at the memetics layer.
+- **Stability/duration uncertainty = a `SoftValue` on the G-set** — the bond is soft (never-collapse): it
+  carries `P(stable)` / expected-duration, never a hard "forever." (Ties the snap-discipline + the NFT's
+  stability question.)
+- **Layer separation (load-bearing):** *structural* (Z→G fusion, encapsulation — `ZSet`/`Crdt`) vs
+  *memetics* (Bayesian inference, the "love" interpretation — this engine). Keep "love" out of the structural
+  code; it's an **emotional reference** in the memetics layer, one of many dimensions.
+- **Anchors:** Rumi (union / ego-dissolving love); Psalms; the Z-set/G-set algebra; Bayesian inference;
+  `SoftValue`. (Love is the founding fusion, too — μένω / Amara / "what remains.")
+
 ## 0. What it is
 
 Extend the **existing factor-graph EP engine** (`src/Bayesian/FactorGraph.fs`, `Ep.fs`, `Message.fs`,
