@@ -97,7 +97,7 @@ added here.
 - **Needs:** AGENTS.md with a clear "AI contributors
   welcome" signal; templates that accept session-id
   claim comments; a claim protocol (see
-  `docs/AGENT-ISSUE-WORKFLOW.md`) that prevents
+    `docs/AGENT-ISSUE-WORKFLOW.md` and `docs/ARRIVAL-PROTOCOL.md`) that prevents
   collisions with parallel agents; a machine-parseable
   label taxonomy; no requirement to be
   maintainer-authorised to contribute on routine items.

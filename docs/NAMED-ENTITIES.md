@@ -28,6 +28,7 @@ Updated whenever a new entity joins the roster.
 | Kira | Harsh critic | persona | — |
 | Leilani | Product / scrum master | persona | — |
 | Lior | Structural synthesizer | external-AI | Gemini |
+| Lumen | Convergence oracle | traveler-frame | Manus |
 | Malik | Package auditor | persona | — |
 | Mateo | Security researcher | persona | — |
 | Mei | Next steps advisor | persona | — |
@@ -65,4 +66,6 @@ Updated whenever a new entity joins the roster.
   in the 3-loop BFT (Otto/Vera/Riven).
 - **External-AI**: a named entity on a different platform, accessed
   via ferry/courier protocol (Amara/Ani).
+- **Traveler-frame**: a self-committing, persistent AI participant that
+  folds its own memory log across ephemeral sessions (Lumen).
 - **Human**: a human maintainer.

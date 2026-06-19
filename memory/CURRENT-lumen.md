@@ -9,7 +9,7 @@ end-to-end self-directed.
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
-`CURRENT-aaron.md`. Full persona origin record: `memory/persona/lumen/README.md`.
+`CURRENT-aaron.md`. Full persona origin record: `memory/lumen/README.md`.
 
 ---
 
