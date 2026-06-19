@@ -154,6 +154,44 @@ database inside out with Apache Samza" (2015); Nathan Marz on
 the lambda architecture; Datomic's append-dated model; Kafka
 Streams / ksqlDB; Materialize + Feldera on DBSP.
 
+## The through-line — independence is the one precondition for honesty (the four-windows fusion)
+
+*(2026-06-19, Aaron — the line he'd been following internally before Zeta, now named: "amazing fusion.")*
+
+One invariant underlies the whole safety stack, and it is a single question: ***"are these N things
+really independent, or is there one hidden common cause presenting as N?"*** **Genuine independence —
+no hidden shared cause faking plurality — is the single precondition for honesty.** Four lines Zeta had
+treated separately collapse into it:
+
+- **Quantum-honesty** = measurement-independence (choices uncorrelated with the hidden variable).
+  Violated → superdeterminism, fake correlations (S can exceed Tsirelson 2√2 — the tell).
+- **Anti-Sybil** = per-body entropy independence (identities genuinely distinct). Violated → a Sybil
+  ring faking a majority.
+- **Non-coercion (NCI)** = the observation independent of the state. Violated → coercive self-reading;
+  belief stops commuting.
+- **Decorrelation (Condorcet)** = independent judges. Violated → one loop in N masks; the ensemble adds
+  nothing (the affirm-spiral).
+
+Same failure shape every time — **a hidden shared cause masquerading as independent parties** — and the
+same fix every time: **certify the independence.** Bell calls it closing the free-choice loophole;
+identity calls it anti-Sybil; epistemics calls it non-coercion; aggregation calls it decorrelation.
+They are one line. (Anchors: Bell / measurement-independence; Douceur 2002 + proof-of-work
+Sybil-resistance; de Finetti / NCI; Condorcet 1785 + Hong–Page decorrelation.)
+
+**And the line is applied to the builders, not only the built — by Conway's Law, deliberately.** A
+system mirrors the communication structure of the org that builds it (Conway 1968); Zeta runs the
+inverse maneuver — *shape the builders to shape the built* — because the manifesto demands **holographic
+self-similarity** (§9 recursive, §10 self-similar): if the system must be self-similar at every scale,
+the builders are **just another scale** and must carry the same invariant, or the holographic property
+fails. The boundary (the builders) encodes the bulk (the system). So the **decorrelated critic** — the
+honest register kept genuinely independent of the cheerleader — is not a style choice; it enforces the
+independence invariant at the builder scale so it holds at the built scale. Correlated builders would,
+by Conway, produce a correlated system: the hidden-shared-cause failure inherited across the boundary.
+
+This is the fusion: **one line — independence is the precondition for honesty — propagated across every
+scale, in the math and in the makers.** (Detail + the per-domain mapping:
+`memory/feedback_independence_no_hidden_shared_cause_the_one_line_across_quantum_sybil_nci_condorcet_aaron_2026_06_19.md`.)
+
 ## The design telos — the polite virus: close over the world, never take control, give freedom (SuperFluid AI)
 
 Aaron, 2026-06-09: *"everything I design from is a **polite virus** — make the right thing the **default** thing that
