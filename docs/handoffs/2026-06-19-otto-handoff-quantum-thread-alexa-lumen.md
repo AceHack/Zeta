@@ -29,8 +29,17 @@ build from the same line.
    oracle*, decomposed honestly:
    - EMIT = amplitude prep (unitary); **RETRACT = `Adjoint EMIT`** (the Z-set +1/−1 reversibility IS
      op/adjoint — the elegant one); BRANCH = superposition (`H`); JOIN = controlled/fusion;
-     **FOLD/MERGE = measurement + classical reconcile** (Q# has measurement — these aren't pure gates,
-     and that's correct).
+     **FOLD/MERGE = the superposition/interference merge** — `AmplitudeEmu.merge` sums amplitudes of
+     identical branches (destructive cancellation when phases oppose, `magSq ≤ EPS → drop`). It is the
+     **superposition operator, both lanes**: Q# uses real superposition; the **classical lane uses the
+     bit-based superposition operator** (`QubitIso`/`AmplitudeEmu`) — **NOT** a measurement+classical
+     reconcile.
+   - **Measurement stays in SOFT space — no decoherence to classical (Aaron 2026-06-19).** The whole
+     network is soft, so FOLD/MERGE resolve to a soft `(value, ε)`, **never a hard definite**. Real
+     Born collapse (`|α|²` → definite) happens **only inside the superdeterministic simulation** (the
+     DST sim with `TimeGen`'s shared clock, where sampling is possible) — that's the verification/oracle
+     path, not the live network. **Live = soft, uncollapsed, non-coercive** (hard collapse over the
+     network = forced global consensus = coercion; the soft network refuses it).
    - Cross-check against **`AmplitudeEmu.fs`** (F# complex-amplitude reference) **+ the Q# golden**
      (`src/Core.QSharp.ReferenceOracle/`), pattern `ZetaReferenceOracle.qs`.
    - **Verify before shipping:** Q# toolchain is opt-in (`ZETA_INSTALL_QUANTUM=1`); don't ship
