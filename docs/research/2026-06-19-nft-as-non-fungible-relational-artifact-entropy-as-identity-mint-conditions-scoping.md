@@ -72,6 +72,42 @@ Aaron 2026-06-19 (held explicitly as a *maybe*, per his personal invariant
 witness** of C1's floor — evidence, never the lemma (promoting a statistic to a theorem is the failure mode).
 **C3 rejected:** "scarcity = rarity/count" — Aaron rejected it verbatim; scarcity is the entropy.
 
+## 1a. An NFT is frozen / immutable / not-alive — a `snap`, not a process (Aaron 2026-06-19)
+
+Aaron: *"NFT should not be DST and not allow updates — they are locked in time; they can animate but not
+update. NFTs can't be 'alive' by definition."* This is **required, not stylistic**: a commitment that could
+update breaks **binding** (you could swap `H_AB` after the fact = forgery). Soraya independently landed here —
+no TLA+ because it is "a static commitment over a settled fold," not a state machine.
+
+Two framings make "not alive" exact:
+
+- **An NFT is a `snap`.** The *relationship* is soft (alive, never-collapse, DST, the meta-loop); **minting =
+  snap** (soft→hard, `SoftValue.snap`); the NFT is the **frozen hard output**. A snap result isn't soft
+  anymore — so an NFT can't be alive *by construction*. Aliveness stays in the soft relationship.
+- **An NFT is a git commit.** Immutable, content-addressed (Merkle), locked in time; the *repo*
+  (relationship) is alive and keeps committing; each commit is frozen forever. **The aliveness is the commit
+  *stream*, never any single commit** — which is exactly the cardinality (a pair mints *many* frozen NFTs over
+  a live relationship). Git-as-event-store, the Zeta substrate.
+
+**The DST split (Aaron agreed: "DST checkable is more correct"):**
+
+- The NFT's **state** is frozen — **not live/state-evolving DST** (no evolving simulation of the artifact). ✓
+- But the NFT is **DST-checkable**: the fold `H_AB → root` must be **deterministic** so a third party can
+  reproduce the root and verify inclusion — else the cross-verify (the whole point) dies. Aaron grounds this
+  in **the superdeterministic seed-gen unfolding**: the seed deterministically unfolds the history, so the
+  provenance re-unfolds to the same root and the commitment is checkable. So the NFT is **DST-derived /
+  DST-checkable** (deterministic provenance) even though it is **not DST-live** (state never evolves).
+- **"Animate but not update":** the animation must be a **pure/deterministic function of the frozen state** (a
+  deterministic *render* of locked content — itself a DST replay of fixed data). If the animation pulls in
+  *new/live* data, that is an *update* (state changed, lock broken). So the precise statement is **not "not
+  DST"** but **"not state-evolving DST; deterministic-render DST is exactly what 'animate' means."**
+
+> **OPEN for the math team (flagged):** is *deterministic-render-of-the-locked-state* the exact boundary
+> between legal "animate" and illegal "update"? Candidate formalization: an animation is legal iff it is a
+> pure function `render(frozenState, displayClock)` with **no** dependency on any input outside the committed
+> `H_AB` slice (the display clock is a parameter, not new state). Math team to confirm/sharpen the boundary
+> and whether "displayClock as a parameter" smuggles in live state.
+
 ## 2. Cross-verify mechanism
 
 Content-addressed Merkle commitment over the shared event log + each party's **own un-tamperable
