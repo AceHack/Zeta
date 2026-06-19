@@ -1,7 +1,7 @@
 # Trajectory — `gen(gen) == gen` self-hosting byte-lock (diverse-double-compiling, N-fold)
 
 Status: **active — plan written; blocked on the IR-v1 freeze (Phase A) + the multi-language generator (dependency)**
-Last refreshed: 2026-06-16
+Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `sim-mea-cut-soft-substrate-shaders` — shares the gen/IR substrate)
 Grounding:
 
@@ -19,7 +19,33 @@ byte-identically in every target is the **termination test** and the **trust mec
 *humans and AIs agree without reading every line*. It is simultaneously a generation, a
 fixed-point, and a drift-check (ECC across space [N-oracle] + time [DST]).
 
-## Where it stands (2026-06-16)
+## Futamura projections ↔ the three Faces of `gen(gen)===gen` (2 of 3 proven — checkpoint 2026-06-19)
+
+Futamura (1971, *Partial Computation of Programs*) — the specialization triple. The repo encodes
+them as the three **Faces** of `gen(gen)===gen` in `src/Core/AdinkraCode.fs`:
+
+| Face | object (code) | Futamura projection | status |
+|---|---|---|---|
+| 1 | duality fixed point `isSelfDual` (C = C⊥) | the generator sits on the self-dual fixed point | ✅ PROVEN |
+| 2 | codespace projector `project` (Π∘Π = Π) — re-gen changes nothing | idempotent specialization | ✅ PROVEN |
+| 3 | `mix(mix,mix) = cogen` reflective fixpoint — `gen(gen)` byte-identical in every target | **the 3rd projection itself** (cogen / self-hosting) | ⏳ OPEN (§B) — the capstone |
+
+- **2 of 3 proven — at the code/algebra level** (self-duality + idempotent projector). The
+  **operational** triple over `zeta-ir` rides the same blocked generator as Face 3 (Phase A IR-freeze
+  + the multi-language generator). So: "2 of 3 proven as the algebraic shadows; the operational triple
+  all waits on the generator."
+- **Face 3 §B home:** `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` — the *"Entropic propagation →
+  self-dual code attractor (`gen(gen)=gen`, Face 3)"* row (two proven legs — structural
+  octonion→Fano→[8,4] + propagation Bayesian/NCI — and the **open MacWilliams/Hadamard bridge**: the
+  crux is proving the SoftValue/NCI accumulation operator IS the MacWilliams transform).
+- **Honest peel (Face 2):** projector along the *parity* complement, not the orthogonal projector
+  (over GF(2) the code is self-orthogonal, `G·Gᵀ=0`, so the orthogonal projector is undefined).
+- **Why it's the trust / "superdeterminism" mechanism:** same seed + same generator → reproduces
+  itself byte-for-byte → humans and AIs agree *without reading every line*. The fixed point is
+  simultaneously generation, fixed-point, AND ECC (space [N-oracle byte-lock] + time [DST replay]).
+  **Phase D below is its discharge.** Anchor: Futamura 1971; Thompson "Trusting Trust"; Wheeler DDC.
+
+## Where it stands (2026-06-19)
 
 - ✅ Phased plan written (A–F), test matrix, conformance-kind-per-tier, honest seams.
 - ✅ Legs confirmed: `AdinkraCode` Faces 1+2 proven (`isSelfDual`, `project`); per-primitive
