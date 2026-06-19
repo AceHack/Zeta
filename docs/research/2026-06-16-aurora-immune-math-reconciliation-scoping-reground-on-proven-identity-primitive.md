@@ -189,6 +189,34 @@ Lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (8: 6 UNSAT proofs + 2 SA
 Honest scope: this is the **symbolic** (Z3) leg. Soraya's secondary FsCheck leg (§4.4 "10 injection
 variants" at the call-site) + Semgrep/CodeQL at the deployed gate remain a noted follow-up.
 
+### (c) CoordRisk spectral — FsCheck cross-check landed (2026-06-19, Otto) — LAST test-obligation leg
+
+Test 4.3 (Cult-Cartel Topology). Soraya routed this to **FsCheck over networkx-style graphs** (the
+TLA+-hammer guard fired — eigenvalues are not a state-transition system). CoordRisk watches two spectral
+quantities of the gossip graph: the adjacency spectral radius `ρ(A_t)` (hub concentration / Cult) and
+the Laplacian Fiedler value `λ₂(L_t)` (algebraic connectivity / Cartel). Test:
+`tests/Tests.FSharp/Formal/CoordRiskSpectralCrossVerify.Tests.fs` (10 green: 6 closed-form/scenario
+witnesses + 4 FsCheck properties), built on a **self-contained symmetric Jacobi eigensolver** (no
+external linear-algebra dependency — only-the-irreducible-is-primitive: generate the spectrum).
+
+- **Eigensolver validated** by closed forms (these would fail if the solver were wrong): `λ₂(K_n) = n`,
+  `ρ(K_n) = n−1`, `ρ(star) = √(n−1)`.
+- **Test A (Cartel/fragmentation):** two exclusive gossip pockets (disconnected) ⇒ `λ₂ = 0`; one bridge
+  edge lifts `λ₂` off 0 — the detectable `−Δλ₂` CoordRisk fires on. Fiedler's theorem (connected ⟺
+  `λ₂ > 0`) holds across sizes.
+- **Test B (Cult/hub):** a star (hub) `ρ = √(n−1)` surges above a sparse non-hub cycle (`ρ = 2`) and
+  grows monotonically with the hub — the `Δρ` CoordRisk fires on.
+- **Properties:** Fiedler ≥ 0 (Laplacian PSD), Perron–Frobenius `ρ ≤ max-degree`, hub-surge monotone.
+
+Honest scope (falsifier §5/leg-3): this proves the **spectral facts under CoordRisk's terms are
+informative** (fragmentation→λ₂↓, hub→ρ↑). It does NOT calibrate the detection thresholds or the ≤5%
+false-positive-on-natural-evolution bound — that is empirical calibration (non-claim #2), still owed.
+
+**Milestone:** with (c) landed, all FOUR test-obligation cross-checks (c, d, e, g) + the (a) identity
+wiring are done. Only **(b)** remains, parked behind the open anti-Sybil-entropy §B dependency. The §B
+row *"Aurora immune re-grounded on the proven identity primitive"* is now ready to promote toward §A
+(operator-by-operator, §C) — gated on the maintainer's sign-off (proof-lineage change).
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).

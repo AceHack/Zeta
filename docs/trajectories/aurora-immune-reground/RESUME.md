@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — formal round CLOSED. (a) d_self wiring + (d) capability-gate Z3 + (e) HarmFloor FsCheck + (g) autoimmunity-decay FsCheck all DONE (2026-06-19). Remaining: (c) CoordRisk spectral FsCheck (last test-obligation cross-check), (b) Z3 honest-count (parked behind anti-Sybil §B) → §A promotion.**
+Status: **READY TO PROMOTE — formal round CLOSED; (a) d_self wiring + ALL FOUR test-obligation cross-checks done (c CoordRisk spectral, d capability-gate Z3, e HarmFloor FsCheck, g autoimmunity-decay FsCheck; 2026-06-19). Only (b) Z3 honest-count remains, parked behind the open anti-Sybil §B. NEXT: open the §B row and promote operator-by-operator toward §A (§C) — gated on maintainer sign-off (proof-lineage).**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
@@ -72,8 +72,12 @@ theorems, not metaphor.
      antitone-in-req/least-privilege, empty-req-admits + 2 non-vacuity witnesses). In
      `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (53 Z3 tests green). Discharge: §8(d). FsCheck
      injection-variant leg + Semgrep/CodeQL at call-site = noted follow-up.
-   - **(c) TODO:** `CoordRisk` spectral (λ₂ Fiedler / ρ radius, Test 4.3) — FsCheck over networkx-style
-     graphs (needs a small graph harness; heavier than e/g). **Last remaining test-obligation cross-check.**
+   - ✅ **(c) DONE (2026-06-19):** `CoordRisk` spectral (Test 4.3) — self-contained symmetric Jacobi
+     eigensolver (no dep); Test A fragmentation `λ₂→0` (+ bridge lifts it = `−Δλ₂`), Test B hub
+     `ρ=√(n−1)` surge, eigensolver validated by closed forms (`λ₂(K_n)=n`, `ρ(K_n)=n−1`, `ρ(star)=√(n−1)`),
+     + Fiedler-PSD / connectivity / Perron / hub-monotone properties.
+     `tests/Tests.FSharp/Formal/CoordRiskSpectralCrossVerify.Tests.fs` (10 green). Discharge: §8(c).
+     Threshold calibration + ≤5% false-positive bound = empirical (non-claim #2), still owed.
 4. ✅ **Prereq DONE (2026-06-19):** z3 4.16.0; `(Set Int)` works under `(set-logic ALL)`, but QF_BV
    bitmask is the chosen encoding (decidable, CI-portable, finite-universe faithful — Soraya's fallback).
 5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
