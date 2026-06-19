@@ -48,6 +48,33 @@ let ``machine action declares workflow-style DU metadata`` () =
     Assert.Equal(Some(mkAddress "play" "meta-cart-host"), action.Address)
 
 [<Fact>]
+let ``observeMetaCartLaunch exposes the child-cart selection readout`` () =
+    let loopCart = CartFixtures.cart CartFixtures.loop
+    let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+    let launch: Runtime.MetaCartLaunch =
+        { Goal = 10
+          Seed = 1UL
+          ParentCapabilities = Chip9Capabilities.metaHost
+          ChildCapabilitiesBySha =
+            MetaCart.capabilityMap
+                [ loopCart, CartFixtures.loop.Capabilities
+                  inputCart, CartFixtures.inputFork.Capabilities ]
+          Children = [ loopCart; inputCart ]
+          Parent = Chip8Cow.create 1UL }
+
+    let readout = Runtime.observeMetaCartLaunch launch
+
+    Assert.Equal(2, readout.Candidates.Length)
+    Assert.Contains("chip8arcade.choose", System.String.Join(" ", readout.DeterministicRulesApplied))
+
+    match readout.Selected with
+    | Some selected ->
+        Assert.Equal(1, selected.Index)
+        Assert.Equal(MetaCart.slotOfCart inputCart, selected.Slot)
+    | None -> Assert.Fail("expected selected child cart")
+
+[<Fact>]
 let ``executeCell runs the selected soft CHIP8 scheduler machine`` () =
     task {
         let sink = RecordingHeatSink()

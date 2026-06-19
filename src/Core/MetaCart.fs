@@ -36,6 +36,22 @@ module MetaCart =
           Slot: CartSlot
           Reflection: Chip8Arcade.Reflection }
 
+    /// Source-owned selection readout for the host-assisted meta-cart boundary.
+    ///
+    /// Reflection remains a pure observation of candidate child futures. The
+    /// selected child is only an ordering decision over those observations; the
+    /// launch still crosses the one-byte CHIP-8 choice cell plus the injected
+    /// `ICartHost` capability boundary.
+    type SelectionReadout =
+        { Goal: int
+          ReflectedGoal: int
+          Seed: uint64
+          CostPerStep: float
+          Tank: SoftThrottle.Tank
+          Candidates: ReflectedChoice list
+          Selected: ReflectedChoice option
+          DeterministicRulesApplied: string list }
+
     type ReflectedPlayResult =
         { Choice: ReflectedChoice
           ParentWithChoice: Chip8Cow.Frame
@@ -82,6 +98,35 @@ module MetaCart =
               Slot = slots.[index]
               Reflection = reflection })
 
+    let selectionReadout
+        (goal: int)
+        (costPerStep: float)
+        (tank: SoftThrottle.Tank)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        : SelectionReadout =
+        let reflected = reflectChildren goal costPerStep tank seed children
+
+        let selected =
+            reflected
+            |> List.map (fun item -> item.Reflection)
+            |> Chip8Arcade.choose
+            |> Option.bind (fun index -> reflected |> List.tryItem index)
+
+        { Goal = goal
+          ReflectedGoal = goal
+          Seed = seed
+          CostPerStep = costPerStep
+          Tank = tank
+          Candidates = reflected
+          Selected = selected
+          DeterministicRulesApplied =
+            [ "metacart.children->fingerprint-slots"
+              "chip8arcade.reflect equal-funds each candidate"
+              "chip8arcade.choose max confidence, depth, then library order"
+              "selection orders candidates only; launch still crosses choice-cell 0x1FF"
+              "host capability gate remains authoritative" ] }
+
     /// Choose the child cart whose knowable future scores best under the
     /// existing CHIP-8 arcade reflection policy.
     let chooseSlot
@@ -91,11 +136,23 @@ module MetaCart =
         (seed: uint64)
         (children: Cart.Cart list)
         : ReflectedChoice option =
-        let reflected = reflectChildren goal costPerStep tank seed children
-        let reflections = reflected |> List.map (fun item -> item.Reflection)
+        (selectionReadout goal costPerStep tank seed children).Selected
 
-        Chip8Arcade.choose reflections
-        |> Option.bind (fun index -> reflected |> List.tryItem index)
+    let selectionReadoutWithCapabilities
+        (goal: int)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (seed: uint64)
+        (children: Cart.Cart list)
+        : SelectionReadout =
+        let reflectedGoal, costPerStep, tank = Chip9Capabilities.reflectionBudget goal parentCapabilities
+        let readout = selectionReadout reflectedGoal costPerStep tank seed children
+
+        { readout with
+            Goal = goal
+            ReflectedGoal = reflectedGoal
+            DeterministicRulesApplied =
+                readout.DeterministicRulesApplied
+                @ [ sprintf "parent manifest %s supplies reflection budget" parentCapabilities.Name ] }
 
     /// Choose under the parent room's declared CHIP-9 policy. The manifest
     /// does not change arithmetic truth: it only decides how much flux funds
@@ -106,8 +163,7 @@ module MetaCart =
         (seed: uint64)
         (children: Cart.Cart list)
         : ReflectedChoice option =
-        let reflectedGoal, costPerStep, tank = Chip9Capabilities.reflectionBudget goal parentCapabilities
-        chooseSlot reflectedGoal costPerStep tank seed children
+        (selectionReadoutWithCapabilities goal parentCapabilities seed children).Selected
 
     /// Read the parent VM's choice using the same one-byte treaty as
     /// `Chip8Arcade.readChoice`, but return the fingerprint slot rather than
@@ -296,6 +352,56 @@ module MetaCart =
     let commitChoice (choice: ReflectedChoice) (parent: Chip8Cow.Frame) : Chip8Cow.Frame =
         Chip8Arcade.commitChoice choice.Index parent
 
+    let private slotsOfReadout (readout: SelectionReadout) : CartSlot list =
+        readout.Candidates |> List.map (fun candidate -> candidate.Slot)
+
+    /// Launch from an explicit selection readout. This is the testable
+    /// observe/choose/execute boundary: callers may inspect or replace the
+    /// readout before any child crosses the injected host.
+    let playChosenFromSelectionReadout
+        (source: string)
+        (sink: IHeatSink)
+        (readout: SelectionReadout)
+        (host: ICartHost)
+        (parent: Chip8Cow.Frame)
+        : Result<ReflectedPlayResult, Feedback> =
+        match readout.Selected with
+        | None -> Error(Feedback.NoSelection source)
+        | Some choice ->
+            let parentWithChoice = commitChoice choice parent
+
+            match playSelected source sink (slotsOfReadout readout) host parentWithChoice with
+            | Ok play ->
+                Ok
+                    { Choice = choice
+                      ParentWithChoice = parentWithChoice
+                      Play = play }
+            | Error feedback -> Error feedback
+
+    /// Capability-aware launch from an explicit selection readout. Parent
+    /// attention/throttle may change ordering, but capability truth is checked
+    /// here at the host boundary and still returns typed feedback/heat.
+    let playChosenFromSelectionReadoutWithCapabilities
+        (source: string)
+        (sink: IHeatSink)
+        (parentCapabilities: Chip9Capabilities.Manifest)
+        (readout: SelectionReadout)
+        (host: ICartHost)
+        (parent: Chip8Cow.Frame)
+        : Result<ReflectedPlayResult, Feedback> =
+        match readout.Selected with
+        | None -> Error(Feedback.NoSelection source)
+        | Some choice ->
+            let parentWithChoice = commitChoice choice parent
+
+            match playSelectedWithCapabilities source sink parentCapabilities (slotsOfReadout readout) host parentWithChoice with
+            | Ok play ->
+                Ok
+                    { Choice = choice
+                      ParentWithChoice = parentWithChoice
+                      Play = play }
+            | Error feedback -> Error feedback
+
     /// Soft-select a child cart by reflection, write that selection into the
     /// parent choice cell, then launch through the injected host boundary.
     let playChosenByReflection
@@ -309,19 +415,7 @@ module MetaCart =
         (host: ICartHost)
         (parent: Chip8Cow.Frame)
         : Result<ReflectedPlayResult, Feedback> =
-        match chooseSlot goal costPerStep tank seed children with
-        | None -> Error(Feedback.NoSelection source)
-        | Some choice ->
-            let slots = slotsOfCarts children
-            let parentWithChoice = commitChoice choice parent
-
-            match playSelected source sink slots host parentWithChoice with
-            | Ok play ->
-                Ok
-                    { Choice = choice
-                      ParentWithChoice = parentWithChoice
-                      Play = play }
-            | Error feedback -> Error feedback
+        playChosenFromSelectionReadout source sink (selectionReadout goal costPerStep tank seed children) host parent
 
     /// Capability-aware reflection path. The parent manifest funds the
     /// lookahead and gates host-child-launch; the child manifest gates the
@@ -336,20 +430,9 @@ module MetaCart =
         (children: Cart.Cart list)
         (parent: Chip8Cow.Frame)
         : Result<ReflectedPlayResult, Feedback> =
-        match chooseSlotWithCapabilities goal parentCapabilities seed children with
-        | None -> Error(Feedback.NoSelection source)
-        | Some choice ->
-            let slots = slotsOfCarts children
-            let host = CapabilityCartHost(children, childCapabilitiesBySha) :> ICartHost
-            let parentWithChoice = commitChoice choice parent
-
-            match playSelectedWithCapabilities source sink parentCapabilities slots host parentWithChoice with
-            | Ok play ->
-                Ok
-                    { Choice = choice
-                      ParentWithChoice = parentWithChoice
-                      Play = play }
-            | Error feedback -> Error feedback
+        let readout = selectionReadoutWithCapabilities goal parentCapabilities seed children
+        let host = CapabilityCartHost(children, childCapabilitiesBySha) :> ICartHost
+        playChosenFromSelectionReadoutWithCapabilities source sink parentCapabilities readout host parent
 
     /// Convenience for the common carried-cart mode: reflect over the bundled
     /// children and resolve the selected child from the same bundle.

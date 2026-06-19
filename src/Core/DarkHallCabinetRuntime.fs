@@ -212,6 +212,16 @@ module DarkHallCabinetRuntime =
     let actionAt (cell: int) (readout: ControllerReadout) : CabinetAction option =
         GridBinding.labelAt cell readout.Grid
 
+    /// Sub-readout for the host-assisted meta-cart machine. The Dark Hall
+    /// controller observes the cabinet action; this readout observes the child
+    /// cart selection inside that action before the host boundary executes.
+    let observeMetaCartLaunch (launch: MetaCartLaunch) : MetaCart.SelectionReadout =
+        MetaCart.selectionReadoutWithCapabilities
+            launch.Goal
+            launch.ParentCapabilities
+            launch.Seed
+            launch.Children
+
     let private findCabinet (room: DarkHall.Room) (cabinetName: string) =
         room.Cabinets |> List.tryFind (fun cabinet -> cabinet.Name = cabinetName)
 
@@ -299,15 +309,16 @@ module DarkHallCabinetRuntime =
                     |> Result.mapError (fun reason -> Feedback.Chip9Feedback(address, reason))
 
             | DarkHall.MachineCore.MetaCartHost, RunMetaCart launch ->
+                let readout = observeMetaCartLaunch launch
+                let host = MetaCart.CapabilityCartHost(launch.Children, launch.ChildCapabilitiesBySha) :> MetaCart.ICartHost
+
                 return
-                    MetaCart.playChosenCarriedWithCapabilities
+                    MetaCart.playChosenFromSelectionReadoutWithCapabilities
                         source
                         sink
-                        launch.Goal
-                        launch.Seed
                         launch.ParentCapabilities
-                        launch.ChildCapabilitiesBySha
-                        launch.Children
+                        readout
+                        host
                         launch.Parent
                     |> Result.map MetaCartResult
                     |> Result.mapError Feedback.MetaCartFeedback

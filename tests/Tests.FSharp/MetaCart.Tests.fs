@@ -106,6 +106,57 @@ let ``chooseSlot reuses arcade reflection and picks the most knowable child`` ()
     | None -> Assert.True(false, "expected a reflected child choice")
 
 [<Fact>]
+let ``selectionReadout exposes reflected candidates and the selected slot before launch`` () =
+    let readout =
+        MetaCart.selectionReadoutWithCapabilities
+            10
+            Chip9Capabilities.metaHost
+            1UL
+            [ loopCart; inputCart ]
+
+    Assert.Equal(10, readout.Goal)
+    Assert.Equal(10, readout.ReflectedGoal)
+    Assert.Equal(2, readout.Candidates.Length)
+    Assert.Contains("choice-cell 0x1FF", System.String.Join(" ", readout.DeterministicRulesApplied))
+
+    match readout.Selected with
+    | Some selected ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(1, selected.Index)
+        Assert.Equal(expected, selected.Slot)
+        Assert.Equal(expected.Fingerprint.Sha256, selected.Slot.Fingerprint.Sha256)
+    | None -> Assert.True(false, "expected a selected child in the readout")
+
+[<Fact>]
+let ``playChosenFromSelectionReadout launches through the injected host boundary`` () =
+    let sink = RecordingHeatSink()
+    let readout =
+        MetaCart.selectionReadout
+            10
+            1.0
+            (SoftThrottle.tank 5.0 1.0)
+            1UL
+            [ loopCart; inputCart ]
+
+    let host = MetaCart.LocalCartHost [ loopCart; inputCart ] :> MetaCart.ICartHost
+
+    match
+        MetaCart.playChosenFromSelectionReadout
+            "parent-cart"
+            (sink :> IHeatSink)
+            readout
+            host
+            (Chip8Cow.create 1UL)
+    with
+    | Ok result ->
+        let expected = MetaCart.slotOfCart inputCart
+        Assert.Equal(expected, result.Choice.Slot)
+        Assert.Equal(expected, result.Play.Slot)
+        Assert.Equal(Some expected, MetaCart.readSlot [ MetaCart.slotOfCart loopCart; expected ] result.ParentWithChoice)
+        Assert.Equal(0, sink.Signatures.Count)
+    | Error feedback -> Assert.True(false, sprintf "expected reflected child launch, got %A" feedback)
+
+[<Fact>]
 let ``playChosenCarried commits the reflected choice into the parent cell and launches the child`` () =
     let sink = RecordingHeatSink()
 
