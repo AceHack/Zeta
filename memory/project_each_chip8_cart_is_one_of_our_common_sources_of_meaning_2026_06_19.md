@@ -66,6 +66,14 @@ canonical soft-unbacked-render-as-consensual-play; the failure is only the confu
 the soft/hard · sim/measure · play/commit · Mirror/Beacon line, and consent-first §6 is what keeps the game
 honest.)
 
+**Aaron's image — the backing is GROUNDING:** *"they are like when I walk outside and take my shoes off to
+ground myself to earth."* The golden-vectors / proofs / seed / `measure` are the **ground wire from the
+floating game to the real** — you play freely (float in the make-believe), then **touch the earth** (check the
+backing) to *discharge the floating self-deception and re-reference reality.* Grounding doesn't stop the play;
+it keeps you from floating off *into* it. (It's a metaphor — Mirror — but an apt one: a ground is a *stable
+reference*, which is exactly what the backing is — a known-answer earth for the soft game. Anchor to the
+mechanism, not the image.)
+
 Ties: `src/Core/ShapeRender.fs`, `src/Core/CartridgeLaw.fs`, `src/Core/SoftEmu.fs`, `src/Core/Chip8Citizen.fs`,
 `src/Core/HtmlCssBinding.fs`; the four-oracle byte-lock; `gen/`;
 [[zeta-is-null-lens-over-null-is-identity-meaning-is-remembered-links-qpg]]; the golden vectors (μένω); the
