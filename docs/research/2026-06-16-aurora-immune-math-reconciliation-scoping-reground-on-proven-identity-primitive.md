@@ -82,6 +82,53 @@ Re-grounding does **not** upgrade Aurora's status: still (1) **NOT deployment-re
 - **Identity legs are about *non-collapse / privacy*, not liveness** — the immune system's *aliveness* leg leans on the §A aliveness proofs separately; don't conflate.
 - This is a **factoring of an open obligation into named dependencies**, not a closure — exactly the §C "one row, one discharge" shape.
 
+## 8. Discharge log
+
+### (a) `d_self` identity term — DISCHARGED on `NonRegisterCollapse` (2026-06-19, Otto)
+
+The wiring step (4b: "(a) is a wiring task", zero new tool). Aurora's `d_self` (§3.2 of the
+standardization doc) is a 5-axis distance `η_I·d_I + η_C·d_C + η_L·d_L + η_P·d_P + η_K·d_K`. Only
+the **identity** axis `d_I(IdentityFeatures(a), I_t)` is re-grounded here — it now stands on the
+proven `NonRegisterCollapse` (FROZEN-CORE §A; `src/Core.Lean4/Safety/NonRegisterCollapse.lean`,
+Lean+TLA, axiom-free):
+
+- **"Self" is no longer an undefined reference vector** — it is the traveler's **standing
+  register**. `distinctness_forces_standing` proves that any *persistent behavioral distinction*
+  between two travelers (after their shared commons converges under the CRDT join) MUST live in the
+  standing register. So "self ≠ non-self" on the identity axis ⟺ "distinct standing registers",
+  and that distinctness is **forced**, not assumed.
+- **The reference is non-forgeable by another party.** `non_collapse` proves consensus on the
+  shared commons CANNOT other-collapse two distinct standing registers into one (the merge leaves
+  each `= a.standing`, `= b.standing`). So the `I_t` that `d_I` measures distance against cannot be
+  collapsed away by a hostile peer — other-imposed collapse is impossible. The identity axis stands
+  on a theorem, not on the early metaphor.
+- **The register is necessary, not incidental.** `no_register_collapses` proves the necessity
+  direction: a traveler with NO standing register (`S := PUnit`) collapses every distinction once
+  the commons converges. The object grounding "self" is load-bearing.
+
+**Falsifier check (§5, leg 1) — PASSED.** Self/non-self on the identity axis expressed cleanly as
+identity-distinctness (standing-register distinctness) WITHOUT needing an extra undefined predicate.
+The metaphor did **not** survive on this axis — it grounds. Matches Soraya's table row (a): reuse,
+zero new tool.
+
+**Honest scope (razor — what this does NOT claim):**
+
+- Only `d_I` grounds. The other four axes — culture `d_C`, language `d_L`, provenance `d_P`,
+  capability `d_K` — remain **feature-space estimators**, NOT proven objects. Recording them as
+  grounded would be false-green — the same §4(f) discipline applied to (a). They stay §B / empirical.
+- Grounding the *self reference* does **not** change the *gate*. Amara's binding note holds: `d_self`
+  is NOT a trigger; foreignness ≠ pathology (`Danger(a) > θ_D` is the trigger; `d_self` only feeds the
+  Anomaly term). This discharge grounds *what "self" is*, not *when the immune system acts* — Otto-298
+  / don't-collapse preserved (foreign-but-useful and internal-but-compromised both still possible).
+- Guardrail held (§5, leg 4): no identity-based punishment introduced. `d_I` measures *distance
+  against a proven-distinct register*; it does not act on *who*. The act/trigger stays pattern-keyed
+  (Danger), blame-the-pattern intact, immune-absorbs-not-attacks intact.
+
+**Status move:** the (a) leg of the §B row now stands on a §A theorem (identity axis). Per §C
+"one row, one discharge", (a) is the first operator ready to promote toward §A. The four non-claims
+(§6) travel unchanged — this adds a proven foundation under the identity term, not deployment
+readiness.
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).

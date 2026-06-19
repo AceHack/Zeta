@@ -1,7 +1,7 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. Next: the FsCheck/Z3 smalls + (a) d_self wiring → §A promotion.**
-Last refreshed: 2026-06-16
+Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. (a) d_self identity-axis wiring DONE (grounded on `NonRegisterCollapse`, §8(a) of scoping doc, 2026-06-19). Next: the (b)/(e) FsCheck cross-checks + (c)/(d)/(g) FsCheck/Z3 smalls → §A promotion.**
+Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
 
@@ -49,7 +49,12 @@ theorems, not metaphor.
 
 ## Next concrete steps (in order)
 
-1. **(a) wiring task:** point Aurora's `d_self` predicate at `NonRegisterCollapse` (no new proof).
+1. ✅ **(a) wiring task DONE (2026-06-19):** Aurora's `d_self` **identity** axis `d_I` grounded on
+   `NonRegisterCollapse` — "self" = the proven-distinct standing register; falsifier §5/leg-1 PASSED
+   (expressed as identity-distinctness with no extra undefined predicate). Honest scope: only `d_I`
+   grounds; the other four axes (C/L/P/K) stay feature-space estimators (no false-green); the gate is
+   unchanged (Amara: `d_self` is not a trigger). Discharge: scoping doc §8(a) + standardization §3.2
+   pointer. **(a) is the first operator ready to promote toward §A.**
 2. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16): the Aurora §4.1 retraction sim (e) +
    the Z3 honest-count side (b).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.

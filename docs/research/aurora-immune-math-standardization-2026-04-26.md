@@ -261,6 +261,8 @@ d_self(a, S) = η_I · d_I(IdentityFeatures(a), I_t)
 
 **Critical Amara note:** `d_self` is NOT a trigger. Foreignness alone is not pathology. Trigger is `Danger(a) > θ_D`. `d_self` feeds the Anomaly term inside Danger; not a standalone gate. (Otto-298 / don't-collapse: foreign-but-useful work, internal-but-compromised agents, both possible.)
 
+> **Re-grounding (2026-06-19, Otto):** the **identity** axis `d_I` is now grounded on the proven `NonRegisterCollapse` (FROZEN-CORE §A) — "self" = the proven-distinct standing register. The other four axes (C/L/P/K) stay feature-space estimators. Discharge: `docs/research/2026-06-16-aurora-immune-math-reconciliation-scoping-reground-on-proven-identity-primitive.md` §8(a).
+
 ### 3.3 MI_H (theoretical) vs Legibility_H (operational estimator) — Round-2 Amara split
 
 ```text
