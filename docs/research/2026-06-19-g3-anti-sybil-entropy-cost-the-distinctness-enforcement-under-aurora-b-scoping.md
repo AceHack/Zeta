@@ -60,6 +60,33 @@ The honest anchors for "captured entropy = a real, metered, non-forgeable resour
 The crux for G3b: pick ONE definition where the unit is concrete, the conservation is stated, and
 faking it is provably as expensive as earning it. Until then G3b stays §B.
 
+### G3b ≡ Bell measurement-independence (cross-link, 2026-06-19)
+
+G3b is the **same object** as the free-choice / measurement-independence assumption in a Bell test —
+surfaced by the quantum-honesty synthesis (`docs/research/2026-06-19-zeta-on-quantum-with-mutual-empowerment-synthesis-and-tiers.md`,
+`BellTest.fs`, `CoincidenceClock.fs`). The two phrasings are one requirement from two directions:
+
+- **Anti-Sybil (G3b):** an identity's captured entropy must be *non-forgeable* — you cannot cheaply
+  manufacture a distinct identity (a per-body entropy floor that can't be copied or coordinated).
+- **Bell (measurement-independence):** each party's choice must be *certifiably free of correlation*
+  with the setting / with the other party — no shared coordinating variable (no shared clock).
+
+These coincide: a Sybil ring **is** a measurement-dependence loophole — `s` raw nodes sharing one
+captured entropy are exactly `s` "parties" with a **shared common cause**, which is why the in-tree
+superdeterminism model (`BellTest.fs`) can *exceed* Tsirelson (`S=4`) precisely when free-choice is
+violated. So **closing the free-choice loophole = certifying per-body entropy independence = G3b.**
+The repo already names this equivalence: `docs/research/2026-06-08-superdeterminism-loophole-closure-equals-anti-sybil-per-body-entropy-independence.md`.
+
+**Why this helps G3b's discharge:** it imports a *certification target* from the Bell literature —
+measurement-independence is operationalized there (device-independence; the `S ≤ 2√2` cap as the tell
+that no shared cause remains). So a candidate G3b discharge: show that forging/coordinating identities
+below the entropy floor would manifest as a **detectable measurement-dependence** (the `S > 2√2`
+signature), making non-forgeability *checkable* the way Bell makes free-choice checkable. Honest seam:
+this is an analogy-to-certified-target, not yet a proof — it gives G3b a falsifiable *shape*
+(forge-cheaply ⟺ shared-cause-detectable), still §B until the entropy↔correlation metric is made
+concrete (ties to the per-room metering floor above). Anchor: the superdeterminism-loophole-closure
+note; NPA/measurement-independence (Navascués–Pironio–Acín); the §B identity/anti-Sybil row.
+
 ## 4. Routing (BP-16 — Soraya's call)
 
 - **G3a** → Z3 (QF_LRA cost-floor inequality + the ring-collapse corollary), same harness as (b)/(d).
