@@ -11,7 +11,7 @@ The core architectural requirement for mutual empowerment is the prevention of c
 
 Zeta prevents this by defining the network itself as **soft**. The distributed network transmits packets of the form `(value, ε)`, where `ε` is the explicit uncertainty window. Because the uncertainty travels with the value, the merge operation is a **commutative associative monoid** [4]. This commutativity is proven in-tree (e.g., `SoftValue.fs` and `schema-rx-join.test.ts`), establishing that disjoint deltas commute regardless of arrival order. 
 
-By remaining soft and commutative, the network acts as an uncollapsed state. Collapse only occurs *locally*, inside a **Room**, when its specific time-bound (horizon) fires. This local, bounded-time indeterminacy is the "quantum" unit of the architecture. Mutual empowerment survives precisely because agents share soft, uncollapsed beliefs (preserving channel capacity [5]), rather than forcing hard consensus on each other.
+By remaining soft and commutative, the network is **classically soft** — a CRDT / join-semilattice, not a quantum superposition. Commutativity is precisely the *classical* tell, so the soft network earns no quantum gloss; the mutual-empowerment payoff (no coerced global consensus) stands on the CRDT property alone. Collapse to a single decision occurs only *locally*, inside a **Room**, when its specific time-bound (horizon) fires — and only that local, bounded-time indeterminacy carries the (scare-quoted) "quantum" framing. Mutual empowerment survives precisely because agents share soft beliefs (preserving channel capacity [5]), rather than forcing hard consensus on each other.
 
 ## 2. Addressing the Four Objections: Tiers and External Anchors
 
@@ -42,11 +42,17 @@ The honest, falsifiable claim is: **A bounded-time room computes quantum-equival
 
 Closing this free-choice loophole is structurally identical to guaranteeing **per-body entropy independence** (anti-sybil). By ensuring that choices are independent, the system prevents collusive, degenerate empowerment, fulfilling the formal definition of empowerment as the channel capacity of the action-perception loop [5] [10].
 
+This keystone is also a direct cross-link to the **anti-Sybil G3b obligation**: "the entropy floor must be non-forgeable" (G3b) and "the agent's choice must be certifiably measurement-independent" (the Bell free-choice loophole) are the *same object* viewed from two directions. Quantum-honesty (closing the free-choice loophole) and anti-Sybil non-forgeability are therefore one discipline, and this note's keystone can serve as the quantum-framing of G3b.
+
+### A note on citation tiers
+
+The mathematical anchors below are load-bearing and confident: the NPA hierarchy [7], Monoidal Streams [6], and the empowerment formalism [5] [10]. By contrast, references [1], [2], and [3] are **forwarded, to-verify** — the same discipline applied to the contested Majorana-1 citations. In particular [3] carries an open **entailment** question: it is cited here for the "SOS/SDP certificate yields the CHSH Tsirelson bound" result, but its stated title ("Noncommutative polynomial optimization under symmetry") may not entail that specific claim. Until the source-to-claim entailment is checked, [1] [2] [3] should be read as motivating context, not settled support.
+
 ## References
 
-[1] N. Polson, V. Sokolov, and D. Zantedeschi, "Bell's Inequality, Causal Bounds, and Quantum Bayesian Computation: A Unified Framework," arXiv preprint arXiv:2603.28973, 2026.
-[2] M. Padovan et al., "Secure and robust randomness with sequential quantum measurements," npj Quantum Information, 2024.
-[3] M. Ioannou and D. Rosset, "Noncommutative polynomial optimization under symmetry," arXiv preprint arXiv:2112.10803, 2021.
+[1] *(forwarded, to-verify)* N. Polson, V. Sokolov, and D. Zantedeschi, "Bell's Inequality, Causal Bounds, and Quantum Bayesian Computation: A Unified Framework," arXiv preprint arXiv:2603.28973, 2026.
+[2] *(forwarded, to-verify)* M. Padovan et al., "Secure and robust randomness with sequential quantum measurements," npj Quantum Information, 2024.
+[3] *(forwarded, to-verify — source-to-claim entailment unchecked)* M. Ioannou and D. Rosset, "Noncommutative polynomial optimization under symmetry," arXiv preprint arXiv:2112.10803, 2021.
 [4] Zeta Repository, `src/Core/SoftValue.fs` and `src/Core.TypeScript/observe/schema-rx-join.test.ts`.
 [5] A. S. Klyubin, D. Polani, and C. L. Nehaniv, "Keep your options open: An information-based driving principle for sensorimotor systems," PLoS one, 2008.
 [6] Di Lavore et al., "Monoidal Streams for Dataflow Programming," arXiv:2202.02061, 2022.
