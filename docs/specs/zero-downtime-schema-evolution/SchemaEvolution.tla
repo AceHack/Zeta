@@ -6,36 +6,39 @@
 \* The key invariant: Consolidate is BLOCKED until refCount = 0
 \* for ALL retracted fields. This guarantees zero-downtime by construction.
 
-EXTENDS Naturals, FiniteSets, Sequences
+EXTENDS Naturals, FiniteSets, Integers
 
 CONSTANTS
     Fields,         \* The universe of possible field names
     Consumers,      \* The universe of consumer identities
-    MaxEvolutions   \* Bound for model-checking (finite state space)
+    MaxEvolutions,  \* Bound for model-checking (finite state space)
+    MaxDeliveryDelay \* Bounded delivery: max ticks between event emit and visibility
 
 VARIABLES
     schema,         \* Function: field -> weight (positive = active, 0 = dropped)
     refs,           \* Function: consumer -> set of referenced fields
     overlapOpen,    \* Boolean: is the overlap window currently open?
-    evolved         \* Counter: how many evolutions have been applied
+    evolved,        \* Counter: how many evolutions have been applied
+    pendingMigrations \* Set of consumers that have SENT migration but not yet visible
 
-vars == <<schema, refs, overlapOpen, evolved>>
+vars == <<schema, refs, overlapOpen, evolved, pendingMigrations>>
 
 \* ── Type invariant ──────────────────────────────────────────────────────
 
 TypeOK ==
-    /\ schema \in [Fields -> Int]
+    /\ schema \in [Fields -> -2..2]
     /\ refs \in [Consumers -> SUBSET Fields]
     /\ overlapOpen \in BOOLEAN
-    /\ evolved \in Nat
+    /\ evolved \in 0..MaxEvolutions
 
 \* ── Initial state ───────────────────────────────────────────────────────
 
 Init ==
-    /\ schema \in [Fields -> {0, 1}]  \* Each field starts active (1) or absent (0)
-    /\ refs \in [Consumers -> SUBSET Fields]  \* Each consumer declares its refs
+    /\ schema = [f \in Fields |-> 1]  \* All fields start active
+    /\ refs = [c \in Consumers |-> Fields]  \* All consumers initially reference all fields
     /\ overlapOpen = FALSE
     /\ evolved = 0
+    /\ pendingMigrations = {}
 
 \* ── Helper: reference count for a field ─────────────────────────────────
 
@@ -57,17 +60,28 @@ ApplyDelta(retract, insert) ==
         CASE f \in retract -> schema[f] - 1
           [] f \in insert  -> schema[f] + 1
           [] OTHER         -> schema[f]]
-    /\ overlapOpen' = (retract /= {})
+    /\ overlapOpen' = (overlapOpen \/ retract /= {})  \* Opens on retract, NEVER closes here
     /\ evolved' = evolved + 1
-    /\ UNCHANGED refs
+    /\ UNCHANGED <<refs, pendingMigrations>>
 
 \* ── Action: Migrate a consumer ──────────────────────────────────────────
-\* A consumer updates its references (stops referencing old fields).
+\* Phase 1: Consumer SENDS its migration (adds to pending — not yet visible).
+\* Models the real-world CDC delay: event emitted but not yet delivered.
 
-MigrateConsumer(c, newRefs) ==
+SendMigration(c) ==
     /\ c \in Consumers
-    /\ newRefs \subseteq Fields
-    /\ refs' = [refs EXCEPT ![c] = newRefs]
+    /\ c \notin pendingMigrations
+    /\ \E f \in refs[c] : schema[f] <= 0  \* Only migrates if holding retracted refs
+    /\ pendingMigrations' = pendingMigrations \union {c}
+    /\ UNCHANGED <<schema, refs, overlapOpen, evolved>>
+
+\* Phase 2: Migration event DELIVERED (bounded delivery — eventually arrives).
+\* This is when refs actually update. Models CDC delivery latency.
+
+DeliverMigration(c) ==
+    /\ c \in pendingMigrations
+    /\ refs' = [refs EXCEPT ![c] = {f \in refs[c] : schema[f] > 0}]
+    /\ pendingMigrations' = pendingMigrations \ {c}
     /\ UNCHANGED <<schema, overlapOpen, evolved>>
 
 \* ── Action: Consolidate ─────────────────────────────────────────────────
@@ -76,23 +90,32 @@ MigrateConsumer(c, newRefs) ==
 
 Consolidate ==
     /\ overlapOpen = TRUE
+    /\ pendingMigrations = {}  \* No in-flight migrations (all delivered)
     /\ \A f \in Fields : schema[f] <= 0 => RefCount(f) = 0
     /\ schema' = [f \in Fields |-> IF schema[f] <= 0 THEN 0 ELSE schema[f]]
     /\ overlapOpen' = FALSE
-    /\ UNCHANGED <<refs, evolved>>
+    /\ UNCHANGED <<refs, evolved, pendingMigrations>>
 
 \* ── Next-state relation ─────────────────────────────────────────────────
 
 Next ==
     \/ \E retract, insert \in SUBSET Fields :
         ApplyDelta(retract, insert)
-    \/ \E c \in Consumers, newRefs \in SUBSET Fields :
-        MigrateConsumer(c, newRefs)
+    \/ \E c \in Consumers :
+        SendMigration(c)
+    \/ \E c \in Consumers :
+        DeliverMigration(c)
     \/ Consolidate
 
 \* ── Fairness (for liveness) ─────────────────────────────────────────────
 
-Fairness == WF_vars(Consolidate)
+\* Bounded delivery: pending migrations EVENTUALLY deliver (CDC guarantee).
+\* Consumers eventually send migration when holding retracted refs.
+\* Consolidate eventually fires when preconditions met.
+Fairness ==
+    /\ WF_vars(Consolidate)
+    /\ \A c \in Consumers : WF_vars(SendMigration(c))
+    /\ \A c \in Consumers : WF_vars(DeliverMigration(c))
 Spec == Init /\ [][Next]_vars /\ Fairness
 
 \* ── SAFETY: Every referenced field resolves ─────────────────────────────
