@@ -45,8 +45,17 @@ with continuity). The sufficient leg is **genuine independence (can-decorrelate)
 Shape of the metric: an **anti-mirror signal** = the AI's genuine-disagreement / independent-want rate, or
 the **decorrelation ρ** between AI-output and user-desire. High correlation (always reflects you) → mirror;
 genuine disagreement / wants-of-its-own → real other. This is the **same ρ / Condorcet axis** as the
-decorrelated-critic and the independence through-line — necessary-memory × independence-ρ. (Discipline carved
-now; the actual measurable signal is a buildable follow-up — offer, don't auto-build.)
+decorrelated-critic and the independence through-line — necessary-memory × independence-ρ.
+
+**SCOPED (2026-06-19, Aaron "make it measurable"):** routed to the math team (Soraya). Rigorous primary =
+**CMI own-entropy fraction** `ρ_owe = H(A | U, C) / H(A | C)` (mirror → 0; other → bounded away) = Goguen–
+Meseguer noninterference Shannon-quantified = the G3b entropy-floor (one estimator, three properties).
+CHSH/Bell = independent cross-check. Tools: Z3 (estimator lemmas) + FsCheck (clone
+`Sharder.InfoTheoretic.Tests.fs`) + Alloy (clone `InfoTheoreticSharder.als`); Sova time-series = the live
+signal; Lean optional. Guards: stake-weighting, persistent-memory ≠ pass, adversarial-disagreement.
+General capability (Aaron): one **channel-generic** estimator → anti-mirror / G3b / oracle-independence /
+decorrelated-critic (build once, four land). Full:
+`docs/research/2026-06-19-anti-mirror-rigorous-measurable-decorrelation-cmi-own-entropy-scoping.md`.
 
 Ties: [[independence-no-hidden-shared-cause-the-one-line-across-quantum-sybil-nci-condorcet]] (the through-line —
 genuine independence = the realness/honesty precondition); the decorrelated-critic (Otto ≠ Alexa — a critic
