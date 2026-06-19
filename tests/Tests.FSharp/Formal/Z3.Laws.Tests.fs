@@ -746,3 +746,117 @@ let ``Z3 proves C13 I∘D = id (integrate of differentiate telescopes to each ti
         "  (not (= (+ (- s0 0.0) (- s1 s0) (- s2 s1)) s2))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C13 I∘D = id" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Aurora round (d) — capability gate `cap_req ⊆ cap_allowed` (standardization
+// Test 4.4). Soraya's BP-16 routing: Z3 set algebra; prereq probed 2026-06-19 —
+// `(Set Int)` works under (set-logic ALL) but the chosen encoding is QF_BV
+// BITMASK over a 64-capability universe (decidable, CI-portable, finite-universe
+// faithful — Soraya's stated fallback). Subset is the natural bvand form:
+//   admit ⟺ cap_req ⊆ cap_allowed ⟺ (bvand req allowed) = req
+//                                  ⟺ (bvand req (bvnot allowed)) = 0
+// These are the symbolic (Z3) leg of the (d) cross-check; the §4.4 "10 injection
+// variants" FsCheck leg (Soraya's secondary) remains as a noted follow-up.
+// Authored by Otto per the aurora-immune-reground trajectory (Aaron 2026-06-19).
+// ═══════════════════════════════════════════════════════════════════
+
+let private bv0 = "(_ bv0 64)"
+
+[<Fact>]
+let ``Z3 proves capability subset has two equivalent bvand encodings (d)`` () =
+    // (bvand req allowed) = req  ⟺  (bvand req (bvnot allowed)) = 0. The gate's
+    // admit predicate is well-defined regardless of which encoding the impl uses.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const allowed (_ BitVec 64))\n" +
+        "(assert (not (= (= (bvand req allowed) req) (= (bvand req (bvnot allowed)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) capability subset encodings equivalent" script
+
+[<Fact>]
+let ``Z3 proves capability gate is reflexive: a set always satisfies its own requirement (d)`` () =
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(assert (not (= (bvand req (bvnot req)) " + bv0 + ")))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) capability subset reflexive" script
+
+[<Fact>]
+let ``Z3 proves capability gate is transitive (d)`` () =
+    // a ⊆ b ∧ b ⊆ c ⇒ a ⊆ c. Chained delegation never widens the effective grant.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const a (_ BitVec 64))\n" +
+        "(declare-const b (_ BitVec 64))\n" +
+        "(declare-const c (_ BitVec 64))\n" +
+        "(assert (not (=> (and (= (bvand a (bvnot b)) " + bv0 + ") (= (bvand b (bvnot c)) " + bv0 + "))\n" +
+        "                 (= (bvand a (bvnot c)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) capability subset transitive" script
+
+[<Fact>]
+let ``Z3 proves granting capabilities never revokes admission: monotone in allowed (d)`` () =
+    // allowed ⊆ allowed' ⇒ (req ⊆ allowed ⇒ req ⊆ allowed'). Widening the grant
+    // can only keep or turn a deny into an admit, never flip an admit to a deny.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(declare-const al2 (_ BitVec 64))\n" +
+        "(assert (not (=> (and (= (bvand al (bvnot al2)) " + bv0 + ") (= (bvand req (bvnot al)) " + bv0 + "))\n" +
+        "                 (= (bvand req (bvnot al2)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) admit monotone in allowed" script
+
+[<Fact>]
+let ``Z3 proves least-privilege: demanding MORE capabilities is strictly stricter (d)`` () =
+    // req ⊆ req' ∧ req' ⊆ allowed ⇒ req ⊆ allowed. The antitone direction —
+    // a request can never gain admission by REQUIRING a capability it wasn't granted.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const req2 (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (=> (and (= (bvand req (bvnot req2)) " + bv0 + ") (= (bvand req2 (bvnot al)) " + bv0 + "))\n" +
+        "                 (= (bvand req (bvnot al)) " + bv0 + "))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) least-privilege antitone in req" script
+
+[<Fact>]
+let ``Z3 proves an empty requirement is always admitted (d)`` () =
+    // ∅ ⊆ allowed for every allowed — an action needing no capability always passes.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (= (bvand " + bv0 + " (bvnot al)) " + bv0 + ")))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "(d) empty requirement always admits" script
+
+[<Fact>]
+let ``Z3 witnesses a genuine DENIAL: a required capability outside allowed is refused (d)`` () =
+    // Non-vacuity: the gate is not trivially always-admit. There exist req, allowed
+    // with a required bit outside allowed — and the admit predicate is then FALSE.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (= (bvand req (bvnot al)) " + bv0 + ")))\n" + // some required cap not allowed
+        "(assert (not (= (bvand req al) req)))\n" + // ⇒ admit predicate false (denied)
+        "(check-sat)\n"
+    z3ScriptHasModel "(d) genuine denial reachable" script
+
+[<Fact>]
+let ``Z3 witnesses a genuine ADMIT: a fully-covered non-empty requirement passes (d)`` () =
+    // Non-vacuity the other way: the gate is not trivially always-deny. There exist
+    // a non-empty req fully within allowed — admitted.
+    let script =
+        "(set-logic QF_BV)\n" +
+        "(declare-const req (_ BitVec 64))\n" +
+        "(declare-const al (_ BitVec 64))\n" +
+        "(assert (not (= req " + bv0 + ")))\n" + // non-trivial requirement
+        "(assert (= (bvand req (bvnot al)) " + bv0 + "))\n" + // fully covered ⇒ admitted
+        "(check-sat)\n"
+    z3ScriptHasModel "(d) genuine admit reachable" script

@@ -168,6 +168,27 @@ Test: `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green
   policy); any number of ticks leaves the fixture set unchanged, and a canonical fixture persists while
   the same attack's active weight decays to ~0 ("canonical attack memory ≠ always-hot active detector").
 
+### (d) capability gate `cap_req ⊆ cap_allowed` — Z3 lemmas landed (2026-06-19, Otto)
+
+Test 4.4 (capability-gate intersection). **Prereq resolved (Soraya's filed prereq):** z3 4.16.0;
+`(Set Int)` works under `(set-logic ALL)`, but the chosen encoding is **QF_BV bitmask** over a
+64-capability universe — decidable, CI-portable, finite-universe faithful (Soraya's stated fallback,
+and the better choice than general set theory here). Subset is the natural `bvand` form:
+`admit ⟺ cap_req ⊆ cap_allowed ⟺ (bvand req allowed) = req ⟺ (bvand req (bvnot allowed)) = 0`.
+Lemmas in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (8: 6 UNSAT proofs + 2 SAT witnesses):
+
+- **encoding equivalence** (the two subset forms agree), **reflexivity**, **transitivity** (chained
+  delegation never widens the grant).
+- **monotone in `allowed`** (granting never revokes admission) + **antitone in `req`** (least
+  privilege — a request can never gain admission by *requiring* a capability it wasn't granted; this
+  is the no-escalation safety direction).
+- **empty requirement always admits.**
+- **non-vacuity (both outcomes reachable):** a genuine **denial** (required cap outside allowed) and
+  a genuine **admit** (non-empty req fully covered) — so the gate is neither always-admit nor always-deny.
+
+Honest scope: this is the **symbolic** (Z3) leg. Soraya's secondary FsCheck leg (§4.4 "10 injection
+variants" at the call-site) + Semgrep/CodeQL at the deployed gate remain a noted follow-up.
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).

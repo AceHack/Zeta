@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — formal round CLOSED. (a) d_self identity-axis wiring + (e) HarmFloor FsCheck + (g) autoimmunity-decay FsCheck all DONE (2026-06-19). Remaining: (b) Z3 honest-count (parked behind anti-Sybil §B), (c) CoordRisk spectral FsCheck, (d) capability-gate Z3 → §A promotion.**
+Status: **active — formal round CLOSED. (a) d_self wiring + (d) capability-gate Z3 + (e) HarmFloor FsCheck + (g) autoimmunity-decay FsCheck all DONE (2026-06-19). Remaining: (c) CoordRisk spectral FsCheck (last test-obligation cross-check), (b) Z3 honest-count (parked behind anti-Sybil §B) → §A promotion.**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
@@ -67,10 +67,15 @@ theorems, not metaphor.
      (`Danger≈0`) Eq 10 → `n(t+1)=max(0,(1−δ)·n(t)−β·FP)`; FsCheck asserts decay→0, monotone,
      fp-accelerates, contraction `(1−δ)∈(0,1)`, and archive-immune (§4.5 a+b).
      `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green). Discharge: §8(g).
+   - ✅ **(d) DONE (2026-06-19):** capability gate `cap_req ⊆ cap_allowed` (Test 4.4) — 8 Z3 lemmas
+     over QF_BV bitmasks (encoding-equivalence, reflexive, transitive, monotone-in-allowed,
+     antitone-in-req/least-privilege, empty-req-admits + 2 non-vacuity witnesses). In
+     `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` (53 Z3 tests green). Discharge: §8(d). FsCheck
+     injection-variant leg + Semgrep/CodeQL at call-site = noted follow-up.
    - **(c) TODO:** `CoordRisk` spectral (λ₂ Fiedler / ρ radius, Test 4.3) — FsCheck over networkx-style
-     graphs (needs a small graph harness; heavier than e/g).
-   - **(d) TODO:** capability gate `cap_req ⊆ cap_allowed` (Test 4.4) — Z3 set algebra (see prereq).
-4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
+     graphs (needs a small graph harness; heavier than e/g). **Last remaining test-obligation cross-check.**
+4. ✅ **Prereq DONE (2026-06-19):** z3 4.16.0; `(Set Int)` works under `(set-logic ALL)`, but QF_BV
+   bitmask is the chosen encoding (decidable, CI-portable, finite-universe faithful — Soraya's fallback).
 5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;
    (e) multi-claim substrate + multi-hop kernel reachability is the v3.
 6. **Liveness path = observe.ts (Aaron 2026-06-16).** Round (e) proves *safety* (over-horizon/
