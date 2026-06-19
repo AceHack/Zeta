@@ -68,6 +68,21 @@ them as the three **Faces** of `gen(gen)===gen` in `src/Core/AdinkraCode.fs`:
 5. **Phase E:** + Python/Go (byte-lock) + CHIP-8 cart (behavioral).
 6. **Phase F:** + Q# + document the Trusting-Trust bootstrap (≥2 independent generators to seed trust).
 
+## Q# self-hosting lane — `gen(gen)===gen` + `cogen=mix(mix,mix)` in Q# (Aaron 2026-06-19)
+
+Aaron's stated horizon: **after** the six Z-set operators land in standalone Q#
+(`docs/handoffs/2026-06-19-zset-isa-six-operators-qsharp-build-spec.md`, Alexa), get the **same
+fixed points** — `gen(gen)===gen` and `cogen = mix(mix,mix)` — **in the Q# lane.** This is the Q#
+instance of **Face 3** (the §B capstone), and it maps onto the phases above:
+
+- The six Q# ops are the *content*; the next step is **`gen(Q#-ops from IR)`** (the generator emits the
+  Q# ISA) → then **`gen(gen)` in Q#** = Phase F (**behavioral-equivalence**, NOT byte-lock — Q#'s
+  execution model; tiers §1).
+- **`cogen = mix(mix,mix)`** is the open Face 3 research discharge (3rd Futamura projection) — same §B
+  obligation, now with Q# as a target lane.
+- **Same prereqs apply:** Phase A (IR-v1 freeze) + the multi-language generator. So the Q# self-hosting
+  lane is gated on those — the operators are the start, not the fixed point.
+
 ## Dependencies / seams (honest)
 
 - **The multi-language generator itself is in-flight** — today `gen/` emits CHIP-8 asm + reified
