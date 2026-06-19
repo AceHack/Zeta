@@ -27,6 +27,17 @@ observations."**
   sim-phase `φ`; their local clocks differ (different frames/offsets) and each is recorded `± uncertainty`
   against `φ`. The "packet" carries the measurement *and* its uncertainty (commutative).
 
+## UTC is a fool's game — leap seconds — so it is NOT the base; soft phase spacetime is
+
+Aaron 2026-06-19: *"all my nerd friends told me UTC is a fool's game"* — *"leap seconds"* — *"this [is] not
+the base"* — *"soft phase spacetime is."* The concrete reason UTC cannot be the base: **leap seconds** are
+**discontinuous, politically-decided insertions** (27 since 1972; IERS-announced, not derivable), making UTC
+**non-monotonic and mutable by committee** — you cannot build a clean time base on a clock that jumps and
+whose jumps are voted on (the real systems-engineering pain: Google's leap-smear hack; the 2035 plan to
+abolish leap seconds). So **UTC is a correlated observation you READ but never BUILD ON.** **The base is
+SOFT PHASE SPACETIME** — the seed-derived phase over spacetime: monotonic, frame-independent, derivable from
+the common seed, immune to leap-second politics. Read UTC; ground on the phase.
+
 ## Why it matters / ties
 
 Real **NTP** (Mills, RFC 5905) assumes a roughly-common Earth time and corrects for network latency against a
