@@ -129,6 +129,28 @@ zero new tool.
 (§6) travel unchanged — this adds a proven foundation under the identity term, not deployment
 readiness.
 
+### (e) `PermanentHarmRisk_H` — FsCheck cross-check landed (2026-06-19, Otto)
+
+The BP-16 **Leg B** (empirical) cross-check for round (e). Leg A is the TLA+ model
+(`src/Core.TLA/specs/PermanentHarmHorizon.tla`, Kira-reviewed, TLC-green). This leg is an
+**independent F# re-implementation** of the same harm-decay-within-horizon transition system, driven
+by FsCheck over random action sequences, asserting the **HarmFloor** safety invariant
+(`committed ⇒ reversible ∧ kernel-reached ∧ within-horizon`) holds at **every reachable state** —
+closing the "is the F# faithful to the spec?" blind spot from the other side. Test:
+`tests/Tests.FSharp/Formal/PermanentHarmHorizonCrossVerify.Tests.fs` (4 tests: 1 FsCheck property +
+3 non-vacuity witnesses, one per §4.1 case — accept / irreversible-block / past-horizon-block; all
+green).
+
+- **Independence is the value:** the F# `step`/`harmFloor` relation is authored separately from the
+  TLA+ `Next`/`HarmFloor`; a counterexample would mean the two **drifted** (triage = freeze + diff
+  both transition relations, never silently fix one to match).
+- **Distinct from `ChildFloorCrossVerify`** — that cross-checks the *deployed* `SubstrateEffectHandler`
+  deny-propagation (a different object); this cross-checks the Aurora §4.1 retraction-horizon dynamics.
+- **Scope honest (unchanged from the spec):** this is the **safety** floor (a harmful/irreversible/
+  over-horizon insert is never *committed*), not **liveness** (that it *is* refused) — the liveness
+  leg routes through `observe.ts` (Aaron 2026-06-16), not by bolting `WF` onto the toy. The four
+  non-claims travel unchanged.
+
 ## Composes with
 
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` — the math being re-grounded (Amara; Gemini; Otto rigor pass).

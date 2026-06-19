@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. (a) d_self identity-axis wiring DONE (grounded on `NonRegisterCollapse`, §8(a) of scoping doc, 2026-06-19). Next: the (b)/(e) FsCheck cross-checks + (c)/(d)/(g) FsCheck/Z3 smalls → §A promotion.**
+Status: **active — the 2 TLA+ rounds are AUTHORED, TLC-green, and Viktor/Kira RE-CONFIRMED (both PASS); formal round CLOSED. (a) d_self identity-axis wiring DONE + (e) FsCheck cross-check DONE (2026-06-19). Next: (b) Z3 honest-count cross-check (after anti-Sybil §B) + (c)/(d)/(g) FsCheck/Z3 smalls → §A promotion.**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
@@ -55,8 +55,13 @@ theorems, not metaphor.
    grounds; the other four axes (C/L/P/K) stay feature-space estimators (no false-green); the gate is
    unchanged (Amara: `d_self` is not a trigger). Discharge: scoping doc §8(a) + standardization §3.2
    pointer. **(a) is the first operator ready to promote toward §A.**
-2. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16): the Aurora §4.1 retraction sim (e) +
-   the Z3 honest-count side (b).
+2. **(b)/(e) FsCheck cross-checks** (Soraya's BP-16):
+   - ✅ **(e) DONE (2026-06-19):** the Aurora §4.1 retraction sim — independent F# re-impl of
+     `PermanentHarmHorizon.tla`, FsCheck asserts HarmFloor at every reachable state + 3 non-vacuity
+     witnesses (accept / irrev-block / horizon-block). `tests/Tests.FSharp/Formal/PermanentHarmHorizonCrossVerify.Tests.fs`
+     (4 green). Discharge: scoping doc §8(e).
+   - **(b) TODO:** the Z3 honest-count side (`honest > 2/3` over proven-distinct identities); note the
+     anti-Sybil-entropy §B dependency must sequence first (it's still open).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
 4. **Prereq:** confirm Z3 `QF_FD` set support in `src/Core.FSharp.Z3Verify` for (d) (else QF_BV subset).
 5. **Refinements noted in-spec:** (b) honest-supermajority-of-quorum needs D=3f+1 sizing;

@@ -335,6 +335,7 @@
     <Compile Include="Formal/RefuseBindingCrossVerify.Tests.fs" />
     <Compile Include="Formal/BifurcationCrossVerify.Tests.fs" />
     <Compile Include="Formal/NonRegisterCollapseCrossVerify.Tests.fs" />
+    <Compile Include="Formal/PermanentHarmHorizonCrossVerify.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
