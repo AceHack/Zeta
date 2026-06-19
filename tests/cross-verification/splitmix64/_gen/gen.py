@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Independent Python oracle: compute SplitMix64 over the canonical inputs and
+emit python-output.json. This recomputes the mixer from scratch (it does not
+import the zeta port) so the cross-verification is a genuine independent oracle,
+not a re-serialisation of another impl."""
+import json
+import os
+
+MASK = (1 << 64) - 1
+GOLDEN = 0x9E3779B97F4A7C15
+A = 0xBF58476D1CE4E5B9
+B = 0x94D049BB133111EB
+
+
+def mix(x: int) -> int:
+    z = (x * GOLDEN) & MASK
+    z = ((z ^ (z >> 30)) * A) & MASK
+    z = ((z ^ (z >> 27)) * B) & MASK
+    return (z ^ (z >> 31)) & MASK
+
+
+INPUTS = {
+    "x-0": 0,
+    "x-1": 1,
+    "x-2": 2,
+    "x-10": 10,
+    "x-255": 255,
+    "x-u64max": 18446744073709551615,
+    "x-golden": 11400714819323198485,
+    "x-2pow63": 9223372036854775808,
+    "x-12345678901234567890": 12345678901234567890,
+    "x-1e18": 1000000000000000000,
+}
+
+out = {k: str(mix(v)) for k, v in INPUTS.items()}
+here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+with open(os.path.join(here, "python-output.json"), "w") as f:
+    json.dump(out, f, indent=2)
+    f.write("\n")
+print("wrote python-output.json")

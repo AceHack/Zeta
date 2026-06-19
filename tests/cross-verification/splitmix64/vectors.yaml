@@ -1,0 +1,42 @@
+version: 1
+description: >-
+  SplitMix64 finaliser golden vectors — the shared seed for cross-language
+  byte-lock. Sebastiano Vigna's mixer (arXiv:1410.0530 §3; public-domain
+  reference https://prng.di.unimi.it/splitmix64.c), the deterministic mixing
+  step behind Zeta's DST RNG. mix(x): z = x*0x9E3779B97F4A7C15; z = (z ^ z>>30)
+  * 0xBF58476D1CE4E5B9; z = (z ^ z>>27) * 0x94D049BB133111EB; return z ^ z>>31
+  — all WRAPPING uint64 arithmetic. uint64 exceeds JSON's exact number range,
+  so inputs (id-encoded) and the canonical `result` are decimal STRINGS (parse
+  to BigInt / UInt64 / u64). Cross-language agreement here is load-bearing:
+  DST replays must produce identical pseudo-random streams across the ports.
+vectors:
+  - id: x-0
+    x: "0"
+    result: "0"
+  - id: x-1
+    x: "1"
+    result: "16294208416658607535"
+  - id: x-2
+    x: "2"
+    result: "7960286522194355700"
+  - id: x-10
+    x: "10"
+    result: "17561866513979060390"
+  - id: x-255
+    x: "255"
+    result: "80788758552623550"
+  - id: x-u64max
+    x: "18446744073709551615"
+    result: "3703370420611038912"
+  - id: x-golden
+    x: "11400714819323198485"
+    result: "5878998237028904013"
+  - id: x-2pow63
+    x: "9223372036854775808"
+    result: "2720858781877447050"
+  - id: x-12345678901234567890
+    x: "12345678901234567890"
+    result: "284664278009360702"
+  - id: x-1e18
+    x: "1000000000000000000"
+    result: "11308661470685490763"

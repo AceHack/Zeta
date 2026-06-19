@@ -24,6 +24,10 @@ import { join } from "node:path";
 const ROOT = "tests/cross-verification";
 
 const dirs = readdirSync(ROOT)
+  // `_`-prefixed dirs are shared infrastructure (e.g. `_harness/`), NOT primitives —
+  // they carry the differ + its self-test, not an oracle. Skipping them keeps the
+  // assert-don't-skip rule honest (no false "unchecked primitive" on the harness).
+  .filter((name) => !name.startsWith("_"))
   .map((name) => join(ROOT, name))
   .filter((p) => statSync(p).isDirectory())
   .sort();
