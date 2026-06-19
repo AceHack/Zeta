@@ -26,7 +26,7 @@ Zeta distributes this superdeterminism. Each language port is an independent ora
 
 If the kernel is the fixed point, the value of the codebase lies in the conditions that guarantee the fixed point exists and is unique. 
 
-This shifts the boundary of the "sacred core." The `src/Core` project currently contains 333 F# files, mixing fundamental DBSP algebra with exploratory research modules (e.g., `Chip8`, `AdinkraViz`, `BellState`, `Arena`). This violates the "keep the stable base sacred and small" principle [2]. 
+This shifts the boundary of the protected core. The `src/Core` project currently contains 333 F# files, mixing fundamental DBSP algebra with exploratory research modules (e.g., `Chip8`, `AdinkraViz`, `BellState`, `Arena`). This violates the "keep the stable base protected and small" principle [2]. 
 
 The true core is the **Interface + Proof layer**:
 - **Interfaces:** The 38 contracts in `src/Core.Abstractions` (e.g., `IOperator`, `ISemiring`, `IDeltaLog`). These are not just type signatures; they are algebraic boundaries.
