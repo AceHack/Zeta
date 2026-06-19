@@ -36,6 +36,12 @@ module MetaCart =
           Slot: CartSlot
           Reflection: Chip8Arcade.Reflection }
 
+    type SelectionPolicyTrace =
+        { PolicyName: string
+          BaselineSelected: ReflectedChoice option
+          PolicySelected: ReflectedChoice option
+          ChangedSelection: bool }
+
     /// Source-owned selection readout for the host-assisted meta-cart boundary.
     ///
     /// Reflection remains a pure observation of candidate child futures. The
@@ -50,6 +56,7 @@ module MetaCart =
           Tank: SoftThrottle.Tank
           Candidates: ReflectedChoice list
           Selected: ReflectedChoice option
+          PolicyTrace: SelectionPolicyTrace option
           DeterministicRulesApplied: string list }
 
     /// Host/room policy hook for attention and gravity over already-observed
@@ -125,6 +132,7 @@ module MetaCart =
           Tank = tank
           Candidates = reflected
           Selected = selected
+          PolicyTrace = None
           DeterministicRulesApplied =
             [ "metacart.children->fingerprint-slots"
               "chip8arcade.reflect equal-funds each candidate"
@@ -163,6 +171,13 @@ module MetaCart =
         left.Index = right.Index
         && left.Slot.Fingerprint.Sha256 = right.Slot.Fingerprint.Sha256
 
+    let private sameChoiceOption (left: ReflectedChoice option) (right: ReflectedChoice option) : bool =
+        match left, right with
+        | Some l, Some r -> sameChoice l r
+        | None, None -> true
+        | Some _, None
+        | None, Some _ -> false
+
     let private normalizePolicyChoice (readout: SelectionReadout) (choice: ReflectedChoice) : ReflectedChoice option =
         readout.Candidates |> List.tryFind (sameChoice choice)
 
@@ -173,10 +188,17 @@ module MetaCart =
         (policy: SelectionPolicy)
         (readout: SelectionReadout)
         : SelectionReadout =
+        let baselineSelected = readout.Selected
         let selected = policy readout |> Option.bind (normalizePolicyChoice readout)
 
         { readout with
             Selected = selected
+            PolicyTrace =
+                Some
+                    { PolicyName = policyName
+                      BaselineSelected = baselineSelected
+                      PolicySelected = selected
+                      ChangedSelection = not (sameChoiceOption baselineSelected selected) }
             DeterministicRulesApplied =
                 readout.DeterministicRulesApplied
                 @ [ sprintf "selection policy %s may reorder existing candidates only" policyName ] }
@@ -325,6 +347,48 @@ module MetaCart =
             | Ok() -> Error failure
             | Error feedback -> Error(Feedback.HeatRejected(slot, feedback))
 
+    let private choiceSummary (choice: ReflectedChoice option) : string =
+        match choice with
+        | None -> "none"
+        | Some choice -> sprintf "%s@%d:%s" choice.Slot.Name choice.Index choice.Slot.Fingerprint.Sha256
+
+    let private policyBackpressureHeat (source: string) (readout: SelectionReadout) (failure: Feedback) : HeatSignature option =
+        let failedSlotAndReason =
+            match failure with
+            | Feedback.MissingCart slot -> Some(slot, "missing")
+            | Feedback.HostDenied(slot, reason) -> Some(slot, reason)
+            | Feedback.NoSelection _
+            | Feedback.HeatRejected _ -> None
+
+        match readout.PolicyTrace, readout.Selected, failedSlotAndReason with
+        | Some trace, Some selected, Some(failedSlot, reason)
+            when trace.ChangedSelection
+                 && selected.Slot.Fingerprint.Sha256 = failedSlot.Fingerprint.Sha256 ->
+            let detail =
+                sprintf
+                    "policy=%s baseline=%s selected=%s reason=%s"
+                    trace.PolicyName
+                    (choiceSummary trace.BaselineSelected)
+                    (choiceSummary trace.PolicySelected)
+                    reason
+
+            Some(HeatSignature.ofMass source "meta-cart.policy-backpressure" 1 1.0 detail)
+        | _ -> None
+
+    let private emitPolicyBackpressureHeat
+        (source: string)
+        (sink: IHeatSink)
+        (readout: SelectionReadout)
+        (failure: Feedback)
+        : Result<unit, Feedback> =
+        match policyBackpressureHeat source readout failure, readout.Selected with
+        | None, _ -> Ok()
+        | Some heat, Some choice ->
+            match sink.Emit heat with
+            | Ok() -> Ok()
+            | Error feedback -> Error(Feedback.HeatRejected(choice.Slot, feedback))
+        | Some _, None -> Ok()
+
     /// Play the child selected by the parent VM. No selection is a cold refusal;
     /// missing/denied children emit heat before returning the typed failure.
     let playSelected
@@ -425,7 +489,10 @@ module MetaCart =
                     { Choice = choice
                       ParentWithChoice = parentWithChoice
                       Play = play }
-            | Error feedback -> Error feedback
+            | Error feedback ->
+                match emitPolicyBackpressureHeat source sink readout feedback with
+                | Ok() -> Error feedback
+                | Error heatFeedback -> Error heatFeedback
 
     /// Capability-aware launch from an explicit selection readout. Parent
     /// attention/throttle may change ordering, but capability truth is checked
@@ -449,7 +516,10 @@ module MetaCart =
                     { Choice = choice
                       ParentWithChoice = parentWithChoice
                       Play = play }
-            | Error feedback -> Error feedback
+            | Error feedback ->
+                match emitPolicyBackpressureHeat source sink readout feedback with
+                | Ok() -> Error feedback
+                | Error heatFeedback -> Error heatFeedback
 
     /// Soft-select a child cart by reflection, write that selection into the
     /// parent choice cell, then launch through the injected host boundary.

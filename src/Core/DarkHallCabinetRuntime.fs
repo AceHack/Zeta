@@ -61,11 +61,16 @@ module DarkHallCabinetRuntime =
           Children: Cart.Cart list
           Parent: Chip8Cow.Frame }
 
+    type MetaCartPolicy =
+        { Name: string
+          Policy: MetaCart.SelectionPolicy }
+
     type RunRequest =
         | RunSoftChip8 of seed: uint64 * rom: byte[] * frames: int
         | RunDarkHallCpu of program: byte[] * budget: int
         | RunChip9Cart of cart: Cart.Cart * manifest: Chip9Capabilities.Manifest
         | RunMetaCart of MetaCartLaunch
+        | RunMetaCartWithPolicy of policy: MetaCartPolicy * launch: MetaCartLaunch
 
     type RunResult =
         | SoftChip8Frame of Chip8Cow.Frame
@@ -114,6 +119,7 @@ module DarkHallCabinetRuntime =
         | RunDarkHallCpu _ -> "run-darkhall-cpu"
         | RunChip9Cart _ -> "run-chip9-cart"
         | RunMetaCart _ -> "run-meta-cart"
+        | RunMetaCartWithPolicy _ -> "run-meta-cart-with-policy"
 
     let private isExecutableCore =
         function
@@ -291,6 +297,24 @@ module DarkHallCabinetRuntime =
             | None -> return machine
         }
 
+    let private executeMetaCartLaunch
+        (source: string)
+        (sink: IHeatSink)
+        (launch: MetaCartLaunch)
+        (readout: MetaCart.SelectionReadout)
+        : Result<RunResult, Feedback> =
+        let host = MetaCart.CapabilityCartHost(launch.Children, launch.ChildCapabilitiesBySha) :> MetaCart.ICartHost
+
+        MetaCart.playChosenFromSelectionReadoutWithCapabilities
+            source
+            sink
+            launch.ParentCapabilities
+            readout
+            host
+            launch.Parent
+        |> Result.map MetaCartResult
+        |> Result.mapError Feedback.MetaCartFeedback
+
     let private executeMachine
         (source: string)
         (sink: IHeatSink)
@@ -319,18 +343,13 @@ module DarkHallCabinetRuntime =
 
             | DarkHall.MachineCore.MetaCartHost, RunMetaCart launch ->
                 let readout = observeMetaCartLaunch launch
-                let host = MetaCart.CapabilityCartHost(launch.Children, launch.ChildCapabilitiesBySha) :> MetaCart.ICartHost
 
-                return
-                    MetaCart.playChosenFromSelectionReadoutWithCapabilities
-                        source
-                        sink
-                        launch.ParentCapabilities
-                        readout
-                        host
-                        launch.Parent
-                    |> Result.map MetaCartResult
-                    |> Result.mapError Feedback.MetaCartFeedback
+                return executeMetaCartLaunch source sink launch readout
+
+            | DarkHall.MachineCore.MetaCartHost, RunMetaCartWithPolicy(policy, launch) ->
+                let readout = observeMetaCartLaunchWithPolicy policy.Name policy.Policy launch
+
+                return executeMetaCartLaunch source sink launch readout
 
             | core, _ when not (isExecutableCore core) ->
                 return Error(Feedback.UnsupportedMachine(address, core))

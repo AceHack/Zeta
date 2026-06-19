@@ -7,7 +7,7 @@
 // Usage:
 //   bun src/Core.TypeScript/lint/lint-csharp.ts
 
-import { spawnSync } from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,22 +23,66 @@ interface Step {
 const STEPS: readonly Step[] = [
   {
     label: "Whitespace checks (C#)",
-    cmd: ["dotnet", "format", "whitespace", "Zeta.sln", "--verify-no-changes", "--include", "src/**/*.cs", "tests/**/*.cs", "bench/**/*.cs", "samples/**/*.cs"],
+    cmd: [
+      "dotnet",
+      "format",
+      "whitespace",
+      "Zeta.sln",
+      "--verify-no-changes",
+      "--include",
+      "src/**/*.cs",
+      "tests/**/*.cs",
+      "bench/**/*.cs",
+      "samples/**/*.cs",
+    ],
   },
   {
     label: "Code style checks (C#)",
-    cmd: ["dotnet", "format", "style", "Zeta.sln", "--verify-no-changes", "--include", "src/**/*.cs", "tests/**/*.cs", "bench/**/*.cs", "samples/**/*.cs"],
+    cmd: [
+      "dotnet",
+      "format",
+      "style",
+      "Zeta.sln",
+      "--verify-no-changes",
+      "--include",
+      "src/**/*.cs",
+      "tests/**/*.cs",
+      "bench/**/*.cs",
+      "samples/**/*.cs",
+    ],
   },
   {
     label: "Analyzer checks (C#)",
-    cmd: ["dotnet", "format", "analyzers", "Zeta.sln", "--verify-no-changes", "--include", "src/**/*.cs", "tests/**/*.cs", "bench/**/*.cs", "samples/**/*.cs"],
+    cmd: [
+      "dotnet",
+      "format",
+      "analyzers",
+      "Zeta.sln",
+      "--verify-no-changes",
+      "--include",
+      "src/**/*.cs",
+      "tests/**/*.cs",
+      "bench/**/*.cs",
+      "samples/**/*.cs",
+    ],
   },
 ];
 
-const RETRYABLE_WORKSPACE_FAILURES = [
-  "The server disconnected unexpectedly",
-  "Restore operation failed",
-];
+const RETRYABLE_WORKSPACE_FAILURES = ["The server disconnected unexpectedly", "Restore operation failed"];
+const TRANSIENT_DOTNET_EXIT_CODES = new Set([139]);
+
+function retryReason(result: SpawnSyncReturns<string>, output: string): string | undefined {
+  if (result.signal !== null) {
+    return `process ended by signal ${result.signal}`;
+  }
+  if (result.status !== null && TRANSIENT_DOTNET_EXIT_CODES.has(result.status)) {
+    return `dotnet exited ${String(result.status)}`;
+  }
+  if (RETRYABLE_WORKSPACE_FAILURES.some((fragment) => output.includes(fragment))) {
+    return "workspace load failure";
+  }
+  return undefined;
+}
 
 function run(step: Step): boolean {
   console.log(`=== ${step.label} ===`);
@@ -49,8 +93,8 @@ function run(step: Step): boolean {
       encoding: "utf8",
       maxBuffer: 64 * 1024 * 1024,
     });
-    process.stdout.write(result.stdout ?? "");
-    process.stderr.write(result.stderr ?? "");
+    process.stdout.write(result.stdout);
+    process.stderr.write(result.stderr);
 
     if (result.error) {
       console.error(`✗ ${step.label}: failed to start — ${result.error.message}`);
@@ -60,16 +104,14 @@ function run(step: Step): boolean {
       return true;
     }
 
-    const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
-    const retryable =
-      attempt === 1 &&
-      (result.signal !== null || RETRYABLE_WORKSPACE_FAILURES.some((fragment) => output.includes(fragment)));
-    if (retryable) {
-      console.warn(`↻ ${step.label}: retrying once after dotnet format workspace load failure`);
+    const reason = attempt === 1 ? retryReason(result, result.stdout + result.stderr) : undefined;
+    if (reason !== undefined) {
+      console.warn(`↻ ${step.label}: ${reason}; retrying once before treating it as deterministic`);
       continue;
     }
 
-    console.error(`✗ ${step.label}: exited with code ${result.status ?? "signal"}`);
+    const exitCode = result.status === null ? "signal" : String(result.status);
+    console.error(`✗ ${step.label}: exited with code ${exitCode}`);
     return false;
   }
   return false;

@@ -31,7 +31,7 @@ function stageFixture(): string {
 }
 
 /** Capture console.error lines while running fn, so we can assert on the report. */
-async function captureErr<T>(fn: () => Promise<T>): Promise<{ result: T; err: string }> {
+async function captureErr<T>(fn: () => T | Promise<T>): Promise<{ result: T; err: string }> {
   const orig = console.error;
   const buf: string[] = [];
   console.error = (...args: unknown[]) => {
@@ -45,10 +45,10 @@ async function captureErr<T>(fn: () => Promise<T>): Promise<{ result: T; err: st
   }
 }
 
-test("control: the unmutated splitmix64 fixture passes (exit 0)", async () => {
+test("control: the unmutated splitmix64 fixture passes (exit 0)", () => {
   const dir = stageFixture();
   try {
-    const code = await runNWayDiff({ dir, verbose: false });
+    const code = runNWayDiff({ dir, verbose: false });
     expect(code).toBe(0);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -62,18 +62,25 @@ test("a one-byte mutation in ONE oracle is caught, exits non-zero, names the cul
     // change to a single oracle — exactly the silent-desync failure mode.
     const goPath = join(dir, "go-output.json");
     const go = JSON.parse(readFileSync(goPath, "utf8")) as Record<string, string>;
-    const firstValueKey = Object.keys(go).find((k) => k !== "_source")!;
-    const original = go[firstValueKey]!;
+    const firstValueKey = Object.keys(go).find((k) => k !== "_source");
+    if (firstValueKey === undefined) {
+      throw new Error("go-output.json has no vector keys to mutate");
+    }
+    const original = go[firstValueKey];
+    if (original === undefined) {
+      throw new Error(`go-output.json vector ${firstValueKey} is undefined`);
+    }
+    if (original.length === 0) {
+      throw new Error(`go-output.json vector ${firstValueKey} is empty`);
+    }
     // Change exactly one character (last digit), keeping the same shape/length.
-    const lastChar = original.at(-1)!;
+    const lastChar = original[original.length - 1] ?? "";
     const flipped = lastChar === "0" ? "1" : "0";
     go[firstValueKey] = original.slice(0, -1) + flipped;
     expect(go[firstValueKey]).not.toBe(original);
     writeFileSync(goPath, JSON.stringify(go, null, 2));
 
-    const { result: code, err } = await captureErr(() =>
-      runNWayDiff({ dir, verbose: false }),
-    );
+    const { result: code, err } = await captureErr(() => runNWayDiff({ dir, verbose: false }));
 
     // (a) It must FAIL loudly.
     expect(code).toBe(1);
@@ -92,13 +99,14 @@ test("a deleted vector key in one oracle is caught as MISSING", async () => {
   try {
     const pyPath = join(dir, "python-output.json");
     const py = JSON.parse(readFileSync(pyPath, "utf8")) as Record<string, string>;
-    const dropKey = Object.keys(py).find((k) => k !== "_source")!;
-    delete py[dropKey];
-    writeFileSync(pyPath, JSON.stringify(py, null, 2));
+    const dropKey = Object.keys(py).find((k) => k !== "_source");
+    if (dropKey === undefined) {
+      throw new Error("python-output.json has no vector keys to delete");
+    }
+    const pyWithoutDrop = Object.fromEntries(Object.entries(py).filter(([key]) => key !== dropKey));
+    writeFileSync(pyPath, JSON.stringify(pyWithoutDrop, null, 2));
 
-    const { result: code, err } = await captureErr(() =>
-      runNWayDiff({ dir, verbose: false }),
-    );
+    const { result: code, err } = await captureErr(() => runNWayDiff({ dir, verbose: false }));
 
     expect(code).toBe(1);
     expect(err).toContain(dropKey);

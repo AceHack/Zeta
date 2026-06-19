@@ -132,7 +132,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 /** The six (today) language oracle slots, by output-file prefix and display name. */
-const ORACLES: ReadonlyArray<{ file: string; name: string }> = [
+const ORACLES: readonly { file: string; name: string }[] = [
   { file: "ts-output.json", name: "TS" },
   { file: "fsharp-output.json", name: "F#" },
   { file: "cs-output.json", name: "C#" },
@@ -181,8 +181,13 @@ function stableStringify(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`;
   if (typeof value === "object") {
     const obj = value as Record<string, unknown>;
-    const keys = Object.keys(obj).sort();
-    return `{${keys.map((k) => `${JSON.stringify(k)}:${stableStringify(obj[k])}`).join(",")}}`;
+    const keys = Object.keys(obj).sort((a, b) => a.localeCompare(b));
+    return `{${keys
+      .map((k) => {
+        const key = JSON.stringify(k);
+        return `${key}:${stableStringify(obj[k])}`;
+      })
+      .join(",")}}`;
   }
   return JSON.stringify(value);
 }
@@ -196,8 +201,10 @@ function loadOracles(dir: string): LoadedOracle[] {
     let table: OracleTable;
     try {
       table = JSON.parse(readFileSync(p, "utf8")) as OracleTable;
-    } catch (e) {
-      throw new Error(`oracle ${name} (${file}) is not valid JSON: ${(e as Error).message}`);
+    } catch (e: unknown) {
+      throw new Error(`oracle ${name} (${file}) is not valid JSON: ${(e as Error).message}`, {
+        cause: e,
+      });
     }
     out.push({ name, file, table });
   }
@@ -221,7 +228,8 @@ function canonicalExpected(vec: Record<string, unknown>): unknown {
 }
 
 /** Load the canonical vectors from vectors.json or vectors.yaml. Returns a map id -> expected canon string (or null if no canonical value is defined). */
-async function loadCanonical(dir: string): Promise<Map<string, string | null>> {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+function loadCanonical(dir: string): Map<string, string | null> {
   const jsonP = join(dir, "vectors.json");
   const yamlP = join(dir, "vectors.yaml");
   let parsed: unknown;
@@ -229,9 +237,11 @@ async function loadCanonical(dir: string): Promise<Map<string, string | null>> {
     parsed = JSON.parse(readFileSync(jsonP, "utf8"));
   } else if (existsSync(yamlP)) {
     // Bun.YAML is available in the bun runtime CI uses for these oracles.
-    parsed = (globalThis as { Bun?: { YAML: { parse(s: string): unknown } } }).Bun!.YAML.parse(
-      readFileSync(yamlP, "utf8"),
-    );
+    const yaml = (globalThis as { Bun?: { YAML?: { parse(s: string): unknown } } }).Bun?.YAML;
+    if (yaml === undefined) {
+      throw new Error(`Bun.YAML is unavailable while parsing ${yamlP}`);
+    }
+    parsed = yaml.parse(readFileSync(yamlP, "utf8"));
   } else {
     throw new Error(`no canonical vectors.json or vectors.yaml in ${dir} (assert-don't-skip)`);
   }
@@ -239,11 +249,12 @@ async function loadCanonical(dir: string): Promise<Map<string, string | null>> {
   // Accept either { vectors: [...] } or a top-level array, or a flat object map.
   const result = new Map<string, string | null>();
   const root = parsed as Record<string, unknown>;
-  const list = Array.isArray(parsed)
-    ? (parsed as Record<string, unknown>[])
-    : Array.isArray(root.vectors)
-      ? (root.vectors as Record<string, unknown>[])
-      : null;
+  let list: Record<string, unknown>[] | null = null;
+  if (Array.isArray(parsed)) {
+    list = parsed as Record<string, unknown>[];
+  } else if (Array.isArray(root.vectors)) {
+    list = root.vectors as Record<string, unknown>[];
+  }
 
   if (list) {
     for (const vec of list) {
@@ -281,14 +292,15 @@ export interface Divergence {
  * 0 = all present oracles agree with each other AND with the canonical vectors;
  * 1 = any divergence, missing-oracle-below-min, or missing canonical.
  */
-export async function runNWayDiff(opts: NWayDiffOptions): Promise<number> {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function runNWayDiff(opts: NWayDiffOptions): number {
   const { dir, minOracles = 1, verbose = true } = opts;
   const oracles = loadOracles(dir);
-  const canonical = await loadCanonical(dir);
+  const canonical = loadCanonical(dir);
 
   if (oracles.length < minOracles) {
     console.error(
-      `✗ ${dir}: only ${oracles.length} oracle(s) present, need >= ${minOracles} (assert-don't-skip)`,
+      `✗ ${dir}: only ${String(oracles.length)} oracle(s) present, need >= ${String(minOracles)} (assert-don't-skip)`,
     );
     return 1;
   }
@@ -299,15 +311,18 @@ export async function runNWayDiff(opts: NWayDiffOptions): Promise<number> {
 
   if (verbose) {
     console.log(`N-way cross-verification — ${dir}`);
-    const present = oracles.map((o) => {
-      const source = typeof o.table._source === "string" ? o.table._source : "hand-port";
-      return `${o.name} [${source}]`;
-    }).join(", ");
+    const present = oracles
+      .map((o) => {
+        const source = typeof o.table._source === "string" ? o.table._source : "hand-port";
+        return `${o.name} [${source}]`;
+      })
+      .join(", ");
     const absent = ORACLES.filter((o) => !oracles.some((p) => p.file === o.file))
       .map((o) => o.name)
       .join(", ");
-    console.log(`  oracles present: ${present}${absent ? `   (absent: ${absent})` : ""}`);
-    console.log(`  canonical vectors: ${canonical.size}`);
+    const absentSuffix = absent ? `   (absent: ${absent})` : "";
+    console.log(`  oracles present: ${present}${absentSuffix}`);
+    console.log(`  canonical vectors: ${String(canonical.size)}`);
   }
 
   const divergences: Divergence[] = [];
@@ -357,9 +372,15 @@ export async function runNWayDiff(opts: NWayDiffOptions): Promise<number> {
 
     if (dissenting.length > 0) {
       // Avoid double-reporting the missing/extra-key rows already pushed above.
-      const already = divergences.some(
-        (d) => d.vector === id && d.dissenting.length === 1 && byOracle[d.dissenting[0]!] === "\u0000MISSING",
-      );
+      const already = divergences.some((d) => {
+        const dissenter = d.dissenting[0];
+        return (
+          d.vector === id &&
+          d.dissenting.length === 1 &&
+          dissenter !== undefined &&
+          byOracle[dissenter] === "\u0000MISSING"
+        );
+      });
       if (!already) {
         divergences.push({ vector: id, expected, byOracle, dissenting });
       }
@@ -369,13 +390,13 @@ export async function runNWayDiff(opts: NWayDiffOptions): Promise<number> {
   if (divergences.length === 0) {
     if (verbose) {
       console.log(
-        `✓ all ${oracles.length} oracles agree with each other and with canonical on ${canonical.size} vectors.`,
+        `✓ all ${String(oracles.length)} oracles agree with each other and with canonical on ${String(canonical.size)} vectors.`,
       );
     }
     return 0;
   }
 
-  console.error(`✗ ${divergences.length} divergence(s):`);
+  console.error(`✗ ${String(divergences.length)} divergence(s):`);
   for (const d of divergences) {
     console.error(`  vector "${d.vector}"  expected=${fmt(d.expected)}  dissenting=[${d.dissenting.join(", ")}]`);
     for (const [name, v] of Object.entries(d.byOracle)) {
@@ -394,9 +415,11 @@ function fmt(v: string | null): string {
 
 /** Most common value in a list (the fixed point the oracles converge to). */
 function majority(values: string[]): string {
+  const first = values[0];
+  if (first === undefined) return "\u0000MISSING";
   const counts = new Map<string, number>();
   for (const v of values) counts.set(v, (counts.get(v) ?? 0) + 1);
-  let best = values[0]!;
+  let best = first;
   let bestN = -1;
   for (const [v, n] of counts) {
     if (n > bestN) {
