@@ -1,9 +1,11 @@
 # Claim - task-nway-oracle-harness
 
+- **Status:** DONE / MERGED (PR #8585, merged 2026-06-19T15:00:08Z, commit `7aba327bd`).
+  Companion research note landed on main (commit `f9a1e7edc`); Lumen memory updated (`6cc13fefe`).
 - **Session ID:** manus/20260619T145445Z-73b7d221
 - **Harness:** manus
 - **Claimed at:** 2026-06-19T14:54:45Z
-- **ETA:** 2026-06-19T17:00:00Z (same-session, short)
+- **Completed at:** 2026-06-19T15:00:08Z (same-session)
 - **Scope:** Extract a shared N-way cross-language byte-diff oracle harness
   (`tests/cross-verification/_harness/nway-diff.ts`) from the per-primitive
   `compare.ts` copies, wire SplitMix64 as the first primitive on it, add a
