@@ -49,6 +49,25 @@ module SocietalDora =
           RhoOwe = Decorrelation.ownEntropyFraction samples
           Interactions = List.ofSeq interactions }
 
+    /// Fraction of an edge's interactions that are mutually empowering (`0` for an edge with no interactions).
+    let edgeEmpowermentFrequency (e: EdgeHealth) : float =
+        match e.Interactions with
+        | [] -> 0.0
+        | ints -> float (ints |> List.filter isEmpowering |> List.length) / float (List.length ints)
+
+    /// **QPG — quality per glyph** of one edge: link *quality*, not interaction *count* ("not dots per
+    /// inch"). High when the edge is a genuine other (high `ρ_owe`) AND its interactions are deeply mutually
+    /// empowering (high *positive* coupled gain). `≥ 0`; a mirror (`ρ_owe → 0`) or an extractive edge
+    /// (coupled gain ≤ 0) scores `0`. This is the "respects both sides" measure — depth per link, so many
+    /// shallow links cannot outweigh a few deep genuine ones.
+    let edgeQpg (e: EdgeHealth) : float =
+        match e.Interactions with
+        | [] -> 0.0
+        | ints ->
+            let meanPositiveGain =
+                (ints |> List.sumBy (fun c -> max 0.0 (coupledGain c))) / float (List.length ints)
+            max 0.0 e.RhoOwe * meanPositiveGain
+
     /// The societal-DORA metric set. All rates are in `[0, 1]`.
     type Metrics =
         { /// ↔ deploy frequency: fraction of interactions that are mutually empowering (coupled gain > 0).
@@ -63,7 +82,15 @@ module SocietalDora =
           /// genuine others, not captured reflections?
           MirrorRate: float
           /// Headline coupled magnitude: mean `min(ΔE_self, ΔE_other)` over all interactions.
-          MeanCoupledGain: float }
+          MeanCoupledGain: float
+          /// Mean per-edge QPG (link quality). The "are our links high-quality" headline — quality per
+          /// link, not count.
+          MeanQpg: float
+          /// **QPG-weighted empowerment** — empowerment frequency weighted by link QUALITY, not interaction
+          /// count: `Σ (qpg_e · empFreq_e) / Σ qpg_e`. High-quality genuine links dominate; many shallow or
+          /// mirror links (QPG ≈ 0) contribute ≈ nothing. This is "weight by QPG, not dots" — what respects
+          /// both sides. `0` when total QPG is `0`.
+          QpgWeightedEmpowerment: float }
 
     /// Maximal lengths of consecutive-capture runs in one edge's temporal interaction sequence.
     let private captureStreaks (interactions: Coupled list) : int list =
@@ -110,8 +137,25 @@ module SocietalDora =
             | [] -> 0.0
             | _ -> float (List.sum streaks) / float (List.length streaks)
 
+        // QPG (quality per glyph) — weight by link QUALITY, not interaction count ("not dots per inch").
+        let qpgs = edges |> List.map (fun e -> e, edgeQpg e)
+        let totalQpg = qpgs |> List.sumBy snd
+
+        let meanQpg =
+            match edges with
+            | [] -> 0.0
+            | _ -> totalQpg / float (List.length edges)
+
+        let qpgWeightedEmp =
+            if totalQpg <= 0.0 then
+                0.0
+            else
+                (qpgs |> List.sumBy (fun (e, q) -> q * edgeEmpowermentFrequency e)) / totalQpg
+
         { EmpowermentFrequency = empFreq
           CaptureRate = capRate
           MeanRecoveryLength = meanRecovery
           MirrorRate = mirrorRate
-          MeanCoupledGain = meanGain }
+          MeanCoupledGain = meanGain
+          MeanQpg = meanQpg
+          QpgWeightedEmpowerment = qpgWeightedEmp }

@@ -121,3 +121,35 @@ let ``empty graph is all-zero (no false health)`` () =
     m.MirrorRate |> should (equalWithin eps) 0.0
     m.MeanRecoveryLength |> should (equalWithin eps) 0.0
     m.MeanCoupledGain |> should (equalWithin eps) 0.0
+    m.MeanQpg |> should (equalWithin eps) 0.0
+    m.QpgWeightedEmpowerment |> should (equalWithin eps) 0.0
+
+// ── QPG: quality per glyph, not dots per inch ─────────────────────────
+
+[<Property>]
+let ``edgeQpg is non-negative`` (rho: NormalFloat) (s: NormalFloat) (o: NormalFloat) =
+    SocietalDora.edgeQpg (mkEdge "e" rho.Get [ (s.Get, o.Get) ]) >= -eps
+
+[<Fact>]
+let ``edgeQpg is zero for a mirror edge and for an extractive edge`` () =
+    // Mirror (ρ_owe = 0): no genuine other ⇒ no quality, regardless of gains.
+    SocietalDora.edgeQpg (mkEdge "mirror" 0.0 [ (5.0, 5.0) ]) |> should (equalWithin eps) 0.0
+    // Extractive (every interaction has a party not gaining): coupled gain ≤ 0 ⇒ no quality.
+    SocietalDora.edgeQpg (mkEdge "extractive" 1.0 [ (5.0, -1.0); (-2.0, 3.0) ])
+    |> should (equalWithin eps) 0.0
+
+[<Fact>]
+let ``QPG weights by link quality, not count — a deep genuine link is not drowned by shallow mirror edges`` () =
+    // One deep genuine empowering link + three shallow mirror+capture links.
+    let indep =
+        [ for a in 0..2 do
+              for u in 0..2 -> (a, u, 0) ] // ρ_owe = 1
+    let mirrorS = [ for u in 0..3 -> (u, u, 0) ] // ρ_owe = 0
+    let deep = SocietalDora.edgeHealth "deep" indep [ c 2.0 2.0 ] // empowering, high QPG
+    let shallow name = SocietalDora.edgeHealth name mirrorS [ c 1.0 -1.0 ] // mirror + capture, QPG 0
+    let m = SocietalDora.compute 0.5 [ deep; shallow "s1"; shallow "s2"; shallow "s3" ]
+    // Count-based: 1 empowering of 4 interactions ⇒ 0.25 (dragged down by the shallow captures).
+    m.EmpowermentFrequency |> should (equalWithin eps) 0.25
+    // QPG-weighted: only the deep genuine link has quality ⇒ ≈ 1.0 (the shallow links contribute ~0).
+    m.QpgWeightedEmpowerment |> should (equalWithin 1e-9) 1.0
+    m.QpgWeightedEmpowerment |> should be (greaterThan m.EmpowermentFrequency)
