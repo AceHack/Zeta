@@ -200,7 +200,7 @@ are closed (status: closed/done in frontmatter)._
 - [x] **[B-0271](backlog/P1/081KR2E4K0008QG0R003VB7ZZR-pm2-first-research-pass-2026-05-08.md)** PM-2 role — first research pass on Zeta feature gaps
 - [ ] **[B-0274](backlog/P1/081KR2E4K0008QG0R003VN9WC8-pages-astro-workflow-scaffold-and-sha-pinning-2026-05-08.md)** Pages discoverability - Astro workflow scaffold and SHA pinning
 - [x] **[B-0362](backlog/P1/081KR50HA0008QG0R000239VTZ-concept-search-index-for-instant-term-lookup.md)** Concept search index — pre-built term→file mapping for instant lookups
-- [ ] **[B-0366.2](backlog/P1/081KR50HA0008QG0R0002PGV1N-2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
+- [x] **[B-0366.2](backlog/P1/081KR50HA0008QG0R0002PGV1N-2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
 - [ ] **[B-0364](backlog/P1/081KR50HA0008QG0R00096ZEYA-policy-relocation-semantic-preservation-fscheck-property.md)** Policy relocation semantic preservation — FsCheck property for mobile DBSP query boundaries
 - [x] **[B-0365.1](backlog/P1/081KR50HA0008QG0R000B29SDB-1-spaceship-math-one-pager-subscribe-vision-monad-cache-iden.md)** Spaceship math one-pager: subscribe primitive + vision monad + cache identity
 - [ ] **[B-0367](backlog/P1/081KR50HA0008QG0R000Z4XCPJ-first-class-uncertainty-semiring-parameterized-weight.md)** First-class uncertainty — semiring-parameterized weight type for DBSP
@@ -236,8 +236,8 @@ are closed (status: closed/done in frontmatter)._
 - [ ] **[B-0403](backlog/P1/081KR7JY10008QG0R0021F5609-weight-free-verification-hat-timeboxed-authority.md)** Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing
 - [x] **[B-0396](backlog/P1/081KR7JY10008QG0R0021T5QTR-isemiring-iring-interface-split-interval-tropical-negate-axi.md)** Split ISemiring into ISemiring (no Negate) and IRing : ISemiring (with Negate axiom) — fix IntervalRing/TropicalSemiring contract violations
 - [ ] **[B-0164.3](backlog/P1/081KR7JY10008QG0R0035GWRQ0-3-cron-tick-coordination-dual-loop.md)** Cron-tick coordination for dual-loop operation (dual-loop AC #6)
-- [ ] **[B-0366.2.3](backlog/P1/081KRA5AR0008QG0R000CYY9ZN-2.3-reversibility-laws-fscheck-properties.md)** Reversibility laws + FsCheck properties for Toffoli Z-set join model (final slice of B-0366.2)
-- [ ] **[B-0366.2.2](backlog/P1/081KRA5AR0008QG0R001GQSVWE-2.2-join-weight-multiplication-encoding.md)** Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)
+- [x] **[B-0366.2.3](backlog/P1/081KRA5AR0008QG0R000CYY9ZN-2.3-reversibility-laws-fscheck-properties.md)** Reversibility laws + FsCheck properties for Toffoli Z-set join model (final slice of B-0366.2)
+- [x] **[B-0366.2.2](backlog/P1/081KRA5AR0008QG0R001GQSVWE-2.2-join-weight-multiplication-encoding.md)** Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)
 - [ ] **[B-0463](backlog/P1/081KRA5AR0008QG0R001JWYYHE-wallet-immune-system-vaccine-spread-poucc-spec.md)** Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec
 - [ ] **[B-0418](backlog/P1/081KRA5AR0008QG0R001NXBYTY-amplification-ratio-metric-dashboard-2026-05-11.md)** Amplification ratio metric — human input : agent actions on dashboard
 - [x] **[B-0366.2.1](backlog/P1/081KRA5AR0008QG0R002X77BEB-2.1-toffoli-circuit-type-wire-map-formal-model.md)** ToffoliCircuit type + wire-map formal model (smallest slice of B-0366.2)
