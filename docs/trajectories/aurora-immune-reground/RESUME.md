@@ -61,7 +61,10 @@ theorems, not metaphor.
      witnesses (accept / irrev-block / horizon-block). `tests/Tests.FSharp/Formal/PermanentHarmHorizonCrossVerify.Tests.fs`
      (4 green). Discharge: scoping doc §8(e).
    - **(b) TODO:** the Z3 honest-count side (`honest > 2/3` over proven-distinct identities); note the
-     anti-Sybil-entropy §B dependency must sequence first (it's still open).
+     anti-Sybil-entropy §B dependency must sequence first (it's still open). **CSLib FLP-lift routing
+     scoped (2026-06-19):** `docs/research/2026-06-19-aurora-b-bft-sybil-lift-onto-cslib-flp-consensus-lean-scoping.md`
+     — maps (b) onto CSLib's Lean FLP framework (G1 crash→Byzantine, G2 identity-keyed quorum, G3
+     anti-Sybil entropy = the blocker); near-term win = the Z3 honest-count leg (no G3 needed).
 3. **Authors:** (c)/(d)/(g) FsCheck/Z3 smalls.
    - ✅ **(g) DONE (2026-06-19):** Autoimmunity Flood / immune-memory decay (Test 4.5). Under flood
      (`Danger≈0`) Eq 10 → `n(t+1)=max(0,(1−δ)·n(t)−β·FP)`; FsCheck asserts decay→0, monotone,
