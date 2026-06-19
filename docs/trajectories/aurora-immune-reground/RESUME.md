@@ -1,6 +1,6 @@
 # Trajectory — Aurora Immune System re-grounded on the proven identity primitive
 
-Status: **READY TO PROMOTE — formal round CLOSED; (a) d_self wiring + ALL FOUR test-obligation cross-checks done (c CoordRisk spectral, d capability-gate Z3, e HarmFloor FsCheck, g autoimmunity-decay FsCheck; 2026-06-19). Only (b) Z3 honest-count remains, parked behind the open anti-Sybil §B. NEXT: open the §B row and promote operator-by-operator toward §A (§C) — gated on maintainer sign-off (proof-lineage).**
+Status: **READY TO PROMOTE — formal round CLOSED; (a) d_self wiring + ALL FOUR test-obligation cross-checks (c/d/e/g) + (b) TLA+ AND Z3 honest-count legs all done (2026-06-19). The one remaining open premise is anti-Sybil entropy: G3a (cost-floor / no-economy-of-scale) LANDED in Z3; G3b (the floor is real + non-forgeable) is the open crux + a research fork (model + prover choice, surfaced for Soraya/maintainer). NEXT: (i) §B→§A promotion row (drafted, awaits maintainer sign-off — proof-lineage); (ii) G3b model+prover call; (iii) CSLib G1 lane (decided). See scoping docs: aurora-b-…cslib-flp + g3-anti-sybil-entropy-cost.**
 Last refreshed: 2026-06-19
 Parent trajectory: none (sibling of `anti-infection`, but this is *active formal work*, not the defensive posture)
 Grounding:
