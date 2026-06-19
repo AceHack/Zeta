@@ -75,6 +75,37 @@ let ``observeMetaCartLaunch exposes the child-cart selection readout`` () =
     | None -> Assert.Fail("expected selected child cart")
 
 [<Fact>]
+let ``observeMetaCartLaunchWithPolicy exposes attention-reordered child selection`` () =
+    let loopCart = CartFixtures.cart CartFixtures.loop
+    let inputCart = CartFixtures.cart CartFixtures.inputFork
+
+    let launch: Runtime.MetaCartLaunch =
+        { Goal = 10
+          Seed = 1UL
+          ParentCapabilities = Chip9Capabilities.metaHost
+          ChildCapabilitiesBySha =
+            MetaCart.capabilityMap
+                [ loopCart, CartFixtures.loop.Capabilities
+                  inputCart, CartFixtures.inputFork.Capabilities ]
+          Children = [ loopCart; inputCart ]
+          Parent = Chip8Cow.create 1UL }
+
+    let readout =
+        Runtime.observeMetaCartLaunchWithPolicy
+            "operator-attention"
+            (MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = loopCart.Meta.Title then 100.0 else 0.0))
+            launch
+
+    Assert.Equal(2, readout.Candidates.Length)
+    Assert.Contains("selection policy operator-attention", System.String.Join(" ", readout.DeterministicRulesApplied))
+
+    match readout.Selected with
+    | Some selected ->
+        Assert.Equal(0, selected.Index)
+        Assert.Equal(MetaCart.slotOfCart loopCart, selected.Slot)
+    | None -> Assert.Fail("expected attention policy to select the loop cart")
+
+[<Fact>]
 let ``executeCell runs the selected soft CHIP8 scheduler machine`` () =
     task {
         let sink = RecordingHeatSink()

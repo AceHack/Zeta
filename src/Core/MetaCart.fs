@@ -52,6 +52,11 @@ module MetaCart =
           Selected: ReflectedChoice option
           DeterministicRulesApplied: string list }
 
+    /// Host/room policy hook for attention and gravity over already-observed
+    /// child futures. Policies may reorder/select existing candidates only;
+    /// `applySelectionPolicy` rejects invented children before execution.
+    type SelectionPolicy = SelectionReadout -> ReflectedChoice option
+
     type ReflectedPlayResult =
         { Choice: ReflectedChoice
           ParentWithChoice: Chip8Cow.Frame
@@ -153,6 +158,50 @@ module MetaCart =
             DeterministicRulesApplied =
                 readout.DeterministicRulesApplied
                 @ [ sprintf "parent manifest %s supplies reflection budget" parentCapabilities.Name ] }
+
+    let private sameChoice (left: ReflectedChoice) (right: ReflectedChoice) : bool =
+        left.Index = right.Index
+        && left.Slot.Fingerprint.Sha256 = right.Slot.Fingerprint.Sha256
+
+    let private normalizePolicyChoice (readout: SelectionReadout) (choice: ReflectedChoice) : ReflectedChoice option =
+        readout.Candidates |> List.tryFind (sameChoice choice)
+
+    let defaultSelectionPolicy (readout: SelectionReadout) : ReflectedChoice option = readout.Selected
+
+    let applySelectionPolicy
+        (policyName: string)
+        (policy: SelectionPolicy)
+        (readout: SelectionReadout)
+        : SelectionReadout =
+        let selected = policy readout |> Option.bind (normalizePolicyChoice readout)
+
+        { readout with
+            Selected = selected
+            DeterministicRulesApplied =
+                readout.DeterministicRulesApplied
+                @ [ sprintf "selection policy %s may reorder existing candidates only" policyName ] }
+
+    let private finiteOrFloor (value: float) : float =
+        if System.Double.IsNaN value || System.Double.IsInfinity value then
+            System.Double.NegativeInfinity
+        else
+            value
+
+    /// Attention changes ordering, not arithmetic truth. The byte/flux cost
+    /// and host capability checks remain downstream; this only chooses which
+    /// already-reflected child future boards first.
+    let attentionSelectionPolicy (attention: CartSlot -> float) : SelectionPolicy =
+        fun readout ->
+            match readout.Candidates with
+            | [] -> None
+            | candidates ->
+                candidates
+                |> List.maxBy (fun choice ->
+                    finiteOrFloor (attention choice.Slot),
+                    choice.Reflection.Report.Confidence,
+                    choice.Reflection.Report.Achieved,
+                    -choice.Index)
+                |> Some
 
     /// Choose under the parent room's declared CHIP-9 policy. The manifest
     /// does not change arithmetic truth: it only decides how much flux funds

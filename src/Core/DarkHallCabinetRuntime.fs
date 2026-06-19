@@ -222,6 +222,15 @@ module DarkHallCabinetRuntime =
             launch.Seed
             launch.Children
 
+    let observeMetaCartLaunchWithPolicy
+        (policyName: string)
+        (policy: MetaCart.SelectionPolicy)
+        (launch: MetaCartLaunch)
+        : MetaCart.SelectionReadout =
+        launch
+        |> observeMetaCartLaunch
+        |> MetaCart.applySelectionPolicy policyName policy
+
     let private findCabinet (room: DarkHall.Room) (cabinetName: string) =
         room.Cabinets |> List.tryFind (fun cabinet -> cabinet.Name = cabinetName)
 
