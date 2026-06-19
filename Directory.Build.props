@@ -24,11 +24,7 @@
     <TieredCompilation>true</TieredCompilation>
     <TieredPGO>true</TieredPGO>
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.fsproj'">
-    <!-- Keep F# gates deterministic: the shared compiler server can preserve
-         bad native state after an fsc abort and turn clean rebuilds into exit
-         139/134 crashes. -->
+    <!-- Keep compilation deterministic and avoid exit code 139/134 daemon segfaults on macOS -->
     <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -1,7 +1,7 @@
 name: lean-proof
 
-# Type-checks the Lean 4 / Mathlib formalization of DBSP at
-# src/Core.Lean4/Lean4/DbspChainRule.lean. Per the math-proofs
+# Type-checks the Lean 4 / Mathlib formalization package rooted at
+# src/Core.Lean4/Lean4.lean. Per the math-proofs
 # honest assessment (docs/research/2026-05-03-math-proofs-
 # honest-assessment.md) the Lean proof is A-grade today
 # hand-run (chain_rule_proposition_3_2 + Dop_LTI_commute) but
@@ -65,7 +65,7 @@ concurrency:
 
 jobs:
   type-check:
-    name: type-check Lean DbspChainRule
+    name: type-check Lean proofs
     runs-on: ubuntu-24.04
     # Mathlib's lake cache get + the actual type-check is fast
     # (~2-5 min) on warm cache; cold cache (cache miss on first
@@ -111,6 +111,15 @@ jobs:
         # lake env lean type-checks the proof in ~30s.
         working-directory: src/Core.Lean4
         run: lake exe cache get
+
+      - name: Build Lean package root
+        # Lean4.lean imports the machine-checked codec modules
+        # (DynamicValue, JsonCodec, CborCodec, YamlCodec) and the
+        # DBSP proof module. `lake build` keeps the documented CI
+        # contract honest: new imported proofs cannot silently drift
+        # outside the workflow's fixed per-file type-check list.
+        working-directory: src/Core.Lean4
+        run: lake build
 
       - name: Type-check DbspChainRule.lean
         # Silence on success = pass. Any error / warning fails the

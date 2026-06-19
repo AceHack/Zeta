@@ -48,7 +48,9 @@ Round-35 landmarks:
 
 * B2 resolved from a conceptual wall into a contract field —
   `IsTimeInvariant` predicate, elevated to an axiom matching the
-  DBSP paper's ~~unspoken premise (Budiu et al. Prop. 3.5)~~ LTI condition [corrected 2026-05-05: Theorem 3.3 states LTI explicitly; paper makes it explicit, formalization separates sub-properties].
+  DBSP paper's ~~unspoken premise (Budiu et al. Prop. 3.5)~~ LTI condition
+  [corrected 2026-05-05: Theorem 3.3 states LTI explicitly; paper makes it
+  explicit, formalization separates sub-properties].
 * B1 statement corrected — the earlier `f (fun _ => s k) k` form
   silently required pointwise-linearity; the generic linear-
   plus-time-invariant form is `f (I s) = I (f s)`.
@@ -200,7 +202,9 @@ commutation with delay. Three candidate upgrades were considered:
 * **Time-invariance** — `f ∘ zInv = zInv ∘ f` as stream
   operators. This IS B2; adding it as an axiom closes B2
   trivially. In DBSP literature this corresponds to the LTI
-  condition: ~~unspoken premise of Budiu et al. Proposition 3.5~~ Budiu et al. Theorem 3.3 [corrected 2026-05-05: paper states `Q^Delta = Q` for LTI operators explicitly via Theorem 3.3, not in an unspoken premise].
+  condition: ~~unspoken premise of Budiu et al. Proposition 3.5~~ Budiu et al.
+  Theorem 3.3 [corrected 2026-05-05: paper states `Q^Delta = Q` for LTI operators
+  explicitly via Theorem 3.3, not in an unspoken premise].
 * **Pointwise action** — `f s n = φ (s n)` for some
   `AddMonoidHom φ`. Strong; implies both causal and time-
   invariant. But **disqualifies** the DBSP primitives: `I s n =
@@ -385,9 +389,9 @@ theorem D_I_eq (s : Stream G) : D (I s) = s := by
   | succ n =>
     -- `D (I s) (n+1) = I s (n+1) - zInv (I s) (n+1) = I s (n+1) - I s n`
     -- which equals `s (n+1)` via `Finset.sum_range_succ`.
-    show I s (n+1) - zInv (I s) (n+1) = s (n+1)
+    change I s (n+1) - zInv (I s) (n+1) = s (n+1)
     rw [zInv_succ]
-    show (Finset.range (n+2)).sum s - (Finset.range (n+1)).sum s = s (n+1)
+    change (Finset.range (n+2)).sum s - (Finset.range (n+1)).sum s = s (n+1)
     rw [Finset.sum_range_succ]
     -- Goal: (Σ_{i<n+1} s i) + s (n+1) - (Σ_{i<n+1} s i) = s (n+1)
     abel
@@ -410,7 +414,7 @@ theorem I_D_eq (s : Stream G) : I (D s) = s := by
     -- `ih` gives `(Σ_{i<n+1} D s i) = s n`.
     have hIH : (Finset.range (n + 1)).sum (D s) = s n := ih
     rw [hIH]
-    show s n + D s (n + 1) = s (n + 1)
+    change s n + D s (n + 1) = s (n + 1)
     unfold D
     rw [zInv_succ]
     -- Goal: s n + (s (n+1) - s n) = s (n+1).
@@ -449,12 +453,12 @@ theorem linear_commute_I (f : Stream G → Stream H)
     funext k
     cases k with
     | zero =>
-      show (Finset.range 1).sum s = s 0 + zInv (I s) 0
+      change (Finset.range 1).sum s = s 0 + zInv (I s) 0
       rw [Finset.sum_range_one, zInv_zero, add_zero]
     | succ m =>
-      show (Finset.range (m + 2)).sum s = s (m + 1) + zInv (I s) (m + 1)
+      change (Finset.range (m + 2)).sum s = s (m + 1) + zInv (I s) (m + 1)
       rw [zInv_succ, Finset.sum_range_succ]
-      show (Finset.range (m + 1)).sum s + s (m + 1) = s (m + 1) + I s m
+      change (Finset.range (m + 1)).sum s + s (m + 1) = s (m + 1) + I s m
       rw [show I s m = (Finset.range (m + 1)).sum s from rfl]
       abel
   -- Recurrence for I on the output stream.
@@ -462,12 +466,12 @@ theorem linear_commute_I (f : Stream G → Stream H)
     funext k
     cases k with
     | zero =>
-      show (Finset.range 1).sum (f s) = f s 0 + zInv (I (f s)) 0
+      change (Finset.range 1).sum (f s) = f s 0 + zInv (I (f s)) 0
       rw [Finset.sum_range_one, zInv_zero, add_zero]
     | succ m =>
-      show (Finset.range (m + 2)).sum (f s) = f s (m + 1) + zInv (I (f s)) (m + 1)
+      change (Finset.range (m + 2)).sum (f s) = f s (m + 1) + zInv (I (f s)) (m + 1)
       rw [zInv_succ, Finset.sum_range_succ]
-      show (Finset.range (m + 1)).sum (f s) + f s (m + 1)
+      change (Finset.range (m + 1)).sum (f s) + f s (m + 1)
            = f s (m + 1) + I (f s) m
       rw [show I (f s) m = (Finset.range (m + 1)).sum (f s) from rfl]
       abel
@@ -484,11 +488,11 @@ theorem linear_commute_I (f : Stream G → Stream H)
   induction n with
   | zero =>
     rw [congrFun hfIs_eq 0, congrFun hIfs_stream 0]
-    show f s 0 + zInv (f (I s)) 0 = f s 0 + zInv (I (f s)) 0
+    change f s 0 + zInv (f (I s)) 0 = f s 0 + zInv (I (f s)) 0
     rw [zInv_zero, zInv_zero]
   | succ m ih =>
     rw [congrFun hfIs_eq (m + 1), congrFun hIfs_stream (m + 1)]
-    show f s (m + 1) + zInv (f (I s)) (m + 1)
+    change f s (m + 1) + zInv (f (I s)) (m + 1)
        = f s (m + 1) + zInv (I (f s)) (m + 1)
     rw [zInv_succ, zInv_succ, ih]
 
@@ -534,16 +538,16 @@ theorem linear_commute_D (f : Stream G → Stream H)
   -- `D s = s + (-zInv s)` as a stream (pointwise rewriting of subtraction).
   have hDs : D s = s + (-zInv s) := by
     funext m
-    show s m - zInv s m = s m + -(zInv s m)
+    change s m - zInv s m = s m + -(zInv s m)
     exact sub_eq_add_neg (s m) (zInv s m)
   rw [hDs, hf.map_add, h_neg]
   -- Goal: f s + -(f (zInv s)) = D (f s)
   funext n
   -- Pi.neg_apply already reduced definitionally; `-f (zInv s) n` is the shape.
-  show f s n + -(f (zInv s) n) = D (f s) n
+  change f s n + -(f (zInv s) n) = D (f s) n
   rw [hti.commute_zInv]
   -- Goal: f s n + -(zInv (f s) n) = D (f s) n
-  show f s n + -(zInv (f s) n) = f s n - zInv (f s) n
+  change f s n + -(zInv (f s) n) = f s n - zInv (f s) n
   exact (sub_eq_add_neg (f s n) (zInv (f s) n)).symm
 
 end Bilinearity
@@ -629,11 +633,11 @@ theorem Dop_LTI_commute
   -- Dop g s = g s - zInv (g s)  (uses g time-invariance).
   have h_Dop_g : Dop g s = g s - zInv (g s) := by
     funext k
-    show g s k - g (zInv s) k = g s k - zInv (g s) k
+    change g s k - g (zInv s) k = g s k - zInv (g s) k
     rw [hti_g.commute_zInv s k]
   -- Push Dop through composition on the LHS.
   funext n
-  show f (g s) n - f (g (zInv s)) n = f (Dop g s) n
+  change f (g s) n - f (g (zInv s)) n = f (Dop g s) n
   -- Push zInv inside g on the LHS.
   have h_g_TI : g (zInv s) = zInv (g s) := funext (hti_g.commute_zInv s)
   rw [h_g_TI, h_Dop_g, h_f_sub]
@@ -725,7 +729,7 @@ theorem chain_rule_proposition_3_2
   -- LHS by definition: D (Q1 (Q2 (I s)))
   -- RHS by definition: D (Q1 (I (D (Q2 (I s)))))
   -- Reduce RHS to LHS using I (D t) = t with t := Q2 (I s).
-  show D (Q1 (Q2 (I s))) = D (Q1 (I (D (Q2 (I s)))))
+  change D (Q1 (Q2 (I s))) = D (Q1 (I (D (Q2 (I s)))))
   rw [I_D_eq (Q2 (I s))]
 
 end Proposition32

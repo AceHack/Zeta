@@ -11,6 +11,7 @@
     "**/.claude/**",
     "**/.kiro/**",
     "**/.pytest_cache/**",
+    "**/.lake/**",
     "BenchmarkDotNet.Artifacts/**",
     "TestResults/**",
     "artifacts/**",

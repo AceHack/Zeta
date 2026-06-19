@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-31
 
-**Status:** *PROPOSED — operator-agreed direction (2026-05-31); Max review before lock.*
+**Status:** *SUPERSEDED by [ADR: 7-Language Matrix and Formal Verification Governance](2026-06-16-seven-language-matrix-and-formal-verification-governance.md)*
 Product-team review (architect + PM personas) is incorporated below. This ADR records
 the decisions agreed when landing the VISION "arena, not the throne" addition (PR #6260)
 and answers the three governance gaps both reviewers flagged. Per the operator's

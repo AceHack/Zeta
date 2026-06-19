@@ -116,7 +116,11 @@ export function classifyPath(path: string): Lane {
 }
 
 function classifyByPrefix(path: string): Lane {
+  if (path.startsWith("memory/") && path.includes("/conversations/")) {
+    return "verbatim-preservation";
+  }
   for (const rule of PATH_RULES) {
+    if (rule.prefix === "memory/<persona>/") continue;
     if (path.startsWith(rule.prefix)) {
       return rule.lane;
     }

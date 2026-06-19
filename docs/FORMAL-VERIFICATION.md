@@ -1,57 +1,59 @@
 # Formal verification strategy
 
-Three independent oracles, each using the right tool for its problem.
+Zeta implements a multi-tier formal verification strategy where each component is validated using the formal proof or analysis system optimized for its mathematical domain. All verification tools are integrated into the repository as first-class anchors.
 
-| Tool | Covers | Runs in CI? | File(s) |
+| Tool | Covers | Runs in CI? | Key File(s) / Directories |
 |---|---|---|---|
-| **FsCheck** (property-based tests) | Algebraic laws over generated Z-sets + pipelines | ✓ (xUnit) | `tests/Tests.FSharp/FuzzTests.fs` |
-| **Z3 SMT solver** | Pointwise axioms over **unbounded integers** | ✓ (xUnit shells to `z3`) | `tests/Tests.FSharp/FormalVerificationTests.fs` |
-| **TLA+ / TLC** | Concurrent-protocol invariants (interleavings) | Manual (optional) | `tools/tla/specs/SpineAsyncProtocol.tla` |
+| **Lean 4** (interactive theorem prover) | Strict functional correctness, type theory, and serialization round-trip bijection proofs | ✓ (via `lake build`) | `src/Core.Lean4/` |
+| **TLA+ / TLC** (temporal logic model checker) | Concurrent-protocol safety/liveness invariants and state-space interleavings | ✓ (via TLC spec verification) | `tools/tla/specs/` |
+| **Alloy** (relational constraint solver) | Declarative structural specifications, relational schemas, and layout invariants | ✓ (via Java/TS Alloy runners) | `src/Core.Alloy/` |
+| **Z3 SMT solver** | Pointwise algebraic axioms over unbounded domains | ✓ (xUnit shells to `z3`) | `tests/Tests.FSharp/FormalVerificationTests.fs` |
+| **FsCheck** (property-based testing) | Algebraic laws, randomized fuzzing, and concrete implementation regressions | ✓ (xUnit) | `tests/Tests.FSharp/FuzzTests.fs` |
 
-## Why each tool where
+---
 
-**Z3 for pointwise axioms.** Given a claim like
-`∀ a, b, c ∈ ℤ. (a + b) + c = a + (b + c)`, we negate it and ask Z3
-`check-sat`. UNSAT = proof over all integers. Each axiom takes ~5 ms;
-we run 8 of them as xUnit tests on every `dotnet test`. This is
-strictly stronger than finite enumeration: Z3 reasons symbolically
-over the integer theory, not a bounded domain.
+## The Verification Ecosystem
 
-**TLA+ for concurrent protocols.** The `SpineAsync` producer/worker
-protocol has threads racing over counters and channel writes. The
-invariant "every sent batch is eventually processed" isn't a pointwise
-theorem — it's a temporal property over interleavings of two threads'
-steps. Z3 can't express that naturally; TLC's BFS enumeration of
-reachable states is the canonical approach. Running it found 15
-distinct states across a 4-batch model; all invariants hold.
+### Lean 4 for Functional Soundness and Codec Bijection
 
-**FsCheck for the rest.** Property-based testing explores larger
-concrete domains than either formal tool and catches concrete
-implementation bugs (off-by-one in consolidate, bad array indexing,
-etc.). The algebraic laws check for free (FsCheck generates adversarial
-Z-sets and pipelines).
+Lean 4 provides interactive, machine-checked proofs of functional correctness. It verifies that data schemas and serialized outputs form mathematical bijections.
+For example, for the JSON, CBOR, and YAML codecs, Lean 4 proves:
+```lean
+theorem yaml_roundtrip : ∀ v, IsRepresentableInYaml v → fromYaml (toYaml v) = some v
+```
+This guarantees that no valid runtime state can produce non-deserializable representations.
 
-## `tools/tla/specs/DbspSpec.tla` status
+### TLA+ for Concurrency and Protocols
 
-An earlier pass encoded the pointwise axioms in TLA+ and model-checked
-them on 1 million states. It's kept as **human-readable documentation**
-(the TLA+ syntax is cleaner than SMT-LIB for math-first readers) but
-**not run in CI** because Z3 already proves everything stronger. If
-you edit the algebra and want a quick visual sanity check, open the
-`.tla`; if you want machine verification, run the Z3 xUnit tests.
+Concurrency-critical operations (such as distributed logs, consensus protocols, and asynchronous worker pools) are subject to state-space verification under arbitrary scheduler interleavings. TLA+ model checking ensures that temporal safety ("bad things never happen") and liveness ("good things eventually happen") hold across all reachable execution states.
 
-## Running each manually
+### Alloy for Structural Invariants
+
+Alloy models the structural invariants of state databases, key-value stores, and index hierarchies. Using first-order logic and relational calculus, Alloy analyzes structural layouts and relations to verify invariants or locate minimal counterexamples.
+
+### Z3 for Pointwise Algebraic Axioms
+
+Pointwise algebraic properties (e.g., Z-set addition commutativity, associativity, and identity) are checked symbolically over unbounded domains using the Z3 SMT solver. UNSAT results demonstrate that these axioms hold universally without restricting verification to finite model sizes.
+
+### FsCheck for Concrete Implementation Parity
+
+FsCheck generates millions of adversarial test cases to verify that concrete implementations in the runtime languages match the formal algebraic models and do not suffer from off-by-one errors, memory overflows, or range bounds violations.
+
+---
+
+## Running Verification Locally
 
 ```bash
-# Z3 (runs automatically under dotnet test)
-dotnet test tests/Tests.FSharp -c Release \
-    --filter "FullyQualifiedName~FormalVerificationTests"
+# 1. Lean 4 proof compilation
+cd src/Core.Lean4
+lake build
 
-# TLA+ protocol spec
-java -cp tla2tools.jar tlc2.TLC -config tools/tla/specs/SpineAsyncProtocol.cfg \
-    tools/tla/specs/SpineAsyncProtocol.tla
+# 2. Alloy specification checks
+bun run tools/formal-verification/run-alloy.ts --all
 
-# TLA+ pointwise axiom spec (documentation)
-java -cp tla2tools.jar tlc2.TLC -config tools/tla/specs/DbspSpec.cfg \
-    tools/tla/specs/DbspSpec.tla
+# 3. Z3 symbolic verification
+dotnet test tests/Tests.FSharp -c Release --filter "FullyQualifiedName~FormalVerificationTests"
+
+# 4. TLA+ concurrent protocols model checking
+java -cp tla2tools.jar tlc2.TLC -config tools/tla/specs/SpineAsyncProtocol.cfg tools/tla/specs/SpineAsyncProtocol.tla
 ```

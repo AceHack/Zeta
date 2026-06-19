@@ -889,7 +889,7 @@ on DBSP foundations, not to carve out a narrow niche.
   proofs, Java for the Alloy driver, TypeScript (or
   researched alternative) for post-install automation. F#
   stays load-bearing. *(Superseded re: the DB by the
-  [4-language compiler-BFT governance ADR (2026-05-31)](DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md):
+  [7-Language Matrix and Formal Verification Governance ADR (2026-06-16)](DECISIONS/2026-06-16-seven-language-matrix-and-formal-verification-governance.md):
   F# is correctness-/spec-authoritative, TS is distribution-
   authoritative — two axes, not "F# primary with polyglot
   drift.")*
@@ -1000,15 +1000,12 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   self-certifying oracle).
 - **F# is the correctness-authoritative core for the DB** — the inverse of
   the factory (where TypeScript is distribution-authoritative). Databases need
-  heavy math + formal proofs (TLA+, Lean), so F# carries the correctness
-  burden + is the clean-room *spec*; TS/C#/Rust are distribution +
-  cross-verification (clean-room impls). The **4-language compiler-BFT** ("the
-  compilers don't lie", B-0944): the same logic in TS/F#/C#/Rust checked
-  against shared golden vectors — 4-of-4 agreement is consensus the logic is
-  bit-perfect, and **no single implementation (including F#) self-certifies.**
-  (The F#-correctness-axis vs TS-distribution-axis reconciliation + the
-  per-artifact "which artifacts earn all 4 languages" gate + the divergence
-  tie-break are recorded in the 4-language-BFT governance ADR, 2026-05-31.)
+  heavy math + formal proofs (Lean 4, TLA+, Alloy, Z3, FsCheck), so F# carries the correctness
+  burden + is the clean-room *spec*; the other runtimes in the matrix handle distribution +
+  cross-verification. The **multi-oracle matrix BFT** ("the compilers/runtimes don't lie"):
+  the same logic checked against shared golden vectors — matrix-wide agreement is consensus the logic is
+  bit-perfect, and **no single implementation self-certifies.**
+  (The alignment across correctness/spec and distribution axes + the BFT governance rules are recorded in the [7-Language Matrix and Formal Verification Governance ADR (2026-06-16)](DECISIONS/2026-06-16-seven-language-matrix-and-formal-verification-governance.md).)
 - **Ships as a DI dependency.** Add the F# database as a package,
   dependency-inject it, and your .NET app *is* a database — no separate
   server or process. One retractive Z-set core; graph / key-value /

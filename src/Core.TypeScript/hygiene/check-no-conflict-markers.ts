@@ -6,19 +6,18 @@
 // the TS+Bun migration. See docs/best-practices/repo-scripting.md.
 //
 // What this checks:
-//   - All tracked files (via `git ls-files`) for the three conflict
-//     marker patterns at line-start.
+//   - All tracked text files (via `git grep -I`) for the three
+//     conflict marker patterns at line-start.
 //   - Reports each violation with file:line.
 //   - Exits non-zero if any found.
 //
 // Usage:
-//   bun tools/hygiene/check-no-conflict-markers.ts
+//   bun src/Core.TypeScript/hygiene/check-no-conflict-markers.ts
 //
 // Exit codes:
 //   0   clean
 //   1   conflict markers found
 
-import { readFileSync } from "node:fs";
 import {
   spawnSync,
   type SpawnSyncReturns,
@@ -33,11 +32,11 @@ interface Violation {
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-const SELF_PATH = "tools/hygiene/check-no-conflict-markers.sh";
+const SELF_PATH = "src/Core.TypeScript/hygiene/check-no-conflict-markers.ts";
 
 const ALLOWLIST: readonly string[] = [
   SELF_PATH,
-  "tools/hygiene/check-no-conflict-markers.ts",
+  "tools/hygiene/check-no-conflict-markers.sh",
   "memory/feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md",
   // Rerere cache dividend memory file — landed PR #694 (2026-04-30).
   // The "Worked-example trace" section quotes the MEMORY.md sibling-
@@ -47,7 +46,8 @@ const ALLOWLIST: readonly string[] = [
   "memory/feedback_rerere_conflict_resolution_cache_dividend_amara_2026_04_28.md",
 ];
 
-const MARKER_RE = /^(<<<<<<<[\t ]|=======$|>>>>>>>[\t ])/;
+const MARKER_GREP_PATTERN = "^(<<<<<<<[[:blank:]]|=======$|>>>>>>>[[:blank:]])";
+const GREP_NO_MATCH = 1;
 
 function classifyFailure(
   cmd: string,
@@ -77,47 +77,55 @@ function repoRoot(): string {
   return result.stdout.trim();
 }
 
-function listTrackedFiles(): readonly string[] {
+function parseGrepHits(stdout: string): readonly Violation[] {
+  if (stdout.length === 0) return [];
+
+  const out: Violation[] = [];
+  for (const line of stdout.split("\n")) {
+    if (line.length === 0) continue;
+    const firstColon = line.indexOf(":");
+    const secondColon = line.indexOf(":", firstColon + 1);
+    if (firstColon < 0 || secondColon < 0) continue;
+
+    const file = line.slice(0, firstColon);
+    const lineNumber = Number.parseInt(
+      line.slice(firstColon + 1, secondColon),
+      10,
+    );
+    if (!Number.isFinite(lineNumber)) continue;
+
+    out.push({
+      file,
+      line: lineNumber,
+      content: line.slice(secondColon + 1),
+    });
+  }
+  return out;
+}
+
+function grepMarkerLines(): readonly Violation[] {
+  // `-I` keeps tracked binaries and packaged artifacts out of the UTF-8 path.
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync("git", ["ls-files"], {
+  const result = spawnSync("git", ["grep", "-n", "-I", "-E", MARKER_GREP_PATTERN, "--", "."], {
     encoding: "utf8",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
-  const failure = classifyFailure("git", ["ls-files"], result);
+  if (result.status === GREP_NO_MATCH) return [];
+  const failure = classifyFailure(
+    "git",
+    ["grep", "-n", "-I", "-E", MARKER_GREP_PATTERN, "--", "."],
+    result,
+  );
   if (failure !== null) throw new Error(failure);
-  return result.stdout.split("\n").filter((s) => s.length > 0);
+  return parseGrepHits(result.stdout);
 }
 
 function isAllowed(path: string): boolean {
   return ALLOWLIST.includes(path);
 }
 
-function checkFile(path: string): readonly Violation[] {
-  let content: string;
-  try {
-    content = readFileSync(path, "utf8");
-  } catch {
-    return [];
-  }
-  const out: Violation[] = [];
-  const lines = content.split("\n");
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i] ?? "";
-    if (MARKER_RE.test(line)) {
-      out.push({ file: path, line: i + 1, content: line });
-    }
-  }
-  return out;
-}
-
 export function audit(): readonly Violation[] {
-  const all = listTrackedFiles();
-  const out: Violation[] = [];
-  for (const file of all) {
-    if (isAllowed(file)) continue;
-    out.push(...checkFile(file));
-  }
-  return out;
+  return grepMarkerLines().filter((hit) => !isAllowed(hit.file));
 }
 
 export function main(): ExitCode {

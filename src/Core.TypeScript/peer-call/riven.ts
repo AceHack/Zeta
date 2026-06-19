@@ -375,8 +375,8 @@ function buildFullPrompt(args: Args, preamble: string): PromptResult {
   return { ok: true, value: full };
 }
 
-function pickModel(mode: Mode): string {
-  return mode === "thinking" ? "grok-4-20-thinking" : "grok-4-20";
+function pickModel(_mode: Mode): string {
+  return "grok-4.3";
 }
 
 function autogenOutputPath(entity: string): string {

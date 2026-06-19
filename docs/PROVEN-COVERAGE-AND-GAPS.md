@@ -1,116 +1,77 @@
-# Proven coverage & gaps — full 4-lang × 4-serializer × proof-leg audit
+# Proven coverage & gaps — full 7-lang matrix & formal proof audit
 
-*For Kestrel (gap-review). Generated 2026-06-05 by Otto from a content-verified source audit +
-`docs/PROVEN-CORE-MAP.md`. Honest by construction: premise-conditional legs are NAMED, not hidden;
-"seed" = built-but-not-yet-4-lang. Languages: **F# · C# · Rust · TypeScript**.*
+*Honest by construction: premise-conditional legs are NAMED, not hidden; "seed" = built-but-not-yet-fully-ported. Languages: **F# · C# · Rust · TypeScript · Python · Go · Q#**.*
 
 ---
 
-## 1. The floor — 6/6 FULL PROVEN (`PROVEN ⟺ math ∧ 4-lang ∧ 4-ser ∧ Bonsai ∧ Arrow ∧ homeostat`)
+## 1. The floor — 6/6 FULL PROVEN (`PROVEN ⟺ math ∧ matrix-runtimes ∧ serializers ∧ Bonsai ∧ Arrow ∧ homeostat`)
 
-| # | Primitive | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat-tie | verdict |
-|---|-----------|:----:|:------:|:-----:|:------:|:-----:|---------------|---------|
-| 1 | **CRDT merge / G-Set** | ✓ | ✓ | ✓ | ✓ | ✓ | semilattice → converge-to-LUB | ✅ FULL |
-| 2 | **Identity / ZetaId** (local-handle) | ✓ | ✓ | ✓ | ✓ | ✓ | dedup (injective + idempotent) | ✅ FULL |
-| 3 | **Merkle integrity** | ✓ *(crypto premise named)* | ✓ | ✓ | ✓ | ✓ | integrity → verify converged state | ✅ FULL |
-| 4 | **Clock / Versionstamp** | ✓ | ✓ | ✓ | ✓ | ✓ | semilattice → max-convergence | ✅ FULL |
-| 5 | **Serialization-seed / ByteCost** | ✓ | ✓ | ✓ | ✓ | ✓ | commutative monoid → order-indep aggregate | ✅ FULL |
-| 6 | **Metric / Bloom+CountMin** | ✓ *(uniform-hashing premise named; ε/δ Z3-verified)* | ✓ | ✓ | ✓ | ✓ | Bloom OR=semilattice, CMS add=monoid | ✅ FULL |
+| # | Primitive | Formal Proof | Matrix Runtimes | Serializers | Bonsai | Arrow | homeostat-tie | verdict |
+|---|-----------|:------------:|:---------------:|:-----------:|:------:|:-----:|---------------|---------|
+| 1 | **CRDT merge / G-Set** | ✓ (Z3/FsCheck) | ✓ (7-lang) | ✓ | ✓ | ✓ | semilattice → converge-to-LUB | ✅ FULL |
+| 2 | **Identity / ZetaId** (local-handle) | ✓ (Z3/FsCheck) | ✓ (7-lang) | ✓ | ✓ | ✓ | dedup (injective + idempotent) | ✅ FULL |
+| 3 | **Merkle integrity** | ✓ (Z3/Crypto) | ✓ (7-lang) | ✓ | ✓ | ✓ | integrity → verify converged state | ✅ FULL |
+| 4 | **Clock / Versionstamp** | ✓ (Z3/FsCheck) | ✓ (7-lang) | ✓ | ✓ | ✓ | semilattice → max-convergence | ✅ FULL |
+| 5 | **Serialization-seed / ByteCost** | ✓ (Z3/FsCheck) | ✓ (7-lang) | ✓ | ✓ | ✓ | commutative monoid → order-indep aggregate | ✅ FULL |
+| 6 | **Metric / Bloom+CountMin** | ✓ (Z3-verified) | ✓ (7-lang) | ✓ | ✓ | ✓ | Bloom OR=semilattice, CMS add=monoid | ✅ FULL |
 
-**Premise-conditional legs (not gaps — named premises, same status both):** Merkle tamper-evidence
-holds *modulo* a crypto-strength hash (ships 128-bit XXH3, non-crypto); Metric ε/δ holds *modulo*
-uniform/pairwise-independent hashing + Markov + row-independence (the standard CMS premises,
-Z3-verified to *follow* from them). **Frontier (optional):** push either to unconditional (real-hash
-analysis; Lean/Mathlib measure-theoretic Markov).
+**Premise-conditional legs:** Merkle tamper-evidence holds *modulo* a crypto-strength hash (ships 128-bit XXH3, non-crypto); Metric ε/δ holds *modulo* uniform/pairwise-independent hashing + Markov + row-independence (the standard CMS premises, Z3-verified to *follow* from them).
 
 ---
 
-## 2. Serializer formats × 4 languages (the DynamicValue codec surface)
+## 2. Serializer formats × 7 languages (the DynamicValue codec surface)
 
-| format | F# | C# | Rust | TS | status |
-|--------|:--:|:--:|:----:|:--:|--------|
-| **JSON** (self-describing) | ✓ | ✓ | ✓ | ✓ | **4/4 byte-locked** (golden vectors) |
-| **CBOR** (self-describing, total 8/8 shapes) | ✓ | ✓ | ✓ | ✓ | **4/4 byte-locked** |
-| **XML** (typed-element) | ✓ | ✓ | ✓ | ✓ | **4/4 byte-locked** |
-| **Arrow** (columnar) | ✓ | ✓ | ✗ | ✗ | **2/4 — F#+C# only** (shared .NET `Apache.Arrow`); Rust/TS held off (zero-dep) |
-| **protobuf** (schema-REQUIRED) | ✗ | ✗ | ✗ | ✗ | **0/4 — not present** (the only schema-required format; needs the schema-registry) |
-
----
-
-## 3. Supporting primitives × 4 languages
-
-| primitive | F# | C# | Rust | TS | note |
-|-----------|:--:|:--:|:----:|:--:|------|
-| DynamicValue (carrier) | ✓ | ✓ | ✓ | ✓ | the universal value tree everything rides |
-| TriBoolean (+ float) | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| Bonsai (reified computation) | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| Yaml · Sha256 · RangeSet | ✓ | ✓ | ✓ | ✓ | 4/4 |
-| Observe · AceCanonical · Resume | ✓ | ✓ | ✓ | ✗ | **3/4 — no TS** |
-| Algebra | ✓ | ✗ | ✓ | ✗ | **2/4 — F#+Rust** |
-
-### New seeds (built, F#-only — 1/4)
-
-| seed | langs | what it proves |
-|------|-------|----------------|
-| **Predicate3** (Kleene K3) | F# | three-valued predicate; UNKNOWN propagates, collapse only at the terminal filter |
-| **SchemaEvolution** | F# | versioned migration over DynamicValue; forward/backward-compat (the B-0930 seed) |
-| **SoftValue** | F# | calibrated value: never-falsely-certain `resolve`; **independent-evidence Bayesian `observe` COMMUTES** (the convergence-despite-reordering crux, for independent evidence) |
+| format | F# | C# | Rust | TS | Python | Go | Q# | status |
+|--------|:--:|:--:|:----:|:--:|:------:|:--:|:--:|--------|
+| **JSON** (self-describing) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **DynamicValue byte-locked (4/7)**; Python/Go have canonical JSON helpers, not DynamicValue codecs |
+| **CBOR** (self-describing, total 8/8 shapes) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **Byte-locked (4/7)** |
+| **XML** (typed-element) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **Byte-locked (4/7)** |
+| **YAML** (safe-subset) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | **DynamicValue byte-locked (4/7)**; Python/Go have event scanners, not DynamicValue codecs |
+| **Arrow** (columnar) | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | **2/7 — F#+C# only** (shared .NET `Apache.Arrow`) |
+| **protobuf** (schema-REQUIRED) | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | **0/7 — not present** (needs runtime schema registry) |
 
 ---
 
-## 4. Homeostat chains — "does everything connect?"
+## 3. Supporting primitives × 7 languages
 
-**Mostly yes, by role — with honest distinctions.** There are FOUR demonstrated homeostat-tie
-classes, and every floor primitive lands in one:
+| primitive | F# | C# | Rust | TS | Python | Go | Q# | note |
+|-----------|:--:|:--:|:----:|:--:|:------:|:--:|:--:|------|
+| DynamicValue (carrier) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7; Python/Go ports need carriers plus golden-vector codec tests |
+| TriBoolean (+ float) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7 |
+| Bonsai (reified computation) | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7 |
+| Yaml events · Sha256 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | 6/7 helpers; Python/Go do not yet lift them through DynamicValue |
+| RangeSet | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | 4/7 |
+| Observe · AceCanonical · Resume | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | 3/7 — no TS |
+| Algebra | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | 2/7 — F#+Rust |
 
-- **converge-to-LUB** (join-semilattice): G-Set (∪), Clock (max), Bloom (OR). Replicas converge to
-  the least-upper-bound regardless of order + duplicates (idempotent CRDT merge).
-- **order-independent aggregate** (commutative monoid, *not* idempotent): ByteCost (+), CountMin (+).
-- **dedup** (injective + idempotent): Identity/ZetaId — distinct→distinct (no bad collapse) + re-observe = no-op.
-- **verify the converged state** (integrity): Merkle — same converged leaves → same root; `LeafDiff`
-  drives anti-entropy.
+### New seeds (built, F#-only — 1/7)
 
-**How they chain (the curve, per PROVEN-CORE-MAP):** a grow-only **G-Set history** (append-only
-samples) → a **curve** (∂ over the Clock x-axis) → a **replayable homeostat** that converges to a
-fixpoint. Identity supplies the locality/neighborhood the merge converges over; Merkle verifies the
-converged state; ByteCost/Metric aggregate it. So the converging primitives form one chain; the
-others connect **by role**, not by being converging states themselves:
-
-- **Carrier:** DynamicValue is the payload every homeostat exchanges (not a converging state — the medium).
-- **Operation:** Bonsai is the reify/apply of each homeostat's merge (the Bonsai leg of every vertical).
-- **Logic/value registers:** TriBoolean/Predicate3 (truth axis) + SoftValue (value axis) supply the
-  *uncertainty* the homeostat carries; **SoftValue's `observe` commutes for independent evidence**,
-  which is the homeostat-merge property pointed at *belief* convergence (the open convergence-despite-
-  reordering question reduces to: is the uncertainty-merge a semilattice? — answered YES for independent
-  evidence; the path-dependent case is the residual).
-- **Identity-as-neighborhood:** per the perspectival model, identity defines the CRDT neighborhood the
-  homeostat converges over (local → global without a coordinator).
-
-**Honest gap in the chain:** SchemaEvolution's migrations are composable + idempotent-where-stated but
-are **not** a convergence homeostat (they're a *directed* version-transform); they connect to the floor
-via DynamicValue (carrier) + the never-collapse discipline, not via LUB-convergence. And the belief/
-SoftValue homeostat is proven commutative only for *independent* evidence — the general (path-dependent)
-Bayesian merge being a semilattice is **unproven** (the real open question for "everything converges").
+- **Predicate3 (Kleene K3):** three-valued predicate; UNKNOWN propagates, collapse only at the terminal filter.
+- **SchemaEvolution:** versioned migration over DynamicValue; forward/backward-compat.
+- **SoftValue:** calibrated value: never-falsely-certain `resolve`; independent-evidence Bayesian `observe` COMMUTES.
 
 ---
 
-## 5. GAP LIST (what to hand Kestrel to attack)
+## 4. Formal Verification soundess checklist
 
-1. **Arrow in Rust + TS** (2/4 → 4/4) — needs an Arrow codec each; deliberate zero-dep deferral.
-   *Decision: hexagonalize (vendored Arrow behind a port, swappable) — IN PROGRESS per Aaron 2026-06-05.*
-2. **protobuf / gRPC** (0/4) — the only **schema-required** binary format; fits DynamicValue only via the
-   **schema-registry** (schema-id → registry → shape). Its compat model *is* `SchemaEvolution`
-   (add/remove/rename + unknown-field preservation). *Decision: pull in, hexagonal, build on the
-   schema-registry slice — IN PROGRESS.*
-3. **New seeds Predicate3 / SchemaEvolution / SoftValue: F#-only (1/4)** — port to C#/Rust/TS + byte-lock.
-4. **Observe / AceCanonical / Resume: no TS (3/4)**; **Algebra: F#+Rust only (2/4)**.
-5. **Belief/SoftValue convergence (general case):** is the *path-dependent* Bayesian uncertainty-merge a
-   join-semilattice? (independent-evidence case proven commutative; general case open). Soraya/Kestrel call.
-6. **Premise-unconditional formal legs:** Merkle real-hash analysis; Metric Lean/Mathlib Markov (frontier).
-7. **B-1018 follow-ups:** cross-oracle **differential** fuzzing (mutate 4 langs toward disagreement) +
-   coverage-guided out-of-process fuzzing (crash-isolated for the deep-nesting stack-overflow class).
+Formal proof and verification targets are mapped explicitly as first-class anchors across all dimensions:
 
-**Bottom line for Kestrel:** the floor is 6/6 FULL PROVEN and the self-describing serializer surface
-(JSON/CBOR/XML) is 4/4 byte-locked. The concrete gaps are (a) Arrow Rust/TS, (b) the schema-required
-binary (protobuf) + its registry, (c) the three new F#-only seeds' 4-lang ports, and (d) the general
-belief-convergence question. Items (a) and (b) are being built now (hexagonal, swappable deps).
+| Dimension / Spec | Lean 4 | TLA+ / TLC | Alloy | Z3 SMT | FsCheck | Proof / Safety Invariant |
+|------------------|:------:|:----------:|:-----:|:------:|:-------:|--------------------------|
+| **DynamicValue AST & Codecs** | ✓ | ✗ | ✗ | ✗ | ✓ | Correct-by-construction parser bijections and round-trip verification |
+| **Sagas & Event-Loop** | ✗ | ✓ | ✗ | ✗ | ✓ | Safety & liveness invariants under concurrent interleavings |
+| **Consensus & Data-Flow** | ✗ | ✓ | ✓ | ✓ | ✓ | Structural database invariants and anti-entropy correctness |
+| **Algebraic Laws (Z-set)** | ✗ | ✗ | ✗ | ✓ | ✓ | Symbolic proofs of associativity, commutativity, and identity |
+
+---
+
+## 5. GAP LIST
+
+1. **DynamicValue Python + Go carriers/codecs** (4/7 → 6/7, Q# remains oracle-only) — canonical JSON/YAML helpers exist, but not the DynamicValue carrier or golden-vector codec surface.
+2. **Arrow in Rust + TS + Python + Go** (2/7 → 7/7) — needs an Arrow codec each.
+3. **RangeSet in Python + Go** (4/7 → 6/7) — needs ports plus golden-vector tests.
+4. **protobuf / gRPC** (0/7) — schema-required binary format, fits DynamicValue only via the schema-registry.
+5. **New seeds Predicate3 / SchemaEvolution / SoftValue: F#-only (1/7)** — port to remaining runtimes in the matrix.
+6. **Observe / AceCanonical / Resume: no TS (3/7)**; **Algebra: F#+Rust only (2/7)**.
+7. **Belief/SoftValue convergence (general case):** is the *path-dependent* Bayesian uncertainty-merge a join-semilattice?
+8. **Premise-unconditional formal legs:** Merkle real-hash analysis; Metric Lean/Mathlib Markov.

@@ -11,7 +11,7 @@
 
 A relativistic git-native database: a **reliable data plane** (storage + read/write over git), a
 **control plane of cells** (YinYang cells, not agents), agents added later as experiments. Built on a
-**minimal-noun, all-language (F#/C#/Rust/TS), all-serializer PROVEN math base**. Two product shapes:
+**minimal-noun, all-language (F#/C#/TS/Rust/Python/Go/Q#), all-serializer PROVEN math base**. Two product shapes:
 data-plane-only, and data-plane + cell control plane.
 
 ### Operating principle — convert every input into one of four channels
@@ -62,7 +62,7 @@ refs* — the same job .NET Aspire's app model does (declare services + referenc
 composition), but expressed as **data in the value** rather than host-language wiring code. A cell / plugin
 / package advertises and finds its collaborators by ZetaID; Nucleus is the composition/discovery resolver;
 the cross-cell bus routes by the same ZetaID. So we get Aspire-style service discovery + composition for
-free, cross-language (4 oracles) and deterministic, because it's all DynamicValue + ZetaID — not a
+free, cross-language (matrix-wide) and deterministic, because it's all DynamicValue + ZetaID — not a
 side-car registry. Beacon anchors: **.NET Aspire** (app model + service discovery), Dapr service
 invocation, Kubernetes service discovery, Consul/etcd. Our twist: the service graph is *self-describing
 data*, not orchestrator config.
@@ -124,7 +124,7 @@ using DynamicValue's byte-locked per-format serializer:
   metadata header, `Delta` = body). So model header+body generally; each file-type plugin realizes it
   (markdown = YAML `---` header + md body; a pure `.yaml`/`.json` file may be all-header, no body).
 - **Markdown + frontmatter treaty** 🚧 — keep `.md` files (frontmatter + body) IN the database; need an
-  **MD read/write treaty across the 4 languages** (frontmatter → DynamicValue.Object, body → text,
+  **MD read/write treaty across the matrix** (frontmatter → DynamicValue.Object, body → text,
   byte-locked like other formats) — one realization of the general header+body pattern above. Makes
   docs/memory/backlog `.md` first-class DB content.
 - **Per-file-TYPE plugins, Open/Closed** — every *file type* (`.md`, `.yaml`, `.cbor`, `.json`, `.xml`,
@@ -137,8 +137,7 @@ using DynamicValue's byte-locked per-format serializer:
   *is* git's "main"** — the materialized current state = the incremental view over the Log's ZSets (our
   mapping to git's working tree/HEAD). The indexed view is **optional per file type**; each file type
   chooses its own indexes, described by **Rx queries** (ties to the Bonsai serialized-Rx substrate). And
-  the **plugin itself is persisted as a `DynamicValue`, not F#**, so the *same plugin runs in any of the 4
-  languages** (plugin-as-data, language-agnostic — no per-language reimplementation). Composes with: DBSP
+  the **plugin itself is persisted as a `DynamicValue`, not F#**, so the *same plugin runs in any of the active runtimes* (plugin-as-data, language-agnostic — no per-language reimplementation). Composes with: DBSP
   IVM (`Circuit`/`Operators`/`Incremental`), Bonsai-serialized Rx queries, `DynamicValue` (the plugin
   carrier), `ZSet` (the core). → backlog to design; clarifies the data-layer shape.
 
@@ -147,10 +146,10 @@ using DynamicValue's byte-locked per-format serializer:
 1. **NO GIT CLI** (item #1) — generic command surface (MCP + CLI) + route all persistence through it. *The definition of done.*
 2. **Close the `Log` noun** — ✅ **DONE (4/4 byte-lock)**: F# #6730 + golden seed #6735 + C# #6743 +
    TS #6744 + Rust #6745. **The 3-noun data-plane proven math base is now whole (ZSet ✅ + DynamicValue ✅
-   + Log ✅ across all four languages).** Remaining tail: migrate `GitDeltaLog`/`DiskDeltaLog` off
+   + Log ✅ across the runtimes).** Remaining tail: migrate `GitDeltaLog`/`DiskDeltaLog` off
    `System.Text.Json` onto the canonical codec (consumes the proven encoding; not part of the byte-lock).
-3. **YAML serializer for DynamicValue** (4-lang) — unblocks the git-default format.
-4. **MD + frontmatter treaty** (4-lang) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
+3. **YAML serializer for DynamicValue** (multi-runtime) — unblocks the git-default format.
+4. **MD + frontmatter treaty** (multi-runtime) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
    crash-durable `Log` — is ALREADY REAL**: the delta-log backends fsync on append (`DiskDeltaLog`

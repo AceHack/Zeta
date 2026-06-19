@@ -32,7 +32,7 @@ export interface SchemaEvolutionEvent {
   readonly time: string;            // ISO-8601 timestamp
 
   // ── CloudEvents optional attributes ──
-  readonly subject?: string;        // which schema (e.g., "fs-metadata")
+  readonly subject?: string | undefined;        // which schema (e.g., "fs-metadata")
   readonly datacontenttype: "application/json";
 
   // ── CDC data payload (Debezium-style) ──
@@ -57,7 +57,7 @@ export interface EmitOptions {
   /** The schema source URI (e.g., "zeta://schema/fs-metadata"). */
   readonly source: string;
   /** The schema subject (e.g., "fs-metadata"). */
-  readonly subject?: string;
+  readonly subject?: string | undefined;
   /** Who is applying this evolution. */
   readonly actor: string;
   /** Clock override (for DST). Default: Date.now(). */

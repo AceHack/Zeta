@@ -2,3 +2,7 @@
 -- `lakefile.toml`. Imports the machine-checked proof files so
 -- `lake build` walks them transitively.
 import Lean4.DbspChainRule
+import Lean4.DynamicValue
+import Lean4.JsonCodec
+import Lean4.CborCodec
+import Lean4.YamlCodec
