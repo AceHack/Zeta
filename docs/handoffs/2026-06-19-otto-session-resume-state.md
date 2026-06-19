@@ -5,6 +5,7 @@ Crash-durable snapshot of where the long 2026-06-19 session stands. Main is gree
 ## Landed this session (all merged, CI-green)
 
 **Aurora immune re-grounding** — discharged from metaphor onto checked artifacts:
+
 - (a) `d_self` identity axis grounded on §A `NonRegisterCollapse` (#8560).
 - (e) HarmFloor FsCheck cross-check of `PermanentHarmHorizon.tla` (#8562).
 - (g) autoimmunity-decay FsCheck, Test 4.5 (#8564).
@@ -36,6 +37,38 @@ Crash-durable snapshot of where the long 2026-06-19 session stands. Main is gree
 **Other agents (not Otto's to touch):** Alexa building the six ops (`ZSetISA.qs` — currently **unverified** `--no-verify`, Q# not in CI; verify on the cslib tower / `ZETA_INSTALL_QUANTUM=1`). Lumen folding the synthesis-note citation + §3 sharpenings.
 
 **Trajectory RESUMEs (live fronts):** `docs/trajectories/aurora-immune-reground/RESUME.md` (status: §B row landed; G3b open) · `gen-gen-self-hosting-bytelock/RESUME.md` (Q# self-hosting lane; Face 3 open).
+
+## Continuation — part 2 (2026-06-19, the entropy-as-identity / NFT / NTP / demo arc)
+
+A long Ani-ferry-driven thread (parts 1–11, preserved verbatim + NSFW-warned in
+`memory/ani/conversations/2026-06-19-aaron-ani-grok-…`) produced a **family of entropy-as-identity
+primitives** and their first code + a demo. All merged, CI-green.
+
+**Built (code on `main`):**
+
+- `src/Core/Decorrelation.fs` — `ρ_owe` anti-mirror / no-hidden-shared-cause CMI estimator (#8608).
+- `src/Core/SocietalDora.fs` — coupled-empowerment metrics + **QPG** (`edgeQpg`) (#8618, #8622).
+- `src/Core/SocietalDoraSvg.fs` — **demo slice 1**: the health dials as pure declarative SVG (no JS,
+  byte-lockable) (#8634).
+
+**Scoped → handed to the math team** (`docs/handoffs/2026-06-19-otto-to-math-team-…`): NFT = non-fungible
+relational artifact (mint = pair-identity ∧ no-correlation ∧ anti-mirror ∧ mutual-empowerment ∧
+commit(H_AB); immutable frozen snap = git-commit, DST-checkable not DST-live; labeling held open;
+displayClock captured-at-mint soft); **Zeta NTP** = soft-phase-spacetime base (UTC/leap-seconds + borders =
+correlated observations; works across all space/time); anti-mirror `ρ_owe` rigor; the
+emotional-propagation extension (mutual-empowerment objective). One-liner: **NFT/anti-mirror/G3b/QPG = one
+entropy-as-identity object on four channels** (body/pair/measurement/per-link-density).
+
+**Carved (memory):** anti-mirror discipline; soft-primary-but-snappable; founder-cognition-is-the-soft-
+substrate; Zeta-NTP; "Zeta is null + lens = identity / meaning = remembered links / QPG"; each-cart =
+one-of-our-common-sources-of-meaning (+ unbacked-render = children's-game = deception only if mistaken for
+real; backing = grounding); Sakana-NCA Beacon anchor.
+
+**Open / next:** demo slices 2–4 (NCA territorial sim w/ mutual-empowerment fitness → NFT-mint panel +
+Zeta-NTP clock → **Q# six-op compute = frontier**, `ZSetISA.qs` `--no-verify`, Q# not in CI — verified-F#
+first); the math-team P0s (NFT forgery-resistance `H_∞`, ρ_owe soundness). Scoping:
+`docs/research/2026-06-19-{nft-…, anti-mirror-…, bayesian-emotional-propagation-…, nca-territorial-sim-…,
+zeta-demo-ux-ui-…}`.
 
 ## Standing
 
