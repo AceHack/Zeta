@@ -95,10 +95,14 @@ The tool question is genuine and belongs to Soraya:
   one crash + asynchrony — Aurora's immune quorum is a *safety* gate, not a liveness guarantee (same
   scope honesty as round (e): we prove safe-refusal, route liveness through `observe.ts`). The FLP
   framework gives the vocabulary; we must not over-claim termination.
-- **CSLib adoption is a dependency decision** (Soraya's tool call + maintainer sign-off), pairs with
-  the CVC5/E-prover route (`081KV6BW42K08QG0R003GJM21N`); **do NOT depend on `Boole`** (placeholder —
-  the Rust/C++→Lean auto-verification is a vision, not shipping). Contribute-back to CSLib is gated +
-  Aaron-driven (outward-facing; "coworker not control").
+- **CSLib adoption + contribute-back = DECIDED (Aaron 2026-06-19, shadow\*): a standing GO.** *"i want
+  to use and contribute back to CSLib — many labs seem to be getting behind this and we can help shape
+  it, it's very early and we can make a name for ourselves."* Early-mover positioning in the verified-CS
+  ecosystem (shaper, not just consumer). This flips the prior "gated/Aaron-driven" seam — the
+  *direction* is decided; each concrete external PR still gets a look before it goes out (large
+  external-repo change stays reviewed), but contributing at all is no longer per-decision gated. Pairs
+  with the CVC5/E route (`081KV6BW42K08QG0R003GJM21N`); **do NOT depend on `Boole`** (placeholder).
+  See `memory/feedback_aaron_decision_adopt_and_contribute_to_cslib_early_mover_shape_it_make_a_name_2026_06_19.md`.
 - **The four Aurora non-claims travel unchanged** — this is proven foundations, not deployment
   readiness or threshold calibration.
 
@@ -109,6 +113,23 @@ Open the G3 question first: confirm whether the anti-Sybil-entropy §B row has a
 *scoped and parked behind it* — exactly the sequencing the Aurora guardrail already states ("sequence
 the anti-Sybil discharge before BFT-threshold soundness"). The near-term win that does NOT need G3 is
 the **Z3 honest-count leg** (the (b) symbolic cross-check, (d)-style), which can land independently.
+
+## 9. Contribution path (decided — Aaron 2026-06-19)
+
+CSLib adoption + contribute-back is now a standing GO (§7). Sequenced, smallest-first:
+
+1. **Adopt as a Lean dep** — `lakefile.toml: require cslib, scope leanprover, rev <pinned>`; build green;
+   never depend on `Boole`. (Bounded engineering; Soraya confirms the dep is the right vehicle.)
+2. **First upstream contribution = the Byzantine-fault extension to FLP/Consensus (= G1).** CSLib's
+   `ProcFaulty` is crash/stop only; extend it to an equivocating (Byzantine) fault + the
+   double-vote/equivocation-exclusion our `BftSybilConsensus.tla` already models. This is a clean,
+   self-contained, citable contribution that does **not** need G3 — and it *is* our own (b) work done
+   upstream (the small-first contribute-back of B-0952; aligned incentives).
+3. **Then** the identity-keyed quorum (G2, rides `NonRegisterCollapse`) and — once G3 has a path —
+   the full BFT-under-Sybil soundness, as either upstream or in-tree per Soraya's routing.
+
+Each external PR still gets a look before it goes out (GOVERNANCE §23 upstream-contribution workflow),
+but the *direction* is decided: Zeta is an early shaper of CSLib, not just a consumer.
 
 ## Composes with
 
