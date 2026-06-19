@@ -42,16 +42,27 @@ the tick and resolves at the horizon **to soft `(value, ε)`, never to a hard de
 This spec is the **ISA (the compute algebra)**, not a full DB. It does **not** corner us *if* three
 boundaries stay explicit:
 
-1. **The log stays HARD/classical — do NOT quantum-ify the source of truth.** The durable event log (the
-   hard `DynamicValue` Z-set / git-native store) is the committed, replayable history — the foundational
-   principle. The six ops are the **soft/superposition compute layer *over* that hard log**. So this is a
-   *hard-log + soft-compute* DB, not a "fully Q# DB" — and that is the *right* architecture. Trying to
-   make the log itself quantum would lose the durable replayable source of truth — that is the corner.
-2. **The read-to-act boundary = LOCAL collapse at the consumer's horizon.** Live never decoheres globally,
-   but an acting edge (human / actuator / external system) eventually needs a definite value. Design it as
-   a **local** collapse at *that consumer's* tick/horizon (they commit an action on their own bounded
-   resolution) — never a global hard consensus. Skipping this backs into "nothing ever resolves, no one can
-   act." (This local-edge collapse is distinct from the sim's verification measurement.)
+1. **Generate the derivable; CAPTURE-and-keep the irreducible (it's identity) — never quantum-ify the
+   irreducible seed.** For v1, treat the durable log as hard/classical; the six ops are soft compute over
+   it. **Long horizon (Aaron 2026-06-19):** *juggle* derivable history in soft space — regenerate it on
+   demand from the generator (`gen(gen)===gen` = the generator IS the ECC, so derived structure is
+   reconstructable) and `snap` to hard only **locally, on demand**. So the hard footprint **shrinks toward
+   the irreducible** (this is `only-the-irreducible-is-primitive` applied to *storage* — it's a microkernel,
+   not a "fully Q# DB"). **And the irreducible is the POINT, not a residual:** the un-generatable entropy =
+   the real external inputs **captured during execution to increase identity space** — that *is* identity
+   (the per-body entropy of anti-Sybil **G3**; the independence through-line). We deliberately keep it hard
+   *because* capturing irreducible entropy is how identity grows. **The corner:** mistaking
+   identity-bearing irreducible entropy for derivable and deleting it (destroys identity, enables Sybil),
+   or quantum-ifying the irreducible seed. The shape is **generate the derivable, keep the irreducible.**
+2. **The read-to-act / soft→hard boundary is `snap` — ALREADY BUILT (`SoftValue.fs`); wire through it, do
+   NOT reinvent it.** `snap : SnapPolicy -> SoftValue -> DynamicValue option` is *"the policy-gated soft→hard
+   boundary … the one place it leaves soft space … Bayesian approximates, snap commits."* It is **local**
+   (per consumer), **policy-gated** (`threshold` = calibration-gated, **never falsely certain**; `best` =
+   argmax), and can return **`None` = decline to collapse, stay soft** — so the collapse is non-coercive and
+   never global. **And the snap policies are themselves soft** (revisable, calibration-gated) — non-coercion
+   all the way down: even the rule for going hard is soft. So route each op's read-to-act commit through
+   `snap`; never build a separate global collapse. (`snap` is also how the long-horizon `gen`→`snap`
+   on-demand materialization in #1 commits derivable history to hard locally.)
 3. **The 4ⁿ support wall is real (scaling).** BRANCH/JOIN grow the superposition support; MERGE only prunes
    *reconverging* paths (`AmplitudeEmu`'s own peel: high entanglement needs `4ⁿ` reals). The **tick horizon
    bounds it** (the tick closes), but do not promise cheap unbounded entangled queries — bound support per
