@@ -341,6 +341,7 @@
     <Compile Include="Formal/DecorrelationEstimator.Tests.fs" />
     <Compile Include="Formal/SocietalDora.Tests.fs" />
     <Compile Include="Formal/SocietalDoraSvg.Tests.fs" />
+    <Compile Include="Formal/AlarmAlgebra.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
