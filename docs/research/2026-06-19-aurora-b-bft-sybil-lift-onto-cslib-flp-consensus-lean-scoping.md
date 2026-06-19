@@ -131,6 +131,35 @@ CSLib adoption + contribute-back is now a standing GO (§7). Sequenced, smallest
 Each external PR still gets a look before it goes out (GOVERNANCE §23 upstream-contribution workflow),
 but the *direction* is decided: Zeta is an early shaper of CSLib, not just a consumer.
 
+## 10. Adoption prerequisite — TOOLCHAIN GAP (reconnaissance 2026-06-19, Otto)
+
+Before any `require cslib`, a real blocker surfaced from the toolchain files (not assumed):
+
+| | our `src/Core.Lean4/` | CSLib (`references/prior-art/cslib/lean-toolchain`) |
+|---|---|---|
+| Lean | **`leanprover/lean4:v4.30.0-rc1`** | **`leanprover/lean4:v4.31.0`** |
+| mathlib | `leanprover-community v4.30.0-rc1` (pinned in `lakefile.toml` + `lake-manifest.json`) | tracks v4.31.0 |
+
+So **step (1) "adopt as a Lean dep" is actually a toolchain + mathlib BUMP** (`v4.30.0-rc1 → v4.31.0`),
+not a one-line `require`. A mathlib major bump churns API and **can break existing proofs** — and our
+proof lineage is **load-bearing**: `Safety/NonRegisterCollapse.lean` is the §A theorem the Aurora **(a)**
+leg *rides*, plus `Safety/ChildFloor.lean` (the child-floor cross-check) and `Privacy/IdentityForcesPrivacy.lean`.
+There is a real CI Lean gate (`.github/workflows/lean-proof.yml`) that would catch breakage — but a
+bump that reds the gate would block the whole fleet.
+
+**This is a proof-lineage-risking change → surfaced, not done blind.** Safe sequence:
+
+1. **Bump first, in isolation:** `v4.30.0-rc1 → v4.31.0` Lean + matching mathlib rev; `lake build` the
+   existing `Lean4` lib; **confirm `NonRegisterCollapse` / `ChildFloor` / `IdentityForcesPrivacy` all
+   still compile sorry-free** and `lean-proof.yml` stays green. *No cslib yet.* (Also moves us off an
+   `-rc1` onto a stable release — independently worth it.)
+2. **Then** `require cslib` (pinned rev) and confirm it resolves + builds.
+3. **Then** G1 (the Byzantine-fault extension).
+
+Routing note for Soraya: the bump is the gating cost of the Lean-on-CSLib vehicle. If it proves
+expensive/destabilizing, the FsCheck-leg alternatives for G1/G2 (no Lean dep) are the fallback. The
+bump should be its own verified PR (proof-lineage), maintainer-visible — **not** bundled into a feature.
+
 ## Composes with
 
 - `docs/trajectories/aurora-immune-reground/RESUME.md` — (b) is that trajectory's open leg; this doc is its CSLib routing.
