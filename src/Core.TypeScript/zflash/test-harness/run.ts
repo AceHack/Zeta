@@ -106,6 +106,7 @@ export interface PathForkRuntimeOptions {
   readonly cwd?: string;
   readonly timeoutMs?: number;
   readonly bootImagePath?: string;
+  readonly freshBootImagePath?: string;
   readonly runDirectory?: string;
   readonly kvmAvailable?: boolean;
 }
@@ -614,7 +615,7 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
       return fromEnv;
     }
     if (options.execute === true && existsSync(absIsoPath)) {
-      const autoPath = join(runDirectory.ok, `${basename(absIsoPath)}.path-fork-boot.img`);
+      const autoPath = join(runDirectory.ok, `${basename(absIsoPath)}.path-fork-boot-retain.img`);
       const ensured = ensureZflashBootImage(absIsoPath, autoPath, true);
       if ("error" in ensured) {
         return ensured;
@@ -627,13 +628,35 @@ export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOpti
     return {
       id: "reformat-from-scratch",
       status: "failed",
-      message: `could not prepare path-fork boot image: ${bootImagePath.error}`,
+      message: `could not prepare path-fork retention boot image: ${bootImagePath.error}`,
+    };
+  }
+  const freshBootImagePath = (() => {
+    if (options.freshBootImagePath !== undefined) {
+      return resolve(options.freshBootImagePath);
+    }
+    if (options.execute === true && existsSync(absIsoPath)) {
+      const autoPath = join(runDirectory.ok, `${basename(absIsoPath)}.path-fork-boot-fresh.img`);
+      const ensured = ensureZflashBootImage(absIsoPath, autoPath, false);
+      if ("error" in ensured) {
+        return ensured;
+      }
+      return ensured.ok;
+    }
+    return undefined;
+  })();
+  if (typeof freshBootImagePath === "object" && "error" in freshBootImagePath) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not prepare path-fork fresh boot image: ${freshBootImagePath.error}`,
     };
   }
   const artifacts = pathForkArtifactPaths(absIsoPath, runDirectory.ok);
   const planned = planPathForkRuntime({
     isoPath: absIsoPath,
     ...(bootImagePath === undefined ? {} : { bootImagePath }),
+    ...(freshBootImagePath === undefined ? {} : { freshBootImagePath }),
     startingDiskPath: artifacts.startingDiskPath,
     migrateSerialLogPath: artifacts.migrateSerialLogPath,
     freshSerialLogPath: artifacts.freshSerialLogPath,

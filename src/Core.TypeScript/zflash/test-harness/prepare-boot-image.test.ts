@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DEFAULT_QEMU_USB_UUID, writeTestCredentialBlob } from "./prepare-boot-image";
 import { planQcow2SnapshotRetention } from "./qemu-state";
+import { B0891_RETENTION_USB_SERIAL_MARKERS } from "./serial-markers";
 
 describe("prepare-boot-image", () => {
   test("writeTestCredentialBlob produces a non-empty encrypted blob", () => {
@@ -18,7 +19,7 @@ describe("prepare-boot-image", () => {
     }
   });
 
-  test("retention restart requires installed-OS restore markers even with zflash boot image", () => {
+  test("retention restart uses B-0891 USB markers when booting from a zflash-prepared image", () => {
     const planned = planQcow2SnapshotRetention({
       isoPath: "/tmp/installer.iso",
       bootImagePath: "/tmp/zflash-boot.img",
@@ -28,7 +29,7 @@ describe("prepare-boot-image", () => {
     });
     expect("ok" in planned).toBe(true);
     if (!("ok" in planned)) throw new Error("expected plan");
-    for (const marker of ["zeta-creds-restore:", "already-present"]) {
+    for (const marker of B0891_RETENTION_USB_SERIAL_MARKERS) {
       expect(planned.ok.requiredSerialMarkers).toContain(marker);
       expect(planned.ok.restartStopCondition.successMarkers).toContain(marker);
     }

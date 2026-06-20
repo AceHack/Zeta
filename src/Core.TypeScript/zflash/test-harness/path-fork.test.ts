@@ -15,10 +15,13 @@ const STARTING_DISK_PATH = "run/zeta.qcow2";
 const MIGRATE_SERIAL_LOG_PATH = "run/migrate.serial.log";
 const FRESH_SERIAL_LOG_PATH = "run/fresh.serial.log";
 
+const FRESH_BOOT_IMAGE_PATH = "fixtures/zflash-boot-fresh.img";
+
 function pathForkPlan(): readonly PathForkRuntimeForkPlan[] {
   const result = planPathForkRuntime({
     isoPath: ISO_PATH,
     bootImagePath: BOOT_IMAGE_PATH,
+    freshBootImagePath: FRESH_BOOT_IMAGE_PATH,
     startingDiskPath: STARTING_DISK_PATH,
     migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
     freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
@@ -36,6 +39,7 @@ describe("path-fork serial marker assertions", () => {
     const result = planPathForkRuntime({
       isoPath: ISO_PATH,
       bootImagePath: BOOT_IMAGE_PATH,
+      freshBootImagePath: FRESH_BOOT_IMAGE_PATH,
       startingDiskPath: STARTING_DISK_PATH,
       migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
       freshSerialLogPath: FRESH_SERIAL_LOG_PATH,
@@ -113,6 +117,7 @@ describe("path-fork serial marker assertions", () => {
     const planned = planPathForkRuntime({
       isoPath: ISO_PATH,
       bootImagePath: BOOT_IMAGE_PATH,
+      freshBootImagePath: FRESH_BOOT_IMAGE_PATH,
       startingDiskPath: STARTING_DISK_PATH,
       migrateSerialLogPath: MIGRATE_SERIAL_LOG_PATH,
       freshSerialLogPath: FRESH_SERIAL_LOG_PATH,

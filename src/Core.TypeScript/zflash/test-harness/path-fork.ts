@@ -30,6 +30,8 @@ export type PathForkId = PathForkVariant["forkId"];
 export interface PathForkRuntimeInput {
   readonly isoPath: string;
   readonly bootImagePath?: string;
+  /** zflash-prepared USB image without /zeta-creds.enc (fresh-cluster fork). */
+  readonly freshBootImagePath?: string;
   readonly startingDiskPath: string;
   readonly migrateSerialLogPath: string;
   readonly freshSerialLogPath: string;
@@ -54,6 +56,7 @@ export interface PathForkRuntimeForkPlan {
 export interface PathForkRuntimePlan {
   readonly isoPath: string;
   readonly bootImagePath?: string;
+  readonly freshBootImagePath?: string;
   readonly startingStateRef: string;
   readonly startingDiskPath: string;
   readonly snapshotName: string;
@@ -116,6 +119,13 @@ function validateInput(input: PathForkRuntimeInput): PathForkRuntimeFeedback | n
   if (input.bootImagePath !== undefined && !nonEmpty(input.bootImagePath)) {
     return { kind: "invalid-input", field: "bootImagePath", reason: "boot image path must be non-empty when provided" };
   }
+  if (input.freshBootImagePath !== undefined && !nonEmpty(input.freshBootImagePath)) {
+    return {
+      kind: "invalid-input",
+      field: "freshBootImagePath",
+      reason: "fresh boot image path must be non-empty when provided",
+    };
+  }
   if (!nonEmpty(input.startingDiskPath)) {
     return { kind: "invalid-input", field: "startingDiskPath", reason: "starting qcow2 disk path is required" };
   }
@@ -140,6 +150,7 @@ function validateInput(input: PathForkRuntimeInput): PathForkRuntimeFeedback | n
 interface NormalizedPathForkRuntimeInput {
   readonly isoPath: string;
   readonly bootImagePath?: string;
+  readonly freshBootImagePath?: string;
   readonly startingDiskPath: string;
   readonly migrateSerialLogPath: string;
   readonly freshSerialLogPath: string;
@@ -190,7 +201,10 @@ function bootCommandForFork(input: NormalizedPathForkRuntimeInput, forkId: PathF
       memoryMB: input.memoryMB,
       cpuCount: input.cpuCount,
       kvmAvailable: input.kvmAvailable,
-      bootMedia: { kind: "iso", path: input.isoPath },
+      bootMedia:
+        input.freshBootImagePath === undefined
+          ? { kind: "iso", path: input.isoPath }
+          : { kind: "usb-image", path: input.freshBootImagePath },
     }),
   };
 }
@@ -198,6 +212,9 @@ function bootCommandForFork(input: NormalizedPathForkRuntimeInput, forkId: PathF
 function missingRequirementsForFork(input: NormalizedPathForkRuntimeInput, forkId: PathForkId): readonly string[] {
   if (forkId === "migrate-existing-creds" && input.bootImagePath === undefined) {
     return ["zflash-prepared boot image containing /zeta-creds.enc"];
+  }
+  if (forkId === "fresh-cluster" && input.freshBootImagePath === undefined) {
+    return ["zflash-prepared boot image without /zeta-creds.enc"];
   }
   return [];
 }
@@ -238,6 +255,7 @@ export function planPathForkRuntime(input: PathForkRuntimeInput): PathForkRuntim
   const normalized: NormalizedPathForkRuntimeInput = {
     isoPath: input.isoPath,
     ...(input.bootImagePath === undefined ? {} : { bootImagePath: input.bootImagePath }),
+    ...(input.freshBootImagePath === undefined ? {} : { freshBootImagePath: input.freshBootImagePath }),
     startingDiskPath: input.startingDiskPath,
     migrateSerialLogPath: input.migrateSerialLogPath,
     freshSerialLogPath: input.freshSerialLogPath,
@@ -251,6 +269,7 @@ export function planPathForkRuntime(input: PathForkRuntimeInput): PathForkRuntim
     ok: {
       isoPath: normalized.isoPath,
       ...(normalized.bootImagePath === undefined ? {} : { bootImagePath: normalized.bootImagePath }),
+      ...(normalized.freshBootImagePath === undefined ? {} : { freshBootImagePath: normalized.freshBootImagePath }),
       startingStateRef: DEFAULT_PATH_FORK.startingStateRef,
       startingDiskPath: normalized.startingDiskPath,
       snapshotName: normalized.snapshotName,

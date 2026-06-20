@@ -1,6 +1,7 @@
 import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import {
+  B0891_RETENTION_USB_SERIAL_MARKERS,
   INITIAL_INSTALL_SERIAL_MARKERS,
   INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -218,8 +219,13 @@ export {
   RETENTION_FAILURE_SERIAL_MARKERS,
 } from "./serial-markers";
 
-function restartRetentionSerialMarkers(): readonly string[] {
-  // Restart proves installed-OS cred restore idempotency, not early USB ESP copy.
+/** Restart phase markers: zflash USB retention when boot image provided; else installed-OS cred-restore. */
+export function restartRetentionSerialMarkers(bootImagePath?: string): readonly string[] {
+  if (bootImagePath !== undefined) {
+    // CI proves cred retention during reinstall (B-0891 ESP copy + picker skip) without
+    // waiting for post-reboot installed-OS zeta-creds-restore in the same QEMU session.
+    return B0891_RETENTION_USB_SERIAL_MARKERS;
+  }
   return INSTALLED_OS_RETENTION_SERIAL_MARKERS;
 }
 
@@ -376,11 +382,11 @@ export function planQcow2SnapshotRetention(input: Qcow2SnapshotRetentionInput): 
       },
       restartStopCondition: {
         serialLogPath: normalized.serialLogPath,
-        successMarkers: restartRetentionSerialMarkers(),
+        successMarkers: restartRetentionSerialMarkers(normalized.bootImagePath),
         failureMarkers: RETENTION_FAILURE_SERIAL_MARKERS,
         terminalFailureMarkers: RETENTION_ABSENT_TERMINAL_MARKERS,
       },
-      requiredSerialMarkers: restartRetentionSerialMarkers(),
+      requiredSerialMarkers: restartRetentionSerialMarkers(normalized.bootImagePath),
     },
   };
 }

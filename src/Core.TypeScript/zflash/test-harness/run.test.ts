@@ -103,19 +103,22 @@ describe("B-0891 test-harness dispatcher", () => {
     expect(migrate.requiredSerialMarkers.join(" ")).toContain("found pre-baked zeta-creds.enc");
     expect(fresh.requiredSerialMarkers.join(" ")).toContain("no pre-baked zeta-creds.enc");
     expect(fresh.forbiddenSerialMarkers.join(" ")).toContain("found pre-baked zeta-creds.enc");
+    expect(fresh.missingRuntimeRequirements).toContain("zflash-prepared boot image without /zeta-creds.enc");
     expect(fresh.qemuBootCommand.args).toContain("-cdrom");
     expect(fresh.qemuBootCommand.args).toContain(resolve("/tmp/nonexistent.iso"));
   });
 
-  test("path-fork runtime can plan against an explicit zflash-prepared boot image", () => {
+  test("path-fork runtime can plan against explicit zflash-prepared boot images", () => {
     const runDirectory = resolve("/tmp/zeta-path-fork-run");
     const result = runPathForkRuntime("/tmp/zeta.iso", {
       bootImagePath: "/tmp/zflash-boot.img",
+      freshBootImagePath: "/tmp/zflash-boot-fresh.img",
       runDirectory,
     });
 
     expect(result.status).toBe("failed");
     expect(result.pathForkPlan?.bootImagePath).toBe("/tmp/zflash-boot.img");
+    expect(result.pathForkPlan?.freshBootImagePath).toBe("/tmp/zflash-boot-fresh.img");
     expect(result.pathForkPlan?.startingDiskPath).toBe(join(runDirectory, "zeta.iso.scenario4.qcow2"));
     const migrate = result.pathForkPlan?.forks.find((fork) => fork.forkId === "migrate-existing-creds");
     const fresh = result.pathForkPlan?.forks.find((fork) => fork.forkId === "fresh-cluster");
@@ -124,8 +127,11 @@ describe("B-0891 test-harness dispatcher", () => {
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
     expect(migrate?.qemuBootCommand?.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
-    expect(fresh?.qemuBootCommand?.args).toContain("-cdrom");
-    expect(fresh?.qemuBootCommand?.args).toContain("/tmp/zeta.iso");
+    expect(fresh?.missingRuntimeRequirements).toEqual([]);
+    expect(fresh?.qemuBootCommand?.args).not.toContain("-cdrom");
+    expect(fresh?.qemuBootCommand?.args).toContain(
+      "file=/tmp/zflash-boot-fresh.img,if=none,format=raw,readonly=on,id=zflashboot",
+    );
   });
 
   test("retention runtime executes through an injected QEMU executor when explicitly enabled", () => {
@@ -181,6 +187,12 @@ describe("B-0891 test-harness dispatcher", () => {
       "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
     );
     expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).not.toContain("-cdrom");
+    for (const marker of [
+      "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
+      "[B-0891-retention]   Step 6.95-picker will skip account re-entry",
+    ]) {
+      expect(result.qemuRetentionPlan?.requiredSerialMarkers).toContain(marker);
+    }
   });
 
   test("retention runtime writes scenario artifacts under a writable run directory", () => {
@@ -199,6 +211,7 @@ describe("B-0891 test-harness dispatcher", () => {
     const result = runPathForkRuntime("/tmp/zeta.iso", {
       execute: true,
       bootImagePath: "/tmp/zflash-boot.img",
+      freshBootImagePath: "/tmp/zflash-boot-fresh.img",
       executor: {
         runCommand: successfulExecution,
         runCommandUntilSerialMarkers: successfulExecution,

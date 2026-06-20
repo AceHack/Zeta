@@ -1,12 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import {
   assertRetentionSerialMarkers,
+  B0891_RETENTION_USB_SERIAL_MARKERS,
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
   INITIAL_INSTALL_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   planQcow2SnapshotRetention,
+  restartRetentionSerialMarkers,
   RETENTION_FAILURE_SERIAL_MARKERS,
+  RETENTION_SERIAL_MARKERS,
   type Qcow2SnapshotRetentionPlan,
   type Qcow2RetentionExecutionStep,
   type ManagedQemuCommandProcess,
@@ -126,13 +129,13 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect(result.ok.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
     expect(result.ok.restartFromIsoWithDisk.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
-    for (const marker of ["zeta-creds-restore:", "already-present"]) {
+    for (const marker of B0891_RETENTION_USB_SERIAL_MARKERS) {
       expect(result.ok.requiredSerialMarkers).toContain(marker);
       expect(result.ok.restartStopCondition.successMarkers).toContain(marker);
     }
   });
 
-  test("carries retention serial markers for later runtime assertions", () => {
+  test("uses installed-OS restore markers when restart boots plain ISO without zflash image", () => {
     const result = planQcow2SnapshotRetention({
       isoPath: "/tmp/zeta.iso",
       diskPath: "/tmp/zeta.qcow2",
@@ -141,11 +144,11 @@ describe("B-0891 QEMU state-preservation planner", () => {
     });
     if ("error" in result) throw new Error(result.error.reason);
 
-    expect(result.ok.requiredSerialMarkers).toContain("zeta-creds-restore:");
-    expect(result.ok.requiredSerialMarkers).toContain("already-present");
+    expect(result.ok.requiredSerialMarkers).toEqual(restartRetentionSerialMarkers());
+    expect(result.ok.restartStopCondition.successMarkers).toEqual(restartRetentionSerialMarkers());
   });
 
-  test("carries lifecycle stop markers for QEMU boot phases", () => {
+  test("carries retention serial markers for later runtime assertions", () => {
     const result = planQcow2SnapshotRetention({
       isoPath: "/tmp/zeta.iso",
       diskPath: "/tmp/zeta.qcow2",
@@ -158,8 +161,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
     expect(result.ok.initialInstallStopCondition.successMarkers).toEqual(INITIAL_INSTALL_SERIAL_MARKERS);
     expect(result.ok.initialInstallStopCondition.failureMarkers).toEqual(RETENTION_FAILURE_SERIAL_MARKERS);
     expect(result.ok.initialInstallStopCondition.terminalFailureMarkers).toEqual(RETENTION_ABSENT_TERMINAL_MARKERS);
-    expect(result.ok.restartStopCondition.successMarkers).toContain("zeta-creds-restore:");
-    expect(result.ok.restartStopCondition.successMarkers).toContain("already-present");
+    expect(result.ok.restartStopCondition.successMarkers).toEqual(RETENTION_SERIAL_MARKERS);
     expect(result.ok.restartStopCondition.terminalFailureMarkers).toEqual(RETENTION_ABSENT_TERMINAL_MARKERS);
   });
 
