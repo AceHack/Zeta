@@ -1,0 +1,71 @@
+description: "ZSetMerkle inclusion-proof cross-language conformance vectors (math-team row 4, N-way golden-vector leg). Each vector commits a Z-set and names one probe key in the net support; the output is the canonical proof string root_hex|leaf_key_hex:leaf_weight|<R|L>sibling_hex,... which every independent oracle must reproduce byte-for-byte and which must verify against the embedded root."
+vectors:
+  - id: singleton
+    entries:
+      - key: "a"
+        weight: 1
+    probe: "a"
+  - id: pair-left
+    entries:
+      - key: "a"
+        weight: 1
+      - key: "b"
+        weight: 2
+    probe: "a"
+  - id: pair-right
+    entries:
+      - key: "a"
+        weight: 1
+      - key: "b"
+        weight: 2
+    probe: "b"
+  - id: triple-odd-node
+    entries:
+      - key: "a"
+        weight: 1
+      - key: "b"
+        weight: 2
+      - key: "c"
+        weight: 3
+    probe: "c"
+  - id: net-retraction-survivor
+    entries:
+      - key: "z-002"
+        weight: 1
+      - key: "z-005"
+        weight: 2
+      - key: "z-005"
+        weight: -2
+      - key: "z-003"
+        weight: -3
+    probe: "z-002"
+  - id: non-ascii-ordinal
+    entries:
+      - key: "é"
+        weight: 1
+      - key: "e"
+        weight: 2
+      - key: "Ω"
+        weight: -4
+      - key: "中"
+        weight: 7
+    probe: "中"
+  - id: eight-leaf-balanced
+    entries:
+      - key: "k1"
+        weight: 1
+      - key: "k2"
+        weight: 1
+      - key: "k3"
+        weight: 1
+      - key: "k4"
+        weight: 1
+      - key: "k5"
+        weight: 1
+      - key: "k6"
+        weight: 1
+      - key: "k7"
+        weight: 1
+      - key: "k8"
+        weight: 1
+    probe: "k5"
