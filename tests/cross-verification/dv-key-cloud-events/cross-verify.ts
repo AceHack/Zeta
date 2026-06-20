@@ -54,48 +54,73 @@ function toHex(bytes: Uint8Array): string {
     .join("");
 }
 
-const data = JSON.parse(readFileSync(join(import.meta.dir, "vectors.json"), "utf8")) as VectorsFile;
-
+const vectors = JSON.parse(readFileSync(join(import.meta.dir, "vectors.json"), "utf8")) as VectorsFile;
 let mismatches = 0;
 
-for (const vec of data.dv_key_vectors) {
-  const key = DvKey.ofValue(vec.value);
-  if (toHex(key.canonical) !== vec.expected_cbor_hex) {
-    console.error(`  DvKey ${vec.id}: canonical CBOR mismatch`);
-    mismatches++;
+function fail(message: string): void {
+  mismatches++;
+  console.error(`  ${message}`);
+}
+
+console.log("dv-key-cloud-events cross-verification:");
+console.log(`  DvKey vectors: ${vectors.dv_key_vectors.length}`);
+console.log(`  CloudEvent vectors: ${vectors.cloud_event_vectors.length}`);
+
+if (vectors.dv_key_vectors.length === 0) {
+  fail("DvKey vector set is empty");
+}
+
+if (vectors.cloud_event_vectors.length === 0) {
+  fail("CloudEvent vector set is empty");
+}
+
+for (const vector of vectors.dv_key_vectors) {
+  const key = DvKey.ofValue(vector.value);
+  const actualCborHex = toHex(key.canonical);
+  const actualHash = key.getHashCode().toString();
+
+  if (actualCborHex !== vector.expected_cbor_hex) {
+    fail(`DvKey ${vector.id}: cbor mismatch got=${actualCborHex} expected=${vector.expected_cbor_hex}`);
   }
-  if (key.getHashCode().toString() !== vec.expected_hash) {
-    console.error(`  DvKey ${vec.id}: hash mismatch`);
-    mismatches++;
+
+  if (actualHash !== vector.expected_hash) {
+    fail(`DvKey ${vector.id}: hash mismatch got=${actualHash} expected=${vector.expected_hash}`);
   }
 }
 
-for (const vec of data.cloud_event_vectors) {
-  const ce = CE.create(vec.event.id, vec.event.source, vec.event.type, vec.event.data);
-  ce.time = vec.event.time;
-  ce.subject = vec.event.subject;
-  ce.datacontenttype = vec.event.datacontenttype;
-  ce.dataschema = vec.event.dataschema;
-  ce.extensions = vec.event.extensions;
+for (const vector of vectors.cloud_event_vectors) {
+  const event = CE.create(vector.event.id, vector.event.source, vector.event.type, vector.event.data);
+  event.time = vector.event.time;
+  event.subject = vector.event.subject;
+  event.datacontenttype = vector.event.datacontenttype;
+  event.dataschema = vector.event.dataschema;
+  event.extensions = vector.event.extensions;
 
-  const dynamicVal = CE.toDynamic(ce);
+  const dynamicValue = CE.toDynamic(event);
+  const json = canonicalJson(dynamicValue);
+  const cbor = canonicalCbor(dynamicValue);
 
-  const jsonRes = canonicalJson(dynamicVal);
-  if (!jsonRes.ok || jsonRes.value !== vec.expected_json) {
-    console.error(`  CloudEvent ${vec.id}: canonical JSON mismatch`);
-    mismatches++;
+  if (!json.ok) {
+    fail(`CloudEvent ${vector.id}: canonical JSON rejected`);
+  } else if (json.value !== vector.expected_json) {
+    fail(`CloudEvent ${vector.id}: json mismatch got=${json.value} expected=${vector.expected_json}`);
   }
 
-  const cborRes = canonicalCbor(dynamicVal);
-  if (!cborRes.ok || toHex(new Uint8Array(cborRes.value)) !== vec.expected_cbor_hex) {
-    console.error(`  CloudEvent ${vec.id}: canonical CBOR mismatch`);
-    mismatches++;
+  if (!cbor.ok) {
+    fail(`CloudEvent ${vector.id}: canonical CBOR rejected`);
+  } else {
+    const actualCborHex = toHex(new Uint8Array(cbor.value));
+
+    if (actualCborHex !== vector.expected_cbor_hex) {
+      fail(`CloudEvent ${vector.id}: cbor mismatch got=${actualCborHex} expected=${vector.expected_cbor_hex}`);
+    }
   }
 }
 
-console.log(
-  `dv-key-cloud-events cross-verify: ${data.dv_key_vectors.length} dv-key + ${data.cloud_event_vectors.length} cloud-event vectors, ${mismatches} mismatch(es).`,
-);
+if (mismatches === 0) {
+  console.log("  TS oracle agrees with every committed vector.");
+  process.exit(0);
+}
 
-if (mismatches > 0) process.exit(1);
-console.log("  TS oracle agrees with canonical on all dv-key + cloud-event vectors.");
+console.log(`  ${mismatches} mismatch(es).`);
+process.exit(1);
