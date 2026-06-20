@@ -262,6 +262,7 @@
     <Compile Include="BoundaryLight.fs" />
     <Compile Include="GeneratorRegistry.fs" />
     <Compile Include="GeneratorIrRegistry.fs" />
+    <Compile Include="ZetaIrV1.fs" />
     <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />

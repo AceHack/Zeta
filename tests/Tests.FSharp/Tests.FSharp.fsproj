@@ -90,6 +90,7 @@
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
+    <Compile Include="ZetaIrV1.Tests.fs" />
     <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="Blake3Hasher.Tests.fs" />
     <Compile Include="ContentHash256.Tests.fs" />
