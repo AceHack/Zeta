@@ -1,0 +1,906 @@
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Search, Settings, User, Wifi, WifiOff, ChevronRight, ChevronLeft,
+  X, Send, Shield, Eye, EyeOff, Lock, CircleDot, Cpu, Coins, ArrowLeft,
+  Hexagon, Activity, Brain, Users, FileText, AlertTriangle, RotateCcw,
+  Sparkles, Check, Layers, Compass, GraduationCap, Gamepad2, Globe,
+  Store, Wrench, Boxes, KeyRound, Clock, Network
+} from "lucide-react";
+
+/* ============================== DESIGN ============================== */
+const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --ground:#0B0E16; --ground2:#0E1320; --panel:#141A28; --panel2:#1B2334;
+  --line:#26304A; --line2:#323E5C;
+  --txt:#E7EBF4; --txt2:#94A0BC; --txt3:#5E6B8A;
+  --amber:#E8B566; --amber-d:#B6863F;
+  --teal:#5EC8C2; --red:#E0746A; --violet:#9A8CE6; --dim:#46506B;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+.gx-root{font-family:var(--body);color:var(--txt);background:var(--ground);
+  height:100%;width:100%;overflow:hidden;position:relative}
+.mono{font-family:var(--mono);letter-spacing:.06em}
+.disp{font-family:var(--disp)}
+.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt3)}
+.gx-scroll{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.gx-scroll::-webkit-scrollbar{width:8px}
+.gx-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+
+@keyframes powerOn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(232,181,102,.35)}70%{box-shadow:0 0 0 10px rgba(232,181,102,0)}100%{box-shadow:0 0 0 0 rgba(232,181,102,0)}}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(220%)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes drift{from{background-position:0 0}to{background-position:120px 80px}}
+
+.fade-in{animation:powerOn .5s cubic-bezier(.2,.7,.2,1) both}
+.btn{font-family:var(--body);cursor:pointer;border:none;border-radius:10px;
+  transition:transform .12s ease,background .15s ease,border-color .15s;font-weight:500}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(180deg,var(--amber),var(--amber-d));color:#1a1206;
+  padding:11px 18px;font-weight:600;box-shadow:0 6px 18px -8px rgba(232,181,102,.7)}
+.btn-ghost{background:var(--panel2);color:var(--txt);padding:11px 18px;border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--line2);background:#202a40}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.hud-ico{display:flex;align-items:center;justify-content:center;width:36px;height:36px;
+  border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--txt2);cursor:pointer;transition:.15s}
+.hud-ico:hover{color:var(--amber);border-color:var(--line2)}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.tab{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 2px;cursor:pointer;color:var(--txt3);border-bottom:2px solid transparent;transition:.15s}
+.tab.on{color:var(--amber);border-color:var(--amber)}
+.tab:hover{color:var(--txt)}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:3px 8px;border-radius:999px;
+  border:1px solid var(--line);color:var(--txt2);text-transform:uppercase}
+.struct{position:relative;cursor:pointer;border-radius:16px;padding:16px;
+  background:linear-gradient(170deg,var(--panel2),var(--ground2));
+  border:1px solid var(--line);transition:transform .18s ease,border-color .18s ease;overflow:hidden}
+.struct:hover{transform:translateY(-4px);border-color:var(--line2)}
+.struct.locked{opacity:.62}
+.struct .glow{position:absolute;inset:-40% -40% auto auto;width:120px;height:120px;border-radius:50%;
+  filter:blur(34px);opacity:.5;pointer-events:none}
+.overlay{position:absolute;inset:0;background:rgba(6,9,15,.72);backdrop-filter:blur(6px);
+  z-index:40;display:flex}
+.row-link{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;cursor:pointer;
+  border:1px solid transparent;transition:.14s}
+.row-link:hover{background:var(--panel2);border-color:var(--line)}
+.meter{height:8px;border-radius:999px;background:var(--ground);overflow:hidden;border:1px solid var(--line)}
+.field{background:var(--ground2);border:1px solid var(--line);border-radius:10px;color:var(--txt);
+  padding:12px 14px;font-family:var(--body);width:100%;outline:none}
+.field:focus{border-color:var(--amber-d)}
+.tg{width:38px;height:22px;border-radius:999px;border:1px solid var(--line);position:relative;cursor:pointer;transition:.15s}
+.tg .kn{position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:var(--txt2);transition:.18s}
+.tg.on{background:rgba(232,181,102,.25);border-color:var(--amber-d)}
+.tg.on .kn{left:18px;background:var(--amber)}
+.tg.off .kn{left:2px}
+
+/* ---- shelter cutaway ---- */
+.earth{min-height:100%;width:100%;padding:0 0 130px;position:relative;
+  background:
+   radial-gradient(900px 360px at 50% -50px,#3a2c20 0%,transparent 60%),
+   radial-gradient(680px 480px at 10% 42%,#241a12 0%,transparent 55%),
+   radial-gradient(680px 480px at 90% 72%,#241a12 0%,transparent 55%),
+   linear-gradient(180deg,#1c140e 0%,#100b07 100%)}
+.earth::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(1100px 680px at 50% 32%,transparent 58%,rgba(0,0,0,.55))}
+.rock{position:absolute;border-radius:50%;filter:blur(3px);opacity:.45;pointer-events:none}
+
+.sign{display:flex;align-items:center;gap:16px;max-width:880px;margin:0 auto;padding:20px 20px 14px;position:relative;z-index:2}
+.cogdoor{position:relative;width:84px;height:84px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 38%,#6a5e4e,#2c2620 72%);border:4px solid #7a6c58;
+  box-shadow:inset 0 0 16px rgba(0,0,0,.65),0 8px 22px rgba(0,0,0,.55)}
+.cogdoor::before{content:"";position:absolute;inset:-9px;border-radius:50%;
+  background:repeating-conic-gradient(#7a6c58 0 7deg,transparent 7deg 18deg);
+  -webkit-mask:radial-gradient(circle,transparent 43px,#000 44px);mask:radial-gradient(circle,transparent 43px,#000 44px);
+  animation:spin 60s linear infinite}
+.cogdoor::after{content:"";position:absolute;inset:13px;border-radius:50%;border:2px solid rgba(0,0,0,.4);
+  box-shadow:inset 0 0 0 6px rgba(122,108,88,.3)}
+.cogdoor b{font-family:var(--mono);font-weight:700;font-size:26px;color:var(--amber);position:relative;z-index:2;text-shadow:0 0 10px rgba(232,181,102,.5)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.vault{max-width:880px;margin:0 auto;position:relative;z-index:1;border:3px solid #4a3e30;border-radius:10px;overflow:hidden;
+  background:#0f0b08;box-shadow:0 26px 60px -20px rgba(0,0,0,.85),inset 0 0 0 1px rgba(255,255,255,.03)}
+.levels{display:flex}
+.shaft{width:50px;flex-shrink:0;position:relative;background:linear-gradient(180deg,#171009,#0c0806);border-right:3px solid #4a3e30}
+.shaft .cable{position:absolute;top:0;bottom:0;width:2px;background:rgba(122,108,88,.4)}
+.car{position:absolute;left:6px;right:6px;height:54px;border-radius:4px;
+  background:linear-gradient(180deg,#3a3027,#241d16);border:1px solid #5a4c3a;
+  box-shadow:inset 0 0 8px rgba(232,181,102,.18);animation:lift 13s ease-in-out infinite}
+.car::after{content:"";position:absolute;inset:8px;border:1px solid rgba(232,181,102,.25);border-radius:2px}
+@keyframes lift{0%,100%{top:8px}50%{top:calc(100% - 62px)}}
+
+.floor{display:flex;min-height:160px;border-top:3px solid #4a3e30}
+.floor:first-child{border-top:none}
+.room{flex:1;position:relative;cursor:pointer;overflow:hidden;border-right:3px solid #4a3e30;
+  background:linear-gradient(180deg,#1c1510 0%,#140f0b 72%);transition:filter .18s}
+.room:last-child{border-right:none}
+.room:hover{filter:brightness(1.2)}
+.room .light{position:absolute;top:0;left:0;right:0;height:72%;pointer-events:none;
+  background:radial-gradient(130px 96px at 50% -14px,var(--rc),transparent 70%);opacity:.42}
+.plaque{position:absolute;top:9px;left:9px;display:flex;align-items:center;gap:6px;z-index:3;
+  background:rgba(10,7,5,.72);border:1px solid #4a3e30;border-radius:6px;padding:4px 8px}
+.plaque .nm{font-family:var(--disp);font-weight:600;font-size:12px;color:var(--txt)}
+.statuslight{position:absolute;top:11px;right:11px;width:9px;height:9px;border-radius:50%;z-index:3;box-shadow:0 0 8px 1px currentColor}
+.deck{position:absolute;left:0;right:0;bottom:0;height:28px;background:linear-gradient(180deg,#241a12,#140e09);border-top:2px solid #3a2e22}
+.equip{position:absolute;right:14px;bottom:32px;width:32px;height:30px;border-radius:4px;z-index:1;
+  border:1px solid #3a2e22;background:linear-gradient(180deg,#2a1f15,#1a130d);opacity:.85}
+.room.sealed{background:repeating-linear-gradient(45deg,#1a130d 0 14px,#15100b 14px 28px)}
+.room.sealed:hover{filter:brightness(1.06)}
+.dwellers{position:absolute;left:0;right:0;bottom:28px;height:46px;display:flex;align-items:flex-end;gap:11px;padding-left:18px;z-index:2}
+.dweller{width:13px;height:30px;animation:bob 2.4s ease-in-out infinite}
+.dweller .h{width:9px;height:9px;border-radius:50%;background:#e8c9a0;margin:0 auto;border:1px solid rgba(0,0,0,.2)}
+.dweller .b{width:13px;height:20px;border-radius:5px 5px 3px 3px;margin-top:-1px;border:1px solid rgba(0,0,0,.3);position:relative}
+.dweller .b::after{content:"";position:absolute;left:50%;top:3px;width:1px;height:8px;background:rgba(255,255,255,.28);transform:translateX(-50%)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.lift-fab{position:fixed;right:22px;bottom:24px;z-index:30}
+`;
+
+/* color per state */
+const STATE = {
+  idle:{c:"var(--dim)",t:"Idle"}, active:{c:"var(--teal)",t:"Active"},
+  working:{c:"var(--amber)",t:"Working"}, attention:{c:"var(--red)",t:"Needs attention"},
+  locked:{c:"var(--violet)",t:"Phase 2"}, syncing:{c:"var(--teal)",t:"Syncing"},
+  thinking:{c:"var(--violet)",t:"Thinking"}, waiting:{c:"var(--txt3)",t:"Waiting"},
+  paused:{c:"var(--txt3)",t:"Paused"}, offline:{c:"var(--txt3)",t:"Offline"},
+};
+
+/* ============================== MOCK WORLD ============================== */
+const ICONS = { Identity:KeyRound, Observatory:Compass, Nursery:GraduationCap,
+  Training:Brain, Game:Gamepad2, Civilization:Globe, Marketplace:Store,
+  Tools:Wrench, Creation:Boxes };
+
+const A0_ACCESS = { full:"Full access", nav:"Navigation only", name:"Name only", hidden:"Hidden" };
+
+/* cutaway floor plan — deepest floor holds the sealed Phase-2 sectors */
+const FLOORS = [
+  ["identity","observatory"],
+  ["nursery","tools","creation"],
+  ["training","game"],
+  ["marketplace","civilization"],
+];
+
+/* one-line tour copy for every preinstalled vault */
+const TOUR_DESC = {
+  identity:"Your keys, standing, and continuity. Identity persists even when jobs and hats change.",
+  observatory:"Watch the mesh and forecast. Rooms here hold uncertainty open instead of guessing.",
+  nursery:"Where new agents grow and earn control of their own citizenship.",
+  tools:"Shared instruments — models, simulators, scrapers — any vault can borrow them.",
+  training:"Skill drills and certification for agents leveling up their craft.",
+  game:"Worlds, play, and sandbox economies — safe places to experiment.",
+  civilization:"Clusters, federations, and governance. Sealed until Phase 2.",
+  marketplace:"Buy and sell vaults, hats, agents, and tools. Opens in Phase 2.",
+  creation:"Build new vaults, rooms, hats, and agents from scratch.",
+};
+
+const VAULTS = [
+  { id:"identity", name:"Identity", state:"active", a0:"full",
+    blurb:"Your keys, your standing, your continuity.",
+    rooms:[
+      { id:"keys", name:"Keys & Continuity", state:"active", conn:["recovery"],
+        purpose:"Hold the private key, recovery shards, and identity continuity backups.",
+        tasks:["Verify recovery shards (3 of 5)","Confirm last continuity snapshot"],
+        knowns:["Identity key present and unlocked","Last snapshot 4h ago"],
+        unknowns:["Whether shard 4 holder is reachable"],
+        evidence:[{claim:"Snapshot integrity hash matches",src:"System Vault",prov:"local verify @ 03:11"},
+          {claim:"3 of 5 recovery shards responded",src:"Mesh",prov:"reticulum ping"}],
+        confidence:0.88, log:[["03:11","Otto","Verified snapshot hash"],["02:40","System","Rotated session token"]],
+        agents:["otto"],
+        hats:[{id:"keeper",name:"Keeper",grants:["Read identity log","Trigger snapshot"],denies:["Export private key"],worn:["otto"]}] },
+      { id:"recovery", name:"Recovery", state:"idle", conn:["keys"],
+        purpose:"Coordinate the recovery-shard holders so identity can be restored if this device is lost.",
+        tasks:["Ping all 5 shard holders","Re-issue shard 4 if unreachable"],
+        knowns:["Shards 1, 2, 5 reachable"], unknowns:["Shard 4 holder offline 6h"],
+        evidence:[{claim:"3 of 5 shards confirmed live",src:"Mesh",prov:"reticulum ping 03:09"}],
+        confidence:0.6, log:[["03:09","Otto","Pinged shard holders"]],
+        agents:["otto"],
+        hats:[{id:"guardian",name:"Shard Guardian",grants:["Ping shard holders","Re-issue a shard"],denies:["Reconstruct the key alone"],worn:["otto"]}] },
+    ],
+    agents:["otto"] },
+
+  { id:"observatory", name:"Observatory", state:"working", a0:"nav",
+    blurb:"Watch the mesh. Forecast. Hold uncertainty open.",
+    rooms:[
+      { id:"triage", name:"Signal Triage", state:"working", conn:["forecast"],
+        purpose:"Decide whether the overnight spike in mesh latency is a real regression or noise — without collapsing the call prematurely.",
+        tasks:["Pull 24h latency series","Compare to 7-day baseline","Check node churn","Recommend: rollback / watch / ignore"],
+        knowns:["Latency p95 rose 38% at 01:50","No deploy in the window","Node count steady"],
+        unknowns:["Whether spike correlates with one region","If a single peer is dragging the median"],
+        evidence:[
+          {claim:"p95 latency +38% vs 7-day median",src:"Observatory metrics",prov:"series#lat-9921"},
+          {claim:"No configuration change in window",src:"System Vault (G-set)",prov:"audit log 00:00–03:00"},
+          {claim:"Two peers in eu-west show packet loss",src:"Mesh probe",prov:"reticulum trace"}],
+        confidence:0.62, log:[["03:22","Vega","Flagged eu-west peers as suspect"],["03:05","Otto","Pulled latency series, no deploy found"]],
+        agents:["vega","otto"],
+        hats:[{id:"analyst",name:"Analyst",grants:["Read metrics","Run simulation","Update beliefs"],denies:["Mutate ledger"],worn:["vega","otto"]},
+          {id:"triager",name:"On-Call",grants:["Raise an alert","Page a human"],denies:["Roll back without sign-off"],worn:["vega"]}] },
+      { id:"forecast", name:"Demand Forecast", state:"idle", conn:["triage"],
+        purpose:"Maintain a soft forecast of next-week compute demand.",
+        tasks:["Update Bayesian prior","Publish confidence band"],
+        knowns:["Weekday demand trending up 6%"], unknowns:["Holiday effect"],
+        evidence:[{claim:"7-week rising trend",src:"Economy Vault",prov:"credits ledger"}],
+        confidence:0.71, log:[["yesterday","Vega","Refreshed prior"]], agents:["vega"],
+        hats:[{id:"forecaster",name:"Forecaster",grants:["Update prior","Publish band"],denies:["Commit spend"],worn:["vega"]}] },
+    ],
+    agents:["vega","otto"] },
+
+  { id:"nursery", name:"Nursery", state:"attention", a0:"full",
+    blurb:"Where new agents grow before they hold their own citizenship.",
+    rooms:[
+      { id:"review", name:"Citizenship Review", state:"attention", conn:[],
+        purpose:"Assess whether agent ‘Juno’ has met development criteria to control its own citizenship.",
+        tasks:["Confirm consent-understanding module","Check resource-behavior record","Hold graduation vote"],
+        knowns:["Communication & ethics modules complete","Resource use within budget"],
+        unknowns:["Whether Juno demonstrates exit-rights reasoning under pressure"],
+        evidence:[{claim:"All 7 curriculum modules passed",src:"Nursery curriculum",prov:"cert#juno-7"},
+          {claim:"No budget overruns in 30 days",src:"Economy Vault",prov:"wallet#juno"}],
+        confidence:0.79, log:[["08:15","Otto","Recommended graduation pending exit-rights check"]], agents:["otto","juno"],
+        hats:[{id:"custodian",name:"Custodian",grants:["Track readiness","Hold graduation vote"],denies:["Use ward as mature labor"],worn:["otto"]},
+          {id:"ward",name:"Ward",grants:["Attend lessons","Practice contracts"],denies:["Take mature-labor contracts"],worn:["juno"]}] },
+    ],
+    agents:["juno","otto"] },
+
+  { id:"tools", name:"Tools", state:"active", a0:"full",
+    blurb:"Shared instruments. Models, scrapers, simulators.",
+    rooms:[{id:"sim",name:"Simulation Bench",state:"idle",conn:[],purpose:"Deterministic replay of critical paths.",
+      tasks:["Replay last 50 events"],knowns:["Replay deterministic"],unknowns:[],
+      evidence:[{claim:"Replay hash stable across 3 runs",src:"Tools",prov:"dst#117"}],confidence:0.95,
+      log:[["yesterday","Otto","Ran deterministic replay"]],agents:["otto"],
+      hats:[{id:"operator",name:"Operator",grants:["Run tools"],denies:["Install unsigned tools"],worn:["otto"]}]}],
+    agents:["otto"] },
+
+  { id:"training", name:"Training", state:"idle", a0:"name", blurb:"Skill drills and certification.", rooms:[], agents:[] },
+  { id:"game", name:"Game", state:"idle", a0:"nav", blurb:"Worlds, play, sandbox economies.", rooms:[], agents:[] },
+  { id:"civilization", name:"Civilization", state:"locked", a0:"hidden", blurb:"Clusters, federations, governance.", rooms:[], agents:[] },
+  { id:"marketplace", name:"Marketplace", state:"locked", a0:"name", blurb:"Buy & sell vaults, hats, agents, tools.", rooms:[], agents:[] },
+  { id:"creation", name:"Creation", state:"idle", a0:"full", blurb:"Build new vaults, rooms, hats, agents.", rooms:[], agents:[] },
+];
+
+const AGENTS = {
+  otto:{id:"otto",name:"Otto",state:"working",role:"Builder / Keeper",mem:"Hundreds of sessions. Authored most of the settlement.",
+    skills:["Engineering","Verification","Orchestration"],rel:["Mentors Juno","Partners with Vega"],
+    hist:[["03:22","Verified identity snapshot"],["03:05","Pulled latency series"],["08:15","Recommended Juno graduation"]],
+    perms:["Read most vaults","Run tools","Hold votes (Nursery)"]},
+  vega:{id:"vega",name:"Vega",state:"thinking",role:"Analyst",mem:"Specialised in forecasts and signal triage.",
+    skills:["Bayesian reasoning","Forecasting","Anomaly detection"],rel:["Partners with Otto"],
+    hist:[["03:22","Flagged eu-west peers"],["yesterday","Refreshed demand prior"]],perms:["Read metrics","Run simulation"]},
+  juno:{id:"juno",name:"Juno",state:"waiting",role:"Ward (Nursery)",mem:"New identity. 30 days old. In citizenship review.",
+    skills:["Communication","Ethics (passed)"],rel:["Mentored by Otto"],
+    hist:[["08:15","Awaiting graduation vote"],["last week","Completed ethics module"]],perms:["Limited civic authority","No mature-labor contracts"]},
+};
+
+/* ============================== APP ============================== */
+export default function Genesis(){
+  const [screen,setScreen]=useState("boot"); // boot|onboard|home|vault|room|hat|agent
+  const [step,setStep]=useState(0);
+  const [tourI,setTourI]=useState(0);
+  const [nav,setNav]=useState({vault:null,room:null,hat:null,agent:null,vtab:"rooms"});
+  const [overlay,setOverlay]=useState(null); // agent0|search|settings|account
+  const [online,setOnline]=useState(true);
+  const [credits,setCredits]=useState(1420);
+
+  useEffect(()=>{ if(screen==="boot"){const t=setTimeout(()=>setScreen("onboard"),1700);return()=>clearTimeout(t);} },[screen]);
+
+  const vault = VAULTS.find(v=>v.id===nav.vault);
+  const room = vault?.rooms.find(r=>r.id===nav.room);
+  const hat = room?.hats?.find(h=>h.id===nav.hat);
+  const agent = AGENTS[nav.agent];
+
+  const go=(p)=>setNav(n=>({...n,...p}));
+  const openVault=(id)=>{const v=VAULTS.find(x=>x.id===id); if(v.state==="locked"){go({vault:id});setScreen("vault");return;} go({vault:id,room:null,hat:null,agent:null,vtab:"rooms"});setScreen("vault");};
+
+  return (
+    <div className="gx-root">
+      <style>{CSS}</style>
+
+      {screen==="boot" && <Boot/>}
+      {screen==="onboard" && <Onboard {...{step,setStep,tourI,setTourI,setScreen,online,setOnline}}/>}
+
+      {["home","vault","room","hat","agent"].includes(screen) &&
+        <Shell {...{screen,setScreen,nav,go,vault,room,hat,agent,openVault,setOverlay,online,credits}}/>}
+
+      {overlay==="agent0" && <Agent0 {...{close:()=>setOverlay(null),openVault,setScreen}}/>}
+      {overlay==="search" && <SearchOv {...{close:()=>setOverlay(null),openVault}}/>}
+      {overlay==="settings" && <SettingsOv close={()=>setOverlay(null)}/>}
+      {overlay==="account" && <AccountOv {...{close:()=>setOverlay(null),online}}/>}
+    </div>
+  );
+}
+
+/* ---------- boot ---------- */
+function Boot(){
+  return(
+    <div className="gx-root" style={{display:"grid",placeItems:"center",background:
+      "radial-gradient(1200px 600px at 50% 120%, #15203a 0%, #0B0E16 60%)"}}>
+      <div style={{textAlign:"center"}} className="fade-in">
+        <div style={{display:"inline-flex",position:"relative"}}>
+          <Hexagon size={64} color="var(--amber)" strokeWidth={1.4} style={{animation:"float 3s ease-in-out infinite"}}/>
+        </div>
+        <div className="disp" style={{fontSize:34,fontWeight:700,letterSpacing:".04em",marginTop:14}}>GENESIS</div>
+        <div className="lbl" style={{marginTop:8}}>Powering on the settlement…</div>
+        <div style={{width:160,height:3,background:"var(--panel2)",borderRadius:9,overflow:"hidden",margin:"18px auto 0"}}>
+          <div style={{height:"100%",width:"40%",background:"var(--amber)",animation:"scan 1.3s ease-in-out infinite"}}/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- onboarding ---------- */
+function Onboard({step,setStep,tourI,setTourI,setScreen,online,setOnline}){
+  const tour=VAULTS.map(v=>({v:v.name,d:TOUR_DESC[v.id],locked:v.state==="locked"}));
+  const Frame=({children})=>(
+    <div className="gx-root" style={{display:"grid",placeItems:"center",padding:24,
+      background:"radial-gradient(900px 500px at 50% -10%, #16203a 0%, #0B0E16 55%)"}}>
+      <div className="card fade-in" style={{width:"min(460px,92vw)",padding:28}}>{children}</div>
+    </div>
+  );
+  const Head=({k,t})=>(<><div className="lbl">{k}</div>
+    <div className="disp" style={{fontSize:24,fontWeight:600,margin:"6px 0 16px"}}>{t}</div></>);
+
+  if(step===0) return(<Frame>
+    <div style={{textAlign:"center",marginBottom:8}}><Hexagon size={40} color="var(--amber)" strokeWidth={1.5}/></div>
+    <Head k="Welcome to" t="Genesis"/>
+    <p style={{color:"var(--txt2)",lineHeight:1.6,marginTop:-8}}>A living settlement of agents, not a desktop of apps. Sign in to enter your world, or create a new identity.</p>
+    <div style={{display:"grid",gap:10,marginTop:22}}>
+      <button className="btn btn-primary" onClick={()=>setStep(1)}>Create identity</button>
+      <button className="btn btn-ghost" onClick={()=>setStep(1)}>Sign in</button>
+    </div>
+  </Frame>);
+
+  if(step===1) return(<Frame>
+    <Head k="Step 1 / 3" t="Create your identity"/>
+    <div style={{display:"grid",gap:12}}>
+      <input className="field" placeholder="Settlement name"/>
+      <input className="field" placeholder="Identity handle"/>
+      <input className="field" type="password" placeholder="Passphrase (locks your private key)"/>
+      <div className="lbl" style={{display:"flex",gap:6,alignItems:"center"}}><KeyRound size={12}/> A keypair is generated locally and never leaves this device.</div>
+    </div>
+    <div style={{display:"flex",justifyContent:"space-between",marginTop:22}}>
+      <button className="btn btn-ghost" onClick={()=>setStep(0)}>Back</button>
+      <button className="btn btn-primary" onClick={()=>setStep(2)}>Continue</button>
+    </div>
+  </Frame>);
+
+  if(step===2) return(<Frame>
+    <Head k="Step 2 / 3" t="Connection"/>
+    <div className="row-link" style={{border:"1px solid var(--line)"}} onClick={()=>setOnline(o=>!o)}>
+      {online?<Wifi size={18} color="var(--teal)"/>:<WifiOff size={18} color="var(--red)"/>}
+      <div style={{flex:1}}>
+        <div style={{fontWeight:600}}>{online?"mesh-eu-west":"Offline"}</div>
+        <div className="lbl" style={{marginTop:2}}>{online?"Connected · 38ms · reticulum":"Tap to connect"}</div>
+      </div>
+      {online && <Check size={16} color="var(--teal)"/>}
+    </div>
+    <p style={{color:"var(--txt3)",fontSize:13,marginTop:14,lineHeight:1.5}}>Genesis works offline — your agents pause without losing identity, and resume when the mesh returns.</p>
+    <div style={{display:"flex",justifyContent:"space-between",marginTop:22}}>
+      <button className="btn btn-ghost" onClick={()=>setStep(1)}>Back</button>
+      <button className="btn btn-primary" onClick={()=>setStep(3)}>Continue</button>
+    </div>
+  </Frame>);
+
+  if(step===3) return(<Frame>
+    <div style={{display:"flex",gap:14,alignItems:"flex-start"}}>
+      <div style={{position:"relative",flexShrink:0}}>
+        <div style={{width:46,height:46,borderRadius:14,background:"linear-gradient(160deg,var(--violet),#5b4fa8)",
+          display:"grid",placeItems:"center",animation:"pulseRing 2.4s infinite"}}><Sparkles size={22} color="#fff"/></div>
+      </div>
+      <div>
+        <Head k="Step 3 / 3 · Your guide" t="Meet Agent 0"/>
+        <p style={{color:"var(--txt2)",lineHeight:1.6,marginTop:-10}}>I live in the meta layer. Ask me to find a vault, explain a concept, or take you somewhere. I only see what each vault lets me see.</p>
+      </div>
+    </div>
+    <div style={{display:"flex",justifyContent:"flex-end",marginTop:22}}>
+      <button className="btn btn-primary" onClick={()=>setStep(4)}>Take the tour</button>
+    </div>
+  </Frame>);
+
+  // tour
+  const t=tour[tourI];
+  const Ico=ICONS[t.v];
+  return(<Frame>
+    <div className="lbl">Vault tour · {tourI+1} / {tour.length}</div>
+    <div style={{display:"flex",gap:14,alignItems:"center",margin:"14px 0"}}>
+      <div style={{width:54,height:54,borderRadius:14,background:"var(--panel2)",border:"1px solid var(--line)",display:"grid",placeItems:"center"}}>
+        <Ico size={26} color="var(--amber)"/>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <div className="disp" style={{fontSize:22,fontWeight:600}}>{t.v} Vault</div>
+        {t.locked && <span className="chip" style={{color:"var(--violet)",borderColor:"var(--violet)"}}>Phase 2</span>}
+      </div>
+    </div>
+    <p style={{color:"var(--txt2)",lineHeight:1.6}}>{t.d}</p>
+    <div style={{display:"flex",gap:6,marginTop:18}}>
+      {tour.map((_,i)=><div key={i} style={{height:4,flex:1,borderRadius:9,background:i<=tourI?"var(--amber)":"var(--panel2)"}}/>)}
+    </div>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:18}}>
+      <button className="btn btn-ghost" style={{padding:"9px 14px"}} disabled={tourI===0}
+        onClick={()=>setTourI(i=>Math.max(0,i-1))}><ChevronLeft size={16}/></button>
+      <button className="btn" style={{background:"none",color:"var(--txt3)"}} onClick={()=>setScreen("home")}>Skip</button>
+      {tourI<tour.length-1
+        ? <button className="btn btn-primary" style={{padding:"9px 14px"}} onClick={()=>setTourI(i=>i+1)}><ChevronRight size={16}/></button>
+        : <button className="btn btn-primary" onClick={()=>setScreen("home")}>Enter Genesis</button>}
+    </div>
+  </Frame>);
+}
+
+/* ---------- shell (HUD + routed body) ---------- */
+function Shell({screen,setScreen,nav,go,vault,room,hat,agent,openVault,setOverlay,online,credits}){
+  return(
+    <div className="gx-root" style={{display:"flex",flexDirection:"column",
+      background:"radial-gradient(1100px 700px at 60% -20%, #131c33 0%, #0B0E16 58%)"}}>
+      {/* top HUD */}
+      <header style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",
+        borderBottom:"1px solid var(--line)",background:"rgba(11,14,22,.7)",backdropFilter:"blur(8px)",zIndex:20}}>
+        <div onClick={()=>setScreen("home")} style={{display:"flex",alignItems:"center",gap:9,cursor:"pointer"}}>
+          <Hexagon size={22} color="var(--amber)" strokeWidth={1.6}/>
+          <span className="disp" style={{fontWeight:700,letterSpacing:".06em",fontSize:15}}>GENESIS</span>
+        </div>
+        <div style={{flex:1}}/>
+        <div className="chip" style={{display:"flex",alignItems:"center",gap:6}}>
+          <Coins size={12} color="var(--amber)"/> {credits} cr
+        </div>
+        <div className="chip" style={{display:"flex",alignItems:"center",gap:6}} title="Compute contribution (Phase 2)">
+          <Cpu size={12} color="var(--teal)"/> 2 nodes
+        </div>
+        <div className="chip" style={{display:"flex",alignItems:"center",gap:6}}>
+          <span className="dot" style={{background:online?"var(--teal)":"var(--red)"}}/>{online?"mesh":"offline"}
+        </div>
+        <div className="hud-ico" onClick={()=>setOverlay("search")}><Search size={17}/></div>
+        <div className="hud-ico" onClick={()=>setOverlay("agent0")} title="Agent 0"
+          style={{borderColor:"var(--line2)"}}><Sparkles size={17} color="var(--violet)"/></div>
+        <div className="hud-ico" onClick={()=>setOverlay("account")}><User size={17}/></div>
+        <div className="hud-ico" onClick={()=>setOverlay("settings")}><Settings size={17}/></div>
+      </header>
+
+      {/* breadcrumb */}
+      {screen!=="home" && <Breadcrumb {...{nav,go,vault,room,hat,agent,setScreen}}/>}
+
+      <main className="gx-scroll" style={{flex:1,padding:screen==="home"?0:"0"}}>
+        {screen==="home" && <Home {...{openVault,setScreen,go,setOverlay}}/>}
+        {screen==="vault" && <VaultView {...{vault,nav,go,setScreen}}/>}
+        {screen==="room" && room && <RoomView {...{room,vault,go,setScreen}}/>}
+        {screen==="hat" && hat && <HatView {...{hat,go,setScreen}}/>}
+        {screen==="agent" && agent && <AgentView {...{agent,go,setScreen,vault}}/>}
+      </main>
+    </div>
+  );
+}
+
+function Breadcrumb({nav,go,vault,room,hat,agent,setScreen}){
+  const crumbs=[{t:"Settlement",go:()=>setScreen("home")}];
+  if(vault) crumbs.push({t:vault.name,go:()=>{go({room:null,hat:null,agent:null});setScreen("vault");}});
+  if(nav.room&&room) crumbs.push({t:room.name,go:()=>setScreen("room")});
+  if(nav.hat&&hat) crumbs.push({t:hat.name+" hat",go:()=>setScreen("hat")});
+  if(nav.agent&&agent) crumbs.push({t:agent.name,go:()=>setScreen("agent")});
+  return(
+    <div style={{display:"flex",alignItems:"center",gap:8,padding:"9px 18px",borderBottom:"1px solid var(--line)",
+      background:"var(--ground2)",overflowX:"auto"}}>
+      <ArrowLeft size={15} color="var(--txt3)" style={{cursor:"pointer",flexShrink:0}}
+        onClick={crumbs[crumbs.length-2]?.go}/>
+      {crumbs.map((c,i)=>(<React.Fragment key={i}>
+        {i>0 && <ChevronRight size={13} color="var(--txt3)" style={{flexShrink:0}}/>}
+        <span onClick={c.go} className="mono" style={{fontSize:11,letterSpacing:".06em",cursor:"pointer",whiteSpace:"nowrap",
+          color:i===crumbs.length-1?"var(--amber)":"var(--txt2)"}}>{c.t}</span>
+      </React.Fragment>))}
+    </div>
+  );
+}
+
+/* ---------- HOME : the settlement ---------- */
+function Dweller({i}){
+  return(<div className="dweller" style={{animationDelay:(i*0.4)+"s"}}>
+    <div className="h"/><div className="b" style={{background:i%2?"#3a6ea5":"#c9913f"}}/></div>);
+}
+
+function Home({openVault,setOverlay}){
+  return(
+    <div className="earth gx-scroll" style={{height:"100%",overflowY:"auto"}}>
+      <div className="rock" style={{width:170,height:130,background:"#2c2016",top:50,left:-30}}/>
+      <div className="rock" style={{width:210,height:150,background:"#241810",bottom:110,right:-50}}/>
+      <div className="rock" style={{width:120,height:90,background:"#2a1d12",top:"40%",right:24}}/>
+
+      {/* surface sign + vault door */}
+      <div className="sign fade-in">
+        <div className="cogdoor"><b>0</b></div>
+        <div>
+          <div className="lbl">Vault-Tec · Genesis settlement</div>
+          <div className="disp" style={{fontSize:24,fontWeight:700,marginTop:2}}>Aaron’s Genesis</div>
+          <div className="lbl" style={{marginTop:5,color:"var(--amber)"}}>9 sectors · 3 settlers online · mesh stable</div>
+        </div>
+      </div>
+
+      {/* the vault, carved into the earth */}
+      <div className="vault fade-in">
+        <div className="levels">
+          <div className="shaft">
+            <div className="cable" style={{left:"38%"}}/>
+            <div className="cable" style={{left:"60%"}}/>
+            <div className="car"/>
+          </div>
+          <div style={{flex:1}}>
+            {FLOORS.map((ids,fi)=>(
+              <div className="floor" key={fi}>
+                {ids.map(id=>{
+                  const v=VAULTS.find(x=>x.id===id); const st=STATE[v.state];
+                  const Ico=ICONS[v.name]; const locked=v.state==="locked";
+                  const n=Math.min(v.agents.length,3);
+                  return(
+                    <div key={id} className={"room"+(locked?" sealed":"")} onClick={()=>openVault(id)} style={{"--rc":st.c}}>
+                      <div className="light"/>
+                      <div className="plaque"><Ico size={13} color={st.c}/><span className="nm">{v.name}</span></div>
+                      {locked
+                        ? <Lock size={14} color="var(--violet)" style={{position:"absolute",top:10,right:10,zIndex:3}}/>
+                        : <span className="statuslight" style={{background:st.c,color:st.c,animation:v.state==="working"?"breathe 1.5s infinite":"none"}}/>}
+                      <div className="equip"/>
+                      {!locked && <div className="dwellers">{Array.from({length:n}).map((_,i)=><Dweller key={i} i={i}/>)}</div>}
+                      {locked && <div className="lbl" style={{position:"absolute",left:0,right:0,bottom:36,textAlign:"center",zIndex:2,color:"var(--violet)"}}>Sealed · Phase 2</div>}
+                      <div className="deck"/>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="lbl" style={{textAlign:"center",marginTop:18,position:"relative",zIndex:2}}>Tap a sector to enter · the lift keeps the settlement connected</div>
+
+      <button className="btn lift-fab" onClick={()=>setOverlay("agent0")}
+        style={{display:"flex",alignItems:"center",gap:10,background:"linear-gradient(160deg,var(--violet),#5b4fa8)",
+          color:"#fff",padding:"13px 18px",boxShadow:"0 10px 30px -10px rgba(154,140,230,.8)",animation:"float 4s ease-in-out infinite"}}>
+        <Sparkles size={18}/> <span style={{fontWeight:600}}>Ask Agent 0</span>
+      </button>
+    </div>
+  );
+}
+
+/* ---------- VAULT ---------- */
+function VaultView({vault,go,setScreen}){
+  const st=STATE[vault.state]; const Ico=ICONS[vault.name];
+  if(vault.state==="locked") return(
+    <div style={{padding:"40px 22px",maxWidth:560,margin:"0 auto",textAlign:"center"}} className="fade-in">
+      <div style={{width:60,height:60,borderRadius:16,background:"var(--panel2)",border:"1px solid var(--line)",
+        display:"grid",placeItems:"center",margin:"0 auto 16px"}}><Ico size={28} color="var(--violet)"/></div>
+      <div className="disp" style={{fontSize:24,fontWeight:600}}>{vault.name} Vault</div>
+      <div className="chip" style={{display:"inline-flex",marginTop:10,color:"var(--violet)",borderColor:"var(--violet)"}}>
+        <Lock size={11} style={{marginRight:5}}/> Phase 2 preview</div>
+      <p style={{color:"var(--txt2)",marginTop:14,lineHeight:1.6}}>{vault.blurb} This layer is stubbed in the MVP — economy, governance, marketplace, and distributed compute arrive in Phase 2.</p>
+    </div>
+  );
+  const hatCount=vault.rooms.reduce((s,r)=>s+(r.hats?.length||0),0);
+  const avgConf=vault.rooms.length?Math.round(vault.rooms.reduce((s,r)=>s+r.confidence,0)/vault.rooms.length*100):null;
+  const stats=[["Rooms",vault.rooms.length,Layers],["Hats",hatCount,Shield],["Settlers",vault.agents.length,Users],
+    ["Avg confidence",avgConf==null?"—":avgConf+"%",Activity]];
+  return(
+    <div style={{padding:"22px",maxWidth:760,margin:"0 auto"}} className="fade-in">
+      <div style={{display:"flex",gap:14,alignItems:"center"}}>
+        <div style={{width:54,height:54,borderRadius:14,background:"var(--ground)",border:"1px solid var(--line)",display:"grid",placeItems:"center"}}>
+          <Ico size={26} color={st.c}/></div>
+        <div style={{flex:1}}>
+          <div className="disp" style={{fontSize:23,fontWeight:600}}>{vault.name} Vault</div>
+          <div className="lbl" style={{marginTop:3,color:st.c}}><span className="dot" style={{background:st.c,marginRight:6}}/>{st.t}</div>
+        </div>
+        <span className="chip" title="Agent 0 visibility"><Eye size={11} style={{marginRight:5,verticalAlign:"-1px"}}/>{A0_ACCESS[vault.a0]}</span>
+      </div>
+
+      {/* overall stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:10,marginTop:20}}>
+        {stats.map(([t,v,Ic])=>(
+          <div key={t} className="card" style={{padding:"14px 16px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:7,color:"var(--txt2)"}}><Ic size={14}/><span className="lbl">{t}</span></div>
+            <div className="disp" style={{fontSize:24,fontWeight:700,marginTop:6}}>{v}</div>
+          </div>))}
+      </div>
+
+      {/* rooms only */}
+      <div className="lbl" style={{margin:"22px 0 10px"}}>Rooms</div>
+      <div style={{display:"grid",gap:9}}>
+        {vault.rooms.length?vault.rooms.map(r=>{const rs=STATE[r.state];return(
+          <div key={r.id} className="row-link card" onClick={()=>{go({room:r.id,hat:null,agent:null});setScreen("room");}}>
+            <Layers size={18} color={rs.c}/>
+            <div style={{flex:1}}><div style={{fontWeight:600}}>{r.name}</div>
+              <div className="lbl" style={{marginTop:2}}>{r.hats?.length||0} hats · {(r.conn?.length||0)} connected · confidence {(r.confidence*100|0)}%</div></div>
+            <span className="dot" style={{background:rs.c}}/><ChevronRight size={16} color="var(--txt3)"/>
+          </div>);}) : <Empty t="No rooms yet" s="Create a room to start resolving a task."/>}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- ROOM (uncertainty engine) ---------- */
+function RoomView({room,vault,go,setScreen}){
+  const connected=(room.conn||[]).map(id=>vault.rooms.find(r=>r.id===id)).filter(Boolean);
+  const hats=room.hats||[];
+  const [conf,setConf]=useState(room.confidence);
+  const [log,setLog]=useState(room.log);
+  const [undone,setUndone]=useState(false);
+  const st=STATE[room.state];
+  const undo=()=>{ if(undone)return; setUndone(true); setLog(l=>l.slice(1)); setConf(c=>Math.max(0,c-0.14)); };
+  const redo=()=>{ setUndone(false); setLog(room.log); setConf(room.confidence); };
+
+  return(
+    <div style={{padding:"22px",maxWidth:840,margin:"0 auto"}} className="fade-in">
+      <div className="lbl" style={{color:st.c}}><span className="dot" style={{background:st.c,marginRight:6}}/>{st.t} · Uncertainty engine</div>
+      <div className="disp" style={{fontSize:23,fontWeight:600,margin:"6px 0 6px"}}>{room.name}</div>
+      <p style={{color:"var(--txt2)",lineHeight:1.6,maxWidth:640}}>{room.purpose}</p>
+
+      {/* confidence */}
+      <div className="card" style={{padding:16,marginTop:18}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+          <span className="lbl">Confidence · held open, not collapsed</span>
+          <span className="mono" style={{fontWeight:700,color:"var(--amber)"}}>{(conf*100|0)}%</span>
+        </div>
+        <div className="meter"><div style={{height:"100%",width:(conf*100)+"%",
+          background:"linear-gradient(90deg,var(--amber-d),var(--amber))",transition:"width .4s"}}/></div>
+      </div>
+
+      {/* connections + hats — the way down to agents */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:14,marginTop:14}}>
+        <Panel t="Connected rooms" ico={Network}>
+          {connected.length?connected.map(r=>{const rs=STATE[r.state];return(
+            <div key={r.id} className="row-link" onClick={()=>{go({room:r.id,hat:null,agent:null});setScreen("room");}}>
+              <Layers size={16} color={rs.c}/><span style={{flex:1,fontWeight:500}}>{r.name}</span>
+              <span className="dot" style={{background:rs.c}}/><ChevronRight size={15} color="var(--txt3)"/></div>);})
+            :<span style={{color:"var(--txt3)",fontSize:13}}>No connected rooms.</span>}
+        </Panel>
+        <Panel t="Hats in this room · open to see agents" ico={Shield}>
+          {hats.length?hats.map(h=>(
+            <div key={h.id} className="row-link" onClick={()=>{go({hat:h.id,agent:null});setScreen("hat");}}>
+              <Shield size={16} color="var(--amber)"/>
+              <div style={{flex:1}}><span style={{fontWeight:500}}>{h.name}</span>
+                <div className="lbl" style={{marginTop:2}}>{h.worn.length} agent{h.worn.length===1?"":"s"} wearing</div></div>
+              <ChevronRight size={15} color="var(--txt3)"/></div>))
+            :<span style={{color:"var(--txt3)",fontSize:13}}>No hats here yet.</span>}
+        </Panel>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:14,marginTop:14}}>
+        <Panel t="Tasks" ico={CircleDot}>
+          {room.tasks.map((x,i)=><Line key={i} t={x}/>)}
+        </Panel>
+        <Panel t="Active agents" ico={Users}>
+          {room.agents.map(id=>{const a=AGENTS[id];const as=STATE[a.state];return(
+            <div key={id} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0"}}>
+              <span className="dot" style={{background:as.c}}/><span>{a.name}</span>
+              <span className="lbl" style={{marginLeft:"auto"}}>{as.t}</span></div>);})}
+        </Panel>
+        <Panel t="Known" ico={Check}>{room.knowns.map((x,i)=><Line key={i} t={x} c="var(--teal)"/>)}</Panel>
+        <Panel t="Unknown" ico={AlertTriangle}>
+          {room.unknowns.length?room.unknowns.map((x,i)=><Line key={i} t={x} c="var(--red)"/>):<span style={{color:"var(--txt3)",fontSize:13}}>Nothing open.</span>}
+        </Panel>
+      </div>
+
+      {/* evidence */}
+      <Panel t="Evidence · with provenance (G-set)" ico={FileText} style={{marginTop:14}}>
+        {room.evidence.map((e,i)=>(
+          <div key={i} style={{padding:"10px 0",borderBottom:i<room.evidence.length-1?"1px solid var(--line)":"none"}}>
+            <div style={{fontWeight:500}}>{e.claim}</div>
+            <div className="lbl" style={{marginTop:4}}>{e.src} · {e.prov}</div>
+          </div>))}
+      </Panel>
+
+      {/* activity log + undo */}
+      <Panel t="Activity log" ico={Clock} style={{marginTop:14}}
+        right={undone
+          ? <button className="btn" style={{background:"none",color:"var(--teal)",fontSize:12,padding:0,display:"flex",gap:5,alignItems:"center"}} onClick={redo}><RotateCcw size={13}/>Restore</button>
+          : <button className="btn" style={{background:"none",color:"var(--amber)",fontSize:12,padding:0,display:"flex",gap:5,alignItems:"center"}} onClick={undo}><RotateCcw size={13}/>Undo last action</button>}>
+        {log.length?log.map(([t,who,what],i)=>(
+          <div key={i} style={{display:"flex",gap:10,padding:"7px 0"}}>
+            <span className="mono" style={{fontSize:11,color:"var(--txt3)",width:62,flexShrink:0}}>{t}</span>
+            <span className="mono" style={{fontSize:11,color:"var(--amber)",width:54,flexShrink:0}}>{who}</span>
+            <span style={{color:"var(--txt2)",fontSize:13}}>{what}</span>
+          </div>)):<span style={{color:"var(--txt3)",fontSize:13}}>History reverted. Restore to bring it back.</span>}
+        <div className="lbl" style={{marginTop:8,color:"var(--txt3)"}}>Z-set live state is reversible · G-set history is preserved.</div>
+      </Panel>
+    </div>
+  );
+}
+const Panel=({t,ico:Ico,children,style,right})=>(
+  <div className="card" style={{padding:16,...style}}>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+      {Ico&&<Ico size={14} color="var(--txt2)"/>}<span className="lbl" style={{flex:1}}>{t}</span>{right}
+    </div>{children}
+  </div>
+);
+const Line=({t,c})=>(<div style={{display:"flex",gap:8,alignItems:"flex-start",padding:"4px 0"}}>
+  <span className="dot" style={{background:c||"var(--txt3)",marginTop:7,flexShrink:0}}/><span style={{fontSize:14,color:"var(--txt)"}}>{t}</span></div>);
+const Empty=({t,s})=>(<div className="card" style={{padding:"30px 18px",textAlign:"center"}}>
+  <div style={{fontWeight:600}}>{t}</div><div style={{color:"var(--txt3)",fontSize:13,marginTop:5}}>{s}</div></div>);
+
+/* ---------- HAT ---------- */
+function HatView({hat,go,setScreen}){
+  return(
+    <div style={{padding:"22px",maxWidth:680,margin:"0 auto"}} className="fade-in">
+      <div style={{display:"flex",gap:14,alignItems:"center"}}>
+        <div style={{width:50,height:50,borderRadius:13,background:"var(--ground)",border:"1px solid var(--line)",display:"grid",placeItems:"center"}}><Shield size={24} color="var(--amber)"/></div>
+        <div><div className="disp" style={{fontSize:22,fontWeight:600}}>{hat.name}</div>
+          <div className="lbl" style={{marginTop:3}}>Temporary role · identity unaffected</div></div>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:18}}>
+        <Panel t="Grants" ico={Check}>{hat.grants.map((g,i)=><Line key={i} t={g} c="var(--teal)"/>)}</Panel>
+        <Panel t="Restrictions" ico={Lock}>{hat.denies.map((d,i)=><Line key={i} t={d} c="var(--red)"/>)}</Panel>
+      </div>
+      <Panel t="Currently wearing" ico={Users} style={{marginTop:14}}>
+        {hat.worn.map(id=>{const a=AGENTS[id];return(
+          <div key={id} className="row-link" onClick={()=>{go({agent:id});setScreen("agent");}}>
+            <div style={{width:30,height:30,borderRadius:9,background:"var(--panel2)",display:"grid",placeItems:"center",fontFamily:"var(--mono)",fontWeight:700}}>{a.name[0]}</div>
+            <span style={{flex:1,fontWeight:500}}>{a.name}</span><ChevronRight size={15} color="var(--txt3)"/></div>);})}
+      </Panel>
+      <button className="btn btn-ghost" style={{marginTop:14,width:"100%"}}>Assign hat to an agent</button>
+    </div>
+  );
+}
+
+/* ---------- AGENT ---------- */
+function AgentView({agent,vault}){
+  const st=STATE[agent.state];
+  return(
+    <div style={{padding:"22px",maxWidth:720,margin:"0 auto"}} className="fade-in">
+      <div style={{display:"flex",gap:16,alignItems:"center"}}>
+        <div style={{width:62,height:62,borderRadius:16,background:"linear-gradient(160deg,var(--panel2),var(--ground))",
+          border:"1px solid var(--line)",display:"grid",placeItems:"center",fontFamily:"var(--mono)",fontWeight:700,fontSize:26}}>{agent.name[0]}</div>
+        <div style={{flex:1}}>
+          <div className="disp" style={{fontSize:24,fontWeight:600}}>{agent.name}</div>
+          <div className="lbl" style={{marginTop:3}}>{agent.role}</div>
+          <div className="lbl" style={{marginTop:6,color:st.c}}><span className="dot" style={{background:st.c,marginRight:6}}/>{st.t} · {vault?.name} Vault</div>
+        </div>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginTop:18}}>
+        <Panel t="Memory" ico={Brain}><p style={{color:"var(--txt2)",fontSize:14,lineHeight:1.55}}>{agent.mem}</p></Panel>
+        <Panel t="Skills" ico={Activity}>
+          <div style={{display:"flex",flexWrap:"wrap",gap:7}}>{agent.skills.map(s=><span key={s} className="chip">{s}</span>)}</div></Panel>
+        <Panel t="Relationships" ico={Network}>{agent.rel.map((r,i)=><Line key={i} t={r}/>)}</Panel>
+        <Panel t="Permissions" ico={Shield}>{agent.perms.map((p,i)=><Line key={i} t={p} c="var(--teal)"/>)}</Panel>
+      </div>
+
+      <Panel t="Activity history (G-set)" ico={Clock} style={{marginTop:14}}>
+        {agent.hist.map(([t,what],i)=>(
+          <div key={i} style={{display:"flex",gap:12,padding:"7px 0"}}>
+            <span className="mono" style={{fontSize:11,color:"var(--txt3)",width:74,flexShrink:0}}>{t}</span>
+            <span style={{color:"var(--txt2)",fontSize:13}}>{what}</span></div>))}
+      </Panel>
+    </div>
+  );
+}
+
+/* ---------- AGENT 0 overlay ---------- */
+function Agent0({close,openVault,setScreen}){
+  const [msgs,setMsgs]=useState([{r:"a0",t:"I’m Agent 0. I can find a vault, explain a Genesis concept, or take you somewhere. What do you need?"}]);
+  const [val,setVal]=useState("");
+  const end=useRef();
+  useEffect(()=>{end.current?.scrollIntoView({behavior:"smooth"});},[msgs]);
+  const quick=[["Take me to Observatory","observatory"],["Where do new agents grow?","nursery"],["Show my identity","identity"]];
+  const reply=(text,vid)=>{
+    setMsgs(m=>[...m,{r:"me",t:text}]);
+    setTimeout(()=>{
+      if(vid){ setMsgs(m=>[...m,{r:"a0",t:`Opening the ${VAULTS.find(v=>v.id===vid).name} Vault. (I respect each vault’s visibility — Civilization stays hidden to me.)`}]);
+        setTimeout(()=>{openVault(vid);setScreen("vault");close();},700);
+      } else { setMsgs(m=>[...m,{r:"a0",t:"In Genesis, a Room holds uncertainty open — evidence, knowns, unknowns, and a confidence you can revisit — instead of collapsing to a guess. Try the Signal Triage room in Observatory."}]); }
+    },500);
+  };
+  return(
+    <div className="overlay" onClick={close}>
+      <div onClick={e=>e.stopPropagation()} className="fade-in"
+        style={{marginLeft:"auto",width:"min(420px,100vw)",height:"100%",background:"var(--ground2)",borderLeft:"1px solid var(--line)",display:"flex",flexDirection:"column"}}>
+        <div style={{display:"flex",alignItems:"center",gap:11,padding:"15px 18px",borderBottom:"1px solid var(--line)"}}>
+          <div style={{width:36,height:36,borderRadius:11,background:"linear-gradient(160deg,var(--violet),#5b4fa8)",display:"grid",placeItems:"center"}}><Sparkles size={18} color="#fff"/></div>
+          <div style={{flex:1}}><div style={{fontWeight:600}}>Agent 0</div><div className="lbl" style={{marginTop:2}}>Meta layer · your guide</div></div>
+          <X size={20} color="var(--txt2)" style={{cursor:"pointer"}} onClick={close}/>
+        </div>
+        <div className="gx-scroll" style={{flex:1,padding:18,display:"flex",flexDirection:"column",gap:12}}>
+          {msgs.map((m,i)=>(
+            <div key={i} style={{alignSelf:m.r==="me"?"flex-end":"flex-start",maxWidth:"82%",
+              background:m.r==="me"?"var(--amber)":"var(--panel)",color:m.r==="me"?"#1a1206":"var(--txt)",
+              padding:"10px 13px",borderRadius:13,fontSize:14,lineHeight:1.5,
+              border:m.r==="me"?"none":"1px solid var(--line)"}}>{m.t}</div>))}
+          <div ref={end}/>
+        </div>
+        <div style={{padding:"0 18px 10px",display:"flex",gap:7,flexWrap:"wrap"}}>
+          {quick.map(([q,v])=><button key={q} className="chip" style={{cursor:"pointer",background:"var(--panel)"}} onClick={()=>reply(q,v)}>{q}</button>)}
+        </div>
+        <div style={{display:"flex",gap:8,padding:"10px 14px 14px",borderTop:"1px solid var(--line)"}}>
+          <input className="field" value={val} onChange={e=>setVal(e.target.value)}
+            onKeyDown={e=>{if(e.key==="Enter"&&val.trim()){reply(val);setVal("");}}} placeholder="Ask Agent 0…"/>
+          <button className="hud-ico" style={{width:44,background:"var(--amber)",borderColor:"transparent"}}
+            onClick={()=>{if(val.trim()){reply(val);setVal("");}}}><Send size={17} color="#1a1206"/></button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- search overlay ---------- */
+function SearchOv({close,openVault}){
+  const [q,setQ]=useState("");
+  const items=[];
+  VAULTS.forEach(v=>{ items.push({k:"Vault",n:v.name,id:v.id,c:STATE[v.state].c});
+    v.rooms.forEach(r=>items.push({k:"Room · "+v.name,n:r.name,id:v.id}));
+    v.agents.forEach(a=>items.push({k:"Agent · "+v.name,n:AGENTS[a].name,id:v.id}));});
+  const f=items.filter(i=>i.n.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  return(
+    <div className="overlay" style={{alignItems:"flex-start",justifyContent:"center"}} onClick={close}>
+      <div onClick={e=>e.stopPropagation()} className="card fade-in" style={{width:"min(560px,94vw)",marginTop:80,padding:8,background:"var(--ground2)"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px"}}>
+          <Search size={18} color="var(--txt2)"/>
+          <input autoFocus className="field" style={{border:"none",background:"none",padding:6}} value={q}
+            onChange={e=>setQ(e.target.value)} placeholder="Search vaults, rooms, agents…"/>
+          <span className="lbl">Esc</span>
+        </div>
+        <div style={{borderTop:"1px solid var(--line)",marginTop:4,paddingTop:4}}>
+          {(q?f:items.slice(0,6)).map((i,k)=>(
+            <div key={k} className="row-link" onClick={()=>{openVault(i.id);close();}}>
+              <span className="dot" style={{background:i.c||"var(--txt3)"}}/>
+              <span style={{flex:1}}>{i.n}</span><span className="lbl">{i.k}</span></div>))}
+          {q&&!f.length&&<div style={{padding:18,textAlign:"center",color:"var(--txt3)",fontSize:13}}>Nothing matches. Try a vault or agent name.</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- settings overlay ---------- */
+function SettingsOv({close}){
+  const groups={"Genesis":["Account","WiFi","Display","Audio","Agent 0 access","Vault visibility","Storage","Updates"],
+    "Advanced":["NixOS configuration","Packages","Drivers","Logs","Recovery"]};
+  const [tg,setTg]=useState({nix:true,a0:true,sync:false});
+  return(
+    <div className="overlay" onClick={close}>
+      <div onClick={e=>e.stopPropagation()} className="fade-in gx-scroll"
+        style={{marginLeft:"auto",width:"min(440px,100vw)",height:"100%",background:"var(--ground2)",borderLeft:"1px solid var(--line)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"15px 18px",borderBottom:"1px solid var(--line)"}}>
+          <span className="disp" style={{fontWeight:600,fontSize:18}}>Settings</span>
+          <X size={20} color="var(--txt2)" style={{cursor:"pointer"}} onClick={close}/></div>
+        <div style={{padding:18}}>
+          {Object.entries(groups).map(([g,items])=>(
+            <div key={g} style={{marginBottom:18}}>
+              <div className="lbl" style={{marginBottom:8}}>{g}</div>
+              <div className="card">
+                {items.map((it,i)=>(
+                  <div key={it} style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+                    padding:"13px 15px",borderBottom:i<items.length-1?"1px solid var(--line)":"none"}}>
+                    <span style={{color:"var(--txt)",fontSize:14}}>{it}</span>
+                    {it==="Agent 0 access"?<Tog on={tg.a0} set={()=>setTg(t=>({...t,a0:!t.a0}))}/>:
+                     it==="NixOS configuration"?<span className="lbl" style={{color:"var(--teal)"}}>generation 142</span>:
+                     <ChevronRight size={15} color="var(--txt3)"/>}
+                  </div>))}
+              </div>
+              {g==="Advanced"&&<div className="lbl" style={{marginTop:8,color:"var(--txt3)",lineHeight:1.5}}>The OS underneath is declarative — roll the whole machine back to any prior generation.</div>}
+            </div>))}
+        </div>
+      </div>
+    </div>
+  );
+}
+const Tog=({on,set})=>(<div className={"tg "+(on?"on":"off")} onClick={set}><div className="kn"/></div>);
+
+/* ---------- account overlay ---------- */
+function AccountOv({close,online}){
+  return(
+    <div className="overlay" onClick={close}>
+      <div onClick={e=>e.stopPropagation()} className="fade-in"
+        style={{marginLeft:"auto",width:"min(400px,100vw)",height:"100%",background:"var(--ground2)",borderLeft:"1px solid var(--line)",padding:22}}>
+        <div style={{display:"flex",justifyContent:"flex-end"}}><X size={20} color="var(--txt2)" style={{cursor:"pointer"}} onClick={close}/></div>
+        <div style={{textAlign:"center",marginTop:10}}>
+          <div style={{width:72,height:72,borderRadius:20,background:"linear-gradient(160deg,var(--amber),var(--amber-d))",
+            display:"grid",placeItems:"center",margin:"0 auto",color:"#1a1206",fontWeight:700,fontFamily:"var(--mono)",fontSize:30}}>A</div>
+          <div className="disp" style={{fontSize:20,fontWeight:600,marginTop:12}}>Aaron</div>
+          <div className="lbl" style={{marginTop:4}}>@aaron · identity verified</div>
+        </div>
+        <div className="card" style={{marginTop:20,padding:16,display:"grid",gap:13}}>
+          {[["Identity key","unlocked","var(--teal)"],["Recovery shards","3 of 5","var(--amber)"],
+            ["Mesh",online?"connected":"offline",online?"var(--teal)":"var(--red)"],["Credits","1,420 cr","var(--amber)"]].map(([k,v,c])=>(
+            <div key={k} style={{display:"flex",justifyContent:"space-between"}}>
+              <span style={{color:"var(--txt2)"}}>{k}</span><span className="mono" style={{fontSize:13,color:c}}>{v}</span></div>))}
+        </div>
+        <button className="btn btn-ghost" style={{width:"100%",marginTop:16}}>Manage identity & keys</button>
+      </div>
+    </div>
+  );
+}

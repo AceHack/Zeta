@@ -20,6 +20,15 @@ paths-ignore:
   # FASTER notes, etc.). Not Zeta's code; not Zeta's bugs.
   - "references/prior-art/**"
 
+  # Project Genesis prototype — a built Vite/React static site
+  # served as a subfolder of the existing Jekyll Pages deploy
+  # (genesis/index.html + genesis/assets/*). The shipped JS is a
+  # minified production bundle (not authored source), and the
+  # genesis/_src/ snapshot is a self-contained UI prototype, not
+  # part of Zeta's production surfaces. Findings here would ask us
+  # to fix bundler output or a prototype, not Zeta's code.
+  - "genesis/**"
+
   # Benchmark harness. Perf-critical by definition; uses
   # patterns (unsafe pointers, pinned spans, unchecked
   # arithmetic) that are intentional there. Keep CodeQL

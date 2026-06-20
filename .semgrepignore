@@ -7,3 +7,10 @@
 # machine/archive surfaces. semgrep's built-in ignores (node_modules, .git, etc.) still
 # apply alongside this file (verified: 0 repo-wide findings, no node_modules/references flood).
 docs/history/
+
+# Project Genesis prototype: genesis/assets/* are minified Vite production
+# bundles (not authored source); genesis/_src/ is a self-contained UI
+# prototype. Neither is a Zeta production surface — scanning them only adds
+# false positives, mirroring the bench/ and references/prior-art/ exclusions
+# the CodeQL config already carries.
+genesis/

@@ -74,3 +74,11 @@ docs/lost-substrate/artifacts/**/*.log linguist-generated=true -diff
 # happen — index-row landings are substrate; the merge driver makes
 # their landing structurally robust.
 memory/MEMORY.md merge=union
+
+# Project Genesis prototype — the served files under genesis/ (except the
+# _src/ snapshot) are a Vite production build: minified JS/CSS bundles, not
+# authored source. Mark them generated so linguist excludes them from language
+# stats and `-diff` keeps the 250KB minified bundle out of PR review walls.
+# The reproducible source lives in genesis/_src/ and stays reviewable.
+genesis/assets/**   linguist-generated=true -diff
+genesis/index.html  linguist-generated=true
