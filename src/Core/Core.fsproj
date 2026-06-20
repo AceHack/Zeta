@@ -195,6 +195,7 @@
     <Compile Include="Heat.fs" />
     <Compile Include="RoomHorizon.fs" />
     <Compile Include="RoomAdmission.fs" />
+    <Compile Include="RoomBoundary.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="Injection.fs" />
     <Compile Include="InjectionExt.fs" />

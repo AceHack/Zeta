@@ -159,6 +159,7 @@
     <Compile Include="PredictionScheduler.Tests.fs" />
     <Compile Include="RoomHorizon.Tests.fs" />
     <Compile Include="RoomAdmission.Tests.fs" />
+    <Compile Include="RoomBoundary.Tests.fs" />
     <Compile Include="RecordedSource.Tests.fs" />
     <Compile Include="SoftIsr.Tests.fs" />
     <Compile Include="SimFramework.Tests.fs" />
