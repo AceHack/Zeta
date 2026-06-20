@@ -472,6 +472,7 @@
     <Compile Include="Command.Tests.fs" />
     <Compile Include="Formal/Merkle.Laws.Tests.fs" />
     <Compile Include="Formal/MerkleInclusion.Laws.Tests.fs" />
+    <Compile Include="Formal/MerkleProofGoldenVectors.Tests.fs" />
     <Compile Include="Formal/Sketch.Laws.Tests.fs" />
     <Compile Include="Formal/Metric.Bounds.Tests.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />

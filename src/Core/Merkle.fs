@@ -65,6 +65,13 @@ module MerkleHash =
         ofBytes (ReadOnlySpan<byte> buf)
 
 
+/// One step on a Merkle inclusion (audit) path: the sibling digest and whether
+/// that sibling sits on the RIGHT (so the current node is the LEFT child and
+/// `parent = combine self sibling`). The odd trailing node's sibling is itself
+/// with `SiblingOnRight = true` — the same duplicate-last shape the tree folds.
+/// Byte-portable across the F#/C#/Rust/TS oracles (the golden-vector treaty).
+type MerkleProofStep = { Sibling: MerkleHash; SiblingOnRight: bool }
+
 /// Merkle tree over a sequence of leaf blobs. Built bottom-up in a
 /// single pass; the root digest is returned + cached for later
 /// diff-against-a-prior-tree comparisons.
@@ -132,10 +139,45 @@ type MerkleTree(leaves: byte array array) =
     /// protocols that walk the tree top-down.
     member _.LevelDigests : MerkleHash array array = levels
 
+    /// Inclusion (audit) proof for the leaf at `index`: the sibling digest at
+    /// each level from leaf to root, with its side. A verifier holding only the
+    /// leaf, this proof, and the root can confirm membership without the tree
+    /// (see `MerkleTree.verifyProof`). Replays the exact fold (duplicate-last on
+    /// an odd trailing node → sibling is self, on the right). Raises on a
+    /// leaf-index out of range.
+    member _.Proof(index: int) : MerkleProofStep array =
+        if index < 0 || index >= level0.Length then
+            invalidArg (nameof index) $"leaf index {index} out of range [0, {level0.Length})"
+        let steps = ResizeArray<MerkleProofStep>()
+        let mutable idx = index
+        // Walk levels[0 .. n-2]; the last level is the root (no sibling).
+        for lvl in 0 .. levels.Length - 2 do
+            let cur = levels.[lvl]
+            let selfIsLeft = idx % 2 = 0
+            let siblingIdx =
+                if selfIsLeft then (if idx + 1 < cur.Length then idx + 1 else idx) else idx - 1
+            steps.Add({ Sibling = cur.[siblingIdx]; SiblingOnRight = selfIsLeft })
+            idx <- idx / 2
+        steps.ToArray()
+
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module MerkleTree =
+
+    /// Verify an inclusion proof: re-hash `leaf`, fold the audit `steps` up,
+    /// and check the result equals `expectedRoot`. Touches ONLY the leaf, the
+    /// proof, and the root — never the tree (the third-party property). A
+    /// tampered leaf, a corrupted step, or the wrong root all fail. The fold
+    /// matches `MerkleTree.Proof` + `MerkleHash.combine` byte-for-byte, so the
+    /// same `(leaf, steps, root)` verifies identically in the C#/Rust/TS oracles.
+    let verifyProof (leaf: byte array) (steps: MerkleProofStep array) (expectedRoot: MerkleHash) : bool =
+        let mutable acc = MerkleHash.ofBytes (ReadOnlySpan<byte> leaf)
+        for step in steps do
+            acc <-
+                if step.SiblingOnRight then MerkleHash.combine acc step.Sibling
+                else MerkleHash.combine step.Sibling acc
+        acc.Equals expectedRoot
 
     /// Combine `FastCdc` + `MerkleTree` into a single call — chunk a
     /// byte stream by content-defined boundaries then build a tree
