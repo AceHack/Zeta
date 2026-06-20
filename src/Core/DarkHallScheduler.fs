@@ -163,3 +163,43 @@ module DarkHallScheduler =
         let start = initial room manifest
 
         SimLoop.run [ handler ] interruptSource measure cut clock budget ctx seed ticksPerLap start
+
+    let private pointerSafe (value: string) : string =
+        value
+        |> Seq.map (fun c ->
+            if System.Char.IsLetterOrDigit c || c = '-' || c = '_' then
+                c
+            else
+                '-')
+        |> Seq.toArray
+        |> fun chars -> System.String(chars)
+
+    let private continuationLoopId (loopId: string) : string =
+        match pointerSafe loopId with
+        | "" -> "darkhall"
+        | id -> id
+
+    /// Deterministic save pointer for the latest heat-board state. The pointer
+    /// names the room/lap/tick boundary; the host decides where the actual save
+    /// payload is written.
+    let heatBoardStatePointer (loopId: string) (outcome: SimLoop.Outcome<ScheduledRoomState, string list>) : string =
+        sprintf
+            "saves/darkhall/%s/lap-%d-tick-%d.heat-board"
+            (continuationLoopId loopId)
+            (List.length outcome.Laps)
+            outcome.Final.CompletedTicks
+
+    /// Mint the existing SimLoop continuation token for a heat-board run when
+    /// the loop stopped on a budget rail. Cut-closed rooms and errored rooms do
+    /// not respawn.
+    let continueHeatBoardAfter
+        (loopId: string)
+        (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
+        : SimLoop.Continuation option =
+        SimLoop.continueAfter (continuationLoopId loopId) (heatBoardStatePointer loopId outcome) outcome
+
+    let encodeHeatBoardContinuation
+        (loopId: string)
+        (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
+        : string option =
+        outcome |> continueHeatBoardAfter loopId |> Option.map SimLoop.encodeContinuation

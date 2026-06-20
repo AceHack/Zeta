@@ -202,6 +202,8 @@ let ``heat board sim loop measures backpressure before the cut closes`` () =
         | SimLoop.Stopped.CutChoseClose -> ()
         | other -> Assert.Fail(sprintf "expected heat-board cut to close the loop, got %A" other)
 
+        Assert.True(Scheduler.continueHeatBoardAfter "darkhall-heat-board" outcome |> Option.isNone)
+
         match outcome.Laps with
         | [ lap ] ->
             Assert.Equal(1, lap.State.CompletedTicks)
@@ -213,4 +215,63 @@ let ``heat board sim loop measures backpressure before the cut closes`` () =
             Assert.Equal("3", firstDisplayRow.Substring(16, 1))
             Assert.Equal("4", firstDisplayRow.Substring(48, 1))
         | laps -> Assert.Fail(sprintf "expected one measured lap before cut, got %A" laps)
+    }
+
+[<Fact>]
+let ``budget stopped heat board sim loop mints a continuation token`` () =
+    task {
+        let budget: SimLoop.Budget =
+            { MaxLaps = 2
+              MaxTicks = 16
+              MaxMillis = 1_000L }
+
+        let! outcome =
+            Scheduler.heatBoardSimLoop
+                "darkhall-heat-board"
+                Arcade.room
+                Chip9Capabilities.chip8Default
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                budget
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+
+        Assert.Equal(SimLoop.Stopped.LapBudget, outcome.Stopped)
+        Assert.Equal(2, outcome.Final.CompletedTicks)
+
+        let expectedPointer = "saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board"
+        Assert.Equal(expectedPointer, Scheduler.heatBoardStatePointer "darkhall-heat-board" outcome)
+
+        match Scheduler.continueHeatBoardAfter "darkhall-heat-board" outcome with
+        | None -> Assert.Fail "budget-stopped heat-board loops should schedule a continuation"
+        | Some token ->
+            Assert.Equal("darkhall-heat-board", token.LoopId)
+            Assert.Equal(2, token.NextLap)
+            Assert.Equal(2, token.TicksSpent)
+            Assert.Equal(expectedPointer, token.StatePointer)
+
+            let encoded = SimLoop.encodeContinuation token
+            Assert.Equal(Some token, SimLoop.parseContinuation encoded)
+            Assert.Equal(Some encoded, Scheduler.encodeHeatBoardContinuation "darkhall-heat-board" outcome)
+
+        match Scheduler.continueHeatBoardAfter "" outcome with
+        | None -> Assert.Fail "empty loop ids should normalize into a parseable continuation"
+        | Some token ->
+            Assert.Equal("darkhall", token.LoopId)
+            Assert.Equal("saves/darkhall/darkhall/lap-2-tick-2.heat-board", token.StatePointer)
+            Assert.Equal(Some token, SimLoop.parseContinuation (SimLoop.encodeContinuation token))
+
+        match Scheduler.continueHeatBoardAfter "darkhall:heat/board" outcome with
+        | None -> Assert.Fail "unsafe loop ids should normalize into a parseable continuation"
+        | Some token ->
+            Assert.Equal("darkhall-heat-board", token.LoopId)
+            Assert.Equal("saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board", token.StatePointer)
+            Assert.Equal(Some token, SimLoop.parseContinuation (SimLoop.encodeContinuation token))
     }
