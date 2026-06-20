@@ -260,6 +260,7 @@
     <Compile Include="CapabilityLedger.fs" />
     <Compile Include="BoundaryLight.fs" />
     <Compile Include="GeneratorRegistry.fs" />
+    <Compile Include="GeneratorIrRegistry.fs" />
     <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />

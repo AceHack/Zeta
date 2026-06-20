@@ -183,6 +183,7 @@
     <Compile Include="MediaLines.Tests.fs" />
     <Compile Include="BoundaryLight.Tests.fs" />
     <Compile Include="GeneratorRegistry.Tests.fs" />
+    <Compile Include="GeneratorIrRegistry.Tests.fs" />
     <Compile Include="ZetaIdViz.Tests.fs" />
     <Compile Include="AnimFlow.Tests.fs" />
     <Compile Include="PixelLens.Tests.fs" />

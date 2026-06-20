@@ -30,24 +30,31 @@
 //
 // Tier: PROVEN that the IR-as-DynamicValue-row + width-parametric total interpreter
 // byte-locks a SECOND primitive against the five independent hand-ports and
-// canonical. REMAINING (shared with splitmix64): carry the row as a live tuple on
-// the registry's DBSP Z-set relation rather than a checked-in document.
-import { readFileSync, writeFileSync } from "node:fs";
+// canonical. The IR is now sourced FROM THE RELATION:
+// `generatorIr.byZetaId(idOf("hash.fmix32", 1))` returns the row whose payload is
+// the canonical-JSON IR (the committed fmix32.ir.json is that row's materialised
+// view; the F# GeneratorIrRegistry.Tests pin the byte-for-byte equality and the
+// register/retract/full==incremental Z-set laws).
+import { writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fromCanonicalJson, type Tagged } from "../../../../src/Core.TypeScript/dynamic-value/json.ts";
+import * as generatorIr from "../../_harness/generator-ir-registry.ts";
 
 /** A single total u-word -> u-word step in a finaliser IR. */
 type MixOp =
   | { readonly op: "mul"; readonly k: bigint } // z := z * k        (wrapping)
   | { readonly op: "xorshr"; readonly s: bigint }; // z := z ^ (z >> s)
 
-// --- read the IR ROW and decode it through the real DynamicValue canonical-JSON decoder ---
+// --- obtain the IR ROW from the relation (by content-addressed ZetaId) and decode it ---
 
-const irPath = join(import.meta.dir, "fmix32.ir.json");
-const irText = readFileSync(irPath, "utf8").trim();
-const decoded = fromCanonicalJson(irText);
+const zetaId = generatorIr.idOf("hash.fmix32", 1);
+const irRow = generatorIr.byZetaId(zetaId);
+if (!irRow) {
+  throw new Error(`no IR row on the relation for hash.fmix32@1 (zetaId ${zetaId})`);
+}
+const decoded = fromCanonicalJson(irRow.irCanonicalJson);
 if (!decoded.ok) {
-  throw new Error(`fmix32.ir.json is not a canonical DynamicValue: ${decoded.error}`);
+  throw new Error(`hash.fmix32@1 IR row is not a canonical DynamicValue: ${decoded.error}`);
 }
 
 // --- project the decoded DynamicValue (Tagged) down to (width, op list) ---
@@ -124,4 +131,4 @@ for (const [id, x] of Object.entries(inputs)) out[id] = mix(x).toString();
 
 const target = join(dirname(import.meta.dir), "ts-output.json");
 writeFileSync(target, `${JSON.stringify(out, null, 2)}\n`);
-console.log("wrote ts-output.json (generated-from-ir, IR read from fmix32.ir.json DynamicValue row, width 32)");
+console.log(`wrote ts-output.json (generated-from-ir, IR sourced from the relation row zetaId=${zetaId}, width 32)`);
