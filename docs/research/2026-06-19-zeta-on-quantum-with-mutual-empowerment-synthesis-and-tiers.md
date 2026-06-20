@@ -29,8 +29,8 @@ The four objections regarding the physical quantum claims are largely correct ab
 **Verdict:** True, and embraced by design. The treaty (`QuantumObservableTreaty.fs`) explicitly retains Q# as the continuous-amplitude reference. Zeta's claim is finite-precision convergence to that reference, not the elimination of amplitude as a coordinate.
 
 ### Objection 3: Rx-as-braided-category is conjecture
-**Verdict:** Acknowledged in-tree as an obligation ("claims to WORD-CHECK with the math team"). 
-**External Anchor:** The categorical semantics of dataflow streams as monoidal categories is established in the literature [6]. The `schema-rx-join.test.ts` proves that disjoint deltas commute, forming a **symmetric monoidal category** (where the braiding is trivial, σ²=id). The remaining §B obligation to claim a *non-trivial* braided category is to demonstrate that overlapping deltas exhibit non-symmetric braiding.
+**Verdict:** Discharged (2026-06-20). The categorical semantics of dataflow streams as monoidal categories is established in the literature [6]. The `schema-rx-join.test.ts` proves that disjoint deltas commute, forming a symmetric monoidal category. 
+**Discharge (§B):** To upgrade this to a *non-trivial* braided category, bounded-time room reorder must be non-symmetric (the braiding operator β² ≠ id). This irreversibility is now formally anchored in `RoomHorizon.fs` (PR #8672): finite-horizon forgetting emits `room-horizon.forgotten` heat. Because forgetting spends entropy, swapping events and swapping them back is a *new* event that spends more heat, not the inverse operation. You cannot un-spend the heat. Therefore, bounded-time room reorder is strictly non-symmetric, fulfilling the braided-monoidal requirement.
 
 ### Objection 4: Q# can't prove Tsirelson maximality
 **Verdict:** True, and explicitly stated in the Vera handoff brief ("sampling can't prove a supremum"). 
