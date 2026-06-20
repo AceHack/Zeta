@@ -4,9 +4,6 @@ import {
   emptySimulatedState,
   GATED_PERMISSIONS,
   DEFAULT_PERMISSIONS,
-  TRADITIONAL_FS_DEFAULT,
-  type SimulatedState,
-  type FileEntry,
 } from "./workspace-port";
 
 describe("simulatedWorkspacePort — in-memory filesystem", () => {
