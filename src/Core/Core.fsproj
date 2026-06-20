@@ -312,6 +312,7 @@
     <Compile Include="WikidataGraph.fs" />
     <Compile Include="GraphSnapshot.fs" />
     <Compile Include="CoEmpowerGraphSvg.fs" />
+    <Compile Include="MintPanel.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />

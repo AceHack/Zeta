@@ -353,6 +353,7 @@
     <Compile Include="Formal/WikidataGraph.Tests.fs" />
     <Compile Include="Formal/GraphSnapshot.Tests.fs" />
     <Compile Include="Formal/CoEmpowerGraphSvg.Tests.fs" />
+    <Compile Include="Formal/MintPanel.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
