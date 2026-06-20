@@ -44,6 +44,7 @@ const CHECKS: readonly Check[] = [
   // Cheap file-presence + markdown first (fast feedback).
   { label: "no-conflict-markers", cmd: ["bun", "src/Core.TypeScript/hygiene/check-no-conflict-markers.ts"] },
   { label: "no-empty-dirs", cmd: ["bun", "src/Core.TypeScript/lint/no-empty-dirs.ts"] },
+  { label: "auto-vivify check", cmd: ["bun", "src/Core.TypeScript/backlog/auto-vivify.ts", "--check"] },
   // The glob is REQUIRED: the config has no `globs` key, so a bare invocation
   // lints zero files (a false pass). Matches the gate: markdownlint-cli2 "**/*.md".
   { label: "markdownlint", cmd: ["npx", "--yes", "markdownlint-cli2", "**/*.md"] },
@@ -135,9 +136,7 @@ function main(): number {
     console.log(`  ${mark} ${r.label}${r.note ? ` — ${r.note}` : ""}`);
   }
   if (skipped.length > 0) {
-    console.log(
-      `\n${skipped.length} check(s) SKIPPED (tool unavailable locally) — they will still run in CI.`,
-    );
+    console.log(`\n${skipped.length} check(s) SKIPPED (tool unavailable locally) — they will still run in CI.`);
   }
   if (failed.length > 0) {
     console.log(`\n✗ preflight: ${failed.length} check(s) failed.`);
