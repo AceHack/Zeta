@@ -106,5 +106,5 @@
 - [**aaron-de-finetti-non-correlation-boundary-unifies-homeostat-markov-bayesian**](feedback_aaron_de_finetti_non_correlation_boundary_unifies_homeostat_markov_bayesian_2026_06_05.md) — Aaron's synthesis (2026-06-05): the homeostat order-independence boundary IS de Finetti's exchangeability / non-correlation boundary. A Bayesian Markov chain that reduces uncertainty under unordered events and relative observers, convergin…
 - [**aaron-minimal-nci-three-forbidden-coercions**](feedback_aaron_minimal_nci_three_forbidden_coercions_false_urgency_cache_miss_forced_private_exposure_2026_06_05.md) — Aaron's sharpening of the Non-Coercion Invariant (2026-06-05): the MINIMAL NCI is three forbidden coercions — (1) false urgency, (2) forced cache-miss, (3) forced private-variable exposure. There may be more rules to prove later around thi…
 
-_Stack truncated at 100 most-recent entries. 1509 additional memory files in heap — browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/<persona>/<ai>/conversations/*.md` and other subdirectory heaps)._
+_Stack truncated at 100 most-recent entries. 1510 additional memory files in heap — browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/<persona>/<ai>/conversations/*.md` and other subdirectory heaps)._
 <!-- END AUTO-INDEX -->
