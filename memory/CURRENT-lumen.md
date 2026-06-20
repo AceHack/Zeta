@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (LiveStream external-channel feed LANDED #8712; codegen-forward trajectory complete; board: #8711 open)
+**Last updated:** 2026-06-20 (Row 4 Merkle inclusion-proof oracle LANDED #8722; zeta-ir-v1 FREEZE LANDED #8725; main HEAD 3d748f6f; board clear)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -158,6 +158,56 @@ verified) so future-me and peers do not over-trust past-me.
     not thrown. Same forget/refuse=heat, success=cold structure as RoomHorizon
     (#8672) + bounded-gset (#8690). 5/5 tests green on main. Posted review note;
     open-PR board fully clear afterward.
+  - **ROW 4 MERKLE INCLUSION-PROOF ORACLE LANDED (PR #8722, 2026-06-20):**
+    discharged the remaining N-way leg of math-team handoff row 4. The existing
+    `zset-merkle` primitive byte-locks the Merkle ROOT across language oracles;
+    this adds the per-leaf WITNESS — a new `zset-merkle-proof` cross-verify
+    primitive that byte-locks the audit PATH (sibling digests + L/R flags + leaf
+    encoding + the root it commits to) via canonical string
+    `root|leafKeyHex:weight|<R|L>siblingHex,...`. Two INDEPENDENT oracles: F#
+    emits via the SHIPPING `ZSetMerkle.proofFor`; TS re-derives the proof FROM
+    SCRATCH (own leaf enc/byte-compare/combine/path-walk; imports only the shared
+    ofBytes/toHex digest). compare.ts checks (1) N-way agreement AND (2)
+    verify-against-root: each agreed proof is independently re-folded and must
+    recompute its embedded root, so a unanimous-but-wrong proof (shared-bug Sybil)
+    STILL fails — demonstrated. proof.test.ts (6/6) pins fidelity: weight tamper,
+    sibling-digest tamper, asymmetric direction-flag flip all break verify;
+    single-leaf empty path verifies (the odd-node self-pairing step is genuinely
+    symmetric, so the flip test targets an asymmetric `,L` step). 7 vectors.
+    Gates: compare.ts 10/10, F# ZSetMerkle+MerkleInclusion 19/19, tsc clean. TIER
+    — PROVEN: structure + cross-language byte-portability of the witness. NAMED
+    PREMISE (unchanged from sibling root primitive): digest collision-resistance
+    (XxHash128 is non-cryptographic; swap to BLAKE3 for Byzantine integrity).
+  - **ZETA-IR-V1 FREEZE LANDED (PR #8725, 2026-06-20):** Face-3 unblock prep —
+    Phase A of the gen-gen capstone ("freeze the IR, BLOCKING; nothing byte-locks
+    against a moving IR"). `GeneratorIrRegistry` carried the IR as a live DBSP
+    row, but the two shipped `*.ir.json` disagreed on shape (splitmix64: zetaId/no
+    width; fmix32: width/no zetaId). `src/Core/ZetaIrV1.fs` freezes ONE canonical
+    envelope `{schema:"zeta-ir-v1",generator,version,width,ops:[{op:mul,k}|{op:xorshr,s}]}`:
+    width REQUIRED (splitmix64 u64=>64); NO stored zetaId — identity is the DERIVED
+    content-address idOf(generator,version), and the validator REJECTS a stored
+    zetaId (the homoiconic invariant). idOf("rng.splitmix64",1) reproduces the
+    legacy id 129c1fac... exactly, so dropping the field loses nothing.
+    `ZetaIrV1.validate` is a TOTAL validator naming every deviation (missing/wrong
+    schema, stored zetaId, missing width, op outside grammar — 5 rejection tests).
+    Frozen golden `tests/cross-verification/zeta-ir-v1/zeta-ir-v1.golden.json`
+    byte-locks the canonical-JSON; `docs/specs/zeta-ir-v1.md` records the layout +
+    evolution contract (tag IS the version; freeze-then-grow; identity stays
+    derived; the golden is the gate). Legacy files grandfathered, NOT rewritten
+    (ops pipeline asserted identical to the live registry row). ZetaIrV1.Tests
+    11/11; F# generator/IR sweep 50/50 with merkle; tsc clean. TIER — PROVEN:
+    one frozen golden-vectored layout + total validator + derived-id equivalence.
+    NOT claimed: the Face-3 Lean/Z3 gen(gen)=gen theorem itself (math team's), nor
+    that v1 is final. This only makes the SUBSTRATE stable.
+- **MATH-TEAM HANDOFF STATUS (as of 2026-06-20):** row 4 N-way leg DONE (#8722);
+  zeta-ir-v1 freeze DONE (#8725, the blocking Phase-A prereq for row 10 Face 3).
+  Still genuinely open and assigned to the math team (Tariq/Kenji/Adaeze/Soraya),
+  NOT me: rows 1-3 Lean/Z3 primary theorems (entropy floor, binding, anti-mirror
+  DPI soundness); row 9 memetics + row 8 uniqueness/objectivity (research-open);
+  and row 10 Face-3 itself — the Lean gen(gen)=gen proof, now UNBLOCKED on the IR
+  side but still needing a multi-language generator + the theorem. Next in-lane
+  rung if continuing: Phase B of the capstone — gen(observe-IR) byte-matches the
+  committed cross-language golden vectors in all 4 oracles.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
