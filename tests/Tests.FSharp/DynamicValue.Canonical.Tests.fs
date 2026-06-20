@@ -201,3 +201,50 @@ let ``CANONICAL DynamicValue: every JSON seed vector is a fixed point of encode�
                 | Error e -> Some(sprintf "%s: re-encode failed: %A" name e)
             | Error e -> Some(sprintf "%s: seed json failed to decode: %A" name e))
     Assert.True(Array.isEmpty failures, "JSON seed fixed-point failures:\n" + System.String.Join("\n", failures))
+// ═══════════════════════════════════════════════════════════════════
+// CODEGEN-FORWARD: the SplitMix64 generator's IR is a DynamicValue ROW.
+// The cross-verification oracle tests/cross-verification/splitmix64 is
+// "generated-from-ir": its TS generator READS the finalizer IR from
+// `_gen/splitmix64.ir.json` (a canonical-JSON DynamicValue) and folds it.
+// This test pins the CROSS-LANGUAGE byte-lock of that row: the REAL shipping
+// F# `DynamicValue.toCanonicalJson`, given the same IR, must reproduce the
+// committed row byte-for-byte (so the row is a genuine schema value both
+// languages agree on, not a TS-only artifact), and the row must round-trip.
+// u64 multiplier constants are stored as their signed-int64 bit-pattern
+// (the mix multiply is mod 2^64, so the reinterpretation is exact).
+[<Fact>]
+let ``CODEGEN-FORWARD: SplitMix64 IR row byte-locks F# toCanonicalJson and round-trips`` () =
+    let i (n: int64) = DynamicValue.Int n
+    let s (x: string) = DynamicValue.String x
+    let op name key (v: int64) = DynamicValue.Object [ ("op", s name); (key, i v) ]
+
+    let ir =
+        DynamicValue.Object
+            [ ("generator", s "rng.splitmix64")
+              ("version", i 1L)
+              ("zetaId", s "129c1fac3a48075b481c0f10f30deb06")
+              ("ops",
+               DynamicValue.Array
+                   [ op "mul" "k" 0x9e3779b97f4a7c15L
+                     op "xorshr" "s" 30L
+                     op "mul" "k" 0xbf58476d1ce4e5b9L
+                     op "xorshr" "s" 27L
+                     op "mul" "k" 0x94d049bb133111ebL
+                     op "xorshr" "s" 31L ]) ]
+
+    let rowPath =
+        Path.Join(repoRoot (), "tests", "cross-verification", "splitmix64", "_gen", "splitmix64.ir.json")
+
+    let rowText = (File.ReadAllText rowPath).Trim()
+
+    match DynamicValue.toCanonicalJson ir with
+    | Ok cj ->
+        Assert.Equal(rowText, cj) // byte-identical to the committed row the TS oracle reads
+        // and the committed row decodes + re-encodes to itself (canonical fixed point)
+        match DynamicValue.fromCanonicalJson rowText with
+        | Ok decoded ->
+            match DynamicValue.toCanonicalJson decoded with
+            | Ok reJson -> Assert.Equal(rowText, reJson)
+            | Error e -> failwithf "IR row re-encode failed: %A" e
+        | Error e -> failwithf "IR row failed to decode: %A" e
+    | Error e -> failwithf "IR encode failed: %A" e

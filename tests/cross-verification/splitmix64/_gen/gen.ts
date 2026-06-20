@@ -1,70 +1,97 @@
-// IR-DRIVEN TS oracle for SplitMix64 — the first "generated-from-ir" oracle.
+// IR-DRIVEN TS oracle for SplitMix64 — a "generated-from-ir" oracle whose IR is a
+// real DynamicValue ROW, not an inline literal.
 //
-// WHAT CHANGED (codegen-forward, 2026-06-20)
-// ------------------------------------------
-// Previously this file recomputed the mixer with hand-written imperative steps
-// (a literal port). It now does NOT contain the algorithm as code — it contains
-// the algorithm as DATA (`SPLITMIX64_IR`), and a tiny total interpreter folds
-// that IR over each input. This is the smallest honest instance of the
-// codegen-forward trajectory documented in `_harness/nway-diff.ts`:
+// THE TRAJECTORY (codegen-forward)
+// --------------------------------
+// `_harness/nway-diff.ts` documents the shift from "do the hand-ports agree?" to
+// "does the generated code match the byte-lock?". This oracle does NOT contain the
+// SplitMix64 algorithm as code. It READS the algorithm as DATA from a serialised
+// DynamicValue document (`splitmix64.ir.json`), DECODES it with the project's real
+// canonical-JSON decoder (`src/Core.TypeScript/dynamic-value/json.ts` —
+// `fromCanonicalJson`), and a tiny total interpreter folds the decoded ops over
+// each input. The emitted oracle tags itself `"_source": "generated-from-ir"`; the
+// N-way harness byte-locks it against the five independent hand-ports + canonical.
 //
-//   "this harness then shifts from 'do the hand-ports agree?' to 'does the
-//    generated code match the byte-lock?'"
+// WHY A DynamicValue ROW (the schema, not a literal)
+// --------------------------------------------------
+// The IR is the payload of the registered generator `rng.splitmix64@1`
+// (`src/Core/GeneratorRegistry.fs`; id `129c1fac…deb06`, byte-locked cross-language
+// in `../generator-registry-id`). Storing the IR as a canonical DynamicValue makes
+// it a genuine row in the universal value schema: language-neutral, byte-lockable,
+// and decoded here through the SAME decoder the rest of Zeta uses — so a malformed
+// or non-canonical IR is rejected as data, never silently mis-folded.
 //
-// The emitted oracle tags itself `"_source": "generated-from-ir"`. The N-way
-// harness then byte-locks THIS generated output against the five independent
-// hand-ports (fsharp/cs/rust/python/go) AND the canonical vectors. If the IR or
-// the interpreter is wrong, the byte-lock turns red and names TS as the
-// dissenter — exactly the generator-fidelity check the trajectory calls for.
+// INT64 DOMAIN NOTE (honest constraint)
+// -------------------------------------
+// DynamicValue.Int is int64, but SplitMix64's multiplier constants are u64. They
+// are therefore stored as their two's-complement SIGNED-int64 bit-pattern (e.g.
+// 0x9e3779b97f4a7c15 -> -7046029254386353131). Because the mix multiply is mod
+// 2^64, reinterpreting the stored i64 back to u64 (`& MASK`) is bit-identical — the
+// round-trip is exact. Shift amounts (<64) need no reinterpretation.
 //
-// IR SHAPE — the finalizer as an ordered list of total u64->u64 ops
-// -----------------------------------------------------------------
-// SplitMix64's finalizer (Vigna, arXiv:1410.0530 §3) is a seed multiply then a
-// sequence of (xor-shift, multiply) rounds then a final xor-shift. Expressed as
-// data, every op is a total wrapping-u64 function, so the whole IR is a total
-// fold — DST-deterministic and byte-lockable, matching the `gen/README.md`
-// generator contract.
-//
-// Tier: PROVEN that a data-defined IR + total interpreter byte-locks against the
-// independent hand-ports. The generator now has a REGISTERED, content-addressed
-// identity (`rng.splitmix64@1` in `src/Core/GeneratorRegistry.fs`, id byte-locked
-// cross-language in `../generator-registry-id`). The IR payload itself is still an
-// inline literal here, not yet serialised AS a DynamicValue row carried on the
-// registry's Z-set — wiring the IR-as-data through the registry relation is the
-// remaining step.
-import { writeFileSync } from "node:fs";
+// Tier: PROVEN that the IR-as-DynamicValue-row + total interpreter byte-locks
+// against the five independent hand-ports and the canonical vectors. The row here
+// is read from a sibling file; carrying it as a live tuple on the registry's DBSP
+// Z-set relation (rather than a checked-in document) is the remaining integration.
+import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
-
-// REGISTRY PROVENANCE — this generator's content-addressed ZetaId.
-// `rng.splitmix64@1` is a registered row in `src/Core/GeneratorRegistry.fs`; its
-// content-address is byte-locked cross-language in
-// `tests/cross-verification/generator-registry-id` and pinned in
-// `tests/Tests.FSharp/GeneratorRegistry.Tests.fs`. Referencing the generator by
-// this derived id (not a minted-and-forgotten one) is what makes "generated-from-
-// ir" point at a real registry row rather than a free-floating literal:
-//   idOf("rng.splitmix64", 1) == 129c1fac3a48075b481c0f10f30deb06
+import { fromCanonicalJson, type Tagged } from "../../../../src/Core.TypeScript/dynamic-value/json.ts";
 
 const MASK = (1n << 64n) - 1n;
 const u64 = (x: bigint): bigint => x & MASK;
+/** Reinterpret a stored signed-int64 back to the u64 it bit-encodes. */
+const fromI64 = (i: bigint): bigint => u64(i);
 
 /** A single total u64->u64 step in the finalizer IR. */
 type MixOp =
   | { readonly op: "mul"; readonly k: bigint } // z := z * k        (wrapping)
   | { readonly op: "xorshr"; readonly s: bigint }; // z := z ^ (z >> s)
 
-/** The SplitMix64 finalizer, as data. Change a constant here and the byte-lock
- *  will catch the divergence. */
-const SPLITMIX64_IR: readonly MixOp[] = [
-  { op: "mul", k: 0x9e3779b97f4a7c15n },
-  { op: "xorshr", s: 30n },
-  { op: "mul", k: 0xbf58476d1ce4e5b9n },
-  { op: "xorshr", s: 27n },
-  { op: "mul", k: 0x94d049bb133111ebn },
-  { op: "xorshr", s: 31n },
-];
+// --- read the IR ROW and decode it through the real DynamicValue canonical-JSON decoder ---
 
-/** The total interpreter: fold the IR over an input. It has no algorithm-
- *  specific branching — it only knows how to apply the two op kinds. */
+const irPath = join(import.meta.dir, "splitmix64.ir.json");
+const irText = readFileSync(irPath, "utf8").trim();
+const decoded = fromCanonicalJson(irText);
+if (!decoded.ok) {
+  throw new Error(`splitmix64.ir.json is not a canonical DynamicValue: ${decoded.error}`);
+}
+
+// --- project the decoded DynamicValue (Tagged) down to the typed op list ---
+
+function field(obj: Tagged, key: string): Tagged {
+  if (obj.t !== "obj") throw new Error("IR: expected object");
+  const hit = obj.v.find(([k]) => k === key);
+  if (!hit) throw new Error(`IR: missing field "${key}"`);
+  return hit[1];
+}
+function asInt(v: Tagged): bigint {
+  if (v.t !== "int") throw new Error("IR: expected int");
+  return BigInt(v.v);
+}
+function asStr(v: Tagged): string {
+  if (v.t !== "str") throw new Error("IR: expected string");
+  return v.v;
+}
+
+function parseOps(ir: Tagged): readonly MixOp[] {
+  const opsNode = field(ir, "ops");
+  if (opsNode.t !== "arr") throw new Error("IR: ops must be an array");
+  return opsNode.v.map((node): MixOp => {
+    const op = asStr(field(node, "op"));
+    switch (op) {
+      case "mul":
+        return { op: "mul", k: fromI64(asInt(field(node, "k"))) };
+      case "xorshr":
+        return { op: "xorshr", s: asInt(field(node, "s")) };
+      default:
+        throw new Error(`IR: unknown op "${op}"`);
+    }
+  });
+}
+
+const SPLITMIX64_IR: readonly MixOp[] = parseOps(decoded.value);
+
+/** The total interpreter: fold the IR (decoded from the row) over an input. */
 function mix(x: bigint): bigint {
   return SPLITMIX64_IR.reduce((z, step) => {
     switch (step.op) {
@@ -94,4 +121,4 @@ for (const [id, x] of Object.entries(inputs)) out[id] = mix(x).toString();
 
 const target = join(dirname(import.meta.dir), "ts-output.json");
 writeFileSync(target, `${JSON.stringify(out, null, 2)}\n`);
-console.log("wrote ts-output.json (generated-from-ir)");
+console.log("wrote ts-output.json (generated-from-ir, IR read from splitmix64.ir.json DynamicValue row)");
