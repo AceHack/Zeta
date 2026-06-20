@@ -86,6 +86,24 @@ elif [ -f "$APT_MANIFEST" ]; then
     { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
     NF > 0 { print }
   ' "$APT_MANIFEST" | tr '\n' ' ')"
+  # manifests/apt canonical names target Ubuntu 24.04 (Noble). Map to jammy
+  # equivalents so install.sh works on 22.04 dev boxes / cloud VMs too.
+  if [ -f /etc/os-release ]; then
+    # shellcheck disable=SC1091
+    . /etc/os-release
+    if [ "${ID:-}" = "ubuntu" ] && [ "${VERSION_ID:-}" = "22.04" ]; then
+      for _pair in libicu74:libicu70 libssl3t64:libssl3; do
+        _noble="${_pair%%:*}"
+        _jammy="${_pair#*:}"
+        case " $PKGS " in
+          *" $_noble "*)
+            echo "↻ apt package alias: $_noble → $_jammy (Ubuntu 22.04 jammy)"
+            PKGS="${PKGS//$_noble/$_jammy}"
+            ;;
+        esac
+      done
+    fi
+  fi
   if [ -n "$PKGS" ]; then
     echo "↓ installing apt packages from $(basename "$APT_MANIFEST")..."
     # Use sudo only when not already root (CI containers often run as root).

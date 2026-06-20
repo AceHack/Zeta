@@ -23,7 +23,8 @@
 # so this shield stays cheap.
 #
 # Complements the five existing install shields (brings coverage to 6/6 surfaces):
-#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu, Docker)
+#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)
+#   - docker-ubuntu-jammy-install-sh-test (install.sh on bare Ubuntu 22.04, Docker)
 #   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)
 #   - macos-install-sh-test           (install.sh on real macOS)
 #   - docker-windows-install-ps1-test (install.ps1 on Windows Server Core, Docker)

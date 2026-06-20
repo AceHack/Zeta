@@ -27,6 +27,7 @@ zstd        # required to extract ollama-linux-<arch>.tar.zst
 # work on TRULY bare ubuntu. Per Microsoft Learn linux-scripted-manual deps;
 # build-essential already pulls libstdc++6/libgcc-s1/zlib1g. Names are Ubuntu
 # 24.04 (Noble: libicu74, libssl3t64 post-time_t-transition).
+# linux.sh maps libicu74/libssl3t64 → libicu70/libssl3 on Ubuntu 22.04 (jammy).
 libicu74          # ICU — .NET globalization (the classic "dotnet exited" cause)
 libssl3t64        # OpenSSL 3 runtime (Noble t64 name)
 libgssapi-krb5-2  # Kerberos/GSSAPI — .NET networking

@@ -5,7 +5,8 @@
 # macos.sh (Homebrew + brew ollama + mise toolchain + lean + jars + the
 # local-LLM model pull via common/local-llm.sh). Completes the install-shield
 # matrix — we already cover ubuntu/nixos/windows/wsl; this closes the mac gap:
-#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu, Docker)
+#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)
+#   - docker-ubuntu-jammy-install-sh-test (install.sh on bare Ubuntu 22.04, Docker)
 #   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)
 #   - docker-windows-install-ps1-test (install.ps1 on Windows Server Core, Docker)
 #   - wsl-install-sh-test             (install.sh in WSL2 Ubuntu on a Windows host)

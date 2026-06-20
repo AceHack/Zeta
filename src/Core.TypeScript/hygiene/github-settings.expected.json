@@ -254,6 +254,11 @@
       "state": "active"
     },
     {
+      "name": "docker-ubuntu-jammy-install-sh-test",
+      "path": ".github/workflows/docker-ubuntu-jammy-install-sh-test.yml",
+      "state": "active"
+    },
+    {
       "name": "docker-windows-install-ps1-test",
       "path": ".github/workflows/docker-windows-install-ps1-test.yml",
       "state": "active"

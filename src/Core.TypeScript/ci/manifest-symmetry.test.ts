@@ -167,6 +167,14 @@ test("local-llm install defaults to skip outside interactive/full install contex
   // The install shields are the explicit non-interactive opt-in path that asserts real Ollama.
   expect(ubuntuDockerfile).toContain("ZETA_INSTALL_FULL=1 \\\n    GITHUB_TOKEN=");
   expect(ubuntuDockerfile).toContain("if ! ZETA_INSTALL_FULL=1 ./tools/setup/install.sh");
+
+  const jammyDockerfile = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ci", "dockerfiles", "ubuntu-jammy-install-sh-test", "Dockerfile"),
+    "utf8",
+  );
+  expect(jammyDockerfile).toContain("ubuntu:22.04@");
+  expect(jammyDockerfile).toContain("ZETA_INSTALL_FULL=1 \\\n    GITHUB_TOKEN=");
+  expect(jammyDockerfile).toContain("if ! ZETA_INSTALL_FULL=1 ./tools/setup/install.sh");
 });
 
 test("NixOS and USB installer surfaces delegate agent/runtime drift to install graph", () => {

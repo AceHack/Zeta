@@ -1,0 +1,69 @@
+# .github/workflows/docker-ubuntu-jammy-install-sh-test.yml
+#
+# Docker-based install.sh test on Ubuntu 22.04 (jammy) — B-0857 cross-OS install
+# parity lane for the LTS many cloud VMs and dev laptops still run. Sibling to:
+#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)
+#   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)
+#   - docker-windows-install-ps1-test (install.ps1 on Windows Server Core, Docker)
+#   - macos-install-sh-test           (install.sh on real macOS)
+#   - wsl-install-sh-test             (install.sh in WSL2 Ubuntu on a Windows host)
+#   - docker-ubuntu-jammy-install-sh-test (install.sh on bare Ubuntu 22.04 — THIS file)
+#
+# NON-BLOCKING (advisory): like macos-install-sh-test and
+# docker-windows-install-ps1-test, this workflow is NOT in branch-protection
+# required_status_checks — it reports signal without gating merge while jammy
+# parity stabilizes. Promote to required once green for several rounds.
+#
+# Security: no github.event.* values interpolated into run: lines.
+
+name: docker-ubuntu-jammy-install-sh-test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "src/Core.TypeScript/ci/dockerfiles/ubuntu-jammy-install-sh-test/**"
+      - "tools/setup/**"
+      - "src/Core.TypeScript/accelerator/local-llm.ts"
+      - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
+      - ".mise.toml"
+      - ".dockerignore"
+      - ".github/workflows/docker-ubuntu-jammy-install-sh-test.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/Core.TypeScript/ci/dockerfiles/ubuntu-jammy-install-sh-test/**"
+      - "tools/setup/**"
+      - "src/Core.TypeScript/accelerator/local-llm.ts"
+      - "src/Core.TypeScript/accelerator/validate-local-llm.ts"
+      - ".mise.toml"
+      - ".dockerignore"
+      - ".github/workflows/docker-ubuntu-jammy-install-sh-test.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: docker-ubuntu-jammy-install-sh-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  docker-ubuntu-jammy-test:
+    name: docker-ubuntu-jammy-install-sh-test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: docker build (jammy — install.sh + local-LLM validation inside)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+            --secret id=github_token,env=GITHUB_TOKEN \
+            -f src/Core.TypeScript/ci/dockerfiles/ubuntu-jammy-install-sh-test/Dockerfile \
+            -t zeta-ubuntu-jammy-install-sh-test \
+            .
