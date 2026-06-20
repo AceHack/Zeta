@@ -115,3 +115,64 @@ let ``byZetaId resolves a live row but not a retracted one`` () =
         (GeneratorIrRegistry.byZetaId r.ZetaId afterRetract).IsNone,
         "a retracted row must NOT resolve by its ZetaId"
     )
+
+
+// ── 5. RUNNING DBSP CIRCUIT: the relation as the integral of a delta stream ─────────
+//
+// The four facts above treat the relation as a constant value or a static sum of
+// deltas. These pin the final rung: the deltas ARRIVE OVER TIME on a real DBSP circuit
+// (ZSetInput -> IntegrateZSet -> Output, stepped once per delta), and the integrator's
+// output is the materialised relation. This is the same `∫` operator the rest of the
+// engine runs, specialised to the generator-IR relation.
+
+// 5a. The running integral of the +1 register deltas CONVERGES to the full relation:
+//     integrateRegisters known == relationOf known (DBSP incrementalisation soundness).
+[<Fact>]
+let ``streaming the register deltas through a DBSP circuit materialises relationOf`` () =
+    task {
+        let! materialised = GeneratorIrRegistry.Stream.integrateRegisters GeneratorIrRegistry.known
+        let full = GeneratorIrRegistry.relation
+        Assert.True(
+            (ZSet.add materialised (ZSet.neg full)).IsEmpty,
+            "circuit-materialised relation must equal relationOf known"
+        )
+        Assert.Equal(full.Count, materialised.Count)
+    }
+
+// 5b. A retract (-1) delta arriving LATER removes the row from the live output — rollback
+//     observed mid-stream on a running circuit, not just in the static algebra.
+[<Fact>]
+let ``a retract delta arriving on the stream removes the row from the live integral`` () =
+    task {
+        let r = List.head GeneratorIrRegistry.known
+        // register r, then later retract r: the running integral must end empty of r.
+        let deltas =
+            [ GeneratorIrRegistry.register r; GeneratorIrRegistry.retract r ]
+        let! trajectory = GeneratorIrRegistry.Stream.stepwise deltas
+        match trajectory with
+        | [ afterRegister; afterRetract ] ->
+            Assert.Equal(1L, ZSet.lookup r afterRegister) // present after the +1 step
+            Assert.Equal(0L, ZSet.lookup r afterRetract) // gone after the -1 step
+            Assert.True((GeneratorIrRegistry.byZetaId r.ZetaId afterRetract).IsNone)
+        | _ -> failwith "expected a two-step trajectory"
+    }
+
+// 5c. ORDER INDEPENDENCE: the integral is a sum in the abelian group, so any interleaving
+//     of the SAME multiset of deltas yields the SAME materialised relation.
+[<Fact>]
+let ``the running integral is order-independent over the same multiset of deltas`` () =
+    task {
+        match GeneratorIrRegistry.known with
+        | a :: b :: _ ->
+            let! forward =
+                GeneratorIrRegistry.Stream.integrateDeltas
+                    [ GeneratorIrRegistry.register a; GeneratorIrRegistry.register b ]
+            let! reversed =
+                GeneratorIrRegistry.Stream.integrateDeltas
+                    [ GeneratorIrRegistry.register b; GeneratorIrRegistry.register a ]
+            Assert.True(
+                (ZSet.add forward (ZSet.neg reversed)).IsEmpty,
+                "delta order must not change the materialised relation"
+            )
+        | _ -> () // need at least two known rows; skip otherwise
+    }

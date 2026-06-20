@@ -161,3 +161,64 @@ module GeneratorIrRegistry =
 
     /// The full known relation (all known IR rows, weight +1).
     let relation: ZSet<IrRow> = relationOf known
+
+    // ── the relation as the RUNNING INTEGRAL of a delta stream ─────────────────────
+    //
+    // Everything above treats the relation as a constant value (full fold) or a static
+    // sum of deltas. The final rung is to let the deltas ARRIVE OVER TIME on a running
+    // DBSP circuit: feed each +1 (register) / -1 (retract) Z-set delta into a
+    // `ZSetInput`, `IntegrateZSet` it, and step the circuit. The integrator's output is
+    // the materialised relation AS OF the deltas seen so far. This is DBSP's `∫`
+    // (integration) operator — the same one the rest of the engine runs — specialised
+    // to the generator-IR relation.
+    //
+    // SOUNDNESS this exercises (pinned in `GeneratorIrRegistry.Tests`):
+    //   * circuit-output AFTER all register deltas == `relationOf known` (the running
+    //     integral converges to the full relation — DBSP incrementalisation soundness).
+    //   * a retract (-1) delta arriving later REMOVES the row from the live output
+    //     (`register r` then `retract r` => the row is gone), which is rollback observed
+    //     on a running stream, not just in the static `add r (neg r) = Zero` algebra.
+    //   * order independence: the integral is a sum in the abelian group, so any
+    //     interleaving of the same multiset of deltas yields the same materialised
+    //     relation.
+    module Stream =
+
+        open System.Threading.Tasks
+
+        /// Run a sequence of Z-set deltas (each a `register`/`retract` result, or any
+        /// `ZSet<IrRow>` delta) through a real DBSP circuit and return the materialised
+        /// relation after all deltas have been stepped. One `Step` per delta, so the
+        /// caller can also observe intermediate states via `stepwise` below.
+        let integrateDeltas (deltas: ZSet<IrRow> seq) : Task<ZSet<IrRow>> =
+            task {
+                let c = Circuit.create ()
+                let input = c.ZSetInput<IrRow>()
+                let materialised = c.IntegrateZSet input.Stream
+                let out = c.Output materialised
+                for d in deltas do
+                    input.Send d
+                    do! c.StepAsync()
+                return out.Current
+            }
+
+        /// Run the deltas through a circuit and return the materialised relation after
+        /// EACH delta (the running integral's trajectory). Useful for asserting that a
+        /// retract removes a row mid-stream, not only at the end.
+        let stepwise (deltas: ZSet<IrRow> seq) : Task<ZSet<IrRow> list> =
+            task {
+                let c = Circuit.create ()
+                let input = c.ZSetInput<IrRow>()
+                let materialised = c.IntegrateZSet input.Stream
+                let out = c.Output materialised
+                let acc = ResizeArray<ZSet<IrRow>>()
+                for d in deltas do
+                    input.Send d
+                    do! c.StepAsync()
+                    acc.Add out.Current
+                return List.ofSeq acc
+            }
+
+        /// Convenience: stream the +1 register delta for each row, returning the
+        /// materialised relation. `integrateRegisters known` must equal `relationOf known`.
+        let integrateRegisters (rows: IrRow seq) : Task<ZSet<IrRow>> =
+            rows |> Seq.map register |> integrateDeltas
