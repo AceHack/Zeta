@@ -92,3 +92,20 @@ data substrate**:
   substrate and evolves without downtime. Ties: `TtlCache`; `ZSet`/`IndexedZSet` (DBSP); HKT-MDM /
   recursive-HKT; `docs/research/2026-06-15-zero-downtime-schema-change-…` (gset-expand/zset-contract);
   `CoEmpowerGraph` (the reverse-mint target).
+
+## Persisting the reified graphs — git-native / MerkleFS columnar formats (Aaron 2026-06-19)
+
+*"SPARQL-JSON is cool, and maybe some of our Arrow or other columnar or HDF5/CDF or DynamicValue or Parquet
+files — we have many options that are git-native, zetadb-native, MerkleFS-friendly."* The reified snapshots
+(the TTL-bounded co-star / entity graphs) don't have to stay in-memory — they persist in our **content-addressed
+MerkleFS** in whichever format fits:
+
+- **Wire-in:** SPARQL-JSON / TMDB-JSON (parsed by `LiveLegs` via `System.Text.Json`).
+- **Persist-as (options, all in-tree):** **Arrow** (`DynamicValue.Arrow`), **Parquet**, **CBOR**
+  (`DynamicValue` CBOR golden-vector path), **`DynamicValue`** itself, columnar / HDF5-style — content-addressed
+  in **`CasStore` / `DagFs` / `Merkle`** (MerkleFS), so a snapshot is **hash-addressed, dedup'd, diffable-by-root,
+  git-native + zetadb-native**.
+- **Discipline caveat:** these are **DATA snapshots, not proofs** — binary columnar (Arrow/Parquet) is fine
+  here; `no-binary-in-proof-lineage` applies only to *verification golden vectors* (those stay text hex-in-JSON).
+  So: graph snapshots = binary columnar in MerkleFS (data); byte-locks = text (proof). Ties: `DynamicValue.Arrow`;
+  `Merkle`/`CasStore`/`DagFs`; `TtlCache` (in-memory) → persisted snapshot; `no-binary-in-proof-lineage`.

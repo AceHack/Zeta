@@ -309,6 +309,7 @@
     <Compile Include="CostarFederations.fs" />
     <Compile Include="CostarZSet.fs" />
     <Compile Include="LiveLegs.fs" />
+    <Compile Include="WikidataGraph.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
