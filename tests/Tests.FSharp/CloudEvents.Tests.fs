@@ -2,8 +2,56 @@ module Zeta.Tests.CloudEventsTests
 
 open global.Xunit
 open Zeta.Core
+open System
+open System.IO
+open System.Text.Json
+open System.Globalization
+open System.Collections.Immutable
 
 module CE = Zeta.Core.CloudEvents
+
+type private Marker = class end
+
+let private repoRoot () : string =
+    let assembly = typeof<Marker>.Assembly
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(assembly.Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then
+        raise (InvalidOperationException("Could not locate repo root (Zeta.sln) from test assembly location."))
+    dir.FullName
+
+let rec private buildValue (el: JsonElement) : DynamicValue =
+    let tag = el.GetProperty("t").GetString()
+    match tag with
+    | "null" -> DynamicValue.Null
+    | "bool" -> DynamicValue.Bool(el.GetProperty("v").GetBoolean())
+    | "int" -> DynamicValue.Int(int64 (el.GetProperty("v").GetString()))
+    | "float" ->
+        let bits = UInt64.Parse(el.GetProperty("v").GetString(), NumberStyles.HexNumber, CultureInfo.InvariantCulture)
+        DynamicValue.Float(BitConverter.UInt64BitsToDouble(bits))
+    | "str" -> DynamicValue.String(el.GetProperty("v").GetString())
+    | "bytes" ->
+        let hexStr = el.GetProperty("v").GetString()
+        DynamicValue.Bytes(ImmutableArray.Create<byte>(Convert.FromHexString(hexStr)))
+    | "arr" ->
+        let arr = el.GetProperty("v").EnumerateArray() |> Seq.map buildValue |> Seq.toList
+        DynamicValue.Array(arr)
+    | "obj" ->
+        let obj =
+            el.GetProperty("v").EnumerateArray()
+            |> Seq.map (fun pair ->
+                let parts = pair.EnumerateArray() |> Seq.toArray
+                parts.[0].GetString(), buildValue parts.[1]
+            )
+            |> Seq.toList
+        DynamicValue.Object(obj)
+    | _ -> failwithf "unsupported tag: %s" tag
+
+let private tryStr (el: JsonElement) (prop: string) : string option =
+    match el.TryGetProperty(prop) with
+    | true, p when p.ValueKind = JsonValueKind.String -> Some(p.GetString())
+    | _ -> None
 
 [<Fact>]
 let ``create yields a valid v1.0 event; validate catches a missing required attribute`` () =
@@ -47,3 +95,63 @@ let ``unknown string keys become extension attributes, core keys do not`` () =
         Assert.Equal<(string * string) list>([ "myext", "v" ], e.Extensions)
         Assert.Equal<DynamicValue option>(Some(DynamicValue.Int 5L), e.Data)
     | Error m -> Assert.Fail m
+
+[<Fact>]
+let ``CrossVerifyCloudEventVectorsMatchExpected`` () =
+    let root = repoRoot ()
+    let jsonPath = Path.Combine(root, "tests", "cross-verification", "dv-key-cloud-events", "vectors.json")
+    Assert.True(File.Exists(jsonPath), sprintf "vectors.json not found: %s" jsonPath)
+
+    use doc = JsonDocument.Parse(File.ReadAllText(jsonPath))
+    let vectors = doc.RootElement.GetProperty("cloud_event_vectors").EnumerateArray()
+
+    for v in vectors do
+        let expectedJson = v.GetProperty("expected_json").GetString()
+        let expectedCborHex = v.GetProperty("expected_cbor_hex").GetString()
+
+        let eventEl = v.GetProperty("event")
+        let id = eventEl.GetProperty("id").GetString()
+        let source = eventEl.GetProperty("source").GetString()
+        let typ = eventEl.GetProperty("type").GetString()
+        let specversion = eventEl.GetProperty("specversion").GetString()
+
+        let data =
+            match eventEl.TryGetProperty("data") with
+            | true, d when d.ValueKind <> JsonValueKind.Null -> Some(buildValue d)
+            | _ -> None
+
+        let extensions =
+            match eventEl.TryGetProperty("extensions") with
+            | true, ext when ext.ValueKind = JsonValueKind.Array ->
+                ext.EnumerateArray()
+                |> Seq.map (fun pair ->
+                    let parts = pair.EnumerateArray() |> Seq.toArray
+                    parts.[0].GetString(), parts.[1].GetString()
+                )
+                |> Seq.toList
+            | _ -> []
+
+        let ce =
+            { CE.create id source typ data with
+                SpecVersion = specversion
+                Time = tryStr eventEl "time"
+                Subject = tryStr eventEl "subject"
+                DataContentType = tryStr eventEl "datacontenttype"
+                DataSchema = tryStr eventEl "dataschema"
+                Extensions = extensions }
+
+        let dynamicVal = CE.toDynamic ce
+
+        // JSON Canonical check
+        let actualJson =
+            match DynamicValue.toCanonicalJson dynamicVal with
+            | Ok s -> s
+            | Error e -> failwithf "JSON encode failed: %A" e
+        Assert.Equal(expectedJson, actualJson)
+
+        // CBOR Canonical check
+        let actualCborHex =
+            match DynamicValue.toCanonicalCbor dynamicVal with
+            | Ok bytes -> Convert.ToHexString(bytes).ToLowerInvariant()
+            | Error e -> failwithf "CBOR encode failed: %A" e
+        Assert.Equal(expectedCborHex, actualCborHex)

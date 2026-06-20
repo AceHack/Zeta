@@ -18,6 +18,14 @@
 /// Markdown + Frontmatter Treaty (Priority 1)
 pub mod markdown;
 
+/// Content-addressed comparable row key (Priority 1)
+pub mod dv_key;
+pub use dv_key::DvKey;
+
+/// CNCF CloudEvents v1.0 envelope mapper (Priority 1)
+pub mod cloud_events;
+pub use cloud_events::CloudEvent;
+
 /// The runtime type tag -- QueryInterface ("what shape are you?") for a value
 /// with no compile-time type.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

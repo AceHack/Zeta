@@ -1,0 +1,102 @@
+{
+  "dv_key_vectors": [
+    {
+      "id": "null-value",
+      "value": {
+        "t": "null"
+      },
+      "expected_cbor_hex": "f6",
+      "expected_hash": "1930131273"
+    },
+    {
+      "id": "bool-true",
+      "value": {
+        "t": "bool",
+        "v": true
+      },
+      "expected_cbor_hex": "f5",
+      "expected_hash": "1879798416"
+    },
+    {
+      "id": "int-42",
+      "value": {
+        "t": "int",
+        "v": "42"
+      },
+      "expected_cbor_hex": "182a",
+      "expected_hash": "-2018383689"
+    },
+    {
+      "id": "str-hello",
+      "value": {
+        "t": "str",
+        "v": "hello"
+      },
+      "expected_cbor_hex": "6568656c6c6f",
+      "expected_hash": "-1490042984"
+    },
+    {
+      "id": "simple-object",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "id",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ],
+          [
+            "name",
+            {
+              "t": "str",
+              "v": "x"
+            }
+          ]
+        ]
+      },
+      "expected_cbor_hex": "a262696401646e616d656178",
+      "expected_hash": "-1191734313"
+    }
+  ],
+  "cloud_event_vectors": [
+    {
+      "id": "minimal-event",
+      "event": {
+        "id": "evt-1",
+        "source": "/test/source",
+        "specversion": "1.0",
+        "type": "test.event",
+        "extensions": []
+      },
+      "expected_json": "{\"specversion\":\"1.0\",\"id\":\"evt-1\",\"source\":\"/test/source\",\"type\":\"test.event\"}",
+      "expected_cbor_hex": "a46b7370656376657273696f6e63312e30626964656576742d3166736f757263656c2f746573742f736f7572636564747970656a746573742e6576656e74"
+    },
+    {
+      "id": "full-event",
+      "event": {
+        "id": "evt-2",
+        "source": "/test/source",
+        "specversion": "1.0",
+        "type": "test.event",
+        "time": "2026-06-20T12:00:00Z",
+        "subject": "test-subject",
+        "datacontenttype": "application/json",
+        "dataschema": "schema://v1",
+        "extensions": [
+          [
+            "custom-header",
+            "custom-value"
+          ]
+        ],
+        "data": {
+          "t": "str",
+          "v": "some data payload"
+        }
+      },
+      "expected_json": "{\"specversion\":\"1.0\",\"id\":\"evt-2\",\"source\":\"/test/source\",\"type\":\"test.event\",\"time\":\"2026-06-20T12:00:00Z\",\"subject\":\"test-subject\",\"datacontenttype\":\"application/json\",\"dataschema\":\"schema://v1\",\"custom-header\":\"custom-value\",\"data\":\"some data payload\"}",
+      "expected_cbor_hex": "aa6b7370656376657273696f6e63312e30626964656576742d3266736f757263656c2f746573742f736f7572636564747970656a746573742e6576656e746474696d6574323032362d30362d32305431323a30303a30305a677375626a6563746c746573742d7375626a6563746f64617461636f6e74656e7474797065706170706c69636174696f6e2f6a736f6e6a64617461736368656d616b736368656d613a2f2f76316d637573746f6d2d6865616465726c637573746f6d2d76616c7565646461746171736f6d652064617461207061796c6f6164"
+    }
+  ]
+}

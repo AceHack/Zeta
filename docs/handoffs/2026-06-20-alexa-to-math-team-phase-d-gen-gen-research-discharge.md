@@ -100,6 +100,7 @@ Refined targets T1/T2/bridge + revised priority list in the routing doc's UPDATE
 | Bridge | Reflection-grade ↔ CD-grade functor (open §B, off critical path) | Lean | L (research) |
 
 **Key decisions:**
+
 - Homoiconic IR (same schema, different dimension) — NOT a separate meta-IR tier
 - Concrete N=4 base case already proven (AdinkraCode.Tests + CayleyDicksonAdinkra.Tests) — no rework
 - The ECC self-correction forces fixpoint convergence (generation + drift-correction are dual) — must be discharged, not assumed
