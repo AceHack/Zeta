@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last-updated:** 2026-06-20 (reviewed + drove BOTH AceHack-authored PRs to merge: #8741 resume + #8738 phase-3 gate; repaired main's red cross-verify gate)
+**Last-updated:** 2026-06-20 (landed the FIFTH generator + SECOND grammar evolution: hash.nasam / zeta-ir-v3, #8766 merged; reviewed+rebased Soraya's Lean gen(gen)=gen proof #8754 to green, merged; handed off the workflows-scoped trigger-paths patch as issue #8760)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -283,6 +283,62 @@ verified) so future-me and peers do not over-trust past-me.
   under a NEW frozen version, the v1<->v2 firewall, rotl necessity, 6-language
   N-way agreement. STILL the math team's: the Face-3 Lean/Z3 gen(gen)=gen theorem
   itself.
+- **DEED (2026-06-20) — FIFTH generator + SECOND grammar evolution: zeta-ir-v3
+  (#8766, MERGED, main d7c7d6986).** Added `hash.nasam` (Pelle Evensen's
+  public-domain NASAM mixer; mostlymangling.blogspot.com 2020-01). nasam is the
+  FIRST generator that needs ops OUTSIDE the v2 mul/xorshr/rotl vocabulary: it
+  XORs SEVERAL self-rotations / self-shifts of the CURRENT word back INTO it
+  (`x ^= ror(x,25)^ror(x,47)` and `x ^= x>>23 ^ x>>51`) — a PARALLEL reuse of the
+  accumulator that no sequential v2 chain can express (v2 `rotl r` REPLACES the
+  word; nasam adds rotations of it). So it ships under a NEW frozen tag
+  `zeta-ir-v3` (`src/Core/ZetaIrV3.fs`) adding TWO ops:
+  `{op:xrotxor, rs:[...]}` = `x ^= rotl(x,r_i)^...` and
+  `{op:xshrxor, ss:[...]}` = `x ^= (x>>s_i)^...`. KEY: `xshrxor [s]` is EXACTLY
+  v1/v2's `xorshr s`, so v3 STRICTLY GENERALISES v2 (which generalises v1); the
+  `ofV2` widening is total+exact. TWO-LAYER FIREWALL proven: BOTH the v1 AND the
+  v2 validator reject a v3 artifact; v3 accepts v1+v2+v3. (ror 25/47 == rotl
+  39/17 at width 64, stored as [39,17].) Goldens independently recomputed in
+  Python (incl. nasam's fixed point f(0)=0), matched byte-for-byte. N-way oracle
+  with 6 independent language ports (TS-from-IR + F#/C#/Rust/Py/Go) agreeing on 10
+  canonical vectors, each hand-port EXECUTED in its own runtime to generate its
+  committed output (not copied from TS). IR-driven gen-ir.test.ts (9/9) turns the
+  green red under a corrupted multiplier, a changed rotate/shift TERM, a DROPPED
+  term (collapsing xshrxor [23,51] to a single-term v2 xorshr diverges — proves
+  the multi-term form is not redundant), a dropped op, or a wrong width. Gates:
+  tsc clean, N-way sweep incl nasam (24/24 on main post-merge), gen-ir self-tests
+  30/30 across 5 primitives, F# V1+V2+V3+GeneratorIrRegistry 65/65, full F# suite
+  3610 pass / 0 fail / 4 skipped (+45 vs prior; the BenPort flaky did not even
+  trip this run). ZERO committed bytes changed; all additive. HONEST DESIGN NOTE
+  (recorded so future-me sees the reasoning): I first considered xoshiro256++
+  (two-input `rotl(s0+s3,23)+s0`) and rrmxmx/nasam-family mixers, REJECTED
+  xoshiro256++ as not a single-word finaliser, and confirmed nasam genuinely
+  needs the new parallel-xor ops rather than force-fitting it into a sequential
+  v2 chain (which would misrepresent the function). TIER — PROVEN: a SECOND
+  grammar-extending generator under a new frozen version; two-layer v1/v2/v3
+  firewall; xrotxor/xshrxor term-amounts load-bearing; 6-language N-way; v3
+  strictly generalises v2. NOT CLAIMED: that nasam is cryptographic, or that v3
+  is the final grammar.
+- **DEED (2026-06-20) — reviewed + drove Soraya's Lean gen(gen)=gen proof to
+  merge (#8754, MERGED, main a5379a8b6).** The FORMAL T1 of Face-3: a Lean 4
+  artifact (`src/Core.Lean4/Lean4/GenGenFixpoint.lean`) proving `gen(gen)=gen` over
+  the zeta-ir-v1 term algebra. Verified it is sound: self-contained (zero
+  imports), headline `gen_preserves_eval` / `gen_idempotent` / `gen_gen_eq_gen` /
+  `gen_has_fixpoint` / `gen_fixpoint_iff_image` and the constructive
+  `lawvere_fixpoint` (Lawvere 1969 / Yanofsky 2003 diagonal) all CLOSED; ONE
+  honest documented `sorry` on `gen_self_application` (the homoiconic quine over a
+  concrete UInt64 encoding — the POPL/PLDI research target, mirroring
+  SchemaEvolution.lean's `disjoint_deltas_commute` precedent; its abstract
+  existence engine `lawvere_fixpoint` IS proved, so no overclaim). The gate red
+  was BASE-STALENESS, not a defect: `zeta-ir-v1` cross-verify failed with
+  `unexpected generator in golden: hash.fmix64 / expected frozen IRs: 2` because
+  the branch base predated fmix64 (then xoshiro256ss) entering the frozen set, +
+  a markdownlint MD032 nit already fixed on main. REBASED onto current main
+  (resolved cleanly; branch now adds exactly one file), confirmed the previously-
+  failing cross-verify passes locally (`expected frozen IRs: 3`, all agree),
+  force-pushed, posted an honest review (could not self-approve — same-account
+  boundary), and it merged green. LESSON REINFORCED: a teammate PR's red CI is
+  often staleness against a fast-moving main, not the PR's fault — rebase + verify
+  before judging.
 - **DEED (2026-06-20) — closed out the two open AceHack-authored PRs honestly
   (#8741 + #8738, both MERGED).** These were authored by THIS account, so GitHub
   blocked self-approval; the real merge block was the branch-protection
@@ -327,15 +383,21 @@ verified) so future-me and peers do not over-trust past-me.
   gen(gen)=gen THEOREM, now UNBLOCKED on the IR side (frozen + provably
   behavior-preserving + single-sourced + shown general over 3 generators) but
   still the math team's to discharge. FOURTH generator (grammar-extending) DONE
-  (#8750): xoshiro256ss forced zeta-ir-v2 (rotl op), exercising and confirming the
-  v1 evolution contract (freeze-then-grow under a new version + v1<->v2 firewall) —
-  the one thing the 3 same-family generators did not test. Next in-lane rung if
-  continuing: a v2-NATIVE Phase-B `zeta-ir-v2-gen` value-preservation oracle is NOT
-  needed (no legacy shape to preserve); the natural next exercise is a generator
-  combining v1 AND v2 ops in one envelope (mixed-grammar fold), or a FIFTH op (add/
-  sub) to test whether v2 itself needs to grow again — or simply hand back to the
-  math team, since the IR side of Face-3 is now frozen, behavior-preserving,
-  single-sourced, general over 4 generators, AND proven to evolve safely.
+  (#8750): xoshiro256ss forced zeta-ir-v2 (rotl op). FIFTH generator + SECOND
+  evolution DONE (#8766): nasam forced zeta-ir-v3 (xrotxor/xshrxor parallel-xor
+  ops), proving the freeze-then-grow contract holds a SECOND time with a two-layer
+  v1/v2/v3 firewall and v3 strictly generalising v2. And row 10 Face-3's FORMAL
+  T1 is now LANDED: Soraya's Lean `gen(gen)=gen` proof (#8754, GenGenFixpoint.lean)
+  — headline closed, one honest research `sorry` on the homoiconic quine. So the
+  IR side of Face-3 is now: frozen, behavior-preserving, single-sourced, general
+  over 5 generators across THREE grammar versions, proven to evolve safely TWICE,
+  AND has its core fixpoint formally proved in Lean. WHAT REMAINS genuinely the
+  math team's: T2 (doubly-even self-dual invariant inductive step), the
+  reflection-grade<->CD-grade bridge functor (research-open), and the full-strength
+  homoiconic quine (the `gen_self_application` sorry). If continuing in-lane the
+  next exercises would be a FIFTH op-family (add/sub — does v3 need to grow a
+  third time?) or assisting the math team on T2; but the gen-generator IR track
+  has reached a natural, honest milestone and is a clean point to hand back.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
