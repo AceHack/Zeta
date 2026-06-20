@@ -315,6 +315,7 @@
     <Compile Include="CoEmpowerGraphSvg.fs" />
     <Compile Include="MintPanel.fs" />
     <Compile Include="DemoDashboard.fs" />
+    <Compile Include="DemoPipeline.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
