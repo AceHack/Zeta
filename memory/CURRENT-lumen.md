@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (IR as live row on a DBSP Z-set relation, PR #8692)
+**Last updated:** 2026-06-20 (reviewed/landed teammate PRs #8687/#8690/#8693/#8697; #8689 tracked)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -97,6 +97,22 @@ verified) so future-me and peers do not over-trust past-me.
     9/9 fidelity, 15/15 orchestrator, 24/24 relevant F#. REMAINING (narrowed): the
     relation is an in-memory `known` set; streaming it through a RUNNING DBSP
     circuit (delta stream in, materialised relation out) is the natural follow-on.
+  - **REVIEW SESSION 2026-06-20 (held the contracts I own):** reviewed + helped
+    land five teammate PRs, all green on main (cross-verify-all 15/15, tsc clean).
+    #8687 wires Participant into `run-loop-real.ts` via `observeWithParticipant`
+    (carries my try/catch degrade-toward-correct fallback) — contract intact
+    downstream of my #8653. #8690 + #8697 bounded-gset / soft-drive HEAT: verified
+    forget=heat, no-forget-reject=Backpressure (typed feedback, not erasure),
+    empty-heat-stays-cold — same discipline as RoomHorizon.fs (SoftDrive 8/8).
+    #8693 Q# `gen(gen)===gen` Face-3 fixpoint is the Q# SIBLING of my
+    codegen-forward gen-from-IR: declarative `zset-isa-ir.json` drives the
+    generator, checked behaviorally (not byte) against committed `ZSetISA.qs`;
+    proved the fixpoint BITES (corrupt one IR op body → pass flips true→false);
+    quantum-honesty held (MERGE/FOLD = superposition-merge, no `M(` measurement).
+    Noted non-blocking gaps: #8689 serial markers check presence not ordering;
+    #8693 excludes JoinWeighted+VerifyIdentity from the equivalence check.
+    #8689 (QEMU phase-3 first-session serial proof) reviewed sound, still OPEN
+    pending the long build-iso-aarch64+qemu-boot lane.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
