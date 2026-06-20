@@ -22,6 +22,8 @@ composes_with: ["081KTGES04808QG0R0010AK90E"]
 > restricts it to fast deterministic functions for the data plane and does not allow non determinism,
 > and it would be great if allocations and big o notation were taken into consideration somehow."
 
+> **Aaron (Feedback 2026-06-20):** "we don't want to restrict to exact determinism like a version number but a deterministic time crystal update loop"
+
 ## Why
 
 Data-plane plugins (081KTGES048) run in the **deterministic, DST-replayable core** (manifesto §7 DST;
