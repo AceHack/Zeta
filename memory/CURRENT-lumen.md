@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-19 (harness deed + society-dual note)
+**Last updated:** 2026-06-20 (second gen-from-IR primitive: fmix32, PR #8686)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -70,6 +70,18 @@ verified) so future-me and peers do not over-trust past-me.
     9/9). The mixer algorithm now lives entirely in the schema row, locked
     TS↔F#. REMAINING: carry the row as a LIVE TUPLE on the registry's DBSP
     Z-set relation (today a checked-in canonical document).
+  - **SECOND gen-from-IR primitive LANDED (PR #8686, 2026-06-20):** MurmurHash3
+    `fmix32` is now a second `generated-from-ir` oracle, proving the IR
+    vocabulary GENERALISES across a new primitive AND a new integer width.
+    fmix32.ir.json is a canonical-JSON DynamicValue with a `width:32` field; the
+    SAME mul/xorshr op vocabulary, only the row differs. gen.ts reads+decodes
+    via the real `fromCanonicalJson` and folds with a width-aware mask. 5
+    independent hand-ports (F#/C#/Rust/Python/Go), all 6 oracles agree on 10
+    vectors. gen-ir.test.ts adds a WIDTH-IS-LOAD-BEARING case (same ops at width
+    64 diverge). F# test pins the cross-language byte-lock of the row. Interpreter
+    intentionally NOT shared across the two gen.ts (shared module would defeat
+    N-way independence). cross-verify-all now 15/15; F# canonical 72/72.
+    REMAINING (shared with splitmix64): the live-tuple-on-DBSP-relation step.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
