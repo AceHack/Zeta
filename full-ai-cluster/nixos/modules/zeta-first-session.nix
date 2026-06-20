@@ -117,8 +117,8 @@ in
           done
           run_demo() {
             cd "${cfg.repoRoot}"
-            sudo -u ${cfg.user} \
-              HOME=${cfg.home} \
+            ${pkgs.util-linux}/bin/runuser -u ${cfg.user} -- \
+              env HOME=${cfg.home} \
               ZETA_FIRST_SESSION_MARKER=${cfg.markerPath} \
               ZETA_FIRST_SESSION_TEE_CONSOLE=1 \
               PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin \
