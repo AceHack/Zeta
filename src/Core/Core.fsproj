@@ -185,10 +185,10 @@
     <Compile Include="Vision.fs" />
     <Compile Include="PredictionInference.fs" />
     <Compile Include="PredictionScheduler.fs" />
+    <Compile Include="Heat.fs" />
     <Compile Include="RoomHorizon.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="Injection.fs" />
-    <Compile Include="Heat.fs" />
     <Compile Include="InjectionExt.fs" />
     <Compile Include="SpeculativeWatermark.fs" />
     <Compile Include="Sink.fs" />

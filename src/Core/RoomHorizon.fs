@@ -42,6 +42,44 @@ module RoomHorizon =
           Ranked: PredictionInference.RankedBranch<'S> list
           Horizon: Report<'K, 'S> }
 
+    let private positiveSignature (source: string) (kind: string) (units: int) (detail: string) : HeatSignature option =
+        if units <= 0 then
+            None
+        else
+            Some(HeatSignature.ofMass source kind units (float units) detail)
+
+    /// Host-facing heat signatures for finite horizon pressure.
+    ///
+    /// Deferred futures are intentionally cold: the byte tank could not afford
+    /// them yet, so no information entered the room and nothing was erased.
+    /// Forgotten materialized keys are heat. Paid futures that still cannot fit
+    /// the finite exterior view are backpressure heat.
+    let heatSignatures (source: string) (report: Report<'K, 'S>) : HeatSignature list =
+        [ positiveSignature
+              source
+              "room-horizon.forgotten"
+              report.HorizonHeat.Units
+              "bounded horizon forgot materialized keys"
+          positiveSignature
+              source
+              "room-horizon.backpressure"
+              (GSet.count report.RejectedByHorizon)
+              "paid futures could not enter the finite horizon" ]
+        |> List.choose id
+
+    /// Emit finite horizon heat through an injected host/room boundary.
+    let emitHeat (sink: IHeatSink) (source: string) (report: Report<'K, 'S>) : Result<unit, HeatSinkFeedback> =
+        let rec loop signatures =
+            result {
+                match signatures with
+                | [] -> return ()
+                | signature :: tail ->
+                    do! sink.Emit signature
+                    return! loop tail
+            }
+
+        report |> heatSignatures source |> loop
+
     let private nonNegative (r: PS.Rational) : bool =
         PS.compare r PS.zero >= 0
 

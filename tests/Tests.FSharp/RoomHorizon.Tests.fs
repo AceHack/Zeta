@@ -98,6 +98,65 @@ let ``paid branch can still be rejected by the finite horizon projection`` () =
     Assert.Equal(0, report.HorizonHeat.Units)
 
 [<Fact>]
+let ``rolling horizon exports forgetting as host heat`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]
+        |> mustOk
+        |> fun projection -> projection.State
+
+    let report =
+        [ candidate 3 "newer" "C" 1L 1L 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    let signatures = RH.heatSignatures "vision-test" report
+
+    Assert.Single(signatures) |> ignore
+    Assert.Equal("vision-test", signatures.[0].Source)
+    Assert.Equal("room-horizon.forgotten", signatures.[0].Kind)
+    Assert.Equal(1, signatures.[0].Units)
+    Assert.Equal(1_000_000L, signatures.[0].MassPpm)
+
+    let sink = RecordingHeatSink()
+    RH.emitHeat (sink :> IHeatSink) "vision-test" report |> mustOk
+
+    Assert.Single(sink.Signatures) |> ignore
+    Assert.Equal("room-horizon.forgotten", sink.Signatures.[0].Kind)
+
+[<Fact>]
+let ``no-forget horizon exports paid finite-view rejection as backpressure heat`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 1 BoundedGSetForgetPolicy.RejectNew) [ 1 ]
+        |> mustOk
+        |> fun projection -> projection.State
+
+    let report =
+        [ candidate 2 "second" "B" 1L 1L 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    Assert.Equal<int list>([ 2 ], report.RejectedByHorizon |> GSet.toList)
+    Assert.Equal(0, report.HorizonHeat.Units)
+
+    let signatures = RH.heatSignatures "vision-test" report
+
+    Assert.Single(signatures) |> ignore
+    Assert.Equal("room-horizon.backpressure", signatures.[0].Kind)
+    Assert.Equal(1, signatures.[0].Units)
+
+[<Fact>]
+let ``byte-deferred futures stay cold until they enter the room`` () =
+    let report =
+        [ candidate 1 "too-expensive" "A" 1L 1L 2L ]
+        |> RH.admit (config 1 BoundedGSetForgetPolicy.RejectNew) (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    Assert.Equal(Vision.RejectedWithBackpressure, report.Prediction.Outcome)
+    Assert.Empty(report.Boarded)
+    Assert.Empty(report.RejectedByHorizon |> GSet.toList)
+    Assert.Empty(RH.heatSignatures "vision-test" report)
+
+[<Fact>]
 let ``negative attention is feedback not an ordering trick`` () =
     let bad =
         { candidate 1 "bad" "A" 1L 1L 1L with
