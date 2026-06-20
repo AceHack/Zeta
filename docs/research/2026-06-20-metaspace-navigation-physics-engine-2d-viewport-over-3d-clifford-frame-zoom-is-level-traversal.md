@@ -104,6 +104,42 @@ them (you'd lose the recursion): **one homoiconic `Space`, role-by-level.** (Mat
 pin the formal version — ties to the homoiconic `IWorld`/`ISociety`/`ITraveler` trinity + the CTM
 3-body note.)
 
+## Doors: first-class portals = the declared metered channels (#13)
+
+(Aaron, 2026-06-20): *"There is a door for getting in and out of vaults and rooms. Rooms can't
+contain other rooms, but a room can contain multiple doors to other rooms in the same vault."*
+
+A **door is a first-class portal — and it IS a declared, metered channel (#13 noninterference).** You
+cross between bounded contexts ONLY through doors: no teleporting between rooms; movement is through
+declared crossings, each metered at the membrane. A door is the navigable object form of the
+"enter = frame-change + boundary-crossing" gesture above.
+
+This means the metaspace has **two distinct edge types over the same nodes**, and they must not be
+conflated:
+
+- **Containment (a tree):** meta-vault ⊃ vault ⊃ room. With the new constraint **rooms can't contain
+  rooms**, the **room is the leaf** — containment depth is **bounded downward.**
+- **Doors (a graph):** a room has **multiple doors to other rooms in the same vault** → rooms form a
+  *graph* within a vault (nodes = rooms, edges = doors), not a nesting tree. Plus vault-doors connect
+  a vault ↔ the outside/meta-vault. (Like a building: floors *contain* rooms; doors *connect* them.)
+
+**Refinement of the self-similar `Space` (above):** the ontology is not *infinitely* recursive — the
+self-similar *pattern* holds (each tier contains the next + connects via portals), but the *depth* is
+bounded with an asymmetry: **recurse up** (the meta-vault's rooms are vaults → worlds-of-worlds,
+unbounded upward) but **terminate down** (room = the floor; no room-in-room). Recurse up, terminate
+down at the room.
+
+**Doors vs clusters/federations — two graphs, kept distinct:** doors are the **navigation topology**
+("I can walk there"); clusters/federations are the **relational topology** ("we have a
+relationship / contract"). They touch at one point: a door is **permission-gated** — traversal is
+gated by a relational/permission check (**consent-first #6**). That also preserves **no infinite
+captivity** (the Universal Exit Principle): a room with doors out is a room you can leave; a context
+with no exit door would be the Vault-Tec cage, not a home.
+
+**Build implication:** a `Door` is a first-class entity (`from Space → to Space`, permission-gated);
+a vault's rooms are a **door-graph** (nodes = rooms, door-edges). Clicking a door = the frame-change
+transition, hit-tested via `Viewport.unproject` (the shipped projection floor).
+
 ## Tiering (consistent with the progressive-enhancement ladder)
 
 - **Tier 0 (CSS-only floor):** the static no-JS `CoEmpowerGraphSvg` map — vault landmarks as
