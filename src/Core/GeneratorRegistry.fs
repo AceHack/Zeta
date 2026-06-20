@@ -88,6 +88,7 @@ module GeneratorRegistry =
           register "shape.kitaev-chain" 1
           register "shape.crossing" 1
           register "rng.splitmix64" 1
+          register "rng.lcg64_mmix" 1
           register "engine.zeta-bayesian" 1
           register "engine.infer-net" 1
           register "engine.mock-flat" 1

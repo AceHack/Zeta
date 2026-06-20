@@ -1,0 +1,40 @@
+version: 1
+description: >-
+  Knuth's 64-bit Linear Congruential Generator (from MMIX) finaliser golden vectors
+  — the SIXTH "generated-from-ir" primitive, and the first to require the `add` op
+  (zeta-ir-v4). The algorithm is `x = x * 6364136223846793005 + 1442695040888963407`.
+  This is an affine translation, proving the IR vocabulary can grow to support
+  operations outside the v3 grammar (which only contained linear operations that map 0 to 0).
+  Inputs (id-encoded) and the canonical `result` are decimal STRINGS (parse to
+  BigInt / UInt64 / u64).
+vectors:
+  - id: x-0
+    x: "0"
+    result: "1442695040888963407"
+  - id: x-1
+    x: "1"
+    result: "7806831264735756412"
+  - id: x-2
+    x: "2"
+    result: "14170967488582549417"
+  - id: x-10
+    x: "10"
+    result: "9743825058228238609"
+  - id: x-255
+    x: "255"
+    result: "983953635380637474"
+  - id: x-u64max
+    x: "18446744073709551615"
+    result: "13525302890751722018"
+  - id: x-golden
+    x: "11400714819323198485"
+    result: "3236661110929538048"
+  - id: x-2pow63
+    x: "9223372036854775808"
+    result: "10666067077743739215"
+  - id: x-12345678901234567890
+    x: "12345678901234567890"
+    result: "4471319178610251321"
+  - id: x-1e18
+    x: "1000000000000000000"
+    result: "7493662477666451791"

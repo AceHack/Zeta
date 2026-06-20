@@ -94,6 +94,7 @@ module ComplexityRegistry =
               ("shape.kitaev-chain", "draw"), c "O(sites)" "O(sites)" Derived
               ("shape.crossing", "draw"), c "O(1)" "O(1)" Derived
               ("rng.splitmix64", "mix"), c "O(1)" "O(1)" Derived
+              ("rng.lcg64_mmix", "mix"), c "O(1)" "O(1)" Derived
               ("engine.zeta-bayesian", "run"), c "O(rounds·factors)" "O(vars+factors)" Derived
               ("engine.infer-net", "run"), c "O(rounds·factors)" "O(model)" Derived
               ("engine.mock-flat", "run"), c "O(vars)" "O(vars)" Derived

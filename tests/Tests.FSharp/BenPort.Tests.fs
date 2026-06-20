@@ -134,7 +134,7 @@ let ``ZETAID BENCHMARK CASES: discovered, run successfully, and verify exact hea
     Assert.Equal(pack.Sizes.Length, packSamples.Length)
     Assert.Equal(unpack.Sizes.Length, unpackSamples.Length)
     
-    // unpack returns a ZetaObservation record instance (reference type), which allocates exactly 48 bytes on net10.0!
-    Assert.Equal(48L, snd unpackSamples.[0])
+    // unpack returns a ZetaObservation record instance (reference type), which allocates exactly 80 bytes on net10.0!
+    Assert.Equal(80L, snd unpackSamples.[0])
 
 

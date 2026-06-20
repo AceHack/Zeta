@@ -127,6 +127,9 @@ module GeneratorIrRegistry =
         DynamicValue.Object
             [ ("op", DynamicValue.String "xshrxor")
               ("ss", DynamicValue.Array(ss |> List.map DynamicValue.Int)) ]
+    /// add-by-constant op node — NEW in the v4 grammar (lcg64_mmix needs it).
+    let private add (k: int64) =
+        DynamicValue.Object [ ("op", DynamicValue.String "add"); ("k", DynamicValue.Int k) ]
 
     /// NOTE on shape: the committed splitmix64 file carries an explicit `zetaId` field
     /// and NO `width` (u64 implied); the fmix32 file carries `width` and no `zetaId`.
@@ -235,12 +238,30 @@ module GeneratorIrRegistry =
                      mul -7030854795893499237L // 0x9E6D62D06F6A9A9B
                      xshrxor [ 23L; 51L ] ]) ]
 
+    /// Knuth's 64-bit Linear Congruential Generator (from MMIX) IR (width 64) — the SIXTH
+    /// generator, and the first to require an op (`add`) OUTSIDE the v3 grammar.
+    /// Per the evolution contract this is a THIRD breaking grammar change, so the row
+    /// carries the thrice-bumped `zeta-ir-v4` schema tag. The algorithm is
+    /// `x = x * 6364136223846793005 + 1442695040888963407`.
+    /// Mirrors `tests/cross-verification/lcg64_mmix/_gen/lcg64_mmix.ir.json`.
+    let lcg64MmixIr : DynamicValue =
+        DynamicValue.Object
+            [ ("schema", DynamicValue.String "zeta-ir-v4")
+              ("generator", DynamicValue.String "rng.lcg64_mmix")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 64L)
+              ("ops",
+               DynamicValue.Array
+                   [ mul 6364136223846793005L
+                     add 1442695040888963407L ]) ]
+
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
           row "hash.fmix32" 1 fmix32Ir
           row "hash.fmix64" 1 fmix64Ir
           row "rng.xoshiro256ss" 1 xoshiro256ssIr
-          row "hash.nasam" 1 nasamIr ]
+          row "hash.nasam" 1 nasamIr
+          row "rng.lcg64_mmix" 1 lcg64MmixIr ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)

@@ -273,6 +273,7 @@
     <Compile Include="ZetaIrV1.fs" />
     <Compile Include="ZetaIrV2.fs" />
     <Compile Include="ZetaIrV3.fs" />
+    <Compile Include="ZetaIrV4.fs" />
     <Compile Include="GeneratorCatalog.fs" />
     <Compile Include="ZetaIdViz.fs" />
     <Compile Include="AnimFlow.fs" />
