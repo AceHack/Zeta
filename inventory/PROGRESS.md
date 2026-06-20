@@ -144,7 +144,7 @@ Auditor brief: you did NOT build this. Using spec.md + PROGRESS.md as the contra
 re-verify EVERY gate; probe — any secret in the repo? service_role referenced? RLS permissive or
 bypassable from the client (run the unauthenticated anon checks)? custom-field XSS? change_log
 editable? role mismatch UI-vs-DB? Then review the Residual Risk Register and confirm each item is
-handled or consciously deferred. Report findings; fix nothing without owner go-ahead.
+handled or consciously deferred. STRUCTURAL CHECK (owner-added 2026-06-07, belt-and-suspenders after a real incident): inspect main's commit history for unexplained gaps or REWINDS, and confirm every gated phase's content is GENUINELY PRESENT on main — a merged PR is NOT proof the content is on main. Empirical precedent: PR #6445 was marked merged, then main was rewound past it, silently dropping ALL of Phase 5 until it was re-landed via PR #6673. For each gated phase, existence-check its key artifacts on main (e.g. `git cat-file -e origin/main:inventory/sql/phase5.sql`, `:inventory/lib/custom-fields.js`, etc.) AND confirm the matching PROGRESS `[x]` content is on main, not just in a closed PR. Treat any phase whose artifacts are missing-from-main, or any force-rewind past a merged PR, as a P0 finding. Report findings; fix nothing without owner go-ahead.
 
 DEFERRED FROM PHASE 3 (owner-approved 2026-05-31, Option 2) — the Auditor MUST run these four
 Phase-3 read-path proofs END-TO-END on the merged, live, NO-PROXY site at
