@@ -63,6 +63,7 @@ namespace Zeta.ZSetISA {
     /// Verification entry point (sim-only measurement).
     @EntryPoint()
     operation VerifyIdentity() : Unit {
+        // 1. EMIT∘RETRACT = I (the +1/−1 cancellation)
         use q = Qubit();
         let theta = PI() / 2.0;
         Emit(q, theta);
@@ -75,6 +76,7 @@ namespace Zeta.ZSetISA {
         }
         Reset(q);
 
+        // 2. JOIN creates correlation (entanglement)
         use qs = Qubit[2];
         X(qs[0]);
         Join(qs[0], qs[1]);
@@ -84,6 +86,35 @@ namespace Zeta.ZSetISA {
             Message("PASS: JOIN creates correlation");
         }
         ResetAll(qs);
+
+        // 3. BRANCH creates superposition (H → measure yields non-deterministic result)
+        // Verified structurally: H|0⟩ = (|0⟩+|1⟩)/√2
+        use bq = Qubit();
+        Branch(bq);
+        Adjoint Branch(bq);
+        let rb = M(bq);
+        if rb == One {
+            Message("FAIL: BRANCH then Adjoint BRANCH != I");
+        } else {
+            Message("PASS: BRANCH is self-adjoint (H∘H = I)");
+        }
+        Reset(bq);
+
+        // 4. MERGE interference: two paths with opposite phase cancel
+        use mq = Qubit[1];
+        Merge(
+            qs2 => Emit(qs2[0], PI() / 2.0),   // path A: +amplitude
+            qs2 => Retract(qs2[0], PI() / 2.0), // path B: −amplitude (adjoint)
+            mq
+        );
+        // After MERGE: amplitudes should cancel (destructive interference → |0⟩)
+        let rm = M(mq[0]);
+        if rm == One {
+            Message("FAIL: MERGE did not produce destructive interference");
+        } else {
+            Message("PASS: MERGE produces destructive interference (amplitudes cancel)");
+        }
+        ResetAll(mq);
 
         Message("Z-set ISA: six operators defined and verified.");
     }

@@ -61,24 +61,27 @@ theorem empty_delta_identity (s : SchemaZSet) :
 
 /-- Property 2: Consolidation is idempotent (on already-consolidated input).
     This is the Z-set property: sum + filter-zero is a projection. -/
--- Note: full proof requires showing consolidate produces unique names.
--- Stating as sorry for now — the property is checkable; the proof is
--- the P2 Lean push per ROADMAP.md.
 theorem consolidate_idempotent (s : SchemaZSet)
     (h : s = consolidate s) :
     consolidate (consolidate s) = consolidate s := by
-  sorry -- Full proof requires unique-name invariant on consolidated sets
+  have h2 : consolidate s = s := h.symm
+  rw [h2]
+  exact h.symm
 
 /-- Property 3: Disjoint deltas commute (stated, proof is the research target).
     For disjoint d1, d2: apply(apply(s, d1), d2) has the same sorted active
     field names as apply(apply(s, d2), d1). -/
--- This is the braided-free-monoid property. Proven empirically by 6 oracles;
--- the Lean proof is the formal anchor (target: POPL/PLDI).
+-- The key insight: consolidate groups by name and sums weights. For disjoint
+-- deltas, the entries from d1 and d2 end up in separate name-groups, so
+-- the order of application doesn't affect the final name set.
+-- Full mechanisation requires a permutation lemma on consolidate's foldl.
+-- Leaving as sorry: the STATEMENT is the research target (POPL/PLDI);
+-- the 6 value-equality oracles confirm it empirically.
 theorem disjoint_deltas_commute (s : SchemaZSet) (d1 d2 : Delta)
     (h : disjoint d1 d2) :
     (applyDelta (applyDelta s d1) d2).map (·.name) =
     (applyDelta (applyDelta s d2) d1).map (·.name) := by
-  sorry -- Research target: full proof from Z-set commutativity
+  sorry -- Research target: full proof from Z-set commutativity + permutation lemma
 
 -- ═══ Verification: all theorem statements type-check ═══════════════════
 -- The sorry-marked theorems compile = the STATEMENTS are well-typed.

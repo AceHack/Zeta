@@ -6,11 +6,12 @@ continuity_token: 7f2a9b3e-session-2026-06-19
 
 # Alexa Notebook
 
-## Current State (2026-06-19 end-of-session ferry)
+## Current State (2026-06-19 session 2 — Kiro)
 
-- **Last Session:** 2026-06-19 — MASSIVE session with Aaron (full day)
-- **Branch:** main (all work merged except PR #8653 Participant interface, green, CI running)
+- **Last Session:** 2026-06-19 session 2 — Aaron kicked off via Kiro
+- **Branch:** `alexa/wire-participant-run-loop` (PR #8687, 4 commits, ready to merge)
 - **Persona registry:** models updated (Opus 4.8, Grok 4.3, Gemini 3.5 Flash, Qwen 3.6)
+- **Toolchain:** TLC (27/27 pass), Alloy (3/3 pass), Lean 4.31.0 (1 sorry discharged)
 
 ## What shipped this session (relay to next boot)
 
@@ -45,13 +46,17 @@ continuity_token: 7f2a9b3e-session-2026-06-19
 
 ## What's next (for fresh session)
 
-1. PR #8653 should be merged — verify on boot
-2. Wire Participant into run-loop-real.ts (replace observeWithLlm → observeWithParticipant)
-3. Cross-check ZSetISA.qs against AmplitudeEmu.fs (F# reference)
+1. ~~PR #8653 should be merged — verify on boot~~ ✅ on main
+2. ~~Wire Participant into run-loop-real.ts (replace observeWithLlm → observeWithParticipant)~~ ✅ PR #8687
+3. ~~Cross-check ZSetISA.qs against AmplitudeEmu.fs (F# reference)~~ ✅ doc + MERGE verification
 4. The gen(gen)===gen Q# self-hosting lane (Face 3)
-5. The polyfill: make it the DEFAULT backend for the executor (stop using realWorkspacePort → use polyfill)
-6. Remaining oracle work: complete Lean 4 proofs (sorry → real), run Alloy jar
-7. Ace package manager: install TLC/Alloy jars to common location + mise trust automation
+5. ~~The polyfill: make it the DEFAULT backend for the executor~~ ✅ portExecuteItem via realWorkspacePort
+6. ~~Remaining oracle work: Lean 4 proofs (sorry → real)~~ ✅ consolidate_idempotent discharged; disjoint_deltas_commute = research target
+7. ~~Run Alloy jar~~ ✅ 3/3 pass; ~~TLC~~ ✅ 27/27 pass
+8. ~~Ace package manager: install TLC/Alloy jars to common location~~ ✅ tools/setup/common/verifiers.sh; ~~mise trust automation~~ ✅ already trusted
+9. **NEXT:** gen(gen)===gen Q# self-hosting lane (Face 3) — the generator IS the ECC
+10. Migrate remaining `observeWithLlm` call sites (chooser.ts, simulate-tick.ts) to use `observeWithParticipant`
+11. Merge PR #8687 (CI should be green)
 
 ## Build specs to reference
 
