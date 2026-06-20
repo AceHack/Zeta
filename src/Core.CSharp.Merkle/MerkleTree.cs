@@ -48,4 +48,63 @@ public sealed class MerkleTree
 
     /// <summary>The leaf hashes (level 0), useful for diffing.</summary>
     public MerkleHash[] LeafHashes => _levels[0];
+
+    /// <summary>
+    /// Inclusion (audit) proof for the leaf at <paramref name="index"/>: the sibling
+    /// digest at each level from leaf to root, with its side. A verifier holding only
+    /// the leaf, this proof, and the root can confirm membership without the tree
+    /// (see <see cref="VerifyProof"/>). Replays the exact fold (duplicate-last on an
+    /// odd trailing node → sibling is self, on the right), matching the F#
+    /// <c>MerkleTree.Proof</c> step-for-step.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">Leaf index out of range.</exception>
+    public MerkleProofStep[] Proof(int index)
+    {
+        var leafCount = _levels[0].Length;
+        if (index < 0 || index >= leafCount)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(index),
+                index,
+                $"leaf index {index.ToString(System.Globalization.CultureInfo.InvariantCulture)} out of range [0, {leafCount.ToString(System.Globalization.CultureInfo.InvariantCulture)})");
+        }
+
+        var steps = new List<MerkleProofStep>();
+        var idx = index;
+        // Walk levels[0 .. n-2]; the last level is the root (no sibling).
+        for (var lvl = 0; lvl < _levels.Length - 1; lvl++)
+        {
+            var cur = _levels[lvl];
+            var selfIsLeft = idx % 2 == 0;
+            var siblingIdx = selfIsLeft
+                ? (idx + 1 < cur.Length ? idx + 1 : idx) // odd trailing node → sibling is self
+                : idx - 1;
+            steps.Add(new MerkleProofStep(cur[siblingIdx], selfIsLeft));
+            idx /= 2;
+        }
+
+        return steps.ToArray();
+    }
+
+    /// <summary>
+    /// Verify an inclusion proof: re-hash <paramref name="leaf"/>, fold the audit
+    /// <paramref name="steps"/> up, and check the result equals
+    /// <paramref name="expectedRoot"/>. Touches ONLY the leaf, the proof, and the root —
+    /// never the tree (the third-party property). The fold matches <see cref="Proof"/> +
+    /// <see cref="MerkleHash.Combine"/> byte-for-byte, so the same <c>(leaf, steps, root)</c>
+    /// verifies identically in the F#/Rust/TS oracles.
+    /// </summary>
+    public static bool VerifyProof(byte[] leaf, MerkleProofStep[] steps, MerkleHash expectedRoot)
+    {
+        ArgumentNullException.ThrowIfNull(steps);
+        var acc = MerkleHash.OfBytes(leaf);
+        foreach (var step in steps)
+        {
+            acc = step.SiblingOnRight
+                ? MerkleHash.Combine(acc, step.Sibling)
+                : MerkleHash.Combine(step.Sibling, acc);
+        }
+
+        return acc.Equals(expectedRoot);
+    }
 }

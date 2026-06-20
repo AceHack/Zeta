@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\src\Core.CSharp.Sha256\Zeta.Core.CSharp.Sha256.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Blake3\Zeta.Core.CSharp.Blake3.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.AceCanonical\Zeta.Core.CSharp.AceCanonical.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />
   </ItemGroup>
 
   <ItemGroup>
