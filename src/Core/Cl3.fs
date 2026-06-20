@@ -127,3 +127,39 @@ module Cl3 =
         let d = vector dirX dirY dirZ
         let n = norm d
         if n <= 1e-12 then zero else smul (speed / n) d
+
+    /// **`Cl(3,0)` presented as a comparison-free `IStarRing<Mv>`** — the buildable Clifford leg of the
+    /// adinkra → Clifford → E8 unfold (math-team handoff 2026-06-19, row 10, IStarRing Clifford leg; Face 3
+    /// `mix(mix,mix)=cogen` stays BLOCKED on freeze-IR). This is the SAME spirit as `CayleyDickson.fs`'s
+    /// `Doubled.algebra` / `Real.algebra` / `ImaginaryStack.*`: a *-ring is a pure dictionary of operations
+    /// (`IStarRing<'A>` = `ISemiring` Zero/One/Add/Mul/Negate + the involution `Conj`), carrying NO state and
+    /// requiring **no `IComparable`** — an `Mv` can BE an identity, comparison is explicit opt-in per the
+    /// culture-invariant rule (`dot` / `normSq` are the opt-in metric, never an implicit ordering).
+    ///
+    /// **Folds, does not duplicate:** built directly on the existing `Cl3.Mv` + `gp` + `add` + `reverse`
+    /// (the prior-art gate — `CliffordE8Bridge` reuses this same `Mv`; we add the *-ring instance, no parallel
+    /// type). The even subalgebra {scalar + bivectors} ≅ ℍ, so this `IStarRing` *contains* `CayleyDickson`'s
+    /// quaternion rotors — the two algebras agree on their overlap.
+    ///
+    /// **Involution = REVERSION (`~`, `Cl3.reverse`), NOT Clifford conjugation.** Reversion is the
+    /// **anti-automorphism** `~(xy) = (~y)(~x)` — exactly the *-ring law `Conj(x·y) = Conj y · Conj x`. It is
+    /// involutive (`~~x = x`), additive (`~(x+y) = ~x + ~y`), and fixes scalars (`~1 = 1`). Grade involution
+    /// `x̂` (flip odd grades) is an *automorphism* `(xy)^ = x̂ŷ` — the WRONG order, so it is NOT the *-ring
+    /// involution. Clifford conjugation `x̄ = ~(x̂) = (x̂)~` is *also* an anti-automorphism and would satisfy
+    /// the *-ring laws too; reversion is chosen because it is the **norm-defining** involution here
+    /// (`⟨x ~x⟩₀ = normSq x`, the metric `Cl3.reverse` already documents) and the one `rotate`'s sandwich uses.
+    ///
+    /// Anchors (Beacon): W. K. Clifford, *Applications of Grassmann's extensive algebra* (1878) — the geometric
+    /// algebra; Hestenes & Sobczyk, *Clifford Algebra to Geometric Calculus* (1984) — reversion as the principal
+    /// anti-automorphism / *-structure; Lounesto, *Clifford Algebras and Spinors* (2001) §3 — reversion vs grade
+    /// involution vs conjugation. Sibling: `CayleyDickson.fs` (the hypercomplex tower as `IStarRing`).
+    let algebra: IStarRing<Mv> =
+        { new IStarRing<Mv> with
+            member _.Zero = zero
+            member _.One = one
+            member _.Add(x, y) = add x y
+            member _.Negate(x) = smul -1.0 x
+            // The geometric product — associative, non-commutative; `One` (scalar 1) is its identity.
+            member _.Mul(x, y) = gp x y
+            // The *-ring involution: reversion (`~`), the anti-automorphism `~(xy) = (~y)(~x)`.
+            member _.Conj(x) = reverse x }
