@@ -9,7 +9,7 @@
 //! the odd trailing node's sibling is itself with right=true.
 //! If this passes, Rust agrees with F#/C#/TS on every proof and every verification.
 
-use zeta_core_merkle::{verify_proof, MerkleTree};
+use zeta_core_merkle::{MerkleTree, verify_proof};
 
 fn hex_to_bytes(s: &str) -> Vec<u8> {
     (0..s.len())
