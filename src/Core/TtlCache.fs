@@ -6,7 +6,7 @@ namespace Zeta.Core
 /// the **reified graphs** (e.g. `ImdbDataset.toCoEmpowerGraph`) keyed by source, valid for a TTL, so an
 /// external source is hit **only on a miss or after expiry** — respecting the source sites' ToS / rate limits.
 ///
-/// **In discipline:** the clock is **injected** — `now` is passed in, never an ambient `DateTime.Now`
+/// **In discipline:** the clock is **injected** — `now` is passed in, never an ambient local wall-clock read
 /// (noninterference §13: entropy/time only through declared channels). Per the **Zeta-NTP** model, `now` is the
 /// **soft phase-spacetime generated time** (the common-seed phase tick — the canonical soft base) **coupled
 /// with UTC observables**: because these data sources are *on Earth*, **UTC (± uncertainty) is the best
