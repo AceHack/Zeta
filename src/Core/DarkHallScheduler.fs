@@ -24,6 +24,7 @@ module DarkHallScheduler =
     type ScheduledRoomState =
         { Loop: RoomLoop.LoopState
           CompletedTicks: int
+          CompletedLaps: int
           LastTick: RoomLoop.TickOutcome option
           HeatRowsRev: HeatBoundaryRow list }
 
@@ -33,15 +34,48 @@ module DarkHallScheduler =
         | LoopIdMismatch of expected: string * actual: string
         | StatePointerMismatch of expectedPrefix: string * actual: string
         | ResumeTickOverflow of nextLap: int * ticksPerLap: int
+        | SnapshotLapMismatch of expected: int * actual: int
+        | SnapshotTickMismatch of expected: int * actual: int
+        | SnapshotMissing of pointer: string
+        | SnapshotStoreRejected of pointer: string * reason: string
 
     type HeatBoardContinuationAdmission =
         { Token: SimLoop.Continuation
           StatePointer: string
           ResumeBaseTick: int }
 
+    type IHeatBoardStateStore =
+        abstract WriteAsync:
+            pointer: string *
+            state: ScheduledRoomState *
+            ct: System.Threading.CancellationToken ->
+                System.Threading.Tasks.Task<Result<unit, HeatBoardContinuationFeedback>>
+
+        abstract ReadAsync:
+            pointer: string *
+            ct: System.Threading.CancellationToken ->
+                System.Threading.Tasks.Task<Result<ScheduledRoomState, HeatBoardContinuationFeedback>>
+
+    [<Sealed>]
+    type InMemoryHeatBoardStateStore() =
+        let snapshots = System.Collections.Generic.Dictionary<string, ScheduledRoomState>(System.StringComparer.Ordinal)
+        let gate = obj ()
+
+        interface IHeatBoardStateStore with
+            member _.WriteAsync(pointer, state, _ct) =
+                lock gate (fun () -> snapshots.[pointer] <- state)
+                System.Threading.Tasks.Task.FromResult(Ok())
+
+            member _.ReadAsync(pointer, _ct) =
+                match lock gate (fun () -> snapshots.TryGetValue pointer) with
+                | true, state -> System.Threading.Tasks.Task.FromResult(Ok state)
+                | false, _ ->
+                    System.Threading.Tasks.Task.FromResult(Error(HeatBoardContinuationFeedback.SnapshotMissing pointer))
+
     let initial (room: DarkHall.Room) (manifest: Chip9Capabilities.Manifest) : ScheduledRoomState =
         { Loop = RoomLoop.initial room manifest
           CompletedTicks = 0
+          CompletedLaps = 0
           LastTick = None
           HeatRowsRev = [] }
 
@@ -119,8 +153,22 @@ module DarkHallScheduler =
         let tick = state.CompletedTicks + 1
         { Loop = outcome.State
           CompletedTicks = tick
+          CompletedLaps = state.CompletedLaps
           LastTick = Some outcome
           HeatRowsRev = rowOfOutcome tick outcome :: state.HeatRowsRev }
+
+    let private stampCumulativeLaps
+        (startLaps: int)
+        (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
+        : SimLoop.Outcome<ScheduledRoomState, string list> =
+        let laps =
+            outcome.Laps
+            |> List.mapi (fun i lap ->
+                { lap with State = { lap.State with CompletedLaps = startLaps + i + 1 } })
+
+        let final = { outcome.Final with CompletedLaps = startLaps + List.length outcome.Laps }
+
+        { outcome with Laps = laps; Final = final }
 
     let tick
         (source: string)
@@ -148,6 +196,37 @@ module DarkHallScheduler =
                 return Ok next
             })
 
+    let heatBoardSimLoopFromState
+        (name: string)
+        (matches: InterruptKind -> bool)
+        (sourceName: string)
+        (sink: IHeatSink)
+        (requestFor: RoomLoop.RequestResolver)
+        (choose: Runtime.ControllerReadout -> RoomLoop.ControllerChoice)
+        (interruptSource: SoftScheduler.Source)
+        (clock: int -> int64)
+        (budget: SimLoop.Budget)
+        (ctx: IntrCtx)
+        (seed: int64)
+        (ticksPerLap: int)
+        (cut: string list -> ScheduledRoomState -> bool)
+        (start: ScheduledRoomState)
+        =
+        task {
+            let handler = roomTickHandler name matches sourceName sink requestFor choose
+            let mutable lapBoundary = start.CompletedLaps
+            let mutable cutState = start
+            let measure state =
+                lapBoundary <- lapBoundary + 1
+                cutState <- { state with CompletedLaps = lapBoundary }
+                renderHeatBoardForState (uint64 seed) cutState
+
+            let cutAtLap measured _state = cut measured cutState
+
+            let! outcome = SimLoop.run [ handler ] interruptSource measure cutAtLap clock budget ctx seed ticksPerLap start
+            return stampCumulativeLaps start.CompletedLaps outcome
+        }
+
     /// Run a bounded sim -> measure -> cut loop where the measurement is the
     /// host-visible CHIP-9 heat board. This is the Dark Hall room loop shape for
     /// production and tests alike: execution stays async in `SoftScheduler`,
@@ -170,11 +249,23 @@ module DarkHallScheduler =
         (ticksPerLap: int)
         (cut: string list -> ScheduledRoomState -> bool)
         =
-        let handler = roomTickHandler name matches sourceName sink requestFor choose
-        let measure = renderHeatBoardForState (uint64 seed)
         let start = initial room manifest
 
-        SimLoop.run [ handler ] interruptSource measure cut clock budget ctx seed ticksPerLap start
+        heatBoardSimLoopFromState
+            name
+            matches
+            sourceName
+            sink
+            requestFor
+            choose
+            interruptSource
+            clock
+            budget
+            ctx
+            seed
+            ticksPerLap
+            cut
+            start
 
     let private pointerSafe (value: string) : string =
         value
@@ -198,7 +289,7 @@ module DarkHallScheduler =
         sprintf
             "saves/darkhall/%s/lap-%d-tick-%d.heat-board"
             (continuationLoopId loopId)
-            (List.length outcome.Laps)
+            outcome.Final.CompletedLaps
             outcome.Final.CompletedTicks
 
     let private heatBoardStatePointerPrefix (loopId: string) : string =
@@ -211,7 +302,17 @@ module DarkHallScheduler =
         (loopId: string)
         (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
         : SimLoop.Continuation option =
-        SimLoop.continueAfter (continuationLoopId loopId) (heatBoardStatePointer loopId outcome) outcome
+        match outcome.Stopped with
+        | SimLoop.Stopped.LapBudget
+        | SimLoop.Stopped.TickBudget
+        | SimLoop.Stopped.ClockBudget ->
+            Some
+                { LoopId = continuationLoopId loopId
+                  NextLap = outcome.Final.CompletedLaps
+                  TicksSpent = List.length outcome.Laps
+                  StatePointer = heatBoardStatePointer loopId outcome }
+        | SimLoop.Stopped.CutChoseClose
+        | SimLoop.Stopped.RoomError _ -> None
 
     let encodeHeatBoardContinuation
         (loopId: string)
@@ -222,9 +323,32 @@ module DarkHallScheduler =
     let private resumeBaseTick (nextLap: int) (ticksPerLap: int) : Result<int, HeatBoardContinuationFeedback> =
         let perLap = max 1 ticksPerLap
         let baseTick = int64 nextLap * int64 perLap
+        let lastTickInLap = baseTick + int64 perLap - 1L
 
-        if baseTick > int64 System.Int32.MaxValue then
+        if lastTickInLap > int64 System.Int32.MaxValue then
             Error(HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, perLap))
+        else
+            Ok(int baseTick)
+
+    let private resumeLinkBaseTick
+        (nextLap: int)
+        (ticksPerLap: int)
+        (budget: SimLoop.Budget)
+        : Result<int, HeatBoardContinuationFeedback> =
+        let perLap = int64 (max 1 ticksPerLap)
+        let maxLaps = int64 (max 1 budget.MaxLaps)
+        let maxTicks = int64 (max 1 budget.MaxTicks)
+        let tickBoundedLaps = (maxTicks + perLap - 1L) / perLap
+        let linkLaps = min maxLaps tickBoundedLaps
+        let baseTick = int64 nextLap * perLap
+        let lastTickInLink = baseTick + linkLaps * perLap - 1L
+        let completedLapBoundary = int64 nextLap + linkLaps
+
+        if
+            lastTickInLink > int64 System.Int32.MaxValue
+            || completedLapBoundary > int64 System.Int32.MaxValue
+        then
+            Error(HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, int perLap))
         else
             Ok(int baseTick)
 
@@ -263,4 +387,85 @@ module DarkHallScheduler =
         (admission: HeatBoardContinuationAdmission)
         (source: SoftScheduler.Source)
         : SoftScheduler.Source =
-        fun tick -> source (admission.ResumeBaseTick + tick)
+        fun tick ->
+            let absoluteTick = int64 admission.ResumeBaseTick + int64 tick
+
+            if absoluteTick > int64 System.Int32.MaxValue then
+                []
+            else
+                source (int absoluteTick)
+
+    let saveHeatBoardStateAsync
+        (store: IHeatBoardStateStore)
+        (loopId: string)
+        (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
+        (ct: System.Threading.CancellationToken)
+        : System.Threading.Tasks.Task<Result<string, HeatBoardContinuationFeedback>> =
+        task {
+            let pointer = heatBoardStatePointer loopId outcome
+            let! saved = store.WriteAsync(pointer, outcome.Final, ct)
+
+            return saved |> Result.map (fun () -> pointer)
+        }
+
+    /// Resume a heat-board loop from a previously saved state pointer. The token
+    /// admission and the snapshot load both stay on the typed feedback channel;
+    /// the returned `Outcome` is still one finite `SimLoop` link.
+    let resumeHeatBoardSimLoop
+        (loopId: string)
+        (store: IHeatBoardStateStore)
+        (name: string)
+        (matches: InterruptKind -> bool)
+        (sourceName: string)
+        (sink: IHeatSink)
+        (requestFor: RoomLoop.RequestResolver)
+        (choose: Runtime.ControllerReadout -> RoomLoop.ControllerChoice)
+        (interruptSource: SoftScheduler.Source)
+        (clock: int -> int64)
+        (budget: SimLoop.Budget)
+        (ctx: IntrCtx)
+        (seed: int64)
+        (ticksPerLap: int)
+        (cut: string list -> ScheduledRoomState -> bool)
+        (tokenLine: string)
+        (ct: System.Threading.CancellationToken)
+        : System.Threading.Tasks.Task<Result<SimLoop.Outcome<ScheduledRoomState, string list>, HeatBoardContinuationFeedback>> =
+        task {
+            match admitHeatBoardContinuation loopId ticksPerLap tokenLine with
+            | Error feedback -> return Error feedback
+            | Ok admission ->
+                match resumeLinkBaseTick admission.Token.NextLap ticksPerLap budget with
+                | Error feedback -> return Error feedback
+                | Ok baseTick ->
+                    let admission = { admission with ResumeBaseTick = baseTick }
+                    let! loaded = store.ReadAsync(admission.StatePointer, ct)
+
+                    match loaded with
+                    | Error feedback -> return Error feedback
+                    | Ok start ->
+                        if start.CompletedLaps <> admission.Token.NextLap then
+                            return Error(HeatBoardContinuationFeedback.SnapshotLapMismatch(admission.Token.NextLap, start.CompletedLaps))
+                        elif start.CompletedTicks <> admission.ResumeBaseTick then
+                            return Error(HeatBoardContinuationFeedback.SnapshotTickMismatch(admission.ResumeBaseTick, start.CompletedTicks))
+                        else
+                            let resumedSource = resumeHeatBoardSource admission interruptSource
+
+                            let! outcome =
+                                heatBoardSimLoopFromState
+                                    name
+                                    matches
+                                    sourceName
+                                    sink
+                                    requestFor
+                                    choose
+                                    resumedSource
+                                    clock
+                                    budget
+                                    ctx
+                                    seed
+                                    ticksPerLap
+                                    cut
+                                    start
+
+                            return Ok outcome
+        }

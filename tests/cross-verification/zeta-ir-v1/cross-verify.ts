@@ -44,6 +44,18 @@ const known: readonly Ir[] = [
       { op: "xorshr", s: "16" },
     ],
   },
+  {
+    generator: "hash.fmix64",
+    version: 1,
+    width: 64,
+    ops: [
+      { op: "xorshr", s: "33" },
+      { op: "mul", k: "-49064778989728563" },
+      { op: "xorshr", s: "33" },
+      { op: "mul", k: "-4265267296055464877" },
+      { op: "xorshr", s: "33" },
+    ],
+  },
 ];
 
 function opJson(op: Op): string {
