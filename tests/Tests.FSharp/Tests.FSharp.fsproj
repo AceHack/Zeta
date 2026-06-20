@@ -371,6 +371,7 @@
     <Compile Include="Formal/ForceLayout.Tests.fs" />
     <Compile Include="Formal/MetaspaceMap.Tests.fs" />
     <Compile Include="Formal/MetaspaceGraphRender.Tests.fs" />
+    <Compile Include="Formal/GlassHalo.Tests.fs" />
     <Compile Include="Formal/LiveLegs.Tests.fs" />
     <Compile Include="Formal/WikidataGraph.Tests.fs" />
     <Compile Include="Formal/GraphSnapshot.Tests.fs" />
