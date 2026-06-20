@@ -46,6 +46,41 @@ channel changes.*
 | 10 | **P1 (Aaron-flagged)** | **Homoiconicity formal proof (Kestrel) ⇒ Futamura `gen(gen)=gen` Face 3** (`mix(mix,mix)=cogen`, OPEN §B). Homoiconicity (code=data) is what makes the self-application work; Kestrel's proof is the named **backstop** for generator-fidelity/byte-lock → the route to discharge Face 3 (Faces 1+2 proven in `AdinkraCode.fs`; the generator now also CORRECTS, generation=correction). Plus: **Clifford layer** of the adinkra unfold buildable now as comparison-free `IStarRing` (comparison opt-in; elements can BE identity), following `CayleyDickson.fs`. Full: `memory/project_kestrel_homoiconicity_…` | Lean (homoiconicity/Futamura) + `IStarRing` algebra | DDC byte-lock + `AdinkraCode` FsCheck | Soraya → math team / gen-gen trajectory |
 | 11 | **P1 (Aaron-flagged, EXTERNALLY ANCHORED)** | **Deeper Clifford → E8 unfold: the geometric product *generates* the E8 root system** (beyond `CliffordE8Bridge`'s basis/metric isometry, already built). **Reproduce/formalize Dechant's Clifford-spinor E8 construction** in-tree (versor/reflection products → the 240 roots) and check it agrees with `CliffordE8Bridge` on the 240 roots. *Not a from-scratch conjecture — a published result to port.* Full: `…adinkra-clifford-e8-unfold-status-…` §"External anchors". | Clifford/GA construction (F#) + Lean (root-system theorem) | `CliffordE8Bridge`/`E8Lattice` FsCheck (240-root agreement) | Soraya → math team |
 
+## Soraya's routing decision (2026-06-19) — tool-assigned, pick-up ready
+
+The formal-verification routing authority (Soraya) triaged all 11 rows (no proofs written — routing only).
+Math team picks up from here; the rows are now tool-assigned.
+
+**Start THIS cycle (P0, all externally-anchored + buildable on `main`):** **rows 1, 2, 3** — the entropy-as-
+identity core (NFT forgery-resistance `H_∞`, binding/collision QF_BV, anti-mirror `ρ_owe` DPI soundness). Each
+carries the BP-16 ≥2-tool cross-check: the Lean theorem is the lemma; `ρ_owe`/Z3/FsCheck are independent
+evidence legs — never promote the measured statistic to the proof.
+
+**Highest-leverage P1: row 11** — pure reproduction of **Dechant 2017** (not a conjecture); the 240-root
+agreement vs `CliffordE8Bridge` is a ready FsCheck acceptance gate. Cheap + decisive; discharges the deeper §B
+unfold.
+
+**TLA+-hammer-bias guard (confirmed):** NO row goes to TLA+/TLC. Watch rows 1 (no quantitative-entropy
+vocabulary), 5 (a static dependency-cut/metering lemma, not a liveness trace), 7 (static purity/reachability,
+not a state machine). The NFT is a static commitment over a settled fold — the NO-TLA+ guard holds.
+
+**Two corrections (underspecification, not wrong-tool):**
+
+- **Row 7** had no tool → **Alloy** (structural reachability: does `displayClock`-as-param admit a live-state
+  config, bound 4–6) + **Z3 QF_LRA** (the `±uncertainty` no-retro-narrowing = interval monotonicity), after a
+  Soraya scoping pass.
+- **Row 9 must be SPLIT:** the **structural** leg (Z→G fusion = idempotent CRDT-merge law; Z3/Lean, anchor
+  Shapiro et al. 2011) is buildable now; the **Bayesian-memetics / multi-axis-superposition uncertainty
+  primitive** leg is research-open — model in FsCheck first, theorem later. Likewise **row 8**: route the
+  *measurability* leg (diversity-entropy / coupled-empowerment / `ρ_owe`, Goodhart-resistant) first; the
+  *uniqueness/objectivity* ("most-objective lens") leg is research-open. **Row 10:** the `IStarRing` Clifford
+  leg is buildable now (Z3 ring/star-ring laws); **Face 3 stays BLOCKED** on freeze-`zeta-ir-v1` + the
+  multi-language generator.
+
+**Owners:** Tariq (`H_∞` / metering inequalities — rows 1, 5), Kenji (Z3 authoring — rows 2, `IStarRing`),
+Adaeze (empirical cross-checks — rows 3, 4, 6), Soraya (scope rows 7/8/9 splits, route 11). Soraya's notebook
+current-round targets: **rows 1/2/3/11**.
+
 ## Judgment calls the math team must preserve (don't lose in formalization)
 
 - **NO TLA+ for the NFT** — it is a *static commitment over a settled fold*, not a state machine (hammer-bias
