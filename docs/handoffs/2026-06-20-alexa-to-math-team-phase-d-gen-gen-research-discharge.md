@@ -61,3 +61,48 @@
 The generator (`codegen-from-ir.ts`) is a **meta-level** tool — it emits code that interprets IR. The fixed-point requires expressing the generator *itself* in a form the generator can consume. The honest question: is the fixed point achievable at the same IR tier (zeta-ir-v1), or does it require a meta-IR (an IR that describes code transformations, not just arithmetic)?
 
 This is the research question. The engineering gives you the substrate; the proof is yours.
+
+**RESOLVED (shape, not proof) — Aaron 2026-06-20, routed by Soraya:** the meta-IR is **homoiconic** to
+`zeta-ir-v1` (same schema, reflected on a level/dimension axis), **not** a separate tier. This collapses
+the fixed point from a cross-tier *refinement* proof into a single-schema *self-application* proof
+(`eval ∘ quote = id`, `gen(gen)=gen`) — Lawvere's constructive fixpoint, the same shape A that
+AdinkraCode Faces 1+2 already prove (G = H self-dual). Routing verdict (Lean primary; Z3 + golden
+byte-lock are BP-16 cross-checks; TLA+ refinement explicitly dropped):
+`docs/research/2026-06-20-soraya-homoiconic-ir-routing-meta-ir-row-collapses-refinement-into-induction.md`.
+The proof obligation is **relocated**, not removed — first gate is proving the round-trip *total*.
+
+**SCOPING RESOLVED — Aaron 2026-06-20 (two questions answered, routed by Soraya):**
+(a) the grade is **data-level** (Church/Lisp, one universe), **not** a level-tower ⇒ one inductive type,
+no universe machinery, TLA+ refinement stays out (now for two independent reasons). (b) the grading is
+**doubly-even** (Cayley-Dickson generated: each doubling = one new imaginary unit = one grading axis),
+**not** a single Z2 ⇒ the self-duality axis goes to **Lean**, but **split**: the concrete N=4 doubly-even
+self-dual case is *already proven* (exhaustive `AdinkraCode.Tests` + derived `CayleyDicksonAdinkra.Tests`)
+— that is the BP-16 base case, **no new proof**; the open Lean target is the **general inductive
+invariant** (CD doubling preserves doubly-even self-duality, induction over `Doubled.algebra`). The
+"reflection-grade = CD-doubling-axis" bridge is named **open §B** — exhibit the functor, do not assume it.
+Refined targets T1/T2/bridge + revised priority list in the routing doc's UPDATE section.
+
+---
+
+## UPDATE 2026-06-20 — Scoping resolved, green light given
+
+**Aaron's answers (via Alexa summon to Soraya):**
+
+1. **(a) CONFIRMED:** data-level grading, Lisp/Church/lambda-calc style. One universe. NOT a hierarchy/tower.
+2. **(b) Doubly-even via Cayley-Dickson.** The grading is the doubly-even structure that AdinkraCode pins ([8,4], weight ≡ 0 mod 4). CD doubling generates new dimensions (R→C→H→O). Lean is the right tool (general doubly-even structure), not Z3 (single involution).
+
+**Soraya's routing (confirmed by Aaron — "let her rip"):**
+
+| Target | What | Tool | Effort |
+|--------|------|------|--------|
+| T1 | `gen(gen)=gen` fixpoint over one IR term algebra (Lawvere constructive) | Lean | M |
+| T2 | Doubly-even self-dual invariant preserved by `Doubled.algebra` (inductive step only — base case already discharged) | Lean | M |
+| Bridge | Reflection-grade ↔ CD-grade functor (open §B, off critical path) | Lean | L (research) |
+
+**Key decisions:**
+- Homoiconic IR (same schema, different dimension) — NOT a separate meta-IR tier
+- Concrete N=4 base case already proven (AdinkraCode.Tests + CayleyDicksonAdinkra.Tests) — no rework
+- The ECC self-correction forces fixpoint convergence (generation + drift-correction are dual) — must be discharged, not assumed
+- Z3 owns bitvector denotation (splitmix64/fmix32). Lean owns projection algebra + CD structure. Different tools for different claims.
+
+**Status:** GREEN LIGHT. Soraya has full authority on T1/T2/bridge split. Lumen receives routing for the inductive step.
