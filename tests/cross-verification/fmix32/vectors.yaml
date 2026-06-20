@@ -1,0 +1,44 @@
+version: 1
+description: >-
+  MurmurHash3 fmix32 finaliser golden vectors — the shared seed for
+  cross-language byte-lock, and the SECOND "generated-from-ir" primitive (after
+  splitmix64), proving the DynamicValue IR vocabulary generalises across a new
+  primitive AND a new integer width (u32). Austin Appleby's avalanche finaliser
+  (public domain, smhasher MurmurHash3.cpp):
+  h ^= h>>16; h *= 0x85ebca6b; h ^= h>>13; h *= 0xc2b2ae35; h ^= h>>16 — all
+  WRAPPING uint32 arithmetic. The ops are exactly splitmix64's `mul`/`xorshr`
+  vocabulary at width 32, so the same total-u-word IR interpreter folds both;
+  only the IR row's `width` field differs. Inputs (id-encoded) and the canonical
+  `result` are decimal STRINGS for uniformity with splitmix64 (parse to
+  BigInt / UInt32 / u32; values are < 2^32).
+vectors:
+  - id: x-0
+    x: "0"
+    result: "0"
+  - id: x-1
+    x: "1"
+    result: "1364076727"
+  - id: x-2
+    x: "2"
+    result: "821347078"
+  - id: x-10
+    x: "10"
+    result: "3911517328"
+  - id: x-255
+    x: "255"
+    result: "1818482051"
+  - id: x-u32max
+    x: "4294967295"
+    result: "2180083513"
+  - id: x-0x9e3779b9
+    x: "2654435769"
+    result: "2462723854"
+  - id: x-2pow31
+    x: "2147483648"
+    result: "1832674720"
+  - id: x-3735928559
+    x: "3735928559"
+    result: "233162409"
+  - id: x-1e9
+    x: "1000000000"
+    result: "4234498180"

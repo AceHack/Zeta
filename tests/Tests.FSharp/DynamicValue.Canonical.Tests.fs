@@ -248,3 +248,49 @@ let ``CODEGEN-FORWARD: SplitMix64 IR row byte-locks F# toCanonicalJson and round
             | Error e -> failwithf "IR row re-encode failed: %A" e
         | Error e -> failwithf "IR row failed to decode: %A" e
     | Error e -> failwithf "IR encode failed: %A" e
+
+// ═══════════════════════════════════════════════════════════════════
+// CODEGEN-FORWARD (2nd primitive): the fmix32 generator's IR is a DynamicValue ROW.
+// MurmurHash3 fmix32 (tests/cross-verification/fmix32) is the SECOND
+// "generated-from-ir" oracle, proving the IR vocabulary generalises across a new
+// primitive AND a new integer width (u32). Its finaliser IR carries a `width: 32`
+// field; the ops are the same `mul`/`xorshr` vocabulary as splitmix64. This test
+// pins the CROSS-LANGUAGE byte-lock of that row: the REAL shipping F#
+// `DynamicValue.toCanonicalJson`, given the same IR, must reproduce the committed
+// `fmix32.ir.json` byte-for-byte, and the row must round-trip. fmix32's u32
+// constants are < 2^31, so they fit `DynamicValue.Int` (int64) directly with NO
+// signed reinterpretation (unlike splitmix64's u64 constants).
+[<Fact>]
+let ``CODEGEN-FORWARD: fmix32 IR row byte-locks F# toCanonicalJson and round-trips`` () =
+    let i (n: int64) = DynamicValue.Int n
+    let s (x: string) = DynamicValue.String x
+    let op name key (v: int64) = DynamicValue.Object [ ("op", s name); (key, i v) ]
+
+    let ir =
+        DynamicValue.Object
+            [ ("generator", s "hash.fmix32")
+              ("version", i 1L)
+              ("width", i 32L)
+              ("ops",
+               DynamicValue.Array
+                   [ op "xorshr" "s" 16L
+                     op "mul" "k" 2246822507L
+                     op "xorshr" "s" 13L
+                     op "mul" "k" 3266489909L
+                     op "xorshr" "s" 16L ]) ]
+
+    let rowPath =
+        Path.Join(repoRoot (), "tests", "cross-verification", "fmix32", "_gen", "fmix32.ir.json")
+
+    let rowText = (File.ReadAllText rowPath).Trim()
+
+    match DynamicValue.toCanonicalJson ir with
+    | Ok cj ->
+        Assert.Equal(rowText, cj) // byte-identical to the committed row the TS oracle reads
+        match DynamicValue.fromCanonicalJson rowText with
+        | Ok decoded ->
+            match DynamicValue.toCanonicalJson decoded with
+            | Ok reJson -> Assert.Equal(rowText, reJson)
+            | Error e -> failwithf "fmix32 IR row re-encode failed: %A" e
+        | Error e -> failwithf "fmix32 IR row failed to decode: %A" e
+    | Error e -> failwithf "fmix32 IR encode failed: %A" e
