@@ -164,23 +164,32 @@ the real/imaginary pair) and the uncertainty primitive's superpose/snap:
 So the metaspace's vertical is the snap/superpose collapse-axis (cf. the orientation-flow ladder:
 Tier-0-snapped ↔ Tier-∞-superposed) rendered as containment depth.
 
-## Visibility is contract/federation-gated too — "seeing through walls"
+## Visibility: open by default (glass halo) — privacy is the EARNED exception
 
-(Aaron, 2026-06-20): *"even the visibility would be federation/contract based too — the seeing
-through walls before you go inside."*
+(Aaron, 2026-06-20): *"walls should be open by default — you have to ask to close them. This is
+radical transparency / glass halo: you have to earn privacy budget."*
 
-The relational topology (clusters/federations/contracts) gates **two separate capabilities**, not
-just one:
+**Correction to an earlier draft of this note** (which said walls are *opaque by default*): that was
+backwards — privacy-as-default contradicts Zeta's **privacy-as-earned** principle ("privacy is a
+currency you earn by being useful, not a default you assert"). The correct, principled model:
 
-- **See** (visibility) — glimpsing inside a vault/room *before* entering ("when you get close you can
-  see inside") is **permission/contract-gated.** Walls are **opaque by default (privacy);** a
-  federation/contract makes them **transparent** (a granted glimpse-before-entry).
-- **Enter** (door traversal) — moving through a door is **also** permission-gated (above).
+- **See (visibility): OPEN by default — the glass halo / radical transparency.** You can see into
+  vaults/rooms by default; "seeing through walls" is the default state, not a gated grant.
+- **Privacy is the EARNED, metered exception.** To **close (frost)** a wall you **spend privacy
+  budget** — earned, not asserted. Opacity is the gated capability; visibility is free.
+- **Enter (door traversal): gated by default** — you can window-shop the glass freely, but walking in
+  still needs a **door + the right** (permission-gated, above).
 
-So both **perception** and **movement** are relationship-gated — privacy-by-default + earned
-visibility/access (consent-first #6). You do not see into someone's vault unless they have granted it;
-you do not walk in unless a door + the right exist. The wall's transparency *is* the visibility
-contract made visual.
+So the clean split is: **glass walls (see in by default), locked doors (enter by permission), frosted
+glass (earned privacy).** Two capabilities with *opposite* defaults — perception open, movement gated.
+
+This is the **glass-halo-bidirectional** discipline made into the visibility default, and it ties to
+the *everyone-is-IT* note: **radical default-transparency IS the symmetric-observation principle**
+(everyone can see ↔ everyone is IT). Vault-Tec was *asymmetric hidden* observation; the glass halo is
+*symmetric open* observation. **Privacy budget = the earned, metered right to opt out locally** —
+which is also why default-*opacity* would have been the Vault-Tec move (hidden-by-default), and
+default-transparency-with-earned-privacy is the home. Consent-first (#6) is honored as the *act of
+spending budget to close*, not as withholding by default.
 
 ## Tiering (consistent with the progressive-enhancement ladder)
 
