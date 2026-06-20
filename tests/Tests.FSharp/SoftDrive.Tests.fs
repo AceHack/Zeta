@@ -74,3 +74,30 @@ let ``frame-aware driveFramesWithHeatSink exports prune heat to host`` () =
                 Assert.Equal("chip8-room", heat.Source)
                 Assert.Equal("soft-emu.prune", heat.Kind)
                 Assert.Equal(1, heat.Units))
+
+[<Fact>]
+let ``frame-aware driveFramesWithHeatSink stops when prune heat backpressures`` () =
+    let setup = Chip8Cow.create 1UL |> Chip8Cow.loadRom inputAfterOne
+
+    let sink =
+        BoundedHeatSink
+            { Capacity = 1
+              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+
+    let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
+
+    match (sink :> IHeatSink).Emit filler with
+    | Error e -> Assert.True(false, sprintf "unexpected heat sink prefill feedback: %A" e)
+    | Ok () -> ()
+
+    match SoftDrive.driveFramesWithHeatSink "chip8-room" (sink :> IHeatSink) SoftDashboard.sumMemory 1 1 1 1 setup with
+    | Ok _ -> Assert.True(false, "soft drive must stop when prune heat cannot cross the room boundary")
+    | Error(HeatSinkFeedback.Backpressure(heat, capacity, count)) ->
+        Assert.Equal("chip8-room", heat.Source)
+        Assert.Equal("soft-emu.prune", heat.Kind)
+        Assert.Equal(1, heat.Units)
+        Assert.Equal(500000L, heat.MassPpm)
+        Assert.Equal(1, capacity)
+        Assert.Equal(2, count)
+        Assert.Equal<HeatSignature list>([ filler ], sink.Stored)
+    | Error e -> Assert.True(false, sprintf "unexpected heat sink feedback: %A" e)
