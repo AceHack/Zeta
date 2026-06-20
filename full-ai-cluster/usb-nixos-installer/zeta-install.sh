@@ -1346,6 +1346,15 @@ maybe_symlink() {
 maybe_symlink "$HOSTNAME_DST" /etc/zeta/cluster-node-id
 maybe_symlink /mnt/etc/zeta/operator-authorized-keys /etc/zeta/operator-authorized-keys
 
+# B-0891 QEMU phase-3: non-interactive CI installs enable boot-time first-session
+# demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
+if [[ "${ZETA_AUTO_CONFIRM:-}" == "WIPE" ]]; then
+  sudo mkdir -p /mnt/etc/zeta
+  echo "qemu-ci-first-session" | sudo tee /mnt/etc/zeta/qemu-first-session-ci >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/qemu-first-session-ci
+  echo "[B-0891]   wrote /mnt/etc/zeta/qemu-first-session-ci (QEMU phase-3 boot demo)"
+fi
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # --impure: required so builtins.pathExists + builtins.readFile in the
 # affected modules (injected-hostname.nix + operator-authorized-keys.nix)

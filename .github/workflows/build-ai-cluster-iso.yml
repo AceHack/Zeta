@@ -286,6 +286,7 @@ jobs:
         working-directory: full-ai-cluster
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-full-install-serial.log
+          QEMU_FIRST_SESSION_PHASE3: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)

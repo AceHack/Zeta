@@ -5,7 +5,8 @@
  * QEMU full-install test (B-0831 Slice 1) for the canonical Zeta installer ISO.
  *
  * Phase 1 — boot installer ISO + virtual disk; wait for install completion.
- * Phase 2 — boot installed disk only; verify auto-generated hostname login banner.
+ * Phase 2 — boot installed disk only; verify login banner (+ optional phase-3
+ * first-session serial markers when QEMU_FIRST_SESSION_PHASE3=1).
  * Phase 1 also asserts iter-5.4.1-ci dry-run registration (B-0831 slice 2)
  * and tree-path coherence (B-0831 slice 3).
  *
@@ -26,6 +27,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
+import {
+  firstSessionPhase3Enabled,
+  firstSessionMarkersSatisfied,
+} from "./qemu-first-session-phase3.ts";
 
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
@@ -107,6 +112,71 @@ export function detectUnexpectedControlPlaneLogin(
     return `phase 2 FAILURE — B-0835 Bug 1 regression: saw "${CONTROL_PLANE_LOGIN_PROMPT}" but expected "${expectedHostname}"`;
   }
   return null;
+}
+
+/** Exported for unit tests. Detect installed-system login prompt in serial output. */
+export function detectInstalledLoginPrompt(
+  serialOutput: string,
+  expectedHostname: string | null,
+): { readonly ok: true; readonly reason: string; readonly hostname?: string } | { readonly ok: false } {
+  const loginNeedle = expectedHostname ? `${expectedHostname} login:` : null;
+  const welcomeNeedle = expectedHostname
+    ? `Welcome to ${expectedHostname} (Zeta cluster node)`
+    : null;
+
+  if (loginNeedle && serialOutput.includes(loginNeedle)) {
+    return {
+      ok: true,
+      reason: `login prompt "${loginNeedle}" observed`,
+      ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
+    };
+  }
+
+  if (welcomeNeedle && serialOutput.includes(welcomeNeedle) && serialOutput.includes("login:")) {
+    return {
+      ok: true,
+      reason: `login banner "${welcomeNeedle}" observed`,
+      ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
+    };
+  }
+
+  if (detectUnexpectedControlPlaneLogin(serialOutput, expectedHostname)) {
+    return { ok: false };
+  }
+
+  if (!loginNeedle) {
+    for (const match of serialOutput.matchAll(/(?:^|\n)([a-z0-9-]+) login:/gi)) {
+      const host = match[1];
+      if (host && host !== "zeta-installer") {
+        return {
+          ok: true,
+          reason: `login prompt "${host} login:" observed`,
+          hostname: host,
+        };
+      }
+    }
+  }
+
+  return { ok: false };
+}
+
+/** Exported for unit tests. Phase 2 (+ optional phase-3 first-session markers). */
+export function detectPhase2Success(
+  serialOutput: string,
+  expectedHostname: string | null,
+  requireFirstSession = false,
+): { readonly ok: true; readonly reason: string; readonly hostname?: string } | { readonly ok: false } {
+  const login = detectInstalledLoginPrompt(serialOutput, expectedHostname);
+  if (!login.ok) return { ok: false };
+  if (requireFirstSession && !firstSessionMarkersSatisfied(serialOutput)) {
+    return { ok: false };
+  }
+  const phase3Suffix = requireFirstSession ? " + first-session markers" : "";
+  return {
+    ok: true,
+    reason: `phase 2 SUCCESS — ${login.reason}${phase3Suffix}`,
+    ...(login.hostname !== undefined ? { hostname: login.hostname } : {}),
+  };
 }
 
 function usage(): never {
@@ -328,46 +398,26 @@ async function waitForInstallComplete(serialLogPath: string): Promise<InstallRes
 async function waitForInstalledLogin(
   serialLogPath: string,
   expectedHostname: string | null,
+  requireFirstSession: boolean,
 ): Promise<InstallResult> {
   const start = Date.now();
   const deadline = start + DISK_BOOT_TIMEOUT_SECONDS * 1000;
   const loginNeedle = expectedHostname ? `${expectedHostname} login:` : null;
-  const welcomeNeedle = expectedHostname
-    ? `Welcome to ${expectedHostname} (Zeta cluster node)`
-    : null;
   let lastReportedMinute = -1;
 
   while (Date.now() < deadline) {
     const elapsedSec = Math.floor((Date.now() - start) / 1000);
     const elapsedMin = Math.floor(elapsedSec / 60);
     if (elapsedMin > lastReportedMinute) {
-      const target = loginNeedle ?? "installed-system login prompt";
+      const target = requireFirstSession
+        ? `${loginNeedle ?? "login"} + first-session markers`
+        : (loginNeedle ?? "installed-system login prompt");
       console.log(
         `[qemu-full-install-test] phase 2: ${elapsedMin} min elapsed; waiting for "${target}"`,
       );
       lastReportedMinute = elapsedMin;
     }
     const content = readSerial(serialLogPath);
-
-    if (loginNeedle && content.includes(loginNeedle)) {
-      return {
-        exitCode: 0,
-        reason: `phase 2 SUCCESS — login prompt "${loginNeedle}" observed`,
-        serialLogTail: content.slice(-1500),
-        elapsedSeconds: elapsedSec,
-        ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
-      };
-    }
-
-    if (welcomeNeedle && content.includes(welcomeNeedle) && content.includes("login:")) {
-      return {
-        exitCode: 0,
-        reason: `phase 2 SUCCESS — login banner "${welcomeNeedle}" observed`,
-        serialLogTail: content.slice(-1500),
-        elapsedSeconds: elapsedSec,
-        ...(expectedHostname !== null ? { hostname: expectedHostname } : {}),
-      };
-    }
 
     const unexpectedControlPlaneReason = detectUnexpectedControlPlaneLogin(content, expectedHostname);
     if (unexpectedControlPlaneReason) {
@@ -379,19 +429,15 @@ async function waitForInstalledLogin(
       };
     }
 
-    if (!loginNeedle) {
-      for (const match of content.matchAll(/(?:^|\n)([a-z0-9-]+) login:/gi)) {
-        const host = match[1];
-        if (host && host !== "zeta-installer") {
-          return {
-            exitCode: 0,
-            reason: `phase 2 SUCCESS — login prompt "${host} login:" observed`,
-            serialLogTail: content.slice(-1500),
-            elapsedSeconds: elapsedSec,
-            hostname: host,
-          };
-        }
-      }
+    const success = detectPhase2Success(content, expectedHostname, requireFirstSession);
+    if (success.ok) {
+      return {
+        exitCode: 0,
+        reason: success.reason,
+        serialLogTail: content.slice(-1500),
+        elapsedSeconds: elapsedSec,
+        ...(success.hostname !== undefined ? { hostname: success.hostname } : {}),
+      };
     }
 
     const failMarker = checkFailureMarkers(content);
@@ -414,11 +460,14 @@ async function waitForInstalledLogin(
       : content.includes("EFI stub: Loaded initrd") && !content.includes("login:")
         ? " (serial stopped after EFI initrd — likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)"
         : "";
+  const phase3Hint = requireFirstSession && !firstSessionMarkersSatisfied(content)
+    ? " (login may be present but zeta-first-session: begin|complete markers missing — check zeta-first-session-ci.service)"
+    : "";
   return {
     exitCode: 1,
     reason: loginNeedle
-      ? `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for "${loginNeedle}"${emptySerialHint}`
-      : `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for installed-system login prompt${emptySerialHint}`,
+      ? `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for "${loginNeedle}"${phase3Hint}${emptySerialHint}`
+      : `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for installed-system login prompt${phase3Hint}${emptySerialHint}`,
     serialLogTail: content.slice(-3000),
     elapsedSeconds: Math.floor((Date.now() - start) / 1000),
   };
@@ -533,11 +582,16 @@ async function main(): Promise<never> {
   const hostname = phase1.hostname ?? extractGeneratedHostname(phase1Serial);
   console.log(`[qemu-full-install-test] phase 1 done; expected hostname: ${hostname ?? "(infer at login)"}`);
 
+  const requireFirstSession = firstSessionPhase3Enabled();
+  if (requireFirstSession) {
+    console.log("[qemu-full-install-test] phase 3 enabled (QEMU_FIRST_SESSION_PHASE3=1) — will assert first-session serial markers");
+  }
+
   const phase2 = await runQemuUntil(
     buildQemuDiskBootArgs(diskPath, phase2SerialLogPath, tmpDir),
     phase2SerialLogPath,
-    () => waitForInstalledLogin(phase2SerialLogPath, hostname),
-    "phase 2 (disk boot)",
+    () => waitForInstalledLogin(phase2SerialLogPath, hostname, requireFirstSession),
+    requireFirstSession ? "phase 2+3 (disk boot + first-session)" : "phase 2 (disk boot)",
   );
 
   writeArtifactSerialLog(phase1Serial, readSerial(phase2SerialLogPath));

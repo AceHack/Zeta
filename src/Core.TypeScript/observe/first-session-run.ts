@@ -15,7 +15,7 @@
 
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, appendFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 import {
@@ -37,6 +37,18 @@ import {
 } from "./first-session-executor";
 
 export const DEFAULT_MARKER_PATH = "/var/lib/zeta-first-session/complete.marker";
+
+/** Mirror serial markers to ttyS0 when ZETA_FIRST_SESSION_TEE_CONSOLE=1 (QEMU phase-3). */
+export function logSerial(line: string): void {
+  console.log(line);
+  if (process.env.ZETA_FIRST_SESSION_TEE_CONSOLE === "1") {
+    try {
+      appendFileSync("/dev/ttyS0", `${line}\n`);
+    } catch {
+      // headless / no serial — stdout-only is fine
+    }
+  }
+}
 
 export interface RunOptions {
   readonly markerPath: string;
@@ -170,7 +182,7 @@ async function pickAction(
     }
     const idx = Number(answer.trim());
     if (!Number.isInteger(idx) || idx < 0 || idx >= menu.length) {
-      console.log(`${SERIAL_PREFIX} invalid-choice`);
+      logSerial(`${SERIAL_PREFIX} invalid-choice`);
       return firstSessionOracle(session);
     }
     return menu[idx]!;
@@ -186,7 +198,7 @@ async function applyAction(
 ): Promise<NodeSessionState> {
   if (action.kind === "setup_credential") {
     if (opts.dryRun) {
-      console.log(`${SERIAL_PREFIX} dry-run setup ${action.vendor}`);
+      logSerial(`${SERIAL_PREFIX} dry-run setup ${action.vendor}`);
       return simulateFirstSession(session, action);
     }
     const result = executeSetupCredential(action.vendor, opts.runner, opts.home);
@@ -199,7 +211,7 @@ async function applyAction(
   }
 
   if (opts.dryRun) {
-    console.log(`${SERIAL_PREFIX} dry-run ${action.kind}`);
+    logSerial(`${SERIAL_PREFIX} dry-run ${action.kind}`);
   }
   return simulateFirstSession(session, action);
 }
@@ -207,11 +219,11 @@ async function applyAction(
 /** Main loop — exported for tests. */
 export async function runFirstSession(opts: RunOptions): Promise<NodeSessionState> {
   if (existsSync(opts.markerPath) && !opts.demo && !opts.dryRun) {
-    console.log(`${SERIAL_PREFIX} already-complete marker=${opts.markerPath}`);
+    logSerial(`${SERIAL_PREFIX} already-complete marker=${opts.markerPath}`);
     return { ...defaultNodeSession(), complete: true };
   }
 
-  console.log(`${SERIAL_PREFIX} begin`);
+  logSerial(`${SERIAL_PREFIX} begin`);
   let session = sessionFromProbe(opts.runner, opts.home);
   const demoQueue = opts.demo ? [...opts.demoScript] : [];
 
@@ -222,14 +234,14 @@ export async function runFirstSession(opts: RunOptions): Promise<NodeSessionStat
     const action = await pickAction(session, opts, demoQueue);
     if (!action) break;
 
-    console.log(`${SERIAL_PREFIX} choice kind=${action.kind}${"vendor" in action ? ` vendor=${action.vendor}` : ""}`);
+    logSerial(`${SERIAL_PREFIX} choice kind=${action.kind}${"vendor" in action ? ` vendor=${action.vendor}` : ""}`);
     session = await applyAction(session, action, opts);
 
     if (session.complete) {
       if (!opts.dryRun) {
         writeMarker(opts.markerPath);
       }
-      console.log(`${SERIAL_PREFIX} complete canSelfRegister=${session.credentials.gh === "ready"}`);
+      logSerial(`${SERIAL_PREFIX} complete canSelfRegister=${session.credentials.gh === "ready"}`);
       break;
     }
   }

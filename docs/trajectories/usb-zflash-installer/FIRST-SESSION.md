@@ -31,7 +31,7 @@ which credentials to set up, which to skip, whether to stay local-only.
 
 | `docs/trajectories/usb-zflash-installer/HAT-ROUTING.md` | Slice 5 hat path → owner sketch |
 
-Not yet wired: QEMU phase-3 SSH executor (markers defined in `serial-markers.ts`).
+Not yet wired: QEMU phase-3 hard gate on push (opt-in via `QEMU_FIRST_SESSION_PHASE3=1` on workflow_dispatch).
 
 ## Reused from observe / workflow DUs
 
@@ -52,7 +52,7 @@ Per `docs/BUILD-GATES.md` — local prepush is the gate; peers replay; CI is sig
 | **S1** | Builder | `bun run preflight:quick` includes observe suite |
 | **S2** | Peer / builder | `validate-local-llm.ts` — Ollama chooser over menu labels |
 | **S3** | USB hat owner | Scripted `first-session` demo against mock LLM backend |
-| **S4** | Society cadence | QEMU SSH phase-3: login → `observe` / first-session transcript |
+| **S4** | Society cadence | QEMU phase-3: `QEMU_FIRST_SESSION_PHASE3=1` on scenario 2 workflow_dispatch |
 | **S6** | Human | Physical boot — feel of adventure UX |
 
 ## Vertical slices (roadmap)

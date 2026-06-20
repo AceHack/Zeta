@@ -2,6 +2,8 @@ import { describe, expect, it } from "bun:test";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   buildQemuDiskBootArgsPure,
+  detectInstalledLoginPrompt,
+  detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
   extractGeneratedHostname,
   mergeFullInstallSerialLogs,
@@ -86,5 +88,32 @@ describe("qemu-full-install-test B-0835 hostname regression guard", () => {
   it("allows control-plane when no generated hostname was expected", () => {
     expect(detectUnexpectedControlPlaneLogin("control-plane login:", null)).toBeNull();
     expect(detectUnexpectedControlPlaneLogin("control-plane login:", "control-plane")).toBeNull();
+  });
+});
+
+describe("qemu-full-install-test phase 3 first-session markers", () => {
+  it("detectPhase2Success requires markers when phase3 flag set", () => {
+    const serial = "node-abc123 login:\n";
+    expect(detectPhase2Success(serial, "node-abc123", false).ok).toBe(true);
+    expect(detectPhase2Success(serial, "node-abc123", true).ok).toBe(false);
+  });
+
+  it("detectPhase2Success passes when login and first-session markers present", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: complete",
+      "node-abc123 login:",
+    ].join("\n");
+    const result = detectPhase2Success(serial, "node-abc123", true);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.reason).toContain("first-session markers");
+    }
+  });
+
+  it("detectInstalledLoginPrompt finds generated hostname login line", () => {
+    const result = detectInstalledLoginPrompt("boot\nzeta-a1b2c3 login:", "zeta-a1b2c3");
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.hostname).toBe("zeta-a1b2c3");
   });
 });

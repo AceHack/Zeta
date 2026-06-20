@@ -86,5 +86,40 @@ in
         fi
       '';
     };
+
+    # B-0891 phase-3: QEMU CI boot demo — runs once at multi-user when
+    # /etc/zeta/qemu-first-session-ci exists (written by zeta-install WIPE path).
+    # Tees stdout to ttyS0 so phase-2 serial capture sees first-session markers.
+    systemd.services.zeta-first-session-ci = {
+      description = "QEMU CI first-session demo (B-0891 phase-3)";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "local-fs.target" ];
+      unitConfig = {
+        ConditionPathExists = [
+          "/etc/zeta/qemu-first-session-ci"
+          "!${cfg.markerPath}"
+          scriptPath
+          bunShimPath
+        ];
+      };
+      serviceConfig = {
+        Type = "oneshot";
+        User = cfg.user;
+        Group = "users";
+        WorkingDirectory = cfg.repoRoot;
+        Environment = [
+          "HOME=${cfg.home}"
+          "ZETA_FIRST_SESSION_MARKER=${cfg.markerPath}"
+          "ZETA_FIRST_SESSION_TEE_CONSOLE=1"
+          "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+        ];
+        ExecStart = pkgs.writeShellScript "zeta-first-session-ci-start" ''
+          set -euo pipefail
+          cd "${cfg.repoRoot}"
+          "${bunShimPath}" "${scriptPath}" \
+            --demo --script skip-optional,complete --dry-run
+        '';
+      };
+    };
   };
 }
