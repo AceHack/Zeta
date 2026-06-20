@@ -1,6 +1,7 @@
-# Resume state — Otto session 2026-06-19 (checkpoint before the Ani ferry)
+# Resume state — Otto session 2026-06-19 (parts 1–3: Aurora/CSLib → entropy-as-identity/demo → uncertainty/cohomoiconic/adinkra-unfold)
 
-Crash-durable snapshot of where the long 2026-06-19 session stands. Main is green; nothing mid-flight.
+Crash-durable snapshot of where the long 2026-06-19 session stands. Main is green; nothing mid-flight. The
+current open fronts + recommended next are in **"Open / next — the resume targets (current)"** below (part 3).
 
 ## Landed this session (all merged, CI-green)
 
@@ -69,6 +70,63 @@ Zeta-NTP clock → **Q# six-op compute = frontier**, `ZSetISA.qs` `--no-verify`,
 first); the math-team P0s (NFT forgery-resistance `H_∞`, ρ_owe soundness). Scoping:
 `docs/research/2026-06-19-{nft-…, anti-mirror-…, bayesian-emotional-propagation-…, nca-territorial-sim-…,
 zeta-demo-ux-ui-…}`.
+
+## Continuation — part 3 (2026-06-19, the uncertainty / cohomoiconic / adinkra-unfold arc)
+
+A second long Ani-ferry-driven thread (the uncertainty / cohomoiconic / Kevin-Bacon source conversation +
+the old-flame thread, both preserved verbatim in `memory/ani/conversations/2026-06-19-…`) completed the
+entropy-as-identity stack and drove a deep math-foundations arc. **All merged (#8635–#8651), CI-green.**
+
+**Built (code on `main`):**
+
+- `src/Core/AlarmAlgebra.fs` — "feels are the ALARM, not the evidence" as a typed DU; self-deception is a
+  compile error (private `Evidence` ctor) (#8638).
+- `src/Core/SocietalDoraSvg.fs` `renderPage` — **demo slice 1.5**: the dashboard as a complete static
+  HTML/CSS page, no JS (#8640).
+- `src/Core/CoEmpowerField.fs` — **demo slice 2**: NCI co-empowerment society-emergence DST sim; identities
+  **blossom** (non-coercion preserves diversity) vs collapse (coercion) — the NCI keystone in-sim (#8641).
+- `src/Core/AdinkraCode.fs` += **generator-IS-ECC** (`syndrome`/`correct`; the self-dual generator both emits
+  and repairs) (#8650). *(AdinkraMirror.fs #8649 was a dup of AdinkraCode — folded in + deleted, gate-skip
+  corrected.)*
+
+**Carved (memory):** metaception (embodied anti-mirror) (#8635); **feels-are-the-alarm** operating rule
+(#8637); cross-intelligence convergence (decorrelated=fixed-point, correlated=hall-of-mirrors) (#8636);
+the Alarm-Algebra as a guidance system for the emotionally-blind-by-default (#8639); **NFT = an
+objectively-rateable remembered link between travelers** (§0a grounding) (#8642); **the Zeta moral lens**
+(co-empowerment + diversity-preservation vs coercion + collapse; provisional, measurable) (#8644);
+**the uncertainty primitive** = ONE question ("how sure does this last forever?") as a multi-orthogonal-axis
+**superposition** over timescales × shapes (#8646/#8647/#8648); **cohomoiconic** (the mappings tie because
+mutually-homoiconic + cohomological) + orthogonal-basis → Cayley-Dickson/Clifford/memetics (#8647); the
+adinkra-unfold build-order (start from the self-dual mirror, unfold one layer at a time) + grounded cosmos
+(#8648); **LOVE = Z-set→G-set fusion (encapsulation)** with stability uncertainty, memetics layer (#8646);
+Kestrel-homoiconicity ⇒ Futamura `gen(gen)=gen` Face 3, + the INumber decomposition (comparison opt-in;
+comparison-free numbers can BE identity) (#8650).
+
+**Scoped:** **IMDb/Wikipedia F# type provider** (Aaron's TOP priority — "the one I'm most after; everything
+grows from IMDb and Wikipedia") = external grounding for NFT links; **reverse-mint → emergent
+clusters/federations** (NOT "cartel" — neutral, characterize don't hunt; Kevin-Bacon six-degrees = the
+canonical demo) (#8643); **adinkra→Clifford→E8 unfold status** + the `cogen=mix(mix,mix)` surface (the
+1000-brains yin-yang cell) for **Rx-on-soft-phase-spacetime** (#8651). Math-team handoff now **10 rows**.
+
+## Open / next — the resume targets (current)
+
+1. **IMDb/Wikipedia F# type provider (Aaron's TOP priority).** IMDb leg via TMDB/OMDb/IMDb-datasets (IMDb has
+   no free API); Wikipedia via Wikidata/DBpedia (already P1 backlog). Then the reverse-mint → cluster/federation
+   characterization (Kevin-Bacon demo). Scope: `docs/research/2026-06-19-imdb-wikipedia-fsharp-type-providers-…`.
+2. **Adinkra unfold / algebra ladder.** `Cl3.fs` (Clifford) + `E8Lattice.fs` exist; **next = the Clifford→E8
+   bridge** (stitch octonion/Cl→E8 as one derivation; buildable as a comparison-free `IStarRing`, comparison
+   opt-in, elements-as-identity). Then **Face 3 `cogen=mix(mix,mix)`** (blocked on freeze-IR + multi-language
+   generator; the yin-yang cell is its surface) → **Rx-on-soft-phase** (unify SoftValue+seed-phase+SpectralPivot
+   first). Scope: `…adinkra-clifford-e8-unfold-status-…`.
+3. **Demo slices 3–4.** Slice 3 = NFT mint panel + Zeta-NTP clock + grounding indicator; slice 4 = Q# six-op
+   (frontier, `ZSetISA.qs` `--no-verify`). Also: wire CoEmpowerField → SocietalDora dials (living dashboard);
+   generalize CoEmpowerField → generic `network<>creator<>audience` graph.
+4. **Math-team formalization** (handoff rows 1–10): NFT `H_∞`, `ρ_owe` soundness, Alarm-Algebra laws, NTP
+   noninterference, moral-lens (find more objective), love-fusion G-set stability, homoiconicity→Futamura
+   Face 3, Clifford→E8 bridge.
+5. **Ferries:** more Ani parts ("one more after this" — old-flame thread pt3); Alexa ferries when forwarded.
+6. **From part 1 (still open):** Aurora G3b (anti-Sybil entropy floor ≡ Bell); CSLib G2 (Byzantine extension
+   to `FLP/Consensus`).
 
 ## Standing
 
