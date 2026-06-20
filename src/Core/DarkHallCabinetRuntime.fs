@@ -79,6 +79,33 @@ module DarkHallCabinetRuntime =
         | MetaCartResult of MetaCart.ReflectedPlayResult
 
     [<RequireQualifiedAccess>]
+    type AttentionOutcome =
+        | Executed
+        | Denied
+        | Missing
+        | NoSelection
+        | HeatRejected
+
+    type AttentionLedgerRow =
+        { Source: string
+          Address: MachineAddress
+          PolicyName: string
+          Baseline: MetaCart.CartSlot option
+          Selected: MetaCart.CartSlot option
+          ChangedSelection: bool
+          Outcome: AttentionOutcome
+          Reason: string
+          HeatKind: string option }
+
+    type AttentionLedgerSummary =
+        { Executed: int
+          Denied: int
+          Missing: int
+          NoSelection: int
+          HeatRejected: int
+          Backpressured: int }
+
+    [<RequireQualifiedAccess>]
     type Feedback =
         | CellUnbound of cell: int
         | CabinetMissing of cabinetName: string
@@ -92,6 +119,10 @@ module DarkHallCabinetRuntime =
         | SchedulerFeedback of InterruptFeedback
         | MetaCartFeedback of MetaCart.Feedback
         | Chip9Feedback of address: MachineAddress * reason: string
+
+    type RunReport =
+        { Result: Result<RunResult, Feedback>
+          AttentionLedger: AttentionLedgerRow list }
 
     let defaultPriority: Map<string, float> =
         Map.ofList
@@ -297,31 +328,130 @@ module DarkHallCabinetRuntime =
             | None -> return machine
         }
 
-    let private executeMetaCartLaunch
+    let private runReport result =
+        { Result = result
+          AttentionLedger = [] }
+
+    let private slotOfChoice (choice: MetaCart.ReflectedChoice option) : MetaCart.CartSlot option =
+        choice |> Option.map (fun selected -> selected.Slot)
+
+    let private boundedGSetErrorReason =
+        function
+        | BoundedGSetError.NonPositiveCapacity capacity -> sprintf "heat storage non-positive capacity %d" capacity
+        | BoundedGSetError.CapacityExceeded(capacity, count) ->
+            sprintf "heat storage capacity exceeded capacity=%d count=%d" capacity count
+        | BoundedGSetError.ConfigMismatch(left, right) ->
+            sprintf
+                "heat storage config mismatch left-capacity=%d right-capacity=%d"
+                left.Capacity
+                right.Capacity
+
+    let private heatSinkFeedbackReason =
+        function
+        | HeatSinkFeedback.Backpressure(heat, capacity, count) ->
+            sprintf "heat sink backpressure kind=%s capacity=%d count=%d" heat.Kind capacity count
+        | HeatSinkFeedback.StorageError error -> boundedGSetErrorReason error
+
+    let private rejectedHeatKind =
+        function
+        | HeatSinkFeedback.Backpressure(heat, _, _) -> Some heat.Kind
+        | HeatSinkFeedback.StorageError _ -> None
+
+    let private metaCartFeedbackOutcome =
+        function
+        | MetaCart.Feedback.NoSelection source ->
+            AttentionOutcome.NoSelection, sprintf "no selection from %s" source, None, None
+        | MetaCart.Feedback.MissingCart slot ->
+            AttentionOutcome.Missing, sprintf "missing cart sha256=%s" slot.Fingerprint.Sha256, Some slot, None
+        | MetaCart.Feedback.HostDenied(slot, reason) -> AttentionOutcome.Denied, reason, Some slot, None
+        | MetaCart.Feedback.HeatRejected(slot, feedback) ->
+            AttentionOutcome.HeatRejected, heatSinkFeedbackReason feedback, Some slot, rejectedHeatKind feedback
+
+    let private isPolicyBackpressure
+        (trace: MetaCart.SelectionPolicyTrace)
+        (selected: MetaCart.ReflectedChoice option)
+        (failedSlot: MetaCart.CartSlot option)
+        : bool =
+        match trace.ChangedSelection, selected, failedSlot with
+        | true, Some selected, Some failedSlot -> selected.Slot.Fingerprint.Sha256 = failedSlot.Fingerprint.Sha256
+        | _ -> false
+
+    let attentionLedgerRow
+        (source: string)
+        (address: MachineAddress)
+        (readout: MetaCart.SelectionReadout)
+        (result: Result<MetaCart.ReflectedPlayResult, MetaCart.Feedback>)
+        : AttentionLedgerRow option =
+        readout.PolicyTrace
+        |> Option.map (fun trace ->
+            let outcome, reason, failedSlot, rejectedHeatKind =
+                match result with
+                | Ok _ -> AttentionOutcome.Executed, "selected cart executed", None, None
+                | Error feedback -> metaCartFeedbackOutcome feedback
+
+            let heatKind =
+                match rejectedHeatKind with
+                | Some "meta-cart.policy-backpressure" -> Some "meta-cart.policy-backpressure"
+                | Some _ -> None
+                | None when outcome = AttentionOutcome.HeatRejected -> None
+                | None ->
+                    if isPolicyBackpressure trace readout.Selected failedSlot then
+                        Some "meta-cart.policy-backpressure"
+                    else
+                        None
+
+            { Source = source
+              Address = address
+              PolicyName = trace.PolicyName
+              Baseline = slotOfChoice trace.BaselineSelected
+              Selected = slotOfChoice trace.PolicySelected
+              ChangedSelection = trace.ChangedSelection
+              Outcome = outcome
+              Reason = reason
+              HeatKind = heatKind })
+
+    let summarizeAttentionLedger (rows: AttentionLedgerRow list) : AttentionLedgerSummary =
+        let count outcome =
+            rows |> List.filter (fun row -> row.Outcome = outcome) |> List.length
+
+        { Executed = count AttentionOutcome.Executed
+          Denied = count AttentionOutcome.Denied
+          Missing = count AttentionOutcome.Missing
+          NoSelection = count AttentionOutcome.NoSelection
+          HeatRejected = count AttentionOutcome.HeatRejected
+          Backpressured = rows |> List.filter (fun row -> Option.isSome row.HeatKind) |> List.length }
+
+    let executeMetaCartLaunchWithAttentionLedger
         (source: string)
         (sink: IHeatSink)
+        (address: MachineAddress)
         (launch: MetaCartLaunch)
         (readout: MetaCart.SelectionReadout)
-        : Result<RunResult, Feedback> =
+        : RunReport =
         let host = MetaCart.CapabilityCartHost(launch.Children, launch.ChildCapabilitiesBySha) :> MetaCart.ICartHost
 
-        MetaCart.playChosenFromSelectionReadoutWithCapabilities
-            source
-            sink
-            launch.ParentCapabilities
-            readout
-            host
-            launch.Parent
-        |> Result.map MetaCartResult
-        |> Result.mapError Feedback.MetaCartFeedback
+        let result =
+            MetaCart.playChosenFromSelectionReadoutWithCapabilities
+                source
+                sink
+                launch.ParentCapabilities
+                readout
+                host
+                launch.Parent
 
-    let private executeMachine
+        { Result =
+            result
+            |> Result.map MetaCartResult
+            |> Result.mapError Feedback.MetaCartFeedback
+          AttentionLedger = attentionLedgerRow source address readout result |> Option.toList }
+
+    let private executeMachineWithAttentionLedger
         (source: string)
         (sink: IHeatSink)
         (address: MachineAddress)
         (machine: DarkHall.Machine)
         (request: RunRequest)
-        : Task<Result<RunResult, Feedback>> =
+        : Task<RunReport> =
         task {
             match machine.Core, request with
             | DarkHall.MachineCore.SoftChip8Scheduler, RunSoftChip8(seed, rom, frames) ->
@@ -331,31 +461,47 @@ module DarkHallCabinetRuntime =
                     result
                     |> Result.map SoftChip8Frame
                     |> Result.mapError Feedback.SchedulerFeedback
+                    |> runReport
 
             | DarkHall.MachineCore.DarkHallCpu, RunDarkHallCpu(program, budget) ->
-                return Ok(DarkHallCpuState(DarkHall.run program budget))
+                return runReport (Ok(DarkHallCpuState(DarkHall.run program budget)))
 
             | DarkHall.MachineCore.Chip9ColorPlanes, RunChip9Cart(cart, cartManifest) ->
                 return
                     Chip9Capabilities.playback cartManifest cart
                     |> Result.map Chip9Frame
                     |> Result.mapError (fun reason -> Feedback.Chip9Feedback(address, reason))
+                    |> runReport
 
             | DarkHall.MachineCore.MetaCartHost, RunMetaCart launch ->
                 let readout = observeMetaCartLaunch launch
 
-                return executeMetaCartLaunch source sink launch readout
+                return executeMetaCartLaunchWithAttentionLedger source sink address launch readout
 
             | DarkHall.MachineCore.MetaCartHost, RunMetaCartWithPolicy(policy, launch) ->
                 let readout = observeMetaCartLaunchWithPolicy policy.Name policy.Policy launch
 
-                return executeMetaCartLaunch source sink launch readout
+                return executeMetaCartLaunchWithAttentionLedger source sink address launch readout
 
             | core, _ when not (isExecutableCore core) ->
-                return Error(Feedback.UnsupportedMachine(address, core))
+                return runReport (Error(Feedback.UnsupportedMachine(address, core)))
 
             | core, _ ->
-                return Error(Feedback.RequestMismatch(address, core, requestName request))
+                return runReport (Error(Feedback.RequestMismatch(address, core, requestName request)))
+        }
+
+    let executeAddressWithAttentionLedger
+        (source: string)
+        (sink: IHeatSink)
+        (manifest: Chip9Capabilities.Manifest)
+        (room: DarkHall.Room)
+        (address: MachineAddress)
+        (request: RunRequest)
+        : Task<RunReport> =
+        task {
+            match validateAddress source sink manifest room address with
+            | Error feedback -> return runReport (Error feedback)
+            | Ok machine -> return! executeMachineWithAttentionLedger source sink address machine request
         }
 
     let executeAddress
@@ -367,9 +513,27 @@ module DarkHallCabinetRuntime =
         (request: RunRequest)
         : Task<Result<RunResult, Feedback>> =
         task {
-            match validateAddress source sink manifest room address with
-            | Error feedback -> return Error feedback
-            | Ok machine -> return! executeMachine source sink address machine request
+            let! report = executeAddressWithAttentionLedger source sink manifest room address request
+            return report.Result
+        }
+
+    /// Execute the action bound to a selected 4x4 controller cell.
+    let executeCellWithAttentionLedger
+        (source: string)
+        (sink: IHeatSink)
+        (manifest: Chip9Capabilities.Manifest)
+        (room: DarkHall.Room)
+        (cell: int)
+        (request: RunRequest)
+        : Task<RunReport> =
+        task {
+            let readout = observe room
+
+            match actionAt cell readout with
+            | None -> return runReport (Error(Feedback.CellUnbound cell))
+            | Some { Address = None } -> return runReport (Error(Feedback.CellUnbound cell))
+            | Some { Address = Some address } ->
+                return! executeAddressWithAttentionLedger source sink manifest room address request
         }
 
     /// Execute the action bound to a selected 4x4 controller cell.
@@ -382,10 +546,6 @@ module DarkHallCabinetRuntime =
         (request: RunRequest)
         : Task<Result<RunResult, Feedback>> =
         task {
-            let readout = observe room
-
-            match actionAt cell readout with
-            | None -> return Error(Feedback.CellUnbound cell)
-            | Some { Address = None } -> return Error(Feedback.CellUnbound cell)
-            | Some { Address = Some address } -> return! executeAddress source sink manifest room address request
+            let! report = executeCellWithAttentionLedger source sink manifest room cell request
+            return report.Result
         }
