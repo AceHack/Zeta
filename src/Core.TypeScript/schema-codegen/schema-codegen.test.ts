@@ -1,5 +1,25 @@
 import { test, expect } from "bun:test";
-import { generate, type TypeSchema } from "./schema-codegen";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { generate, loadSchema, type TypeSchema } from "./schema-codegen";
+
+// Shared single-source IR: the TS leg reads the SAME committed schemas/imdb/*.zetaschema.json
+// that the C# / Rust / Roslyn legs read. One file, every oracle.
+const sharedImdbNamePath = join(import.meta.dir, "../../../schemas/imdb/name-basics.zetaschema.json");
+
+test("loads the shared committed .zetaschema.json and generates the real IMDb interface", () => {
+  const schema = loadSchema(readFileSync(sharedImdbNamePath, "utf8"));
+  expect(schema.typeName).toBe("ImdbName");
+  const ts = generate(schema);
+  expect(ts).toContain("export interface ImdbName {");
+  expect(ts).toContain("nconst: string;");
+  expect(ts).toContain("birthYear: number | null;");
+  expect(ts).toContain("knownForTitles: string;");
+});
+
+test("loadSchema rejects a malformed schema", () => {
+  expect(() => loadSchema('{ "namespace": "X", "typeName": "Y" }')).toThrow();
+});
 
 // TypeScript leg of "one IR, a typed surface per oracle": the SAME TypeSchema the C#
 // SchemaCodegen renders to a record and the Rust RustSchemaCodegen renders to a struct

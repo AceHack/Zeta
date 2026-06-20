@@ -1,0 +1,12 @@
+{
+  "namespace": "Zeta.Generated.Imdb",
+  "typeName": "ImdbPrincipal",
+  "fields": [
+    { "name": "Tconst", "csType": "string" },
+    { "name": "Ordering", "csType": "int" },
+    { "name": "Nconst", "csType": "string" },
+    { "name": "Category", "csType": "string" },
+    { "name": "Job", "csType": "string" },
+    { "name": "Characters", "csType": "string" }
+  ]
+}

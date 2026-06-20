@@ -33,6 +33,38 @@ const TS_TYPES: Readonly<Record<string, string>> = {
   "double?": "number | null",
 };
 
+/**
+ * Parse a shared `.zetaschema.json` IR file (the single source of truth all codegen legs read:
+ * C#, Rust, this TS leg, and the Roslyn generator). Validates the structure and narrows the
+ * `unknown` JSON to a {@link TypeSchema}.
+ */
+export function loadSchema(json: string): TypeSchema {
+  const raw: unknown = JSON.parse(json);
+  if (typeof raw !== "object" || raw === null) {
+    throw new Error("zetaschema: root must be an object");
+  }
+  const obj = raw as Record<string, unknown>;
+  const namespace = obj["namespace"];
+  const typeName = obj["typeName"];
+  const fieldsRaw = obj["fields"];
+  if (typeof namespace !== "string" || typeof typeName !== "string" || !Array.isArray(fieldsRaw)) {
+    throw new Error("zetaschema: missing or malformed namespace/typeName/fields");
+  }
+  const fields: SchemaField[] = fieldsRaw.map((f: unknown): SchemaField => {
+    if (typeof f !== "object" || f === null) {
+      throw new Error("zetaschema: each field must be an object");
+    }
+    const fo = f as Record<string, unknown>;
+    const name = fo["name"];
+    const csType = fo["csType"];
+    if (typeof name !== "string" || typeof csType !== "string") {
+      throw new Error("zetaschema: each field needs string name + csType");
+    }
+    return { name, csType };
+  });
+  return { namespace, typeName, fields };
+}
+
 /** PascalCase identifier to camelCase (e.g. `BirthYear` → `birthYear`, `Nconst` → `nconst`). */
 function toCamelCase(name: string): string {
   if (name.length === 0) {

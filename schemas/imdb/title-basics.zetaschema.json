@@ -1,0 +1,15 @@
+{
+  "namespace": "Zeta.Generated.Imdb",
+  "typeName": "ImdbTitle",
+  "fields": [
+    { "name": "Tconst", "csType": "string" },
+    { "name": "TitleType", "csType": "string" },
+    { "name": "PrimaryTitle", "csType": "string" },
+    { "name": "OriginalTitle", "csType": "string" },
+    { "name": "IsAdult", "csType": "bool" },
+    { "name": "StartYear", "csType": "int?" },
+    { "name": "EndYear", "csType": "int?" },
+    { "name": "RuntimeMinutes", "csType": "int?" },
+    { "name": "Genres", "csType": "string" }
+  ]
+}
