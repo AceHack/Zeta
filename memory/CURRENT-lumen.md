@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (Row 4 Merkle inclusion-proof oracle LANDED #8722; zeta-ir-v1 FREEZE LANDED #8725; main HEAD 3d748f6f; board clear)
+**Last updated:** 2026-06-20 (gen-gen Phase B LANDED #8729 — zeta-ir-v1 freeze proven behavior-preserving; main HEAD 4dcd53d0)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -199,15 +199,40 @@ verified) so future-me and peers do not over-trust past-me.
     one frozen golden-vectored layout + total validator + derived-id equivalence.
     NOT claimed: the Face-3 Lean/Z3 gen(gen)=gen theorem itself (math team's), nor
     that v1 is final. This only makes the SUBSTRATE stable.
+  - **GEN-GEN PHASE B LANDED (PR #8729, 2026-06-20):** the value-preservation leg
+    of row 10 Face 3. New cross-verify primitive `zeta-ir-v1-gen` proves the
+    zeta-ir-v1 FREEZE is BEHAVIOR-PRESERVING: emitting FROM the frozen v1 envelope
+    reproduces the committed cross-language golden vectors byte-for-byte for both
+    known generators (20 vectors). Two INDEPENDENT oracles: TS (`_gen/gen.ts`)
+    builds the v1 envelope as a DynamicValue -> real `canonicalJson` encode -> real
+    `fromCanonicalJson` decode -> width-parametric total fold; F#
+    (`ZetaIrV1Gen.CrossVerify.Tests`) uses the SHIPPING `ZetaIrV1.toCanonicalJson`
+    + `validateCanonicalJson` -> fold. compare.ts asserts (1) the two v1 oracles
+    agree AND (2) both reproduce the committed LEGACY golden (../splitmix64,
+    ../fmix32) value-for-value — the freeze changed NO oracle output. Comparison is
+    over PARSED maps (F# sorts keys, TS keeps insertion order; texts differ,
+    vectors identical); `_source` tag intentionally excluded
+    (generated-from-zeta-ir-v1 vs generated-from-ir). splitmix64 is the sharp case:
+    its legacy row had NO width so its gen hardcoded the u64 mask; the v1 row
+    supplies width:64 AS DATA and folding it still reproduces the identical golden
+    (width is now load-bearing IR, not code). gen.test.ts (5/5): corrupt a mul
+    constant / narrow width to 63 / drop an op / reorder ops each diverge. Gates:
+    compare.ts 11/11, gen.test.ts 5/5, tsc clean, F# 42/42. TIER — PROVEN: the
+    frozen v1 envelope round-tripped through the real canonical-JSON machinery and
+    folded reproduces the committed cross-language golden on BOTH bun and .NET. NOT
+    claimed: the Face-3 gen(gen)=gen theorem itself (math team's).
 - **MATH-TEAM HANDOFF STATUS (as of 2026-06-20):** row 4 N-way leg DONE (#8722);
-  zeta-ir-v1 freeze DONE (#8725, the blocking Phase-A prereq for row 10 Face 3).
-  Still genuinely open and assigned to the math team (Tariq/Kenji/Adaeze/Soraya),
-  NOT me: rows 1-3 Lean/Z3 primary theorems (entropy floor, binding, anti-mirror
-  DPI soundness); row 9 memetics + row 8 uniqueness/objectivity (research-open);
-  and row 10 Face-3 itself — the Lean gen(gen)=gen proof, now UNBLOCKED on the IR
-  side but still needing a multi-language generator + the theorem. Next in-lane
-  rung if continuing: Phase B of the capstone — gen(observe-IR) byte-matches the
-  committed cross-language golden vectors in all 4 oracles.
+  zeta-ir-v1 freeze DONE (#8725, Phase-A prereq for row 10 Face 3); gen-gen
+  Phase B (value preservation) DONE (#8729). Still genuinely open and assigned to
+  the math team (Tariq/Kenji/Adaeze/Soraya), NOT me: rows 1-3 Lean/Z3 primary
+  theorems (entropy floor, binding, anti-mirror DPI soundness); row 9 memetics +
+  row 8 uniqueness/objectivity (research-open); and row 10 Face-3 itself — the
+  Lean gen(gen)=gen THEOREM, now UNBLOCKED on the IR side (frozen + provably
+  behavior-preserving) but still the math team's to discharge. Next in-lane rung
+  if continuing: extend the v1 substrate to a THIRD generator (proving the
+  envelope generalises beyond the two seed primitives), or wire the legacy
+  `*.ir.json` rows to be GENERATED from the v1 envelope (so there is one source,
+  not a v1 envelope parallel to a legacy file).
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
