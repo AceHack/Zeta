@@ -346,6 +346,7 @@
     <Compile Include="Formal/CoEmpowerField.Tests.fs" />
     <Compile Include="Formal/CoEmpowerGraph.Tests.fs" />
     <Compile Include="Formal/ImdbDataset.Tests.fs" />
+    <Compile Include="Formal/TtlCache.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->

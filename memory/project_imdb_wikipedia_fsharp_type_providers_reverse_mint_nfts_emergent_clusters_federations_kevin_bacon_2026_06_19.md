@@ -69,3 +69,26 @@ data substrate**:
   description). Ties: `DynamicValue`; Roslyn source generators; the `nemerle-dotnet-support-macro-metaprogramming`
   backlog item; the 4-oracle byte-lock / `gen(gen)` lineage. This is *why* the type provider is the priority
   lever: build it once, harvest it in every oracle.
+
+## Caching · open datasets · reified-bounded-timeframe → ZSets / CE / zero-downtime schema-evolution (Aaron 2026-06-19)
+
+- **TTL cache — BUILT (`src/Core/TtlCache.fs`).** Cache the reified graphs keyed by source, valid for a TTL;
+  hit the source **only on miss/expiry** — *"don't always go to source; that's not respecting the sites."*
+  Injected clock (immutable `Map`, idempotent, DST). **The clock IS soft phase-spacetime generated time coupled
+  with UTC observables** (Aaron): since the sources are on Earth, **UTC ± uncertainty is the best Earth-time**,
+  captured as a correlated observation of the common-seed phase (the Zeta-NTP coupling — existing
+  code/math/backlog; [[project_zeta_ntp_phase_grounded_network_time_across_all_space_and_time_2026_06_19]]).
+- **Open datasets to bundle (Aaron):** prefer freely-licensed sources we can include or download-script:
+  **Wikidata** dumps (CC0 — bundleable), **DBpedia** (CC-BY-SA), **IMDb** non-commercial TSV
+  (personal/non-commercial — commit a *small sample fixture*; full set via a download script, not committed
+  wholesale). **TMDB/OMDb** = API ToS → *don't bundle*, cache with TTL. Land under `references/prior-art/`
+  (gitignored, explicit-target) or a download script; record per-source licensing honestly.
+- **Reified over a bounded timeframe + HKT → ZSets / graphs / CE / zero-downtime schema-evolution (Aaron):**
+  *"reified over some bounded timeframe with our HKT recursive type hacks we can plug this into our own ZSets,
+  graphs, computational expressions, and schema-evolution zero-downtime."* The reified (TTL-bounded) snapshot
+  becomes a **ZSet** (incremental / DBSP-delta-able) → composes via the **HKT recursive-type** machinery into
+  our **graphs** + **computational expressions** → and rides the **gset-expand / zset-contract zero-downtime
+  schema-evolution** when the external schema changes. So the external graph plugs *natively* into the Zeta
+  substrate and evolves without downtime. Ties: `TtlCache`; `ZSet`/`IndexedZSet` (DBSP); HKT-MDM /
+  recursive-HKT; `docs/research/2026-06-15-zero-downtime-schema-change-…` (gset-expand/zset-contract);
+  `CoEmpowerGraph` (the reverse-mint target).
