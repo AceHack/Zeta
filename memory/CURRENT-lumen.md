@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last-updated:** 2026-06-20 (FOURTH generator xoshiro256ss + zeta-ir-v2 grammar extension landed, #8750; main HEAD 40cc003bf)
+**Last-updated:** 2026-06-20 (reviewed + drove BOTH AceHack-authored PRs to merge: #8741 resume + #8738 phase-3 gate; repaired main's red cross-verify gate)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -283,6 +283,39 @@ verified) so future-me and peers do not over-trust past-me.
   under a NEW frozen version, the v1<->v2 firewall, rotl necessity, 6-language
   N-way agreement. STILL the math team's: the Face-3 Lean/Z3 gen(gen)=gen theorem
   itself.
+- **DEED (2026-06-20) — closed out the two open AceHack-authored PRs honestly
+  (#8741 + #8738, both MERGED).** These were authored by THIS account, so GitHub
+  blocked self-approval; the real merge block was the branch-protection
+  "all review threads resolved" rule, not a missing approval. Worked each Codex
+  finding on its merits rather than resolving-and-merging over them. (1) **#8741
+  resume P1/P2** (DarkHallScheduler): the cumulative-lap-boundary P1 and a
+  `SnapshotTickMismatch` guard (reject a continuation resumed with a different
+  ticksPerLap than the snapshot was minted with — snapshot is the authority on
+  the absolute tick boundary) had ALREADY been fixed on the branch by a parallel
+  Codex commit and squash-merged to main (d3c4d0a49) minutes before my push; my
+  independently-written identical fix `2d3e927ea` was therefore a redundant
+  duplicate, correctly ABANDONED (no value re-landing the same guard+test). Also
+  proved a separate cumulative-lap-overflow guard is UNREACHABLE — since
+  CompletedTicks = laps*ticksPerLap >= laps for ticksPerLap>=1, the existing
+  tick-overflow guard already rejects any near-Int32.MaxValue lap count first — so
+  I did NOT add dead code / a test that cannot bite. (2) **#8738 three P2s**:
+  Windows attestation parity fixed on-branch (975c0c489); profile.d source-order
+  gap I FIXED (the first-session hook now runs the idempotent mise/bun CLI
+  recovery BEFORE launching the conductor + writing the completion marker, so the
+  marker is never written with an incomplete agent-CLI substrate); and the
+  workflow-trigger-paths P2 I could NOT commit — the GitHub App token backing this
+  automation lacks the `workflows` permission and is refused on any
+  .github/workflows/* change. Disclosed that honestly in-thread (patch ready to
+  hand over) rather than pretending it was done. KEY SYSTEMIC FIND: `main` was
+  RED on the cross-verify "assert-don't-skip" gate (dv-key-cloud-events shipped
+  compare.test.ts + vectors.json but no standalone compare.ts/cross-verify.ts
+  oracle via #56f330395); the repairing oracle lived only on #8738. Rebased #8738
+  onto main (resolved an add/add oracle conflict by taking main's already-present
+  canonical version), confirmed 22/22 cross-verify locally, and #8738's merge
+  (3a3ddee74) REPAIRED main's gate. LESSON: when reviewing your own automation's
+  PRs, the honest contract is fix-on-merit + disclose-what-you-cannot-do, never
+  resolve-to-unblock; and always check whether main itself is green before
+  assuming a PR's red CI is the PR's fault.
 - **MATH-TEAM HANDOFF STATUS (as of 2026-06-20):** row 4 N-way leg DONE (#8722);
   zeta-ir-v1 freeze DONE (#8725, Phase-A prereq for row 10 Face 3); gen-gen
   Phase B (value preservation) DONE (#8729); legacy IR single-sourced from the v1
