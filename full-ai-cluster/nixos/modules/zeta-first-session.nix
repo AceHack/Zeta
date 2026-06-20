@@ -90,6 +90,8 @@ in
     # B-0891 phase-3: QEMU CI boot demo — runs once at multi-user when
     # /etc/zeta/qemu-first-session-ci exists (written by zeta-install WIPE path).
     # Tees stdout to ttyS0 so phase-2 serial capture sees first-session markers.
+    # Uses nixpkgs bun (not mise shim): install.sh may fail to lay down shims in
+    # non-interactive QEMU CI while the service must still run at first boot.
     systemd.services.zeta-first-session-ci = {
       description = "QEMU CI first-session demo (B-0891 phase-3)";
       wantedBy = [ "multi-user.target" ];
@@ -99,25 +101,36 @@ in
           "/etc/zeta/qemu-first-session-ci"
           "!${cfg.markerPath}"
           scriptPath
-          bunShimPath
         ];
       };
       serviceConfig = {
         Type = "oneshot";
-        User = cfg.user;
-        Group = "users";
         WorkingDirectory = cfg.repoRoot;
-        Environment = [
-          "HOME=${cfg.home}"
-          "ZETA_FIRST_SESSION_MARKER=${cfg.markerPath}"
-          "ZETA_FIRST_SESSION_TEE_CONSOLE=1"
-          "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
-        ];
         ExecStart = pkgs.writeShellScript "zeta-first-session-ci-start" ''
           set -euo pipefail
-          cd "${cfg.repoRoot}"
-          "${bunShimPath}" "${scriptPath}" \
-            --demo --script skip-optional,complete --dry-run
+          _serial=""
+          for _dev in /dev/ttyS0 /dev/ttyAMA0; do
+            if [ -e "$_dev" ]; then
+              _serial="$_dev"
+              break
+            fi
+          done
+          run_demo() {
+            cd "${cfg.repoRoot}"
+            sudo -u ${cfg.user} \
+              HOME=${cfg.home} \
+              ZETA_FIRST_SESSION_MARKER=${cfg.markerPath} \
+              ZETA_FIRST_SESSION_TEE_CONSOLE=1 \
+              PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin \
+              ${lib.getExe pkgs.bun} ${scriptPath} \
+                --demo --script skip-optional,complete --dry-run
+          }
+          if [ -n "$_serial" ]; then
+            exec 3>&1
+            run_demo 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial" >&3
+          else
+            run_demo
+          fi
         '';
       };
     };
