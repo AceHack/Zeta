@@ -24,6 +24,7 @@
     <Compile Include="CayleyDickson.fs" />
     <Compile Include="Cl3.fs" />
     <Compile Include="Viewport.fs" />
+    <Compile Include="MetaspaceMap.fs" />
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />
     <Compile Include="AdinkraCode.fs" />
