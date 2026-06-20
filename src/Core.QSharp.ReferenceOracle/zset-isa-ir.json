@@ -1,0 +1,85 @@
+{
+  "schema": "zeta-ir-v0",
+  "name": "ZSetISA",
+  "namespace": "Zeta.ZSetISA",
+  "description": "The six Z-set operators on standalone Q# — the compute algebra for weighted key-sets encoded as amplitude ensembles.",
+  "operators": [
+    {
+      "name": "Emit",
+      "kind": "unitary",
+      "adjoint": "Retract",
+      "gate": "Ry",
+      "semantics": "weight +1 on key k (amplitude injection)",
+      "params": [
+        { "name": "k", "type": "Qubit" },
+        { "name": "theta", "type": "Double" }
+      ],
+      "body": "Ry(theta, k);"
+    },
+    {
+      "name": "Retract",
+      "kind": "unitary",
+      "adjoint": "Emit",
+      "gate": "Adjoint Ry",
+      "semantics": "weight -1 on key k (EMIT then RETRACT = I)",
+      "params": [
+        { "name": "k", "type": "Qubit" },
+        { "name": "theta", "type": "Double" }
+      ],
+      "body": "Adjoint Emit(k, theta);"
+    },
+    {
+      "name": "Branch",
+      "kind": "unitary",
+      "adjoint": "Branch",
+      "gate": "H",
+      "semantics": "put k in superposition (presence/absence coexist while tick open)",
+      "params": [
+        { "name": "k", "type": "Qubit" }
+      ],
+      "body": "H(k);"
+    },
+    {
+      "name": "Join",
+      "kind": "unitary",
+      "adjoint": null,
+      "gate": "CNOT",
+      "semantics": "couple two streams / Z-set product (entanglement)",
+      "params": [
+        { "name": "control", "type": "Qubit" },
+        { "name": "target", "type": "Qubit" }
+      ],
+      "body": "CNOT(control, target);"
+    },
+    {
+      "name": "Merge",
+      "kind": "superposition-merge",
+      "adjoint": null,
+      "gate": null,
+      "semantics": "sum amplitudes of identical branches (interference); stays soft",
+      "params": [
+        { "name": "sourceA", "type": "Qubit[] => Unit is Adj + Ctl" },
+        { "name": "sourceB", "type": "Qubit[] => Unit is Adj + Ctl" },
+        { "name": "target", "type": "Qubit[]" }
+      ],
+      "body": "sourceA(target);\nsourceB(target);"
+    },
+    {
+      "name": "Fold",
+      "kind": "superposition-merge",
+      "adjoint": null,
+      "gate": null,
+      "semantics": "repeated MERGE; Born readout is sim-only, terminal, never live",
+      "params": [
+        { "name": "sources", "type": "(Qubit[] => Unit is Adj + Ctl)[]" },
+        { "name": "target", "type": "Qubit[]" }
+      ],
+      "body": "for source in sources {\n    source(target);\n}"
+    }
+  ],
+  "invariants": {
+    "no_live_collapse": "MERGE/FOLD never call M/Measure/Reset — stays soft",
+    "emit_retract_identity": "EMIT(k,theta); RETRACT(k,theta) = I (the +1/-1 cancellation)",
+    "self_dual_property": "The ISA contains its own inverse (EMIT <-> RETRACT; BRANCH is self-adjoint)"
+  }
+}

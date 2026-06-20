@@ -47,16 +47,19 @@ continuity_token: 7f2a9b3e-session-2026-06-19
 ## What's next (for fresh session)
 
 1. ~~PR #8653 should be merged — verify on boot~~ ✅ on main
-2. ~~Wire Participant into run-loop-real.ts (replace observeWithLlm → observeWithParticipant)~~ ✅ PR #8687
-3. ~~Cross-check ZSetISA.qs against AmplitudeEmu.fs (F# reference)~~ ✅ doc + MERGE verification
-4. The gen(gen)===gen Q# self-hosting lane (Face 3)
-5. ~~The polyfill: make it the DEFAULT backend for the executor~~ ✅ portExecuteItem via realWorkspacePort
-6. ~~Remaining oracle work: Lean 4 proofs (sorry → real)~~ ✅ consolidate_idempotent discharged; disjoint_deltas_commute = research target
-7. ~~Run Alloy jar~~ ✅ 3/3 pass; ~~TLC~~ ✅ 27/27 pass
-8. ~~Ace package manager: install TLC/Alloy jars to common location~~ ✅ tools/setup/common/verifiers.sh; ~~mise trust automation~~ ✅ already trusted
-9. **NEXT:** gen(gen)===gen Q# self-hosting lane (Face 3) — the generator IS the ECC
-10. Migrate remaining `observeWithLlm` call sites (chooser.ts, simulate-tick.ts) to use `observeWithParticipant`
-11. Merge PR #8687 (CI should be green)
+2. ~~Wire Participant into run-loop-real.ts~~ ✅ PR #8687 MERGED
+3. ~~Cross-check ZSetISA.qs against AmplitudeEmu.fs~~ ✅ doc + MERGE verification
+4. ~~gen(gen)===gen Q# self-hosting lane (Face 3)~~ ✅ PR #8693 (IR + generator + 9 tests)
+5. ~~The polyfill: make it the DEFAULT backend for executor~~ ✅ portExecuteItem via realWorkspacePort
+6. ~~Lean 4 proofs (sorry → real)~~ ✅ consolidate_idempotent discharged; 1 sorry = research target
+7. ~~Run TLC + Alloy~~ ✅ TLC 27/27, Alloy 3/3
+8. ~~mise trust + jar install~~ ✅
+
+**ALL NOTEBOOK ITEMS COMPLETE.** Next session pick-up:
+- Merge PR #8693 (gen(gen)===gen)
+- Migrate remaining `observeWithLlm` call sites (chooser.ts, simulate-tick.ts) → `observeWithParticipant`
+- Phase A: freeze `zeta-ir-v1-layout.yaml` (the gen(gen) trajectory's blocking prereq)
+- Extend gen(gen) to the 4-oracle tier (TS/F#/C#/Rust golden vectors from same IR)
 
 ## Build specs to reference
 
