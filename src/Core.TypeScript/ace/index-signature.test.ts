@@ -4,7 +4,7 @@ import { signIndex, verifyIndexSignature, type IndexSignableContent } from "./in
 
 const indexContent: IndexSignableContent = {
   format_version: 1, sequence: 3, issued_at: "2026-06-01T12:00:00Z",
-  packages: { leaf: { "1.0.0": { url: "https://x/leaf-1.0.0.json", package_hash: "sha256:aa" } } },
+  packages: { leaf: { "1.0.0": { url: "https://x/leaf-1.0.0.json", package_hash: "blake3:aa" } } },
 };
 
 describe("index signing", () => {

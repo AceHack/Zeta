@@ -14,36 +14,11 @@
 // whitespace, non-minimal escapes, leading zeros / '+' signs) as `NonCanonical`.
 // "The compilers don't lie."
 
-export type Tagged =
-  | { t: "null" }
-  | { t: "bool"; v: boolean }
-  | { t: "int"; v: string }
-  | { t: "str"; v: string }
-  | { t: "arr"; v: Tagged[] }
-  | { t: "obj"; v: [string, Tagged][] };
-
-// Why canonical JSON bytes could not be decoded into a v1 DynamicValue. (No `NonTextKey`:
-// JSON object keys are syntactically always strings, unlike CBOR map keys.) `NestingTooDeep`:
-// the input's nesting exceeds MAX_NESTING_DEPTH — a resource-safety guard mirrored across
-// F#/C#/Rust/TS, rejecting a depth-bomb as data rather than overflowing the stack.
-export type DecodeError =
-  | "UnexpectedEnd"
-  | "TrailingData"
-  | "Unsupported"
-  | "IntegerOverflow"
-  | "NonCanonical"
-  | "NestingTooDeep";
-
-export type DecodeResult = { ok: true; value: Tagged } | { ok: false; error: DecodeError };
+import { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH } from "./types";
+export { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH };
 
 const I64_MAX = 9223372036854775807n;
 const I64_MIN = -9223372036854775808n;
-
-// Maximum input nesting depth the recursive decoder walks before failing `NestingTooDeep`. A
-// fixed resource-safety bound, NOT part of the value domain: far above any realistic value, so
-// golden vectors and real data are unaffected while a depth-bomb is rejected before it overflows
-// the stack. Mirrored across F#/C#/Rust/TS.
-const MAX_NESTING_DEPTH = 256;
 
 // --- canonical JSON encode (the byte-lock target; shared with the decoder's fixed-point check) ---
 
@@ -88,22 +63,47 @@ function encodeString(s: string): string {
   return out + '"';
 }
 
-export function canonicalJson(n: Tagged): string {
+class JsonEncodeError extends Error {
+  readonly error: EncodeError;
+  constructor(error: EncodeError) {
+    super(error);
+    this.error = error;
+  }
+}
+
+function writeJson(n: Tagged, depth: number): string {
+  if (depth > MAX_NESTING_DEPTH) {
+    throw new JsonEncodeError("NestingTooDeep");
+  }
   switch (n.t) {
     case "null":
       return "null";
     case "bool":
       return n.v ? "true" : "false";
     case "int":
-      // re-canonicalize via BigInt: validates the int text is canonical (no leading
-      // zeros, no '+', '-' only for negatives) and arbitrary-precision-exact
       return BigInt(n.v).toString();
+    case "float":
+      throw new JsonEncodeError("FloatDeferred");
     case "str":
       return encodeString(n.v);
+    case "bytes":
+      throw new JsonEncodeError("BytesDeferred");
     case "arr":
-      return "[" + n.v.map(canonicalJson).join(",") + "]";
+      return "[" + n.v.map(item => writeJson(item, depth + 1)).join(",") + "]";
     case "obj":
-      return "{" + n.v.map(([k, val]) => encodeString(k) + ":" + canonicalJson(val)).join(",") + "}";
+      return "{" + n.v.map(([k, val]) => encodeString(k) + ":" + writeJson(val, depth + 1)).join(",") + "}";
+  }
+}
+
+export function canonicalJson(n: Tagged): EncodeResult {
+  try {
+    const value = writeJson(n, 0);
+    return { ok: true, value };
+  } catch (e) {
+    if (e instanceof JsonEncodeError) {
+      return { ok: false, error: e.error };
+    }
+    throw e;
   }
 }
 
@@ -322,7 +322,8 @@ export function fromCanonicalJson(json: string): DecodeResult {
     if (pos !== json.length) return { ok: false, error: "TrailingData" };
     // canonical fixed-point: a canonical string re-encodes to itself; anything else (extra
     // whitespace, non-minimal escapes, leading zeros) is well-formed but not canonical
-    if (canonicalJson(value) !== json) return { ok: false, error: "NonCanonical" };
+    const enc = canonicalJson(value);
+    if (!enc.ok || enc.value !== json) return { ok: false, error: "NonCanonical" };
     return { ok: true, value };
   } catch (e) {
     if (e instanceof JsonDecodeError) return { ok: false, error: e.error };

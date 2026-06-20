@@ -54,7 +54,7 @@ module DvKey =
 
     /// Wrap a `DynamicValue` as a comparable, content-addressed row key (computes its canonical CBOR once).
     let ofValue (v: DynamicValue) : DvKey =
-        { Value = v; Canonical = DynamicValue.toCanonicalCbor v }
+        { Value = v; Canonical = DynamicValue.toCanonicalCborOk v }
 
     /// The underlying value.
     let value (k: DvKey) : DynamicValue = k.Value

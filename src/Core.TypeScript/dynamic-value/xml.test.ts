@@ -16,7 +16,9 @@ const vectors = (goldens as { vectors: XmlVector[] }).vectors;
 
 test("XML golden byte-lock: encode(value) === xml for every vector", () => {
   for (const v of vectors) {
-    expect(canonicalXml(v.value)).toBe(v.xml);
+    const enc = canonicalXml(v.value);
+    expect(enc.ok).toBe(true);
+    expect(enc.ok ? enc.value : "").toBe(v.xml);
   }
 });
 
@@ -33,7 +35,10 @@ test("XML never-collapse: null / empty arr / empty obj / empty str / empty bytes
     canonicalXml({ t: "obj", v: [] }),
     canonicalXml({ t: "str", v: "" }),
     canonicalXml({ t: "bytes", v: "" }),
-  ];
+  ].map(r => {
+    expect(r.ok).toBe(true);
+    return r.ok ? r.value : "";
+  });
   expect(forms).toEqual(["<null/>", "<arr></arr>", "<obj></obj>", "<str></str>", "<bytes></bytes>"]);
   expect(new Set(forms).size).toBe(5);
 });
@@ -45,9 +50,17 @@ test("XML float corners are distinct + round-trip exactly (bit-pattern form)", (
   const nan: Tagged = { t: "float", v: "7ff8000000000000" };
   const posInf: Tagged = { t: "float", v: "7ff0000000000000" };
   const corners = [posZero, negZero, nan, posInf];
-  const encs = corners.map(canonicalXml);
+  const encs = corners.map(c => {
+    const r = canonicalXml(c);
+    expect(r.ok).toBe(true);
+    return r.ok ? r.value : "";
+  });
   expect(new Set(encs).size).toBe(4); // all distinct
-  for (const t of corners) expect(fromCanonicalXml(canonicalXml(t))).toEqual({ ok: true, value: t });
+  for (const t of corners) {
+    const enc = canonicalXml(t);
+    expect(enc.ok).toBe(true);
+    if (enc.ok) expect(fromCanonicalXml(enc.value)).toEqual({ ok: true, value: t });
+  }
   // uppercase / wrong-length float hex is non-canonical
   expect(fromCanonicalXml("<float>3FF0000000000000</float>").ok).toBe(false);
   expect(fromCanonicalXml("<float>3ff0</float>").ok).toBe(false);
@@ -63,7 +76,9 @@ test("XML round-trips whitespace + markup chars in text and keys", () => {
     { t: "arr", v: [{ t: "arr", v: [] }, { t: "obj", v: [] }, { t: "null" }, { t: "str", v: "" }] },
   ];
   for (const t of cases) {
-    expect(fromCanonicalXml(canonicalXml(t))).toEqual({ ok: true, value: t });
+    const enc = canonicalXml(t);
+    expect(enc.ok).toBe(true);
+    if (enc.ok) expect(fromCanonicalXml(enc.value)).toEqual({ ok: true, value: t });
   }
 });
 
@@ -89,7 +104,9 @@ test("XML canonicality: non-canonical forms rejected via fixed-point", () => {
 test("XML int64 boundaries round-trip; overflow rejected", () => {
   for (const v of ["9223372036854775807", "-9223372036854775808", "0"]) {
     const t: Tagged = { t: "int", v };
-    expect(fromCanonicalXml(canonicalXml(t))).toEqual({ ok: true, value: t });
+    const enc = canonicalXml(t);
+    expect(enc.ok).toBe(true);
+    if (enc.ok) expect(fromCanonicalXml(enc.value)).toEqual({ ok: true, value: t });
   }
   expect(fromCanonicalXml("<int>9223372036854775808</int>")).toEqual({ ok: false, error: "IntegerOverflow" });
 });

@@ -22,16 +22,17 @@ namespace Zeta.Core
 module Files =
 
     open ZetaCli
+    open Zeta.Core.FSharp.Blake3
 
     /// A file-or-folder (Aaron #7017): a `File` (content addressed by hash) or a `Folder`. Named `FileEntry`
     /// (not bare `Entry`) so the global noun is obviously file-related (#7018).
     type FileEntry =
-        | File of contentHash: string // CAS pointer (BLAKE3) into ContentStore/DagFs — NOT the bytes
+        | File of contentHash: ContentHash256 // CAS pointer (BLAKE3) into ContentStore/DagFs — NOT the bytes
         | Folder
 
     /// An event (`+1` delta) on the one stream. Paths are the keys; `Write` carries a content HASH, not bytes.
     type FileEvent =
-        | Write of path: string * contentHash: string // upsert a file at path with the given content hash
+        | Write of path: string * contentHash: ContentHash256 // upsert a file at path with the given content hash
         | MkFolder of path: string // upsert a folder at path
         | Remove of path: string // remove path and all descendants (prefix cascade)
         | Move of src: string * dst: string // move a file/subtree (NOT idempotent)
@@ -92,7 +93,7 @@ module Files =
 
     /// Read a file's content hash at `path` (None if absent or a folder). The caller resolves the hash against
     /// the ContentStore/DagFs to get the bytes (reference-not-copy).
-    let readHash (path: string) (st: FileState) : string option =
+    let readHash (path: string) (st: FileState) : ContentHash256 option =
         match Map.tryFind path st.Entries with
         | Some(File h) -> Some h
         | _ -> None

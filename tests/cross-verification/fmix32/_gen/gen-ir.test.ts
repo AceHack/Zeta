@@ -81,7 +81,7 @@ test("the fmix32 IR row is a CANONICAL DynamicValue (decoder accepts it; fixed-p
   const decoded = fromCanonicalJson(IR_TEXT);
   expect(decoded.ok).toBe(true);
   if (!decoded.ok) return;
-  expect(canonicalJson(decoded.value)).toBe(IR_TEXT);
+  expect(canonicalJson(decoded.value)).toEqual({ ok: true, value: IR_TEXT });
 });
 
 test("IR decoded FROM THE ROW reproduces the canonical fmix32 golden vectors", () => {

@@ -26,7 +26,9 @@ test("seed identifies as DynamicValue v1", () => {
 for (const v of seed.vectors) {
   test(`byte-lock encode: ${v.name}`, () => {
     // encode(value) === canonical json (the byte-lock target)
-    expect(canonicalJson(v.value)).toBe(v.json);
+    const enc = canonicalJson(v.value);
+    expect(enc.ok).toBe(true);
+    expect(enc.ok ? enc.value : "").toBe(v.json);
     // the canonical json is itself valid JSON (block body — don't return JSON.parse's `any`)
     expect(() => {
       JSON.parse(v.json);

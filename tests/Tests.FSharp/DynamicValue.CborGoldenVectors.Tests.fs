@@ -81,7 +81,7 @@ let ``F# CBOR encoder agrees with seed`` () =
             let name = v.GetProperty("name").GetString()
             let value = buildValue (v.GetProperty "value")
             let expected = v.GetProperty("cbor").GetString()
-            let actual = hex (DynamicValue.toCanonicalCbor value)
+            let actual = hex (DynamicValue.toCanonicalCborOk value)
 
             if actual = expected then
                 None
@@ -106,11 +106,11 @@ let ``F# CBOR encoder agrees with seed`` () =
 [<InlineData(-4.0, "f9c400")>]
 [<InlineData(-4.1, "fbc010666666666666")>]
 let ``float matches RFC 8949 Appendix A`` (value: float) (expected: string) =
-    Assert.Equal(expected, hex (DynamicValue.toCanonicalCbor (DynamicValue.Float value)))
+    Assert.Equal(expected, hex (DynamicValue.toCanonicalCborOk (DynamicValue.Float value)))
 
 [<Fact>]
 let ``infinities, NaN, and negative zero canonicalize`` () =
-    Assert.Equal("f97c00", hex (DynamicValue.toCanonicalCbor (DynamicValue.Float System.Double.PositiveInfinity)))
-    Assert.Equal("f9fc00", hex (DynamicValue.toCanonicalCbor (DynamicValue.Float System.Double.NegativeInfinity)))
-    Assert.Equal("f97e00", hex (DynamicValue.toCanonicalCbor (DynamicValue.Float System.Double.NaN)))
-    Assert.Equal("f98000", hex (DynamicValue.toCanonicalCbor (DynamicValue.Float -0.0)))
+    Assert.Equal("f97c00", hex (DynamicValue.toCanonicalCborOk (DynamicValue.Float System.Double.PositiveInfinity)))
+    Assert.Equal("f9fc00", hex (DynamicValue.toCanonicalCborOk (DynamicValue.Float System.Double.NegativeInfinity)))
+    Assert.Equal("f97e00", hex (DynamicValue.toCanonicalCborOk (DynamicValue.Float System.Double.NaN)))
+    Assert.Equal("f98000", hex (DynamicValue.toCanonicalCborOk (DynamicValue.Float -0.0)))

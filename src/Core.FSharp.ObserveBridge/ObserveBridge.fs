@@ -175,7 +175,7 @@ module ObserveBridge =
 
     // ── Canonical-CBOR hex (the comparison-able delta-log event for a NextAction) ──
     let encodeAction (a: NextAction) : string =
-        System.Convert.ToHexString(DynamicValue.toCanonicalCbor (nextActionToDv a))
+        System.Convert.ToHexString(DynamicValue.toCanonicalCborOk (nextActionToDv a))
 
     let decodeAction (s: string) : NextAction =
         let dv =

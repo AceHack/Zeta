@@ -82,7 +82,7 @@ test("the IR row is a CANONICAL DynamicValue (decoder accepts it; fixed-point ho
   expect(decoded.ok).toBe(true);
   if (!decoded.ok) return;
   // fixed-point: re-encoding the decoded value reproduces the row byte-for-byte.
-  expect(canonicalJson(decoded.value)).toBe(IR_TEXT);
+  expect(canonicalJson(decoded.value)).toEqual({ ok: true, value: IR_TEXT });
 });
 
 test("IR decoded FROM THE ROW reproduces the canonical SplitMix64 golden vectors", () => {

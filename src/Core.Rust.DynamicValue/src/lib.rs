@@ -163,14 +163,16 @@ impl DynamicValue {
     /// `Object` is order-significant -- the §4.2.1 key-sort would be lossy /
     /// non-bijective (the same call v1 made for canonical JSON). Integers and
     /// string/array/map lengths use preferred (shortest) serialization per §4.2.1.
-    #[must_use]
-    pub fn to_canonical_cbor(&self) -> Vec<u8> {
+    pub fn to_canonical_cbor(&self) -> Result<Vec<u8>, EncodeError> {
         let mut out = Vec::new();
-        self.write_cbor(&mut out);
-        out
+        self.write_cbor(&mut out, 0)?;
+        Ok(out)
     }
 
-    fn write_cbor(&self, out: &mut Vec<u8>) {
+    fn write_cbor(&self, out: &mut Vec<u8>, depth: usize) -> Result<(), EncodeError> {
+        if depth > MAX_NESTING_DEPTH {
+            return Err(EncodeError::NestingTooDeep);
+        }
         match self {
             DynamicValue::Null => out.push(0xf6),
             DynamicValue::Bool(b) => out.push(if *b { 0xf5 } else { 0xf4 }),
@@ -197,7 +199,7 @@ impl DynamicValue {
             DynamicValue::Array(items) => {
                 cbor_head(out, 4, items.len() as u64);
                 for item in items {
-                    item.write_cbor(out);
+                    item.write_cbor(out, depth + 1)?;
                 }
             }
             DynamicValue::Object(pairs) => {
@@ -206,10 +208,11 @@ impl DynamicValue {
                     let kb = key.as_bytes();
                     cbor_head(out, 3, kb.len() as u64);
                     out.extend_from_slice(kb);
-                    val.write_cbor(out);
+                    val.write_cbor(out, depth + 1)?;
                 }
             }
         }
+        Ok(())
     }
 
     /// Decode the canonical CBOR bytes emitted by
@@ -231,15 +234,15 @@ impl DynamicValue {
     /// in one uniform check. float16 payloads decode via [`f16_to_f32`].
     pub fn from_canonical_cbor(bytes: &[u8]) -> Result<DynamicValue, DecodeError> {
         let mut pos = 0usize;
-        let value = read_cbor(bytes, &mut pos)?;
+        let value = read_cbor(bytes, &mut pos, 0)?;
         if pos != bytes.len() {
             return Err(DecodeError::TrailingData);
         }
         // canonical fixed-point: canonical bytes are exactly those `b` with encode(decode(b)) == b
-        if value.to_canonical_cbor() != bytes {
-            return Err(DecodeError::NonCanonical);
+        match value.to_canonical_cbor() {
+            Ok(enc) if enc == bytes => Ok(value),
+            _ => Err(DecodeError::NonCanonical),
         }
-        Ok(value)
     }
 
     /// Decodes canonical JSON text into a [`DynamicValue`] -- the inverse of
@@ -475,6 +478,7 @@ impl DynamicValue {
 /// `Bytes` have no canonical JSON form yet (they lock under CBOR or a tagged-JSON
 /// convention); surfaced as `Err` data per the Result-over-exception rule
 /// (AGENTS.md), never panicked. Mirrors the F#/C# `EncodeError`.
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EncodeError {
     /// `DynamicValue::Float` has no canonical shortest-float form in plain JSON.
@@ -519,6 +523,7 @@ impl std::error::Error for EncodeError {}
 /// Why canonical CBOR bytes could not be decoded into a [`DynamicValue`]. Public API
 /// (returned from [`DynamicValue::from_canonical_cbor`]); carries `Display` +
 /// `std::error::Error`. Mirrors the C#/F# `DecodeError`.
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DecodeError {
     /// Input ended mid-item (a head or payload was truncated).
@@ -1022,7 +1027,10 @@ fn f16_to_f32(bits: u16) -> f32 {
 // Reads one CBOR item starting at `*pos`, advancing it. Mirrors the C#/F# reader; per-form
 // readers stay lenient (e.g. lossy UTF-8) -- the single fixed-point check in
 // `from_canonical_cbor` is the canonical-enforcement point.
-fn read_cbor(b: &[u8], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+fn read_cbor(b: &[u8], pos: &mut usize, depth: usize) -> Result<DynamicValue, DecodeError> {
+    if depth > MAX_NESTING_DEPTH {
+        return Err(DecodeError::NestingTooDeep);
+    }
     if *pos >= b.len() {
         return Err(DecodeError::UnexpectedEnd);
     }
@@ -1053,8 +1061,8 @@ fn read_cbor(b: &[u8], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
         }
         2 => read_byte_string(b, pos, arg),
         3 => read_text_string(b, pos, arg),
-        4 => read_array(b, pos, arg),
-        5 => read_map(b, pos, arg),
+        4 => read_array(b, pos, arg, depth),
+        5 => read_map(b, pos, arg, depth),
         _ => Err(DecodeError::Unsupported), // major 6 = tags
     }
 }
@@ -1139,28 +1147,38 @@ fn read_text_string(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue,
     Ok(DynamicValue::String(s))
 }
 
-fn read_array(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeError> {
+fn read_array(
+    b: &[u8],
+    pos: &mut usize,
+    arg: u64,
+    depth: usize,
+) -> Result<DynamicValue, DecodeError> {
     // each item is >= 1 byte, so a count beyond the remaining bytes is truncated
     if arg > (b.len() - *pos) as u64 {
         return Err(DecodeError::UnexpectedEnd);
     }
     let mut items = Vec::with_capacity(arg as usize);
     for _ in 0..arg {
-        items.push(read_cbor(b, pos)?);
+        items.push(read_cbor(b, pos, depth + 1)?);
     }
     Ok(DynamicValue::Array(items))
 }
 
-fn read_map(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeError> {
+fn read_map(
+    b: &[u8],
+    pos: &mut usize,
+    arg: u64,
+    depth: usize,
+) -> Result<DynamicValue, DecodeError> {
     if arg > (b.len() - *pos) as u64 {
         return Err(DecodeError::UnexpectedEnd);
     }
     let mut pairs = Vec::with_capacity(arg as usize);
     for _ in 0..arg {
-        let DynamicValue::String(k) = read_cbor(b, pos)? else {
+        let DynamicValue::String(k) = read_cbor(b, pos, depth + 1)? else {
             return Err(DecodeError::NonTextKey);
         };
-        let v = read_cbor(b, pos)?;
+        let v = read_cbor(b, pos, depth + 1)?;
         pairs.push((k, v));
     }
     Ok(DynamicValue::Object(pairs))
@@ -1436,6 +1454,7 @@ mod tests {
     fn float_hex(v: f64) -> String {
         DynamicValue::Float(v)
             .to_canonical_cbor()
+            .unwrap()
             .iter()
             .map(|b| format!("{b:02x}"))
             .collect()

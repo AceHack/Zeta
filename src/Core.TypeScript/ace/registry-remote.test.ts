@@ -7,7 +7,7 @@ import { verifyIndex, type CacheMeta } from "./registry-remote.ts";
 
 const good = JSON.stringify({
   format_version: 1, sequence: 2, issued_at: "2026-06-01T12:00:00Z",
-  packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+  packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "blake3:aa" } } },
   signature: { algo: "ed25519", key_id: "ed25519:k", sig: "BASE64" },
 });
 
@@ -32,7 +32,7 @@ describe("parseIndex", () => {
 function mk(seq: number, issuedAtMs: number) {
   const kp = generateKeypair();
   const content = { format_version: 1 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
-    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "blake3:aa" } } } };
   const doc = { ...content, signature: signIndex(content, kp.privatePem) };
   const trust = new Map<string, TrustEntry>([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
   return { kp, doc, trust };
@@ -86,7 +86,7 @@ describe("cache I/O", () => {
   test("write then read round-trips meta + body", () => {
     const body = '{"hello":"world"}';
     const meta = writeCache("https://x/index.json", body, { etag: '"e1"', last_modified: "lm", sequence_high_water: 3 });
-    expect(meta.index_content_hash).toMatch(/^sha256:/);
+    expect(meta.index_content_hash).toMatch(/^blake3:/);
     const got = readCache("https://x/index.json");
     expect(got).not.toBeNull();
     expect(got!.body).toBe(body);
@@ -102,7 +102,7 @@ import { fetchRemoteIndex } from "./registry-remote.ts";
 
 function indexJson(kp: { privatePem: string }, seq: number, issuedAtMs: number) {
   const content = { format_version: 1 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
-    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "blake3:aa" } } } };
   return JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
 }
 
@@ -178,12 +178,12 @@ describe("loadRegistries merge precedence", () => {
   test("remote entries appear; user overrides remote on conflict", async () => {
     const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
     const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
-      packages: { leaf: { "1.0.0": { url: "https://REMOTE/l.json", package_hash: "sha256:rr" } } } };
+      packages: { leaf: { "1.0.0": { url: "https://REMOTE/l.json", package_hash: "blake3:rr" } } } };
     const body = JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
     globalThis.fetch = (async () => new Response(body, { status: 200 })) as unknown as typeof fetch;
     const { writeRegistryRemote, addRegistryEntry } = await import("./store.ts");
     writeRegistryRemote({ url: "https://x/index.json", key_id: kp.keyId });
-    addRegistryEntry("leaf", "1.0.0", { url: "https://LOCAL/l.json", package_hash: "sha256:ll" });
+    addRegistryEntry("leaf", "1.0.0", { url: "https://LOCAL/l.json", package_hash: "blake3:ll" });
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     const r = await loadRegistries({ trustStore: trust, now });
     expect(r.errors).toEqual([]);
@@ -204,7 +204,7 @@ describe("loadRegistries merge precedence", () => {
     const kp0 = gkp(), kp1 = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
     const mkBody = (kp: typeof kp0, url: string) => {
       const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
-        packages: { leaf: { "1.0.0": { url, package_hash: "sha256:xx" } } } };
+        packages: { leaf: { "1.0.0": { url, package_hash: "blake3:xx" } } } };
       return JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
     };
     const body0 = mkBody(kp0, "https://R0/l.json"), body1 = mkBody(kp1, "https://R1/l.json");
@@ -228,7 +228,7 @@ import type { RevocationMap } from "./signing.ts";
 function mkV2Index(kp: { privatePem: string; keyId: string }, seq: number, issuedAtMs: number, extra: Record<string, unknown> = {}) {
   const content = {
     format_version: 2 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
-    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "blake3:aa" } } },
     ...extra,
   };
   return JSON.stringify({ ...content, signature: si2(content, kp.privatePem) });

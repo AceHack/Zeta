@@ -44,6 +44,13 @@ public sealed class ContentHash256 : IEquatable<ContentHash256>
         return new ContentHash256(hash.AsSpan().ToArray());
     }
 
+    /// <summary>Parse a 32-byte BLAKE3-256 digest from its hex string representation (allows optional 'blake3:' prefix).</summary>
+    public static ContentHash256 OfHex(string hex)
+    {
+        var hexClean = hex.StartsWith("blake3:", StringComparison.Ordinal) ? hex.Substring(7) : hex;
+        return new ContentHash256(Convert.FromHexString(hexClean));
+    }
+
     /// <summary>Derive the compact ContentAddress128 (MerkleHash) from the full digest.</summary>
     public static MerkleHash ToContentAddress128(ContentHash256 h)
     {

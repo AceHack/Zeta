@@ -1,15 +1,8 @@
-import type { Tagged } from "./cbor";
+import { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH } from "./types";
+export { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH };
 import { parse as parseYaml } from "../yaml/dom";
 import type { YamlValue } from "../yaml/dom";
 import { encode as encodeYaml } from "../yaml/encoder";
-
-export type EncodeError = "BytesDeferred" | "NestingTooDeep";
-export type DecodeError = "UnexpectedEnd" | "TrailingData" | "Unsupported" | "IntegerOverflow" | "NonCanonical" | "NestingTooDeep";
-
-export type EncodeResult = { ok: true; value: string } | { ok: false; error: EncodeError };
-export type DecodeResult = { ok: true; value: Tagged } | { ok: false; error: DecodeError };
-
-const MAX_NESTING_DEPTH = 256;
 
 function firstDeferred(n: Tagged, depth: number): EncodeError | null {
   if (depth > MAX_NESTING_DEPTH) {

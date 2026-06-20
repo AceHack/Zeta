@@ -1,11 +1,12 @@
 ---
 id: 081KTH59TVZ08QG0R000YRX5HW
 type: task
-state: backlog
+state: done
 priority: P2
 slug: contenthash256-full-256-bit-raw-blake3-proof-tier-files-pack
 title: "ContentHash256 — full 256-bit raw BLAKE3 proof tier (files/packages/blocks/adversarial); the remaining trust-core gap"
 created: 2026-06-07T13:45:34.847Z
+completed: 2026-06-20T09:40:00.000Z
 depends_on: []
 composes_with: ["081KTH323AK08QG0R000ZZ0N93"]
 ---

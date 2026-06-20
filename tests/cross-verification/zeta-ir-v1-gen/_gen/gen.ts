@@ -189,8 +189,9 @@ function fold(decoded: DecodedV1, x: bigint): bigint {
 export function emit(spec: GenSpec): Record<string, string> {
   // build envelope -> real canonical-JSON encode -> real decode (round-trip through the
   // exact machinery the freeze byte-locks) -> v1-contract decode -> fold.
-  const cj = canonicalJson(v1Envelope(spec));
-  const reparsed = fromCanonicalJson(cj);
+  const cjResult = canonicalJson(v1Envelope(spec));
+  if (!cjResult.ok) throw new Error(`v1 envelope for ${spec.generator} could not be canonicalized: ${cjResult.error}`);
+  const reparsed = fromCanonicalJson(cjResult.value);
   if (!reparsed.ok) throw new Error(`v1 envelope for ${spec.generator} is not canonical: ${reparsed.error}`);
   const decoded = decodeV1(reparsed.value);
   const out: Record<string, string> = { _source: "generated-from-zeta-ir-v1" };

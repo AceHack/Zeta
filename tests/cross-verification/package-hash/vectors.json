@@ -1,5 +1,5 @@
 {
-  "description": "Ace package_hash content-identity vectors (TS now; F#/C#/Rust must match). Each: package -> canonical-JSON of {manifest-minus-signature, files} + sha256: package_hash.",
+  "description": "Ace package_hash content-identity vectors (TS now; F#/C#/Rust must match). Each: package -> canonical-JSON of {manifest-minus-signature, files} + blake3: package_hash.",
   "vectors": [
     {
       "id": "minimal",
@@ -8,14 +8,14 @@
           "format_version": 1,
           "name": "x",
           "version": "1.0.0",
-          "content_hash": "sha256:deadbeef"
+          "content_hash": "blake3:deadbeef00000000000000000000000000000000000000000000000000000000"
         },
         "files": {
           "a.txt": "a"
         }
       },
-      "expected_canonical_json": "{\"files\":{\"a.txt\":\"a\"},\"manifest\":{\"content_hash\":\"sha256:deadbeef\",\"format_version\":1,\"name\":\"x\",\"version\":\"1.0.0\"}}",
-      "expected_package_hash": "sha256:52d5eea3ab33c6a4aa9665c57ea555325b68196b7b6023aea4c4b57e72a278a8"
+      "expected_canonical_json": "{\"files\":{\"a.txt\":\"a\"},\"manifest\":{\"content_hash\":\"blake3:deadbeef00000000000000000000000000000000000000000000000000000000\",\"format_version\":1,\"name\":\"x\",\"version\":\"1.0.0\"}}",
+      "expected_package_hash": "blake3:fa9e27f31c704f5da9b1fcdaf5373c301a69df5767bf9b6aeaf0b46e1382e8dc"
     },
     {
       "id": "signature-excluded",
@@ -24,7 +24,7 @@
           "format_version": 1,
           "name": "x",
           "version": "1.0.0",
-          "content_hash": "sha256:deadbeef",
+          "content_hash": "blake3:deadbeef00000000000000000000000000000000000000000000000000000000",
           "signature": {
             "algo": "ed25519",
             "key_id": "ed25519:abcd",
@@ -35,8 +35,8 @@
           "a.txt": "a"
         }
       },
-      "expected_canonical_json": "{\"files\":{\"a.txt\":\"a\"},\"manifest\":{\"content_hash\":\"sha256:deadbeef\",\"format_version\":1,\"name\":\"x\",\"version\":\"1.0.0\"}}",
-      "expected_package_hash": "sha256:52d5eea3ab33c6a4aa9665c57ea555325b68196b7b6023aea4c4b57e72a278a8"
+      "expected_canonical_json": "{\"files\":{\"a.txt\":\"a\"},\"manifest\":{\"content_hash\":\"blake3:deadbeef00000000000000000000000000000000000000000000000000000000\",\"format_version\":1,\"name\":\"x\",\"version\":\"1.0.0\"}}",
+      "expected_package_hash": "blake3:fa9e27f31c704f5da9b1fcdaf5373c301a69df5767bf9b6aeaf0b46e1382e8dc"
     },
     {
       "id": "with-dependencies",
@@ -45,7 +45,7 @@
           "format_version": 1,
           "name": "root",
           "version": "2.1.0",
-          "content_hash": "sha256:cafe",
+          "content_hash": "blake3:cafe000000000000000000000000000000000000000000000000000000000000",
           "dependencies": [
             {
               "kind": "registry",
@@ -58,15 +58,15 @@
           "r.txt": "r"
         }
       },
-      "expected_canonical_json": "{\"files\":{\"r.txt\":\"r\"},\"manifest\":{\"content_hash\":\"sha256:cafe\",\"dependencies\":[{\"kind\":\"registry\",\"name\":\"dep\",\"version\":\"^1.0.0\"}],\"format_version\":1,\"name\":\"root\",\"version\":\"2.1.0\"}}",
-      "expected_package_hash": "sha256:ad0e910bc6e0cde4d4f49a0a75b6afec500e30d1ca431841957ac4c6617abd29"
+      "expected_canonical_json": "{\"files\":{\"r.txt\":\"r\"},\"manifest\":{\"content_hash\":\"blake3:cafe000000000000000000000000000000000000000000000000000000000000\",\"dependencies\":[{\"kind\":\"registry\",\"name\":\"dep\",\"version\":\"^1.0.0\"}],\"format_version\":1,\"name\":\"root\",\"version\":\"2.1.0\"}}",
+      "expected_package_hash": "blake3:e60d822f90f99cb2e42d1044623bf2a34d69ff7ef98afc839a5bcbcb7129cb93"
     },
     {
       "id": "key-order-independent",
       "package": {
         "manifest": {
           "version": "1.0.0",
-          "content_hash": "sha256:deadbeef",
+          "content_hash": "blake3:deadbeef00000000000000000000000000000000000000000000000000000000",
           "name": "x",
           "format_version": 1
         },
@@ -74,8 +74,8 @@
           "a.txt": "a"
         }
       },
-      "expected_canonical_json": "{\"files\":{\"a.txt\":\"a\"},\"manifest\":{\"content_hash\":\"sha256:deadbeef\",\"format_version\":1,\"name\":\"x\",\"version\":\"1.0.0\"}}",
-      "expected_package_hash": "sha256:52d5eea3ab33c6a4aa9665c57ea555325b68196b7b6023aea4c4b57e72a278a8"
+      "expected_canonical_json": "{\"files\":{\"a.txt\":\"a\"},\"manifest\":{\"content_hash\":\"blake3:deadbeef00000000000000000000000000000000000000000000000000000000\",\"format_version\":1,\"name\":\"x\",\"version\":\"1.0.0\"}}",
+      "expected_package_hash": "blake3:fa9e27f31c704f5da9b1fcdaf5373c301a69df5767bf9b6aeaf0b46e1382e8dc"
     }
   ]
 }

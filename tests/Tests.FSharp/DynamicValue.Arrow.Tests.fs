@@ -82,7 +82,7 @@ type ArrowDvArb() =
 
 [<Property(Arbitrary = [| typeof<ArrowDvArb> |])>]
 let ``ARROW DynamicValue: round-trip — fromArrow ∘ toArrow = id (8/8 shapes)`` (v: DynamicValue) =
-    DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow v) = Ok v
+    DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk v) = Ok v
 
 // ── never-collapse: Null / empty Array / empty Object / empty String / empty Bytes
 //    all round-trip AND are pairwise distinguished ──
@@ -98,10 +98,10 @@ let ``ARROW DynamicValue: never-collapse — empties round-trip and stay distinc
 
     // each round-trips to itself
     for v in empties do
-        Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow v))
+        Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk v))
 
     // and they are all pairwise distinct after round-trip (no collapse)
-    let decoded = empties |> List.map (DynamicValueArrow.toArrow >> DynamicValueArrow.fromArrow)
+    let decoded = empties |> List.map (DynamicValueArrow.toArrowOk >> DynamicValueArrow.fromArrow)
     let distinct = decoded |> List.distinct
     Assert.Equal(empties.Length, distinct.Length)
 
@@ -111,7 +111,7 @@ let ``ARROW DynamicValue: never-collapse — empties round-trip and stay distinc
 let ``ARROW DynamicValue: non-finite floats (NaN, ±inf, -0.0) round-trip`` () =
     for f in [ nan; infinity; -infinity; -0.0; 0.0 ] do
         let v = DynamicValue.Float f
-        Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow v))
+        Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk v))
 
 // ── fixed nested cases ──
 
@@ -124,7 +124,7 @@ let ``ARROW DynamicValue: nested object/array/object round-trips faithfully`` ()
               "c", DynamicValue.Array []
               "d", DynamicValue.Object [] ]
 
-    Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow v))
+    Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk v))
 
 [<Fact>]
 let ``ARROW DynamicValue: object key order and array sibling order are preserved`` () =
@@ -134,7 +134,7 @@ let ``ARROW DynamicValue: object key order and array sibling order are preserved
               DynamicValue.String "first"
               DynamicValue.String "second" ]
 
-    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow v) with
+    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk v) with
     | Ok decoded -> Assert.Equal(v, decoded)
     | Error e -> failwithf "round-trip failed: %A" e
 
@@ -148,4 +148,4 @@ let ``ARROW DynamicValue: deeply nested array of bytes/strings round-trips`` () 
                     DynamicValue.Float 1.5
                     DynamicValue.Object [ "deep", DynamicValue.Array [ DynamicValue.Null ] ] ] ]
 
-    Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow v))
+    Assert.Equal(Ok v, DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk v))

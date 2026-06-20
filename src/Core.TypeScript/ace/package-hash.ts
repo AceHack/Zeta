@@ -8,12 +8,12 @@
 // across re-signing.
 // Runtime hasher is node:crypto SHA-256 (native; byte-identical to the slice-8 SHA-256
 // oracle, which exists for cross-language verification, not as the runtime hasher).
-import { createHash } from "node:crypto";
+import { ContentHash256 } from "../blake3/blake3.ts";
 import { canonicalBytes } from "./canonical.ts";
 import type { AcePackage } from "./store.ts";
 
 /**
- * Content identity: `sha256:<hex>` of canonicalBytes({ manifest − signature, files }).
+ * Content identity: `blake3:<hex>` of canonicalBytes({ manifest − signature, files }).
  * The parent's pin / identity for a dependency — two edges sharing a packageHash have
  * byte-identical CONTENT regardless of signature. Throws (via canonicalBytes / toTagged)
  * on a non-safe-integer or lone-surrogate field; resolve maps that to invalid-package.
@@ -21,7 +21,8 @@ import type { AcePackage } from "./store.ts";
 export function packageHash(pkg: AcePackage): string {
   const { signature, ...rest } = pkg.manifest; // exclude signature from the identity
   void signature;
-  return "sha256:" + createHash("sha256").update(canonicalBytes({ manifest: rest, files: pkg.files })).digest("hex");
+  const bytes = canonicalBytes({ manifest: rest, files: pkg.files });
+  return "blake3:" + ContentHash256.ofBytes(bytes).toHex();
 }
 
 /** Result of {@link safePackageHash}: the hash, or a reason the input was malformed. */

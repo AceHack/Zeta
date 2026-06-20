@@ -34,6 +34,19 @@ export class ContentHash256 {
     return new ContentHash256(blake3(bytes));
   }
 
+  /** Parse a 32-byte BLAKE3-256 digest from its hex string representation (allows optional 'blake3:' prefix). */
+  static ofHex(hex: string): ContentHash256 {
+    const clean = hex.startsWith("blake3:") ? hex.slice(7) : hex;
+    if (clean.length !== 64) {
+      throw new Error("BLAKE3-256 hex string must be exactly 64 characters.");
+    }
+    const raw = new Uint8Array(32);
+    for (let i = 0; i < 32; i++) {
+      raw[i] = parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+    }
+    return new ContentHash256(raw);
+  }
+
   /** Derive the compact ContentAddress128 (MerkleHash) from the full digest. */
   static toContentAddress128(h: ContentHash256): MerkleHash {
     const view = new DataView(h.raw.buffer, h.raw.byteOffset, h.raw.byteLength);

@@ -91,7 +91,7 @@ fn cbor_decode_round_trips_golden_vectors() {
             Ok(decoded) => {
                 // byte-lock: decoded re-encodes to the canonical bytes (the decoder's fixed-point
                 // check guarantees this, asserted explicitly here)
-                if decoded.to_canonical_cbor() != cbor {
+                if decoded.to_canonical_cbor().as_deref() != Ok(&cbor[..]) {
                     failures.push(format!("{name}: re-encode mismatch"));
                 }
                 // structural (skip NaN: Rust f64 NaN != NaN under derived PartialEq)

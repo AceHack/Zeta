@@ -497,28 +497,54 @@ public static class DynamicValues
 
     /// <summary>Canonical CBOR encoding (RFC 8949) — the TOTAL byte-lock target for all eight shapes
     /// (the shared seed is <c>src/Core.TypeScript/dynamic-value/golden-vectors-cbor.json</c>). Where
+    /// <summary>Canonical CBOR encoding (RFC 8949) — the TOTAL byte-lock target for all
+    /// eight shapes (the shared seed is
+    /// <c>src/Core.TypeScript/dynamic-value/golden-vectors-cbor.json</c>). Where
     /// <see cref="ToCanonicalJson"/> is a partial projection (6/8 shapes; Float/Bytes deferred), CBOR
     /// is total: <see cref="DynamicValue.Float"/> uses the RFC 8949 §4.2.2 shortest-float rule
     /// (float16 if it round-trips exactly, else float32, else float64; NaN canonicalizes to
-    /// <c>0xf97e00</c>) and <see cref="DynamicValue.Bytes"/> uses a native major-type-2 byte string —
-    /// so no <see cref="Result{T, TError}"/> is needed (CBOR has a canonical form for every shape).
+    /// <c>0xf97e00</c>) and <see cref="DynamicValue.Bytes"/> uses a native major-type-2 byte string.
     /// <para>One deliberate deviation from RFC 8949 §4.2.1 deterministic encoding:
     /// <see cref="DynamicValue.Object"/> map keys stay in INSERTION order, NOT bytewise-sorted,
     /// because Object is order-significant — the §4.2.1 key-sort would be lossy / non-bijective (the
     /// same call v1 made for canonical JSON). Integers and string/array/map lengths use preferred
     /// (shortest) serialization per §4.2.1.</para></summary>
     /// <param name="value">the value to encode.</param>
-    /// <returns>the canonical CBOR bytes.</returns>
-    public static byte[] ToCanonicalCbor(DynamicValue value)
+    /// <returns>the Result containing the canonical CBOR bytes or an EncodeError.</returns>
+    public static Result<byte[], EncodeError> ToCanonicalCbor(DynamicValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
         var buf = new List<byte>();
-        WriteCbor(buf, value);
-        return buf.ToArray();
+        var err = WriteCbor(buf, value, 0);
+        if (err is EncodeError e)
+        {
+            return new Result<byte[], EncodeError>.Err(e);
+        }
+        return new Result<byte[], EncodeError>.Ok(buf.ToArray());
     }
 
-    private static void WriteCbor(List<byte> buf, DynamicValue value)
+    /// <summary>Exposes a way to cleanly unwrap the CBOR encode result for low-depth invariants in calling code.</summary>
+    public static byte[] ToCanonicalCborOk(DynamicValue value)
     {
+        var result = ToCanonicalCbor(value);
+        if (result is Result<byte[], EncodeError>.Ok ok)
+        {
+            return ok.Value;
+        }
+        else
+        {
+            var err = (Result<byte[], EncodeError>.Err)result;
+            throw new InvalidOperationException($"ToCanonicalCbor failed on low-depth invariant: {err.Error}");
+        }
+    }
+
+    private static EncodeError? WriteCbor(List<byte> buf, DynamicValue value, int depth)
+    {
+        if (depth > MaxNestingDepth)
+        {
+            return EncodeError.NestingTooDeep;
+        }
+
         switch (value)
         {
             case DynamicValue.Null:
@@ -544,7 +570,11 @@ public static class DynamicValues
                 WriteCborHead(buf, 4, (ulong)a.Items.Length);
                 foreach (DynamicValue item in a.Items)
                 {
-                    WriteCbor(buf, item);
+                    var err = WriteCbor(buf, item, depth + 1);
+                    if (err != null)
+                    {
+                        return err;
+                    }
                 }
 
                 break;
@@ -553,7 +583,11 @@ public static class DynamicValues
                 foreach (KeyValuePair<string, DynamicValue> pair in o.Pairs)
                 {
                     WriteCborText(buf, pair.Key);
-                    WriteCbor(buf, pair.Value);
+                    var err = WriteCbor(buf, pair.Value, depth + 1);
+                    if (err != null)
+                    {
+                        return err;
+                    }
                 }
 
                 break;
@@ -562,6 +596,8 @@ public static class DynamicValues
                 throw new InvalidOperationException(
                     $"WriteCbor reached an unknown variant ({value.Type}); the DynamicValue hierarchy is closed");
         }
+
+        return null;
     }
 
     // CBOR initial byte (major type in top 3 bits) + preferred/shortest argument (RFC 8949 §3, §4.2.1).
@@ -684,7 +720,7 @@ public static class DynamicValues
     {
         ArgumentNullException.ThrowIfNull(bytes);
         int pos = 0;
-        DecodeError? err = TryReadCbor(bytes, ref pos, out DynamicValue value);
+        DecodeError? err = TryReadCbor(bytes, ref pos, 0, out DynamicValue value);
         if (err is DecodeError e)
         {
             return new Result<DynamicValue, DecodeError>.Err(e);
@@ -700,7 +736,7 @@ public static class DynamicValues
         // non-shortest int/length widths (18 00 vs 00), non-shortest floats / non-canonical NaN,
         // and invalid UTF-8 silently repaired to U+FFFD (which re-encodes to different bytes) — in
         // one uniform check, instead of scattering per-form strictness through the reader.
-        if (!ToCanonicalCbor(value).AsSpan().SequenceEqual(bytes))
+        if (ToCanonicalCbor(value) is not Result<byte[], EncodeError>.Ok ok || !ok.Value.AsSpan().SequenceEqual(bytes))
         {
             return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
         }
@@ -710,9 +746,13 @@ public static class DynamicValues
 
     // Reads one CBOR item starting at `pos`, advancing it. Returns null on success (value set), or
     // the DecodeError on failure.
-    private static DecodeError? TryReadCbor(byte[] b, ref int pos, out DynamicValue value)
+    private static DecodeError? TryReadCbor(byte[] b, ref int pos, int depth, out DynamicValue value)
     {
         value = new DynamicValue.Null();
+        if (depth > MaxNestingDepth)
+        {
+            return DecodeError.NestingTooDeep;
+        }
         if (pos >= b.Length)
         {
             return DecodeError.UnexpectedEnd;
@@ -757,9 +797,9 @@ public static class DynamicValues
             case 3:
                 return TryReadTextString(b, ref pos, arg, out value);
             case 4:
-                return TryReadArray(b, ref pos, arg, out value);
+                return TryReadArray(b, ref pos, depth, arg, out value);
             case 5:
-                return TryReadMap(b, ref pos, arg, out value);
+                return TryReadMap(b, ref pos, depth, arg, out value);
             default:
                 return DecodeError.Unsupported; // major 6 = tags, not used by our canonical form
         }
@@ -856,7 +896,7 @@ public static class DynamicValues
         return null;
     }
 
-    private static DecodeError? TryReadArray(byte[] b, ref int pos, ulong arg, out DynamicValue value)
+    private static DecodeError? TryReadArray(byte[] b, ref int pos, int depth, ulong arg, out DynamicValue value)
     {
         value = new DynamicValue.Null();
         // each item is ≥ 1 byte, so a count beyond the remaining bytes is truncated
@@ -868,7 +908,7 @@ public static class DynamicValues
         var items = ImmutableArray.CreateBuilder<DynamicValue>((int)arg);
         for (ulong i = 0; i < arg; i++)
         {
-            DecodeError? itemErr = TryReadCbor(b, ref pos, out DynamicValue item);
+            DecodeError? itemErr = TryReadCbor(b, ref pos, depth + 1, out DynamicValue item);
             if (itemErr is DecodeError ie)
             {
                 return ie;
@@ -881,7 +921,7 @@ public static class DynamicValues
         return null;
     }
 
-    private static DecodeError? TryReadMap(byte[] b, ref int pos, ulong arg, out DynamicValue value)
+    private static DecodeError? TryReadMap(byte[] b, ref int pos, int depth, ulong arg, out DynamicValue value)
     {
         value = new DynamicValue.Null();
         if (arg > (ulong)(b.Length - pos))
@@ -892,7 +932,7 @@ public static class DynamicValues
         var pairs = ImmutableArray.CreateBuilder<KeyValuePair<string, DynamicValue>>((int)arg);
         for (ulong i = 0; i < arg; i++)
         {
-            DecodeError? keyErr = TryReadCbor(b, ref pos, out DynamicValue key);
+            DecodeError? keyErr = TryReadCbor(b, ref pos, depth + 1, out DynamicValue key);
             if (keyErr is DecodeError ke)
             {
                 return ke;
@@ -903,7 +943,7 @@ public static class DynamicValues
                 return DecodeError.NonTextKey;
             }
 
-            DecodeError? valErr = TryReadCbor(b, ref pos, out DynamicValue val);
+            DecodeError? valErr = TryReadCbor(b, ref pos, depth + 1, out DynamicValue val);
             if (valErr is DecodeError ve)
             {
                 return ve;

@@ -24,7 +24,7 @@ module DynamicValueAlgebra =
 
     /// Canonical content address of any `DynamicValue` (via canonical CBOR) — the deterministic LWW key.
     let private addr (v: DynamicValue) : MerkleHash =
-        MerkleHash.ofBytes(ReadOnlySpan<byte>(DynamicValue.toCanonicalCbor v))
+        MerkleHash.ofBytes(ReadOnlySpan<byte>(DynamicValue.toCanonicalCborOk v))
 
     /// Content-hash last-write-wins: `Null` is bottom; equal values collapse; else the value with the
     /// greater content address. A deterministic, commutative, associative, idempotent join (max over a

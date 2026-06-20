@@ -67,7 +67,7 @@ module ZetaExec =
 
         | Some s when s = Files.SeamName ->
             match cmd.Verb with
-            | "write" -> needValue (fun h -> { ws with Files = Files.apply ws.Files (Files.Write(cmd.Noun, h)) })
+            | "write" -> needValue (fun h -> { ws with Files = Files.apply ws.Files (Files.Write(cmd.Noun, Zeta.Core.FSharp.Blake3.ContentHash256.ofHex h)) })
             | "mkfolder"
             | "mkdir" -> Ok { ws with Files = Files.apply ws.Files (Files.MkFolder cmd.Noun) }
             | "remove"

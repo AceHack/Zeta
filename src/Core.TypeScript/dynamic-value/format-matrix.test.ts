@@ -22,6 +22,7 @@ function dvToYaml(t: Tagged): YamlValue {
     case "str": return { t: "Str", value: t.v };
     case "arr": return { t: "Seq", items: t.v.map(dvToYaml) };
     case "obj": return { t: "Map", entries: t.v.map(([k, c]) => [k, dvToYaml(c)] as [string, YamlValue]) };
+    default: throw new Error(`Unsupported tag in dvToYaml: ${(t as any).t}`);
   }
 }
 function yamlToDv(y: YamlValue): Tagged {
@@ -38,13 +39,25 @@ function yamlToDv(y: YamlValue): Tagged {
 
 const eq = (a: Tagged, b: Tagged) => JSON.stringify(a) === JSON.stringify(b);
 
-const jsonRT = (t: Tagged) => { const r = fromCanonicalJson(canonicalJson(t)); return r.ok && eq(r.value, t); };
+const jsonRT = (t: Tagged) => {
+  const enc = canonicalJson(t);
+  if (!enc.ok) return false;
+  const r = fromCanonicalJson(enc.value);
+  return r.ok && eq(r.value, t);
+};
 const cborRT = (t: Tagged) => {
-  const r = fromCanonicalCbor(canonicalCbor(t as unknown as CborTagged));
+  const enc = canonicalCbor(t as unknown as CborTagged);
+  if (!enc.ok) return false;
+  const r = fromCanonicalCbor(enc.value);
   return r.ok && eq(r.value as unknown as Tagged, t);
 };
 const yamlRT = (t: Tagged) => { const r = parse(encode(dvToYaml(t))); return r.ok && eq(yamlToDv(r.value), t); };
-const xmlRT = (t: Tagged) => { const r = fromCanonicalXml(canonicalXml(t)); return r.ok && eq(r.value as unknown as Tagged, t); };
+const xmlRT = (t: Tagged) => {
+  const enc = canonicalXml(t);
+  if (!enc.ok) return false;
+  const r = fromCanonicalXml(enc.value);
+  return r.ok && eq(r.value as unknown as Tagged, t);
+};
 
 const cases: Tagged[] = [
   { t: "obj", v: [["a", { t: "int", v: "1" }], ["b", { t: "str", v: "x" }], ["n", { t: "null" }], ["f", { t: "bool", v: true }]] },

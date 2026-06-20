@@ -47,13 +47,17 @@ test("seed has the DeltaLogEntry vectors", () => {
 for (const v of vectors) {
   test(`TS DeltaLogEntry byte-lock: ${v.name}`, () => {
     // encode → must equal the seed hex (the cross-language byte-lock)
-    expect(toHex(canonicalCbor(entryToTagged(v.entry)))).toBe(v.cbor);
+    const enc1 = canonicalCbor(entryToTagged(v.entry));
+    expect(enc1.ok).toBe(true);
+    expect(toHex(enc1.ok ? enc1.value : [])).toBe(v.cbor);
 
     // decode(seed hex) → re-encode → must equal the seed hex (round-trip stability)
     const decoded = fromCanonicalCbor(fromHex(v.cbor));
     expect(decoded.ok).toBe(true);
     if (decoded.ok) {
-      expect(toHex(canonicalCbor(decoded.value))).toBe(v.cbor);
+      const enc2 = canonicalCbor(decoded.value);
+      expect(enc2.ok).toBe(true);
+      expect(toHex(enc2.ok ? enc2.value : [])).toBe(v.cbor);
     }
   });
 }

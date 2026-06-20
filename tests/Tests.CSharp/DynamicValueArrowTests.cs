@@ -135,7 +135,7 @@ public class DynamicValueArrowTests
         {
             string name = Str(v, "name");
             DynamicValue value = BuildValue(v.GetProperty("value"));
-            DynamicValue back = Decode(DynamicValuesArrow.ToArrow(value));
+            DynamicValue back = Decode(DynamicValuesArrow.ToArrowOk(value));
             if (!BitEqual(value, back))
             {
                 failures.Add($"{name}: round-trip mismatch");
@@ -148,12 +148,12 @@ public class DynamicValueArrowTests
     [Fact]
     public void NeverCollapseGivesFiveDistinctArrowStreams()
     {
-        byte[] nullA = DynamicValuesArrow.ToArrow(new DynamicValue.Null());
-        byte[] emptyArr = DynamicValuesArrow.ToArrow(new DynamicValue.Array(ImmutableArray<DynamicValue>.Empty));
-        byte[] emptyObj = DynamicValuesArrow.ToArrow(
+        byte[] nullA = DynamicValuesArrow.ToArrowOk(new DynamicValue.Null());
+        byte[] emptyArr = DynamicValuesArrow.ToArrowOk(new DynamicValue.Array(ImmutableArray<DynamicValue>.Empty));
+        byte[] emptyObj = DynamicValuesArrow.ToArrowOk(
             new DynamicValue.Object(ImmutableArray<KeyValuePair<string, DynamicValue>>.Empty));
-        byte[] emptyStr = DynamicValuesArrow.ToArrow(new DynamicValue.String(string.Empty));
-        byte[] emptyBytes = DynamicValuesArrow.ToArrow(new DynamicValue.Bytes(ImmutableArray<byte>.Empty));
+        byte[] emptyStr = DynamicValuesArrow.ToArrowOk(new DynamicValue.String(string.Empty));
+        byte[] emptyBytes = DynamicValuesArrow.ToArrowOk(new DynamicValue.Bytes(ImmutableArray<byte>.Empty));
 
         var distinct = new HashSet<string>(StringComparer.Ordinal)
         {
@@ -183,7 +183,7 @@ public class DynamicValueArrowTests
     public void NonFiniteAndCornerFloatsPreserveBits(ulong bits)
     {
         double d = BitConverter.UInt64BitsToDouble(bits);
-        DynamicValue back = Decode(DynamicValuesArrow.ToArrow(new DynamicValue.Float(d)));
+        DynamicValue back = Decode(DynamicValuesArrow.ToArrowOk(new DynamicValue.Float(d)));
         var f = Assert.IsType<DynamicValue.Float>(back);
         Assert.Equal(bits, BitConverter.DoubleToInt64Bits(f.Value) is long l ? unchecked((ulong)l) : 0UL);
     }
@@ -206,7 +206,7 @@ public class DynamicValueArrowTests
             DynamicValue value = BuildValue(v.GetProperty("value"));
             string expectedHex = Str(v, "arrowHex");
 
-            string actualHex = Convert.ToHexString(DynamicValuesArrow.ToArrow(value)).ToLowerInvariant();
+            string actualHex = Convert.ToHexString(DynamicValuesArrow.ToArrowOk(value)).ToLowerInvariant();
             if (!string.Equals(actualHex, expectedHex, StringComparison.Ordinal))
             {
                 failures.Add($"{name}: encode hex mismatch");
@@ -236,7 +236,7 @@ public class DynamicValueArrowTests
             string name = Str(v, "name");
             DynamicValue value = BuildValue(v.GetProperty("value"));
 
-            byte[] cs = DynamicValuesArrow.ToArrow(value);
+            byte[] cs = DynamicValuesArrow.ToArrowOk(value);
             byte[] fs = FSharpToArrow(value);
 
             if (!cs.AsSpan().SequenceEqual(fs))
@@ -252,7 +252,7 @@ public class DynamicValueArrowTests
     // DynamicValue are distinct CLR types, so translate the tree across the boundary, then invoke
     // Zeta.Core.DynamicValueArrow.toArrow.
     private static byte[] FSharpToArrow(DynamicValue value) =>
-        Zeta.Core.DynamicValueArrow.toArrow(ToFSharp(value));
+        Zeta.Core.DynamicValueArrow.toArrowOk(ToFSharp(value));
 
     private static Zeta.Core.DynamicValue ToFSharp(DynamicValue v)
     {

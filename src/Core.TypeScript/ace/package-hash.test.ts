@@ -3,18 +3,18 @@ import { packageHash, safePackageHash } from "./package-hash.ts";
 import type { AcePackage } from "./store.ts";
 
 const base: AcePackage = {
-  manifest: { format_version: 1, name: "x", version: "1.0.0", content_hash: "sha256:deadbeef" },
+  manifest: { format_version: 1, name: "x", version: "1.0.0", content_hash: "blake3:deadbeef00000000000000000000000000000000000000000000000000000000" },
   files: { "a.txt": "a" },
 };
 
 describe("packageHash", () => {
-  test("sha256:<hex> form", () => {
-    expect(packageHash(base)).toMatch(/^sha256:[0-9a-f]{64}$/);
+  test("blake3:<hex> form", () => {
+    expect(packageHash(base)).toMatch(/^blake3:[0-9a-f]{64}$/);
   });
 
   test("deterministic + key-order-independent", () => {
     const reordered: AcePackage = {
-      manifest: { version: "1.0.0", content_hash: "sha256:deadbeef", name: "x", format_version: 1 },
+      manifest: { version: "1.0.0", content_hash: "blake3:deadbeef00000000000000000000000000000000000000000000000000000000", name: "x", format_version: 1 },
       files: { "a.txt": "a" },
     };
     expect(packageHash(reordered)).toBe(packageHash(base));
@@ -46,7 +46,7 @@ describe("packageHash", () => {
       manifest: { ...base.manifest, dependencies: [{ kind: "registry" as const, name: "dep", version: "^1.0.0" }] },
       files: base.files,
     };
-    expect(packageHash(withDeps)).toMatch(/^sha256:[0-9a-f]{64}$/);
+    expect(packageHash(withDeps)).toMatch(/^blake3:[0-9a-f]{64}$/);
     expect(packageHash(withDeps)).not.toBe(packageHash(base));
   });
 

@@ -2,29 +2,29 @@ import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { createHash } from "node:crypto";
+import { ContentHash256 } from "../blake3/blake3.ts";
 import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry, listRegistry, addRegistryEntry } from "./store.ts";
 
 describe("contentHash", () => {
-  test("sha256 of known bytes matches the sha256:<hex> form", () => {
-    // sha256("hello") = 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+  test("blake3 of known bytes matches the blake3:<hex> form", () => {
+    // blake3("hello") = ea8f163db38682925e4491c5e58d4bb3506ef8c14eb78a86e908c5624a67200f
     const h = contentHash(new TextEncoder().encode("hello"));
-    expect(h).toBe("sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824");
+    expect(h).toBe("blake3:ea8f163db38682925e4491c5e58d4bb3506ef8c14eb78a86e908c5624a67200f");
   });
 
-  test("empty input has the known empty-sha256", () => {
+  test("empty input has the known empty-blake3", () => {
     const h = contentHash(new Uint8Array(0));
-    expect(h).toBe("sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    expect(h).toBe("blake3:af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262");
   });
 });
 
 describe("installPackage", () => {
   // A package is a JSON file: { manifest: AceManifest, files: {relpath: contents} }.
-  // content_hash is the sha256 of the canonical JSON of `files`.
+  // content_hash is the blake3 of the canonical JSON of `files`.
   function makePkg(files: Record<string, string>, name = "demo") {
     const filesJson = JSON.stringify(files);
     const content_hash =
-      "sha256:" + createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
+      "blake3:" + ContentHash256.ofBytes(new TextEncoder().encode(filesJson)).toHex();
     return {
       pkg: { manifest: { format_version: 1, name, version: "1.0.0", content_hash }, files },
       content_hash,
@@ -100,11 +100,11 @@ describe("installPackage", () => {
   test("installPackage ignores a manifest's dependencies field (leaf back-compat)", () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const files = { "r.txt": "hi" };
-    const content_hash = "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const content_hash = "blake3:" + ContentHash256.ofBytes(new TextEncoder().encode(JSON.stringify(files))).toHex();
     const pkg = {
       manifest: {
         format_version: 1, name: "demo", version: "1.0.0", content_hash,
-        dependencies: [{ kind: "inline" as const, name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
+        dependencies: [{ kind: "inline" as const, name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "blake3:0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20" }],
       },
       files,
     };
@@ -257,8 +257,8 @@ describe("registry load + list", () => {
   test("loadRegistry unions bundled+user; user overrides on (name,version)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const b = join(dir, "b.json"); const u = join(dir, "u.json");
-    writeFileSync(b, JSON.stringify({ libfoo: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
-    writeFileSync(u, JSON.stringify({ libfoo: { "1.0.0": { url: "U", package_hash: "sha256:u" }, "2.0.0": { url: "U2", package_hash: "sha256:u2" } } }));
+    writeFileSync(b, JSON.stringify({ libfoo: { "1.0.0": { url: "B", package_hash: "blake3:b" } } }));
+    writeFileSync(u, JSON.stringify({ libfoo: { "1.0.0": { url: "U", package_hash: "blake3:u" }, "2.0.0": { url: "U2", package_hash: "blake3:u2" } } }));
     const m = loadRegistry(b, u);
     expect(m.get("libfoo")?.get("1.0.0")?.url).toBe("U");
     expect(m.get("libfoo")?.get("2.0.0")?.url).toBe("U2");
@@ -274,8 +274,8 @@ describe("registry load + list", () => {
   test("listRegistry reports source per entry, user overriding bundled", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const b = join(dir, "b.json"); const u = join(dir, "u.json");
-    writeFileSync(b, JSON.stringify({ a: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
-    writeFileSync(u, JSON.stringify({ a: { "1.0.0": { url: "U", package_hash: "sha256:u" } } }));
+    writeFileSync(b, JSON.stringify({ a: { "1.0.0": { url: "B", package_hash: "blake3:b" } } }));
+    writeFileSync(u, JSON.stringify({ a: { "1.0.0": { url: "U", package_hash: "blake3:u" } } }));
     const rows = listRegistry(b, u);
     const row = rows.find((r) => r.name === "a" && r.version === "1.0.0");
     expect(row?.source).toBe("user");
@@ -287,33 +287,33 @@ describe("addRegistryEntry", () => {
   test("creates the user file + dedups by (name,version)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const u = join(dir, "registry.json");
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "U", package_hash: "sha256:u" }, u).added).toBe(true);
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "U", package_hash: "sha256:u" }, u).added).toBe(false);
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "U", package_hash: "blake3:u" }, u).added).toBe(true);
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "U", package_hash: "blake3:u" }, u).added).toBe(false);
     expect(loadRegistry(join(dir, "missing.json"), u).get("libfoo")?.get("1.0.0")?.url).toBe("U");
   });
   test("a second version of the same name is added (not a dedup)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const u = join(dir, "registry.json");
-    addRegistryEntry("libfoo", "1.0.0", { url: "U1", package_hash: "sha256:u1" }, u);
-    expect(addRegistryEntry("libfoo", "2.0.0", { url: "U2", package_hash: "sha256:u2" }, u).added).toBe(true);
+    addRegistryEntry("libfoo", "1.0.0", { url: "U1", package_hash: "blake3:u1" }, u);
+    expect(addRegistryEntry("libfoo", "2.0.0", { url: "U2", package_hash: "blake3:u2" }, u).added).toBe(true);
     const m = loadRegistry(join(dir, "missing.json"), u);
     expect(m.get("libfoo")?.size).toBe(2);
   });
   test("re-add with DIFFERING url/hash overwrites stale pin (updated:true); identical re-add is a no-op (updated:false)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const u = join(dir, "registry.json");
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({ added: true, updated: false });
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({ added: false, updated: false }); // identical -> idempotent no-op
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "NEW", package_hash: "sha256:new" }, u)).toEqual({ added: false, updated: true }); // corrected -> overwrite stale pin
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "blake3:old" }, u)).toEqual({ added: true, updated: false });
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "blake3:old" }, u)).toEqual({ added: false, updated: false }); // identical -> idempotent no-op
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "NEW", package_hash: "blake3:new" }, u)).toEqual({ added: false, updated: true }); // corrected -> overwrite stale pin
     const e = loadRegistry(join(dir, "missing.json"), u).get("libfoo")?.get("1.0.0");
     expect(e?.url).toBe("NEW");
-    expect(e?.package_hash).toBe("sha256:new");
+    expect(e?.package_hash).toBe("blake3:new");
   });
   test("a __proto__ / constructor package name does not pollute Object.prototype", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const u = join(dir, "registry.json");
-    addRegistryEntry("__proto__", "9.9.9", { url: "U", package_hash: "sha256:u" }, u);
-    addRegistryEntry("constructor", "9.9.9", { url: "U2", package_hash: "sha256:u2" }, u);
+    addRegistryEntry("__proto__", "9.9.9", { url: "U", package_hash: "blake3:u" }, u);
+    addRegistryEntry("constructor", "9.9.9", { url: "U2", package_hash: "blake3:u2" }, u);
     // pollution would make every object carry a "9.9.9" property
     expect(({} as Record<string, unknown>)["9.9.9"]).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call({}, "9.9.9")).toBe(false);
@@ -325,7 +325,7 @@ describe("addRegistryEntry", () => {
     const parent = mkdtempSync(join(tmpdir(), "ace-regperm-"));
     const aceDir = join(parent, ".ace");
     const u = join(aceDir, "registry.json");
-    addRegistryEntry("a", "1.0.0", { url: "U", package_hash: "sha256:u" }, u);
+    addRegistryEntry("a", "1.0.0", { url: "U", package_hash: "blake3:u" }, u);
     expect(statSync(u).mode & 0o077).toBe(0);
     expect(statSync(aceDir).mode & 0o077).toBe(0);
   });

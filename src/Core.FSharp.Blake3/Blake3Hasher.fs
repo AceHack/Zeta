@@ -14,6 +14,12 @@ open Zeta.Core
 /// `ZSetMerkle.rootWith` / `ContentStore.create` unchanged.
 [<Sealed>]
 type Blake3Hasher() =
+    static do
+        ContentHash256.setOfBytesHook (fun bytes ->
+            let digest = Blake3.Hasher.Hash(ReadOnlySpan<byte> bytes)
+            { Raw = digest.AsSpan().ToArray() }
+        )
+
     interface IContentHasher with
         member _.Name = "blake3"
 

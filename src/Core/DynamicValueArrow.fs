@@ -73,7 +73,7 @@ open Zeta.Core
     /// the node table). DFS pre-order: the root is row 0 (parent -1, key null); an
     /// Array recurses its children in order (key null); an Object recurses each
     /// value child in order with its key set. Container nodes carry no scalar payload.
-    let toArrow (value: DynamicValue) : byte[] =
+    let toArrow (value: DynamicValue) : Result<byte[], EncodeError> =
         let kindB = Int8Array.Builder()
         let parentB = Int32Array.Builder()
         let keyB = StringArray.Builder()
@@ -143,57 +143,77 @@ open Zeta.Core
             byB.AppendNull() |> ignore
 
         // recurse: append `v` as a node with the given parent + optional key
-        let rec write (parent: int) (key: string option) (v: DynamicValue) =
-            match v with
-            | DynamicValue.Null ->
-                emit KindNull parent key |> ignore
-                fillNone ()
-            | DynamicValue.Bool b ->
-                emit KindBool parent key |> ignore
-                fillBool b
-            | DynamicValue.Int i ->
-                emit KindInt parent key |> ignore
-                fillInt i
-            | DynamicValue.Float f ->
-                emit KindFloat parent key |> ignore
-                fillFloat f
-            | DynamicValue.String s ->
-                emit KindString parent key |> ignore
-                fillString s
-            | DynamicValue.Bytes by ->
-                emit KindBytes parent key |> ignore
-                fillBytes by
-            | DynamicValue.Array items ->
-                let me = emit KindArray parent key
-                fillNone ()
+        let rec write (depth: int) (parent: int) (key: string option) (v: DynamicValue) : Result<unit, EncodeError> =
+            if depth > DynamicValue.maxNestingDepth then
+                Error EncodeError.NestingTooDeep
+            else
+                match v with
+                | DynamicValue.Null ->
+                    emit KindNull parent key |> ignore
+                    fillNone ()
+                    Ok()
+                | DynamicValue.Bool b ->
+                    emit KindBool parent key |> ignore
+                    fillBool b
+                    Ok()
+                | DynamicValue.Int i ->
+                    emit KindInt parent key |> ignore
+                    fillInt i
+                    Ok()
+                | DynamicValue.Float f ->
+                    emit KindFloat parent key |> ignore
+                    fillFloat f
+                    Ok()
+                | DynamicValue.String s ->
+                    emit KindString parent key |> ignore
+                    fillString s
+                    Ok()
+                | DynamicValue.Bytes by ->
+                    emit KindBytes parent key |> ignore
+                    fillBytes by
+                    Ok()
+                | DynamicValue.Array items ->
+                    let me = emit KindArray parent key
+                    fillNone ()
 
-                for item in items do
-                    write me None item
-            | DynamicValue.Object pairs ->
-                let me = emit KindObject parent key
-                fillNone ()
+                    items
+                    |> List.fold (fun acc item ->
+                        acc |> Result.bind (fun () -> write (depth + 1) me None item)
+                    ) (Ok())
+                | DynamicValue.Object pairs ->
+                    let me = emit KindObject parent key
+                    fillNone ()
 
-                for (k, value) in pairs do
-                    write me (Some k) value
+                    pairs
+                    |> List.fold (fun acc (k, value) ->
+                        acc |> Result.bind (fun () -> write (depth + 1) me (Some k) value)
+                    ) (Ok())
 
-        write -1 None value
+        match write 0 -1 None value with
+        | Error e -> Error e
+        | Ok() ->
+            let columns: IArrowArray[] =
+                [| kindB.Build()
+                   parentB.Build()
+                   keyB.Build()
+                   bB.Build()
+                   iB.Build()
+                   fB.Build()
+                   sB.Build()
+                   byB.Build() |]
 
-        let columns: IArrowArray[] =
-            [| kindB.Build()
-               parentB.Build()
-               keyB.Build()
-               bB.Build()
-               iB.Build()
-               fB.Build()
-               sB.Build()
-               byB.Build() |]
+            let batch = new RecordBatch(schema, columns, count)
+            use ms = new MemoryStream()
+            use writer = new ArrowStreamWriter(ms, schema)
+            writer.WriteRecordBatch batch
+            writer.WriteEnd()
+            Ok(ms.ToArray())
 
-        let batch = new RecordBatch(schema, columns, count)
-        use ms = new MemoryStream()
-        use writer = new ArrowStreamWriter(ms, schema)
-        writer.WriteRecordBatch batch
-        writer.WriteEnd()
-        ms.ToArray()
+    /// Exposes a way to cleanly unwrap the Arrow encode result for low-depth invariants in calling/test code.
+    let toArrowOk (value: DynamicValue) : byte[] =
+        match toArrow value with
+        | Ok bytes -> bytes
+        | Error e -> failwithf "toArrow failed on low-depth invariant: %A" e
 
     // ── DECODE ──────────────────────────────────────────────────────────────
 
@@ -258,74 +278,77 @@ open Zeta.Core
                         else
                             // build each node bottom-up via the children adjacency; recursion is
                             // bounded by n (a valid tree) and parent < child guarantees acyclicity.
-                            let rec build (row: int) : Result<DynamicValue, DecodeError> =
-                                let kindOpt = kindArr.GetValue row
-
-                                if not kindOpt.HasValue then
-                                    Error DecodeError.MalformedArrow
+                            let rec build (depth: int) (row: int) : Result<DynamicValue, DecodeError> =
+                                if depth > DynamicValue.maxNestingDepth then
+                                    Error DecodeError.NestingTooDeep
                                 else
-                                    match kindOpt.Value with
-                                    | k when k = KindNull -> Ok DynamicValue.Null
-                                    | k when k = KindBool ->
-                                        let v = bArr.GetValue row
-                                        if v.HasValue then Ok(DynamicValue.Bool v.Value) else Error DecodeError.MalformedArrow
-                                    | k when k = KindInt ->
-                                        let v = iArr.GetValue row
-                                        if v.HasValue then Ok(DynamicValue.Int v.Value) else Error DecodeError.MalformedArrow
-                                    | k when k = KindFloat ->
-                                        let v = fArr.GetValue row
-                                        if v.HasValue then Ok(DynamicValue.Float v.Value) else Error DecodeError.MalformedArrow
-                                    | k when k = KindString ->
-                                        let v = sArr.GetString row
-                                        if isNull v then Error DecodeError.MalformedArrow else Ok(DynamicValue.String v)
-                                    | k when k = KindBytes ->
-                                        if byArr.IsNull row then
-                                            Error DecodeError.MalformedArrow
-                                        else
-                                            let span = byArr.GetBytes row
-                                            Ok(DynamicValue.Bytes(ImmutableArray.Create<byte>(span.ToArray())))
-                                    | k when k = KindArray ->
-                                        let kids = children.[row]
-                                        let acc = ResizeArray<DynamicValue>(kids.Count)
-                                        let mutable e: DecodeError option = None
-                                        let mutable ci = 0
+                                    let kindOpt = kindArr.GetValue row
 
-                                        while ci < kids.Count && e.IsNone do
-                                            match build kids.[ci] with
-                                            | Ok child -> acc.Add child
-                                            | Error de -> e <- Some de
-
-                                            ci <- ci + 1
-
-                                        match e with
-                                        | Some de -> Error de
-                                        | None -> Ok(DynamicValue.Array(List.ofSeq acc))
-                                    | k when k = KindObject ->
-                                        let kids = children.[row]
-                                        let acc = ResizeArray<string * DynamicValue>(kids.Count)
-                                        let mutable e: DecodeError option = None
-                                        let mutable ci = 0
-
-                                        while ci < kids.Count && e.IsNone do
-                                            let childRow = kids.[ci]
-                                            let key = keyArr.GetString childRow
-
-                                            if isNull key then
-                                                // an Object entry value must carry its key
-                                                e <- Some DecodeError.MalformedArrow
+                                    if not kindOpt.HasValue then
+                                        Error DecodeError.MalformedArrow
+                                    else
+                                        match kindOpt.Value with
+                                        | k when k = KindNull -> Ok DynamicValue.Null
+                                        | k when k = KindBool ->
+                                            let v = bArr.GetValue row
+                                            if v.HasValue then Ok(DynamicValue.Bool v.Value) else Error DecodeError.MalformedArrow
+                                        | k when k = KindInt ->
+                                            let v = iArr.GetValue row
+                                            if v.HasValue then Ok(DynamicValue.Int v.Value) else Error DecodeError.MalformedArrow
+                                        | k when k = KindFloat ->
+                                            let v = fArr.GetValue row
+                                            if v.HasValue then Ok(DynamicValue.Float v.Value) else Error DecodeError.MalformedArrow
+                                        | k when k = KindString ->
+                                            let v = sArr.GetString row
+                                            if isNull v then Error DecodeError.MalformedArrow else Ok(DynamicValue.String v)
+                                        | k when k = KindBytes ->
+                                            if byArr.IsNull row then
+                                                Error DecodeError.MalformedArrow
                                             else
-                                                match build childRow with
-                                                | Ok child -> acc.Add(key, child)
+                                                let span = byArr.GetBytes row
+                                                Ok(DynamicValue.Bytes(ImmutableArray.Create<byte>(span.ToArray())))
+                                        | k when k = KindArray ->
+                                            let kids = children.[row]
+                                            let acc = ResizeArray<DynamicValue>(kids.Count)
+                                            let mutable e: DecodeError option = None
+                                            let mutable ci = 0
+
+                                            while ci < kids.Count && e.IsNone do
+                                                match build (depth + 1) kids.[ci] with
+                                                | Ok child -> acc.Add child
                                                 | Error de -> e <- Some de
 
-                                            ci <- ci + 1
+                                                ci <- ci + 1
 
-                                        match e with
-                                        | Some de -> Error de
-                                        | None -> Ok(DynamicValue.Object(List.ofSeq acc))
-                                    | _ -> Error DecodeError.MalformedArrow
+                                            match e with
+                                            | Some de -> Error de
+                                            | None -> Ok(DynamicValue.Array(List.ofSeq acc))
+                                        | k when k = KindObject ->
+                                            let kids = children.[row]
+                                            let acc = ResizeArray<string * DynamicValue>(kids.Count)
+                                            let mutable e: DecodeError option = None
+                                            let mutable ci = 0
 
-                            build 0
+                                            while ci < kids.Count && e.IsNone do
+                                                let childRow = kids.[ci]
+                                                let key = keyArr.GetString childRow
+
+                                                if isNull key then
+                                                    // an Object entry value must carry its key
+                                                    e <- Some DecodeError.MalformedArrow
+                                                else
+                                                    match build (depth + 1) childRow with
+                                                    | Ok child -> acc.Add(key, child)
+                                                    | Error de -> e <- Some de
+
+                                                ci <- ci + 1
+
+                                            match e with
+                                            | Some de -> Error de
+                                            | None -> Ok(DynamicValue.Object(List.ofSeq acc))
+                                        | _ -> Error DecodeError.MalformedArrow
+
+                            build 0 0
                 | _ -> Error DecodeError.MalformedArrow
         with _ ->
             Error DecodeError.MalformedArrow

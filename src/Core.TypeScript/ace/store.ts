@@ -1,7 +1,6 @@
 import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
-import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 export type AceDependency =
@@ -28,9 +27,11 @@ export function defaultStorePath(): string {
   return join(home, ".ace", "store");
 }
 
-/** Content hash of raw bytes, in the `sha256:<hex>` form Ace manifests use. */
+import { ContentHash256 } from "../blake3/blake3";
+
+/** Content hash of raw bytes, in the `blake3:<hex>` form Ace manifests use. */
 export function contentHash(bytes: Uint8Array): string {
-  return "sha256:" + createHash("sha256").update(bytes).digest("hex");
+  return "blake3:" + ContentHash256.ofBytes(bytes).toHex();
 }
 
 export function listInstalled(storePath: string): InstalledPackage[] {

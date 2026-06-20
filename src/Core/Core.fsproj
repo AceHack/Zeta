@@ -108,6 +108,7 @@
     <Compile Include="NovelMathExt.fs" />
     <Compile Include="FastCdc.fs" />
     <Compile Include="Merkle.fs" />
+    <Compile Include="ContentHash256.fs" />
     <Compile Include="ZSetMerkle.fs" />
     <Compile Include="ContentHasher.fs" />
     <Compile Include="ContentStore.fs" />

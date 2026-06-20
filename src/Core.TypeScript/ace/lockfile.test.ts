@@ -63,8 +63,8 @@ import { serializeLockfile, parseLockfile, type Lockfile } from "./lockfile.ts";
 describe("serializeLockfile / parseLockfile", () => {
   const lf: Lockfile = {
     format_version: 1,
-    root: { name: "root", version: "1.0.0", package_hash: "sha256:r" },
-    nodes: [{ name: "A", version: "1.2.0", url: "u/A", package_hash: "sha256:a" }],
+    root: { name: "root", version: "1.0.0", package_hash: "blake3:r" },
+    nodes: [{ name: "A", version: "1.2.0", url: "u/A", package_hash: "blake3:a" }],
   };
   test("round-trips", () => {
     const parsed = parseLockfile(serializeLockfile(lf));
@@ -104,8 +104,8 @@ import { lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 describe("lockfilesEqual", () => {
   const base: Lockfile = {
     format_version: 1,
-    root: { name: "root", version: "1.0.0", package_hash: "sha256:r" },
-    nodes: [{ name: "A", version: "1.2.0", url: "u/A", package_hash: "sha256:a" }],
+    root: { name: "root", version: "1.0.0", package_hash: "blake3:r" },
+    nodes: [{ name: "A", version: "1.2.0", url: "u/A", package_hash: "blake3:a" }],
   };
   test("true for identical (incl. key-order-insensitive via canonical)", () => {
     const clone: Lockfile = JSON.parse(JSON.stringify(base));
@@ -116,7 +116,7 @@ describe("lockfilesEqual", () => {
     expect(lockfilesEqual(base, diff)).toBe(false);
   });
   test("false when root differs", () => {
-    const diff: Lockfile = { ...base, root: { ...base.root, package_hash: "sha256:other" } };
+    const diff: Lockfile = { ...base, root: { ...base.root, package_hash: "blake3:other" } };
     expect(lockfilesEqual(base, diff)).toBe(false);
   });
 });

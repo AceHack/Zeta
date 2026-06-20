@@ -93,6 +93,7 @@ where
     fn encode(&self, z: &ZSet<K>) -> Vec<u8> {
         let dv = to_dynamic_value(&self.key_enc, z);
         dv.to_canonical_cbor()
+            .expect("ZSet serialization should never exceed depth limit")
     }
 
     fn decode(&self, bytes: &[u8]) -> Result<ZSet<K>, String> {

@@ -9,7 +9,7 @@ import { signIndex, verifyIndexSignature } from "./index-signature.ts";
 import type { AceManifest } from "./store.ts";
 
 function baseManifest(overrides: Partial<AceManifest> = {}): AceManifest {
-  return { format_version: 1, name: "demo", version: "1.0.0", content_hash: "sha256:abc", ...overrides };
+  return { format_version: 1, name: "demo", version: "1.0.0", content_hash: "blake3:abc", ...overrides };
 }
 
 describe("keyId", () => {
@@ -47,7 +47,7 @@ describe("sign + verify", () => {
   test("tampered content_hash -> bad-signature", () => {
     const kp = generateKeypair();
     const m = baseManifest();
-    const signed = { ...m, signature: signManifest(m, kp.privatePem), content_hash: "sha256:TAMPERED" } as AceManifest;
+    const signed = { ...m, signature: signManifest(m, kp.privatePem), content_hash: "blake3:TAMPERED" } as AceManifest;
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     const r = verifySignature(signed, trust);
     expect(r.ok).toBe(false);
@@ -102,7 +102,7 @@ describe("publicKeyInfoFromPrivatePem", () => {
   test("the derived public_key verifies an index this key signed", () => {
     const kp = generateKeypair();
     const content = { format_version: 1 as const, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
-      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "blake3:aa" } } } };
     const sig = signIndex(content, kp.privatePem);
     const info = publicKeyInfoFromPrivatePem(kp.privatePem);
     const trust = new Map([[info.keyId, { public_key: info.public_key }]]);

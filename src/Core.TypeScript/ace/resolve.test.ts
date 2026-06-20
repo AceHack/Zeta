@@ -6,7 +6,7 @@ import { contentHash } from "./store.ts";
 import type { RegistryEntry } from "./store.ts";
 
 const mk = (name: string): AcePackage => ({
-  manifest: { format_version: 1, name, version: "1.0.0", content_hash: "sha256:aaa" },
+  manifest: { format_version: 1, name, version: "1.0.0", content_hash: "blake3:aaa" },
   files: { "a.txt": "x" },
 });
 
@@ -97,7 +97,7 @@ describe("resolve — conflicts", () => {
     if (!r.ok) expect(r.reason).toBe("version-skew");
   });
   test("root-involving skew (root@1 -> A -> root@2) refuses (root seeded)", async () => {
-    const root2: AcePackage = { manifest: { format_version: 1, name: "root", version: "2.0.0", content_hash: "sha256:zzz" }, files: { "r.txt": "two" } };
+    const root2: AcePackage = { manifest: { format_version: 1, name: "root", version: "2.0.0", content_hash: "blake3:zzz" }, files: { "r.txt": "two" } };
     const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ kind: "inline" as const, name: "root", version: "2.0.0", url: "http://e/root2", package_hash: packageHash(root2) }] }, files: { "a.txt": "a" } };
     const root = pkgOf("root", { "r.txt": "one" }, [{ pkg: A, url: "http://e/A" }]);
     const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root2": root2 }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
@@ -137,7 +137,7 @@ describe("resolve — verification", () => {
   test("pin-mismatch (edge package_hash != fetched) refuses", async () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
-    (root.manifest.dependencies as any)[0] = { kind: "inline" as const, ...root.manifest.dependencies![0], package_hash: "sha256:wrongwrong" };
+    (root.manifest.dependencies as any)[0] = { kind: "inline" as const, ...root.manifest.dependencies![0], package_hash: "blake3:wrongwrong" };
     const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("pin-mismatch");
@@ -218,7 +218,7 @@ describe("resolve — registry deps", () => {
   });
   test("registry-miss (name/version absent) refuses", async () => {
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "9.9.9")] }, files: { "r.txt": "r" } };
-    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "sha256:x" } } });
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "blake3:x" } } });
     // solved has D->9.9.9 (satisfies the edge range "9.9.9" exactly), but 9.9.9 is absent from the registry
     const r = await resolve(root, fetchOf({}), NO_TRUST, reg, new Map([["D", "9.9.9"]]), { allowNoSignature: true });
     expect(r.ok).toBe(false);
@@ -239,7 +239,7 @@ describe("resolve — registry deps", () => {
   test("registry dep whose registry package_hash mismatches the fetched pkg -> pin-mismatch", async () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] }, files: { "r.txt": "r" } };
-    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "sha256:wrong" } } });
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "blake3:wrong" } } });
     const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("pin-mismatch");
@@ -270,7 +270,7 @@ describe("resolve — solved-map registry edges", () => {
   });
   test("registry name absent from solved map → unsatisfiable", async () => {
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "registry" as const, name: "D", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
-    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: "sha256:x" }]])]]);
+    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: "blake3:x" }]])]]);
     const r = await resolve(root, fetchOf({}), NO_TRUST, reg, new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("unsatisfiable");
@@ -406,7 +406,7 @@ describe("resolve — revoked / quarantined gates (Task B)", () => {
 describe("resolve — malformed root refuses cleanly (no escaped throw)", () => {
   test("float manifest field on root -> invalid-package at path [root]", async () => {
     const badRoot = {
-      manifest: { format_version: 1, name: "root", version: "1.0.0", content_hash: "sha256:aaa", bogus: 1.5 },
+      manifest: { format_version: 1, name: "root", version: "1.0.0", content_hash: "blake3:aaa", bogus: 1.5 },
       files: { "a.txt": "x" },
     } as unknown as AcePackage;
     const r = await resolve(badRoot, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
@@ -418,7 +418,7 @@ describe("resolve — malformed root refuses cleanly (no escaped throw)", () => 
   });
   test("lone-surrogate manifest field on root -> invalid-package", async () => {
     const badRoot = {
-      manifest: { format_version: 1, name: "root", version: "1.0.0", content_hash: "sha256:aaa", bogus: "\uD800" },
+      manifest: { format_version: 1, name: "root", version: "1.0.0", content_hash: "blake3:aaa", bogus: "\uD800" },
       files: { "a.txt": "x" },
     } as unknown as AcePackage;
     const r = await resolve(badRoot, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });

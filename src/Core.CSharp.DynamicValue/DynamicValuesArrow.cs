@@ -65,13 +65,17 @@ public static class DynamicValuesArrow
     /// set. Container nodes carry no scalar payload. <see cref="DynamicValue.Float"/> preserves the
     /// exact IEEE-754 bit pattern (NaN / -0.0 / ±Inf).</summary>
     /// <param name="value">the value to encode.</param>
-    /// <returns>the Arrow IPC stream bytes.</returns>
-    public static byte[] ToArrow(DynamicValue value)
+    /// <returns>the Result containing the Arrow IPC stream bytes or an EncodeError.</returns>
+    public static Result<byte[], EncodeError> ToArrow(DynamicValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
         var enc = new NodeEncoder();
-        enc.Write(parent: -1, key: null, value);
+        var err = enc.Write(parent: -1, key: null, value, 0);
+        if (err is EncodeError e)
+        {
+            return new Result<byte[], EncodeError>.Err(e);
+        }
         RecordBatch batch = enc.BuildBatch();
 
         using var ms = new MemoryStream();
@@ -81,7 +85,22 @@ public static class DynamicValuesArrow
             writer.WriteEnd();
         }
 
-        return ms.ToArray();
+        return new Result<byte[], EncodeError>.Ok(ms.ToArray());
+    }
+
+    /// <summary>Exposes a way to cleanly unwrap the Arrow encode result for low-depth invariants in calling/test code.</summary>
+    public static byte[] ToArrowOk(DynamicValue value)
+    {
+        var result = ToArrow(value);
+        if (result is Result<byte[], EncodeError>.Ok ok)
+        {
+            return ok.Value;
+        }
+        else
+        {
+            var err = (Result<byte[], EncodeError>.Err)result;
+            throw new InvalidOperationException($"ToArrow failed on low-depth invariant: {err.Error}");
+        }
     }
 
     /// <summary>Deserializes Arrow IPC stream bytes back into a <see cref="DynamicValue"/> — the
@@ -114,7 +133,7 @@ public static class DynamicValuesArrow
             }
 
             var decoder = new NodeDecoder(cols, children);
-            return decoder.Build(0);
+            return decoder.Build(0, 0);
         }
         catch (Exception)
         {
@@ -182,8 +201,13 @@ public static class DynamicValuesArrow
         private readonly BinaryArray.Builder _by = new();
         private int _count;
 
-        public void Write(int parent, string? key, DynamicValue v)
+        public EncodeError? Write(int parent, string? key, DynamicValue v, int depth)
         {
+            if (depth > DynamicValues.MaxNestingDepth)
+            {
+                return EncodeError.NestingTooDeep;
+            }
+
             switch (v)
             {
                 case DynamicValue.Null:
@@ -211,15 +235,15 @@ public static class DynamicValuesArrow
                     FillBytes(by.Value);
                     break;
                 case DynamicValue.Array arr:
-                    WriteArray(parent, key, arr);
-                    break;
+                    return WriteArray(parent, key, arr, depth);
                 case DynamicValue.Object obj:
-                    WriteObject(parent, key, obj);
-                    break;
+                    return WriteObject(parent, key, obj, depth);
                 default:
                     throw new InvalidOperationException(
                         $"ToArrow reached a non-locked variant ({v.Type}); the hierarchy is closed");
             }
+
+            return null;
         }
 
         public RecordBatch BuildBatch()
@@ -232,24 +256,34 @@ public static class DynamicValuesArrow
             return new RecordBatch(NodeSchema, columns, _count);
         }
 
-        private void WriteArray(int parent, string? key, DynamicValue.Array arr)
+        private EncodeError? WriteArray(int parent, string? key, DynamicValue.Array arr, int depth)
         {
             int me = Emit(KindArray, parent, key);
             FillNone();
             foreach (DynamicValue item in arr.Items)
             {
-                Write(me, null, item);
+                var err = Write(me, null, item, depth + 1);
+                if (err != null)
+                {
+                    return err;
+                }
             }
+            return null;
         }
 
-        private void WriteObject(int parent, string? key, DynamicValue.Object obj)
+        private EncodeError? WriteObject(int parent, string? key, DynamicValue.Object obj, int depth)
         {
             int me = Emit(KindObject, parent, key);
             FillNone();
             foreach (KeyValuePair<string, DynamicValue> pair in obj.Pairs)
             {
-                Write(me, pair.Key, pair.Value);
+                var err = Write(me, pair.Key, pair.Value, depth + 1);
+                if (err != null)
+                {
+                    return err;
+                }
             }
+            return null;
         }
 
         // Emit a row's header (kind/parent/key); returns its row index (the count BEFORE the append).
@@ -392,8 +426,13 @@ public static class DynamicValuesArrow
             _children = children;
         }
 
-        public Result<DynamicValue, DecodeError> Build(int row)
+        public Result<DynamicValue, DecodeError> Build(int row, int depth)
         {
+            if (depth > DynamicValues.MaxNestingDepth)
+            {
+                return new Result<DynamicValue, DecodeError>.Err(DecodeError.NestingTooDeep);
+            }
+
             if (_cols.Kind.GetValue(row) is not sbyte kind)
             {
                 return Malformed();
@@ -407,8 +446,8 @@ public static class DynamicValuesArrow
                 KindFloat => _cols.Float.GetValue(row) is double fv ? Ok(new DynamicValue.Float(fv)) : Malformed(),
                 KindString => BuildString(row),
                 KindBytes => BuildBytes(row),
-                KindArray => BuildArray(row),
-                KindObject => BuildObject(row),
+                KindArray => BuildArray(row, depth),
+                KindObject => BuildObject(row, depth),
                 _ => Malformed(),
             };
         }
@@ -430,13 +469,13 @@ public static class DynamicValuesArrow
             return Ok(new DynamicValue.Bytes(span.ToArray().ToImmutableArray()));
         }
 
-        private Result<DynamicValue, DecodeError> BuildArray(int row)
+        private Result<DynamicValue, DecodeError> BuildArray(int row, int depth)
         {
             List<int> kids = _children[row];
             var acc = ImmutableArray.CreateBuilder<DynamicValue>(kids.Count);
             foreach (int childRow in kids)
             {
-                Result<DynamicValue, DecodeError> child = Build(childRow);
+                Result<DynamicValue, DecodeError> child = Build(childRow, depth + 1);
                 if (child is not Result<DynamicValue, DecodeError>.Ok ok)
                 {
                     return child;
@@ -448,7 +487,7 @@ public static class DynamicValuesArrow
             return Ok(new DynamicValue.Array(acc.ToImmutable()));
         }
 
-        private Result<DynamicValue, DecodeError> BuildObject(int row)
+        private Result<DynamicValue, DecodeError> BuildObject(int row, int depth)
         {
             List<int> kids = _children[row];
             var acc = ImmutableArray.CreateBuilder<KeyValuePair<string, DynamicValue>>(kids.Count);
@@ -461,7 +500,7 @@ public static class DynamicValuesArrow
                     return Malformed();
                 }
 
-                Result<DynamicValue, DecodeError> child = Build(childRow);
+                Result<DynamicValue, DecodeError> child = Build(childRow, depth + 1);
                 if (child is not Result<DynamicValue, DecodeError>.Ok ok)
                 {
                     return child;

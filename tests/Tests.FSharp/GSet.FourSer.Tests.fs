@@ -49,7 +49,7 @@ let private jsonRT (dv: DynamicValue) : DynamicValue option =
     | Error _ -> None
 
 let private cborRT (dv: DynamicValue) : DynamicValue option =
-    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor dv) with
+    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCborOk dv) with
     | Ok d -> Some d
     | Error _ -> None
 
@@ -119,7 +119,7 @@ let ``G-Set × 4-ser: canonical-order means the four formats are byte-stable per
 // "tied into the Arrow (columnar memory) layer" = the Arrow proof leg. ──
 
 let private arrowRT (dv: DynamicValue) : DynamicValue option =
-    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow dv) with
+    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk dv) with
     | Ok d -> Some d
     | Error _ -> None
 

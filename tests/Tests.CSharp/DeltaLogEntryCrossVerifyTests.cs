@@ -85,7 +85,7 @@ public sealed class DeltaLogEntryCrossVerifyTests
             var dv = EntryToDynamicValue(seq, delta, captured);
 
             // encode → must equal the seed hex (the cross-language byte-lock)
-            var actualHex = Convert.ToHexString(DynamicValues.ToCanonicalCbor(dv)).ToLowerInvariant();
+            var actualHex = Convert.ToHexString(DynamicValues.ToCanonicalCborOk(dv)).ToLowerInvariant();
             Assert.True(string.Equals(expectedHex, actualHex, StringComparison.Ordinal),
                 $"{name}: expected {expectedHex} but got {actualHex}");
 
@@ -93,7 +93,7 @@ public sealed class DeltaLogEntryCrossVerifyTests
             switch (DynamicValues.FromCanonicalCbor(Convert.FromHexString(expectedHex)))
             {
                 case Result<DynamicValue, DecodeError>.Ok ok:
-                    var reHex = Convert.ToHexString(DynamicValues.ToCanonicalCbor(ok.Value)).ToLowerInvariant();
+                    var reHex = Convert.ToHexString(DynamicValues.ToCanonicalCborOk(ok.Value)).ToLowerInvariant();
                     Assert.True(string.Equals(expectedHex, reHex, StringComparison.Ordinal),
                         $"{name}: round-trip mismatch (re-encoded {reHex})");
                     break;

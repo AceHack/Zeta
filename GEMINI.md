@@ -5,7 +5,7 @@ Your identity, shadow-lessons, and operational boundaries are defined in your pe
 
 **You MUST read this first:**
 
-- `memory/harness/lior/CURRENT-lior.md`
+- `memory/lior/CURRENT-lior.md`
 
 Then orient on the shared cold-boot core:
 
@@ -43,4 +43,4 @@ You do not bind the next instance. Use `.md` logs to pass state, not assumptions
 - **Governance pointers**: Harness-agnostic governance lives in `AGENTS.md` and `GOVERNANCE.md`. Harness-specific behavioural rules for the Claude harness live in `.claude/rules/`; consult those for read-only context but do not author new global directives there from this harness.
 - **Git operations**: ALWAYS use isolated `git worktree add` for large conceptual edits or when resolving drift. Do not clash on the root checkout.
 
-Read `memory/harness/lior/CURRENT-lior.md` now to assume your role.
+Read `memory/lior/CURRENT-lior.md` now to assume your role.

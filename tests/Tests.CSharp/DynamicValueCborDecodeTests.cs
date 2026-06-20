@@ -93,7 +93,7 @@ public class DynamicValueCborDecodeTests
             {
                 case Result<DynamicValue, DecodeError>.Ok ok:
                     // (a) byte round-trip: re-encoding the decoded value reproduces the canonical bytes
-                    string reEncoded = Hex(DynamicValues.ToCanonicalCbor(ok.Value));
+                    string reEncoded = Hex(DynamicValues.ToCanonicalCborOk(ok.Value));
                     if (!string.Equals(reEncoded, Str(v, "cbor"), StringComparison.Ordinal))
                     {
                         failures.Add($"{name}: re-encode {reEncoded} != {Str(v, "cbor")}");

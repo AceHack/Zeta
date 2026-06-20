@@ -90,7 +90,8 @@ describe("canonicalBytes", () => {
   test("= encode(canonicalJson(toTagged(x)))", () => {
     const x = { b: 2, a: "hi", c: [1, 2] };
     const expected = canonicalJson(toTagged(x));
-    expect(bytesToStr(canonicalBytes(x))).toBe(expected);
+    expect(expected.ok).toBe(true);
+    expect(bytesToStr(canonicalBytes(x))).toBe(expected.ok ? expected.value : "");
   });
 
   test("produces sorted-key minified canonical JSON", () => {
@@ -113,7 +114,11 @@ describe("canonicalBytes", () => {
     const json = bytesToStr(canonicalBytes(x));
     const back = fromCanonicalJson(json);
     expect(back.ok).toBe(true);
-    if (back.ok) expect(canonicalJson(back.value)).toBe(json);
+    if (back.ok) {
+      const enc = canonicalJson(back.value);
+      expect(enc.ok).toBe(true);
+      if (enc.ok) expect(enc.value).toBe(json);
+    }
   });
 
   test("determinism: key insertion order does not change the bytes", () => {

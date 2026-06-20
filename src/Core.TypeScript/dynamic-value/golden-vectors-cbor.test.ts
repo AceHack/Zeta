@@ -17,7 +17,11 @@ interface Vector {
   note?: string;
 }
 
-const floatHex = (x: number): string => toHex(canonicalCbor({ t: "float", v: f64ToBitsHex(x) }));
+const floatHex = (x: number): string => {
+  const enc = canonicalCbor({ t: "float", v: f64ToBitsHex(x) });
+  if (!enc.ok) throw new Error("Encode failed: " + enc.error);
+  return toHex(enc.value);
+};
 
 const seed = vectors as unknown as { primitive: string; format: string; vectors: Vector[] };
 
@@ -29,7 +33,9 @@ test("seed identifies as DynamicValue canonical-cbor", () => {
 
 for (const v of seed.vectors) {
   test(`cbor byte-lock: ${v.name}`, () => {
-    expect(toHex(canonicalCbor(v.value))).toBe(v.cbor);
+    const enc = canonicalCbor(v.value);
+    expect(enc.ok).toBe(true);
+    expect(toHex(enc.ok ? enc.value : [])).toBe(v.cbor);
   });
 }
 

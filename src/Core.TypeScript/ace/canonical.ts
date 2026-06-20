@@ -74,5 +74,9 @@ const ENCODER = new TextEncoder();
 
 /** Ace's canonical byte form: shared canonical-JSON over the sorted-key `Tagged` tree. */
 export function canonicalBytes(value: unknown): Uint8Array {
-  return ENCODER.encode(canonicalJson(toTagged(value)));
+  const enc = canonicalJson(toTagged(value));
+  if (!enc.ok) {
+    throw new Error(`canonicalBytes failed: ${enc.error}`);
+  }
+  return ENCODER.encode(enc.value);
 }

@@ -71,7 +71,7 @@ let private jsonRoundtrips (dv: DynamicValue) : bool =
     | Error _ -> false
 
 let private cborRoundtrips (dv: DynamicValue) : bool =
-    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor dv) with
+    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCborOk dv) with
     | Ok d -> d = dv
     | Error _ -> false
 
@@ -87,7 +87,7 @@ let private arrowRoundtrips (dv: DynamicValue) : bool =
     // Arrow is the columnar leg (shredded node-table); round-trip, not byte-lock
     // (Arrow IPC is not byte-identical across language libs — its rigor is
     // round-trip + cross-language semantic interop).
-    match Zeta.Core.DynamicValueArrow.fromArrow (Zeta.Core.DynamicValueArrow.toArrow dv) with
+    match Zeta.Core.DynamicValueArrow.fromArrow (Zeta.Core.DynamicValueArrow.toArrowOk dv) with
     | Ok d -> d = dv
     | Error _ -> false
 

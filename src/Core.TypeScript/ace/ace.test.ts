@@ -279,7 +279,7 @@ describe("listInstalled", () => {
       format_version: 1,
       name: "test-package",
       version: "1.0.0",
-      content_hash: "sha256:aabbccdd",
+      content_hash: "blake3:aabbccdd",
       description: "A test DLC",
     };
     writeFileSync(join(pkgDir, "manifest.json"), JSON.stringify(manifest));
@@ -318,7 +318,7 @@ describe("listInstalled", () => {
     mkdirSync(pkgDir);
     writeFileSync(
       join(pkgDir, "manifest.json"),
-      JSON.stringify({ format_version: 1, name: "x", content_hash: "sha256:abc" }),
+      JSON.stringify({ format_version: 1, name: "x", content_hash: "blake3:abc" }),
     );
 
     const result = listInstalled(dir);
@@ -336,7 +336,7 @@ describe("listInstalled", () => {
           format_version: 1,
           name: pair[1],
           version: "1.0.0",
-          content_hash: `sha256:${pair[0]}`,
+          content_hash: `blake3:${pair[0]}`,
         }),
       );
     }
@@ -379,7 +379,7 @@ describe("main", () => {
         format_version: 1,
         name: "demo-dlc",
         version: "0.1.0",
-        content_hash: "sha256:test",
+        content_hash: "blake3:test",
         description: "Demo package",
       }),
     );
@@ -449,7 +449,7 @@ describe("main", () => {
   test("sign of a package with mismatched content_hash exits 1", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-sign-"));
     const pkg = {
-      manifest: { format_version: 1, name: "t", version: "1.0.0", content_hash: "sha256:WRONG" },
+      manifest: { format_version: 1, name: "t", version: "1.0.0", content_hash: "blake3:WRONG" },
       files: { "a.txt": "hello" },
     };
     const pkgPath = join(dir, "bad.json");
@@ -541,7 +541,7 @@ describe("main", () => {
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Write a package with tampered content_hash (after signing)
     const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
-    pkg.manifest.content_hash = "sha256:TAMPERED"; // but signature was over original
+    pkg.manifest.content_hash = "blake3:TAMPERED"; // but signature was over original
     const tamperedPath = join(dir, "tampered.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
     // Trust the key (so we get past untrusted-key, reach bad-signature)
@@ -632,7 +632,7 @@ describe("main", () => {
   test("e2e: install a small graph (root->A->B) installs all three", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
     writeFileSync(join(dir,"B.json"), JSON.stringify(B));
     const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }), dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "a.txt":"a" } };
@@ -647,7 +647,7 @@ describe("main", () => {
   test("atomic: a graph with an unsafe-path node installs NOTHING (preflight)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const bad = { manifest: { format_version:1, name:"BAD", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
     writeFileSync(join(dir,"BAD.json"), JSON.stringify(bad));
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind: "inline" as const, name:"BAD", version:"1.0.0", url: join(dir,"BAD.json"), package_hash: packageHash(bad as any) }] }, files: { "r.txt":"r" } };
@@ -660,10 +660,10 @@ describe("main", () => {
   test("atomic: a graph whose ROOT has a bad content_hash installs NOTHING", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
     writeFileSync(join(dir,"B.json"), JSON.stringify(B));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: "sha256:deadbeef", dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "r.txt":"r" } };
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: "blake3:deadbeef", dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "r.txt":"r" } };
     writeFileSync(join(dir,"root.json"), JSON.stringify(root));
     const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
@@ -673,7 +673,7 @@ describe("main", () => {
   test("store-collision: two distinct packages with identical files install NOTHING", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const sharedFiles = { "same.txt": "identical" };
     const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
     const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
@@ -695,7 +695,7 @@ describe("main", () => {
 describe("registry commands", () => {
   test("ace registry add fetches + computes hash + stores; registry list shows it", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
     const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
     expect(await main(["registry", "add", "D", "1.0.0", dPath])).toBe(0);
@@ -706,7 +706,7 @@ describe("registry commands", () => {
 
   test("registry add normalizes a relative local path to absolute (cwd-independent install)", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string, string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const D = { manifest: { format_version: 1, name: "Drel", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
     const absPath = join(dir, "Drel.json");
     writeFileSync(absPath, JSON.stringify(D));
@@ -724,7 +724,7 @@ describe("registry commands", () => {
   });
   test("registry add refuses a package whose identity != the CLI name/version with exit 65", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string, string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const D = { manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
     const p = join(dir, "D.json");
     writeFileSync(p, JSON.stringify(D));
@@ -735,13 +735,13 @@ describe("registry commands", () => {
     const p = join(dir, "mal.json");
     // Well-formed SHAPE + matching identity, but a float manifest field makes packageHash throw;
     // safePackageHash must turn that into a clean exit 65, not the generic ace: fatal: catch-all.
-    writeFileSync(p, JSON.stringify({ manifest: { format_version: 1, name: "M", version: "1.0.0", content_hash: "sha256:deadbeef", bogus: 1.5 }, files: { "a.txt": "x" } }));
+    writeFileSync(p, JSON.stringify({ manifest: { format_version: 1, name: "M", version: "1.0.0", content_hash: "blake3:deadbeef", bogus: 1.5 }, files: { "a.txt": "x" } }));
     expect(await main(["registry", "add", "M", "1.0.0", p])).toBe(65);
   });
   test("e2e: install a root with a registry dep resolves via the registry", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
     const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
     await main(["registry", "add", "D", "1.0.0", dPath]);
@@ -755,7 +755,7 @@ describe("registry commands", () => {
   test("e2e: graph install writes ./ace.lock pinning the installed deps", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
     const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
     await main(["registry", "add", "A", "1.0.0", aPath]);
@@ -777,7 +777,7 @@ describe("registry commands", () => {
   test("e2e: install with a registry dep missing from the registry -> exit 1, store empty", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"MISSING", version:"1.0.0" }] }, files: { "r.txt":"r" } };
     const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
@@ -789,7 +789,7 @@ describe("registry commands", () => {
 // ---- frozen lockfile replay (slice 5.3) ----
 
 describe("install --frozen (slice 5.3)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
 
   // Builds an inline root->A graph in a temp dir, installs it once with --lockfile to
   // generate the lock (the lock's node url points at the temp A.json — registry never used),
@@ -964,7 +964,7 @@ describe("install --frozen (slice 5.3)", () => {
     // so the value is never compared. (packageHash now excludes the signature and throws on a
     // manifest-less payload, so it can no longer be called on `malformed` to derive the pin —
     // a placeholder hash exercises the same guard.) slice 8.2.
-    const aHash = "sha256:" + "0".repeat(64);
+    const aHash = "blake3:" + "0".repeat(64);
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
     const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
     const lock = {
@@ -988,7 +988,7 @@ describe("install — semver ranges (slice 5.2)", () => {
   test("e2e: ranged registry dep resolves to newest satisfying version", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const mkA = (v: string) => ({ manifest: { format_version:1, name:"A", version:v, content_hash: h({ "a.txt":v }) }, files: { "a.txt":v } });
     for (const v of ["1.0.0","1.5.0","1.9.0"]) { const p = join(dir, `A-${v}.json`); writeFileSync(p, JSON.stringify(mkA(v))); await main(["registry","add","A",v,p]); }
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
@@ -1001,7 +1001,7 @@ describe("install — semver ranges (slice 5.2)", () => {
   test("e2e: unsatisfiable range → exit 1, store empty", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
     const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A)); await main(["registry","add","A","1.0.0",ap]);
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:">=2.0.0" }] }, files: { "r.txt":"r" } };
@@ -1013,7 +1013,7 @@ describe("install — semver ranges (slice 5.2)", () => {
   test("e2e: inline-only graph still installs (empty registry, no registry-miss)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
     const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A));
     const aHash = packageHash(A as any);
@@ -1026,7 +1026,7 @@ describe("install — semver ranges (slice 5.2)", () => {
   test("e2e: --print-resolution prints the solved graph", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const A = { manifest: { format_version:1, name:"A", version:"1.2.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
     const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A)); await main(["registry","add","A","1.2.0",ap]);
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
@@ -1036,7 +1036,7 @@ describe("install — semver ranges (slice 5.2)", () => {
 });
 
 describe("install --locked graph (slice 5.4)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
 
   test("--locked installs when the on-disk lock matches a fresh solve", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-locked-pkgs-"));
@@ -1088,7 +1088,7 @@ describe("install --locked graph (slice 5.4)", () => {
 });
 
 describe("leaf-install lockfiles (slice 5.4)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
 
   // Builds a no-dependency (leaf) package file in a temp dir; returns { dir, pkg, pkgPath }.
   function leafFixture(files: Record<string,string> = { "leaf.txt": "v1" }) {
@@ -1175,7 +1175,7 @@ describe("parseArgs — update", () => {
 });
 
 describe("ace update (slice 5.4)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string,string>) => contentHash(new TextEncoder().encode(JSON.stringify(files)));
 
   test("update rewrites ./ace.lock to the freshly-solved graph + installs NOTHING", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-update-pkgs-"));
@@ -1513,7 +1513,7 @@ describe("ace registry publish (slice 6.1)", () => {
     writeSignedPkg(pkgDir, "good", "1.0.0");
     // a package whose content_hash does NOT match files
     const kp = generateKeypair();
-    const m = { format_version: 1, name: "bad", version: "1.0.0", content_hash: "sha256:deadbeef" };
+    const m = { format_version: 1, name: "bad", version: "1.0.0", content_hash: "blake3:deadbeef" };
     const bad = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files: { "bad.txt": "x" } };
     writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(bad));
     const keyPath = join(tempHome, "bh.pem"); writeFileSync(keyPath, idxKp.privatePem);

@@ -89,6 +89,7 @@ version = "0.1.0"
 dependencies = [
  "blake3",
  "zeta-core-merkle",
+ "zeta-core-yaml",
 ]
 
 [[package]]
@@ -97,3 +98,7 @@ version = "0.1.0"
 dependencies = [
  "xxhash-rust",
 ]
+
+[[package]]
+name = "zeta-core-yaml"
+version = "0.1.0"

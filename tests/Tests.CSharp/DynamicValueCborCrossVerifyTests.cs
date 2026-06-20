@@ -98,7 +98,7 @@ public class DynamicValueCborCrossVerifyTests
             string name = Str(v, "name");
             DynamicValue value = BuildValue(v.GetProperty("value"));
             string expected = Str(v, "cbor");
-            string actual = Hex(DynamicValues.ToCanonicalCbor(value));
+            string actual = Hex(DynamicValues.ToCanonicalCborOk(value));
             if (!string.Equals(actual, expected, StringComparison.Ordinal))
             {
                 failures.Add($"{name}: expected {expected} but got {actual}");
@@ -124,21 +124,21 @@ public class DynamicValueCborCrossVerifyTests
     [InlineData(-4.0, "f9c400")]
     [InlineData(-4.1, "fbc010666666666666")]
     public void FloatMatchesRfc8949AppendixA(double value, string expectedHex) =>
-        Assert.Equal(expectedHex, Hex(DynamicValues.ToCanonicalCbor(new DynamicValue.Float(value))));
+        Assert.Equal(expectedHex, Hex(DynamicValues.ToCanonicalCborOk(new DynamicValue.Float(value))));
 
     [Fact]
     public void PositiveInfinityIsHalf() =>
-        Assert.Equal("f97c00", Hex(DynamicValues.ToCanonicalCbor(new DynamicValue.Float(double.PositiveInfinity))));
+        Assert.Equal("f97c00", Hex(DynamicValues.ToCanonicalCborOk(new DynamicValue.Float(double.PositiveInfinity))));
 
     [Fact]
     public void NegativeInfinityIsHalf() =>
-        Assert.Equal("f9fc00", Hex(DynamicValues.ToCanonicalCbor(new DynamicValue.Float(double.NegativeInfinity))));
+        Assert.Equal("f9fc00", Hex(DynamicValues.ToCanonicalCborOk(new DynamicValue.Float(double.NegativeInfinity))));
 
     [Fact]
     public void NanCanonicalizesToQuietHalf() =>
-        Assert.Equal("f97e00", Hex(DynamicValues.ToCanonicalCbor(new DynamicValue.Float(double.NaN))));
+        Assert.Equal("f97e00", Hex(DynamicValues.ToCanonicalCborOk(new DynamicValue.Float(double.NaN))));
 
     [Fact]
     public void NegativeZeroPreservesSign() =>
-        Assert.Equal("f98000", Hex(DynamicValues.ToCanonicalCbor(new DynamicValue.Float(-0.0))));
+        Assert.Equal("f98000", Hex(DynamicValues.ToCanonicalCborOk(new DynamicValue.Float(-0.0))));
 }

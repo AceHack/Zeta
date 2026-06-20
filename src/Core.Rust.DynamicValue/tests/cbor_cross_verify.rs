@@ -105,7 +105,7 @@ fn cbor_cross_verify_matches_golden_vectors() {
         let name = vec["name"].as_str().expect("name string");
         let value = build_value(&vec["value"]);
         let expected = vec["cbor"].as_str().expect("cbor string");
-        let actual = hex(&value.to_canonical_cbor());
+        let actual = hex(&value.to_canonical_cbor().expect("cbor encode failed"));
         if actual != expected {
             failures.push(format!("{name}: expected {expected} but got {actual}"));
         }

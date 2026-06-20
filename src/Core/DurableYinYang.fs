@@ -58,7 +58,7 @@ module DurableYinYang =
     /// ZSet/delta-log key directly; canonical CBOR is deterministic + byte-locked, so the hex
     /// string is a faithful, ordering-stable surrogate.)
     let encodeInput (dv: DynamicValue) : string =
-        System.Convert.ToHexString(DynamicValue.toCanonicalCbor dv)
+        System.Convert.ToHexString(DynamicValue.toCanonicalCborOk dv)
 
     /// Decode an input hex string back to its `DynamicValue`. Undecodable input is genuine
     /// corruption of our own encoding ⇒ `invalidArg` (matches `CborDeltaCodec.Decode`).
@@ -131,7 +131,7 @@ module DurableYinYang =
 
     /// Encode a soft input (a `SoftValue`) as a canonical-CBOR hex string for the delta-log event.
     let encodeSoftInput (sv: SoftValue.SoftValue) : string =
-        System.Convert.ToHexString(DynamicValue.toCanonicalCbor (softToDynamicValue sv))
+        System.Convert.ToHexString(DynamicValue.toCanonicalCborOk (softToDynamicValue sv))
 
     /// Decode a soft-input hex string back to a `SoftValue`. Undecodable ⇒ `invalidArg`.
     let decodeSoftInput (s: string) : SoftValue.SoftValue =

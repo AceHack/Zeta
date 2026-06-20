@@ -66,7 +66,11 @@ export class CborDeltaCodec<K> implements IDeltaCodec<K> {
 
   encode(z: ZSet<K>): number[] {
     const dv = toDynamicValue(this.keyEnc, z);
-    return canonicalCbor(dv);
+    const enc = canonicalCbor(dv);
+    if (!enc.ok) {
+      throw new Error(`CborDeltaCodec.encode: failed to encode: ${enc.error}`);
+    }
+    return enc.value;
   }
 
   decode(bytes: number[]): ZSet<K> {

@@ -42,7 +42,7 @@ let jsonRT (dv: DynamicValue) : DynamicValue option =
 
 /// CBOR round-trip.
 let cborRT (dv: DynamicValue) : DynamicValue option =
-    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor dv) with
+    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCborOk dv) with
     | Ok d -> Some d
     | Error _ -> None
 
@@ -61,7 +61,7 @@ let yamlRT (dv: DynamicValue) : DynamicValue option =
 
 /// Arrow round-trip (shredded node-table IPC).
 let arrowRT (dv: DynamicValue) : DynamicValue option =
-    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow dv) with
+    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrowOk dv) with
     | Ok d -> Some d
     | Error _ -> None
 

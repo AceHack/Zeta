@@ -110,7 +110,7 @@ type JsonDvArb() =
 [<Property(Arbitrary = [| typeof<CborDvArb> |])>]
 let ``CANONICAL DynamicValue: CBOR round-trip — fromCanonicalCbor ∘ toCanonicalCbor = id (8/8 shapes)``
     (v: DynamicValue) =
-    DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor v) = Ok v
+    DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCborOk v) = Ok v
 
 [<Property(Arbitrary = [| typeof<JsonDvArb> |])>]
 let ``CANONICAL DynamicValue: JSON round-trip — fromCanonicalJson ∘ toCanonicalJson = id (6/8 shapes)``
@@ -126,7 +126,7 @@ let ``CANONICAL DynamicValue: canonical CBOR encoding is INJECTIVE (distinct val
     // a corollary of round-trip, stated explicitly: the 4-language byte-lock is
     // a FAITHFUL identity only if encode is injective — no two distinct values
     // share canonical bytes (else the lock would equate things that differ).
-    (DynamicValue.toCanonicalCbor a = DynamicValue.toCanonicalCbor b) = (a = b)
+    (DynamicValue.toCanonicalCborOk a = DynamicValue.toCanonicalCborOk b) = (a = b)
 
 // ── XML is now TOTAL (8/8) like CBOR — same round-trip LAW + injectivity ──
 // (XML float = 16-hex IEEE-754 f64 bits, bytes = lowercase hex; generated strings
@@ -152,7 +152,7 @@ let ``CANONICAL DynamicValue: canonical XML encoding is INJECTIVE (distinct valu
 let ``CANONICAL DynamicValue: non-finite floats (NaN, ±inf, -0.0) CBOR + XML round-trip`` () =
     for f in [ nan; infinity; -infinity; -0.0; 0.0 ] do
         let v = DynamicValue.Float f
-        Assert.Equal(Ok v, DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor v))
+        Assert.Equal(Ok v, DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCborOk v))
         match DynamicValue.toCanonicalXml v with
         | Ok xml -> Assert.Equal(Ok v, DynamicValue.fromCanonicalXml xml)
         | Error e -> failwithf "XML encode failed for non-finite float %f: %A" f e
@@ -177,7 +177,7 @@ let ``CANONICAL DynamicValue: every CBOR seed vector is a fixed point of encode�
             let bytes = System.Convert.FromHexString seedHex
             match DynamicValue.fromCanonicalCbor bytes with
             | Ok value ->
-                let reHex = hex (DynamicValue.toCanonicalCbor value)
+                let reHex = hex (DynamicValue.toCanonicalCborOk value)
                 if reHex = seedHex then None
                 else Some(sprintf "%s: re-encode %s ≠ seed %s" name reHex seedHex)
             | Error e -> Some(sprintf "%s: seed bytes failed to decode: %A" name e))

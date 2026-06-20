@@ -493,7 +493,7 @@ module DynamicValue =
     /// `Encoding.UTF8.GetBytes` emits U+FFFD for it (encoder-defined). Unlike the
     /// JSON encoder, CBOR text cannot `\u`-escape it back to bijectivity; that
     /// asymmetry is inherent to CBOR's UTF-8 text requirement, not an encoder choice.
-    let toCanonicalCbor (value: DynamicValue) : byte[] =
+    let toCanonicalCbor (value: DynamicValue) : Result<byte[], EncodeError> =
         let buf = System.Collections.Generic.List<byte>()
 
         // CBOR initial byte (major type in the top 3 bits) + preferred/shortest argument.
@@ -569,31 +569,56 @@ module DynamicValue =
                     for shift in [ 56; 48; 40; 32; 24; 16; 8; 0 ] do
                         buf.Add(byte (bits64 >>> shift))
 
-        let rec write (v: DynamicValue) =
-            match v with
-            | DynamicValue.Null -> buf.Add 0xf6uy
-            | DynamicValue.Bool b -> buf.Add(if b then 0xf5uy else 0xf4uy)
-            | DynamicValue.Int i -> writeInt i
-            | DynamicValue.Float f -> writeFloat f
-            | DynamicValue.String s -> writeText s
-            | DynamicValue.Bytes bytes ->
-                let b = if bytes.IsDefault then ImmutableArray<byte>.Empty else bytes
-                writeHead 2 (uint64 b.Length)
-                buf.AddRange(b)
-            | DynamicValue.Array items ->
-                writeHead 4 (uint64 (List.length items))
+        let rec write (depth: int) (v: DynamicValue) : Result<unit, EncodeError> =
+            if depth > maxNestingDepth then
+                Error EncodeError.NestingTooDeep
+            else
+                match v with
+                | DynamicValue.Null -> 
+                    buf.Add 0xf6uy
+                    Ok()
+                | DynamicValue.Bool b -> 
+                    buf.Add(if b then 0xf5uy else 0xf4uy)
+                    Ok()
+                | DynamicValue.Int i -> 
+                    writeInt i
+                    Ok()
+                | DynamicValue.Float f -> 
+                    writeFloat f
+                    Ok()
+                | DynamicValue.String s -> 
+                    writeText s
+                    Ok()
+                | DynamicValue.Bytes bytes ->
+                    let b = if bytes.IsDefault then ImmutableArray<byte>.Empty else bytes
+                    writeHead 2 (uint64 b.Length)
+                    buf.AddRange(b)
+                    Ok()
+                | DynamicValue.Array items ->
+                    writeHead 4 (uint64 (List.length items))
+                    items
+                    |> List.fold
+                        (fun acc item -> acc |> Result.bind (fun () -> write (depth + 1) item))
+                        (Ok())
+                | DynamicValue.Object pairs ->
+                    writeHead 5 (uint64 (List.length pairs))
+                    pairs
+                    |> List.fold
+                        (fun acc (k, valVal) ->
+                            acc
+                            |> Result.bind (fun () ->
+                                writeText k
+                                write (depth + 1) valVal))
+                        (Ok())
 
-                for item in items do
-                    write item
-            | DynamicValue.Object pairs ->
-                writeHead 5 (uint64 (List.length pairs))
+        write 0 value
+        |> Result.map (fun () -> buf.ToArray())
 
-                for (k, value) in pairs do
-                    writeText k
-                    write value
-
-        write value
-        buf.ToArray()
+    /// Exposes a way to cleanly unwrap the CBOR encode result for low-depth invariants in calling code.
+    let toCanonicalCborOk (value: DynamicValue) : byte[] =
+        match toCanonicalCbor value with
+        | Ok bytes -> bytes
+        | Error e -> failwithf "toCanonicalCbor failed on low-depth invariant: %A" e
 
     /// Decode canonical CBOR (RFC 8949) bytes back into a `DynamicValue` — the inverse
     /// of `toCanonicalCbor`, completing the byte↔value bijection for all eight shapes.
@@ -636,8 +661,10 @@ module DynamicValue =
                 elif pos + n > bytes.Length then Error DecodeError.UnexpectedEnd
                 else Ok(readBE n)
 
-        let rec readValue () : Result<DynamicValue, DecodeError> =
-            if pos >= bytes.Length then
+        let rec readValue (depth: int) : Result<DynamicValue, DecodeError> =
+            if depth > maxNestingDepth then
+                Error DecodeError.NestingTooDeep
+            elif pos >= bytes.Length then
                 Error DecodeError.UnexpectedEnd
             else
                 let initial = int bytes.[pos]
@@ -664,8 +691,8 @@ module DynamicValue =
                                 Ok(DynamicValue.Int(-1L - int64 arg))
                         | 2 -> readByteString arg
                         | 3 -> readTextString arg
-                        | 4 -> readArray arg
-                        | 5 -> readMap arg
+                        | 4 -> readArray arg depth
+                        | 5 -> readMap arg depth
                         | _ -> Error DecodeError.Unsupported
 
         // major 7: simple values (false/true/null) + IEEE floats; float16 via System.Half
@@ -711,7 +738,7 @@ module DynamicValue =
                 Ok(DynamicValue.String s)
 
         // each item is >= 1 byte, so a count beyond the remaining bytes is truncated
-        and readArray (arg: uint64) : Result<DynamicValue, DecodeError> =
+        and readArray (arg: uint64) (depth: int) : Result<DynamicValue, DecodeError> =
             if arg > uint64 (bytes.Length - pos) then
                 Error DecodeError.UnexpectedEnd
             else
@@ -719,13 +746,13 @@ module DynamicValue =
                     if i >= int arg then
                         Ok(DynamicValue.Array(List.rev acc))
                     else
-                        match readValue () with
+                        match readValue (depth + 1) with
                         | Error e -> Error e
                         | Ok item -> loop (i + 1) (item :: acc)
 
                 loop 0 []
 
-        and readMap (arg: uint64) : Result<DynamicValue, DecodeError> =
+        and readMap (arg: uint64) (depth: int) : Result<DynamicValue, DecodeError> =
             if arg > uint64 (bytes.Length - pos) then
                 Error DecodeError.UnexpectedEnd
             else
@@ -733,26 +760,25 @@ module DynamicValue =
                     if i >= int arg then
                         Ok(DynamicValue.Object(List.rev acc))
                     else
-                        match readValue () with
+                        match readValue (depth + 1) with
                         | Error e -> Error e
                         | Ok(DynamicValue.String k) ->
-                            match readValue () with
+                            match readValue (depth + 1) with
                             | Error e -> Error e
                             | Ok v -> loop (i + 1) ((k, v) :: acc)
                         | Ok _ -> Error DecodeError.NonTextKey
 
                 loop 0 []
 
-        match readValue () with
+        match readValue 0 with
         | Error e -> Error e
         | Ok value ->
             if pos <> bytes.Length then
                 Error DecodeError.TrailingData
-            // canonical fixed-point: canonical bytes are exactly those `b` with toCanonicalCbor(decode b) = b
-            elif toCanonicalCbor value <> bytes then
-                Error DecodeError.NonCanonical
             else
-                Ok value
+                match toCanonicalCbor value with
+                | Ok enc when enc = bytes -> Ok value
+                | _ -> Error DecodeError.NonCanonical
 
     /// Decodes canonical JSON text into a `DynamicValue` — the inverse of `toCanonicalJson`,
     /// completing the text↔value round-trip for the six locked shapes (Float + Bytes are DEFERRED

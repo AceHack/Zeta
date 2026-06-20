@@ -106,7 +106,7 @@ fn delta_log_entry_cross_verify_matches_golden_vectors() {
         let value = build_entry(&vec["entry"]);
 
         // encode -> must equal the seed hex (the cross-language byte-lock)
-        let actual = hex(&value.to_canonical_cbor());
+        let actual = hex(&value.to_canonical_cbor().expect("cbor encode failed"));
         if actual != expected {
             failures.push(format!(
                 "{name}: encode expected {expected} but got {actual}"
@@ -117,7 +117,7 @@ fn delta_log_entry_cross_verify_matches_golden_vectors() {
         // decode(seed hex) -> re-encode -> must equal the seed hex (round-trip stability)
         match DynamicValue::from_canonical_cbor(&decode_hex(expected)) {
             Ok(decoded) => {
-                let re = hex(&decoded.to_canonical_cbor());
+                let re = hex(&decoded.to_canonical_cbor().expect("cbor encode failed"));
                 if re != expected {
                     failures.push(format!("{name}: round-trip mismatch (re-encoded {re})"));
                 }

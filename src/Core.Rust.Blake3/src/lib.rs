@@ -34,6 +34,22 @@ impl ContentHash256 {
         Self { raw: hash.into() }
     }
 
+    /// Parse a 32-byte BLAKE3-256 digest from its hex string representation (allows optional 'blake3:' prefix).
+    pub fn of_hex(hex: &str) -> Self {
+        let clean = hex.strip_prefix("blake3:").unwrap_or(hex);
+        assert_eq!(
+            clean.len(),
+            64,
+            "BLAKE3-256 hex string must be exactly 64 characters."
+        );
+        let mut raw = [0u8; 32];
+        for i in 0..32 {
+            let s = &clean[i * 2..i * 2 + 2];
+            raw[i] = u8::from_str_radix(s, 16).expect("invalid hex byte");
+        }
+        Self { raw }
+    }
+
     /// Derive the compact ContentAddress128 (MerkleHash) from the full digest.
     pub fn to_content_address_128(&self) -> MerkleHash {
         let lo = u64::from_le_bytes(self.raw[0..8].try_into().unwrap());

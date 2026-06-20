@@ -10,8 +10,16 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { loadWorld, readEventActions } from "./load-world";
+import { loadWorld as loadWorldReal, readEventActions } from "./load-world";
 import { observe, type BacklogItem, type NextAction } from "./observe";
+import { defaultNodeSession } from "./first-session";
+
+function loadWorld(opts: Parameters<typeof loadWorldReal>[0]): ReturnType<typeof loadWorldReal> {
+  return loadWorldReal({
+    nodeSession: { session: { ...defaultNodeSession(), complete: true } },
+    ...opts,
+  });
+}
 
 let dir: string;
 beforeEach(() => {

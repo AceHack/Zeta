@@ -56,7 +56,7 @@ type CborDeltaCodec<'K when 'K : comparison>
     (keyEnc: 'K -> DynamicValue, keyDec: DynamicValue -> 'K) =
     interface IDeltaCodec<'K> with
         member _.Encode z =
-            ZSetDynamic.toDynamicValue keyEnc z |> DynamicValue.toCanonicalCbor
+            ZSetDynamic.toDynamicValue keyEnc z |> DynamicValue.toCanonicalCborOk
         member _.Decode bytes =
             match DynamicValue.fromCanonicalCbor bytes with
             | Ok dv -> ZSetDynamic.ofDynamicValue keyDec dv
@@ -130,7 +130,7 @@ module DeltaLogEntryCodec =
 
     /// Canonical CBOR (the filesystem default — speed; complete 8/8 shapes, full round-trip).
     let encodeCbor (keyEnc: 'K -> DynamicValue) (entry: DeltaLogEntry<'K>) : byte[] =
-        DeltaLogEntryDynamic.toDynamicValue keyEnc entry |> DynamicValue.toCanonicalCbor
+        DeltaLogEntryDynamic.toDynamicValue keyEnc entry |> DynamicValue.toCanonicalCborOk
 
     let decodeCbor (keyDec: DynamicValue -> 'K) (bytes: byte[]) : DeltaLogEntry<'K> =
         match DynamicValue.fromCanonicalCbor bytes with

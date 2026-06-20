@@ -124,7 +124,7 @@ module DurableDiplomacy =
 
     /// Encode an agreement as a canonical-CBOR hex string — the delta-log event.
     let encodeAgreement (a: Diplomacy.Profile) (b: Diplomacy.Profile) (o: Diplomacy.NegotiationOutcome) : string =
-        System.Convert.ToHexString(DynamicValue.toCanonicalCbor (agreementToDv a b o))
+        System.Convert.ToHexString(DynamicValue.toCanonicalCborOk (agreementToDv a b o))
 
     /// Decode an agreement event. Undecodable ⇒ `invalidArg` (corruption of our own encoding).
     let decodeAgreement (s: string) : Diplomacy.Profile * Diplomacy.Profile * Diplomacy.NegotiationOutcome =

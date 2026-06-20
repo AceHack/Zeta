@@ -32,31 +32,13 @@
 // locks (see cbor.ts). XML wraps them in typed elements; no bit conversion here, so
 // the float/bytes byte-lock is inherited from the tagged form (exact; all float
 // corners — NaN/Inf/-0.0/subnormals — are distinct bit patterns).
-import type { Tagged } from "./cbor";
-
-export type { Tagged };
-
-export type DecodeError =
-  | "UnexpectedEnd"
-  | "TrailingData"
-  | "Unsupported"
-  | "IntegerOverflow"
-  | "NonCanonical"
-  | "MalformedXml"
-  // The input's nesting exceeds MAX_NESTING_DEPTH — a resource-safety guard mirrored across
-  // F#/C#/Rust/TS, rejecting a depth-bomb as data rather than overflowing the stack.
-  | "NestingTooDeep";
-
-export type DecodeResult = { ok: true; value: Tagged } | { ok: false; error: DecodeError };
+import { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH } from "./types";
+export { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH };
 
 const I64_MAX = 9223372036854775807n;
 const I64_MIN = -9223372036854775808n;
 
-// Maximum input nesting depth the recursive decoder walks before failing `NestingTooDeep`. A
-// fixed resource-safety bound, NOT part of the value domain: far above any realistic value, so
-// golden vectors and real data are unaffected while a depth-bomb is rejected before it overflows
-// the stack. Mirrored across F#/C#/Rust/TS.
-const MAX_NESTING_DEPTH = 256;
+// Maximum input nesting depth the recursive decoder walks before failing `NestingTooDeep` (imported from types).
 
 // A char is XML-1.0 legal as content iff it is \t \n \r or >= 0x20 (and not a lone
 // surrogate / 0xFFFE / 0xFFFF — left to the host string, which holds valid UTF-16).
@@ -120,31 +102,54 @@ function escapeAttr(s: string): string {
   return out;
 }
 
-export function canonicalXml(n: Tagged): string {
+class XmlEncodeErrorCarrier extends Error {
+  readonly error: EncodeError;
+  constructor(error: EncodeError) {
+    super(error);
+    this.error = error;
+  }
+}
+
+function writeXml(n: Tagged, depth: number): string {
+  if (depth > MAX_NESTING_DEPTH) {
+    throw new XmlEncodeErrorCarrier("NestingTooDeep");
+  }
   switch (n.t) {
     case "null":
       return "<null/>";
     case "bool":
       return n.v ? "<bool>true</bool>" : "<bool>false</bool>";
     case "int":
-      // re-canonicalize via BigInt: validates no leading zeros / '+' and is int64-exact
       return "<int>" + BigInt(n.v).toString() + "</int>";
     case "str":
       return "<str>" + escapeText(n.v) + "</str>";
     case "float":
-      // n.v is the canonical 16-hex IEEE-754 f64 bit pattern (from the tagged form)
       return "<float>" + n.v + "</float>";
     case "bytes":
-      // n.v is canonical lowercase hex (empty bytes -> <bytes></bytes>)
       return "<bytes>" + n.v + "</bytes>";
     case "arr":
-      return "<arr>" + n.v.map(canonicalXml).join("") + "</arr>";
+      return "<arr>" + n.v.map(item => writeXml(item, depth + 1)).join("") + "</arr>";
     case "obj":
       return (
         "<obj>" +
-        n.v.map(([k, val]) => '<e k="' + escapeAttr(k) + '">' + canonicalXml(val) + "</e>").join("") +
+        n.v.map(([k, val]) => '<e k="' + escapeAttr(k) + '">' + writeXml(val, depth + 1) + "</e>").join("") +
         "</obj>"
       );
+  }
+}
+
+export function canonicalXml(n: Tagged): EncodeResult {
+  try {
+    const value = writeXml(n, 0);
+    return { ok: true, value };
+  } catch (e) {
+    if (e instanceof XmlEncodeError) {
+      return { ok: false, error: "NonRepresentable" };
+    }
+    if (e instanceof XmlEncodeErrorCarrier) {
+      return { ok: false, error: e.error };
+    }
+    throw e;
   }
 }
 
@@ -338,11 +343,13 @@ export function fromCanonicalXml(xml: string): DecodeResult {
     // canonical fixed-point: a canonical string re-encodes to itself; anything else
     // (self-closing empties, &#x9; vs &#9;, raw whitespace, unknown entities) is
     // well-formed-ish but not canonical.
-    if (canonicalXml(value) !== xml) return { ok: false, error: "NonCanonical" };
+    const enc = canonicalXml(value);
+    if (!enc.ok || enc.value !== xml) return { ok: false, error: "NonCanonical" };
     return { ok: true, value };
   } catch (e) {
     if (e instanceof XmlDecodeError) return { ok: false, error: e.error };
     if (e instanceof XmlEncodeError) return { ok: false, error: "NonCanonical" };
+    if (e instanceof XmlEncodeErrorCarrier) return { ok: false, error: "NonCanonical" };
     throw e;
   }
 }

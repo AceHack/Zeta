@@ -10,6 +10,9 @@ publish = false
 blake3 = "1.5.1"
 zeta-core-merkle = { path = "../Core.Rust.Merkle" }
 
+[dev-dependencies]
+zeta-core-yaml = { path = "../Core.Rust.Yaml" }
+
 [lints.rust]
 unsafe_code = "forbid"
 missing_docs = "warn"

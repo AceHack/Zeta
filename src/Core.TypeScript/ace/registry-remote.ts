@@ -107,10 +107,12 @@ function metaPath(url: string): string {
   return join(registryCacheDir(), createHash("sha256").update(url).digest("hex") + ".json");
 }
 function blobPath(contentHash: string): string {
-  return join(registryCacheDir(), "blobs", contentHash.replace("sha256:", "") + ".json");
+  return join(registryCacheDir(), "blobs", contentHash.replace("sha256:", "").replace("blake3:", "") + ".json");
 }
+import { ContentHash256 } from "../blake3/blake3.ts";
+
 function indexContentHash(body: string): string {
-  return "sha256:" + createHash("sha256").update(body).digest("hex");
+  return "blake3:" + ContentHash256.ofBytes(new TextEncoder().encode(body)).toHex();
 }
 
 export function readCache(url: string): { meta: CacheMeta; body: string } | null {

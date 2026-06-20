@@ -9,26 +9,8 @@
 // so f64↔f16 is hand-rolled (mirroring the Rust oracle), with the encoder gated on an exact
 // round-trip and the decoder gated on a fixed-point canonical check.
 
-export type Tagged =
-  | { t: "null" }
-  | { t: "bool"; v: boolean }
-  | { t: "int"; v: string }
-  | { t: "float"; v: string }
-  | { t: "str"; v: string }
-  | { t: "bytes"; v: string }
-  | { t: "arr"; v: Tagged[] }
-  | { t: "obj"; v: [string, Tagged][] };
-
-// Why canonical CBOR bytes could not be decoded. Mirrors the C#/F#/Rust DecodeError.
-export type DecodeError =
-  | "UnexpectedEnd"
-  | "TrailingData"
-  | "Unsupported"
-  | "IntegerOverflow"
-  | "NonTextKey"
-  | "NonCanonical";
-
-export type DecodeResult = { ok: true; value: Tagged } | { ok: false; error: DecodeError };
+import { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH } from "./types";
+export { type Tagged, type EncodeError, type DecodeError, type EncodeResult, type DecodeResult, MAX_NESTING_DEPTH };
 
 // --- bit helpers (DataView is the only portable way to get IEEE bit patterns in JS) ---
 
@@ -170,7 +152,18 @@ function cborFloat(out: number[], v: number): void {
 
 const utf8 = (s: string): Uint8Array => new TextEncoder().encode(s);
 
-function writeCbor(out: number[], n: Tagged): void {
+class CborEncodeError extends Error {
+  readonly error: EncodeError;
+  constructor(error: EncodeError) {
+    super(error);
+    this.error = error;
+  }
+}
+
+function writeCbor(out: number[], n: Tagged, depth: number): void {
+  if (depth > MAX_NESTING_DEPTH) {
+    throw new CborEncodeError("NestingTooDeep");
+  }
   switch (n.t) {
     case "null":
       out.push(0xf6);
@@ -199,7 +192,7 @@ function writeCbor(out: number[], n: Tagged): void {
     }
     case "arr":
       cborHead(out, 4, BigInt(n.v.length));
-      for (const it of n.v) writeCbor(out, it);
+      for (const it of n.v) writeCbor(out, it, depth + 1);
       break;
     case "obj":
       cborHead(out, 5, BigInt(n.v.length));
@@ -207,16 +200,23 @@ function writeCbor(out: number[], n: Tagged): void {
         const kb = utf8(k);
         cborHead(out, 3, BigInt(kb.length));
         for (const x of kb) out.push(x);
-        writeCbor(out, val);
+        writeCbor(out, val, depth + 1);
       }
       break;
   }
 }
 
-export function canonicalCbor(n: Tagged): number[] {
-  const out: number[] = [];
-  writeCbor(out, n);
-  return out;
+export function canonicalCbor(n: Tagged): EncodeResult<number[]> {
+  try {
+    const out: number[] = [];
+    writeCbor(out, n, 0);
+    return { ok: true, value: out };
+  } catch (e) {
+    if (e instanceof CborEncodeError) {
+      return { ok: false, error: e.error };
+    }
+    throw e;
+  }
 }
 
 export const toHex = (bytes: number[]): string => bytes.map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -355,25 +355,26 @@ export function fromCanonicalCbor(bytes: number[]): DecodeResult {
     return { t: "str", v: s };
   };
 
-  const readArray = (arg: bigint): Tagged => {
+  const readArray = (arg: bigint, depth: number): Tagged => {
     if (arg > remaining()) return fail("UnexpectedEnd");
     const items: Tagged[] = [];
-    for (let i = 0n; i < arg; i++) items.push(readValue());
+    for (let i = 0n; i < arg; i++) items.push(readValue(depth + 1));
     return { t: "arr", v: items };
   };
 
-  const readMap = (arg: bigint): Tagged => {
+  const readMap = (arg: bigint, depth: number): Tagged => {
     if (arg > remaining()) return fail("UnexpectedEnd");
     const pairs: [string, Tagged][] = [];
     for (let i = 0n; i < arg; i++) {
-      const key = readValue();
+      const key = readValue(depth + 1);
       if (key.t !== "str") return fail("NonTextKey");
-      pairs.push([key.v, readValue()]);
+      pairs.push([key.v, readValue(depth + 1)]);
     }
     return { t: "obj", v: pairs };
   };
 
-  function readValue(): Tagged {
+  function readValue(depth: number): Tagged {
+    if (depth > MAX_NESTING_DEPTH) fail("NestingTooDeep");
     need(1);
     const initial = bytes[pos] ?? 0;
     pos += 1;
@@ -392,19 +393,20 @@ export function fromCanonicalCbor(bytes: number[]): DecodeResult {
       case 3:
         return readTextString(arg);
       case 4:
-        return readArray(arg);
+        return readArray(arg, depth);
       case 5:
-        return readMap(arg);
+        return readMap(arg, depth);
       default:
         return fail("Unsupported"); // major 6 = tags
     }
   }
 
   try {
-    const value = readValue();
+    const value = readValue(0);
     if (pos !== bytes.length) return { ok: false, error: "TrailingData" };
     // canonical fixed-point: canonical bytes are exactly those `b` with canonicalCbor(decode b) == b
-    if (!bytesEqual(canonicalCbor(value), bytes)) return { ok: false, error: "NonCanonical" };
+    const enc = canonicalCbor(value);
+    if (!enc.ok || !bytesEqual(enc.value, bytes)) return { ok: false, error: "NonCanonical" };
     return { ok: true, value };
   } catch (e) {
     if (e instanceof CborDecodeError) return { ok: false, error: e.error };

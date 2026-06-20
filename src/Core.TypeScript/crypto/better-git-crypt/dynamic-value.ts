@@ -62,7 +62,11 @@ export function encryptValue(
   self: SelfKeys,
   extraRecipients: readonly RecipientKey[] = [],
 ): EncryptValueResult {
-  const inner = Uint8Array.from(canonicalCbor(value));
+  const enc = canonicalCbor(value);
+  if (!enc.ok) {
+    throw new Error(`encryptValue: canonicalCbor failed: ${enc.error}`);
+  }
+  const inner = Uint8Array.from(enc.value);
   return encryptBytes(inner, self, extraRecipients);
 }
 
