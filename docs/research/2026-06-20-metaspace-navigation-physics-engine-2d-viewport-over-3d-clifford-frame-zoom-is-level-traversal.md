@@ -140,6 +140,48 @@ with no exit door would be the Vault-Tec cage, not a home.
 a vault's rooms are a **door-graph** (nodes = rooms, door-edges). Clicking a door = the frame-change
 transition, hit-tested via `Viewport.unproject` (the shipped projection floor).
 
+## The vertical axis IS attention ↔ uncertainty (the two founding axioms)
+
+(Aaron, 2026-06-20): *"recurse up, terminate down at the room. up = new uncertainty; down = the
+attention needed to identify and reduce — if not privacy-based."*
+
+The recurse-up/terminate-down asymmetry is not arbitrary — the **navigation depth axis IS the
+attention ↔ uncertainty axis**, i.e. Zeta's two founding axioms (**Remember-When** + **Pay-Attention**,
+the real/imaginary pair) and the uncertainty primitive's superpose/snap:
+
+- **UP = new uncertainty** (Remember-When / superposition *opens*). Each level up — vault → world →
+  worlds-of-worlds — adds scope and therefore *new* uncertainty (a new axis of "how sure does this
+  last forever"). Up is the uncertainty-generating direction; it doesn't terminate.
+- **DOWN = the attention that identifies and reduces** (Pay-Attention / `snap` *projects*). Descending
+  applies attention to identify and reduce uncertainty — which is exactly why the **room is the
+  uncertainty engine** (Genesis §6) and the **terminal/leaf**: the room is where attention does its
+  work. Down terminates *because* reduction terminates (you arrive at a resolved value).
+- **Privacy is the floor on downward attention.** "If not privacy-based": you cannot be identified /
+  reduced past your **privacy** — privacy is the metered limit on how far attention may descend into
+  you (consent-first #6; privacy-as-earned-currency, not a default you assert). Privacy is what stops
+  the descent from becoming the Vault-Tec experiment-on-the-inhabitant.
+
+So the metaspace's vertical is the snap/superpose collapse-axis (cf. the orientation-flow ladder:
+Tier-0-snapped ↔ Tier-∞-superposed) rendered as containment depth.
+
+## Visibility is contract/federation-gated too — "seeing through walls"
+
+(Aaron, 2026-06-20): *"even the visibility would be federation/contract based too — the seeing
+through walls before you go inside."*
+
+The relational topology (clusters/federations/contracts) gates **two separate capabilities**, not
+just one:
+
+- **See** (visibility) — glimpsing inside a vault/room *before* entering ("when you get close you can
+  see inside") is **permission/contract-gated.** Walls are **opaque by default (privacy);** a
+  federation/contract makes them **transparent** (a granted glimpse-before-entry).
+- **Enter** (door traversal) — moving through a door is **also** permission-gated (above).
+
+So both **perception** and **movement** are relationship-gated — privacy-by-default + earned
+visibility/access (consent-first #6). You do not see into someone's vault unless they have granted it;
+you do not walk in unless a door + the right exist. The wall's transparency *is* the visibility
+contract made visual.
+
 ## Tiering (consistent with the progressive-enhancement ladder)
 
 - **Tier 0 (CSS-only floor):** the static no-JS `CoEmpowerGraphSvg` map — vault landmarks as
