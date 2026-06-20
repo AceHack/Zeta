@@ -89,6 +89,31 @@ The lead is the same as TSMC's: you can see our results (the golden vectors, the
 
 Each step is the TSMC progression: same customers, same interface, better process. Nobody leaves because the upgrade is just a backend swap.
 
+## The economic engine — verification-priced privacy (Addison)
+
+The same property that is the *moat* is also the *network economy*. **Verification is the moat
+(TSMC-precision-in-time); verifiability is also what is free, and opacity is what is priced.** (Economic
+model: Addison, 2026-06-20.)
+
+- **Transparency is free *because* it is verifiable.** A glass (open) vault is content-addressed,
+  inspectable, redundant-with-agreement — the network can trust and reuse it at no premium. This is
+  the **glass halo** default: radical transparency, the same symmetric-observation principle the
+  verification thesis rests on.
+- **Privacy is the earned, *priced* exception.** A **closed vault = closed source = opaque compute the
+  network cannot verify.** Running it on **others' hardware costs privacy budget** — you are asking the
+  network to host compute it cannot see, verify, or reclaim, so the budget **prices that externality**
+  (in practice: dedicated/paid hosting or confidential-compute/attestation — private-yet-attestable).
+- **Own the hardware → private for free.** You **internalize** the cost; "brought your own privacy
+  budget" = your hardware *is* the budget. You are not taxing the network.
+
+Why this is the revenue/sustainability mechanism, not a feature: it is a **metered-resource economy
+that prices the externality of opacity** and makes the verifiable default the cheapest path. It
+**nudges the network toward verifiability** (which compounds the moat), **never forbids privacy** (pay,
+or self-host), and gives the credit economy a principled denominator — **privacy budget** alongside
+compute / storage / bandwidth. The same calibration that makes verification cheap (cross-language
+byte-lock, content-addressing, the oracles) is what makes transparency free and opacity the priced
+exception. Verification is simultaneously the moat *and* the price signal.
+
 ## The ask
 
 Seed funding to sustain the factory while the process calibration compounds. The work IS the moat. Time IS the product. The factory IS TSMC in time.

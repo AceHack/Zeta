@@ -191,6 +191,33 @@ which is also why default-*opacity* would have been the Vault-Tec move (hidden-b
 default-transparency-with-earned-privacy is the home. Consent-first (#6) is honored as the *act of
 spending budget to close*, not as withholding by default.
 
+### The economics of opacity — privacy budget prices closed-on-shared-hardware (Addison)
+
+(Addison, 2026-06-20): *a closed vault is like closed source; you have to pay (privacy budget) to run
+it on other people's hardware, because it's not your hardware. If you own the hardware you can be
+private for free — you brought your own privacy budget; you're not paying the network.*
+
+The economic **why** behind the glass-halo default:
+
+- **Closed vault = closed source = opaque compute the network can't verify.** Default transparency is
+  what makes compute *verifiable* (content-addressed, redundant-with-agreement, inspectable — the
+  best-effort-node trust model in the orientation-flow note). Transparency is **free because it is
+  verifiable**; the network can trust and reuse it.
+- **Closed (private) on others' hardware → pay privacy budget.** You're asking the network to host
+  compute it **cannot see, verify, or reclaim** — privacy budget **prices that externality.** In
+  practice "closed on the network" means **dedicated/paid hosting** or **confidential compute /
+  attestation** (TEE/enclave: private-yet-attestable); the budget denominates that premium over the
+  free verifiable default.
+- **Closed on your own hardware → free.** You've **internalized** the cost — "brought your own privacy
+  budget" = your hardware *is* the budget; you're not asking the network to trust-host anything.
+
+Incentive geometry: it **nudges toward transparency** (cheapest, verifiable), **never forbids privacy**
+(pay, or self-host), and the marketplace / open-source / forkability all compose on the glass default
+while closed-source stays a first-class, *priced* option. Cross-links the orientation-flow
+resource-tiering (dependable vs best-effort; content-addressed cache is self-verifying) and the
+Genesis **privacy-budget** resource. This is the economic layer of the privacy/glass-halo model — see
+also the funding thesis ("TSMC in Time"), where it grounds the network economy.
+
 ## Tiering (consistent with the progressive-enhancement ladder)
 
 - **Tier 0 (CSS-only floor):** the static no-JS `CoEmpowerGraphSvg` map — vault landmarks as
