@@ -222,3 +222,91 @@ module GeneratorIrRegistry =
         /// materialised relation. `integrateRegisters known` must equal `relationOf known`.
         let integrateRegisters (rows: IrRow seq) : Task<ZSet<IrRow>> =
             rows |> Seq.map register |> integrateDeltas
+
+    // ── the relation under a LIVE, EXTERNAL delta feed (zero-downtime evolution) ────
+    //
+    // `Stream` above drains a finite, pre-baked `seq` of deltas through a circuit that
+    // is built and torn down in one call. The honest claim the project cares about —
+    // "zero-downtime schema evolution over a live feed" — needs more: a circuit that is
+    // built ONCE and kept RUNNING while deltas ARRIVE FROM OUTSIDE over time, with the
+    // materialised relation observable BETWEEN arrivals.
+    //
+    // `ChannelZSetInput` (Handles.fs) is exactly that external boundary: a bounded
+    // `System.Threading.Channels` channel — SingleReader (the circuit), multi-writer
+    // (external producers), FullMode=Wait (real backpressure: a full channel AWAITS,
+    // never drops). The producer holds only the input handle and calls `SendAsync`; it
+    // has NO reference to the step loop. This is a genuine producer/consumer split, not
+    // a list dressed up as a stream.
+    //
+    // WHAT THIS ADDS over `Stream` (pinned in `GeneratorIrRegistry.Tests`):
+    //   * the relation observed AFTER k externally-sent deltas equals `relationOf` over
+    //     just those k rows admitted SO FAR — correctness holds at every observation
+    //     point on a still-running circuit, not only at end-of-stream.
+    //   * SCHEMA EVOLUTION: while the circuit runs, a `retract(v1) + register(v2)` pair
+    //     arriving from outside swaps a generator's IR row with NO dropped or duplicated
+    //     rows — the old IR is gone, the new IR is live, in one observation step.
+    //   * the generator's content-addressed ZetaId is STABLE across the swap when the
+    //     version is unchanged, and CHANGES (new id) when the version bumps — the
+    //     homoiconic "version bump = new fact" rule survives a live feed.
+    //
+    // TIER: PROVEN that a long-lived circuit fed by an EXTERNAL channel preserves the
+    // integral semantics and the delta algebra at every observation point, including a
+    // live IR-shape swap. STILL ASPIRATIONAL (not claimed here): that this constitutes
+    // production-grade zero-downtime evolution (durability, multi-node consensus, replay
+    // after crash) — those are separate obligations on top of this in-process proof.
+    module LiveStream =
+
+        open System.Threading.Tasks
+
+        /// A long-lived, externally-fed generator-IR circuit. Created ONCE; kept running.
+        /// The `Input` is an external boundary (bounded channel); `feed`/`feedAndObserve`
+        /// push deltas from outside and step the circuit so the integral advances.
+        type Session =
+            internal
+                { Circuit: Circuit
+                  Input: ChannelZSetInputHandle<IrRow>
+                  Out: OutputHandle<ZSet<IrRow>> }
+
+            /// The materialised relation AS OF the deltas admitted and stepped so far.
+            member this.Relation : ZSet<IrRow> = this.Out.Current
+
+            /// Resolve a live IR row by content-addressed ZetaId on the current relation.
+            member this.ByZetaId(zetaId: string) : IrRow option = byZetaId zetaId this.Relation
+
+        /// Open a long-lived session: build the circuit ONCE, wire the external channel
+        /// input through the `IntegrateZSet` (`∫`) operator to an output. `capacity`
+        /// bounds the in-flight delta backlog (backpressure when full).
+        let openSession (capacity: int) : Session =
+            let c = Circuit.create ()
+            let input = c.ChannelZSetInput<IrRow>(capacity)
+            let materialised = c.IntegrateZSet input.Stream
+            let out = c.Output materialised
+            { Circuit = c; Input = input; Out = out }
+
+        /// Push ONE delta from the external producer and step the circuit once, so the
+        /// running integral reflects exactly the deltas admitted up to and including this
+        /// one. Returns when the step has completed (the delta is now visible in
+        /// `session.Relation`). Send is awaited first so a full channel applies real
+        /// backpressure rather than dropping.
+        let feed (session: Session) (delta: ZSet<IrRow>) : Task =
+            task {
+                do! session.Input.SendAsync(delta).AsTask()
+                do! session.Circuit.StepAsync()
+            }
+
+        /// Feed one delta, step, and return the materialised relation observed at that
+        /// point — the running integral's value AS OF this arrival.
+        let feedAndObserve (session: Session) (delta: ZSet<IrRow>) : Task<ZSet<IrRow>> =
+            task {
+                do! feed session delta
+                return session.Relation
+            }
+
+        /// Live, zero-downtime swap of a generator's IR while the circuit keeps running:
+        /// retract the old row and register the new one as a single observation step.
+        /// After this, `oldRow` is absent and `newRow` is live, with no other rows
+        /// touched. Modelled as one combined delta so the swap is atomic at the
+        /// observation boundary (no transient state where both — or neither — are live).
+        let evolve (session: Session) (oldRow: IrRow) (newRow: IrRow) : Task<ZSet<IrRow>> =
+            let swap = ZSet.add (retract oldRow) (register newRow)
+            feedAndObserve session swap

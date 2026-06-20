@@ -176,3 +176,131 @@ let ``the running integral is order-independent over the same multiset of deltas
             )
         | _ -> () // need at least two known rows; skip otherwise
     }
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+// 6. LIVE, EXTERNAL delta feed (zero-downtime schema evolution) — GeneratorIrRegistry.LiveStream
+//    Section 5 drains a finite pre-baked list through a build-and-tear-down circuit.
+//    These tests use `LiveStream`, where the circuit is built ONCE and kept RUNNING
+//    while deltas arrive FROM OUTSIDE on a bounded channel (a genuine producer/consumer
+//    boundary), with the materialised relation observed BETWEEN arrivals. This is the
+//    in-process core of "zero-downtime schema evolution over a live feed". (Durability /
+//    multi-node / crash-replay remain separate obligations — NOT claimed here.)
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+// 6a. Correctness AT EVERY OBSERVATION POINT: after k externally-sent register deltas,
+//     the live relation equals relationOf over exactly those k rows admitted so far —
+//     not only at end-of-stream, but at each step of a still-running circuit.
+[<Fact>]
+let ``live external feed: relation at each step equals relationOf over rows admitted so far`` () =
+    task {
+        let rows = GeneratorIrRegistry.known
+        let session = GeneratorIrRegistry.LiveStream.openSession 16
+        let mutable admitted = []
+
+        for r in rows do
+            let! observed = GeneratorIrRegistry.LiveStream.feedAndObserve session (GeneratorIrRegistry.register r)
+            admitted <- admitted @ [ r ]
+            let expected = GeneratorIrRegistry.relationOf admitted
+            // observed == expected as Z-sets (difference is empty) and same cardinality.
+            Assert.True(
+                (ZSet.add observed (ZSet.neg expected)).IsEmpty,
+                sprintf "live relation diverged from relationOf after admitting %d rows" admitted.Length
+            )
+            Assert.Equal(expected.Count, observed.Count)
+        // and the final live relation equals the full known relation.
+        Assert.True((ZSet.add session.Relation (ZSet.neg GeneratorIrRegistry.relation)).IsEmpty)
+    }
+
+// 6b. ZERO-DOWNTIME IR SWAP: while the circuit runs, an externally-fed retract(old)+register(new)
+//     evolves a generator's IR row with NO dropped or duplicated rows — old gone, new live,
+//     in one observation step, every other row untouched.
+[<Fact>]
+let ``live external feed: evolving a generator IR row is a lossless swap on a running circuit`` () =
+    task {
+        // Start the circuit with both known rows live.
+        let session = GeneratorIrRegistry.LiveStream.openSession 16
+
+        for r in GeneratorIrRegistry.known do
+            do! GeneratorIrRegistry.LiveStream.feed session (GeneratorIrRegistry.register r)
+
+        let oldRow =
+            GeneratorIrRegistry.known |> List.find (fun r -> r.Name = "rng.splitmix64")
+
+        // A NEW IR shape for the same generator@version: same identity, different payload
+        // (an extra finalising xorshr). The row's structural key changes, so the swap is
+        // retract(old) + register(new) — a new fact, not a silent mutate.
+        let evolvedIr =
+            match GeneratorIrRegistry.decodeIr oldRow with
+            | Ok(DynamicValue.Object fields) ->
+                let bump =
+                    fields
+                    |> List.map (fun (k, v) ->
+                        if k = "ops" then
+                            match v with
+                            | DynamicValue.Array ops ->
+                                k,
+                                DynamicValue.Array(
+                                    ops
+                                    @ [ DynamicValue.Object [ ("op", DynamicValue.String "xorshr"); ("s", DynamicValue.Int 17L) ] ]
+                                )
+                            | other -> k, other
+                        else
+                            k, v)
+
+                DynamicValue.Object bump
+            | _ -> failwith "expected splitmix64 IR to decode to an Object"
+
+        let newRow =
+            match GeneratorIrRegistry.row oldRow.Name oldRow.Version evolvedIr with
+            | Ok r -> r
+            | Error _ -> failwith "evolved IR must be canonical-encodable"
+
+        let countBefore = session.Relation.Count
+        let! after = GeneratorIrRegistry.LiveStream.evolve session oldRow newRow
+
+        // old row gone, new row live, total row count unchanged (lossless swap).
+        Assert.Equal(0L, ZSet.lookup oldRow after)
+        Assert.Equal(1L, ZSet.lookup newRow after)
+        Assert.Equal(countBefore, after.Count)
+        // the OTHER generator (fmix32) is untouched by the swap.
+        let fmix =
+            GeneratorIrRegistry.known |> List.find (fun r -> r.Name = "hash.fmix32")
+
+        Assert.Equal(1L, ZSet.lookup fmix after)
+    }
+
+// 6c. CONTENT-ADDRESS across a live evolution: a same-version IR change keeps the
+//     generator's ZetaId (identity is name@version, not payload), while a VERSION BUMP
+//     yields a NEW content-address — the "version bump = new fact" rule survives the feed.
+[<Fact>]
+let ``live external feed: ZetaId is payload-independent within a version and changes on version bump`` () =
+    task {
+        let session = GeneratorIrRegistry.LiveStream.openSession 16
+
+        let v1 =
+            GeneratorIrRegistry.known |> List.find (fun r -> r.Name = "rng.splitmix64")
+
+        do! GeneratorIrRegistry.LiveStream.feed session (GeneratorIrRegistry.register v1)
+
+        // same name@version, different payload → SAME ZetaId (content-address of name@version).
+        let v1Evolved =
+            match GeneratorIrRegistry.row "rng.splitmix64" 1 GeneratorIrRegistry.fmix32Ir with
+            | Ok r -> r
+            | Error _ -> failwith "canonical"
+
+        Assert.Equal(v1.ZetaId, v1Evolved.ZetaId)
+
+        // version bump → DIFFERENT ZetaId (a new fact / a new generator identity).
+        let v2 =
+            match GeneratorIrRegistry.row "rng.splitmix64" 2 GeneratorIrRegistry.splitmix64Ir with
+            | Ok r -> r
+            | Error _ -> failwith "canonical"
+
+        Assert.NotEqual<string>(v1.ZetaId, v2.ZetaId)
+
+        // feeding v2 alongside v1 leaves BOTH live (distinct ids = distinct rows), so a
+        // version bump on a running feed is additive, not a destructive overwrite.
+        let! after = GeneratorIrRegistry.LiveStream.feedAndObserve session (GeneratorIrRegistry.register v2)
+        Assert.True((GeneratorIrRegistry.byZetaId v1.ZetaId after).IsSome)
+        Assert.True((GeneratorIrRegistry.byZetaId v2.ZetaId after).IsSome)
+    }
