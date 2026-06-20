@@ -8,7 +8,7 @@ open System.Globalization
 /// One static **HTML/CSS page (no JS)** composing the shipped demo renders into a single view: the **Zeta-NTP
 /// clock** + **grounding** indicator, the **federation graph** (`CoEmpowerGraphSvg`), the **minted-NFT cards**
 /// (`MintPanel`), and the optional **societal-DORA dials** (`SocietalDoraSvg`). Deterministic + byte-lockable
-/// (the clock is injected, not `DateTime.Now`); the whole arc — fetch → graph → federations → minted links →
+/// (the clock is injected, not read from ambient wall time); the whole arc — fetch → graph → federations → minted links →
 /// dials — on one page.
 [<RequireQualifiedAccess>]
 module DemoDashboard =

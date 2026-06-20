@@ -355,6 +355,12 @@
     "space": "O(1)"
     "by": "Derived"
   -
+    "artifact": "rng.splitmix64"
+    "op": "mix"
+    "time": "O(1)"
+    "space": "O(1)"
+    "by": "Derived"
+  -
     "artifact": "engine.zeta-bayesian"
     "op": "run"
     "time": "O(rounds·factors)"

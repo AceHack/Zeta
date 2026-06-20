@@ -72,6 +72,7 @@ export const DECLARED: Record<string, Cost> = {
   "shape.exchange-worldlines:draw": { time: "O(crossings·strands)", space: "O(strands)", by: "Derived" },
   "shape.kitaev-chain:draw": { time: "O(sites)", space: "O(sites)", by: "Derived" },
   "shape.crossing:draw": { time: "O(1)", space: "O(1)", by: "Derived" },
+  "rng.splitmix64:mix": { time: "O(1)", space: "O(1)", by: "Derived" },
   "engine.zeta-bayesian:run": { time: "O(rounds·factors)", space: "O(vars+factors)", by: "Derived" },
   "engine.infer-net:run": { time: "O(rounds·factors)", space: "O(model)", by: "Derived" },
   "engine.mock-flat:run": { time: "O(vars)", space: "O(vars)", by: "Derived" },

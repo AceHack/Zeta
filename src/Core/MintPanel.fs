@@ -9,8 +9,8 @@ open System.Globalization
 /// is a **minted relational NFT** — *an objectively-rateable remembered link between two travelers*, rated by
 /// shared titles — stamped with the **Zeta-NTP mint time** (the soft-phase tick + the correlated UTC observation
 /// ± uncertainty) and a **grounding indicator** (backed by a real source = grounded; unbacked = the
-/// children's-game / not-real warning). Deterministic + byte-lockable: the clock is **injected** (not
-/// `DateTime.Now` — noninterference), so the same inputs render the same page.
+/// children's-game / not-real warning). Deterministic + byte-lockable: the clock is **injected**,
+/// not read from ambient wall time, so the same inputs render the same page.
 [<RequireQualifiedAccess>]
 module MintPanel =
 
