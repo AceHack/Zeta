@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Consumer + test for approach A. The whole point: this project references the generator as an
+       ANALYZER (not a runtime lib) and includes a *.zetaschema.json as an AdditionalFile, so the
+       Zeta.Generated.ImdbName record exists ONLY because the IIncrementalGenerator ran during THIS
+       project's compile. The test below references that type — if the generator didn't run, this
+       project would not compile. Green test == compile-time generation proven. -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <GenerateProgramFile>false</GenerateProgramFile>
+    <RootNamespace>Zeta.Tests.CSharp.TypeProvider</RootNamespace>
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The generator, referenced as a compiler analyzer. ReferenceOutputAssembly="false" because we
+         never link its assembly at runtime — it only runs inside the compiler to emit source. -->
+    <ProjectReference Include="..\..\src\Core.CSharp.TypeProvider\Zeta.Core.CSharp.TypeProvider.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The schema the generator consumes at compile time to emit Zeta.Generated.ImdbName. -->
+    <AdditionalFiles Include="ImdbName.zetaschema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,10 @@
+{
+  "namespace": "Zeta.Generated",
+  "typeName": "ImdbName",
+  "fields": [
+    { "name": "Nconst", "csType": "string" },
+    { "name": "PrimaryName", "csType": "string" },
+    { "name": "BirthYear", "csType": "int?" },
+    { "name": "DeathYear", "csType": "int?" }
+  ]
+}

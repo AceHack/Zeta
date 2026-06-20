@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Approach A — a REAL Roslyn IIncrementalGenerator (the "literal type provider" analogue).
+       Unlike approach B (src/Core.CSharp/SchemaCodegen.cs — a plain library you call), this runs
+       INSIDE the C# compiler: a consumer that drops a *.zetaschema.json into <AdditionalFiles> and
+       references this project OutputItemType="Analyzer" just *uses* the generated record — there is
+       no codegen build step, no committed .cs output. -->
+
+  <PropertyGroup>
+    <!-- MUST override the repo-global net10.0 (Directory.Build.props): analyzers/generators load
+         inside the compiler, which targets netstandard2.0. This is the one mandatory override. -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <!-- Roslyn component switches: marks this as an analyzer/source-generator and turns on the
+         extended analyzer rules (RS1xxx) that catch generator-specific mistakes. -->
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+    <!-- A generator is never packed/run as a normal lib; it is referenced as an analyzer. -->
+    <IsPackable>false</IsPackable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+
+    <RootNamespace>Zeta.Core.CSharp.TypeProvider</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.TypeProvider</AssemblyName>
+
+    <!-- netstandard2.0 analyzer can't see net10 framework docs; turn off the inherited
+         GenerateDocumentationFile so missing-doc never matters, and keep warnings-as-errors ON
+         (the global gate is NOT weakened — generator code is fully documented + clean). -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The Roslyn API. PrivateAssets="all" so the compiler-only dependency never flows to
+         consumers (they reference us as an analyzer, not a runtime lib). Pinned centrally in
+         Directory.Packages.props to match the net10 SDK's bundled Roslyn (4.14.0). -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Analyzer release tracking (RS2008): every reported diagnostic id (ZTP001) is declared in
+         these manifests. This is the canonical per-project fix, not a rule suppression. -->
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+  </ItemGroup>
+
+</Project>
