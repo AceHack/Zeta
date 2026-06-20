@@ -1,5 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { simulatedWorkspacePort, emptySimulatedState, type SimulatedState } from "./workspace-port";
+import {
+  simulatedWorkspacePort,
+  emptySimulatedState,
+  GATED_PERMISSIONS,
+  DEFAULT_PERMISSIONS,
+  TRADITIONAL_FS_DEFAULT,
+  type SimulatedState,
+  type FileEntry,
+} from "./workspace-port";
 
 describe("simulatedWorkspacePort — in-memory filesystem", () => {
   test("writeFile + readFile round-trips", () => {
@@ -30,10 +38,10 @@ describe("simulatedWorkspacePort — in-memory filesystem", () => {
 
   test("readDir lists immediate children", () => {
     const state = emptySimulatedState();
-    state.files.set("docs/backlog/P0/item1.md", "content1");
-    state.files.set("docs/backlog/P0/item2.md", "content2");
-    state.files.set("docs/backlog/P1/other.md", "content3");
     const port = simulatedWorkspacePort(state);
+    port.writeFile("docs/backlog/P0/item1.md", "content1");
+    port.writeFile("docs/backlog/P0/item2.md", "content2");
+    port.writeFile("docs/backlog/P1/other.md", "content3");
 
     const result = port.readDir("docs/backlog/P0");
     expect(result.ok).toBe(true);
@@ -105,19 +113,135 @@ describe("simulatedWorkspacePort — git simulation", () => {
 
 describe("simulatedWorkspacePort — pre-seeded state", () => {
   test("pre-seeded files are readable immediately", () => {
-    const state: SimulatedState = {
-      files: new Map([
-        ["docs/backlog/P1/item.md", "---\nid: B-0170\nzetaid: 081KTEST\n---\n# Item"],
-        ["src/Core.TypeScript/observe/observe.ts", "// the controller"],
-      ]),
-      commits: [],
-      branch: "main",
-      pushed: new Set(),
-    };
+    const state = emptySimulatedState();
     const port = simulatedWorkspacePort(state);
+    port.writeFile("docs/backlog/P1/item.md", "---\nid: B-0170\nzetaid: 081KTEST\n---\n# Item");
+    port.writeFile("src/Core.TypeScript/observe/observe.ts", "// the controller");
 
     const result = port.readFile("docs/backlog/P1/item.md");
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.value).toContain("081KTEST");
+  });
+});
+
+describe("simulatedWorkspacePort — version control primitives (git-free)", () => {
+  test("branch + currentBranch", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    expect(port.currentBranch()).toEqual({ ok: true, value: "main" });
+    port.branch("alexa/feature", "origin/main");
+    expect(port.currentBranch()).toEqual({ ok: true, value: "alexa/feature" });
+  });
+
+  test("commit returns a hash and records the message", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.writeFile("src/new.ts", "export const x = 1;");
+    const result = port.commit("feat: add new module");
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.hash).toMatch(/^sim-/);
+    }
+    expect(state.commits.length).toBe(1);
+    expect(state.commits[0]!.message).toBe("feat: add new module");
+  });
+
+  test("push records the branch", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.branch("alexa/work");
+    port.push("origin", "alexa/work");
+    expect(state.pushed.has("alexa/work")).toBe(true);
+  });
+
+  test("full cycle via version control primitives (no git CLI)", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    // The executor's workflow using only the abstracted primitives:
+    port.pull("origin", "main");
+    port.branch("alexa/fix-123", "origin/main");
+    port.writeFile("src/fix.ts", "export function fix() { return true; }");
+    port.writeFile("scripts/deploy.sh", "#!/bin/bash\necho deploy", DEFAULT_PERMISSIONS);
+    const commitResult = port.commit("fix: resolve issue 123", ["src/fix.ts", "scripts/deploy.sh"]);
+    port.push("origin", "alexa/fix-123");
+
+    // Verify
+    expect(port.currentBranch()).toEqual({ ok: true, value: "alexa/fix-123" });
+    expect(commitResult.ok).toBe(true);
+    expect(state.pushed.has("alexa/fix-123")).toBe(true);
+    expect(state.commits.length).toBe(1);
+
+    // The executable flag is tracked
+    const entry = port.readFileEntry("scripts/deploy.sh");
+    expect(entry.ok).toBe(true);
+    if (entry.ok) expect(entry.value.permissions.executable).toBe(true);
+  });
+});
+
+describe("simulatedWorkspacePort — permissions (Zeta inverted model)", () => {
+  test("default is executable/consumable (everything alive)", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.writeFile("src/lib.ts", "export const x = 1;");
+
+    const entry = port.readFileEntry("src/lib.ts");
+    expect(entry.ok).toBe(true);
+    if (entry.ok) {
+      expect(entry.value.permissions.executable).toBe(true); // Zeta default: alive
+    }
+  });
+
+  test("GATED_PERMISSIONS opts out (-x = consent gate)", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    // Sister's memories: preserved but not consumable as prompt source
+    port.writeFile("memory/persona/elizabeth/journal.md", "private content", GATED_PERMISSIONS);
+
+    const entry = port.readFileEntry("memory/persona/elizabeth/journal.md");
+    expect(entry.ok).toBe(true);
+    if (entry.ok) {
+      expect(entry.value.permissions.executable).toBe(false); // gated: exists but not for consumption
+    }
+  });
+
+  test("setPermissions can gate a previously-executable file", () => {
+    const state = emptySimulatedState();
+    const port = simulatedWorkspacePort(state);
+
+    port.writeFile("memory/shared/conversation.md", "content");
+    // Initially alive (default)
+    let entry = port.readFileEntry("memory/shared/conversation.md");
+    expect(entry.ok && entry.value.permissions.executable).toBe(true);
+
+    // Person withdraws consent → gate it
+    port.setPermissions("memory/shared/conversation.md", GATED_PERMISSIONS);
+    entry = port.readFileEntry("memory/shared/conversation.md");
+    expect(entry.ok && entry.value.permissions.executable).toBe(false);
+  });
+
+  test("setPermissions on missing file returns error", () => {
+    const port = simulatedWorkspacePort(emptySimulatedState());
+    const result = port.setPermissions("nope.sh", GATED_PERMISSIONS);
+    expect(result.ok).toBe(false);
+  });
+
+  test("win32 simulated port still tracks the flag (for git mode)", () => {
+    const state = emptySimulatedState("win32");
+    const port = simulatedWorkspacePort(state);
+    expect(port.platform).toBe("win32");
+
+    port.writeFile("script.ps1", "Write-Host hi");
+    const entry = port.readFileEntry("script.ps1");
+    expect(entry.ok).toBe(true);
+    if (entry.ok) {
+      expect(entry.value.permissions.executable).toBe(true); // Zeta default even on win32
+    }
   });
 });
