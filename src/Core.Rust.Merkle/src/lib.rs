@@ -121,4 +121,85 @@ impl MerkleTree {
     pub fn leaf_hashes(&self) -> &[MerkleHash] {
         &self.levels[0]
     }
+
+    /// Inclusion (audit) proof for the leaf at `index`: the sibling digest at each
+    /// level from leaf to root, with its side. A verifier holding only the leaf, this
+    /// proof, and the root can confirm membership without the tree (see [`verify_proof`]).
+    /// Replays the exact F# fold (duplicate-last on an odd trailing node → sibling is
+    /// self, on the right). Mirrors `MerkleTree.Proof` in `src/Core/Merkle.fs`.
+    ///
+    /// # Panics
+    /// Panics if `index >= leaf count` (leaf-index out of range), matching the F#
+    /// `invalidArg`.
+    pub fn proof(&self, index: usize) -> Vec<ProofStep> {
+        let level0 = &self.levels[0];
+        assert!(
+            index < level0.len(),
+            "leaf index {index} out of range [0, {})",
+            level0.len()
+        );
+        let mut steps = Vec::with_capacity(self.levels.len().saturating_sub(1));
+        let mut idx = index;
+        // Walk levels[0 .. n-2]; the last level is the root (no sibling).
+        for lvl in 0..self.levels.len().saturating_sub(1) {
+            let cur = &self.levels[lvl];
+            let self_is_left = idx.is_multiple_of(2);
+            let sibling_idx = if self_is_left {
+                if idx + 1 < cur.len() {
+                    idx + 1
+                } else {
+                    idx // duplicate-last: odd trailing node's sibling is itself
+                }
+            } else {
+                idx - 1
+            };
+            steps.push(ProofStep {
+                sibling: cur[sibling_idx],
+                right: self_is_left,
+            });
+            idx /= 2;
+        }
+        steps
+    }
+}
+
+/// One step of a Merkle inclusion proof: a sibling digest and which side it sits on.
+/// `right == true` means the sibling is the RIGHT child (the current accumulator is the
+/// LEFT child, so `parent = combine(self, sibling)`). Mirrors the F# `MerkleProofStep`
+/// and the `{"hash","right"}` golden-vector schema.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub struct ProofStep {
+    /// The sibling node's digest at this level.
+    pub sibling: MerkleHash,
+    /// `true` ⇒ sibling is the RIGHT child (combine self then sibling);
+    /// `false` ⇒ sibling is the LEFT child (combine sibling then self).
+    pub right: bool,
+}
+
+/// Verify an inclusion proof against `expected_root` using an explicit hashing port:
+/// re-hash `leaf`, fold the audit `steps` up, and check the result equals the root.
+/// Touches ONLY the leaf, the proof, and the root — never the tree (the third-party
+/// property). Matches `MerkleTree.verifyProof` (`src/Core/Merkle.fs`) byte-for-byte.
+pub fn verify_proof_with_hasher<H: Hasher128>(
+    leaf: &[u8],
+    steps: &[ProofStep],
+    expected_root: MerkleHash,
+    hasher: &H,
+) -> bool {
+    let mut acc = hasher.hash128(leaf);
+    for step in steps {
+        acc = if step.right {
+            hasher.combine(acc, step.sibling)
+        } else {
+            hasher.combine(step.sibling, acc)
+        };
+    }
+    acc == expected_root
+}
+
+/// Verify an inclusion proof using the default XXH3-128 adapter (requires the `xxh3`
+/// feature). See [`verify_proof_with_hasher`].
+#[cfg(feature = "xxh3")]
+pub fn verify_proof(leaf: &[u8], steps: &[ProofStep], expected_root: MerkleHash) -> bool {
+    verify_proof_with_hasher(leaf, steps, expected_root, &Xxh3Hasher128)
 }
