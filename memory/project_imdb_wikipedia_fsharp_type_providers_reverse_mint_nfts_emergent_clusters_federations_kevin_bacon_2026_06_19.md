@@ -51,3 +51,21 @@ NFT §0a (the backing); the grounding/children's-game thread; `CoEmpowerField` (
 the federation-health metric); `CoordRisk`/`CartelToy`/Aurora-immune (coercive-collapse case only);
 `anchor-to-human-prior-art`; HKT-MDM. Anchors: Six Degrees of Kevin Bacon / Oracle of Bacon; Watts–Strogatz
 small-world; Milgram six-degrees; Erdős number.
+
+## Why type providers are HIGH-LEVERAGE — cross-oracle (Aaron 2026-06-19)
+
+*"All reified F# type providers are high-leverage: they work in C# and our DynamicValue, and we should be able
+to cross-lang-oracle eventually with Roslyn and others for other langs — maybe a homoiconic meta-language like
+Nemerle."* The point: a type provider is **not an F#-only convenience** — it is the **high-leverage cross-oracle
+data substrate**:
+
+- **Reified ⇒ reusable across .NET oracles.** The provided types flow into **C#** and into our **`DynamicValue`**
+  (the universal self-describing payload) — one provider, every .NET consumer.
+- **Cross-language-oracle is the target.** Eventually generate the same typed bindings into the *other* oracles
+  via **Roslyn** source-gen (C#) + each lang's toolchain (TS/Rust/…) — the byte-lock / `gen(gen)` cross-oracle
+  discipline applied to *external-reference types*, so IMDb/Wikipedia bindings are identical across oracles.
+- **A homoiconic meta-language** (e.g. **Nemerle** — macro/metaprogramming .NET lang, already a P3 backlog item)
+  is the natural *generator* for those cross-lang bindings (code=data → emit per-oracle providers from one
+  description). Ties: `DynamicValue`; Roslyn source generators; the `nemerle-dotnet-support-macro-metaprogramming`
+  backlog item; the 4-oracle byte-lock / `gen(gen)` lineage. This is *why* the type provider is the priority
+  lever: build it once, harvest it in every oracle.

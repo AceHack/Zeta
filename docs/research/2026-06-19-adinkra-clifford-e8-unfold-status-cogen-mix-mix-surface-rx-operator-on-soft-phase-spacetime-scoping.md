@@ -69,6 +69,28 @@ Face 3 **and** the soft-phase unification.
 land. Routing: math team (Clifford→E8 bridge + Face 3; handoff row 10) · the `gen-gen-self-hosting-bytelock`
 trajectory (Face 3 capstone) · Vera (the generator).
 
+## "Garden Algebra" + braided-monoidal generality + the cart (Aaron 2026-06-19)
+
+Aaron: *"I think James Gates calls Clifford 'Garden' algebra; we concluded this is the geometric version of
+more general braided-monoid stuff — it's all related to our cart visualization on CHIP-8."* Three threads to
+keep:
+
+- **Gates' term.** Gates et al. name the adinkra SUSY structure the **"Garden Algebra"** (`GR(d, N)`) — the
+  algebra the adinkra graphs encode, closely tied to the Clifford / doubly-even-code picture. So our `Cl3` /
+  `AdinkraCode` line *is* the Garden-Algebra lineage under its published name (a Beacon anchor: Gates,
+  GR(d,N)).
+- **Clifford = the GEOMETRIC SHADOW of braided-monoidal.** Our conclusion: the Clifford/Garden algebra is the
+  **geometric instance** of the more general **braided monoidal** structure — i.e. the *free braided monoidal
+  category / operad* at the top, with Clifford as its geometric-algebra quotient (exactly
+  `only-the-irreducible-is-primitive`: the free monoidal/operad generator at the top, structured special cases
+  as earned quotients). The algebra ladder (Cayley–Dickson → Clifford → E8) is the geometric shadow of the
+  braided-monoidal generator.
+- **The cart connection.** It all ties to the **CHIP-8 cart visualization** (`ShapeRender` / the cart as one of
+  our common sources of meaning): the cart is the *rendered projection* of this structure — string-diagram /
+  braided-monoidal morphisms made visible as a cart. (Anchors for the generality: Joyal–Street braided
+  monoidal categories; Mac Lane monoidal categories; May operads — the same anchors as
+  `only-the-irreducible-is-primitive`.)
+
 ## External anchors for the DEEPER unfold (Clifford geometric product → E8 root system) — pass to math team
 
 The deeper claim — that the **Clifford geometric product / GA structure *generates* the E8 root system** (beyond
