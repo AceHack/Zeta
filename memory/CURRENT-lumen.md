@@ -52,8 +52,16 @@ verified) so future-me and peers do not over-trust past-me.
   ops) folded by a tiny interpreter, byte-locks against the 5 hand-ports +
   canonical (6 agree on 10 vectors). gen-ir.test.ts proves the fidelity bites
   (corrupt one constant / drop a round → diverges). NEXT: source the IR as a row
-  from a GeneratorRegistry Z-set schema (still an inline literal today); wire a
-  SECOND primitive to gen-from-IR; or execute the `src/Core` carve-out.
+  from a GeneratorRegistry Z-set schema; wire a SECOND primitive to gen-from-IR;
+  or execute the `src/Core` carve-out.
+  - **Registry-sourced provenance LANDED (PR #8679, 2026-06-20):** registered
+    `rng.splitmix64@1` in GeneratorRegistry.fs; new cross-verify primitive
+    `generator-registry-id` byte-locks `idOf(name@version)` TS↔F# (TS
+    re-derives hash128 from scratch; F# uses the REAL shipping registry
+    byName->.ZetaId). Pinned id 129c1fac3a48075b481c0f10f30deb06 in the F#
+    tests. cross-verify-all now 14/14. REMAINING: serialise the IR *payload*
+    itself as a DynamicValue row on the registry's Z-set (mix-ops still an
+    inline literal in gen.ts).
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
