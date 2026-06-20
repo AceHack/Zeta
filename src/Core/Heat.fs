@@ -50,6 +50,37 @@ type IHeatSink =
     abstract Emit: heat: HeatSignature -> Result<unit, HeatSinkFeedback>
 
 
+[<RequireQualifiedAccess>]
+module BoundedHeat =
+
+    /// Convert bounded finite-view loss into the common host-facing heat
+    /// signature. Empty heat stays cold: callers should not spend heat-channel
+    /// capacity to say that nothing was forgotten.
+    let signature
+        (source: string)
+        (kind: string)
+        (detail: string)
+        (heat: BoundedGSetHeat<'T>)
+        : HeatSignature option =
+        if heat.Units <= 0 then
+            None
+        else
+            Some(HeatSignature.ofMass source kind heat.Units (float heat.Units) detail)
+
+    /// Emit bounded finite-view loss through an injected host or in-room heat
+    /// sink. Sink backpressure is preserved on the typed feedback channel.
+    let emit
+        (sink: IHeatSink)
+        (source: string)
+        (kind: string)
+        (detail: string)
+        (heat: BoundedGSetHeat<'T>)
+        : Result<unit, HeatSinkFeedback> =
+        match signature source kind detail heat with
+        | None -> Ok()
+        | Some heatSignature -> sink.Emit heatSignature
+
+
 [<Sealed>]
 type NullHeatSink() =
     interface IHeatSink with

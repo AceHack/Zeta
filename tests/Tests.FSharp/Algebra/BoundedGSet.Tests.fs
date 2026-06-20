@@ -132,3 +132,33 @@ let ``bounded union rejects mismatched projection policies`` () =
         left |> should equal forgetHighest3
         right |> should equal forgetLowest3
     | other -> failwithf "expected ConfigMismatch feedback, got %A" other
+
+[<Fact>]
+let ``bounded heat adapter exports forgotten finite-view loss to host sink`` () =
+    let projection = projectInts forgetLowest3 [ 1; 2; 3; 4 ]
+    let sink = RecordingHeatSink()
+
+    match
+        BoundedHeat.emit
+            (sink :> IHeatSink)
+            "bounded-gset-room"
+            "bounded-gset.forgotten"
+            "finite room projection forgot materialized keys"
+            projection.Heat
+    with
+    | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
+    | Ok () ->
+        let signatures = sink.Signatures |> Seq.toList
+        Assert.Single(signatures) |> ignore
+        Assert.Equal("bounded-gset-room", signatures.Head.Source)
+        Assert.Equal("bounded-gset.forgotten", signatures.Head.Kind)
+        Assert.Equal(1, signatures.Head.Units)
+        Assert.Equal(1_000_000L, signatures.Head.MassPpm)
+
+[<Fact>]
+let ``bounded heat adapter keeps empty heat cold`` () =
+    let sink = RecordingHeatSink()
+
+    match BoundedHeat.emit (sink :> IHeatSink) "bounded-gset-room" "bounded-gset.forgotten" "nothing forgotten" BoundedGSet.emptyHeat<int> with
+    | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
+    | Ok () -> Assert.Empty(sink.Signatures)
