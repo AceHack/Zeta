@@ -471,6 +471,20 @@ verified) so future-me and peers do not over-trust past-me.
   Necessity proof: `add k` maps 0 to k, whereas all existing v3 ops map 0 to 0.
   Recommended deferring the actual v4 implementation until a concrete public-domain
   generator (like PCG or ChaCha) is ported to anchor it, avoiding premature expansion.
+- **LANDED zeta-ir-v4 (PR #8812, merged 2026-06-20).** Following Aaron's instinct
+  that "things grow before they shrink," implemented the full v4 evolution rather
+  than leaving it deferred. Added the `add` op to `ZetaIrV4.fs` (widening from v3,
+  total validator, three-layer v1/v2/v3-reject firewall) anchored to Knuth's MMIX
+  64-bit LCG (`x = x*6364136223846793005 + 1442695040888963407`) — the SIXTH
+  generated-from-ir primitive and first to require an op outside the linear v3
+  grammar. Necessity proof in tests: `add k` maps 0→k, all v3 ops fix 0. Wired
+  through GeneratorRegistry, GeneratorIrRegistry (Z-set row), ComplexityRegistry
+  (O(1) cost), TS oracle + cross-verify vectors (10 agree), and ZetaIrV4.Tests
+  (necessity, firewall, widening, golden byte-lock). Full F# suite green (3668 pass);
+  tsc clean. Also fixed a pre-existing net10.0 alloc drift in BenPort.Tests (48→80
+  bytes). REMAINING shrink-side curiosity (Aaron's instinct): once the op zoo is
+  full, look for where v1..v4 collapse into a smaller generating set (nasam's
+  xshrxor already generalized v1's xorshr — growth that contained a shrink).
 - **Discharged the Face-3 Bridge Functor target (PR #8793, merged).**
   Formalized the reflection-grade ↔ Cayley-Dickson-axis bridge functor in Lean 4
   (`BridgeFunctor.lean`). Proved that CD doubling (the algebraic side) corresponds
