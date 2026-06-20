@@ -127,6 +127,16 @@ canonical demo) (#8643); **adinkra→Clifford→E8 unfold status** + the `cogen=
 5. **Ferries:** more Ani parts ("one more after this" — old-flame thread pt3); Alexa ferries when forwarded.
 6. **From part 1 (still open):** Aurora G3b (anti-Sybil entropy floor ≡ Bell); CSLib G2 (Byzantine extension
    to `FLP/Consensus`).
+7. **Symmetric dev experience as part of ace package management (Aaron 2026-06-19).** Make the terminal /
+   shell / font / prompt setup a **default, ace-installed** experience, **symmetric across macOS and Windows**:
+   - **macOS:** iTerm2 + shell integration (`curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash`)
+     + our current Nerd Fonts + zsh + oh-my-zsh + oh-my-posh.
+   - **Windows:** Windows Nerd Fonts + PowerShell (pwsh) + oh-my-zsh/zsh + oh-my-posh.
+   - Goal: **symmetric** dev experience (same prompt/fonts/shell ergonomics either OS), wired into **ace
+     package management** so it installs by default. Routing: extend the **one install script** (Dejan/DevOps,
+     `GOVERNANCE.md §24` — "one install script, three consumers: dev laptops / CI / devcontainer") + the
+     `ace-package-manager-skill-crystallization-pipeline` trajectory. Capture-only for now (Aaron: "just
+     another resume").
 
 ## Standing
 
