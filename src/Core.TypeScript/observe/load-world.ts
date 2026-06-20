@@ -5,7 +5,7 @@
  * execute side landed (execute.ts + event-sink-folder.ts). `loadWorld` is the
  * read side: it builds a `World` from the real channels so the loop runs for real:
  *
- *   loadWorld()  →  observe / observeWithLlm  →  execute (append event)  →  loadWorld()  →  …
+ *   loadWorld()  →  observe / observeWithParticipant  →  execute (append event)  →  loadWorld()  →  …
  *
  * Two channels, each its own source of truth:
  *

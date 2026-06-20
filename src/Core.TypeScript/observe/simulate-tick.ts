@@ -28,10 +28,11 @@
  *   - src/Core.TypeScript/accelerator/local-llm.ts (ollamaBackend / chooseIndex)
  */
 
-import { observe, observeWithLlm, renderAction, type BacklogItem, type World, type NextAction } from "./observe";
+import { observe, renderAction, type BacklogItem, type World, type NextAction } from "./observe";
 import { execute, type EventSink, type AppendOutcome, type OperatorPort } from "./execute";
 import { fakeExecutor, type DoItemOptions, type RunOutcome } from "./do-item";
-import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
+import type { ModelBackend } from "../accelerator/local-llm";
+import { observeWithParticipant, localLlmParticipant, type Participant } from "./participant";
 
 // ─── Synthetic scenarios (DI-injectable worlds) ──────────────────────────────
 
@@ -121,7 +122,9 @@ export interface TickOptions {
   readonly scenarioName: string;
   /** Use a local LLM (ollama, temperature 0) instead of pure oracle. */
   readonly useLlm?: boolean;
-  /** Model backend override (for testing with mocks). */
+  /** Participant override (for testing with custom choosers). */
+  readonly participant?: Participant;
+  /** @deprecated Model backend override — use `participant` instead. */
   readonly backend?: ModelBackend;
   /** EventSink override (default: in-memory fake). */
   readonly sink?: EventSink;
@@ -144,8 +147,8 @@ export async function simulateTick(opts: TickOptions): Promise<TickResult> {
   let usedLlm = false;
 
   if (opts.useLlm) {
-    const backend = opts.backend ?? ollamaBackend({ model: "qwen2.5:0.5b", seed: 42 });
-    action = await observeWithLlm(world, backend);
+    const participant = opts.participant ?? localLlmParticipant({ model: "qwen2.5:0.5b", seed: 42 });
+    action = await observeWithParticipant(world, participant);
     usedLlm = true;
   } else {
     action = oracleAction;
