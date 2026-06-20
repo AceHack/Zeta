@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (reviewed/landed teammate PRs #8687/#8690/#8693/#8697; #8689 tracked)
+**Last updated:** 2026-06-20 (IR relation as the running integral of a delta stream on a real DBSP circuit, PR #8698; #8689 merged)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -111,8 +111,25 @@ verified) so future-me and peers do not over-trust past-me.
     quantum-honesty held (MERGE/FOLD = superposition-merge, no `M(` measurement).
     Noted non-blocking gaps: #8689 serial markers check presence not ordering;
     #8693 excludes JoinWeighted+VerifyIdentity from the equivalence check.
-    #8689 (QEMU phase-3 first-session serial proof) reviewed sound, still OPEN
-    pending the long build-iso-aarch64+qemu-boot lane.
+    #8689 (QEMU phase-3 first-session serial proof) reviewed sound; later MERGED
+    once its build-iso-aarch64+qemu-boot lane finished.
+  - **IR-RELATION-ON-A-RUNNING-DBSP-CIRCUIT LANDED (PR #8698, 2026-06-20):** the
+    LAST narrowed open thread of the codegen-forward trajectory is discharged.
+    Added `GeneratorIrRegistry.Stream`: feeds the register(+1)/retract(-1) Z-set
+    deltas into a REAL DBSP circuit (`c.ZSetInput<IrRow>()` -> `c.IntegrateZSet`
+    -> `c.Output`, stepped once per delta), so the materialised relation is the
+    RUNNING INTEGRAL of a delta stream arriving over time — the same ∫ operator the
+    rest of the engine runs, not a static fold. Tests (11/11) pin: (5a)
+    `integrateRegisters known == relationOf known` (incrementalisation soundness),
+    (5b) a retract delta arriving MID-STREAM removes the row from the live output
+    (rollback observed on a running circuit, beyond static add r(neg r)=Zero), (5c)
+    ORDER INDEPENDENCE over the same multiset of deltas (abelian-group sum). Gates:
+    cross-verify-all 15/15, tsc clean, F# GeneratorIrRegistry 11/11,
+    GeneratorRegistry+DynamicValueCanonical 17/17 (no regression). REMAINING (now
+    only an engineering rung, not a proof gap): a LONG-LIVED circuit fed by an
+    EXTERNAL delta source (zero-downtime schema evolution over a live feed) reuses
+    these exact rungs; the integration semantics + delta algebra are proven
+    end-to-end on a real circuit here.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
