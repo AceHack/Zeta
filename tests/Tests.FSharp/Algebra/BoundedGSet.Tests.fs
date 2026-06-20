@@ -16,10 +16,23 @@ let private forgetLowest3 =
     { Capacity = 3
       ForgetPolicy = BoundedGSetForgetPolicy.ForgetLowest }
 
+let private moduloReject4 =
+    { Slots = 4
+      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+
+let private moduloReplace4 =
+    { Slots = 4
+      CollisionPolicy = ModuloGSetCollisionPolicy.ReplaceExisting }
+
 let private unwrap =
     function
     | Ok value -> value
     | Error error -> failwithf "unexpected bounded GSet error: %A" error
+
+let private unwrapModulo =
+    function
+    | Ok value -> value
+    | Error error -> failwithf "unexpected modulo GSet error: %A" error
 
 let private projectInts config values =
     BoundedGSet.ofSeq<int> config values |> unwrap
@@ -36,6 +49,16 @@ let ``invalid capacity returns feedback instead of throwing`` () =
     match BoundedGSet.empty<int> config with
     | Error(BoundedGSetError.NonPositiveCapacity 0) -> ()
     | other -> failwithf "expected NonPositiveCapacity feedback, got %A" other
+
+[<Fact>]
+let ``invalid modulo slots return feedback instead of throwing`` () =
+    let config =
+        { Slots = 0
+          CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+
+    match ModuloGSet.empty<int> config with
+    | Error(ModuloGSetError.NonPositiveSlots 0) -> ()
+    | other -> failwithf "expected NonPositiveSlots feedback, got %A" other
 
 [<Fact>]
 let ``reject-new policy backpressures instead of forgetting`` () =
@@ -162,3 +185,60 @@ let ``bounded heat adapter keeps empty heat cold`` () =
     match BoundedHeat.emit (sink :> IHeatSink) "bounded-gset-room" "bounded-gset.forgotten" "nothing forgotten" BoundedGSet.emptyHeat<int> with
     | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
     | Ok () -> Assert.Empty(sink.Signatures)
+
+[<Fact>]
+let ``modulo GSet rejects collisions without forgetting`` () =
+    let start = ModuloGSet.empty<int> moduloReject4 |> unwrapModulo
+
+    let first = ModuloGSet.add (fun value -> int64 value) 1 start |> unwrapModulo
+    first.Admission |> should equal ModuloGSetAdmission.Admitted
+    first.Slot |> should equal 1
+    first.State |> ModuloGSet.toList |> should equal [ 1 ]
+
+    let collision = ModuloGSet.add (fun value -> int64 value) 5 first.State |> unwrapModulo
+    collision.Admission |> should equal ModuloGSetAdmission.RejectedByCollision
+    collision.Slot |> should equal 1
+    collision.State |> ModuloGSet.toList |> should equal [ 1 ]
+    Assert.Empty(collision.Heat.Forgotten |> GSet.toList)
+    collision.Heat.Units |> should equal 0
+
+[<Fact>]
+let ``modulo GSet replacement emits forgotten occupant as heat`` () =
+    let start = ModuloGSet.empty<string> moduloReplace4 |> unwrapModulo
+
+    let old = ModuloGSet.addWithSlot -1L "old" start |> unwrapModulo
+    old.Admission |> should equal ModuloGSetAdmission.Admitted
+    old.Slot |> should equal 3
+
+    let replaced = ModuloGSet.addWithSlot 7L "new" old.State |> unwrapModulo
+    replaced.Admission |> should equal ModuloGSetAdmission.Replaced
+    replaced.Slot |> should equal 3
+    replaced.State |> ModuloGSet.toSlotList |> should equal [ 3, "new" ]
+    replaced.Heat.Forgotten |> GSet.toList |> should equal [ "old" ]
+    replaced.Heat.Units |> should equal 1
+
+[<Fact>]
+let ``modulo GSet projection from GSet is deterministic and bounded`` () =
+    let source = GSet.ofSeq [ 3; 0; 1; 0 ]
+
+    let projected =
+        ModuloGSet.ofGSet (fun value -> int64 (value % 3)) { moduloReplace4 with Slots = 3 } source
+        |> unwrapModulo
+
+    projected.State |> ModuloGSet.toSlotList |> should equal [ 0, 3; 1, 1 ]
+    projected.State |> ModuloGSet.toList |> should equal [ 1; 3 ]
+    projected.Heat.Forgotten |> GSet.toList |> should equal [ 0 ]
+    projected.Heat.Units |> should equal 1
+    projected.Rejected |> should equal 0
+
+[<Fact>]
+let ``modulo GSet projection counts cold collision backpressure`` () =
+    let projected =
+        ModuloGSet.ofSeq (fun value -> int64 (value % 2)) { moduloReject4 with Slots = 2 } [ 0; 2; 4; 1 ]
+        |> unwrapModulo
+
+    projected.State |> ModuloGSet.toSlotList |> should equal [ 0, 0; 1, 1 ]
+    projected.State |> ModuloGSet.toList |> should equal [ 0; 1 ]
+    Assert.Empty(projected.Heat.Forgotten |> GSet.toList)
+    projected.Heat.Units |> should equal 0
+    projected.Rejected |> should equal 2
