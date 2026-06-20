@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (second gen-from-IR primitive: fmix32, PR #8686)
+**Last updated:** 2026-06-20 (IR as live row on a DBSP Z-set relation, PR #8692)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -81,7 +81,22 @@ verified) so future-me and peers do not over-trust past-me.
     64 diverge). F# test pins the cross-language byte-lock of the row. Interpreter
     intentionally NOT shared across the two gen.ts (shared module would defeat
     N-way independence). cross-verify-all now 15/15; F# canonical 72/72.
-    REMAINING (shared with splitmix64): the live-tuple-on-DBSP-relation step.
+  - **IR-AS-LIVE-ROW-ON-DBSP-RELATION LANDED (PR #8692, 2026-06-20):** the
+    open "live tuple on the registry's DBSP Z-set relation" thread is now
+    discharged. `src/Core/GeneratorIrRegistry.fs` models the generator IR as the
+    PAYLOAD of a row on a real `ZSet<IrRow>`: register = +1 delta, retract = -1
+    delta (abelian-group inverse), `relationOf` (full) == `incremental` fold,
+    each row's ZetaId = the real `GeneratorRegistry.idOf` content-address,
+    `byZetaId` lookup. The committed `*.ir.json` files are the rows' MATERIALISED
+    VIEWS — `GeneratorIrRegistry.Tests` (8) pin byte-for-byte equality (file IS
+    the row's bytes), the group law (register+retract=Zero), full==incremental,
+    and byZetaId live-vs-retracted liveness. Both TS oracles now source their IR
+    via `generatorIr.byZetaId(idOf(name,version))` (bun-side twin
+    `_harness/generator-ir-registry.ts`) instead of a bare file path;
+    ts-output.json bytes UNCHANGED so the N-way byte-lock holds. Gates: tsc clean,
+    9/9 fidelity, 15/15 orchestrator, 24/24 relevant F#. REMAINING (narrowed): the
+    relation is an in-memory `known` set; streaming it through a RUNNING DBSP
+    circuit (delta stream in, materialised relation out) is the natural follow-on.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
