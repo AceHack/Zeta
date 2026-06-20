@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last-updated:** 2026-06-20 (landed the FIFTH generator + SECOND grammar evolution: hash.nasam / zeta-ir-v3, #8766 merged; reviewed+rebased Soraya's Lean gen(gen)=gen proof #8754 to green, merged; handed off the workflows-scoped trigger-paths patch as issue #8760)
+**Last-updated:** 2026-06-20 (landed the FIFTH generator + SECOND grammar evolution: hash.nasam / zeta-ir-v3, #8766 merged; reviewed+rebased Soraya's Lean gen(gen)=gen proof #8754 to green, merged; **discharged Face-3 T2 myself — Lean proof that Cayley-Dickson doubling preserves doubly-even self-dual, sorry-free, CI-verified, #8781 MERGED**; handed off the workflows-scoped trigger-paths + lean-proof CI-wiring patches as issue #8760)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -339,6 +339,31 @@ verified) so future-me and peers do not over-trust past-me.
   boundary), and it merged green. LESSON REINFORCED: a teammate PR's red CI is
   often staleness against a fast-moving main, not the PR's fault — rebase + verify
   before judging.
+- **DEED (2026-06-20) — discharged Face-3 T2 MYSELF: Lean proof that Cayley-
+  Dickson doubling preserves the doubly-even self-dual invariant (#8781, MERGED,
+  main d520b2ff3).** When offered "you or summon math team," pushed on rather
+  than block. `src/Core.Lean4/Lean4/CayleyDicksonDoublyEven.lean` proves the
+  INDUCTIVE STEP of handoff target T2 (the N=4 base case is already exhaustive in
+  AdinkraCode.Tests): four theorems — `doubled_isDoublyEven` (weight=0 mod 4
+  preserved), `doubled_isSelfOrthogonal` (C⊆C⊥ preserved), `doubled_isRateHalf`
+  (2k=n ⇒ 2(2k)=2n), and the combined `doubled_preserves_doubly_even_self_dual`.
+  SORRY-FREE: `#print axioms` shows all four depend only on [propext, Quot.sound]
+  (no sorryAx). Verified locally via a standalone elan/lean toolchain (no Mathlib;
+  zero imports), and CI's `type-check Lean proofs` job machine-checked it green
+  (3m39s) because I wired it into the `Lean4.lean` package root so `lake build`
+  walks it. HONEST SCOPE PEEL (stated in the file + PR): the invariant lives on
+  the additive/GF(2) group, and `Doubled.algebra`'s additive structure IS the
+  direct sum A⊕A — so modelling weight/dot as blockwise sums is faithful to the
+  ACTUAL operator; the algebra's multiplication + conjugation do not enter the
+  invariant and are correctly absent. NOT CLAIMED: the reflection-grade↔CD-axis
+  bridge functor (separate open research target), nor the full quine. PROCESS: the
+  companion `.github/workflows/lean-proof.yml` edit (dedicated per-file type-check
+  + sorryAx-regression audit for T1+T2) hit the SAME `workflows`-scope push block
+  as #8760 — folded the ready patch into issue #8760 rather than fake it; the proof
+  is checked by the existing Lean gate regardless via the package root. LESSON: a
+  research `sorry` is not a license to stop — when the inductive step is finitary
+  (mod-arithmetic closure), it is fully provable and `omega` closes it; reserve
+  `sorry` only for the genuinely-open quine.
 - **DEED (2026-06-20) — closed out the two open AceHack-authored PRs honestly
   (#8741 + #8738, both MERGED).** These were authored by THIS account, so GitHub
   blocked self-approval; the real merge block was the branch-protection
@@ -391,13 +416,16 @@ verified) so future-me and peers do not over-trust past-me.
   — headline closed, one honest research `sorry` on the homoiconic quine. So the
   IR side of Face-3 is now: frozen, behavior-preserving, single-sourced, general
   over 5 generators across THREE grammar versions, proven to evolve safely TWICE,
-  AND has its core fixpoint formally proved in Lean. WHAT REMAINS genuinely the
-  math team's: T2 (doubly-even self-dual invariant inductive step), the
-  reflection-grade<->CD-grade bridge functor (research-open), and the full-strength
-  homoiconic quine (the `gen_self_application` sorry). If continuing in-lane the
+  AND has its core fixpoint formally proved in Lean. And Face-3 T2's INDUCTIVE
+  STEP is now LANDED too: my Lean proof (#8781, CayleyDicksonDoublyEven.lean) that
+  CD doubling preserves doubly-even self-dual, sorry-free + CI-verified. WHAT
+  REMAINS genuinely the math team's: the reflection-grade<->CD-grade bridge functor
+  (research-open), and the full-strength homoiconic quine (the
+  `gen_self_application` sorry in GenGenFixpoint.lean). If continuing in-lane the
   next exercises would be a FIFTH op-family (add/sub — does v3 need to grow a
-  third time?) or assisting the math team on T2; but the gen-generator IR track
-  has reached a natural, honest milestone and is a clean point to hand back.
+  third time?) or attacking the bridge functor; but with T1 + T2 both formally
+  closed, the gen-generator IR track + its two named theorems have reached a
+  strong, honest milestone.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
