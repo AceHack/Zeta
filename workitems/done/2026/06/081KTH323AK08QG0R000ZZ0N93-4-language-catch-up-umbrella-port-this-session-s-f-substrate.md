@@ -1,7 +1,7 @@
 ---
 id: 081KTH323AK08QG0R000ZZ0N93
 type: task
-state: backlog
+state: completed
 priority: P1
 slug: 4-language-catch-up-umbrella-port-this-session-s-f-substrate
 title: "4-language catch-up UMBRELLA: port this session's F# substrate (store/interop/Evolution/collation) to C#/Rust/TS with golden vectors"
