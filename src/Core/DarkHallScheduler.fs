@@ -27,6 +27,18 @@ module DarkHallScheduler =
           LastTick: RoomLoop.TickOutcome option
           HeatRowsRev: HeatBoundaryRow list }
 
+    [<RequireQualifiedAccess>]
+    type HeatBoardContinuationFeedback =
+        | MalformedContinuation of token: string
+        | LoopIdMismatch of expected: string * actual: string
+        | StatePointerMismatch of expectedPrefix: string * actual: string
+        | ResumeTickOverflow of nextLap: int * ticksPerLap: int
+
+    type HeatBoardContinuationAdmission =
+        { Token: SimLoop.Continuation
+          StatePointer: string
+          ResumeBaseTick: int }
+
     let initial (room: DarkHall.Room) (manifest: Chip9Capabilities.Manifest) : ScheduledRoomState =
         { Loop = RoomLoop.initial room manifest
           CompletedTicks = 0
@@ -189,6 +201,9 @@ module DarkHallScheduler =
             (List.length outcome.Laps)
             outcome.Final.CompletedTicks
 
+    let private heatBoardStatePointerPrefix (loopId: string) : string =
+        sprintf "saves/darkhall/%s/" (continuationLoopId loopId)
+
     /// Mint the existing SimLoop continuation token for a heat-board run when
     /// the loop stopped on a budget rail. Cut-closed rooms and errored rooms do
     /// not respawn.
@@ -203,3 +218,49 @@ module DarkHallScheduler =
         (outcome: SimLoop.Outcome<ScheduledRoomState, string list>)
         : string option =
         outcome |> continueHeatBoardAfter loopId |> Option.map SimLoop.encodeContinuation
+
+    let private resumeBaseTick (nextLap: int) (ticksPerLap: int) : Result<int, HeatBoardContinuationFeedback> =
+        let perLap = max 1 ticksPerLap
+        let baseTick = int64 nextLap * int64 perLap
+
+        if baseTick > int64 System.Int32.MaxValue then
+            Error(HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, perLap))
+        else
+            Ok(int baseTick)
+
+    /// Admit a heat-board continuation token back through the Dark Hall boundary.
+    /// Arbitrary `spawn:*` text is not authority: the token must parse, match the
+    /// expected loop id, and point inside the heat-board save namespace before a
+    /// host runner can use it to offset the next bounded lap.
+    let admitHeatBoardContinuation
+        (loopId: string)
+        (ticksPerLap: int)
+        (tokenLine: string)
+        : Result<HeatBoardContinuationAdmission, HeatBoardContinuationFeedback> =
+        match SimLoop.parseContinuation tokenLine with
+        | None -> Error(HeatBoardContinuationFeedback.MalformedContinuation tokenLine)
+        | Some token ->
+            let expectedLoop = continuationLoopId loopId
+
+            if token.LoopId <> expectedLoop then
+                Error(HeatBoardContinuationFeedback.LoopIdMismatch(expectedLoop, token.LoopId))
+            else
+                let expectedPrefix = heatBoardStatePointerPrefix loopId
+
+                if not (token.StatePointer.StartsWith(expectedPrefix, System.StringComparison.Ordinal)) then
+                    Error(HeatBoardContinuationFeedback.StatePointerMismatch(expectedPrefix, token.StatePointer))
+                else
+                    resumeBaseTick token.NextLap ticksPerLap
+                    |> Result.map (fun baseTick ->
+                        { Token = token
+                          StatePointer = token.StatePointer
+                          ResumeBaseTick = baseTick })
+
+    /// Offset the injected interrupt source for a resumed heat-board run. The
+    /// source remains owned by the host; admission only tells it where the next
+    /// finite link starts.
+    let resumeHeatBoardSource
+        (admission: HeatBoardContinuationAdmission)
+        (source: SoftScheduler.Source)
+        : SoftScheduler.Source =
+        fun tick -> source (admission.ResumeBaseTick + tick)

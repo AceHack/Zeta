@@ -261,6 +261,16 @@ let ``budget stopped heat board sim loop mints a continuation token`` () =
             Assert.Equal(Some token, SimLoop.parseContinuation encoded)
             Assert.Equal(Some encoded, Scheduler.encodeHeatBoardContinuation "darkhall-heat-board" outcome)
 
+            match Scheduler.admitHeatBoardContinuation "darkhall-heat-board" 3 encoded with
+            | Error feedback -> Assert.Fail(sprintf "expected heat-board continuation admission, got %A" feedback)
+            | Ok admission ->
+                Assert.Equal(token, admission.Token)
+                Assert.Equal(expectedPointer, admission.StatePointer)
+                Assert.Equal(6, admission.ResumeBaseTick)
+
+                let resumed = Scheduler.resumeHeatBoardSource admission (fun tick -> [ TimerElapsed tick ])
+                Assert.Equal<InterruptKind list>([ TimerElapsed 11 ], resumed 5)
+
         match Scheduler.continueHeatBoardAfter "" outcome with
         | None -> Assert.Fail "empty loop ids should normalize into a parseable continuation"
         | Some token ->
@@ -275,3 +285,30 @@ let ``budget stopped heat board sim loop mints a continuation token`` () =
             Assert.Equal("saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board", token.StatePointer)
             Assert.Equal(Some token, SimLoop.parseContinuation (SimLoop.encodeContinuation token))
     }
+
+[<Fact>]
+let ``heat board continuation admission refuses malformed and foreign spawn tokens`` () =
+    let admit = Scheduler.admitHeatBoardContinuation "darkhall-heat-board" 2
+
+    match admit "not-a-spawn-token" with
+    | Error(Scheduler.HeatBoardContinuationFeedback.MalformedContinuation token) ->
+        Assert.Equal("not-a-spawn-token", token)
+    | other -> Assert.Fail(sprintf "expected malformed token refusal, got %A" other)
+
+    match admit "spawn:other-loop:2:2:saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board" with
+    | Error(Scheduler.HeatBoardContinuationFeedback.LoopIdMismatch(expected, actual)) ->
+        Assert.Equal("darkhall-heat-board", expected)
+        Assert.Equal("other-loop", actual)
+    | other -> Assert.Fail(sprintf "expected loop mismatch refusal, got %A" other)
+
+    match admit "spawn:darkhall-heat-board:2:2:saves/other/darkhall-heat-board/lap-2-tick-2.heat-board" with
+    | Error(Scheduler.HeatBoardContinuationFeedback.StatePointerMismatch(expectedPrefix, actual)) ->
+        Assert.Equal("saves/darkhall/darkhall-heat-board/", expectedPrefix)
+        Assert.Equal("saves/other/darkhall-heat-board/lap-2-tick-2.heat-board", actual)
+    | other -> Assert.Fail(sprintf "expected state-pointer mismatch refusal, got %A" other)
+
+    match admit "spawn:darkhall-heat-board:2147483647:0:saves/darkhall/darkhall-heat-board/lap-max.heat-board" with
+    | Error(Scheduler.HeatBoardContinuationFeedback.ResumeTickOverflow(nextLap, ticksPerLap)) ->
+        Assert.Equal(System.Int32.MaxValue, nextLap)
+        Assert.Equal(2, ticksPerLap)
+    | other -> Assert.Fail(sprintf "expected overflow refusal, got %A" other)
