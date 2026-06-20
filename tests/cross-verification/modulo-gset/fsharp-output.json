@@ -1,0 +1,76 @@
+{
+  "_source": "hand-port",
+  "reject-collision-keeps-room-cold": {
+    "admissions": [
+      {
+        "admission": "admitted",
+        "slot": 1
+      },
+      {
+        "admission": "rejected-by-collision",
+        "slot": 1
+      },
+      {
+        "admission": "already-present",
+        "slot": 1
+      }
+    ],
+    "exterior": ["a"],
+    "heatForgotten": [],
+    "heatUnits": 0,
+    "rejected": 1,
+    "stateSlots": [
+      {
+        "slot": 1,
+        "value": "a"
+      }
+    ]
+  },
+  "replace-existing-emits-heat": {
+    "admissions": [
+      {
+        "admission": "admitted",
+        "slot": 3
+      },
+      {
+        "admission": "replaced",
+        "slot": 3
+      },
+      {
+        "admission": "already-present",
+        "slot": 3
+      }
+    ],
+    "exterior": ["new"],
+    "heatForgotten": ["old"],
+    "heatUnits": 1,
+    "rejected": 0,
+    "stateSlots": [
+      {
+        "slot": 3,
+        "value": "new"
+      }
+    ]
+  },
+  "gset-source-replays-in-canonical-order": {
+    "admissions": [],
+    "exterior": ["1", "3"],
+    "heatForgotten": ["0"],
+    "heatUnits": 1,
+    "rejected": 0,
+    "stateSlots": [
+      {
+        "slot": 0,
+        "value": "3"
+      },
+      {
+        "slot": 1,
+        "value": "1"
+      }
+    ]
+  },
+  "invalid-slot-count-is-feedback": {
+    "error": "non-positive-slots",
+    "slots": 0
+  }
+}

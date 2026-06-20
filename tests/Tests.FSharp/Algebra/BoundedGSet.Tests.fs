@@ -1,5 +1,10 @@
 module Zeta.Tests.Algebra.BoundedGSetTests
 
+open System.Globalization
+open System.IO
+open System.Reflection
+open System.Text.Json
+open System.Text.Json.Nodes
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
@@ -242,3 +247,148 @@ let ``modulo GSet projection counts cold collision backpressure`` () =
     Assert.Empty(projected.Heat.Forgotten |> GSet.toList)
     projected.Heat.Units |> should equal 0
     projected.Rejected |> should equal 2
+
+let private repoRoot () : string =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then
+        failwith "Could not locate repo root (Zeta.sln) from test assembly location."
+    dir.FullName
+
+let private moduloPolicy (value: string) : ModuloGSetCollisionPolicy =
+    match value with
+    | "reject-collision" -> ModuloGSetCollisionPolicy.RejectCollision
+    | "replace-existing" -> ModuloGSetCollisionPolicy.ReplaceExisting
+    | other -> failwithf "unknown modulo-gset collision policy: %s" other
+
+let private moduloConfig (element: JsonElement) : ModuloGSetConfig =
+    let config = element.GetProperty("config")
+    { Slots = config.GetProperty("slots").GetInt32()
+      CollisionPolicy = moduloPolicy (config.GetProperty("collisionPolicy").GetString()) }
+
+let private admissionName (admission: ModuloGSetAdmission) : string =
+    match admission with
+    | ModuloGSetAdmission.Admitted -> "admitted"
+    | ModuloGSetAdmission.AlreadyPresent -> "already-present"
+    | ModuloGSetAdmission.Replaced -> "replaced"
+    | ModuloGSetAdmission.RejectedByCollision -> "rejected-by-collision"
+
+let private combineModuloHeat (left: BoundedGSetHeat<string>) (right: BoundedGSetHeat<string>) : BoundedGSetHeat<string> =
+    { Forgotten = GSet.union left.Forgotten right.Forgotten
+      Units = left.Units + right.Units }
+
+let private jsonArray (nodes: JsonNode seq) : JsonArray =
+    let array = JsonArray()
+    for node in nodes do
+        array.Add(node)
+    array
+
+let private stringArray (values: string list) : JsonArray =
+    values |> Seq.map (fun value -> JsonValue.Create(value) :> JsonNode) |> jsonArray
+
+let private slotArray (slots: (int * string) list) : JsonArray =
+    slots
+    |> Seq.map (fun (slot, value) ->
+        let node = JsonObject()
+        node["slot"] <- JsonValue.Create(slot)
+        node["value"] <- JsonValue.Create(value)
+        node :> JsonNode)
+    |> jsonArray
+
+let private admissionArray (admissions: (string * int) list) : JsonArray =
+    admissions
+    |> Seq.map (fun (admission, slot) ->
+        let node = JsonObject()
+        node["admission"] <- JsonValue.Create(admission)
+        node["slot"] <- JsonValue.Create(slot)
+        node :> JsonNode)
+    |> jsonArray
+
+let private errorOutput (error: ModuloGSetError) : JsonObject =
+    let node = JsonObject()
+    match error with
+    | ModuloGSetError.NonPositiveSlots slots ->
+        node["error"] <- JsonValue.Create("non-positive-slots")
+        node["slots"] <- JsonValue.Create(slots)
+    node
+
+let private stateOutput
+    (state: ModuloGSet<string>)
+    (heat: BoundedGSetHeat<string>)
+    (rejected: int)
+    (admissions: (string * int) list)
+    : JsonObject =
+    let node = JsonObject()
+    node["admissions"] <- admissionArray admissions
+    node["exterior"] <- stringArray (ModuloGSet.toList state)
+    node["heatForgotten"] <- stringArray (GSet.toList heat.Forgotten)
+    node["heatUnits"] <- JsonValue.Create(heat.Units)
+    node["rejected"] <- JsonValue.Create(rejected)
+    node["stateSlots"] <- slotArray (ModuloGSet.toSlotList state)
+    node
+
+let private replayOps (vector: JsonElement) : JsonNode =
+    let config = moduloConfig vector
+    match ModuloGSet.empty<string> config with
+    | Error error -> errorOutput error :> JsonNode
+    | Ok start ->
+        let mutable state = start
+        let mutable heat = ModuloGSet.emptyHeat<string>
+        let mutable rejected = 0
+        let admissions = ResizeArray<string * int>()
+        let mutable error: ModuloGSetError option = None
+
+        for op in vector.GetProperty("ops").EnumerateArray() do
+            if Option.isNone error then
+                match ModuloGSet.addWithSlot (op.GetProperty("slot").GetInt64()) (op.GetProperty("value").GetString()) state with
+                | Error e -> error <- Some e
+                | Ok added ->
+                    state <- added.State
+                    heat <- combineModuloHeat heat added.Heat
+                    if added.Admission = ModuloGSetAdmission.RejectedByCollision then
+                        rejected <- rejected + 1
+                    admissions.Add(admissionName added.Admission, added.Slot)
+
+        match error with
+        | Some e -> errorOutput e :> JsonNode
+        | None -> stateOutput state heat rejected (Seq.toList admissions) :> JsonNode
+
+let private stringList (element: JsonElement) : string list =
+    [ for value in element.EnumerateArray() -> value.GetString() ]
+
+let private replayFromGSet (vector: JsonElement) : JsonNode =
+    let config = moduloConfig vector
+    let slotOf (value: string) =
+        int64 (System.Int32.Parse(value, NumberStyles.Integer, CultureInfo.InvariantCulture))
+
+    let source = vector.GetProperty("sourceValues") |> stringList |> GSet.ofSeq
+    match ModuloGSet.ofGSet slotOf config source with
+    | Error error -> errorOutput error :> JsonNode
+    | Ok projected -> stateOutput projected.State projected.Heat projected.Rejected [] :> JsonNode
+
+let private replayModuloVector (vector: JsonElement) : JsonNode =
+    match vector.GetProperty("mode").GetString() with
+    | "ops" -> replayOps vector
+    | "from-gset" -> replayFromGSet vector
+    | other -> failwithf "unknown modulo-gset vector mode: %s" other
+
+[<Fact>]
+let ``F# replays modulo GSet treaty vectors and committed oracle output`` () =
+    let root = repoRoot ()
+    let vectorsPath = Path.Join(root, "tests", "cross-verification", "modulo-gset", "vectors.json")
+    let outputPath = Path.Join(root, "tests", "cross-verification", "modulo-gset", "fsharp-output.json")
+
+    use vectorsDoc = JsonDocument.Parse(File.ReadAllText(vectorsPath))
+    use outputDoc = JsonDocument.Parse(File.ReadAllText(outputPath))
+
+    Assert.Equal("hand-port", outputDoc.RootElement.GetProperty("_source").GetString())
+
+    for vector in vectorsDoc.RootElement.GetProperty("vectors").EnumerateArray() do
+        let id = vector.GetProperty("id").GetString()
+        let expected = JsonNode.Parse(vector.GetProperty("expected").GetRawText())
+        let actual = replayModuloVector vector
+        let committed = JsonNode.Parse(outputDoc.RootElement.GetProperty(id).GetRawText())
+
+        Assert.True(JsonNode.DeepEquals(expected, actual), sprintf "computed F# output diverged for %s" id)
+        Assert.True(JsonNode.DeepEquals(expected, committed), sprintf "committed F# output diverged for %s" id)
