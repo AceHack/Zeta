@@ -87,6 +87,7 @@ module GeneratorRegistry =
           register "shape.exchange-worldlines" 1
           register "shape.kitaev-chain" 1
           register "shape.crossing" 1
+          register "rng.splitmix64" 1
           register "engine.zeta-bayesian" 1
           register "engine.infer-net" 1
           register "engine.mock-flat" 1

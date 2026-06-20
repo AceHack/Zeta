@@ -1,0 +1,37 @@
+version: 1
+description: >-
+  GeneratorRegistry content-address golden vectors — the cross-language byte-lock
+  for `idOf name version` (src/Core/GeneratorRegistry.fs). A generator's ZetaId is
+  a PURE FUNCTION of its stable `name@version`: a two-lane FNV-1a-ish 128-bit fold
+  (h1 seeded 0xcbf29ce484222325, h2 seeded 0x84222325cbf29ce4, each char mixes
+  c into h1 and c*31 into h2, prime 0x100000001b3, all wrapping uint64), printed
+  as 32 lowercase hex (h1 then h2). This is the "treaty over generators": the same
+  generator name means the SAME id on every node/oracle, so a filetype can refer
+  to its artifacts by id and every language resolves it identically. Agreement here
+  is load-bearing for the codegen-forward pipeline — a `generated-from-ir` oracle
+  references its generator by this id, so the id must be reproducible cross-language
+  or the reference floats apart.
+  `rng.splitmix64@1` is the generator behind the splitmix64 cross-verification
+  oracle (tests/cross-verification/splitmix64), tying that oracle's provenance to a
+  real registered, content-addressed registry row rather than an inline literal.
+vectors:
+  - id: rng.splitmix64@1
+    name: rng.splitmix64
+    gen_version: 1
+    result: "129c1fac3a48075b481c0f10f30deb06"
+  - id: boundary.glow@1
+    name: boundary.glow
+    gen_version: 1
+    result: "bb074fb3fefaa419c660f62218eeb912"
+  - id: boundary.glow@2
+    name: boundary.glow
+    gen_version: 2
+    result: "bb074cb3fefa9f00c661972218efcaa5"
+  - id: kernel.rbf@1
+    name: kernel.rbf
+    gen_version: 1
+    result: "28e0a82bea989793c194656392bd1096"
+  - id: zetaid.glyph@1
+    name: zetaid.glyph
+    gen_version: 1
+    result: "f42317cf4d9df65dbb63d5e27430f384"

@@ -27,6 +27,18 @@ let ``every known generator has a distinct id (no collisions in the stable set)`
     Assert.Equal(List.length ids, ids |> List.distinct |> List.length)
 
 [<Fact>]
+let ``rng.splitmix64 is registered and its ZetaId is pinned (cross-verification byte-lock anchor)`` () =
+    // The splitmix64 cross-verification oracle is `generated-from-ir`: it references
+    // its generator by this content-addressed id. The id is byte-locked across TS
+    // and F# in tests/cross-verification/generator-registry-id, so pin it here too —
+    // any drift (a renamed generator, a changed hash) breaks this AND the oracle
+    // reference at once, never silently.
+    let e = GeneratorRegistry.byName "rng.splitmix64" |> Option.get
+    Assert.Equal(1, e.Version)
+    Assert.Equal("129c1fac3a48075b481c0f10f30deb06", e.ZetaId)
+    Assert.Equal("129c1fac3a48075b481c0f10f30deb06", GeneratorRegistry.idOf "rng.splitmix64" 1)
+
+[<Fact>]
 let ``ROTOR: a quarter-turn unit rotor sweeps a seed vector around the center (the rotational generator)`` () =
     let re, im = B.rotorOf 1 4 1000 // 1/4 turn, unit growth (a circle)
     let curve = B.rotorCurve (B.p 10 10) 6.0 0.0 re im 4

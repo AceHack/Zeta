@@ -26,11 +26,23 @@
 // generator contract.
 //
 // Tier: PROVEN that a data-defined IR + total interpreter byte-locks against the
-// independent hand-ports. The IR here is an inline literal, NOT yet a row read
-// from a DynamicValue Z-set schema (`src/Core/GeneratorRegistry.fs`) — that
-// registry-sourced IR remains the next step.
+// independent hand-ports. The generator now has a REGISTERED, content-addressed
+// identity (`rng.splitmix64@1` in `src/Core/GeneratorRegistry.fs`, id byte-locked
+// cross-language in `../generator-registry-id`). The IR payload itself is still an
+// inline literal here, not yet serialised AS a DynamicValue row carried on the
+// registry's Z-set — wiring the IR-as-data through the registry relation is the
+// remaining step.
 import { writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
+
+// REGISTRY PROVENANCE — this generator's content-addressed ZetaId.
+// `rng.splitmix64@1` is a registered row in `src/Core/GeneratorRegistry.fs`; its
+// content-address is byte-locked cross-language in
+// `tests/cross-verification/generator-registry-id` and pinned in
+// `tests/Tests.FSharp/GeneratorRegistry.Tests.fs`. Referencing the generator by
+// this derived id (not a minted-and-forgotten one) is what makes "generated-from-
+// ir" point at a real registry row rather than a free-floating literal:
+//   idOf("rng.splitmix64", 1) == 129c1fac3a48075b481c0f10f30deb06
 
 const MASK = (1n << 64n) - 1n;
 const u64 = (x: bigint): bigint => x & MASK;
