@@ -34,6 +34,44 @@ let private timer =
     | _ -> false
 
 [<Fact>]
+let ``heat boundary rows render as a host visible CHIP-9 board`` () =
+    let row: Scheduler.HeatBoundaryRow =
+        { Tick = 7
+          RoomName = "darkhall"
+          HeatRejected = 2
+          Backpressured = 1
+          StorageErrors = 1
+          HeatKinds = [ "darkhall.machine.denied"; "meta-cart.policy-backpressure" ]
+          Reasons = [ "capacity=1"; "child launch denied" ] }
+
+    let frame = Scheduler.heatBoardFrame 99UL [ row ]
+
+    Assert.Equal(7uy, frame.Plane)
+    Assert.Equal(1uy, Chip8Cow.colorAt 0 0 frame)
+    Assert.Equal(1uy, Chip8Cow.colorAt 1 0 frame)
+    Assert.Equal(0uy, Chip8Cow.colorAt 2 0 frame)
+    Assert.Equal(3uy, Chip8Cow.colorAt 16 0 frame)
+    Assert.Equal(0uy, Chip8Cow.colorAt 17 0 frame)
+    Assert.Equal(5uy, Chip8Cow.colorAt 32 0 frame)
+    Assert.Equal(0uy, Chip8Cow.colorAt 33 0 frame)
+    Assert.Equal(4uy, Chip8Cow.colorAt 48 0 frame)
+    Assert.Equal(4uy, Chip8Cow.colorAt 49 0 frame)
+    Assert.Equal(0uy, Chip8Cow.colorAt 50 0 frame)
+
+    let rendered = Scheduler.renderHeatBoard 99UL [ row ]
+    let firstDisplayRow = rendered.[1]
+
+    Assert.Equal("plane\t7", rendered.[0])
+    Assert.Equal("11", firstDisplayRow.Substring(0, 2))
+    Assert.Equal("0", firstDisplayRow.Substring(2, 1))
+    Assert.Equal("3", firstDisplayRow.Substring(16, 1))
+    Assert.Equal("0", firstDisplayRow.Substring(17, 1))
+    Assert.Equal("5", firstDisplayRow.Substring(32, 1))
+    Assert.Equal("0", firstDisplayRow.Substring(33, 1))
+    Assert.Equal("44", firstDisplayRow.Substring(48, 2))
+    Assert.Equal("0", firstDisplayRow.Substring(50, 1))
+
+[<Fact>]
 let ``soft scheduler banks darkhall heat backpressure as a room boundary row`` () =
     task {
         let sink =

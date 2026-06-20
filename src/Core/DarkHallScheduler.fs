@@ -42,6 +42,58 @@ module DarkHallScheduler =
     let backpressured (state: ScheduledRoomState) : bool =
         state.HeatRowsRev |> List.exists (fun row -> row.Backpressured > 0)
 
+    let private setColor (x: int) (y: int) (mask: byte) (frame: Chip8Cow.Frame) : Chip8Cow.Frame =
+        let idx = y * Chip8.DisplayW + x
+        let display =
+            if mask &&& 1uy <> 0uy then Map.add idx true frame.Display else Map.remove idx frame.Display
+
+        let hi = mask &&& 0b110uy
+        let extra = if hi = 0uy then Map.remove idx frame.Extra else Map.add idx hi frame.Extra
+
+        { frame with Display = display; Extra = extra }
+
+    let private drawLane (y: int) (start: int) (width: int) (mask: byte) (count: int) (frame: Chip8Cow.Frame) : Chip8Cow.Frame =
+        let lit = max 0 count |> min width
+
+        if lit = 0 then
+            frame
+        else
+            [ 0 .. lit - 1 ] |> List.fold (fun acc dx -> setColor (start + dx) y mask acc) frame
+
+    let private drawKindLane (y: int) (row: HeatBoundaryRow) (frame: Chip8Cow.Frame) : Chip8Cow.Frame =
+        row.HeatKinds
+        |> List.distinct
+        |> List.truncate 16
+        |> List.indexed
+        |> List.fold (fun acc (i, _) -> setColor (48 + i) y 4uy acc) frame
+
+    /// Host-visible CHIP-9 heat board. Each heat row becomes one display row:
+    /// red 0..15 = heat rejected, yellow 16..31 = backpressure, magenta
+    /// 32..47 = storage errors, blue 48..63 = distinct heat kinds.
+    let heatBoardFrame (seed: uint64) (rows: HeatBoundaryRow list) : Chip8Cow.Frame =
+        let visibleRows = rows |> List.rev |> List.truncate Chip8.DisplayH |> List.rev
+        let baseFrame = { Chip8Cow.create seed with Plane = 7uy }
+
+        visibleRows
+        |> List.indexed
+        |> List.fold
+            (fun frame (y, row) ->
+                frame
+                |> drawLane y 0 16 1uy row.HeatRejected
+                |> drawLane y 16 16 3uy row.Backpressured
+                |> drawLane y 32 16 5uy row.StorageErrors
+                |> drawKindLane y row)
+            baseFrame
+
+    let heatBoardFrameForState (seed: uint64) (state: ScheduledRoomState) : Chip8Cow.Frame =
+        state |> heatRows |> heatBoardFrame seed
+
+    let renderHeatBoard (seed: uint64) (rows: HeatBoundaryRow list) : string list =
+        rows |> heatBoardFrame seed |> Chip9Board.render
+
+    let renderHeatBoardForState (seed: uint64) (state: ScheduledRoomState) : string list =
+        state |> heatRows |> renderHeatBoard seed
+
     let private rowOfOutcome (tick: int) (outcome: RoomLoop.TickOutcome) : HeatBoundaryRow =
         { Tick = tick
           RoomName = outcome.Readout.RoomName
