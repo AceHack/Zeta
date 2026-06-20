@@ -115,6 +115,18 @@ module GeneratorIrRegistry =
     /// rotate-left-by-constant op node — NEW in the v2 grammar (xoshiro256ss needs it).
     let private rotl (r: int64) =
         DynamicValue.Object [ ("op", DynamicValue.String "rotl"); ("r", DynamicValue.Int r) ]
+    /// xor-in several self-rotations op node — NEW in the v3 grammar (nasam needs it):
+    /// `x ^= rotl(x,r_1) ^ rotl(x,r_2) ^ ...` reusing the CURRENT word in parallel.
+    let private xrotxor (rs: int64 list) =
+        DynamicValue.Object
+            [ ("op", DynamicValue.String "xrotxor")
+              ("rs", DynamicValue.Array(rs |> List.map DynamicValue.Int)) ]
+    /// xor-in several self-shifts op node — NEW in the v3 grammar (nasam needs it):
+    /// `x ^= (x>>s_1) ^ (x>>s_2) ^ ...`. The one-term form is exactly v1/v2's `xorshr s`.
+    let private xshrxor (ss: int64 list) =
+        DynamicValue.Object
+            [ ("op", DynamicValue.String "xshrxor")
+              ("ss", DynamicValue.Array(ss |> List.map DynamicValue.Int)) ]
 
     /// NOTE on shape: the committed splitmix64 file carries an explicit `zetaId` field
     /// and NO `width` (u64 implied); the fmix32 file carries `width` and no `zetaId`.
@@ -197,11 +209,38 @@ module GeneratorIrRegistry =
     /// `GeneratorRegistry.known`; their ZetaId is still the deterministic `idOf`
     /// content-address (the id is a pure function of name@version, registered-or-not —
     /// that is the homoiconic point).
+    /// nasam MIXER IR (width 64) — the FIFTH generator, and the first to require ops
+    /// (`xrotxor`/`xshrxor`) OUTSIDE the v2 `mul`/`xorshr`/`rotl` grammar. A v2 `rotl`
+    /// REPLACES the word with its rotation; nasam XORs several rotations/shifts of the
+    /// CURRENT word back IN (parallel reuse), which no sequential mul/xorshr/rotl chain
+    /// expresses. Per the evolution contract this is a SECOND breaking grammar change, so
+    /// the row carries the twice-bumped `zeta-ir-v3` schema tag. Pelle Evensen's
+    /// public-domain reference
+    /// (mostlymangling.blogspot.com/2020/01/nasam-not-another-strange-acronym-mixer.html),
+    /// with M1 = 0x9E6C63D0676A9A99, M2 = 0x9E6D62D06F6A9A9B:
+    ///   x ^= ror(x,25)^ror(x,47); x*=M1; x ^= x>>23^x>>51; x*=M2; x ^= x>>23^x>>51
+    /// (ror 25/47 == rotl 39/17 at width 64). Mirrors
+    /// `tests/cross-verification/nasam/_gen/nasam.ir.json`.
+    let nasamIr : DynamicValue =
+        DynamicValue.Object
+            [ ("schema", DynamicValue.String "zeta-ir-v3")
+              ("generator", DynamicValue.String "hash.nasam")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 64L)
+              ("ops",
+               DynamicValue.Array
+                   [ xrotxor [ 39L; 17L ]
+                     mul -7031135171492799847L // 0x9E6C63D0676A9A99
+                     xshrxor [ 23L; 51L ]
+                     mul -7030854795893499237L // 0x9E6D62D06F6A9A9B
+                     xshrxor [ 23L; 51L ] ]) ]
+
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
           row "hash.fmix32" 1 fmix32Ir
           row "hash.fmix64" 1 fmix64Ir
-          row "rng.xoshiro256ss" 1 xoshiro256ssIr ]
+          row "rng.xoshiro256ss" 1 xoshiro256ssIr
+          row "hash.nasam" 1 nasamIr ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)

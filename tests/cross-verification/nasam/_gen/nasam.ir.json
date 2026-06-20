@@ -1,0 +1,1 @@
+{"schema":"zeta-ir-v3","generator":"hash.nasam","version":1,"width":64,"ops":[{"op":"xrotxor","rs":[39,17]},{"op":"mul","k":-7031135171492799847},{"op":"xshrxor","ss":[23,51]},{"op":"mul","k":-7030854795893499237},{"op":"xshrxor","ss":[23,51]}]}

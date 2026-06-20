@@ -1,0 +1,43 @@
+version: 1
+description: >-
+  nasam mixer golden vectors — the FIFTH generated-from-ir primitive and the
+  SECOND grammar evolution (it needs ops the v2 mul/xorshr/rotl vocabulary
+  cannot express: XOR-ing several self-rotations / self-shifts of the CURRENT
+  word back into it). Pelle Evensen's public-domain reference
+  (mostlymangling.blogspot.com/2020/01/nasam-not-another-strange-acronym-mixer.html)
+  is, with M1 = 0x9E6C63D0676A9A99 and M2 = 0x9E6D62D06F6A9A9B, all WRAPPING uint64:
+    x ^= ror(x,25) ^ ror(x,47);  x *= M1;  x ^= x>>23 ^ x>>51;  x *= M2;  x ^= x>>23 ^ x>>51
+  In the zeta-ir-v3 grammar the ops are xrotxor[39,17] (ror 25/47 == rotl 39/17),
+  mul M1, xshrxor[23,51], mul M2, xshrxor[23,51] at width 64. Inputs and the
+  canonical result are decimal STRINGS (parse to BigInt / UInt64 / u64).
+vectors:
+  - id: x-0
+    x: "0"
+    result: "0"
+  - id: x-1
+    x: "1"
+    result: "11248308645848015117"
+  - id: x-2
+    x: "2"
+    result: "4049871018963231258"
+  - id: x-10
+    x: "10"
+    result: "15619865334026328962"
+  - id: x-255
+    x: "255"
+    result: "5217507792931239132"
+  - id: x-u64max
+    x: "18446744073709551615"
+    result: "7929819594426970889"
+  - id: x-golden
+    x: "11400714819323198485"
+    result: "5316353314353495237"
+  - id: x-2pow63
+    x: "9223372036854775808"
+    result: "3708717314784509798"
+  - id: x-12345678901234567890
+    x: "12345678901234567890"
+    result: "1378205068980227994"
+  - id: x-1e18
+    x: "1000000000000000000"
+    result: "4831380412942311106"

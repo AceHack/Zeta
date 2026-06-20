@@ -92,6 +92,7 @@
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
     <Compile Include="ZetaIrV2.Tests.fs" />
+    <Compile Include="ZetaIrV3.Tests.fs" />
     <Compile Include="ZetaIrV1Gen.CrossVerify.Tests.fs" />
     <Compile Include="ContentHasher.Tests.fs" />
     <Compile Include="Blake3Hasher.Tests.fs" />
