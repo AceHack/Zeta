@@ -55,11 +55,11 @@ module RoomHorizon =
     /// Forgotten materialized keys are heat. Paid futures that still cannot fit
     /// the finite exterior view are backpressure heat.
     let heatSignatures (source: string) (report: Report<'K, 'S>) : HeatSignature list =
-        [ positiveSignature
+        [ BoundedHeat.signature
               source
               "room-horizon.forgotten"
-              report.HorizonHeat.Units
               "bounded horizon forgot materialized keys"
+              report.HorizonHeat
           positiveSignature
               source
               "room-horizon.backpressure"

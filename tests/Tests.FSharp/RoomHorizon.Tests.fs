@@ -124,6 +124,34 @@ let ``rolling horizon exports forgetting as host heat`` () =
     Assert.Equal("room-horizon.forgotten", sink.Signatures.[0].Kind)
 
 [<Fact>]
+let ``rolling horizon preserves heat sink backpressure as typed feedback`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]
+        |> mustOk
+        |> fun projection -> projection.State
+
+    let report =
+        [ candidate 3 "newer" "C" 1L 1L 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    let sink =
+        BoundedHeatSink
+            { Capacity = 1
+              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+
+    let filler = HeatSignature.ofMass "occupied" "heat.fill" 1 1.0 "pre-fill bounded heat sink"
+    (sink :> IHeatSink).Emit filler |> mustOk
+
+    match RH.emitHeat (sink :> IHeatSink) "vision-test" report with
+    | Ok () -> Assert.Fail("expected bounded heat sink backpressure")
+    | Error(HeatSinkFeedback.Backpressure(heat, capacity, count)) ->
+        Assert.Equal("room-horizon.forgotten", heat.Kind)
+        Assert.Equal(1, capacity)
+        Assert.Equal(2, count)
+    | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
+
+[<Fact>]
 let ``no-forget horizon exports paid finite-view rejection as backpressure heat`` () =
     let current =
         BoundedGSet.ofSeq<int> (config 1 BoundedGSetForgetPolicy.RejectNew) [ 1 ]
