@@ -35,6 +35,44 @@ else
   echo "→ .mise.full.toml (k8s set) skipped: requires tier=full, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
   echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
 fi
+
+# --- CI idempotency guard: stale python minor-version alias dir ---
+# Hosted GitHub runner images ship a pre-warmed mise cache in which the
+# python *minor* alias path (…/installs/python/3.14) is a REAL directory,
+# not a symlink. When `mise install` lays down our pinned patch version
+# (python = "3.14.6") it then runs `ln -sf ./3.14.6 …/python/3.14` to
+# maintain the minor alias — which fails "File exists (os error 17)"
+# because `ln -sf` cannot replace a directory. That aborts the whole
+# install step (set -e) BEFORE any lint runs, so every job on the PR goes
+# red (observed 2026-06-20 on the `lint (§33 migration xrefs)` job). It is
+# a mise/runner-image idempotency violation (discipline #6), not a content
+# failure — `apply-N-times` must equal `apply-once`, and the colliding
+# alias slot breaks that.
+#
+# Fix: in CI only, remove a stale NON-SYMLINK python minor-alias dir so
+# mise can (re)create it as the symlink it expects. Idempotent — a correct
+# symlink (or absent path) is left untouched, and the real patch install
+# (3.14.6) is never removed (its name has two dots, so the X.Y filter skips
+# it). Scoped to GITHUB_ACTIONS so dev laptops, where a real …/python/3.14
+# may be intentional and the collision is unobserved, are never touched.
+# REVERT/WIDEN: if the same collision appears on laptops, drop the
+# GITHUB_ACTIONS guard. (install.ps1 is unaffected — Windows mise does not
+# use POSIX `ln -sf` for the alias.)
+if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+  py_installs="${MISE_DATA_DIR:-$HOME/.local/share/mise}/installs/python"
+  if [ -d "$py_installs" ]; then
+    for alias_path in "$py_installs"/*; do
+      [ -e "$alias_path" ] || continue
+      alias_name="$(basename "$alias_path")"
+      if [ ! -L "$alias_path" ] && [ -d "$alias_path" ] &&
+         printf '%s' "$alias_name" | grep -Eq '^[0-9]+\.[0-9]+$'; then
+        echo "↻ removing stale non-symlink python alias dir '$alias_path' (CI idempotency guard; mise recreates it as a symlink)"
+        rm -rf "$alias_path"
+      fi
+    done
+  fi
+fi
+
 if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
    [ -n "${GITHUB_TOKEN:-}" ] &&
    [ -z "${MISE_GITHUB_TOKEN:-}" ] &&
