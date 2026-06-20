@@ -27,6 +27,7 @@
     <Compile Include="Orbit.fs" />
     <Compile Include="AdinkraCode.fs" />
     <Compile Include="E8Lattice.fs" />
+    <Compile Include="CliffordE8Bridge.fs" />
     <Compile Include="Tsirelson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />

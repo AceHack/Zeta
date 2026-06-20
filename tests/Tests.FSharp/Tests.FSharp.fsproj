@@ -319,6 +319,7 @@
     <Compile Include="Curve.Serializer.Tests.fs" />
     <Compile Include="BeliefConvergence.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
+    <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="CayleyDicksonAdinkra.Tests.fs" />
     <Compile Include="Evolution.Tests.fs" />
     <Compile Include="MediatorUnit.Tests.fs" />
