@@ -81,3 +81,89 @@ module ZSetMerkle =
     /// git-replacement / tamper-evident store, call `rootWith` with BLAKE3 instead (081KTGTJC1Q).
     let root (encodeKey: 'K -> byte[]) (z: ZSet<'K>) : MerkleHash =
         rootWith (fun (b: byte[]) -> MerkleHash.ofBytes (ReadOnlySpan<byte> b)) encodeKey z
+
+    // ── Inclusion (audit) proofs — math-team handoff row 4 (inclusion + no third-party forge) ──
+    //
+    // A root commits to the whole Z-set; an inclusion proof commits to ONE `(key, weight)` entry
+    // *under* that root. The soundness target (row 4): a third party holding only the proof + the
+    // root — never the tree — can verify membership, and cannot forge a proof for an entry that is
+    // not committed (any tampered leaf/weight/path recomputes a different root). This is the
+    // companion to `Merkle.Laws.Tests.fs`'s existing tamper-evidence ("equal roots ⟹ equal leaves"):
+    // that proves the root pins the leaves; this gives the succinct per-leaf witness of it.
+
+    /// One step on a Merkle audit path: the sibling digest and whether that sibling sits on the
+    /// RIGHT (so the current node is the LEFT child and `parent = combine self sibling`). When a
+    /// level has an odd trailing node the `fold` duplicates it, so that node's sibling IS itself
+    /// with `SiblingOnRight = true` — `proofForWith` records this faithfully so verification replays
+    /// the exact same construction `rootWith` used.
+    type MerkleStep = { Sibling: MerkleHash; SiblingOnRight: bool }
+
+    /// A self-contained inclusion (audit) proof that a single `(key, weight)` Z-set entry is
+    /// committed under a Merkle root. Verifiable by a third party holding ONLY the proof + the root.
+    /// `LeafKeyBytes` is the canonical `encodeKey` image (not the live `'K`), so the proof is
+    /// byte-portable across the four language oracles — the bytes are the treaty, same as the root.
+    type MerkleProof =
+        { LeafKeyBytes: byte[]
+          LeafWeight: Weight
+          Steps: MerkleStep[] }
+
+    /// Build an inclusion proof for `key` under the root of `z` (explicit hash). `None` when `key`
+    /// is not in the support (you cannot prove membership of a non-member — that absence is exactly
+    /// the no-forge property). The proof replays `rootWith`'s canonical order + odd-node duplication.
+    let proofForWith
+        (hash: byte[] -> MerkleHash)
+        (encodeKey: 'K -> byte[])
+        (z: ZSet<'K>)
+        (key: 'K)
+        : MerkleProof option =
+        let entries =
+            [| for e in z -> struct (encodeKey e.Key, e.Weight) |]
+            |> Array.sortWith (fun (struct (ka, _)) (struct (kb, _)) -> byteCompare ka kb)
+
+        let targetKey = encodeKey key
+
+        match entries |> Array.tryFindIndex (fun (struct (kb, _)) -> byteCompare kb targetKey = 0) with
+        | None -> None
+        | Some leafIdx ->
+            let struct (leafKeyBytes, leafWeight) = entries.[leafIdx]
+            let mutable level = entries |> Array.map (fun (struct (kb, w)) -> hash (leafBytes kb w))
+            let steps = ResizeArray<MerkleStep>()
+            let mutable idx = leafIdx
+            while level.Length > 1 do
+                let n = level.Length
+                let selfIsLeft = idx % 2 = 0
+                // selfIsLeft: sibling on the right (or self, when this is the odd trailing node).
+                // not selfIsLeft: self is the right child, sibling is the left neighbour.
+                let siblingIdx =
+                    if selfIsLeft then (if idx + 1 < n then idx + 1 else idx) else idx - 1
+                steps.Add({ Sibling = level.[siblingIdx]; SiblingOnRight = selfIsLeft })
+                let parents = Array.zeroCreate<MerkleHash> ((n + 1) / 2)
+                for i in 0 .. parents.Length - 1 do
+                    let a = level.[2 * i]
+                    let b = if 2 * i + 1 < n then level.[2 * i + 1] else a
+                    parents.[i] <- combine hash a b
+                level <- parents
+                idx <- idx / 2
+            Some
+                { LeafKeyBytes = leafKeyBytes
+                  LeafWeight = leafWeight
+                  Steps = steps.ToArray() }
+
+    /// Verify an inclusion proof against an expected root (explicit hash). Recomputes the leaf digest
+    /// from the proof's own `(LeafKeyBytes, LeafWeight)` and folds up the audit path — touching only
+    /// the proof + the root, never the tree. Returns `true` iff the recomputed root matches.
+    let verifyWith (hash: byte[] -> MerkleHash) (proof: MerkleProof) (expectedRoot: MerkleHash) : bool =
+        let mutable acc = hash (leafBytes proof.LeafKeyBytes proof.LeafWeight)
+        for step in proof.Steps do
+            acc <-
+                if step.SiblingOnRight then combine hash acc step.Sibling
+                else combine hash step.Sibling acc
+        acc.ToHex() = expectedRoot.ToHex()
+
+    /// Inclusion proof using the default digest (XxHash128). Pairs with `root`.
+    let proofFor (encodeKey: 'K -> byte[]) (z: ZSet<'K>) (key: 'K) : MerkleProof option =
+        proofForWith (fun (b: byte[]) -> MerkleHash.ofBytes (ReadOnlySpan<byte> b)) encodeKey z key
+
+    /// Verify an inclusion proof using the default digest (XxHash128). Pairs with `root`.
+    let verify (proof: MerkleProof) (expectedRoot: MerkleHash) : bool =
+        verifyWith (fun (b: byte[]) -> MerkleHash.ofBytes (ReadOnlySpan<byte> b)) proof expectedRoot
