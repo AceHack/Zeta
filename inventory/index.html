@@ -172,6 +172,39 @@
     .hist-list { display:flex; flex-direction:column; gap:0.5rem; max-height:55vh; overflow-y:auto; }
     .hist-row { border:1px solid var(--panel-border); border-radius:8px; padding:0.55rem 0.7rem; font-size:0.85rem; }
     .hist-row .hh { color:var(--text-muted); font-size:0.76rem; }
+
+    /* ---- Phase 6: item-record detail + QR block ---- */
+    .record-grid { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:0.9rem; align-items:start; }
+    .record-grid .k { color:var(--text-muted); text-transform:uppercase; letter-spacing:0.4px; font-size:0.72rem; white-space:nowrap; }
+    .record-grid .v { color:var(--text-main); white-space:pre-wrap; word-break:break-word; }
+    .qr-block { display:flex; gap:1rem; align-items:center; flex-wrap:wrap; margin-top:0.6rem;
+                padding:0.8rem; border:1px solid var(--panel-border); border-radius:12px; background:var(--inset); }
+    .qr-block img { width:128px; height:128px; image-rendering:pixelated; background:#fff; padding:6px; border-radius:8px; }
+    .qr-block .qr-meta { font-size:0.8rem; color:var(--text-muted); min-width:0; }
+    .qr-block .qr-url { color:var(--text-main); word-break:break-all; margin-top:3px; }
+
+    /* ---- Phase 6: printable QR label sheet (hidden on screen; only laid out for printing) ---- */
+    .label-sheet { display:none; }
+    @media print {
+      /* print ONLY the label grid, on white — hide every other top-level node */
+      body.printing-labels > *:not(#label-sheet) { display:none !important; }
+      body.printing-labels { background:#fff; }
+      body.printing-labels #label-sheet {
+        display:grid; grid-template-columns:repeat(3, 2.625in); grid-auto-rows:1in;
+        gap:0; margin:0; padding:0;
+      }
+      #label-sheet .label {
+        width:2.625in; height:1in; box-sizing:border-box; overflow:hidden;
+        display:flex; align-items:center; gap:0.12in; padding:0.07in 0.1in;
+        page-break-inside:avoid; break-inside:avoid; color:#000; background:#fff;
+      }
+      #label-sheet .label-qr { width:0.82in; height:0.82in; flex:0 0 auto; image-rendering:pixelated; }
+      #label-sheet .label-meta { min-width:0; font-family:system-ui, sans-serif; }
+      #label-sheet .label-id { font-size:9pt; font-weight:700; color:#000; }
+      #label-sheet .label-name { font-size:7.5pt; color:#000; overflow:hidden;
+        display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; word-break:break-word; }
+      @page { margin:0.5in; }
+    }
   </style>
 </head>
 <body>
