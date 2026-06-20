@@ -102,3 +102,32 @@ module AdinkraCode =
     /// `mix(mix,mix)=cogen` reflective fixpoint — remains open in §B.)
     let project (v: int[]) : int[] =
         encode (Array.sub v 0 dimension)
+
+    /// **Syndrome** `s(v) = G·v` over GF(2) (`k` bits). Because the code is **self-dual**, the generator is
+    /// also a parity-check matrix (`H = G`), so `v` is a codeword **iff** `s(v) = 0`. The same generator that
+    /// *generates* the code also *checks* it.
+    let syndrome (v: int[]) : int[] =
+        generator |> Array.map (fun gi -> dot gi v)
+
+    /// `true` iff `v` is a codeword (zero syndrome).
+    let isCodeword (v: int[]) : bool =
+        syndrome v |> Array.forall (fun b -> b = 0)
+
+    /// **Correct** a single-bit error (`d = 4 ⇒ t = 1`): `Some` the unique codeword reachable by flipping
+    /// ≤ 1 bit, or `None` if uncorrectable (≥ 2 errors detected). The same generator that *generates* the
+    /// code now *repairs* it — **generation = error-correction, dual** (`only-the-irreducible-is-primitive`:
+    /// "the generator IS the ECC; regenerating from the irreducible IS the correction"). This is the
+    /// code-level **backstop** for Kestrel's homoiconicity proof / the Futamura `gen(gen)=gen` self-hosting
+    /// fixpoint (Face 3, open in §B): a self-dual generator that both emits and corrects its own image.
+    let correct (v: int[]) : int[] option =
+        if isCodeword v then
+            Some v
+        else
+            let flips =
+                [ for p in 0 .. length - 1 do
+                      let y = Array.copy v
+                      y.[p] <- y.[p] ^^^ 1
+                      if isCodeword y then yield y ]
+            match flips with
+            | [ y ] -> Some y
+            | _ -> None

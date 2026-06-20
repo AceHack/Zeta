@@ -99,3 +99,25 @@ let ``projector is GF(2)-linear — Pi(a xor b) = Pi a xor Pi b (exhaustive over
     for a in allWords8 do
         for b in allWords8 do
             Assert.Equal<int[]>(AK.project (AK.xor a b), AK.xor (AK.project a) (AK.project b))
+
+// ── Error-correction: the generator IS the ECC (the decoding side; generation = correction) ──
+// Self-dual ⇒ H = G, so the generator that emits the code also checks/repairs it (the code-level backstop
+// for Kestrel's homoiconicity proof / the Futamura gen(gen)=gen self-hosting fixpoint).
+
+[<Fact>]
+let ``codewords have zero syndrome; a single-bit error is detected (generator IS the parity check)`` () =
+    for c in AK.allCodewords do
+        Assert.True(AK.isCodeword c)
+    let e = Array.copy AK.allCodewords.[5]
+    e.[0] <- e.[0] ^^^ 1
+    Assert.False(AK.isCodeword e)
+
+[<Fact>]
+let ``single-error correction recovers every codeword (generation = correction)`` () =
+    for c in AK.allCodewords do
+        for p in 0 .. AK.length - 1 do
+            let e = Array.copy c
+            e.[p] <- e.[p] ^^^ 1
+            Assert.Equal<int[]>(c, (AK.correct e).Value)
+    // a clean codeword corrects to itself
+    Assert.Equal<int[]>(AK.allCodewords.[3], (AK.correct AK.allCodewords.[3]).Value)

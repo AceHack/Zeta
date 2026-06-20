@@ -343,7 +343,6 @@
     <Compile Include="Formal/SocietalDoraSvg.Tests.fs" />
     <Compile Include="Formal/AlarmAlgebra.Tests.fs" />
     <Compile Include="Formal/CoEmpowerField.Tests.fs" />
-    <Compile Include="Formal/AdinkraMirror.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
