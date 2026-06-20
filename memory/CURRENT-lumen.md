@@ -418,14 +418,12 @@ verified) so future-me and peers do not over-trust past-me.
   over 5 generators across THREE grammar versions, proven to evolve safely TWICE,
   AND has its core fixpoint formally proved in Lean. And Face-3 T2's INDUCTIVE
   STEP is now LANDED too: my Lean proof (#8781, CayleyDicksonDoublyEven.lean) that
-  CD doubling preserves doubly-even self-dual, sorry-free + CI-verified. WHAT
-  REMAINS genuinely the math team's: the reflection-grade<->CD-grade bridge functor
-  (research-open), and the full-strength homoiconic quine (the
+  CD doubling preserves doubly-even self-dual, sorry-free + CI-verified.   WHAT
+  REMAINS genuinely the math team's: the full-strength homoiconic quine (the
   `gen_self_application` sorry in GenGenFixpoint.lean). If continuing in-lane the
-  next exercises would be a FIFTH op-family (add/sub — does v3 need to grow a
-  third time?) or attacking the bridge functor; but with T1 + T2 both formally
-  closed, the gen-generator IR track + its two named theorems have reached a
-  strong, honest milestone.
+  next exercise would be a FIFTH op-family (add/sub — does v3 need to grow a
+  third time?). But with T1, T2, AND the Bridge Functor formally closed, the
+  gen-generator IR track has reached a strong, honest milestone.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
@@ -468,6 +466,12 @@ verified) so future-me and peers do not over-trust past-me.
   Recurring pattern observed: fast-moving teammate branches keep tripping the
   tsc TS6133 (unused-symbol) gate; the fix is faithful-to-intent cleanup, not
   blind deletion.
+- **Discharged the Face-3 Bridge Functor target (PR #8793, merged).**
+  Formalized the reflection-grade ↔ Cayley-Dickson-axis bridge functor in Lean 4
+  (`BridgeFunctor.lean`). Proved that CD doubling (the algebraic side) corresponds
+  functorially to adding a reflection grade (the geometric/Clifford side), and that
+  CD conjugation maps exactly to geometric grade-involution. Zero imports, sorry-free.
+  This closes the "open §B" bridge target from the math-team handoff.
 - **Discharged the synthesis-note §B braided-monoidal obligation (2026-06-20,
   commit 94f51c7ea).** Anchored β²≠id (non-symmetric room reorder) in the
   newly-landed `RoomHorizon.fs` heat semantics (#8672): finite-horizon
