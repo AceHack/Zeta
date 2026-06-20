@@ -69,6 +69,29 @@ Face 3 **and** the soft-phase unification.
 land. Routing: math team (Clifford→E8 bridge + Face 3; handoff row 10) · the `gen-gen-self-hosting-bytelock`
 trajectory (Face 3 capstone) · Vera (the generator).
 
-Anchors: Gates (adinkra doubly-even self-dual ECC); Hestenes (geometric/Clifford algebra); Conway–Sloane
-(E8 Construction A); Futamura 1971 (`cogen=mix(mix,mix)`); Cayley–Dickson (the doubling generator). Authorship:
-Otto (scoping, verified map).
+## External anchors for the DEEPER unfold (Clifford geometric product → E8 root system) — pass to math team
+
+The deeper claim — that the **Clifford geometric product / GA structure *generates* the E8 root system** (beyond
+our basis/metric isometry in `CliffordE8Bridge`) — is **NOT unanchored speculation**; it is a **published
+result** (Aaron 2026-06-19: *"we can external-anchor here and pass to math team"*). So `§B`'s "deeper unfold"
+is a **reproduction/formalization task**, not an open conjecture-from-scratch:
+
+- **Pierre-Philippe Dechant — "The E8 geometry from a Clifford perspective"** (*Adv. Appl. Clifford Algebras*
+  27, 2017) + **"Clifford algebra is the natural framework for root systems and Coxeter groups"** (2016).
+  *The direct anchor:* E8 roots constructed via **Clifford spinors** (the `H4`/icosahedral → `E8` spinor
+  induction; reflections = sandwich/versor products). This IS "Clifford → E8."
+- **Robert A. Wilson — "Octonions and the Leech lattice"** (*J. Algebra* 2009) and his octonionic `E8`
+  constructions — the octonion ↔ E8 bridge (matches our octonion→[8,4]→E8 leg).
+- **John C. Baez — "The Octonions"** (*Bull. AMS* 39, 2002) — §on E8 / exceptional structures, the standard
+  survey tying octonions, Clifford, and E8.
+- **Conway & Sloane — *SPLAG*** (Construction A, already used by `E8Lattice`) · **Lounesto — *Clifford
+  Algebras and Spinors*** (the Clifford/spinor reference).
+
+**Math-team obligation (handoff row 11):** reproduce/formalize **Dechant's Clifford-spinor E8 construction**
+in-tree (versor/reflection products in a Clifford algebra generating the 240 roots), discharging the deeper
+`§B` unfold — and check it agrees with `CliffordE8Bridge`'s isometry on the 240 roots.
+
+Anchors: Gates (adinkra doubly-even self-dual ECC); Hestenes (geometric/Clifford algebra); **Dechant
+(Clifford→E8 spinor construction)**; **Wilson (octonionic E8)**; **Baez (octonions/E8 survey)**; Conway–Sloane
+(E8 Construction A); Lounesto (Clifford/spinors); Futamura 1971 (`cogen=mix(mix,mix)`); Cayley–Dickson (the
+doubling generator). Authorship: Otto (scoping, verified map).
