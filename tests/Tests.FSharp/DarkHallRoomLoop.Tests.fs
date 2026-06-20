@@ -139,6 +139,59 @@ let ``tick appends runtime refusal and emits heat for denied cabinet capability`
     | other -> Assert.Fail(sprintf "expected denied capability, got %A" other)
 
 [<Fact>]
+let ``tick readout exposes heat backpressure when denied cabinet heat cannot cross boundary`` () =
+    let sink =
+        BoundedHeatSink
+            { Capacity = 1
+              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+
+    let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
+
+    match (sink :> IHeatSink).Emit filler with
+    | Error feedback -> Assert.Fail(sprintf "expected heat sink prefill, got %A" feedback)
+    | Ok() -> ()
+
+    let child = CartFixtures.cart CartFixtures.chip9GreenDot
+    let caps = MetaCart.capabilityMap [ child, CartFixtures.chip9GreenDot.Capabilities ]
+
+    let launch: Runtime.MetaCartLaunch =
+        { Goal = 3
+          Seed = 1UL
+          ParentCapabilities = Chip9Capabilities.chip8Default
+          ChildCapabilitiesBySha = caps
+          Children = [ child ]
+          Parent = Chip8Cow.create 1UL }
+
+    let requestFor (action: Runtime.CabinetAction) =
+        if action.Id = "darkhall.play.meta-cart-host" then
+            Some(Runtime.RunMetaCart launch)
+        else
+            None
+
+    let outcome =
+        RoomLoop.tick
+            "darkhall-room-loop"
+            (sink :> IHeatSink)
+            requestFor
+            (chooseById "darkhall.play.meta-cart-host")
+            (RoomLoop.initial Arcade.room Chip9Capabilities.chip8Default)
+        |> wait
+
+    match outcome.Result with
+    | Error(RoomLoop.TickFeedback.RuntimeFeedback(Runtime.Feedback.HeatRejected(address, HeatSinkFeedback.Backpressure(heat, capacity, count)))) ->
+        Assert.Equal(mkAddress "play" "meta-cart-host", address)
+        Assert.Equal("darkhall.machine.denied", heat.Kind)
+        Assert.Equal(1, capacity)
+        Assert.Equal(2, count)
+    | other -> Assert.Fail(sprintf "expected heat backpressure, got %A" other)
+
+    Assert.Equal(1, outcome.Heat.HeatRejected)
+    Assert.Equal(1, outcome.Heat.Backpressured)
+    Assert.Equal(0, outcome.Heat.StorageErrors)
+    Assert.Equal<string list>([ "darkhall.machine.denied" ], outcome.Heat.HeatKinds)
+    Assert.Contains("capacity=1", System.String.Join(";", outcome.Heat.Reasons))
+
+[<Fact>]
 let ``run is bounded and carries state through consecutive room ticks`` () =
     let sink = RecordingHeatSink()
     let state = RoomLoop.initial Arcade.room Chip9Capabilities.chip8Default

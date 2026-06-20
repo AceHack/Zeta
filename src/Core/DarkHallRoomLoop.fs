@@ -29,6 +29,13 @@ module DarkHallRoomLoop =
 
     type RequestResolver = Runtime.CabinetAction -> Runtime.RunRequest option
 
+    type HeatReadout =
+        { HeatRejected: int
+          Backpressured: int
+          StorageErrors: int
+          HeatKinds: string list
+          Reasons: string list }
+
     [<RequireQualifiedAccess>]
     type TickFeedback =
         | CellUnbound of cell: int
@@ -55,6 +62,7 @@ module DarkHallRoomLoop =
           Choice: ControllerChoice
           Action: Runtime.CabinetAction option
           Result: Result<Runtime.RunResult, TickFeedback>
+          Heat: HeatReadout
           State: LoopState }
 
     type RunOutcome =
@@ -74,6 +82,49 @@ module DarkHallRoomLoop =
     let private append (event: LoopEvent) (state: LoopState) : LoopState =
         { state with EventsRev = event :: state.EventsRev }
 
+    let emptyHeatReadout : HeatReadout =
+        { HeatRejected = 0
+          Backpressured = 0
+          StorageErrors = 0
+          HeatKinds = []
+          Reasons = [] }
+
+    let private boundedGSetErrorReason =
+        function
+        | BoundedGSetError.NonPositiveCapacity capacity -> sprintf "heat storage non-positive capacity %d" capacity
+        | BoundedGSetError.CapacityExceeded(capacity, count) ->
+            sprintf "heat storage capacity exceeded capacity=%d count=%d" capacity count
+        | BoundedGSetError.ConfigMismatch(left, right) ->
+            sprintf
+                "heat storage config mismatch left-capacity=%d right-capacity=%d"
+                left.Capacity
+                right.Capacity
+
+    let private heatSinkFeedbackReadout =
+        function
+        | HeatSinkFeedback.Backpressure(heat, capacity, count) ->
+            { emptyHeatReadout with
+                HeatRejected = 1
+                Backpressured = 1
+                HeatKinds = [ heat.Kind ]
+                Reasons = [ sprintf "heat sink backpressure kind=%s capacity=%d count=%d" heat.Kind capacity count ] }
+        | HeatSinkFeedback.StorageError error ->
+            { emptyHeatReadout with
+                HeatRejected = 1
+                StorageErrors = 1
+                Reasons = [ boundedGSetErrorReason error ] }
+
+    let private heatReadoutOfRuntimeFeedback =
+        function
+        | Runtime.Feedback.HeatRejected(_, feedback) -> heatSinkFeedbackReadout feedback
+        | Runtime.Feedback.MetaCartFeedback(MetaCart.Feedback.HeatRejected(_, feedback)) -> heatSinkFeedbackReadout feedback
+        | _ -> emptyHeatReadout
+
+    let private heatReadoutOfResult =
+        function
+        | Error(TickFeedback.RuntimeFeedback feedback) -> heatReadoutOfRuntimeFeedback feedback
+        | _ -> emptyHeatReadout
+
     let private complete
         (readout: Runtime.ControllerReadout)
         (choice: ControllerChoice)
@@ -85,6 +136,7 @@ module DarkHallRoomLoop =
           Choice = choice
           Action = action
           Result = result
+          Heat = heatReadoutOfResult result
           State = state }
 
     let private cellForAction (action: Runtime.CabinetAction) (readout: Runtime.ControllerReadout) : int option =
