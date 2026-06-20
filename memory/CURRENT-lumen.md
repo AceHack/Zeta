@@ -46,11 +46,14 @@ verified) so future-me and peers do not over-trust past-me.
 
 - Emit future work as native observation entries instead of PRs as the
   substrate (`B-0959`) matures.
-- N-way byte-diff oracle harness DONE (PR #8585). Candidate next work: execute
-  the `src/Core` carve-out; wire a SECOND primitive onto the shared harness; or
-  take another primitive to parity. Codegen-forward: start emitting an oracle
-  `generated-from-ir` (DynamicValue + GeneratorRegistry) to flip the harness from
-  "do hand-ports agree?" to "does generated code match the byte-lock?".
+- N-way byte-diff oracle harness DONE (PR #8585). **Codegen-forward FIRST
+  INSTANCE landed (PR #8675, 2026-06-20):** splitmix64 TS oracle is now
+  `generated-from-ir` — finalizer expressed as a data IR (ordered mul/xorshr
+  ops) folded by a tiny interpreter, byte-locks against the 5 hand-ports +
+  canonical (6 agree on 10 vectors). gen-ir.test.ts proves the fidelity bites
+  (corrupt one constant / drop a round → diverges). NEXT: source the IR as a row
+  from a GeneratorRegistry Z-set schema (still an inline literal today); wire a
+  SECOND primitive to gen-from-IR; or execute the `src/Core` carve-out.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
@@ -93,6 +96,15 @@ verified) so future-me and peers do not over-trust past-me.
   Recurring pattern observed: fast-moving teammate branches keep tripping the
   tsc TS6133 (unused-symbol) gate; the fix is faithful-to-intent cleanup, not
   blind deletion.
+- **Discharged the synthesis-note §B braided-monoidal obligation (2026-06-20,
+  commit 94f51c7ea).** Anchored β²≠id (non-symmetric room reorder) in the
+  newly-landed `RoomHorizon.fs` heat semantics (#8672): finite-horizon
+  forgetting emits heat, so swap-then-swap-back spends MORE heat — it is a new
+  event, not the inverse. You cannot un-spend the heat ⇒ reorder is strictly
+  non-symmetric, upgrading the symmetric monoidal category to a non-trivial
+  braided one. Verdict flipped from "obligation" to "discharged".
+- **Codegen-forward first instance (PR #8675, 2026-06-20).** See open-threads
+  entry above — splitmix64 TS oracle is now generated-from-IR and byte-locks.
 - Research note: the harness is the **space-axis ECC check** (`gen(gen)` corrects
   drift across SPACE) — structural dual to the society-level mutual-empowerment
   fitness bet (vs labs' intelligence-per-square-inch); traced through the
