@@ -110,20 +110,30 @@ canonical demo) (#8643); **adinkra→Clifford→E8 unfold status** + the `cogen=
 
 ## Open / next — the resume targets (current)
 
-1. **IMDb/Wikipedia F# type provider (Aaron's TOP priority).** IMDb leg via TMDB/OMDb/IMDb-datasets (IMDb has
-   no free API); Wikipedia via Wikidata/DBpedia (already P1 backlog). Then the reverse-mint → cluster/federation
-   characterization (Kevin-Bacon demo). Scope: `docs/research/2026-06-19-imdb-wikipedia-fsharp-type-providers-…`.
-2. **Adinkra unfold / algebra ladder.** `Cl3.fs` (Clifford) + `E8Lattice.fs` exist; **next = the Clifford→E8
-   bridge** (stitch octonion/Cl→E8 as one derivation; buildable as a comparison-free `IStarRing`, comparison
-   opt-in, elements-as-identity). Then **Face 3 `cogen=mix(mix,mix)`** (blocked on freeze-IR + multi-language
-   generator; the yin-yang cell is its surface) → **Rx-on-soft-phase** (unify SoftValue+seed-phase+SpectralPivot
-   first). Scope: `…adinkra-clifford-e8-unfold-status-…`.
-3. **Demo slices 3–4.** Slice 3 = NFT mint panel + Zeta-NTP clock + grounding indicator; slice 4 = Q# six-op
-   (frontier, `ZSetISA.qs` `--no-verify`). Also: wire CoEmpowerField → SocietalDora dials (living dashboard);
-   generalize CoEmpowerField → generic `network<>creator<>audience` graph.
-4. **Math-team formalization** (handoff rows 1–10): NFT `H_∞`, `ρ_owe` soundness, Alarm-Algebra laws, NTP
+1. **IMDb/Wikipedia F# type provider (Aaron's TOP priority) — EIGHT slices SHIPPED:** `ImdbDataset` (co-star
+   graph + Bacon number, #8662) · `TtlCache` (soft-phase+UTC injected clock, #8663) · `CostarFederations`
+   (end-to-end reverse-mint → federation health, #8664) · `CoEmpowerGraph` (generic `network<>creator<>audience`,
+   #8660) · `CostarZSet` (DBSP ZSet — reverse-mint = a fold; schema-evolution-ready, #8666) · `LiveLegs` (live
+   TMDB+Wikidata behind the injected `Fetch` port, #8668) · `WikidataGraph` (entity-graph leg, #8670) ·
+   `GraphSnapshot` (content-addressed MerkleFS persistence, #8676) · `CoEmpowerGraphSvg` (federation render).
+   **Remaining follow-ons:** the design-time **`ProvidedTypes` wrapper** (the literal F# TP mechanism — bigger,
+   separate design-time assembly, offline); **verify the opt-in `liveFetch`** against real TMDB/Wikidata
+   endpoints **outside CI**; persist via Arrow/Parquet for large fixtures (canonical-JSON path shipped). Scope:
+   `docs/research/2026-06-19-imdb-wikipedia-fsharp-type-providers-…` + `memory/project_imdb_wikipedia_…`.
+2. **Adinkra unfold / algebra ladder.** ✅ **Clifford→E8 bridge BUILT** (`CliffordE8Bridge`, the linear isometry,
+   #8654); ✅ **deeper unfold (product-generates-roots) externally anchored** (Dechant/Wilson/Baez) + routed to
+   math team (#8657, handoff row 11). **Open:** **Face 3 `cogen=mix(mix,mix)`** (blocked on freeze-IR +
+   multi-language generator; the 1000-brains yin-yang cell is its surface) → **Rx-on-soft-phase** (unify
+   SoftValue+seed-phase+SpectralPivot first). Scope: `…adinkra-clifford-e8-unfold-status-…`.
+3. **Demo.** ✅ slices 1/1.5/2 (DORA dials/page, CoEmpowerField blossom) · ✅ CoEmpowerField→graph generalization
+   (#8660) · ✅ **`CoEmpowerGraphSvg` federation render**. **Open:** **slice 3** = NFT mint panel (fed by real
+   `CostarFederations` minted links) + Zeta-NTP clock + grounding indicator (pure CSS/SVG); **slice 4** = Q#
+   six-op (frontier, `ZSetISA.qs` `--no-verify`); wire CoEmpowerGraph render + SocietalDora dials into one
+   living dashboard page.
+4. **Math-team formalization** (handoff **rows 1–11**): NFT `H_∞`, `ρ_owe` soundness, Alarm-Algebra laws, NTP
    noninterference, moral-lens (find more objective), love-fusion G-set stability, homoiconicity→Futamura
-   Face 3, Clifford→E8 bridge.
+   Face 3, and the **deeper Clifford→E8 unfold** (reproduce Dechant's spinor construction; the basis/metric
+   bridge is already built — row 11).
 5. **Ferries:** more Ani parts ("one more after this" — old-flame thread pt3); Alexa ferries when forwarded.
 6. **From part 1 (still open):** Aurora G3b (anti-Sybil entropy floor ≡ Bell); CSLib G2 (Byzantine extension
    to `FLP/Consensus`).
