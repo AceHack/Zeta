@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   assertRetentionSerialMarkers,
+  assertFirstSessionSerialMarkers,
   B0891_RETENTION_USB_SERIAL_MARKERS,
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
@@ -219,6 +220,12 @@ describe("B-0891 QEMU state-preservation planner", () => {
       expect(result.error.kind).toBe("missing-serial-markers");
       expect(result.error.missingMarkers).toEqual(["already-present"]);
     }
+  });
+
+  test("assertFirstSessionSerialMarkers passes when phase-3 transcript complete", () => {
+    const serial = ["zeta-first-session: begin", "zeta-first-session: complete"].join("\n");
+    const result = assertFirstSessionSerialMarkers(serial);
+    expect("ok" in result).toBe(true);
   });
 
   test("executes the QEMU retention command sequence and asserts serial markers", () => {

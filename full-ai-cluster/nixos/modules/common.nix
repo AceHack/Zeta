@@ -39,6 +39,9 @@
     # ships the TS implementation; imported here so every node type
     # has the same module surface.
     ./zeta-self-register.nix
+    # B-0891 slice 3: post-login first-session credential adventure (profile.d).
+    # Runs once on interactive zeta login; gh auth load-bearing for self-register.
+    ./zeta-first-session.nix
     # B-0852.4a/d: boot-time credential restore from ESP.
     #
     # 2026-05-27 (B-0852.4 default-on flip): now enabled by default
@@ -83,6 +86,9 @@
   # maintainers/<gh-user>/cluster-nodes/<host> PR) once cred-restore has put gh
   # auth back. Idempotent; per-host opt-out: zeta.selfRegister.enable = false;
   zeta.selfRegister.enable = lib.mkDefault true;
+
+  # B-0891 slice 3: numbered menu by default; set useLlm = true for Ollama chooser.
+  zeta.firstSession.enable = lib.mkDefault true;
 
   # B-0831 slice 1 phase-2 / B-0891 scenario 2: qemu-full-install-test boots
   # the installed disk with -serial file: and polls for "<hostname> login:".

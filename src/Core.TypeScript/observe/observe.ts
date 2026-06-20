@@ -60,6 +60,11 @@
  */
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
+import {
+  describeFirstSession,
+  firstSessionOracle,
+  type NodeSessionState,
+} from "./first-session";
 import type { FourCornerOwnership } from "../workflow-engine/types";
 
 /** One backlog item, classified to just what the controller needs to decide. */
@@ -141,6 +146,8 @@ export interface World {
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
+  /** B-0891 slice 4: post-login cred adventure channel; absent when complete or unwired. */
+  readonly nodeSession?: NodeSessionState;
 }
 
 /** Forge host state snapshot, populated by the async path in run-loop-real.ts. */
@@ -159,6 +166,13 @@ const EXPLORE_REASON = "self-directed making — code / docs / research the agen
 const PLAY_REASON = "leisure / cross-AI friendly play / culture-forming (a valid mode — NCI)";
 const SELF_REFLECT_REASON = "review own trajectories, journal, think (self-reflection)";
 const FREE_TIME_REASON = "rest — free time as a valid mode (NCI), never gated";
+const FIRST_SESSION_PENDING_REASON =
+  "first-session credential adventure pending — finish cred setup before backlog work";
+
+/** True when the nodeSession channel is wired and the adventure is not complete. */
+export function isFirstSessionPending(world: World): boolean {
+  return world.nodeSession !== undefined && !world.nodeSession.complete;
+}
 
 /** The NextAction for a persisted free mode — its kind + canonical reason. */
 function freeModeAction(mode: FreeMode): NextAction {
@@ -247,6 +261,13 @@ export function observe(world: World): NextAction {
   const op = world.operator;
   if (op?.pendingFerry) return { kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON };
   if (op?.pendingMessage) return { kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON };
+
+  // First-session channel (B-0891 slice 4): outranks backlog until complete.
+  // NextAction union stays at nine kinds — cred adventure uses explore as the lead
+  // rail; grammar-16 slot 4 carries the first-session sub-menu overlay.
+  if (isFirstSessionPending(world)) {
+    return { kind: "explore", reason: FIRST_SESSION_PENDING_REASON };
+  }
 
   // Mode persistence (operator 2026-05-31 "i love mode persistance"): a chosen
   // FREE mode persists across ticks. Work is OFFERED, not forced — a ready item
@@ -417,6 +438,13 @@ function describeWorld(world: World): string {
         }]`,
     );
     parts.push(`Backlog (${String(world.backlog.length)} items):\n${lines.join("\n")}`);
+  }
+  if (world.nodeSession !== undefined) {
+    parts.push(describeFirstSession(world.nodeSession));
+    if (isFirstSessionPending(world)) {
+      const lead = firstSessionOracle(world.nodeSession);
+      parts.push(`First-session lead: ${lead.kind}${"vendor" in lead ? ` (${lead.vendor})` : ""}`);
+    }
   }
   return parts.join("\n");
 }

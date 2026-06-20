@@ -6,6 +6,7 @@ import {
   INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
+  FIRST_SESSION_SERIAL_MARKERS,
   serialFirstBootInProgress,
 } from "./serial-markers";
 
@@ -810,4 +811,12 @@ export function assertRetentionSerialMarkers(
       matchedMarkers: requiredMarkers,
     },
   };
+}
+
+/** Phase-3 post-login proof: first-session adventure reached completion on serial. */
+export function assertFirstSessionSerialMarkers(
+  serialOutput: string,
+  requiredMarkers: readonly string[] = FIRST_SESSION_SERIAL_MARKERS,
+): RetentionSerialMarkerResult {
+  return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
 }

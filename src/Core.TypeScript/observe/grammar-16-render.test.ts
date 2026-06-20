@@ -7,6 +7,7 @@ import { describe, expect, it } from "bun:test";
 import type { BacklogItem, NextAction, OperatorChannel, World } from "./observe";
 import { GRAMMAR_16_V0, SLOT } from "./grammar-16";
 import { renderGrammar16, leadSlot, type RenderedMenuSlot } from "./grammar-16-render";
+import { defaultNodeSession } from "./first-session";
 
 const item = (over: Partial<BacklogItem> = {}): BacklogItem => ({
   id: "B-0001",
@@ -135,5 +136,23 @@ describe("leadSlot — oracle pick -> slot (operator-priority is not a slot)", (
 
   it("operator spoke -> null (operator-priority is above the menu, not a slot)", () => {
     expect(leadSlot(OPERATOR_SPOKE)).toBeNull();
+  });
+});
+
+describe("renderGrammar16 — first-session overlay (slice 4)", () => {
+  const PENDING: World = {
+    backlog: [item({ id: "B-0099", title: "ready work", ready: true })],
+    nodeSession: defaultNodeSession(),
+  };
+
+  it("slot 4 carries first-session sub-menu when nodeSession pending", () => {
+    const accept = slotOf(renderGrammar16(PENDING), SLOT.ACCEPT);
+    expect(accept.availability.s).toBe("T");
+    expect(accept.firstSessionSubMenu?.length).toBeGreaterThan(0);
+    expect(accept.label).toContain("gh");
+  });
+
+  it("leadSlot highlights slot 4 while first-session pending", () => {
+    expect(leadSlot(PENDING)).toBe(SLOT.ACCEPT);
   });
 });

@@ -41,6 +41,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { nextActionFromBacklog, type Priority } from "./backlog-reader";
 import { fold, type BacklogItem, type Mode, type NextAction, type OperatorChannel, type World } from "./observe";
+import { loadNodeSession, type LoadNodeSessionOptions } from "./load-node-session";
 
 /** The NextAction kinds a folded event log may legitimately contain. */
 const KNOWN_KINDS: ReadonlySet<string> = new Set([
@@ -134,6 +135,8 @@ export interface LoadWorldOptions {
   readonly maxPriority?: Priority;
   /** Live operator channel; omit for a background agent. */
   readonly operator?: OperatorChannel;
+  /** First-session channel; default loads from marker + cred probe. Inject in tests. */
+  readonly nodeSession?: LoadNodeSessionOptions;
 }
 
 /**
@@ -152,9 +155,12 @@ export function loadWorld(opts: LoadWorldOptions): World {
   // transitions don't depend on backlog contents, so this isolates the persisted mode.
   const mode: Mode | undefined = fold({ backlog: [] }, readEventActions(opts.eventDir)).mode;
 
+  const nodeSession = loadNodeSession(opts.nodeSession);
+
   return {
     backlog,
     ...(mode !== undefined ? { mode } : {}),
     ...(opts.operator !== undefined ? { operator: opts.operator } : {}),
+    ...(nodeSession !== undefined ? { nodeSession } : {}),
   };
 }

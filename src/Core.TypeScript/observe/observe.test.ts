@@ -20,11 +20,13 @@ import {
   runLoop,
   fold,
   replay,
+  isFirstSessionPending,
   type BacklogItem,
   type World,
   type OperatorChannel,
   type NextAction,
 } from "./observe";
+import { defaultNodeSession } from "./first-session";
 import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 
 /** Deterministic mock backend: `complete` always returns `reply`. */
@@ -122,6 +124,31 @@ describe("observe — operator channel OUTRANKS the backlog (presence-gated)", (
     expect(observe(w([item("B-amb", false, true)], op(true, false))).kind).toBe("respond_to_operator");
     expect(observe(w([item("B-x", false, false, true)], op(true, false))).kind).toBe("respond_to_operator");
     expect(observe(w([], op(false, true))).kind).toBe("preserve_ferry");
+  });
+});
+
+describe("observe — first-session channel (slice 4)", () => {
+  const readyBacklog = [item("B-ready", true, false)];
+
+  it("pending nodeSession outranks backlog work", () => {
+    const world: World = { backlog: readyBacklog, nodeSession: defaultNodeSession() };
+    expect(isFirstSessionPending(world)).toBe(true);
+    const a = observe(world);
+    expect(a.kind).toBe("explore");
+    if (a.kind === "explore") expect(a.reason).toContain("first-session");
+  });
+
+  it("operator still outranks pending nodeSession", () => {
+    const world: World = {
+      backlog: readyBacklog,
+      nodeSession: defaultNodeSession(),
+      operator: op(true, false),
+    };
+    expect(observe(world).kind).toBe("respond_to_operator");
+  });
+
+  it("absent nodeSession channel falls through to backlog", () => {
+    expect(observe(w(readyBacklog)).kind).toBe("do_item");
   });
 });
 
