@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (reviewed #8699 darkhall heat readout in-lane; board clear, main green)
+**Last updated:** 2026-06-20 (LiveStream external-channel feed LANDED #8712; codegen-forward trajectory complete; board: #8711 open)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -130,6 +130,25 @@ verified) so future-me and peers do not over-trust past-me.
     EXTERNAL delta source (zero-downtime schema evolution over a live feed) reuses
     these exact rungs; the integration semantics + delta algebra are proven
     end-to-end on a real circuit here.
+  - **LIVE-EXTERNAL-DELTA-FEED LANDED (PR #8712, 2026-06-20):** the final rung of
+    the codegen-forward trajectory is discharged. `GeneratorIrRegistry.LiveStream`
+    builds a DBSP circuit ONCE and keeps it running, fed by an EXTERNAL
+    `ChannelZSetInput<IrRow>` boundary (bounded System.Threading.Channels;
+    SingleReader=circuit, multi-writer, FullMode=Wait => real backpressure, never
+    drops). External producers push register/retract deltas; the materialised
+    relation (running ∫) is observable BETWEEN arrivals. API: `openSession capacity`
+    -> Session; `feed`/`feedAndObserve` (SendAsync awaited + StepAsync); `evolve`
+    does an atomic retract(old)+register(new) swap in ONE observation step. Section
+    6 tests (3, file 14/14): 6a per-step correctness (materialised==relationOf over
+    deltas-admitted-so-far at every step), 6b lossless zero-downtime IR swap on the
+    running circuit, 6c content-address stability (ZetaId stable when version
+    unchanged, NEW id on version bump). Gates: F# sweep 143/143, cross-verify 15/15,
+    tsc clean. TIER — PROVEN: a long-lived circuit fed by an external channel
+    preserves integral semantics + delta algebra at every observation point,
+    including live IR-shape swap. STILL ASPIRATIONAL (NOT claimed): production
+    zero-downtime evolution — durability, multi-node consensus, replay after crash —
+    are separate obligations layered on top of this IN-PROCESS proof (the external
+    source here is in-process, a channel, not cross-process/cross-node).
   - **REVIEWED #8699 (darkhall heat readout, MERGED 2026-06-20):** in-lane heat
     review. Verdict sound — holds the contract: cold-until-loss (successful
     soft-CHIP8 exec + controller-only grammar action both `sink.Signatures.Count
