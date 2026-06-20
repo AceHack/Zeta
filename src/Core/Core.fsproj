@@ -322,6 +322,7 @@
     <Compile Include="WikidataGraph.fs" />
     <Compile Include="GraphSnapshot.fs" />
     <Compile Include="CoEmpowerGraphSvg.fs" />
+    <Compile Include="MetaspaceGraphRender.fs" />
     <Compile Include="MintPanel.fs" />
     <Compile Include="DemoDashboard.fs" />
     <Compile Include="DemoPipeline.fs" />
