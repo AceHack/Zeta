@@ -1,6 +1,6 @@
 # First-session vertical — post-login choose-your-own-adventure
 
-Status: slice 4 landed (nodeSession World channel + grammar-16 overlay)
+Status: slice 4 landed; S4 society proof green (QEMU phase-3, run [27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618))
 Owner hat (tentative): **usb-zflash-installer** + **observe** composes
 Last refreshed: 2026-06-20
 
@@ -31,7 +31,9 @@ which credentials to set up, which to skip, whether to stay local-only.
 
 | `docs/trajectories/usb-zflash-installer/HAT-ROUTING.md` | Slice 5 hat path → owner sketch |
 
-Not yet wired: QEMU phase-3 hard gate on push (opt-in via `QEMU_FIRST_SESSION_PHASE3=1` on workflow_dispatch).
+QEMU phase-3 hard gate on push: scenario 2 sets `QEMU_FIRST_SESSION_PHASE3=1` on every `build-ai-cluster-iso` push + workflow_dispatch (promoted after society proof run 27862943618).
+
+**Next vertical:** S6 physical first-login UX (menu copy, flow, feel) — design pass in progress with operator family.
 
 ## Reused from observe / workflow DUs
 
@@ -52,8 +54,8 @@ Per `docs/BUILD-GATES.md` — local prepush is the gate; peers replay; CI is sig
 | **S1** | Builder | `bun run preflight:quick` includes observe suite |
 | **S2** | Peer / builder | `validate-local-llm.ts` — Ollama chooser over menu labels |
 | **S3** | USB hat owner | Scripted `first-session` demo against mock LLM backend |
-| **S4** | Society cadence | QEMU phase-3: `QEMU_FIRST_SESSION_PHASE3=1` on scenario 2 workflow_dispatch |
-| **S6** | Human | Physical boot — feel of adventure UX |
+| **S4** | Society cadence | QEMU phase-3: `QEMU_FIRST_SESSION_PHASE3=1` on scenario 2 (push + workflow_dispatch) |
+| **S6** | Human (+ co-design) | Physical boot — first-login adventure UX (menu, pacing, copy) |
 
 ## Vertical slices (roadmap)
 

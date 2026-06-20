@@ -94,6 +94,7 @@ mkdir -p "$ZETA_ENV_DIR"
   # Ubuntu + macOS matrix. If CI surfaces a step that needs
   # shims, flip back to `mise activate bash --shims` and file
   # a DEBT entry explaining which step failed and why.
+  echo "export MISE_PYTHON_GITHUB_ATTESTATIONS=\"\${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}\""
   if command -v mise >/dev/null 2>&1; then
     echo "if [ -n \"\${ZSH_VERSION:-}\" ]; then"
     echo "  eval \"\$(mise activate zsh)\""

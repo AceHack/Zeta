@@ -13,6 +13,7 @@
 let
   cfg = config.zeta.firstSession;
   bunShimPath = "${cfg.home}/.local/share/mise/shims/bun";
+  bunNixPath = lib.getExe pkgs.bun;
   scriptPath = "${cfg.repoRoot}/src/Core.TypeScript/observe/first-session-run.ts";
 in
 {
@@ -67,7 +68,35 @@ in
           case "$-" in
             *i*)
               if [ -z "''${ZETA_FIRST_SESSION_RUNNING:-}" ] && [ ! -f "${cfg.markerPath}" ]; then
-                if [ -f "${scriptPath}" ] && [ -x "${bunShimPath}" ]; then
+                # Codex P2 (#8738): this hook is sourced BEFORE zeta-user-paths.sh
+                # (lexical profile.d order), where the lazy `mise install` recovery
+                # lives. Since the bun fallback below now lets the conductor launch
+                # with no agent CLIs yet, completing/skipping the adventure would
+                # write the marker and never rerun after the CLIs finally install.
+                # Run the same recovery HERE first so the agent CLIs exist (or were
+                # attempted) before the marker can be written. Idempotent: only runs
+                # when the mise bun shim is still absent.
+                export MISE_PYTHON_GITHUB_ATTESTATIONS="''${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"
+                if command -v mise >/dev/null 2>&1 && [ ! -x "${bunShimPath}" ]; then
+                  _zeta_repo=""
+                  if [ -f "${cfg.repoRoot}/.mise.toml" ]; then
+                    _zeta_repo="${cfg.repoRoot}"
+                  elif [ -f "${cfg.home}/Zeta/.mise.toml" ]; then
+                    _zeta_repo="${cfg.home}/Zeta"
+                  fi
+                  if [ -n "$_zeta_repo" ]; then
+                    echo "zeta-first-session: installing runtimes before adventure (mise recovery)..."
+                    (cd "$_zeta_repo" && mise trust .mise.toml >/dev/null 2>&1; MISE_ENV=full mise install) >/dev/null 2>&1 || true
+                  fi
+                fi
+                _bun=""
+                for _c in "${bunShimPath}" "${cfg.home}/.bun/bin/bun" "${bunNixPath}"; do
+                  if [ -x "$_c" ]; then
+                    _bun="$_c"
+                    break
+                  fi
+                done
+                if [ -f "${scriptPath}" ] && [ -n "$_bun" ]; then
                   export ZETA_FIRST_SESSION_RUNNING=1
                   export ZETA_FIRST_SESSION_MARKER="${cfg.markerPath}"
                   export HOME="${cfg.home}"
@@ -75,10 +104,10 @@ in
                   LLM_FLAG=""
                   ${lib.optionalString cfg.useLlm "LLM_FLAG=\"--llm\""}
                   echo "zeta-first-session: launching post-login credential adventure..."
-                  cd "${cfg.repoRoot}" && "${bunShimPath}" "${scriptPath}" $LLM_FLAG || true
+                  cd "${cfg.repoRoot}" && "$_bun" "${scriptPath}" $LLM_FLAG || true
                   unset ZETA_FIRST_SESSION_RUNNING
                 else
-                  echo "zeta-first-session: script or bun shim missing — skipping (install substrate incomplete?)"
+                  echo "zeta-first-session: script or bun missing — skipping (install substrate incomplete?)"
                 fi
               fi
               ;;

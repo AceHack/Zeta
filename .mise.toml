@@ -118,8 +118,9 @@ node = "24"
 # unauthenticated GitHub API rate-limits the shared runner IP;
 # scratch + SQLSharp both disable this check. Round-32 v1.0
 # security scope treats python-attestation on CI as a post-v1
-# hardening item (`SECURITY-BACKLOG.md`).
-python.github_attestations = false
+# hardening item (`SECURITY-BACKLOG.md`). Disabled via
+# MISE_PYTHON_GITHUB_ATTESTATIONS in tools/setup/common/mise.sh (not here —
+# nixpkgs mise 2025.11.x on cluster nodes predates the v2026.3.18 key).
 # Auto-activate uv-created venvs when mise enters a directory.
 # QoL: `uv run` / venv switching seamless. From ../scratch.
 python.uv_venv_auto = "source"

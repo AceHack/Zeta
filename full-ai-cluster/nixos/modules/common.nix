@@ -315,6 +315,18 @@
     # mise activate sets up shims for all .mise.toml runtimes (bun,
     # node, dotnet, python, java, uv, actionlint, shellcheck, etc.)
     if command -v mise >/dev/null 2>&1; then
+      export MISE_PYTHON_GITHUB_ATTESTATIONS="''${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"
+      _zeta_repo=""
+      if [ -f /etc/zeta/.mise.toml ]; then
+        _zeta_repo="/etc/zeta"
+      elif [ -f "$HOME/Zeta/.mise.toml" ]; then
+        _zeta_repo="$HOME/Zeta"
+      fi
+      # Recovery: non-interactive install may have skipped mise install (tarball
+      # mise is not FHS-compatible on NixOS). Lazy-install runtimes on first login.
+      if [ -n "$_zeta_repo" ] && [ ! -x "$HOME/.local/share/mise/shims/bun" ]; then
+        (cd "$_zeta_repo" && mise trust .mise.toml >/dev/null 2>&1; MISE_ENV=full mise install) >/dev/null 2>&1 || true
+      fi
       eval "$(mise activate bash)"
     fi
     # bun's `bun install --global` writes manifest-driven agent CLI

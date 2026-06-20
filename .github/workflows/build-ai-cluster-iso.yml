@@ -280,13 +280,15 @@ jobs:
       #
       # Security: no github.event.* interpolation; ISO path comes from
       # prior workflow step's filesystem find.
+      # B-0891 phase-3: first-session serial markers on scenario 2 (push +
+      # workflow_dispatch). Society proof: run 27862943618 (2026-06-20).
       - name: B-0891 scenario 2 — boot + install substrate (B-0831 Slice 1)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         timeout-minutes: 90
         working-directory: full-ai-cluster
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-full-install-serial.log
-          QEMU_FIRST_SESSION_PHASE3: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
+          QEMU_FIRST_SESSION_PHASE3: "1"
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)

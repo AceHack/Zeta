@@ -239,6 +239,9 @@ try {
     $env:MISE_ENV = 'full'
     Invoke-Tool { mise trust "$RepoRoot\.mise.full.toml" } 'mise trust (.mise.full.toml)'
   }
+  # Parity with tools/setup/common/mise.sh: old NixOS mise cannot parse
+  # python.github_attestations in .mise.toml (v2026.3.18+ only); env works everywhere.
+  if (-not $env:MISE_PYTHON_GITHUB_ATTESTATIONS) { $env:MISE_PYTHON_GITHUB_ATTESTATIONS = '0' }
   Invoke-Tool { mise install } 'mise install'
 } finally { Pop-Location }
 

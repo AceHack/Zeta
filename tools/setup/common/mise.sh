@@ -11,6 +11,11 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 
+# Disable python GitHub artifact attestation checks (CI rate-limit + nixpkgs
+# mise 2025.11.x on cluster nodes cannot parse python.github_attestations in
+# .mise.toml — v2026.3.18+ only). Env works on all supported mise versions.
+export MISE_PYTHON_GITHUB_ATTESTATIONS="${MISE_PYTHON_GITHUB_ATTESTATIONS:-0}"
+
 if [ ! -f "$REPO_ROOT/.mise.toml" ]; then
   echo "error: no .mise.toml at repo root"
   exit 1

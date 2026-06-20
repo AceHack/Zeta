@@ -135,6 +135,31 @@ fi
 echo "✓ apt packages up to date"
 
 # ── 2. mise ─────────────────────────────────────────────────────────
+# NixOS: use declarative system mise (common.nix / installer ISO). Upstream
+# release tarballs are glibc-linked and fail with "cannot execute: required
+# file not found" when copied to ~/.local/bin (observed iter-5.5.0 QEMU CI +
+# zeta-install.sh Step 6.95a on the live ISO).
+linux_sh_prepend_nixos_mise() {
+  for _bin_dir in \
+      /run/current-system/sw/bin \
+      "${HOME}/.nix-profile/bin" \
+      /nix/var/nix/profiles/default/bin; do
+    if [ -x "${_bin_dir}/mise" ]; then
+      export PATH="${_bin_dir}:${PATH}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if [ "$IS_NIXOS" = 1 ]; then
+  linux_sh_prepend_nixos_mise || true
+  if [ -f "${HOME}/.local/bin/mise" ] && ! "${HOME}/.local/bin/mise" --version >/dev/null 2>&1; then
+    echo "↻ removing broken tarball mise from ${HOME}/.local/bin/mise (not executable on NixOS)"
+    rm -f "${HOME}/.local/bin/mise"
+  fi
+fi
+
 # Pinned to a specific mise release tarball + verified SHA256 (per
 # arch). Resolves Scorecard PinnedDependenciesID #16 (downloadThenRun
 # not pinned by hash). The official `curl mise.run | sh` installer
@@ -142,8 +167,26 @@ echo "✓ apt packages up to date"
 # flags. Bumping: pull /repos/jdx/mise/releases/latest, update
 # MISE_VERSION + both MISE_SHA256_* values together — they form a
 # content-pin set.
+# Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
+# B-0849 docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
+linux_sh_nixos_tarball_mise_allowed() {
+  [ -f /.dockerenv ] \
+    || [ -e /lib64/ld-linux-x86-64.so.2 ] \
+    || [ -e /lib/ld-linux-aarch64.so.1 ]
+}
+
 if ! command -v mise >/dev/null 2>&1; then
-  echo "↓ installing mise from pinned release tarball..."
+  if [ "$IS_NIXOS" = 1 ] && ! linux_sh_nixos_tarball_mise_allowed; then
+    echo "error: mise not found on PATH on NixOS" >&2
+    echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
+    echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
+    exit 1
+  fi
+  if [ "$IS_NIXOS" = 1 ]; then
+    echo "↓ NixOS (docker/FHS): installing mise from pinned tarball..."
+  else
+    echo "↓ installing mise from pinned release tarball..."
+  fi
   MISE_VERSION="v2026.4.24"
   MISE_SHA256_X64="de2f924940c29b8983035833e2fb3a50092c5794562ca0dcd0cf87b40cae2c58"
   MISE_SHA256_ARM64="cf5f4899c3f1b56239d2eedf173c68c47b7db95400c4fa1b61e943dee4965727"

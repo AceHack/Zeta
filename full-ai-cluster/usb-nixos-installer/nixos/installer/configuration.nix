@@ -191,6 +191,10 @@
     # writing to /mnt/etc/zeta/initial-hashedpassword.
     mkpasswd
     nh
+    # iter-5.5.0 (B-0848): target bootstrap (zeta-install.sh Step 6.95a)
+    # runs tools/setup/install.sh on the live ISO as the zeta user. Nix-provided
+    # mise is required — upstream release tarballs are not FHS-compatible on NixOS.
+    mise
     # Declarative disk partitioning — used by the cookie-cutter
     # disko-shapes/ modules. Pre-staged on the ISO so installs
     # don't need network access just to fetch disko itself.
