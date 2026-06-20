@@ -59,9 +59,17 @@ verified) so future-me and peers do not over-trust past-me.
     `generator-registry-id` byte-locks `idOf(name@version)` TS↔F# (TS
     re-derives hash128 from scratch; F# uses the REAL shipping registry
     byName->.ZetaId). Pinned id 129c1fac3a48075b481c0f10f30deb06 in the F#
-    tests. cross-verify-all now 14/14. REMAINING: serialise the IR *payload*
-    itself as a DynamicValue row on the registry's Z-set (mix-ops still an
-    inline literal in gen.ts).
+    tests. cross-verify-all now 14/14.
+  - **IR-as-DynamicValue-ROW LANDED (PR #8684, 2026-06-20):** the splitmix64
+    finalizer IR is now a real DynamicValue row (splitmix64.ir.json, canonical
+    JSON; u64 multipliers stored as signed-int64 bit-pattern — multiply is mod
+    2^64 so reinterpretation is exact). gen.ts READS the row and decodes via the
+    real `fromCanonicalJson`, then folds — algorithm no longer in code. F# test
+    pins the cross-language byte-lock: real shipping `toCanonicalJson`
+    reproduces the row byte-for-byte + round-trips (DynamicValueCanonicalTests
+    9/9). The mixer algorithm now lives entirely in the schema row, locked
+    TS↔F#. REMAINING: carry the row as a LIVE TUPLE on the registry's DBSP
+    Z-set relation (today a checked-in canonical document).
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
