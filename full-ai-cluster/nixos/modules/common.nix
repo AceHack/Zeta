@@ -325,7 +325,7 @@
       # Recovery: non-interactive install may have skipped mise install (tarball
       # mise is not FHS-compatible on NixOS). Lazy-install runtimes on first login.
       if [ -n "$_zeta_repo" ] && [ ! -x "$HOME/.local/share/mise/shims/bun" ]; then
-        (cd "$_zeta_repo" && mise trust .mise.toml >/dev/null 2>&1; MISE_ENV=full mise install) >/dev/null 2>&1 || true
+        (cd "$_zeta_repo" && mise trust --all >/dev/null 2>&1; MISE_ENV=full mise install) >/dev/null 2>&1 || true
       fi
       eval "$(mise activate bash)"
     fi

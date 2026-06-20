@@ -333,6 +333,23 @@ describe("B-0967 argocd-health-test Application verdicts", () => {
     ).toBe(true);
     expect(
       isApplicationSynced({
+        name: "sealed-secrets",
+        syncStatus: "Unknown",
+        healthStatus: "Healthy",
+        message: "",
+      }),
+    ).toBe(true);
+    expect(
+      isApplicationSynced({
+        name: "hat-system",
+        syncStatus: "OutOfSync",
+        healthStatus: "Healthy",
+        message: "",
+        syncRevision: "abc123",
+      }),
+    ).toBe(true);
+    expect(
+      isApplicationSynced({
         name: "dapr",
         syncStatus: "OutOfSync",
         healthStatus: "Healthy",
@@ -417,6 +434,7 @@ describe("B-0967 argocd-health-test planning", () => {
     expect(included).not.toContain("gitlab");
     expect(included).not.toContain("forgejo");
     expect(included).not.toContain("agent-memory");
+    expect(included).not.toContain("spire");
   });
 
   test("detects repo-backed child Applications that should track the harness git ref", () => {

@@ -33,7 +33,7 @@ which credentials to set up, which to skip, whether to stay local-only.
 
 QEMU phase-3 hard gate on push: scenario 2 sets `QEMU_FIRST_SESSION_PHASE3=1` on every `build-ai-cluster-iso` push + workflow_dispatch (promoted after society proof run 27862943618).
 
-**Next vertical:** S6 physical first-login UX (menu copy, flow, feel) — design pass in progress with operator family.
+**Next vertical:** S6 physical first-login UX — see [S6-UX-PLACEHOLDER.md](./S6-UX-PLACEHOLDER.md) (co-design in progress with operator family).
 
 ## Reused from observe / workflow DUs
 

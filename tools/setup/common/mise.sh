@@ -21,9 +21,12 @@ if [ ! -f "$REPO_ROOT/.mise.toml" ]; then
   exit 1
 fi
 
-# `mise trust` is idempotent and required before `install` will read
-# a project-local .mise.toml. Silent on repeat runs.
-mise trust "$REPO_ROOT/.mise.toml" >/dev/null
+# `mise trust --all` is idempotent and required before `install` will read
+# project-local config. Per-file `mise trust path/.mise.toml` is insufficient on
+# mise v2026.x — the tool prompts for directory trust ("config files in …/Zeta")
+# when multiple configs exist (.mise.toml + env merges). Windows install.ps1
+# already trusts from RepoRoot; Unix/NixOS parity here.
+(cd "$REPO_ROOT" && mise trust --all) >/dev/null
 
 # HOST TIERS (workitem 081KTWQZY7F08QG0R0034KN17T): full-tier hosts also merge
 # .mise.full.toml (the k8s set: k3d/kind/kubectl/helm/kubeconform) via MISE_ENV=full.
@@ -34,10 +37,10 @@ mise trust "$REPO_ROOT/.mise.toml" >/dev/null
 . "$(cd "$(dirname "$0")" && pwd)/host-tier.sh"
 if zeta_tier_allows full; then
   export MISE_ENV=full
-  mise trust "$REPO_ROOT/.mise.full.toml" >/dev/null
   echo "↓ mise install (reading .mise.toml + .mise.full.toml — host is full/$ZETA_HOST_TIER_SOURCE)..."
 else
   echo "→ .mise.full.toml (k8s set) skipped: requires tier=full, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+  echo "  hint: export ZETA_HOST_TIER=full before install.sh on dev machines that need k3d/kubectl/helm"
   echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
 fi
 

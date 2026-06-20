@@ -347,11 +347,6 @@
       "name": "memory-index-integrity",
       "path": ".github/workflows/memory-index-integrity.yml",
       "state": "active"
-    },
-    {
-      "name": "memory-reference-existence-lint",
-      "path": ".github/workflows/memory-reference-existence-lint.yml",
-      "state": "active"
     }
   ],
   "environments": [

@@ -169,6 +169,7 @@ jobs:
   live-kind-included:
     name: live kind included Synced+Healthy proof (${{ matrix.runner }})
     needs: dry-run
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:

@@ -5,7 +5,7 @@ Last refreshed: 2026-06-20
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none for QEMU phase-3 (S4 green); physical S6 UX + WiFi (B-0792) out-of-band.
-Next concrete action: co-design first-login UX (S6); slice 5 CODEOWNERS when teams confirmed; mise bootstrap on NixOS install (system mise, not tarball) — fixes profile.d first-session on metal.
+Next concrete action: co-design first-login UX — [S6-UX-PLACEHOLDER.md](./S6-UX-PLACEHOLDER.md); slice 5 CODEOWNERS when teams confirmed; system mise pinned via Nix overlay (same release as `tools/setup/linux.sh`).
 
 ## Why This Exists
 

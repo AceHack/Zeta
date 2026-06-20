@@ -242,6 +242,9 @@ if ! command -v mise >/dev/null 2>&1; then
   mkdir -p "${HOME}/.local/bin"
   mv "${MISE_TMP}/mise/bin/mise" "${HOME}/.local/bin/mise"
   # Tmp dir cleanup happens via the EXIT trap above.
+  # Pinned tarball: bump via install.sh / flake overlay, not mise self-update.
+  mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+  touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
   # The installer puts mise at $HOME/.local/bin/mise; ensure we can
   # invoke it for the remainder of this script run.
   export PATH="${HOME}/.local/bin:${PATH}"

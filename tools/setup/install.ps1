@@ -232,12 +232,11 @@ Write-Host "mise: $(Get-ToolVersion { mise --version })"
 # 4. runtimes from .mise.toml (dotnet/python/java/bun/uv) -- IDENTICAL file to Unix (symmetric).
 Push-Location $RepoRoot
 try {
-  Invoke-Tool { mise trust } 'mise trust'
+  Invoke-Tool { mise trust --all } 'mise trust --all'
   # HOST TIERS (workitem 081KTWQZY7F): Windows boxes are dev machines -- full tier unless
   # explicitly declared otherwise; full merges .mise.full.toml (the k8s set) via MISE_ENV.
   if (-not $env:ZETA_HOST_TIER -or $env:ZETA_HOST_TIER -eq 'full') {
     $env:MISE_ENV = 'full'
-    Invoke-Tool { mise trust "$RepoRoot\.mise.full.toml" } 'mise trust (.mise.full.toml)'
   }
   # Parity with tools/setup/common/mise.sh: old NixOS mise cannot parse
   # python.github_attestations in .mise.toml (v2026.3.18+ only); env works everywhere.

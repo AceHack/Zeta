@@ -77,7 +77,9 @@
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs stateVersion; };
-        modules = modules;
+        modules = [
+          ({ nixpkgs.overlays = [ (import ./nixos/overlays/mise-pin.nix) ]; })
+        ] ++ modules;
       };
     in
     {
