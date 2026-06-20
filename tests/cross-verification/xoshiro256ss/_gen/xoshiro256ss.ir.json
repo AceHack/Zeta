@@ -1,0 +1,1 @@
+{"schema":"zeta-ir-v2","generator":"rng.xoshiro256ss","version":1,"width":64,"ops":[{"op":"mul","k":5},{"op":"rotl","r":7},{"op":"mul","k":9}]}

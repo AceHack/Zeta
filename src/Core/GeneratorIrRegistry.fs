@@ -112,6 +112,9 @@ module GeneratorIrRegistry =
     let private mul (k: int64) = DynamicValue.Object [ ("op", DynamicValue.String "mul"); ("k", DynamicValue.Int k) ]
     let private xorshr (s: int64) =
         DynamicValue.Object [ ("op", DynamicValue.String "xorshr"); ("s", DynamicValue.Int s) ]
+    /// rotate-left-by-constant op node — NEW in the v2 grammar (xoshiro256ss needs it).
+    let private rotl (r: int64) =
+        DynamicValue.Object [ ("op", DynamicValue.String "rotl"); ("r", DynamicValue.Int r) ]
 
     /// NOTE on shape: the committed splitmix64 file carries an explicit `zetaId` field
     /// and NO `width` (u64 implied); the fmix32 file carries `width` and no `zetaId`.
@@ -170,14 +173,35 @@ module GeneratorIrRegistry =
                      mul -4265267296055464877L // 0xc4ceb9fe1a85ec53
                      xorshr 33L ]) ]
 
+    /// xoshiro256** OUTPUT SCRAMBLER IR (width 64) — the FOURTH generator, and the first
+    /// to require an op (`rotl`) OUTSIDE the v1 `mul`/`xorshr` grammar. Per the v1
+    /// evolution contract this is a breaking grammar change, so the row carries the
+    /// bumped `zeta-ir-v2` schema tag (it is a v2 artifact, NOT a pre-v1 grandfathered
+    /// file). Blackman & Vigna's public-domain reference
+    /// (https://prng.di.unimi.it/xoshiro256starstar.c): `result = rotl(x * 5, 7) * 9`.
+    /// Mirrors `tests/cross-verification/xoshiro256ss/_gen/xoshiro256ss.ir.json`.
+    let xoshiro256ssIr : DynamicValue =
+        DynamicValue.Object
+            [ ("schema", DynamicValue.String "zeta-ir-v2")
+              ("generator", DynamicValue.String "rng.xoshiro256ss")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 64L)
+              ("ops",
+               DynamicValue.Array
+                   [ mul 5L
+                     rotl 7L
+                     mul 9L ]) ]
+
     /// The known generator-IR rows. Each `Ok` because the IRs above are canonical.
-    /// Note `hash.fmix32`/`hash.fmix64` are NOT yet in `GeneratorRegistry.known`; their
-    /// ZetaId is still the deterministic `idOf` content-address (the id is a pure
-    /// function of name@version, registered-or-not — that is the homoiconic point).
+    /// Note `hash.fmix32`/`hash.fmix64`/`rng.xoshiro256ss` are NOT yet in
+    /// `GeneratorRegistry.known`; their ZetaId is still the deterministic `idOf`
+    /// content-address (the id is a pure function of name@version, registered-or-not —
+    /// that is the homoiconic point).
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
           row "hash.fmix32" 1 fmix32Ir
-          row "hash.fmix64" 1 fmix64Ir ]
+          row "hash.fmix64" 1 fmix64Ir
+          row "rng.xoshiro256ss" 1 xoshiro256ssIr ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)
