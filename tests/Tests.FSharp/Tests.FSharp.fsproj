@@ -363,6 +363,7 @@
     <Compile Include="Formal/CostarFederations.Tests.fs" />
     <Compile Include="Formal/CostarZSet.Tests.fs" />
     <Compile Include="Formal/NftCommitBinding.Tests.fs" />
+    <Compile Include="Formal/NtpNoninterference.Tests.fs" />
     <Compile Include="Formal/LiveLegs.Tests.fs" />
     <Compile Include="Formal/WikidataGraph.Tests.fs" />
     <Compile Include="Formal/GraphSnapshot.Tests.fs" />
