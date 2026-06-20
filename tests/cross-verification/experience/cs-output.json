@@ -1,0 +1,23 @@
+{
+  "provisional-experience-v1": {
+    "uli": {
+      "languageCode": "en-US",
+      "lexiconHash": "a8f5c2b3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1"
+    },
+    "uii": {
+      "agentId": "agent-007",
+      "capabilities": [
+        "speak",
+        "traverse"
+      ]
+    },
+    "uti": {
+      "temperature": 0.7,
+      "decayRate": 0.1
+    },
+    "utri": {
+      "rootHash": "081478c5744a061d3eb3e9800a78517b8f6dc060759a2ce2a0a32b516c80fdc9"
+    },
+    "rootHash": "081478c5744a061d3eb3e9800a78517b8f6dc060759a2ce2a0a32b516c80fdc9"
+  }
+}

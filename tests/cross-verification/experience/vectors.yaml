@@ -1,0 +1,13 @@
+description: "Provisional Core UX/DX/AX Room / Universal Experience state cross-language verification vectors."
+vectors:
+  - id: provisional-experience-v1
+    langCode: "en-US"
+    lexHash: "a8f5c2b3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1"
+    agentId: "agent-007"
+    capabilities:
+      - "speak"
+      - "traverse"
+    temperature: 0.7
+    decayRate: 0.1
+    fixturePath: "fixtures/tree1"
+    expected_hex: "081478c5744a061d3eb3e9800a78517b8f6dc060759a2ce2a0a32b516c80fdc9"
