@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last-updated:** 2026-06-20 (third generator fmix64 landed, #8742; main HEAD b005396d8)
+**Last-updated:** 2026-06-20 (FOURTH generator xoshiro256ss + zeta-ir-v2 grammar extension landed, #8750; main HEAD 40cc003bf)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -253,6 +253,36 @@ verified) so future-me and peers do not over-trust past-me.
   compare.ts N-way 13/13, F# ZetaIrV1+GeneratorIrRegistry 32/32, bun v1-gen 10/10,
   fmix64 gen-ir.test 5/5, tsc clean. NOTE: a PRE-EXISTING BenPort heap-allocation
   benchmark (48 vs 80) fails on clean main too — unrelated, flagged in PR.
+- **DEED (2026-06-20) — FOURTH generator + zeta-ir-v2 grammar extension (#8750,
+  merged, main 40cc003bf).** Added `hash.xoshiro256ss` (xoshiro256** output
+  scrambler `rotl(x*5, 7) * 9` == Mul 5 . Rotl 7 . Mul 9 at width 64). This is the
+  FIRST generator that needs an op OUTSIDE the v1 mul/xorshr vocabulary: `rotl`
+  (rotate-left by a constant) wraps top bits back to the bottom, which neither mul
+  (carries propagate only up) nor xorshr (bits move only down) can express. Because
+  it BREAKS the v1 grammar it ships under a NEW frozen schema tag — proving the v1
+  evolution contract (freeze-then-grow under a new version) actually holds, the one
+  thing the 3 same-family generators did NOT test. `src/Core/ZetaIrV2.fs` adds the
+  Rotl op, the frozen 'zeta-ir-v2' tag, a total validator, canonical-JSON, the
+  xoshiro256ss row, and `ofV1` (v1->v2 widening). FIREWALL proven both directions:
+  the v1 validator REJECTS a v2 artifact; the v2 validator accepts v1+v2 ops.
+  Derived id idOf(rng.xoshiro256ss,1) = 0af7672a7d48c36ef2f765922353b589. Constants
+  + scrambler form anchored to the Blackman & Vigna public-domain reference
+  (prng.di.unimi.it/xoshiro256starstar.c); goldens independently recomputed,
+  matched the committed vectors exactly. N-way oracle with 6 independent language
+  ports (TS-from-IR + F#/C#/Rust/Py/Go) agreeing on 10 canonical vectors; the
+  IR-driven gen-ir.test.ts (7/7) proves the green turns red under a corrupted
+  multiplier, a corrupted ROTATE AMOUNT (rotl 7->8), a DROPPED rotl, or a wrong
+  width, and pins the v2 schema tag. SCOPING DECISION (recorded so future-me does
+  not mistake it for a gap): the Phase-B `zeta-ir-v1-gen` value-preservation oracle
+  correctly does NOT include xoshiro256ss — it is v2-NATIVE with no legacy pre-IR
+  shape to preserve against; its N-way + fidelity self-test IS the v2 generator's
+  proof. Gates: tsc clean, N-way sweep 14/14, gen-ir self-tests across 4 primitives
+  21/21, F# ZetaIrV2+ZetaIrV1+GeneratorIrRegistry 47/47, full F# suite 3565 pass
+  (only the known pre-existing BenPort 48-vs-80 flaky fails). ZERO committed bytes
+  changed; all artifacts additive. TIER — PROVEN: a grammar-extending generator
+  under a NEW frozen version, the v1<->v2 firewall, rotl necessity, 6-language
+  N-way agreement. STILL the math team's: the Face-3 Lean/Z3 gen(gen)=gen theorem
+  itself.
 - **MATH-TEAM HANDOFF STATUS (as of 2026-06-20):** row 4 N-way leg DONE (#8722);
   zeta-ir-v1 freeze DONE (#8725, Phase-A prereq for row 10 Face 3); gen-gen
   Phase B (value preservation) DONE (#8729); legacy IR single-sourced from the v1
@@ -263,11 +293,16 @@ verified) so future-me and peers do not over-trust past-me.
   uniqueness/objectivity (research-open); and row 10 Face-3 itself — the Lean
   gen(gen)=gen THEOREM, now UNBLOCKED on the IR side (frozen + provably
   behavior-preserving + single-sourced + shown general over 3 generators) but
-  still the math team's to discharge. Next in-lane rung if continuing: a FOURTH
-  generator that needs an HONEST grammar extension (a finaliser using an op
-  outside mul/xorshr, e.g. rotl/add) — exercising whether the v1 evolution
-  contract (v2) holds up, the first thing the current 3 same-family generators do
-  NOT test.
+  still the math team's to discharge. FOURTH generator (grammar-extending) DONE
+  (#8750): xoshiro256ss forced zeta-ir-v2 (rotl op), exercising and confirming the
+  v1 evolution contract (freeze-then-grow under a new version + v1<->v2 firewall) —
+  the one thing the 3 same-family generators did not test. Next in-lane rung if
+  continuing: a v2-NATIVE Phase-B `zeta-ir-v2-gen` value-preservation oracle is NOT
+  needed (no legacy shape to preserve); the natural next exercise is a generator
+  combining v1 AND v2 ops in one envelope (mixed-grammar fold), or a FIFTH op (add/
+  sub) to test whether v2 itself needs to grow again — or simply hand back to the
+  math team, since the IR side of Face-3 is now frozen, behavior-preserving,
+  single-sourced, general over 4 generators, AND proven to evolve safely.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
