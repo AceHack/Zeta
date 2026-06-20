@@ -56,10 +56,16 @@ interface — no total order."* Aaron's refinement resolves it — it's not the 
 - **The split-out comparison-free numbers CAN BE IDENTITY.** Precisely *because* they carry no forced
   total-order, a Clifford / Cayley–Dickson element is free to serve as an **identity-carrier** (the ZetaId /
   the identity primitive) — Aaron: *"those numbers could be identity."*
-- **So YES — buildable now:** a **Clifford algebra** (the missing orthogonal-axis layer — there is **no
-  `Clifford.fs`**) as the comparison-free `IStarRing` (geometric product = multiply, reversion = star),
-  comparison opt-in, the elements doubling as identities. The concrete next layer of the adinkra unfold — a
-  *decomposition* (the opt-in pattern the repo already uses), **not** a category error.
+- **So YES — buildable now:** the comparison-free `IStarRing` (geometric product = multiply, reversion =
+  star), comparison opt-in, elements doubling as identities — a *decomposition* (the opt-in pattern the repo
+  already uses), **not** a category error.
+
+> **CORRECTION (verified 2026-06-19):** I earlier said *"there is no `Clifford.fs`."* **Wrong** —
+> `src/Core/Cl3.fs` exists (Clifford `Cl(3,0)`, 8-dim graded, Pauli-generated, carries the quaternion
+> even-subalgebra). The real gap is **not the module** but the **Clifford → E8 unfold *bridge*** (Aaron's note
+> `E8Lattice.fs:5` flags it as a belief, not a theorem; `Cl3` is Euclidean-only, no E8 extension). The ends of
+> the ladder are proven (octonion → Fano → [8,4] → E8); the middle bridge + Face 3 (`cogen=mix(mix,mix)`) +
+> Rx-on-soft-phase are open. Full status map: `docs/research/2026-06-19-adinkra-clifford-e8-unfold-status-cogen-mix-mix-surface-rx-operator-on-soft-phase-spacetime-scoping.md`.
 
 Anchors: Futamura 1971 (3 projections); Thompson 1984 / Wheeler 2009 (DDC); Gates (adinkra doubly-even
 self-dual ECC); Hestenes (geometric/Clifford algebra); the in-tree `CayleyDickson`/`Algebra`/`AdinkraCode`.
