@@ -4,6 +4,7 @@
 import Lean4.DbspChainRule
 import Lean4.GenGenFixpoint
 import Lean4.CayleyDicksonDoublyEven
+import Lean4.SchemaEvolution
 import Lean4.DynamicValue
 import Lean4.JsonCodec
 import Lean4.CborCodec

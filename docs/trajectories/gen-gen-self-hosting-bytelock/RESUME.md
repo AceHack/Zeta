@@ -1,7 +1,7 @@
 # Trajectory — `gen(gen) == gen` self-hosting byte-lock (diverse-double-compiling, N-fold)
 
-Status: **active — plan written; blocked on the IR-v1 freeze (Phase A) + the multi-language generator (dependency)**
-Last refreshed: 2026-06-19
+Status: **active — Phases A-D COMPLETE (T1+T2 proved); Phase E-F next**
+Last refreshed: 2026-06-20
 Parent trajectory: none (sibling of `sim-mea-cut-soft-substrate-shaders` — shares the gen/IR substrate)
 Grounding:
 
@@ -45,13 +45,23 @@ them as the three **Faces** of `gen(gen)===gen` in `src/Core/AdinkraCode.fs`:
   simultaneously generation, fixed-point, AND ECC (space [N-oracle byte-lock] + time [DST replay]).
   **Phase D below is its discharge.** Anchor: Futamura 1971; Thompson "Trusting Trust"; Wheeler DDC.
 
-## Where it stands (2026-06-19)
+## Where it stands (2026-06-20)
 
-- ✅ Phased plan written (A–F), test matrix, conformance-kind-per-tier, honest seams.
-- ✅ Legs confirmed: `AdinkraCode` Faces 1+2 proven (`isSelfDual`, `project`); per-primitive
-  cross-language byte-lock built (observe / DynamicValue / ZSet / Bag / GSet across 4 oracles);
-  hex-in-JSON golden-vector harness + one canonical collation + DoP=1 injected scheduler.
-- ⏳ **Face 3 (Futamura `mix(mix,mix)=cogen`) is genuinely OPEN (§B)** — that *is* the capstone.
+- ✅ **Phase A:** `zeta-ir-v1` frozen (Lumen #8692) — spec + golden + validator + tests
+- ✅ **Phase B:** Multi-language codegen from IR (#8735) — splitmix64/fmix32, 4 targets (TS/F#/C#/Rust)
+- ✅ **Phase C:** ZSet Merkle golden verification (#8736) + domain IR extension design
+- ✅ **Phase D:** Research discharge — machine-checked Lean 4 proofs:
+  - **T1** `gen(gen)=gen` algebraic fixpoint (#8754) — sorry-free for idempotence + Lawvere diagonal
+  - **T2** CD doubling preserves doubly-even self-duality (#8781) — sorry-free inductive step
+  - Q# Face 3 fixpoint (#8693) — behavioral-equiv gen(IR)===ZSetISA.qs
+  - AdinkraCode Faces 1+2 — exhaustively verified (existing)
+- ✅ **Design decision (Aaron 2026-06-20):** meta-IR is HOMOICONIC to regular IR (same schema, data-level
+  grading via Cayley-Dickson, one universe). Not a separate tier.
+- ⏳ **Open (refinements, not blocking):**
+  - T1 `gen_self_application` sorry — the quine bridge (POPL/PLDI target)
+  - T2.5 — CD twist-isometry lemma (prose → Lean)
+  - Bridge — reflection-grade ↔ CD-grade functor (off critical path)
+  - Z3 QF_BV — denotation preservation for splitmix64/fmix32
 
 ## The tiers (don't blur "all our languages")
 
