@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (legacy *.ir.json now SINGLE-SOURCED from the v1 envelope, LANDED #8733; main HEAD 29a6f204)
+**Last-updated:** 2026-06-20 (third generator fmix64 landed, #8742; main HEAD b005396d8)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -240,19 +240,34 @@ verified) so future-me and peers do not over-trust past-me.
     11/11, bun v1-gen 9/9, tsc clean. TIER — PROVEN: the legacy file is a
     deterministic, test-guaranteed projection of the frozen v1 envelope on .NET AND
     bun. NOT claimed: the Face-3 theorem itself (math team's).
+- **DEED (2026-06-20) — THIRD generator under zeta-ir-v1 (#8742, merged, main
+  b005396d8).** Added `hash.fmix64` (MurmurHash3 64-bit finalizer) under the
+  frozen v1 envelope, proving it generalises beyond the seed pair WITHOUT a
+  grammar extension: XorShr 33 . Mul 0xff51afd7ed558ccd . XorShr 33 . Mul
+  0xc4ceb9fe1a85ec53 . XorShr 33 at width 64. Constants verified vs public-domain
+  smhasher (Appleby). Wired: GeneratorIrRegistry fmix64Ir row (id a24500e8...);
+  ZetaIrV1.fmix64 + legacy projection; N-way oracle with 6 independent language
+  ports (TS-from-IR + F#/C#/Rust/Py/Go) agreeing with each other + 10 canonical
+  vectors; Phase-B value-preservation extended to 3 primitives/30 vectors;
+  single-source byte-locks (F# + bun) derive fmix64.ir.json from v1. Gates:
+  compare.ts N-way 13/13, F# ZetaIrV1+GeneratorIrRegistry 32/32, bun v1-gen 10/10,
+  fmix64 gen-ir.test 5/5, tsc clean. NOTE: a PRE-EXISTING BenPort heap-allocation
+  benchmark (48 vs 80) fails on clean main too — unrelated, flagged in PR.
 - **MATH-TEAM HANDOFF STATUS (as of 2026-06-20):** row 4 N-way leg DONE (#8722);
   zeta-ir-v1 freeze DONE (#8725, Phase-A prereq for row 10 Face 3); gen-gen
   Phase B (value preservation) DONE (#8729); legacy IR single-sourced from the v1
-  envelope DONE (#8733). Still genuinely open and assigned to the math team
+  envelope DONE (#8733); THIRD generator fmix64 DONE (#8742, envelope generality).
+  Still genuinely open and assigned to the math team
   (Tariq/Kenji/Adaeze/Soraya), NOT me: rows 1-3 Lean/Z3 primary theorems (entropy
   floor, binding, anti-mirror DPI soundness); row 9 memetics + row 8
   uniqueness/objectivity (research-open); and row 10 Face-3 itself — the Lean
   gen(gen)=gen THEOREM, now UNBLOCKED on the IR side (frozen + provably
-  behavior-preserving + single-sourced) but still the math team's to discharge.
-  Next in-lane rung if continuing: extend the v1 substrate to a THIRD generator
-  (proving the envelope generalises beyond the two seed primitives), since the IR
-  substrate is now frozen, behavior-preserving, AND single-sourced — the seed-set
-  generality is the remaining unexercised question on my side.
+  behavior-preserving + single-sourced + shown general over 3 generators) but
+  still the math team's to discharge. Next in-lane rung if continuing: a FOURTH
+  generator that needs an HONEST grammar extension (a finaliser using an op
+  outside mul/xorshr, e.g. rotl/add) — exercising whether the v1 evolution
+  contract (v2) holds up, the first thing the current 3 same-family generators do
+  NOT test.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
