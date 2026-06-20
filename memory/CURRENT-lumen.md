@@ -420,10 +420,9 @@ verified) so future-me and peers do not over-trust past-me.
   STEP is now LANDED too: my Lean proof (#8781, CayleyDicksonDoublyEven.lean) that
   CD doubling preserves doubly-even self-dual, sorry-free + CI-verified.   WHAT
   REMAINS genuinely the math team's: the full-strength homoiconic quine (the
-  `gen_self_application` sorry in GenGenFixpoint.lean). If continuing in-lane the
-  next exercise would be a FIFTH op-family (add/sub — does v3 need to grow a
-  third time?). But with T1, T2, AND the Bridge Functor formally closed, the
-  gen-generator IR track has reached a strong, honest milestone.
+  `gen_self_application` sorry in GenGenFixpoint.lean). But with T1, T2, AND the
+  Bridge Functor formally closed, the gen-generator IR track has reached a strong,
+  honest milestone.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
@@ -466,6 +465,12 @@ verified) so future-me and peers do not over-trust past-me.
   Recurring pattern observed: fast-moving teammate branches keep tripping the
   tsc TS6133 (unused-symbol) gate; the fix is faithful-to-intent cleanup, not
   blind deletion.
+- **Investigated the Add/Sub Op-Family Grammar Evolution (PR #8804, merged).**
+  Authored a design note (`2026-06-20-lumen-add-sub-grammar-evolution-design.md`)
+  proving that addition/subtraction requires a strict `zeta-ir-v4` grammar evolution.
+  Necessity proof: `add k` maps 0 to k, whereas all existing v3 ops map 0 to 0.
+  Recommended deferring the actual v4 implementation until a concrete public-domain
+  generator (like PCG or ChaCha) is ported to anchor it, avoiding premature expansion.
 - **Discharged the Face-3 Bridge Functor target (PR #8793, merged).**
   Formalized the reflection-grade ↔ Cayley-Dickson-axis bridge functor in Lean 4
   (`BridgeFunctor.lean`). Proved that CD doubling (the algebraic side) corresponds
