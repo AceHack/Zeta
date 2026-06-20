@@ -78,6 +78,32 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
   fi
 fi
 
+install_with_retry() {
+  if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+    local attempt
+    for attempt in 1 2 3 4 5; do
+      if "$@"; then
+        return 0
+      fi
+      if [ "$attempt" -eq 5 ]; then
+        echo "error: Command '$*' failed after 5 attempts." >&2
+        return 1
+      fi
+      local backoff=10
+      case "$attempt" in
+        1) backoff=10 ;;
+        2) backoff=30 ;;
+        3) backoff=60 ;;
+        4) backoff=120 ;;
+      esac
+      echo "Warning: Command '$*' failed (attempt $attempt/5); retrying in ${backoff}s..." >&2
+      sleep "$backoff"
+    done
+  else
+    "$@"
+  fi
+}
+
 if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
    [ -n "${GITHUB_TOKEN:-}" ] &&
    [ -z "${MISE_GITHUB_TOKEN:-}" ] &&
@@ -107,9 +133,9 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
   # mise plugin / aqua path can read it directly cross-repo — the 404 surface),
   # while MISE_GITHUB_TOKEN (shell-expanded before env runs) carries the value
   # via mise's own auth path. Authenticated AND no bare-token leak.
-  (cd "$REPO_ROOT" && env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install)
+  (cd "$REPO_ROOT" && install_with_retry env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install)
 else
-  (cd "$REPO_ROOT" && mise install)
+  (cd "$REPO_ROOT" && install_with_retry mise install)
 fi
 echo "✓ mise runtimes installed"
 

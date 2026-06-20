@@ -1,7 +1,7 @@
 ---
 id: 081KTGF7GE808QG0R001A5H37X
 type: bug
-state: backlog
+state: completed
 priority: P1
 slug: ci-gate-goes-whole-gate-red-on-transient-kind-0-31-0-downloa
 title: "CI gate goes whole-gate-red on transient kind@0.31.0 download 504 in toolchain install — retry on 5xx or make kind optional for jobs that don't need it"
@@ -45,9 +45,9 @@ signal and blocking auto-merge. The actual content (markdownlint, conflict-marke
    Actions cache for the mise tool store (`~/.local/share/mise` / the aqua/tool cache), keyed on what
    actually changes — the mise config + lockfile hash — in **every** workflow/action. Then deps re-pull
    **only when they change**, not every run, so a transient CDN 504 almost never reaches the critical path
-   (a cache hit skips the download entirely). Verbatim: *"cache the results of the dependencies from mise
+   (a cache hit skips the download entirely). Verbatim: _"cache the results of the dependencies from mise
    so you don't have to pull them every time, only when they change, in every github action/workflow —
-   then it pulls much less often."* Turns "download on every job" into "download only on dep change."
+   then it pulls much less often."_ Turns "download on every job" into "download only on dep change."
 1. **Retry on 5xx** — wrap aqua/mise tool installs in a bounded retry-with-backoff for transient
    HTTP 5xx / timeout (cheap defense-in-depth for the rare cache-miss-and-504; aqua downloads are idempotent).
 2. **Make `kind` (and other k8s-only tools) optional / lazy** — don't install `kind` in jobs that don't
