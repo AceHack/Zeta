@@ -45,6 +45,7 @@
     <Compile Include="RayTensor.fs" />
     <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
+    <Compile Include="DynamicValue.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
     <Compile Include="Resume.fs" />
@@ -65,7 +66,6 @@
     <Compile Include="Curve.fs" />
     <Compile Include="BeliefConvergence.fs" />
     <Compile Include="Evolution.fs" />
-    <Compile Include="DynamicValue.fs" />
     <Compile Include="MarkdownTreaty.fs" />
     <Compile Include="YinYang.fs" />
     <Compile Include="Diplomacy.fs" />
@@ -285,6 +285,7 @@
     <Compile Include="SoftActionController.fs" />
     <Compile Include="SoftEvolution.fs" />
     <Compile Include="StateSpace.fs" />
+    <Compile Include="HierarchicalPlanning.fs" />
     <Compile Include="DeltaPattern.fs" />
     <Compile Include="MemoryLens.fs" />
     <Compile Include="LensRouter.fs" />

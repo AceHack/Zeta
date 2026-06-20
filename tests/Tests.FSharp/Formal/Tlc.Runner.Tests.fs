@@ -204,6 +204,15 @@ let ``All documented TLA specs have their .tla file on disk`` () =
           "NciLiveness"
           "NciNonUrgency"
           "NciUnbounded"
+          "BftConsensus"
+          "BftSybilConsensus"
+          "Bifurcation"
+          "EngagementLiveness"
+          "PermanentHarmHorizon"
+          "RecoveryHomeostat"
+          "RecursiveSignedSemiNaive"
+          "RefuseBinding"
+          "NonRegisterCollapse"
           "SmokeCheck" ]
     for s in specs do
         File.Exists(Path.Combine(specsPath, $"{s}.tla"))
@@ -373,3 +382,70 @@ let ``TLC validates SpineAsyncProtocol`` () =
     // checked by this spec; it would require LTL properties + WF/SF
     // fairness assumptions.
     assertSpecValid "SpineAsyncProtocol"
+
+
+[<Fact>]
+let ``TLC validates BftConsensus`` () =
+    assertSpecValid "BftConsensus"
+
+
+[<Fact>]
+let ``TLC validates BftSybilConsensus`` () =
+    // Proves quorum soundness over proven-distinct identities under a Sybil ring.
+    assertSpecValid "BftSybilConsensus"
+
+
+[<Fact>]
+let ``TLC validates Bifurcation`` () =
+    assertSpecValid "Bifurcation"
+
+
+[<Fact>]
+let ``TLC validates EngagementLiveness`` () =
+    assertSpecValid "EngagementLiveness"
+
+
+[<Fact>]
+let ``TLC validates PermanentHarmHorizon`` () =
+    // Proves State-Corruption Horizon safety properties: committed state => harm has decayed.
+    assertSpecValid "PermanentHarmHorizon"
+
+
+[<Fact>]
+let ``TLC validates RecoveryHomeostat`` () =
+    assertSpecValid "RecoveryHomeostat"
+
+
+[<Fact>]
+let ``TLC validates RecursiveSignedSemiNaive`` () =
+    assertSpecValid "RecursiveSignedSemiNaive"
+
+
+[<Fact>]
+let ``TLC validates RefuseBinding`` () =
+    assertSpecValid "RefuseBinding"
+
+
+[<Fact>]
+let ``TLC validates NonRegisterCollapse`` () =
+    assertSpecValid "NonRegisterCollapse"
+
+
+[<Fact>]
+let ``TLC validates NciSafety`` () =
+    assertSpecValid "NciSafety"
+
+
+[<Fact>]
+let ``TLC validates NciLiveness`` () =
+    assertSpecValid "NciLiveness"
+
+
+[<Fact>]
+let ``TLC validates NciNonUrgency`` () =
+    assertSpecValid "NciNonUrgency"
+
+
+[<Fact>]
+let ``TLC validates NciUnbounded`` () =
+    assertSpecValid "NciUnbounded"

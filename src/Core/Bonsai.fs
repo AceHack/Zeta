@@ -548,6 +548,175 @@ module Bonsai =
                         | false, _ -> Error [ { Path = "$.v"; Feedback = MalformedJson "document v is not an int32" } ]
                     | _ -> Error [ { Path = "$.v"; Feedback = MalformedJson "document v is missing or not a number" } ]
 
+
+    /// Converts a Bonsai.Expr to its reified DynamicValue representation.
+    let rec reify (e: Expr) : DynamicValue =
+        match e with
+        | Const c ->
+            let valueDv =
+                match c with
+                | CInt i -> DynamicValue.Object [("t", DynamicValue.String "int"); ("v", DynamicValue.Int i)]
+                | CStr s -> DynamicValue.Object [("t", DynamicValue.String "str"); ("v", DynamicValue.String s)]
+                | CBool b -> DynamicValue.Object [("t", DynamicValue.String "bool"); ("v", DynamicValue.Bool b)]
+                | CNull -> DynamicValue.Object [("t", DynamicValue.String "null")]
+            DynamicValue.Object [
+                ("kind", DynamicValue.String "const")
+                ("value", valueDv)
+            ]
+        | Param name ->
+            DynamicValue.Object [
+                ("kind", DynamicValue.String "param")
+                ("name", DynamicValue.String name)
+            ]
+        | Lambda (ps, body) ->
+            DynamicValue.Object [
+                ("kind", DynamicValue.String "lambda")
+                ("params", DynamicValue.Array (List.map DynamicValue.String ps))
+                ("body", reify body)
+            ]
+        | Binary (op, l, r) ->
+            DynamicValue.Object [
+                ("kind", DynamicValue.String "binary")
+                ("op", DynamicValue.String (binOpToString op))
+                ("left", reify l)
+                ("right", reify r)
+            ]
+        | Call (fn, args) ->
+            DynamicValue.Object [
+                ("kind", DynamicValue.String "call")
+                ("fn", DynamicValue.String fn)
+                ("args", DynamicValue.Array (List.map reify args))
+            ]
+        | Cond (t, th, el) ->
+            DynamicValue.Object [
+                ("kind", DynamicValue.String "cond")
+                ("test", reify t)
+                ("then", reify th)
+                ("else", reify el)
+            ]
+
+    /// Parses a reified DynamicValue representation back into a Bonsai.Expr.
+    let rec apply (dv: DynamicValue) : Result<Expr, BonsaiFeedback> =
+        match dv with
+        | DynamicValue.Object pairs ->
+            let tryFindKey key =
+                pairs |> List.tryFind (fun (k, _) -> k = key) |> Option.map snd
+
+            match tryFindKey "kind" with
+            | Some (DynamicValue.String kind) ->
+                match kind with
+                | "const" ->
+                    match tryFindKey "value" with
+                    | Some (DynamicValue.Object valPairs) ->
+                        let tryFindValKey key =
+                            valPairs |> List.tryFind (fun (k, _) -> k = key) |> Option.map snd
+
+                        match tryFindValKey "t" with
+                        | Some (DynamicValue.String t) ->
+                            match t with
+                            | "int" ->
+                                match tryFindValKey "v" with
+                                | Some (DynamicValue.Int i) -> Ok (Const (CInt i))
+                                | _ -> Error (ExpectedInt "const int value")
+                            | "str" ->
+                                match tryFindValKey "v" with
+                                | Some (DynamicValue.String s) -> Ok (Const (CStr s))
+                                | _ -> Error (ExpectedString "const str value")
+                            | "bool" ->
+                                match tryFindValKey "v" with
+                                | Some (DynamicValue.Bool b) -> Ok (Const (CBool b))
+                                | _ -> Error (ExpectedBool "const bool value")
+                            | "null" -> Ok (Const CNull)
+                            | other -> Error (UnknownConstTag other)
+                        | _ -> Error (MalformedJson "value.t is missing or not a string")
+                    | _ -> Error (MalformedJson "value is not an object")
+                | "param" ->
+                    match tryFindKey "name" with
+                    | Some (DynamicValue.String n) -> Ok (Param n)
+                    | _ -> Error (ExpectedString "param.name")
+                | "lambda" ->
+                    match tryFindKey "params" with
+                    | Some (DynamicValue.Array ps) ->
+                        let mutable errOpt = None
+                        let parsedParams = 
+                            ps 
+                            |> List.choose (fun p ->
+                                match p with
+                                | DynamicValue.String s -> Some s
+                                | _ -> 
+                                    errOpt <- Some (ExpectedString "lambda.params[]")
+                                    None)
+                        match errOpt with
+                        | Some e -> Error e
+                        | None ->
+                            match tryFindKey "body" with
+                            | Some bodyDv ->
+                                match apply bodyDv with
+                                | Ok body -> Ok (Lambda (parsedParams, body))
+                                | Error e -> Error e
+                            | None -> Error (MalformedJson "missing required property body")
+                    | _ -> Error (MalformedJson "lambda.params is not an array")
+                | "binary" ->
+                    match tryFindKey "op" with
+                    | Some (DynamicValue.String opStr) ->
+                        try
+                            let op = binOpOfString opStr
+                            match tryFindKey "left" with
+                            | Some leftDv ->
+                                match apply leftDv with
+                                | Ok left ->
+                                    match tryFindKey "right" with
+                                    | Some rightDv ->
+                                        match apply rightDv with
+                                        | Ok right -> Ok (Binary (op, left, right))
+                                        | Error e -> Error e
+                                    | None -> Error (MalformedJson "missing required property right")
+                                | Error e -> Error e
+                            | None -> Error (MalformedJson "missing required property left")
+                        with BonsaiFail f -> Error f
+                    | _ -> Error (UnknownOp "<missing>")
+                | "call" ->
+                    match tryFindKey "fn" with
+                    | Some (DynamicValue.String fn) ->
+                        match tryFindKey "args" with
+                        | Some (DynamicValue.Array args) ->
+                            let mutable errOpt = None
+                            let parsedArgs = 
+                                args 
+                                |> List.choose (fun a ->
+                                    match apply a with
+                                    | Ok res -> Some res
+                                    | Error e ->
+                                        errOpt <- Some e
+                                        None)
+                            match errOpt with
+                            | Some e -> Error e
+                            | None -> Ok (Call (fn, parsedArgs))
+                        | _ -> Error (MalformedJson "call.args is not an array")
+                    | _ -> Error (ExpectedString "call.fn")
+                | "cond" ->
+                    match tryFindKey "test" with
+                    | Some testDv ->
+                        match apply testDv with
+                        | Ok test ->
+                            match tryFindKey "then" with
+                            | Some thenDv ->
+                                match apply thenDv with
+                                | Ok thenB ->
+                                    match tryFindKey "else" with
+                                    | Some elseDv ->
+                                        match apply elseDv with
+                                        | Ok elseB -> Ok (Cond (test, thenB, elseB))
+                                        | Error e -> Error e
+                                    | None -> Error (MalformedJson "missing required property else")
+                                | Error e -> Error e
+                            | None -> Error (MalformedJson "missing required property then")
+                        | Error e -> Error e
+                    | None -> Error (MalformedJson "missing required property test")
+                | other -> Error (UnknownKind other)
+            | _ -> Error (MalformedJson "kind missing or not a string")
+        | _ -> Error (MalformedJson "expected object for expression")
+
     /// The Bonsai canonical-JSON serializer exposed as a value codec (the hexagonal port) —
     /// callers can depend on `Codec.ICodec<Expr, string, BonsaiFeedback>` rather than the
     /// concrete serialize/parse, so the canonical-JSON mechanism is swappable behind the port.
