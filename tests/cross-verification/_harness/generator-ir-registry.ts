@@ -57,6 +57,7 @@ const CROSS_VERIFY_DIR = join(HARNESS_DIR, ".."); // tests/cross-verification
 const KNOWN: ReadonlyArray<{ name: string; version: number; primitive: string; file: string }> = [
   { name: "rng.splitmix64", version: 1, primitive: "splitmix64", file: "splitmix64.ir.json" },
   { name: "hash.fmix32", version: 1, primitive: "fmix32", file: "fmix32.ir.json" },
+  { name: "hash.fmix64", version: 1, primitive: "fmix64", file: "fmix64.ir.json" },
 ];
 
 function loadRow(entry: (typeof KNOWN)[number]): IrRow {

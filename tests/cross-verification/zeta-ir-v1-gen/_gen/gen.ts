@@ -104,6 +104,32 @@ const FMIX32: GenSpec = {
   },
 };
 
+const FMIX64: GenSpec = {
+  generator: "hash.fmix64",
+  version: 1,
+  width: 64,
+  ops: [
+    { op: "xorshr", s: 33n },
+    { op: "mul", k: -49064778989728563n }, // 0xff51afd7ed558ccd
+    { op: "xorshr", s: 33n },
+    { op: "mul", k: -4265267296055464877n }, // 0xc4ceb9fe1a85ec53
+    { op: "xorshr", s: 33n },
+  ],
+  goldenPrimitive: "fmix64",
+  inputs: {
+    "x-0": 0n,
+    "x-1": 1n,
+    "x-2": 2n,
+    "x-10": 10n,
+    "x-255": 255n,
+    "x-u64max": 18446744073709551615n,
+    "x-golden": 11400714819323198485n,
+    "x-2pow63": 9223372036854775808n,
+    "x-12345678901234567890": 12345678901234567890n,
+    "x-1e18": 1000000000000000000n,
+  },
+};
+
 // ── build the FROZEN v1 envelope as a Tagged DynamicValue (frozen key order) ──
 
 function opToTagged(op: MixOp): Tagged {
@@ -201,10 +227,10 @@ export function emit(spec: GenSpec): Record<string, string> {
 
 if (import.meta.main) {
   const result: Record<string, Record<string, string>> = {};
-  for (const spec of [SPLITMIX64, FMIX32]) result[spec.goldenPrimitive] = emit(spec);
+  for (const spec of [SPLITMIX64, FMIX32, FMIX64]) result[spec.goldenPrimitive] = emit(spec);
   const target = join(dirname(import.meta.dir), "ts-output.json");
   writeFileSync(target, `${JSON.stringify(result, null, 2)}\n`);
   console.log("wrote ts-output.json (generated-from-zeta-ir-v1)");
 }
 
-export { SPLITMIX64, FMIX32, type GenSpec };
+export { SPLITMIX64, FMIX32, FMIX64, type GenSpec };

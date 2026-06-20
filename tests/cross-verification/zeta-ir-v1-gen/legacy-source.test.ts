@@ -66,6 +66,21 @@ const KNOWN: readonly V1[] = [
       { op: "xorshr", s: 16n },
     ],
   },
+  {
+    generator: "hash.fmix64",
+    version: 1,
+    width: 64,
+    legacyShape: "width-no-zetaId",
+    primitive: "fmix64",
+    file: "fmix64.ir.json",
+    ops: [
+      { op: "xorshr", s: 33n },
+      { op: "mul", k: -49064778989728563n },
+      { op: "xorshr", s: 33n },
+      { op: "mul", k: -4265267296055464877n },
+      { op: "xorshr", s: 33n },
+    ],
+  },
 ];
 
 function opJson(op: Op): string {

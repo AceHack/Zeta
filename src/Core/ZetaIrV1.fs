@@ -184,8 +184,23 @@ module ZetaIrV1 =
               Mul 3266489909L // 0xc2b2ae35
               XorShr 16L ] }
 
+    /// MurmurHash3 fmix64 finaliser under v1 — width 64, the THIRD generator. Same
+    /// `mul`/`xorshr` vocabulary as the other two, proving the frozen v1 envelope
+    /// generalises beyond the seed pair. u64 multipliers stored as signed-int64
+    /// bit-pattern (like splitmix64). Public-domain smhasher fmix64.
+    let fmix64: Ir =
+        { Generator = "hash.fmix64"
+          Version = 1
+          Width = 64
+          Ops =
+            [ XorShr 33L
+              Mul -49064778989728563L // 0xff51afd7ed558ccd
+              XorShr 33L
+              Mul -4265267296055464877L // 0xc4ceb9fe1a85ec53
+              XorShr 33L ] }
+
     /// All known v1 IRs (the rows the frozen golden file pins).
-    let known: Ir list = [ splitmix64; fmix32 ]
+    let known: Ir list = [ splitmix64; fmix32; fmix64 ]
 
     // ── projection BACK to the legacy `*.ir.json` shape (single source of truth) ─────
     //
@@ -220,6 +235,7 @@ module ZetaIrV1 =
         match generator with
         | "rng.splitmix64" -> Some ZetaIdNoWidth
         | "hash.fmix32" -> Some WidthNoZetaId
+        | "hash.fmix64" -> Some WidthNoZetaId
         | _ -> None
 
     /// The legacy-shaped `DynamicValue` for a v1 IR, in that generator's committed field

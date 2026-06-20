@@ -44,6 +44,7 @@ let private irFile (primitive: string) (name: string) =
 [<Theory>]
 [<InlineData("rng.splitmix64", 1, "splitmix64", "splitmix64.ir.json")>]
 [<InlineData("hash.fmix32", 1, "fmix32", "fmix32.ir.json")>]
+[<InlineData("hash.fmix64", 1, "fmix64", "fmix64.ir.json")>]
 let ``IR relation row reproduces the committed cross-verification IR file byte-for-byte``
     (name: string)
     (version: int)

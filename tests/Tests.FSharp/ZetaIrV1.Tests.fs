@@ -198,6 +198,18 @@ let ``legacy fmix32.ir.json is byte-identical to the v1-derived projection`` () 
     | None -> failwith "fmix32 has no legacy shape mapping"
 
 [<Fact>]
+let ``legacy fmix64.ir.json is byte-identical to the v1-derived projection`` () =
+    // the THIRD generator: its committed legacy file is also DERIVED from the frozen v1
+    // value (fmix32-style WidthNoZetaId shape at width 64), proving the single-source-of-
+    // truth projection generalises to a freshly-added generator.
+    let committed =
+        File.ReadAllText(legacyIrPath "fmix64" "fmix64.ir.json").Trim()
+    match ZetaIrV1.toLegacyIrJson ZetaIrV1.fmix64 with
+    | Some(Ok derived) -> Assert.Equal(committed, derived)
+    | Some(Error e) -> failwithf "fmix64 legacy projection failed to encode: %A" e
+    | None -> failwith "fmix64 has no legacy shape mapping"
+
+[<Fact>]
 let ``the v1-derived legacy splitmix64 reconstructs the stored zetaId from identity alone`` () =
     // the strong claim: the legacy `zetaId` field is NOT carried as v1 data; the
     // projection re-derives it from generator@version. Confirm the derived bytes contain

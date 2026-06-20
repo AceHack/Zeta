@@ -1,0 +1,1 @@
+{"generator":"hash.fmix64","version":1,"width":64,"ops":[{"op":"xorshr","s":33},{"op":"mul","k":-49064778989728563},{"op":"xorshr","s":33},{"op":"mul","k":-4265267296055464877},{"op":"xorshr","s":33}]}

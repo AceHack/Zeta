@@ -1,0 +1,43 @@
+version: 1
+description: >-
+  MurmurHash3 fmix64 finaliser golden vectors — the THIRD "generated-from-ir"
+  primitive (after splitmix64 at u64 and fmix32 at u32), proving the DynamicValue
+  IR vocabulary generalises to a SECOND member of the hash family at the u64
+  width. Austin Appleby's avalanche finalizer (public domain, smhasher
+  MurmurHash3.cpp): k ^= k>>33; k *= 0xff51afd7ed558ccd; k ^= k>>33;
+  k *= 0xc4ceb9fe1a85ec53; k ^= k>>33 — all WRAPPING uint64 arithmetic. The ops
+  are exactly the `mul`/`xorshr` vocabulary at width 64, so the same total-u-word
+  IR interpreter folds it; only the IR row differs from the other two generators.
+  Inputs (id-encoded) and the canonical `result` are decimal STRINGS (parse to
+  BigInt / UInt64 / u64).
+vectors:
+  - id: x-0
+    x: "0"
+    result: "0"
+  - id: x-1
+    x: "1"
+    result: "12994781566227106604"
+  - id: x-2
+    x: "2"
+    result: "4233148493373801447"
+  - id: x-10
+    x: "10"
+    result: "7233188113542599437"
+  - id: x-255
+    x: "255"
+    result: "1297215527019907880"
+  - id: x-u64max
+    x: "18446744073709551615"
+    result: "7256831767414464289"
+  - id: x-golden
+    x: "11400714819323198485"
+    result: "11286133854226296554"
+  - id: x-2pow63
+    x: "9223372036854775808"
+    result: "10338021812380738707"
+  - id: x-12345678901234567890
+    x: "12345678901234567890"
+    result: "5624975647114020216"
+  - id: x-1e18
+    x: "1000000000000000000"
+    result: "7386266618110926366"

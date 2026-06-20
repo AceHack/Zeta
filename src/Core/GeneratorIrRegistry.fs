@@ -148,13 +148,36 @@ module GeneratorIrRegistry =
                      mul 3266489909L // 0xc2b2ae35
                      xorshr 16L ]) ]
 
+    /// MurmurHash3 fmix64 finaliser IR (width 64) — the THIRD generator, proving the
+    /// `mul`/`xorshr` IR vocabulary generalises to a SECOND member of the hash family
+    /// at the u64 width (splitmix64's width, fmix32's family). Austin Appleby's
+    /// public-domain smhasher finalizer:
+    ///   k ^= k>>33; k *= 0xff51afd7ed558ccd; k ^= k>>33; k *= 0xc4ceb9fe1a85ec53; k ^= k>>33
+    /// The u64 multipliers are stored as their signed-int64 bit-pattern (multiply is
+    /// mod 2^64, so the reinterpretation is bit-exact), exactly as splitmix64's are.
+    /// Mirrors `tests/cross-verification/fmix64/_gen/fmix64.ir.json` (fmix32-shaped:
+    /// `generator, version, width, ops`, no stored `zetaId`).
+    let fmix64Ir : DynamicValue =
+        DynamicValue.Object
+            [ ("generator", DynamicValue.String "hash.fmix64")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 64L)
+              ("ops",
+               DynamicValue.Array
+                   [ xorshr 33L
+                     mul -49064778989728563L // 0xff51afd7ed558ccd
+                     xorshr 33L
+                     mul -4265267296055464877L // 0xc4ceb9fe1a85ec53
+                     xorshr 33L ]) ]
+
     /// The known generator-IR rows. Each `Ok` because the IRs above are canonical.
-    /// Note `hash.fmix32` is NOT yet in `GeneratorRegistry.known`; its ZetaId is still
-    /// the deterministic `idOf` content-address (the id is a pure function of
-    /// name@version, registered-or-not — that is the homoiconic point).
+    /// Note `hash.fmix32`/`hash.fmix64` are NOT yet in `GeneratorRegistry.known`; their
+    /// ZetaId is still the deterministic `idOf` content-address (the id is a pure
+    /// function of name@version, registered-or-not — that is the homoiconic point).
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
-          row "hash.fmix32" 1 fmix32Ir ]
+          row "hash.fmix32" 1 fmix32Ir
+          row "hash.fmix64" 1 fmix64Ir ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)

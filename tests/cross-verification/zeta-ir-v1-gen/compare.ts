@@ -66,6 +66,7 @@ for (const p of primitives) {
 const legacyGolden: Record<string, string> = {
   splitmix64: join(CV, "splitmix64", "ts-output.json"),
   fmix32: join(CV, "fmix32", "ts-output.json"),
+  fmix64: join(CV, "fmix64", "ts-output.json"),
 };
 
 let vectorCount = 0;

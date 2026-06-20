@@ -54,6 +54,18 @@ let private fmix32Inputs : (string * BigInteger) list =
       "x-3735928559", BigInteger 3735928559L
       "x-1e9", BigInteger 1000000000L ]
 
+let private fmix64Inputs : (string * BigInteger) list =
+    [ "x-0", BigInteger 0
+      "x-1", BigInteger 1
+      "x-2", BigInteger 2
+      "x-10", BigInteger 10
+      "x-255", BigInteger 255
+      "x-u64max", BigInteger.Parse "18446744073709551615"
+      "x-golden", BigInteger.Parse "11400714819323198485"
+      "x-2pow63", BigInteger.Parse "9223372036854775808"
+      "x-12345678901234567890", BigInteger.Parse "12345678901234567890"
+      "x-1e18", BigInteger.Parse "1000000000000000000" ]
+
 // decode a v1 IR (from its canonical JSON) into (width, ops), enforcing the v1 contract
 // through the shipping ZetaIrV1.validate — i.e. the SAME validator the freeze ships.
 let private decodeV1 (canonicalJson: string) : int * ZetaIrV1.Op list =
@@ -89,12 +101,14 @@ let private emit (ir: ZetaIrV1.Ir) (inputs: (string * BigInteger) list) : Map<st
 let ``emit zeta-ir-v1-gen fsharp-output.json (and value-preservation against legacy golden)`` () =
     let splitmix64 = emit ZetaIrV1.splitmix64 splitmix64Inputs
     let fmix32 = emit ZetaIrV1.fmix32 fmix32Inputs
+    let fmix64 = emit ZetaIrV1.fmix64 fmix64Inputs
 
     // sanity inside this oracle: a couple of pinned values from the committed golden.
     Assert.Equal("16294208416658607535", splitmix64.["x-1"])
     Assert.Equal("1364076727", fmix32.["x-1"])
+    Assert.Equal("12994781566227106604", fmix64.["x-1"])
 
-    let result = dict [ "splitmix64", splitmix64; "fmix32", fmix32 ]
+    let result = dict [ "splitmix64", splitmix64; "fmix32", fmix32; "fmix64", fmix64 ]
     let options = JsonSerializerOptions(WriteIndented = true)
     let json = JsonSerializer.Serialize(result, options).Replace("\r\n", "\n") + "\n"
 
