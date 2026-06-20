@@ -357,6 +357,7 @@
     <Compile Include="Formal/MintPanel.Tests.fs" />
     <Compile Include="Formal/DemoDashboard.Tests.fs" />
     <Compile Include="Formal/DemoPipeline.Tests.fs" />
+    <Compile Include="Formal/EntityFederations.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
