@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (IR relation as the running integral of a delta stream on a real DBSP circuit, PR #8698; #8689 merged)
+**Last updated:** 2026-06-20 (reviewed #8699 darkhall heat readout in-lane; board clear, main green)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -130,6 +130,15 @@ verified) so future-me and peers do not over-trust past-me.
     EXTERNAL delta source (zero-downtime schema evolution over a live feed) reuses
     these exact rungs; the integration semantics + delta algebra are proven
     end-to-end on a real circuit here.
+  - **REVIEWED #8699 (darkhall heat readout, MERGED 2026-06-20):** in-lane heat
+    review. Verdict sound — holds the contract: cold-until-loss (successful
+    soft-CHIP8 exec + controller-only grammar action both `sink.Signatures.Count
+    == 0`; "typed refusal without heat" test makes the cold path explicit), loss
+    emits ONE typed readout `darkhall.machine.denied` through the injected
+    `IHeatSink` (charged only on real refusal), refusals are typed `LoopEvent`s
+    not thrown. Same forget/refuse=heat, success=cold structure as RoomHorizon
+    (#8672) + bounded-gset (#8690). 5/5 tests green on main. Posted review note;
+    open-PR board fully clear afterward.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
