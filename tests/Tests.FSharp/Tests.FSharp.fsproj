@@ -348,6 +348,7 @@
     <Compile Include="Formal/ImdbDataset.Tests.fs" />
     <Compile Include="Formal/TtlCache.Tests.fs" />
     <Compile Include="Formal/CostarFederations.Tests.fs" />
+    <Compile Include="Formal/CostarZSet.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->

@@ -307,6 +307,7 @@
     <Compile Include="ImdbDataset.fs" />
     <Compile Include="TtlCache.fs" />
     <Compile Include="CostarFederations.fs" />
+    <Compile Include="CostarZSet.fs" />
     <Compile Include="IdentityCapacity.fs" />
     <Compile Include="TrustCalculus.fs" />
     <Compile Include="PrivacyEconomy.fs" />
