@@ -168,3 +168,54 @@ let ``frozen zeta-ir-v1 golden reproduces byte-for-byte`` () =
         Assert.Equal(existing, json) // byte-lock: committed golden must match freshly emitted
     else
         File.WriteAllText(path, json) // first run materialises the frozen artifact
+
+// ── single source of truth: the legacy *.ir.json is DERIVED from the v1 envelope ──
+//
+// The committed legacy files are no longer hand-maintained parallels: `toLegacyIrJson`
+// derives them from the frozen v1 `Ir`, and these byte-locks prove the derivation equals
+// the committed file character-for-character. So the v1 value is the SINGLE SOURCE; the
+// legacy file is a generated artifact whose continued existence is test-guaranteed.
+
+let private legacyIrPath (primitive: string) (file: string) =
+    Path.Join(repoRoot (), "tests", "cross-verification", primitive, "_gen", file)
+
+[<Fact>]
+let ``legacy splitmix64.ir.json is byte-identical to the v1-derived projection`` () =
+    let committed =
+        File.ReadAllText(legacyIrPath "splitmix64" "splitmix64.ir.json").Trim()
+    match ZetaIrV1.toLegacyIrJson ZetaIrV1.splitmix64 with
+    | Some(Ok derived) -> Assert.Equal(committed, derived)
+    | Some(Error e) -> failwithf "splitmix64 legacy projection failed to encode: %A" e
+    | None -> failwith "splitmix64 has no legacy shape mapping"
+
+[<Fact>]
+let ``legacy fmix32.ir.json is byte-identical to the v1-derived projection`` () =
+    let committed =
+        File.ReadAllText(legacyIrPath "fmix32" "fmix32.ir.json").Trim()
+    match ZetaIrV1.toLegacyIrJson ZetaIrV1.fmix32 with
+    | Some(Ok derived) -> Assert.Equal(committed, derived)
+    | Some(Error e) -> failwithf "fmix32 legacy projection failed to encode: %A" e
+    | None -> failwith "fmix32 has no legacy shape mapping"
+
+[<Fact>]
+let ``the v1-derived legacy splitmix64 reconstructs the stored zetaId from identity alone`` () =
+    // the strong claim: the legacy `zetaId` field is NOT carried as v1 data; the
+    // projection re-derives it from generator@version. Confirm the derived bytes contain
+    // exactly the historically-stored id, proving it was always a pure function of
+    // identity (never independent, mintable data).
+    match ZetaIrV1.toLegacyIrJson ZetaIrV1.splitmix64 with
+    | Some(Ok derived) ->
+        Assert.Contains("\"zetaId\":\"129c1fac3a48075b481c0f10f30deb06\"", derived)
+    | Some(Error e) -> failwithf "%A" e
+    | None -> failwith "splitmix64 has no legacy shape mapping"
+
+[<Fact>]
+let ``a generator with no legacy file has no legacy projection`` () =
+    // the projection is total only over generators that actually have a committed legacy
+    // file; an unknown generator yields None (not a fabricated file).
+    let unknown: ZetaIrV1.Ir =
+        { Generator = "rng.nonexistent"
+          Version = 1
+          Width = 64
+          Ops = [ ZetaIrV1.XorShr 7L ] }
+    Assert.True((ZetaIrV1.toLegacyIrJson unknown).IsNone)

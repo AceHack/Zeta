@@ -186,3 +186,65 @@ module ZetaIrV1 =
 
     /// All known v1 IRs (the rows the frozen golden file pins).
     let known: Ir list = [ splitmix64; fmix32 ]
+
+    // ── projection BACK to the legacy `*.ir.json` shape (single source of truth) ─────
+    //
+    // The committed legacy files predate v1 and have two pre-existing, INCONSISTENT
+    // shapes (see the module header): `splitmix64.ir.json` stores a `zetaId` and omits
+    // `width`; `fmix32.ir.json` carries `width` and omits `zetaId`; neither carries the
+    // `schema` tag. Those bytes are load-bearing byte-locks (the TS harness folds them
+    // and `GeneratorIrRegistry.Tests` pin the relation row against them), so they must
+    // not change. Instead, this projection makes the v1 `Ir` the SINGLE SOURCE OF TRUTH:
+    // it DERIVES the exact committed legacy bytes from the frozen v1 value, and a
+    // byte-lock test (`ZetaIrV1.Tests`) asserts the derivation equals the committed file
+    // character-for-character. The legacy file thus becomes a generated artifact, not a
+    // hand-maintained parallel.
+    //
+    // Crucially the legacy `splitmix64` `zetaId` is NOT carried as v1 data — it is
+    // re-derived here via `zetaId ir` (== `idOf generator version`), demonstrating it
+    // was always a pure function of identity, never independent data. The legacy field
+    // ORDER is reproduced exactly: splitmix64 = generator,version,zetaId,ops;
+    // fmix32 = generator,version,width,ops.
+
+    /// The legacy field layout a given generator's committed `*.ir.json` uses. The two
+    /// shipped files differ by construction; v1 unifies the *source*, this records how
+    /// each one *serialised* before the freeze.
+    type private LegacyShape =
+        /// generator, version, zetaId (derived), ops  — e.g. splitmix64 (no width)
+        | ZetaIdNoWidth
+        /// generator, version, width, ops             — e.g. fmix32 (no zetaId)
+        | WidthNoZetaId
+
+    /// How each known generator serialised under the legacy (pre-v1) shape.
+    let private legacyShapeOf (generator: string) : LegacyShape option =
+        match generator with
+        | "rng.splitmix64" -> Some ZetaIdNoWidth
+        | "hash.fmix32" -> Some WidthNoZetaId
+        | _ -> None
+
+    /// The legacy-shaped `DynamicValue` for a v1 IR, in that generator's committed field
+    /// order. Returns `None` for a generator with no legacy file.
+    let private toLegacyDynamicValue (ir: Ir) : DynamicValue option =
+        legacyShapeOf ir.Generator
+        |> Option.map (fun shape ->
+            let opsDv = DynamicValue.Array(ir.Ops |> List.map opToDv)
+            match shape with
+            | ZetaIdNoWidth ->
+                DynamicValue.Object
+                    [ ("generator", DynamicValue.String ir.Generator)
+                      ("version", DynamicValue.Int(int64 ir.Version))
+                      // re-DERIVED, not stored: equals `idOf generator version`.
+                      ("zetaId", DynamicValue.String(zetaId ir))
+                      ("ops", opsDv) ]
+            | WidthNoZetaId ->
+                DynamicValue.Object
+                    [ ("generator", DynamicValue.String ir.Generator)
+                      ("version", DynamicValue.Int(int64 ir.Version))
+                      ("width", DynamicValue.Int(int64 ir.Width))
+                      ("ops", opsDv) ])
+
+    /// The exact committed legacy `*.ir.json` bytes for a v1 IR, derived from the frozen
+    /// v1 value via the REAL canonical-JSON machinery. `None` if the generator has no
+    /// legacy file. The `ZetaIrV1.Tests` byte-lock proves this equals the committed file.
+    let toLegacyIrJson (ir: Ir) : Result<string, EncodeError> option =
+        toLegacyDynamicValue ir |> Option.map DynamicValue.toCanonicalJson
