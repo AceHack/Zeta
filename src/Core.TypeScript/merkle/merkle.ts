@@ -26,6 +26,18 @@ export interface MerkleHash {
 
 export const ZERO: MerkleHash = { hi: 0n, lo: 0n };
 
+/**
+ * One step of a Merkle inclusion proof: the sibling hash to combine with, and
+ * whether the sibling is the RIGHT child. `right === true` means the current
+ * accumulator is the LEFT child, so the parent is `combine(acc, sibling)`;
+ * `right === false` means the sibling is the LEFT child, so `combine(sibling, acc)`.
+ * Byte-identical to the F#/C#/Rust ProofStep ({ sibling, right }).
+ */
+export interface ProofStep {
+  readonly sibling: MerkleHash;
+  readonly right: boolean;
+}
+
 /** Hex representation (hi then lo, 16 hex digits each) — matches the other oracles' ToHex. */
 export const toHex = (h: MerkleHash): string => hex16(h.hi) + hex16(h.lo);
 
@@ -86,4 +98,47 @@ export class MerkleTree {
   leafHashes(): readonly MerkleHash[] {
     return this.levels[0]!;
   }
+
+  /**
+   * Merkle inclusion proof for the leaf at `index`: the O(log N) sibling path
+   * from that leaf up to (but excluding) the root. Byte-identical to F#'s
+   * `Proof(index)` (src/Core/Merkle.fs): walks levels[0 .. n-2], at each level
+   * `selfIsLeft = idx % 2 === 0`; the sibling is `idx + 1` when self is left
+   * (or self itself for the odd trailing node — duplicate-last), else `idx - 1`;
+   * pushes `{ sibling, right: selfIsLeft }`; then `idx = floor(idx / 2)`.
+   * A single-leaf tree has one level, so the path is empty.
+   */
+  proof(index: number): ProofStep[] {
+    const steps: ProofStep[] = [];
+    let idx = index;
+    // Walk every level except the topmost (the root level).
+    for (let level = 0; level < this.levels.length - 1; level++) {
+      const nodes = this.levels[level]!;
+      const selfIsLeft = idx % 2 === 0;
+      const siblingIdx = selfIsLeft
+        ? (idx + 1 < nodes.length ? idx + 1 : idx) // duplicate-last for odd trailing node
+        : idx - 1;
+      steps.push({ sibling: nodes[siblingIdx]!, right: selfIsLeft });
+      idx = Math.floor(idx / 2);
+    }
+    return steps;
+  }
+}
+
+/**
+ * Verify a Merkle inclusion proof: re-fold `leaf` up through the sibling `steps`
+ * and check the result equals `expectedRoot`. Byte-identical to F#'s
+ * `verifyProof`: `acc = ofBytes(leaf)`; per step `acc = right ? combine(acc, sibling)
+ * : combine(sibling, acc)`; returns `acc === expectedRoot`.
+ */
+export function verifyProof(
+  leaf: Uint8Array,
+  steps: ProofStep[],
+  expectedRoot: MerkleHash,
+): boolean {
+  let acc = ofBytes(leaf);
+  for (const step of steps) {
+    acc = step.right ? combine(acc, step.sibling) : combine(step.sibling, acc);
+  }
+  return acc.hi === expectedRoot.hi && acc.lo === expectedRoot.lo;
 }
