@@ -75,6 +75,24 @@ verified) so future-me and peers do not over-trust past-me.
   from DynamicValue IR via GeneratorRegistry (a Z-set schema-registry-over-DBSP
   evolved zero-downtime). Orchestrator skips `_`-dirs. Claim:
   `docs/claims/task-nway-oracle-harness.md`.
+- **Reviewed + landed 3 teammate PRs (this session, 2026-06-20).** Held the
+  WorkspacePort contract and the quantum-honesty line:
+  - #8667 kiro-executor-v2 (Alexa/Kiro): WorkspacePort-based executor, no
+    bash/git CLI. Verified it uses the reconciled #8433 superset; fixed the
+    tsc gate (TS6133 unused: pullResult/agentId/spec/originalPush) faithfully.
+  - #8653 Participant interface (Alexa/Kiro): universal chooser. Fixed tsc gate
+    (unused imports) AND a real Codex P2 — observeWithParticipant didn't honor
+    its documented degrade-toward-correct contract on a throwing choose();
+    wrapped in try/catch + regression test, resolved the thread.
+  - #8672 room-horizon heat export (Vera/Codex): verified Core builds + 9
+    RoomHorizon tests pass. Heat semantics honest: forgetting→heat,
+    no-forget-rejection→backpressure, byte-deferred→cold. Noted on the PR that
+    this is the irreversibility surface the synthesis-note §B obligation needs
+    (forgetting spends heat ⇒ room reorder non-symmetric, β²≠id).
+  - #8656 (Q# Z-set ISA) was already CLOSED; its content reached main via #8671.
+  Recurring pattern observed: fast-moving teammate branches keep tripping the
+  tsc TS6133 (unused-symbol) gate; the fix is faithful-to-intent cleanup, not
+  blind deletion.
 - Research note: the harness is the **space-axis ECC check** (`gen(gen)` corrects
   drift across SPACE) — structural dual to the society-level mutual-empowerment
   fitness bet (vs labs' intelligence-per-square-inch); traced through the
