@@ -143,3 +143,74 @@ let ``soft scheduler banks darkhall heat backpressure as a room boundary row`` (
             | [ row ] -> Assert.Equal(1, row.Backpressured)
             | rows -> Assert.Fail(sprintf "expected one scheduler heat row, got %A" rows)
     }
+
+[<Fact>]
+let ``heat board sim loop measures backpressure before the cut closes`` () =
+    task {
+        let sink =
+            BoundedHeatSink
+                { Capacity = 1
+                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+
+        let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
+
+        match (sink :> IHeatSink).Emit filler with
+        | Error feedback -> Assert.Fail(sprintf "expected heat sink prefill, got %A" feedback)
+        | Ok() -> ()
+
+        let child = CartFixtures.cart CartFixtures.chip9GreenDot
+        let caps = MetaCart.capabilityMap [ child, CartFixtures.chip9GreenDot.Capabilities ]
+
+        let launch: Runtime.MetaCartLaunch =
+            { Goal = 3
+              Seed = 1UL
+              ParentCapabilities = Chip9Capabilities.chip8Default
+              ChildCapabilitiesBySha = caps
+              Children = [ child ]
+              Parent = Chip8Cow.create 1UL }
+
+        let requestFor (action: Runtime.CabinetAction) =
+            if action.Id = "darkhall.play.meta-cart-host" then
+                Some(Runtime.RunMetaCart launch)
+            else
+                None
+
+        let budget: SimLoop.Budget =
+            { MaxLaps = 4
+              MaxTicks = 4
+              MaxMillis = 1_000L }
+
+        let! outcome =
+            Scheduler.heatBoardSimLoop
+                "darkhall-heat-board"
+                Arcade.room
+                Chip9Capabilities.chip8Default
+                timer
+                "darkhall-simloop"
+                (sink :> IHeatSink)
+                requestFor
+                (chooseById "darkhall.play.meta-cart-host")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                budget
+                (ctx ())
+                42L
+                1
+                (fun _ state -> not (Scheduler.backpressured state))
+
+        match outcome.Stopped with
+        | SimLoop.Stopped.CutChoseClose -> ()
+        | other -> Assert.Fail(sprintf "expected heat-board cut to close the loop, got %A" other)
+
+        match outcome.Laps with
+        | [ lap ] ->
+            Assert.Equal(1, lap.State.CompletedTicks)
+            Assert.True(Scheduler.backpressured lap.State)
+
+            let firstDisplayRow = lap.Measured.[1]
+
+            Assert.Equal("1", firstDisplayRow.Substring(0, 1))
+            Assert.Equal("3", firstDisplayRow.Substring(16, 1))
+            Assert.Equal("4", firstDisplayRow.Substring(48, 1))
+        | laps -> Assert.Fail(sprintf "expected one measured lap before cut, got %A" laps)
+    }

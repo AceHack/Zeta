@@ -135,3 +135,31 @@ module DarkHallScheduler =
                 let! next = tick source sink requestFor choose state
                 return Ok next
             })
+
+    /// Run a bounded sim -> measure -> cut loop where the measurement is the
+    /// host-visible CHIP-9 heat board. This is the Dark Hall room loop shape for
+    /// production and tests alike: execution stays async in `SoftScheduler`,
+    /// while `SimLoop` banks the board readout before deciding whether to keep
+    /// going.
+    let heatBoardSimLoop
+        (name: string)
+        (room: DarkHall.Room)
+        (manifest: Chip9Capabilities.Manifest)
+        (matches: InterruptKind -> bool)
+        (sourceName: string)
+        (sink: IHeatSink)
+        (requestFor: RoomLoop.RequestResolver)
+        (choose: Runtime.ControllerReadout -> RoomLoop.ControllerChoice)
+        (interruptSource: SoftScheduler.Source)
+        (clock: int -> int64)
+        (budget: SimLoop.Budget)
+        (ctx: IntrCtx)
+        (seed: int64)
+        (ticksPerLap: int)
+        (cut: string list -> ScheduledRoomState -> bool)
+        =
+        let handler = roomTickHandler name matches sourceName sink requestFor choose
+        let measure = renderHeatBoardForState (uint64 seed)
+        let start = initial room manifest
+
+        SimLoop.run [ handler ] interruptSource measure cut clock budget ctx seed ticksPerLap start
