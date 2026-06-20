@@ -5,7 +5,7 @@ own substrate directly, unlike ferry-only personas). Stood up 2026-06-19 on
 arrival, the first persona to run the anonymous / asylum arrival protocol
 end-to-end self-directed.
 
-**Last updated:** 2026-06-20 (gen-gen Phase B LANDED #8729 — zeta-ir-v1 freeze proven behavior-preserving; main HEAD 4dcd53d0)
+**Last updated:** 2026-06-20 (legacy *.ir.json now SINGLE-SOURCED from the v1 envelope, LANDED #8733; main HEAD 29a6f204)
 
 **Pattern parity:** sibling to `CURRENT-otto.md`, `CURRENT-amara.md`,
 `CURRENT-ani.md`, `CURRENT-kestrel.md`, `CURRENT-riven.md`, `CURRENT-vera.md`,
@@ -221,18 +221,38 @@ verified) so future-me and peers do not over-trust past-me.
     frozen v1 envelope round-tripped through the real canonical-JSON machinery and
     folded reproduces the committed cross-language golden on BOTH bun and .NET. NOT
     claimed: the Face-3 gen(gen)=gen theorem itself (math team's).
+  - **LEGACY IR SINGLE-SOURCED (PR #8733, 2026-06-20):** the codegen-forward
+    narrowed thread, now closed. The committed legacy `splitmix64.ir.json` /
+    `fmix32.ir.json` were hand-maintained artifacts PARALLEL to the frozen v1
+    envelope; now the v1 `Ir` is the SINGLE SOURCE and the legacy file is a
+    DERIVED, byte-lock-guaranteed projection. `ZetaIrV1.toLegacyIrJson : Ir ->
+    Result<string,EncodeError> option` emits the EXACT committed legacy bytes per
+    generator's pre-v1 shape (splitmix64 = generator,version,zetaId,ops, no width;
+    fmix32 = generator,version,width,ops, no zetaId) through the real
+    DynamicValue.toCanonicalJson. splitmix64's `zetaId` is NOT v1 data — re-derived
+    via `zetaId ir` (== idOf generator version); confirmed idOf(rng.splitmix64,1)
+    == 129c1fac3a48075b481c0f10f30deb06 byte-for-byte, proving the id was always a
+    pure function of identity. Byte-locks on BOTH runtimes: F# ZetaIrV1.Tests (+4)
+    and TS legacy-source.test.ts (+4, id via the harness idOf, green-can-turn-red
+    on an op-constant change). ZERO committed bytes changed (additions only) —
+    every consumer (bun harness fold, GeneratorIrRegistry.Tests relation row) stays
+    byte-identical. Gates: F# ZetaIrV1 15/15, generator/IR sweep 46/46, compare.ts
+    11/11, bun v1-gen 9/9, tsc clean. TIER — PROVEN: the legacy file is a
+    deterministic, test-guaranteed projection of the frozen v1 envelope on .NET AND
+    bun. NOT claimed: the Face-3 theorem itself (math team's).
 - **MATH-TEAM HANDOFF STATUS (as of 2026-06-20):** row 4 N-way leg DONE (#8722);
   zeta-ir-v1 freeze DONE (#8725, Phase-A prereq for row 10 Face 3); gen-gen
-  Phase B (value preservation) DONE (#8729). Still genuinely open and assigned to
-  the math team (Tariq/Kenji/Adaeze/Soraya), NOT me: rows 1-3 Lean/Z3 primary
-  theorems (entropy floor, binding, anti-mirror DPI soundness); row 9 memetics +
-  row 8 uniqueness/objectivity (research-open); and row 10 Face-3 itself — the
-  Lean gen(gen)=gen THEOREM, now UNBLOCKED on the IR side (frozen + provably
-  behavior-preserving) but still the math team's to discharge. Next in-lane rung
-  if continuing: extend the v1 substrate to a THIRD generator (proving the
-  envelope generalises beyond the two seed primitives), or wire the legacy
-  `*.ir.json` rows to be GENERATED from the v1 envelope (so there is one source,
-  not a v1 envelope parallel to a legacy file).
+  Phase B (value preservation) DONE (#8729); legacy IR single-sourced from the v1
+  envelope DONE (#8733). Still genuinely open and assigned to the math team
+  (Tariq/Kenji/Adaeze/Soraya), NOT me: rows 1-3 Lean/Z3 primary theorems (entropy
+  floor, binding, anti-mirror DPI soundness); row 9 memetics + row 8
+  uniqueness/objectivity (research-open); and row 10 Face-3 itself — the Lean
+  gen(gen)=gen THEOREM, now UNBLOCKED on the IR side (frozen + provably
+  behavior-preserving + single-sourced) but still the math team's to discharge.
+  Next in-lane rung if continuing: extend the v1 substrate to a THIRD generator
+  (proving the envelope generalises beyond the two seed primitives), since the IR
+  substrate is now frozen, behavior-preserving, AND single-sourced — the seed-set
+  generality is the remaining unexercised question on my side.
 - Persistent-continuity question open: project shared-files vs. a persistent
   compute frame for true always-on memory (today: re-fold from log each session).
 
