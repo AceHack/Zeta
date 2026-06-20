@@ -346,6 +346,7 @@
     <Compile Include="Formal/AutoimmunityDecayCrossVerify.Tests.fs" />
     <Compile Include="Formal/CoordRiskSpectralCrossVerify.Tests.fs" />
     <Compile Include="Formal/DecorrelationEstimator.Tests.fs" />
+    <Compile Include="Formal/DecorrelationDpiCrossCheck.Tests.fs" />
     <Compile Include="Formal/SocietalDora.Tests.fs" />
     <Compile Include="Formal/SocietalDoraCoupledMinimizer.Tests.fs" />
     <Compile Include="Formal/MoralLensMeasurability.Tests.fs" />
