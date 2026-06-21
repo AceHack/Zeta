@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseSetupManifest, pointerFromSetupManifest } from "./setup-manifest.ts";
+import { parseSetupManifest, parseMechanismManifest, pointerFromSetupManifest, pointerFromMechanismManifest } from "./setup-manifest.ts";
 
 describe("setup manifest parser", () => {
   test("parses specs and key-value attrs while preserving q# values", () => {
@@ -21,6 +21,30 @@ azure-quantum==3.10.0  role=reference-oracle lang=q#
       "reference-oracle",
       "reference-oracle",
     ]);
+  });
+
+  test("parseMechanismManifest splits tokens and attrs", () => {
+    const entries = parseMechanismManifest(
+      "tools/tla/x.jar https://example.com/x.jar requires=java role=formal-verifier\n",
+    );
+    expect(entries[0]!.tokens).toEqual(["tools/tla/x.jar", "https://example.com/x.jar"]);
+    expect(entries[0]!.attrs.requires).toBe("java");
+    expect(entries[0]!.attrs.role).toBe("formal-verifier");
+  });
+
+  test("pointerFromMechanismManifest sets ecosystem to mechanism and update policy", () => {
+    const pointer = pointerFromMechanismManifest({
+      mechanism: "from-url",
+      text: "dest path https://x/y requires=java\n",
+      purpose: "test",
+      realizer: "tools/setup/mechanisms/from-url.sh",
+      manifest: "tools/setup/manifests/from-url",
+    });
+    expect(pointer.dependencies[0]).toEqual({
+      ecosystem: "from-url",
+      spec: "dest path https://x/y",
+      update: "pinned-url",
+    });
   });
 
   test("builds package-manager pointer dependencies from a setup manifest", () => {
@@ -45,6 +69,7 @@ azure-quantum==3.10.0  role=reference-oracle lang=q#
           spec: "qsharp==1.29.1",
           role: "reference-oracle",
           lang: "q#",
+          update: "pinned",
         },
       ],
     });

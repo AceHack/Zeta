@@ -27,7 +27,7 @@
 #
 # This file centralises the retry policy so every call site
 # uses the same flags. Previously the policy was inlined in
-# `tools/setup/common/verifiers.sh` and missing entirely from
+# `tools/setup/mechanisms/from-url.sh` and missing entirely from
 # `linux.sh` (mise install), `macos.sh` (Homebrew install),
 # and `elan.sh` (Lean toolchain install). Follow-up framing:
 # *"sounds like a common helper would help too rather than

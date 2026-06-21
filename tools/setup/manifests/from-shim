@@ -1,0 +1,4 @@
+# Mechanism: from-shim — symlink name on PATH to an existing binary (when= gated).
+# Format: <name-on-path>  <source-binary>  [when=ubuntu-22.04]
+
+cvc5  cvc4  when=ubuntu-22.04

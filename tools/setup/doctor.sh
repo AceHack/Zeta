@@ -54,7 +54,7 @@ for jar in "tools/tla/tla2tools.jar" "tools/alloy/alloy.jar"; do
       pass "$jar ($(( size / 1024 / 1024 )) MB)"
     fi
   else
-    fail "$jar missing — run tools/setup/install.sh (or tools/setup/common/verifiers.sh for just the jars)"
+    fail "$jar missing — run tools/setup/install.sh (or tools/setup/mechanisms/from-url.sh for just the jars)"
   fi
 done
 echo

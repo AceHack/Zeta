@@ -238,7 +238,7 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
 
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/agent-clis");
-    expect(ITER_595_BLOCK).toContain("tools/setup/manifests/one-liner-tools");
+    expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-installer");
     expect(ITER_595_BLOCK).not.toContain(
       "bun install --global @anthropic-ai/claude-code",
     );

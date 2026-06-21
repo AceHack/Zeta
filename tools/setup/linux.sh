@@ -4,6 +4,7 @@
 #
 # Order matters:
 #   1. apt packages from manifests/apt (build-essential, curl, etc.)
+#   1b. mechanisms/from-deb.sh + from-shim.sh — platform fallbacks after apt
 #   2. mise (via official installer; no apt package yet)
 #   3. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
@@ -14,12 +15,11 @@
 #   6. common/elan.sh     — Lean toolchain
 #   7. common/dotnet-tools.sh — dotnet global tools from
 #                              manifests/dotnet-tools
-#   8. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
+#   8. mechanisms/from-url.sh   — HTTPS assets → repo paths (manifests/from-url)
 #   8b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
 #                              ZETA_INSTALL_FULL (heavy OCaml build)
 #   9. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#  10. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
-#                                  from manifests/one-liner-tools
+#  10. mechanisms/from-installer.sh — vendor install scripts (manifests/from-installer)
 #  11. common/local-llm.sh   — local-LLM core primitive (ollama + pinned tiny model) from
 #                              manifests/local-llm
 #  12. common/shellenv.sh    — managed PATH file
@@ -92,7 +92,7 @@ elif [ -f "$APT_MANIFEST" ]; then
     # shellcheck disable=SC1091
     . /etc/os-release
     if [ "${ID:-}" = "ubuntu" ] && [ "${VERSION_ID:-}" = "22.04" ]; then
-      for _pair in libicu74:libicu70 libssl3t64:libssl3; do
+      for _pair in libicu74:libicu70 libssl3t64:libssl3 cvc5:cvc4; do
         _noble="${_pair%%:*}"
         _jammy="${_pair#*:}"
         case " $PKGS " in
@@ -102,6 +102,15 @@ elif [ -f "$APT_MANIFEST" ]; then
             ;;
         esac
       done
+      # eprover absent from jammy apt; mechanisms/from-deb.sh installs Noble pool .deb.
+      case " $PKGS " in
+        *" eprover "*)
+          echo "↻ apt: eprover deferred on Ubuntu 22.04 jammy (mechanisms/from-deb.sh)"
+          PKGS="${PKGS// eprover / }"
+          PKGS="${PKGS//eprover /}"
+          PKGS="${PKGS// eprover/}"
+          ;;
+      esac
     fi
   fi
   if [ -n "$PKGS" ]; then
@@ -151,6 +160,12 @@ elif [ -f "$APT_MANIFEST" ]; then
   fi
 fi
 echo "✓ apt packages up to date"
+
+# Jammy mechanism fallbacks (from-deb, from-shim) after apt; Noble uses apt directly.
+if [ "$IS_NIXOS" != 1 ]; then
+  "$SETUP_DIR/mechanisms/from-deb.sh"
+  "$SETUP_DIR/mechanisms/from-shim.sh"
+fi
 
 # ── 2. mise ─────────────────────────────────────────────────────────
 # NixOS: use declarative system mise (common.nix / installer ISO). Upstream
@@ -293,7 +308,7 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/dotnet-workloads.sh"
-"$SETUP_DIR/common/verifiers.sh"
+"$SETUP_DIR/mechanisms/from-url.sh"
 # TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
 # binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
 # so minimal/CI/devcontainer installs stay fast. opam + z3 come from
@@ -308,9 +323,8 @@ fi
 "$SETUP_DIR/common/agent-clis.sh"
 # Expose repo package bins (ace, zeta-shadow) on PATH via `bun link`. Best-effort.
 "$SETUP_DIR/common/repo-bins.sh"
-# Non-package-manager CLIs (grok/cursor-agent/kiro/hermes/forge) via their own one-line
-# installers from manifests/one-liner-tools. Detect-first + best-effort (never bricks install).
-"$SETUP_DIR/common/one-liner-tools.sh"
+# Non-package-manager CLIs via mechanisms/from-installer.sh (manifests/from-installer).
+"$SETUP_DIR/mechanisms/from-installer.sh"
 # Local-LLM core primitive — installs pinned ollama binary + pulls the pinned
 # tiny model (manifests/local-llm). Graceful: warns + continues on failure.
 "$SETUP_DIR/common/local-llm.sh"

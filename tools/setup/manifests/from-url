@@ -1,0 +1,6 @@
+# Mechanism: from-url — HTTPS release/asset → declared path.
+# Format: <dest>  <url>  [requires=java,...]
+# <dest> is repo-root-relative unless it starts with ~ or /.
+
+tools/tla/tla2tools.jar    https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar    requires=java    role=formal-verifier
+tools/alloy/alloy.jar      https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar    requires=java    role=formal-verifier

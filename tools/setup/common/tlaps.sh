@@ -17,7 +17,7 @@
 #   An OCaml-from-source build (a dedicated opam switch + ~30 OCaml
 #   deps + the vendored Zenon backend) is heavy and slow. It does NOT
 #   belong on a minimal install. macos.sh/linux.sh only invoke this
-#   script when ZETA_INSTALL_FULL=1 (same gate one-liner-tools.sh
+#   script when ZETA_INSTALL_FULL=1 (same gate from-installer.sh
 #   uses for its heavy/optional installers). GOVERNANCE §24: the gate
 #   keeps install.sh's dev/CI/devcontainer minimal modes fast; the
 #   full mode (or an explicit ZETA_INSTALL_FULL=1) opts into TLAPS.

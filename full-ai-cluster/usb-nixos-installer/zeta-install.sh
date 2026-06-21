@@ -1467,7 +1467,7 @@ if [ -d "$ZETA_HOME" ]; then
   # CLIs via the canonical setup manifests:
   #
   #   tools/setup/manifests/agent-clis       (claude/codex)
-  #   tools/setup/manifests/one-liner-tools  (grok/cursor/kiro/hermes/forge/agy)
+  #   tools/setup/manifests/from-installer  (grok/cursor/kiro/hermes/forge/agy)
   #
   # We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE this
   # step so .mise.toml + setup manifests are available; reorder vs the

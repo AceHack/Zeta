@@ -1,6 +1,0 @@
-# Formal-verifier jar downloads — fetched by tools/setup/common/verifiers.sh.
-# Format: <target-path-relative-to-repo-root>  <url>
-# Per Aaron round-29 call: no checksum verification (trust-on-first-use).
-
-tools/tla/tla2tools.jar    https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar
-tools/alloy/alloy.jar      https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar

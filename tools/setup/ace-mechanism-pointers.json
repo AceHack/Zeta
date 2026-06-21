@@ -1,0 +1,97 @@
+[
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "HTTPS release assets → declared repo paths (jars, binaries, etc.)",
+    "realizer": "tools/setup/mechanisms/from-url.sh",
+    "manifest": "tools/setup/manifests/from-url",
+    "dependencies": [
+      {
+        "ecosystem": "from-url",
+        "spec": "tools/tla/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar",
+        "update": "pinned-url",
+        "role": "formal-verifier"
+      },
+      {
+        "ecosystem": "from-url",
+        "spec": "tools/alloy/alloy.jar https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar",
+        "update": "pinned-url",
+        "role": "formal-verifier"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Direct .deb installs when distro apt lacks the package",
+    "realizer": "tools/setup/mechanisms/from-deb.sh",
+    "manifest": "tools/setup/manifests/from-deb",
+    "dependencies": [
+      {
+        "ecosystem": "from-deb",
+        "spec": "eprover http://archive.ubuntu.com/ubuntu/pool/universe/e/eprover/eprover_3.0.03+ds-1_amd64.deb",
+        "update": "when-drift-bump-pin",
+        "when": "ubuntu-22.04,amd64"
+      },
+      {
+        "ecosystem": "from-deb",
+        "spec": "eprover http://ports.ubuntu.com/ubuntu-ports/pool/universe/e/eprover/eprover_3.0.03+ds-1_arm64.deb",
+        "update": "when-drift-bump-pin",
+        "when": "ubuntu-22.04,arm64"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "PATH symlinks when binary name differs from upstream package",
+    "realizer": "tools/setup/mechanisms/from-shim.sh",
+    "manifest": "tools/setup/manifests/from-shim",
+    "dependencies": [
+      {
+        "ecosystem": "from-shim",
+        "spec": "cvc5 cvc4",
+        "update": "when-drift-bump-pin",
+        "when": "ubuntu-22.04"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Vendor install scripts (HTTPS download-then-exec)",
+    "realizer": "tools/setup/mechanisms/from-installer.sh",
+    "manifest": "tools/setup/manifests/from-installer",
+    "dependencies": [
+      {
+        "ecosystem": "from-installer",
+        "spec": "grok https://x.ai/cli/install.sh",
+        "update": "self-updating"
+      },
+      {
+        "ecosystem": "from-installer",
+        "spec": "cursor-agent https://cursor.com/install",
+        "update": "self-updating"
+      },
+      {
+        "ecosystem": "from-installer",
+        "spec": "kiro-cli https://cli.kiro.dev/install",
+        "update": "self-updating"
+      },
+      {
+        "ecosystem": "from-installer",
+        "spec": "hermes https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh",
+        "update": "self-updating"
+      },
+      {
+        "ecosystem": "from-installer",
+        "spec": "forge https://forgecode.dev/cli",
+        "update": "self-updating"
+      },
+      {
+        "ecosystem": "from-installer",
+        "spec": "agy https://antigravity.google/cli/install.sh",
+        "update": "self-updating"
+      }
+    ],
+    "opt_in": [
+      "ZETA_INSTALL_FULL=1"
+    ]
+  }
+]

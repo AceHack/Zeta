@@ -208,7 +208,7 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
   expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
   expect(zetaInstall).toContain("tools/setup/manifests/agent-clis");
-  expect(zetaInstall).toContain("tools/setup/manifests/one-liner-tools");
+  expect(zetaInstall).toContain("tools/setup/manifests/from-installer");
 
   // No NixOS module should name individual bun-global agent packages; package selection lives
   // in tools/setup/manifests/agent-clis.

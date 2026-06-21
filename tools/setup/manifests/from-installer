@@ -1,0 +1,11 @@
+# Mechanism: from-installer — vendor install script (HTTPS) → PATH binary.
+# Format: <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]  [args=...]
+#
+# Best-effort dev CLIs; non-interactive runs skip unless ZETA_INSTALL_FULL=1.
+
+grok          https://x.ai/cli/install.sh
+cursor-agent  https://cursor.com/install
+kiro-cli      https://cli.kiro.dev/install                                                            os=mac
+hermes        https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh    args=--skip-setup
+forge         https://forgecode.dev/cli                                                               interp=sh
+agy           https://antigravity.google/cli/install.sh

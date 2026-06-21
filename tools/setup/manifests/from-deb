@@ -1,0 +1,7 @@
+# Mechanism: from-deb — install .deb from URL when= host matches.
+# Format: <binary-name>  <deb-url>  [deps=pkg1,pkg2]  [when=ubuntu-22.04,amd64]
+#
+# Jammy (22.04) has no eprover apt package; Noble pool .deb matches what Noble apt ships.
+
+eprover  http://archive.ubuntu.com/ubuntu/pool/universe/e/eprover/eprover_3.0.03+ds-1_amd64.deb  deps=picosat  when=ubuntu-22.04,amd64
+eprover  http://ports.ubuntu.com/ubuntu-ports/pool/universe/e/eprover/eprover_3.0.03+ds-1_arm64.deb  deps=picosat  when=ubuntu-22.04,arm64

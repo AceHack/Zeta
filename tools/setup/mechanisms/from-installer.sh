@@ -1,65 +1,24 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/one-liner-tools.sh — installs non-package-manager CLIs from
-# tools/setup/manifests/one-liner-tools. Sibling to common/agent-clis.sh (bun-global CLIs).
+# Mechanism: from-installer — download vendor install script (HTTPS), verify, exec.
+# Manifest: tools/setup/manifests/from-installer
 #
-# B-0063 DOWNLOAD-THEN-EXEC (NOT pipe-to-shell): for each registry entry the runner downloads the
-# install script to a temp file via curl_fetch (retry-equipped), verifies it is non-empty, then
-# executes it with the named interpreter. NEVER `curl … | bash`: a truncated/interrupted download
-# is caught by the non-empty check before any code runs, and a failed download surfaces as a
-# non-zero curl_fetch exit — unlike `curl … | bash`, where bash exits 0 on an empty pipe even when
-# the download failed. Same shape as the Homebrew bootstrap in macos.sh. Trust anchor: HTTPS + the
-# vendor's domain (these installers track HEAD with no published per-release checksum, same as
-# Homebrew's install.sh) — and the runner ENFORCES https:// before fetching (see below).
-#
-# NONINTERACTIVE: the downloaded installer is exec'd with stdin redirected from /dev/null, so it
-# matches the vendor's documented `curl … | bash` behavior (where bash's stdin is the pipe, not a
-# TTY). Note some installers (e.g. Hermes) open /dev/tty DIRECTLY rather than reading stdin, so the
-# /dev/null redirect alone does not suppress their setup wizard on an interactive dev install — those
-# need an explicit noninteractive flag via the args= qualifier (Hermes: args=--skip-setup). Without
-# this, running install.sh from an interactive shell could let a setup/auth wizard stall the Zeta
-# bootstrap before local-llm.sh + shellenv.sh run.
-#
-# DETECT-FIRST + UPDATE: by default, skip if the tool's <detect-binary> is already on PATH. This is
-# the efficient path (no re-download of multi-step vendor installers on every install.sh run) AND it
-# is correct for these CLIs because they SELF-UPDATE (cursor-agent + kiro auto-update in the
-# background per their docs; the others are HEAD-tracking installers that the operator re-runs at
-# will). install.sh's job here is to ensure PRESENCE; the tools keep themselves current. To FORCE a
-# re-run of every installer (the explicit update path, vs the old "manually remove the binary
-# first"), set ZETA_FORCE_UPDATE_TOOLS=1. BEST-EFFORT throughout: a failed installer WARNS and
-# continues — these are auth-gated peer/dev CLIs, not hard deps; LOGIN/auth is the operator's to do
-# after install; it must NEVER brick install (mirrors common/local-llm.sh exceptions-as-signals).
-#
-# NON-INTERACTIVE DEFAULT-SKIP: these heavy external vendor installers (best-effort, not asserted)
-# would otherwise run in EVERY CI install.sh — every gate lint job (needlessly downloading
-# grok/cursor/hermes/forge per job and tipping the short-timeout jobs over: install.sh ~90s ->
-# >2min) AND every Docker/macOS install shield. The discriminator is the controlling terminal:
-# install.sh run interactively from a dev shell (stdin is a TTY) installs them; any non-interactive
-# run (CI gate jobs, Docker build steps, macOS shield steps — none have a TTY) skips them. This is
-# consistent across ALL CI contexts (unlike $CI, which Docker builds do not inherit). To exercise
-# the installers in a non-interactive context anyway (e.g. a dedicated install-shield that should
-# download-exec them), set ZETA_INSTALL_FULL=1.
-#
-# Registry line:  <detect-binary>  <installer-url>  [interp=bash|sh]  [os=mac,linux]  [args=<arg> ...]
-# (defaults: interp=bash, os=all, no args). `#` comments + blank lines ignored. args= is repeatable.
-# Installer URLs MUST be https:// (enforced). See manifests/one-liner-tools.
+# B-0063 download-then-exec discipline. Best-effort; non-interactive skip unless
+# ZETA_INSTALL_FULL=1. See manifest header for format.
 
 set -euo pipefail
 
-# curl_fetch (file-output download with retries) — the B-0063 helper that replaced the old
-# pipe-to-shell pattern. Sourced from the sibling common/curl-fetch.sh.
-# shellcheck source=tools/setup/common/curl-fetch.sh
-# shellcheck disable=SC1091  # path is constructed from BASH_SOURCE at runtime; the source= above
-# tells shellcheck where the file lives so it follows the include for static analysis.
-source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
+# shellcheck source=../common/curl-fetch.sh
+# shellcheck disable=SC1091
+source "$(cd "$(dirname "$0")/.." && pwd)/common/curl-fetch.sh"
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/one-liner-tools"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-installer"
 # Force a re-run of every installer even when the binary is already present (explicit update path).
 FORCE_UPDATE="${ZETA_FORCE_UPDATE_TOOLS:-0}"
 
 if [ ! -f "$MANIFEST" ]; then
-  echo "✓ no one-liner-tools manifest; skipping"
+  echo "✓ from-installer: no manifest; skipping"
   exit 0
 fi
 
@@ -69,7 +28,7 @@ fi
 # (stdin is a TTY) install them by default. Using the TTY check rather than $CI keeps the behavior
 # consistent across ALL CI contexts (Docker builds do not inherit $CI).
 if [ ! -t 0 ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]; then
-  echo "✓ one-liner-tools: skipping dev-CLI installers (non-interactive run; best-effort; set ZETA_INSTALL_FULL=1 to exercise; interactive dev shells run them by default)"
+  echo "✓ from-installer: skipping dev-CLI installers (non-interactive; set ZETA_INSTALL_FULL=1 to exercise)"
   exit 0
 fi
 
@@ -164,4 +123,4 @@ while IFS= read -r line || [ -n "$line" ]; do
   rm -f "$tmp"
 done <"$MANIFEST"
 
-echo "✓ one-liner-tools step complete (login to each CLI separately — install is account-free)"
+echo "✓ from-installer complete (login to each CLI separately — install is account-free)"

@@ -17,12 +17,11 @@
 #   8. common/elan.sh     — Lean toolchain (no mise plugin yet)
 #   9. common/dotnet-tools.sh — dotnet global tools (semgrep,
 #                              stryker, etc.) from manifests/dotnet-tools
-#  10. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
+#  10. mechanisms/from-url.sh   — HTTPS assets → repo paths (manifests/from-url)
 #  10b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
 #                              ZETA_INSTALL_FULL (heavy OCaml build)
 #  11. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#  12. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
-#                                  from manifests/one-liner-tools
+#  12. mechanisms/from-installer.sh — vendor install scripts (manifests/from-installer)
 #  13. common/local-llm.sh   — local-LLM core primitive (ollama via brew above + pinned
 #                              tiny model from manifests/local-llm)
 #  14. common/shellenv.sh    — managed PATH file
@@ -196,7 +195,7 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/dotnet-workloads.sh"
-"$SETUP_DIR/common/verifiers.sh"
+"$SETUP_DIR/mechanisms/from-url.sh"
 # TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
 # binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
 # so minimal/CI/devcontainer installs stay fast. opam + z3 come from
@@ -211,9 +210,8 @@ fi
 "$SETUP_DIR/common/agent-clis.sh"
 # Expose repo package bins (ace, zeta-shadow) on PATH via `bun link`. Best-effort.
 "$SETUP_DIR/common/repo-bins.sh"
-# Non-package-manager CLIs (grok/cursor-agent/kiro/hermes/forge) via their own one-line
-# installers from manifests/one-liner-tools. Detect-first + best-effort (never bricks install).
-"$SETUP_DIR/common/one-liner-tools.sh"
+# Non-package-manager CLIs via mechanisms/from-installer.sh (manifests/from-installer).
+"$SETUP_DIR/mechanisms/from-installer.sh"
 # Local-LLM core primitive — macOS gets the ollama binary via manifests/brew
 # (above); this pulls the pinned tiny model (manifests/local-llm). Graceful.
 "$SETUP_DIR/common/local-llm.sh"
