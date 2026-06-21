@@ -41,6 +41,14 @@ per-machine made explicit** and known — no more floating ad-hoc keys.
 - **Per-MACHINE (device, persona-bound):** a device key (derived per-machine for SSH from the PKI base,
   or a per-host keypair) that identifies the **machine**, traceable to its persona — what zflash
   injects + `operator-ssh-keys` bakes into node trust. This is the layer that was being filled ad-hoc.
+  **Two machine kinds — both are registered identities (Aaron, 2026-06-20):**
+  - **dev machines (flashers)** — the machine you flash *from*. A user has **many** (Aaron has ~4 dev
+    machines that are **not** part of the cluster), and may flash from any of them. Each dev machine
+    needs its **own** registered machine key, even though it never joins the cluster.
+  - **cluster nodes (flash targets)** — the machine you flash *to* / boot. The booted node's machine
+    key + the operator's user key go into node trust.
+  So **machine identity ≠ cluster membership**: a registered machine can be a flasher-only dev box.
+  The `(user × machine)` pair is the unit — same user, different dev machine ⇒ a new machine key.
 
 ## What to combine (the scattered pieces today)
 
@@ -65,11 +73,17 @@ per-machine made explicit** and known — no more floating ad-hoc keys.
 ## First-run auto-provisioning AT FLASH TIME (Aaron, 2026-06-20)
 
 The load-bearing UX: a **first-time** zflash user who has **no saved keys yet** must be provisioned
-**automatically**, in-flow — they shouldn't have to know the keyring exists. When zflash runs and the
-operator is not already set up:
+**automatically**, in-flow — they shouldn't have to know the keyring exists. When zflash runs it
+**checks the `(user, machine)` pair independently** and creates whichever is missing **before
+flashing**:
 
-1. **Generate the full keyset for them** (seed → persona 4×4 rolling keyset + per-machine key) via the
-   persona-keys generator.
+0. **Two-part presence check (the gate):** is the **user key** present (this operator's persona
+   keyring)? is the **machine key** present (this *dev machine's* device key)? Either missing →
+   create it. Because a user flashes from **several different dev machines**, the user key is often
+   already set up while *this* dev machine's key is not (new flasher box) — so check + create each
+   independently, not all-or-nothing.
+1. **Generate whatever's missing** — user keyset (seed → persona 4×4 rolling keyset) and/or this dev
+   machine's per-machine key — via the persona-keys generator.
 2. **Save it to their local PC** (seed/private keys land in their local secret store, e.g.
    `~/.config/zeta/...`; never committed).
 3. **Set up their GitHub account** — `gh auth login` + upload/register their SSH (and signing) pubkey
