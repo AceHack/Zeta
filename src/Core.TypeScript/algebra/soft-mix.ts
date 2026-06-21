@@ -81,8 +81,9 @@ function applyOp<W>(
       const newKey = (entry.key ^ (entry.key >> BigInt(op.s!))) & MASK;
       return [{ key: newKey, weight: entry.weight }];
     } else if (op.op === "branch") {
-      // Fork: two frames — bit flipped vs not (the H gate / Hadamard).
-      // Support grows by 1 bit of uncertainty.
+      // Fork: two frames, bit flipped vs not.
+      // Support grows by 1 bit of uncertainty; ring-specific split weights
+      // are a separate policy.
       const bit = BigInt(op.s ?? (op as any).bit ?? 0);
       return [
         { key: entry.key, weight: entry.weight },

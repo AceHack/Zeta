@@ -74,6 +74,7 @@ case "retract":
 ## The Rx/query view (Aaron's observation)
 
 The ISA ops ARE reactive queries over two ZSets:
+
 - **Frame ZSet A** (current state): keys = possible states, weights = amplitudes
 - **Frame ZSet B** (after op): keys = transformed states, weights = transformed amplitudes
 - **Each op**: A query that maps ZSet A → ZSet B
@@ -97,7 +98,8 @@ This is DBSP's `D[op]` (the incremental version of the op) applied to the ZSet s
 
 One JSON schema. One `flatMap → consolidate` interpreter. One `StarRing` interface.
 The lens is selected by which ring instance you inject:
+
 - `realRing` → classical/Bayesian view
-- `complexRing` → quantum/amplitude view  
+- `complexRing` → quantum/amplitude view
 - `cl3Ring` → Clifford/geometric view (future)
 - The IR is its own meta-description (gen(gen)=gen)

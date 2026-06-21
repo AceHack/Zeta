@@ -8,6 +8,8 @@ open Zeta.Core
 module Runtime = DarkHallCabinetRuntime
 module RoomLoop = DarkHallRoomLoop
 module Scheduler = DarkHallScheduler
+module RH = RoomHorizon
+module PS = ProbabilitySemiring
 
 let private ctx () : IntrCtx =
     { Memetic = "darkhall-scheduler"
@@ -51,6 +53,26 @@ let private emptyBoundary source room budget config =
     ModuloGSet.empty<string> config
     |> mustOk
     |> RoomBoundary.create source room budget
+
+let private horizonConfig capacity policy : BoundedGSetConfig =
+    { Capacity = capacity
+      ForgetPolicy = policy }
+
+let private horizonCost bytes : Vision.BranchCost =
+    { SpaceBytes = bytes
+      TimeTicks = 0
+      BytesPerTick = 0L
+      UncertaintyResolutionBits = 0 }
+
+let private horizonCandidate key label state bytes : RH.Candidate<int, string> =
+    { Key = key
+      Branch =
+        { Label = label
+          State = state
+          Cost = horizonCost bytes }
+      Priority =
+        { Attention = PS.one
+          Gravity = PS.one } }
 
 let private sampleVault () =
     let v =
@@ -97,6 +119,58 @@ let ``heat boundary rows render as a host visible CHIP-9 board`` () =
     Assert.Equal("0", firstDisplayRow.Substring(33, 1))
     Assert.Equal("44", firstDisplayRow.Substring(48, 2))
     Assert.Equal("0", firstDisplayRow.Substring(50, 1))
+
+[<Fact>]
+let ``room horizon forgetting renders on the DarkHall heat board`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (horizonConfig 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]
+        |> mustOk
+        |> fun projection -> projection.State
+
+    let report =
+        [ horizonCandidate 3 "newer" "C" 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    let row = Scheduler.heatRowOfHorizonReport 11 "darkhall" "darkhall-horizon" report
+
+    Assert.Equal(11, row.Tick)
+    Assert.Equal("darkhall", row.RoomName)
+    Assert.Equal(1, row.HeatRejected)
+    Assert.Equal(0, row.Backpressured)
+    Assert.Equal<string list>([ "room-horizon.forgotten" ], row.HeatKinds)
+    Assert.Contains("forgot materialized keys", System.String.Join(";", row.Reasons))
+
+    let frame = Scheduler.heatBoardFrame 99UL [ row ]
+
+    Assert.Equal(1uy, Chip8Cow.colorAt 0 0 frame)
+    Assert.Equal(0uy, Chip8Cow.colorAt 16 0 frame)
+    Assert.Equal(4uy, Chip8Cow.colorAt 48 0 frame)
+
+[<Fact>]
+let ``room horizon no-forget backpressure renders on the DarkHall heat board`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (horizonConfig 1 BoundedGSetForgetPolicy.RejectNew) [ 1 ]
+        |> mustOk
+        |> fun projection -> projection.State
+
+    let report =
+        [ horizonCandidate 2 "second" "B" 1L ]
+        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> mustOk
+
+    let row = Scheduler.heatRowOfHorizonReport 12 "darkhall" "darkhall-horizon" report
+
+    Assert.Equal(1, row.HeatRejected)
+    Assert.Equal(1, row.Backpressured)
+    Assert.Equal<string list>([ "room-horizon.backpressure" ], row.HeatKinds)
+    Assert.Contains("paid futures could not enter", System.String.Join(";", row.Reasons))
+
+    let frame = Scheduler.heatBoardFrame 99UL [ row ]
+
+    Assert.Equal(1uy, Chip8Cow.colorAt 0 0 frame)
+    Assert.Equal(3uy, Chip8Cow.colorAt 16 0 frame)
+    Assert.Equal(4uy, Chip8Cow.colorAt 48 0 frame)
 
 [<Fact>]
 let ``soft scheduler banks darkhall heat backpressure as a room boundary row`` () =
