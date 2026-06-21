@@ -97,7 +97,13 @@ jobs:
   build:
     name: build-iso
     runs-on: ubuntu-24.04
-    timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && 240 || 90 }}
+    # Cold-cache PR runs can exceed the old 90-minute budget while still
+    # actively compiling Nix dependencies in `Build installer ISO` (run
+    # 27902283517, 2026-06-21, cancelled at 90m during texinfo/binutils
+    # builds). Keep manual dispatch roomier for hardware-oriented debugging,
+    # and give PR/push enough budget to finish a real cold build instead of
+    # cancelling useful work at the boundary.
+    timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && 240 || 180 }}
     permissions:
       contents: read
       # 081KSKBP80008QG0R000Y2B7HC.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived

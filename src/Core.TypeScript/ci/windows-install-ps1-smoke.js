@@ -31,7 +31,8 @@ export function miseProvidesTool(miseListOutput, tool) {
         .map((l) => l.trim())
         .some((l) => new RegExp(`(^|\\s)${tool}(\\s|@|$)`).test(l));
 }
-/** Pure: parse tools/setup/manifests/agent-clis. */
+export const AGENT_CLI_MANIFEST_RELATIVE_PATH = ["tools", "setup", "manifests", "from-bun-global"];
+/** Pure: parse tools/setup/manifests/from-bun-global. */
 export function parseAgentCliManifest(text) {
     return text
         .split(/\r?\n/)
@@ -106,19 +107,20 @@ function main() {
     }
     try {
         const g = execFileSync("mise", ["exec", "--", "bun", "pm", "ls", "-g"], { encoding: "utf8" });
-        const manifestPath = join(repoRoot(), "tools", "setup", "manifests", "agent-clis");
+        const manifestPath = join(repoRoot(), ...AGENT_CLI_MANIFEST_RELATIVE_PATH);
         const entries = parseAgentCliManifest(readFileSync(manifestPath, "utf8"));
         for (const entry of entries) {
             if (bunGlobalOutputContainsPackage(g, entry.packageId)) {
-                pass(`${entry.packageId} installed (bun --global via manifests/agent-clis)`);
+                pass(`${entry.packageId} installed (bun --global via manifests/from-bun-global)`);
             }
             else {
                 fail(`${entry.packageId} not in bun global packages`);
             }
         }
     }
-    catch {
-        fail("could not check bun global packages");
+    catch (error) {
+        const reason = error instanceof Error ? `: ${error.message}` : "";
+        fail(`could not check bun global packages${reason}`);
     }
     if (mode === "desktop") {
         try {

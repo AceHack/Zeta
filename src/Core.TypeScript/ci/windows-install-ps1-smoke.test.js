@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { taskHasDurationAndNextRun, miseProvidesTool, parseAgentCliManifest, bunGlobalOutputContainsPackage, SHARED_COMMANDS, CONTAINER_SKIPS, } from "./windows-install-ps1-smoke";
+import { AGENT_CLI_MANIFEST_RELATIVE_PATH, taskHasDurationAndNextRun, miseProvidesTool, parseAgentCliManifest, bunGlobalOutputContainsPackage, SHARED_COMMANDS, CONTAINER_SKIPS, } from "./windows-install-ps1-smoke";
 test("taskHasDurationAndNextRun: healthy task (Repetition Duration + populated Next Run)", () => {
     const xml = "<Repetition><Interval>PT1M</Interval><Duration>P3650D</Duration></Repetition>";
     const v = "Next Run Time:                        5/30/2026 11:00:00 AM";
@@ -37,6 +37,11 @@ test("agent CLI manifest parser keeps package id plus expected binary metadata",
         { packageId: "@anthropic-ai/claude-code", binary: "claude" },
         { packageId: "@openai/codex", binary: "codex" },
     ]);
+});
+test("agent CLI smoke reads the canonical bun-global manifest", () => {
+    const repoRoot = join(import.meta.dir, "..", "..", "..");
+    const manifest = readFileSync(join(repoRoot, ...AGENT_CLI_MANIFEST_RELATIVE_PATH), "utf8");
+    expect(parseAgentCliManifest(manifest).map((entry) => entry.packageId)).toContain("@openai/codex");
 });
 test("bun global package detection accepts scoped id or unscoped package name", () => {
     expect(bunGlobalOutputContainsPackage("@openai/codex@1.2.3", "@openai/codex")).toBe(true);

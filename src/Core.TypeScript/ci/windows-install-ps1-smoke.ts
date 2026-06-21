@@ -44,6 +44,8 @@ export interface AgentCliManifestEntry {
   readonly binary?: string;
 }
 
+export const AGENT_CLI_MANIFEST_RELATIVE_PATH = ["tools", "setup", "manifests", "from-bun-global"] as const;
+
 /** Pure: parse tools/setup/manifests/from-bun-global. */
 export function parseAgentCliManifest(text: string): AgentCliManifestEntry[] {
   return text
@@ -126,7 +128,7 @@ function main(): void {
 
   try {
     const g = execFileSync("mise", ["exec", "--", "bun", "pm", "ls", "-g"], { encoding: "utf8" });
-    const manifestPath = join(repoRoot(), "tools", "setup", "manifests", "agent-clis");
+    const manifestPath = join(repoRoot(), ...AGENT_CLI_MANIFEST_RELATIVE_PATH);
     const entries = parseAgentCliManifest(readFileSync(manifestPath, "utf8"));
     for (const entry of entries) {
       if (bunGlobalOutputContainsPackage(g, entry.packageId)) {
@@ -135,8 +137,9 @@ function main(): void {
         fail(`${entry.packageId} not in bun global packages`);
       }
     }
-  } catch {
-    fail("could not check bun global packages");
+  } catch (error) {
+    const reason = error instanceof Error ? `: ${error.message}` : "";
+    fail(`could not check bun global packages${reason}`);
   }
 
   if (mode === "desktop") {

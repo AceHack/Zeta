@@ -2,6 +2,7 @@ import { test, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  AGENT_CLI_MANIFEST_RELATIVE_PATH,
   taskHasDurationAndNextRun,
   miseProvidesTool,
   parseAgentCliManifest,
@@ -50,6 +51,12 @@ test("agent CLI manifest parser keeps package id plus expected binary metadata",
     { packageId: "@anthropic-ai/claude-code", binary: "claude" },
     { packageId: "@openai/codex", binary: "codex" },
   ]);
+});
+
+test("agent CLI smoke reads the canonical bun-global manifest", () => {
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const manifest = readFileSync(join(repoRoot, ...AGENT_CLI_MANIFEST_RELATIVE_PATH), "utf8");
+  expect(parseAgentCliManifest(manifest).map((entry) => entry.packageId)).toContain("@openai/codex");
 });
 
 test("bun global package detection accepts scoped id or unscoped package name", () => {
