@@ -34,21 +34,32 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 
 mode="${1:-}"; name="${2:-}"; shift 2 2>/dev/null || true
-public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"
+public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"; publish=""; dry_run=""
 while [ $# -gt 0 ]; do case "$1" in
   --public-only) public_only="--public-only";;
   --vault) vault_path="${2:?}"; shift;;
   --gh-secret) gh_secret="${2:?}"; shift;;
   --gh-repo) gh_repo="${2:?}"; shift;;
   --out) out_dir="${2:?}"; shift;;
+  --publish) publish="--publish";;
+  --dry-run) dry_run="--dry-run";;
   *) echo "unknown arg: $1" >&2; exit 2;;
 esac; shift; done
 
 [ -n "$mode" ] && [ -n "$name" ] || { sed -n '2,30p' "$0"; exit 2; }
-case "$mode" in generate|import|rotate) ;; *) echo "mode must be generate|import|rotate" >&2; exit 2;; esac
+case "$mode" in generate|import|rotate|onboard) ;; *) echo "mode must be generate|import|rotate|onboard" >&2; exit 2;; esac
 
 command -v bun >/dev/null || { echo "bun required (closed over in install.sh)"; exit 1; }
 [ -d "$HERE/node_modules" ] || (cd "$HERE" && bun install >/dev/null)
+
+if [ "$mode" = "onboard" ]; then
+  extra_args=()
+  [ -n "$publish" ] && extra_args+=("--publish")
+  [ -n "$dry_run" ] && extra_args+=("--dry-run")
+  [ -n "$out_dir" ] && extra_args+=("--repo-root" "$out_dir")
+  bun "$HERE/onboard.ts" --user "$name" "${extra_args[@]}"
+  exit 0
+fi
 
 umask 077
 tmp="$(mktemp -t zeta-keyring.XXXXXX.json)"

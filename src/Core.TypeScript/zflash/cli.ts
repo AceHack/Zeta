@@ -61,7 +61,7 @@
 //   finger on the actual trackpad.
 
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -75,6 +75,8 @@ import {
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
+import { deviceKeyPath } from "../../../tools/setup/persona-keys/machine.ts";
+import { onboardUserAndMachine, realEffects as realOnboardEffects, localKeyringPath } from "../../../tools/setup/persona-keys/onboard.ts";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -1104,15 +1106,85 @@ async function main() {
   const flashUsb = findFlashUsbPath();
 
   // Pre-flight: determine if iter-4.2 inject will run + which key
-  const pubkeyPath = sshKeyOverride ?? DEFAULT_SSH_KEY;
+  let pubkeyPath = sshKeyOverride ?? DEFAULT_SSH_KEY;
   let willInject = !noInject;
-  if (willInject && !existsSync(pubkeyPath)) {
-    process.stderr.write(
-      `\nzflash: iter-4.2 inject skipped — pubkey not found at ${pubkeyPath}\n` +
-        `  (proceeding with flash; cluster node will need manual operator-ssh-keys.nix\n` +
-        `   edit + nixos-rebuild on first login per iter-4 v1 fallback)\n\n`,
-    );
-    willInject = false;
+  let tempPubkeyPath: string | null = null;
+
+  if (willInject) {
+    if (sshKeyOverride) {
+      if (!existsSync(pubkeyPath)) {
+        process.stderr.write(
+          `\nzflash: iter-4.2 inject skipped — pubkey not found at ${pubkeyPath}\n` +
+            `  (proceeding with flash; cluster node will need manual operator-ssh-keys.nix\n` +
+            `   edit + nixos-rebuild on first login per iter-4 v1 fallback)\n\n`,
+        );
+        willInject = false;
+      }
+    } else {
+      // Resolve user persona using git config or USER env
+      let user = "";
+      try {
+        const gitUser = execFileSync("git", ["config", "user.name"], { encoding: "utf8" }).trim();
+        if (gitUser) {
+          user = gitUser.toLowerCase().replace(/[^a-z0-9._-]+/g, "-");
+        }
+      } catch { /* ignore */ }
+      if (!user) {
+        user = process.env.USER || "zeta";
+      }
+
+      const repoRoot = findRepoRoot() || ".";
+      const home = homedir();
+      
+      const localKeyring = localKeyringPath(user, home);
+      const localMachineKey = deviceKeyPath(home);
+      
+      const userKeyringExists = existsSync(localKeyring);
+      const machineKeyExists = existsSync(localMachineKey);
+      
+      if (!userKeyringExists || !machineKeyExists) {
+        process.stdout.write(`\nzflash: detected missing user keyring or machine key for user '${user}'.\n`);
+        process.stdout.write(`Starting inline onboarding flow...\n\n`);
+        try {
+          await onboardUserAndMachine(realOnboardEffects(), {
+            user,
+            repoRoot,
+            home,
+            publish: true,
+          });
+        } catch (err: any) {
+          bail(1, `Onboarding failed: ${err.message}`);
+        }
+      }
+
+      // Generate the union of the machine's public key and the user's public key
+      const machinePubPath = deviceKeyPath(home) + ".pub";
+      const localKeyringAfter = localKeyringPath(user, home);
+      
+      let combinedContent = "";
+      if (existsSync(machinePubPath)) {
+        combinedContent += readFileSync(machinePubPath, "utf8").trim() + "\n";
+      }
+      if (existsSync(localKeyringAfter)) {
+        try {
+          const keyring = JSON.parse(readFileSync(localKeyringAfter, "utf8"));
+          if (keyring.ssh?.public) {
+            combinedContent += keyring.ssh.public.trim() + "\n";
+          }
+        } catch { /* ignore */ }
+      }
+      
+      if (combinedContent.trim()) {
+        tempPubkeyPath = join(tmpdir(), `zeta-combined-${user}.pub`);
+        writeFileSync(tempPubkeyPath, combinedContent, { mode: 0o644 });
+        pubkeyPath = tempPubkeyPath;
+      } else {
+        process.stderr.write(
+          `\nzflash: iter-4.2 inject skipped — failed to construct combined pubkey\n\n`
+        );
+        willInject = false;
+      }
+    }
   }
 
   // iter-5.2.2 (B-0792) — REVERTS iter-5.2.1 flash-time auto-generation:
@@ -1234,7 +1306,15 @@ async function main() {
   }
 
   if (willInject) {
-    await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
+    try {
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
+    } finally {
+      if (tempPubkeyPath && existsSync(tempPubkeyPath)) {
+        try {
+          rmSync(tempPubkeyPath, { force: true });
+        } catch { /* ignore */ }
+      }
+    }
   } else {
     process.stdout.write("\n(iter-4.2 inject skipped per --no-inject or missing pubkey)\n");
     if (hostOverride !== null) {
