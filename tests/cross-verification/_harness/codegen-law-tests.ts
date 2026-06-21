@@ -28,6 +28,7 @@ interface LawSchema {
   op?: string;
   mul?: string;
   add?: string;
+  over?: string;
   element?: string;
   inverse?: string;
   identity?: string;
@@ -101,6 +102,8 @@ function requiredInputs(law: LawSchema): readonly string[] {
       return ["a", "b", "c"];
 
     case "commutative":
+    case "homomorphism":
+    case "antihomomorphism":
       return ["a", "b"];
 
     case "identity":
@@ -109,6 +112,10 @@ function requiredInputs(law: LawSchema): readonly string[] {
     case "involutive":
     case "roundTrip":
       return ["a"];
+
+    case "fixpoint":
+    case "multiplicative":
+      return [];
 
     default:
       return [];
