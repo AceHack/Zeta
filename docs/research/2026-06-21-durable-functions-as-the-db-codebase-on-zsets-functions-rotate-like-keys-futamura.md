@@ -51,6 +51,67 @@ Every recent decision is one face of "everything is data-in-the-one-DB on the la
 - **"The interfaces are the value"** → because behind every interface is the same one substrate, so
   a new capability (a new graph, a new key type, a new workflow) is a *use*, not new machinery.
 
+## THE END GOAL: a self-modeling DB that predicts its own future (Aaron 2026-06-21)
+
+> *"This is the end goal — a DB that can predict its own future, like our CHIP-8 and Q#. A DB of
+> superpositions of itself and all dynamical things within its environment, with real uncertainty
+> attached, so the wave function is precise — not just a blob."*
+
+The apex of "Durable Functions AS the DB": because the DB is **self-modeling** (its code + state +
+schema are data in itself), **deterministic** (DST), **event-sourced** (Z-sets), and **runs its
+own code** (Futamura gen/mix), it can **run its own model forward — simulating its next states =
+predicting its future.** Two regimes, one substrate:
+
+- **CHIP-8 regime (deterministic limit).** Where the future is determined, the DB run-aheads it
+  *exactly* — deterministic emulation, the collapsed single branch ("computational omniscience
+  over the simulation substrate", the DST discipline). One precise line.
+- **Q# regime (superposition).** Where the future is uncertain, the DB holds a **superposition** —
+  a **precise wave function** over the possible futures of **itself AND all dynamical things in its
+  environment**, where **each branch carries its real, quantified uncertainty** (first-class
+  uncertainty semiring / DynamicValue soft-value; metered via the entropy budget + the
+  `db/uncertainty/` ledger). The point of "precise, not a blob": the amplitudes are **real and
+  measured**, so the distribution is a proper wave function — not a vague cloud of maybes.
+
+So prediction spans **exact (CHIP-8) ↔ distributional (Q#)** on the same machinery: the DB
+projects its own forward evolution as a superposition with honest amplitudes, collapsing to a
+deterministic line where uncertainty is zero. The environment's dynamical entities enter only
+through declared, metered channels (noninterference §13), so their uncertainty is *accounted*, not
+ambient — which is exactly what makes the wave function precise rather than a blob. This is the
+self-modeling-database end-goal: a substrate that **models, runs, and forecasts itself**.
+
+## There is no "the DB" — only relative views (Aaron 2026-06-21)
+
+> *"And there is no 'the DB' — there are only relative views based on what repos you have access to."*
+
+Critical framing fix, and it governs all of the above: the unification is **one SUBSTRATE** (one
+set of primitives + machinery), **NOT one DB instance.** There is no central, canonical database —
+there are only **relative views**, each = the **fold over the repos / event-logs an observer can
+access.** Different access ⇒ different view. Consistent **where access overlaps** (Z-set/CRDT merge
+is confluent), divergent where it doesn't — and that's correct, not a flaw.
+
+This is scale-free (§1: no central point of control) and **traveler-framed** made literal: a "DB"
+is frame-relative — *your* DB is *your* accessible repos folded; mine is mine. It also means the
+prediction end-goal is **relative too**: you forecast *your view's* future from *your* accessible
+repos; the superposition's branches are over what *you* can see. No observer holds "the" truth —
+each holds a self-certifying, content-addressed view, mergeable with others where they share access.
+("A bus/routing address is not identity"; likewise "a view is not the DB — there is no the-DB.")
+
+So every "one DB" / "the DB" phrasing above means **the one substrate**, realized as **per-access
+relative views** — never a single instance. Repos are the unit of access + sharing; your view is
+the fold over the ones you hold.
+
+**The views COMMUTE — so partial access constructively reduces uncertainty (Aaron 2026-06-21).**
+The merges are **commutative + associative + idempotent** (Z-set/CRDT semilattice → confluent), so
+relative views are not a limitation: **you do NOT need access to all repos to reduce uncertainty
+constructively.** Each repo you *can* access **monotonically reduces your uncertainty** (more info
+→ never more uncertainty); the **order** you gain access doesn't matter (commutative); and you make
+real, **coordination-free** progress with whatever subset you hold — adding more access only
+reduces uncertainty further, never contradicts what you had. This is **CALM** (Consistency As
+Logical Monotonicity — Hellerstein): monotone, commutative computation needs no global coordination,
+so a partial view is *constructively* useful and composes cleanly with others when they meet. The
+uncertainty reduction is banked in the `db/uncertainty/` ledger; relative + commutative + monotone
+means every observer can make honest forward progress without the whole.
+
 ## Build (already largely in flight / backlogged)
 
 This is the integrating vision over existing components: `src/Core.TypeScript/workflow-engine/`
