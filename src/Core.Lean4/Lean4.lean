@@ -5,6 +5,7 @@ import Lean4.DbspChainRule
 import Lean4.EntropyFloorLift
 import Lean4.EntropyMeasureTheoretic
 import Lean4.FinShannonEntropy
+import Lean4.FinConditionalEntropy
 import Lean4.DecorrelationDpi
 import Lean4.GenGenFixpoint
 import Lean4.CayleyDicksonDoublyEven
