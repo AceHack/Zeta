@@ -6,12 +6,19 @@
 
 /// The *-ring trait: Zero/One/Add/Mul/Negate + Conj (involution).
 pub trait StarRing: Clone + PartialEq {
+    /// Additive identity.
     fn zero() -> Self;
+    /// Multiplicative identity.
     fn one() -> Self;
+    /// Additive combination (⊕).
     fn add(a: &Self, b: &Self) -> Self;
+    /// Multiplicative product (⊗).
     fn mul(a: &Self, b: &Self) -> Self;
+    /// Additive inverse.
     fn negate(a: &Self) -> Self;
+    /// Involution (conjugation).
     fn conj(a: &Self) -> Self;
+    /// Check if an element is effectively zero (below threshold).
     fn is_zero(a: &Self) -> bool;
 }
 
@@ -43,7 +50,9 @@ impl StarRing for f64 {
 /// Complex number (re + im*i).
 #[derive(Clone, PartialEq, Debug)]
 pub struct Complex {
+    /// Real part.
     pub re: f64,
+    /// Imaginary part.
     pub im: f64,
 }
 
@@ -86,7 +95,9 @@ impl StarRing for Complex {
 /// A weighted entry: (key, weight) where weight is from a *-ring.
 #[derive(Clone)]
 pub struct WEntry<W: StarRing> {
+    /// The basis state key.
     pub key: u64,
+    /// The weight (amplitude for quantum, probability for Bayesian).
     pub weight: W,
 }
 

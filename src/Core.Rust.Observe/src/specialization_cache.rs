@@ -1,5 +1,6 @@
-// src/Core.Rust.Observe/src/specialization_cache.rs — WeakRef specialization cache.
-// cogen=mix(mix,mix) as memory management. NEVER caches errors.
+//! src/Core.Rust.Observe/src/specialization_cache.rs — WeakRef specialization cache.
+//! cogen=mix(mix,mix) as memory management. NEVER caches errors.
+#![allow(missing_docs)]
 //
 // Rust uses Arc<T> + Weak<T> for the weak reference pattern.
 // When all strong refs are dropped, the specialized function is deallocated.
@@ -53,11 +54,9 @@ impl<F: Fn(u64) -> u64 + Send + Sync + 'static> SpecializationCache<F> {
 
     fn get_or_regenerate(&mut self) -> Result<Arc<F>, String> {
         // Try the weak ref first
-        if let Some(weak) = &self.cached {
-            if let Some(strong) = weak.upgrade() {
-                self.stats.hits.fetch_add(1, Ordering::Relaxed);
-                return Ok(strong);
-            }
+        if let Some(strong) = self.cached.as_ref().and_then(|w| w.upgrade()) {
+            self.stats.hits.fetch_add(1, Ordering::Relaxed);
+            return Ok(strong);
         }
 
         // Cache miss — regenerate

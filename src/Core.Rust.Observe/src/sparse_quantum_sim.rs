@@ -1,5 +1,6 @@
-// src/Core.Rust.Observe/src/sparse_quantum_sim.rs — Sparse statevector quantum simulator.
-// Support grows ONLY by actual uncertainty. Same cost model as AmplitudeEmu.
+//! src/Core.Rust.Observe/src/sparse_quantum_sim.rs — Sparse statevector quantum simulator.
+//! Support grows ONLY by actual uncertainty. Same cost model as AmplitudeEmu.
+#![allow(missing_docs)]
 //
 // Key property: permutation ops (mul, xorshr, join) NEVER grow support.
 // Only branch (Hadamard-like) ops grow support — by exactly 1 bit per fork.
@@ -45,11 +46,11 @@ const EPS: f64 = 1e-12;
 /// The "bit-growing quantum" lane — O(support), not O(2^n).
 pub struct SparseQuantumSim {
     state: HashMap<u64, Complex>,
-    width: u32,
     mask: u64,
 }
 
 impl SparseQuantumSim {
+    /// Create a sparse simulator for the given register width.
     pub fn new(width: u32) -> Self {
         let mask = if width >= 64 {
             u64::MAX
@@ -58,7 +59,6 @@ impl SparseQuantumSim {
         };
         Self {
             state: HashMap::new(),
-            width,
             mask,
         }
     }

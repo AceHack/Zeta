@@ -1,5 +1,6 @@
-// src/Core.Rust.Observe/src/algebra_interfaces.rs — the full algebraic interface stack.
-// GCF principle: richest shared structure + Rust-specific extras (trait bounds, lifetimes).
+//! src/Core.Rust.Observe/src/algebra_interfaces.rs — the full algebraic interface stack.
+//! GCF principle: richest shared structure + Rust-specific extras (trait bounds, lifetimes).
+#![allow(missing_docs)]
 
 /// Group: identity + combine + inverse. Minimal structure for undo/retract.
 pub trait Group {

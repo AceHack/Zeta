@@ -174,6 +174,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pyqir"
+version = "0.12.5"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6e/10/3b041f225dac208451f568188fd06524360ffc66ff855a1a205af0a895a0/pyqir-0.12.5-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:9bc8232f028f40e026cb72c7f654cf63f4c464ff4695874b70a45e8c34969665", size = 2160708, upload-time = "2026-05-12T18:06:54.242Z" },
+    { url = "https://files.pythonhosted.org/packages/88/94/a120794a8048291203b28c96e1c212243c45d8d99e2dad9002d67c0559ce/pyqir-0.12.5-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:7f568054dbb42b7fd33e0d5b58e7ac60ad6af496e9e1376fcb4a45290e9f510d", size = 2102202, upload-time = "2026-05-12T18:06:56.336Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/b7/da263a4c694b062d94b899a7248dec2238f965dc4ee58c69c6ba1263297e/pyqir-0.12.5-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:4304984337a26cb01f8f0b0b0b436737e90379fbd0adfb48f142cfd942234384", size = 2640753, upload-time = "2026-05-12T18:06:57.988Z" },
+    { url = "https://files.pythonhosted.org/packages/31/9f/e78010a4158e65be86b0013bccd5b0709ae87d8af9da82685464fb8e784c/pyqir-0.12.5-cp39-abi3-manylinux_2_38_aarch64.whl", hash = "sha256:ced0baf85371393bae59c3c93a97d3de68217f43fde21b7be8c6ed31b1e00128", size = 2709456, upload-time = "2026-05-12T18:06:59.761Z" },
+    { url = "https://files.pythonhosted.org/packages/04/b2/970e1621e372dffbb540cbb06518d0af4a16e63c074db61d60fb3d464ae2/pyqir-0.12.5-cp39-abi3-win_amd64.whl", hash = "sha256:c70381e8e1e2db8e2a9d5aec484f51328b66f7ac9cc72989ba05a61d7689f950", size = 1967113, upload-time = "2026-05-12T18:07:01.197Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/6e/575bbfe2382e15c2c1e1a3062ba5f1f0b61d73da05b2ff1b130dbda1214b/pyqir-0.12.5-cp39-abi3-win_arm64.whl", hash = "sha256:1be238924839fa5edbae20fb5a039f0caabe349e96c20029e7decf180a7aa1ae", size = 1868996, upload-time = "2026-05-12T18:07:02.58Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "9.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -213,6 +226,34 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/da/92/1446574745d74df0c92e6aa4a7b0b3130706a4142b2d1a5869f2eaa423c6/pyyaml-6.0.3-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:16249ee61e95f858e83976573de0f5b2893b3677ba71c9dd36b9cf8be9ac6d65", size = 829923, upload-time = "2025-09-25T21:32:54.537Z" },
     { url = "https://files.pythonhosted.org/packages/f0/7a/1c7270340330e575b92f397352af856a8c06f230aa3e76f86b39d01b416a/pyyaml-6.0.3-cp314-cp314t-win_amd64.whl", hash = "sha256:4ad1906908f2f5ae4e5a8ddfce73c320c2a1429ec52eafd27138b7f1cbe341c9", size = 174062, upload-time = "2025-09-25T21:32:55.767Z" },
     { url = "https://files.pythonhosted.org/packages/f1/12/de94a39c2ef588c7e6455cfbe7343d3b2dc9d6b6b2f40c4c6565744c873d/pyyaml-6.0.3-cp314-cp314t-win_arm64.whl", hash = "sha256:ebc55a14a21cb14062aa4162f906cd962b28e2e9ea38f9b4391244cd8de4ae0b", size = 149341, upload-time = "2025-09-25T21:32:56.828Z" },
+]
+
+[[package]]
+name = "qdk"
+version = "1.29.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyqir" },
+    { name = "qsharp" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/34/26/30072fc3ebad4db0559639dfc8f62b347a18e193d0aa83bb48f6d13c6cff/qdk-1.29.1-cp310-abi3-macosx_10_12_x86_64.whl", hash = "sha256:55ea113995ce54e512d07a2eb84d2be6ec490f37f9ad9b434f00b2defb6af773", size = 5555164, upload-time = "2026-05-23T18:05:24.977Z" },
+    { url = "https://files.pythonhosted.org/packages/13/a7/23ab46eee6c406bccb4c1070f9221cff79a2b81f9bcc1242b302f5d4f58a/qdk-1.29.1-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:ba9f27516019b7684e8e955bce7b5870a51b44041d0495c3771ec4ea7fba7865", size = 5216077, upload-time = "2026-05-23T18:05:27.772Z" },
+    { url = "https://files.pythonhosted.org/packages/99/cb/a8a3d6c89c51626d95d1e5c81d38f1f74ff30e30946a8be4efc7b042dfd1/qdk-1.29.1-cp310-abi3-manylinux_2_35_aarch64.whl", hash = "sha256:fae219be3e8349db62890cc06b0e6a8da5b789dfb248ed6422e76221f60e0817", size = 5814420, upload-time = "2026-05-23T18:05:29.716Z" },
+    { url = "https://files.pythonhosted.org/packages/24/71/18c070a2009fa314259398cc40f0af303af2929a63678d36a24e1af2517c/qdk-1.29.1-cp310-abi3-manylinux_2_35_x86_64.whl", hash = "sha256:54412931898706bfddecd62347fd6eafe8d05c4f4471158b13f3dbe0740aa3b7", size = 6289390, upload-time = "2026-05-23T18:05:31.768Z" },
+    { url = "https://files.pythonhosted.org/packages/98/fb/12fa1871528cd1254859a12a394098a9884cae08406f1f5493d1f842f811/qdk-1.29.1-cp310-abi3-win_amd64.whl", hash = "sha256:35c9f5327a93e437b9c61593c72862c5e4c1e8bc454db82a7b262d81e5be88d5", size = 6707056, upload-time = "2026-05-23T18:05:33.545Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/89/533b089a32a69d9e86c0aba16d317f5ef88275f9ef0d597da0aacaaf34ab/qdk-1.29.1-cp310-abi3-win_arm64.whl", hash = "sha256:5fe1a791822c0be0d91563b9f20ea8358227ece5954bc2b6a0eff31bf3cfc4f3", size = 6296878, upload-time = "2026-05-23T18:05:35.629Z" },
+]
+
+[[package]]
+name = "qsharp"
+version = "1.29.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "qdk" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/fa/2a6974b9226cf3065db3c03b3e69f13e1f6279fb144cae0e3aa7f44f4f98/qsharp-1.29.1-py3-none-any.whl", hash = "sha256:561af0480dc63ce55b3ab5891037996bc1eea94892cc656102fea0c903aed5f1", size = 14593, upload-time = "2026-05-23T18:05:37.336Z" },
 ]
 
 [[package]]
@@ -315,6 +356,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "pyyaml" },
+    { name = "qdk" },
     { name = "xxhash" },
 ]
 
@@ -329,6 +371,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "qdk", specifier = ">=1.29.0" },
     { name = "xxhash", specifier = ">=3.7.0" },
 ]
 
