@@ -54,6 +54,22 @@ composes_with: ["081KVNMFYS808QG0R002D0VM64", "081KVNRSGVR08QG0R003R3RNJX"]
 4. **Revocation drill**: deleting a service account / rotating a vault token cleanly cuts the
    agent's access to exactly that class.
 
+## CA disaster-recovery key — hardware, but the NEXT layer (Aaron 2026-06-21)
+
+The CA-only cold/offline recovery key (used only if both Active+Standby are lost/compromised) is
+the place for **hardware-backed security: FIDO / hardware security key / hardware wallet, with
+N-of-M quorum + HSM** support. **Sequencing decision: do NOT do this before investors.**
+
+- **Now (pre-investor):** **software-defined security** — the SSH-CA + 1Password 3-vault
+  Active+Standby + rotation + the whole shipped stack — is **sufficient** to stand up the cluster
+  and demo to investors. Ship that first.
+- **Next layer (post-investor, optional/fundable):** hardware-backed CA recovery (FIDO/hardware
+  key/hardware wallet + N-of-M + HSM). **Investors decide to pay for it or not.**
+- **Why it's safe to defer:** hardware is just another **KeyCustody / Consent adapter** behind the
+  hexagonal ports — a drop-in later with **no redesign**. The ports are precisely what let
+  software-defined-now → hardware-next-layer be a swap, not a rewrite. (Ties to ai-sovereignty-path
+  N-of-M HSM / KSK.)
+
 ## Composes / anchors
 
 Composes: OSS-secret-manager-via-ArgoCD (081KVNMFYS808QG0R002D0VM64), secret-clip cross-OS
