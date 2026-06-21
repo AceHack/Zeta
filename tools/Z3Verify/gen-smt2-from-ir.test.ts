@@ -48,12 +48,23 @@ const z3Available = (() => {
   return probe.status === 0;
 })();
 
+const cvc5Available = (() => {
+  const probe = spawnSync("cvc5", ["--version"], { encoding: "utf8" });
+  return probe.status === 0;
+})();
+
 /** Run z3 on proof text; return the sequence of check-sat verdicts. */
 function z3Verdicts(smt2: string): string[] {
   const r = spawnSync("z3", ["-in"], { input: smt2, encoding: "utf8" });
-  // (set-info :status ...) makes z3 print an `(error ...)` on a mismatched verdict;
-  // collect the bare sat/unsat/unknown tokens in order.
-  return r.stdout.match(/\b(unsat|sat|unknown)\b/g) ?? [];
+  return r.stdout.split(/\r?\n/).map(l => l.trim()).filter(l => l === "sat" || l === "unsat" || l === "unknown");
+}
+
+/** Run cvc5 on proof text; return the sequence of check-sat verdicts. */
+function cvc5Verdicts(smt2: string): string[] {
+  // Prepend (set-logic ALL) if not present to suppress cvc5 warnings
+  const query = smt2.includes("set-logic") ? smt2 : `(set-logic ALL)\n${smt2}`;
+  const r = spawnSync("cvc5", ["--lang=smt2", "-q", "--incremental", "-"], { input: query, encoding: "utf8" });
+  return r.stdout.split(/\r?\n/).map(l => l.trim()).filter(l => l === "sat" || l === "unsat" || l === "unknown");
 }
 
 for (const g of ROWS) {
@@ -67,22 +78,37 @@ for (const g of ROWS) {
     expect(parenBalance(proof)).toBe(0); // balanced s-expressions
   });
 
-  test(`z3 discharges all-unsat for ${g}`, () => {
-    if (!z3Available) {
-      console.warn(`  [skip] z3 not on PATH — soundness leg for ${g} not run`);
+  test(`solvers discharge all-unsat for ${g}`, () => {
+    if (!z3Available && !cvc5Available) {
+      console.warn(`  [skip] Z3 and CVC5 not on PATH — soundness leg for ${g} not run`);
       return;
     }
     const ir = parseIrJson(readFileSync(irPathOf(g), "utf8"));
     const proof = emitSmt2(ir, loadVectors(irPathOf(g)));
-    const verdicts = z3Verdicts(proof);
-    expect(verdicts.length).toBeGreaterThanOrEqual(2); // THEOREM + CONTROL at minimum
-    for (const v of verdicts) expect(v).toBe("unsat");
+
+    if (z3Available) {
+      const verdicts = z3Verdicts(proof);
+      expect(verdicts.length).toBeGreaterThanOrEqual(2); // THEOREM + CONTROL at minimum
+      for (const v of verdicts) expect(v).toBe("unsat");
+    }
+
+    if (cvc5Available) {
+      const verdicts = cvc5Verdicts(proof);
+      expect(verdicts.length).toBeGreaterThanOrEqual(2);
+      for (const v of verdicts) expect(v).toBe("unsat");
+    }
+
+    if (z3Available && cvc5Available) {
+      const z3V = z3Verdicts(proof);
+      const cvc5V = cvc5Verdicts(proof);
+      expect(z3V).toEqual(cvc5V); // BP-16 cross-check agreement
+    }
   });
 }
 
 test("a corrupted IR makes the proof FALSIFIABLE (CONTROL goes sat)", () => {
-  if (!z3Available) {
-    console.warn("  [skip] z3 not on PATH — falsifiability leg not run");
+  if (!z3Available && !cvc5Available) {
+    console.warn("  [skip] Z3 and CVC5 not on PATH — falsifiability leg not run");
     return;
   }
   // flip one digit of a splitmix64 multiplier; the byte-lock CONTROL must reject it.
@@ -91,8 +117,22 @@ test("a corrupted IR makes the proof FALSIFIABLE (CONTROL goes sat)", () => {
   expect(corrupted).not.toBe(text);
   const ir = parseIrJson(corrupted);
   const proof = emitSmt2(ir, loadVectors(irPathOf("splitmix64")));
-  const verdicts = z3Verdicts(proof);
-  expect(verdicts).toContain("sat"); // at least one check now fails — the green can turn red
+
+  if (z3Available) {
+    const verdicts = z3Verdicts(proof);
+    expect(verdicts).toContain("sat");
+  }
+
+  if (cvc5Available) {
+    const verdicts = cvc5Verdicts(proof);
+    expect(verdicts).toContain("sat");
+  }
+
+  if (z3Available && cvc5Available) {
+    const z3V = z3Verdicts(proof);
+    const cvc5V = cvc5Verdicts(proof);
+    expect(z3V).toEqual(cvc5V);
+  }
 });
 
 // guard: the committed hand-written reference proof still exists alongside the emitter.

@@ -73,6 +73,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   "fuse-overlayfs": "Linux rootless overlay storage driver; Windows podman uses WSL2's VM storage",
   opam: "OCaml package manager; only needed on Unix to build tlapm from source. Windows tlapm installs via prebuilt MSI/zip.",
   z3: "SMT solver; on Windows, Z3 is either scoop-installed or used via JS z3-solver npm package.",
+  cvc5: "SMT solver; on Windows, cvc5 is either scoop-installed or downloaded directly.",
+  eprover: "first-order ATP; on Windows, E prover is typically run in WSL or downloaded directly.",
   "headscale-cli":
     "headscale SERVER-side CLI — mesh coordination ops run on Linux/macOS hosts; Windows dev boxes join the mesh as tailscale clients (manifests/windows tailscale line).",
   "r-base":

@@ -84,3 +84,7 @@ r-base
 # install-graph decision (`cargo install tectonic`, or a GitHub-release extraction onto PATH) —
 # Dejan/devops call (mirrors the kiro-cli Linux gap precedent in manifests/one-liner-tools).
 gnupg           # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)
+
+# CVC5 and E prover -- SMT/ATP solvers for the formal-verification portfolio (rung-3)
+cvc5
+eprover

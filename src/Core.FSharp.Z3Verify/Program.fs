@@ -1,51 +1,27 @@
 module Zeta.Z3Verify.Program
 
 open System
-open System.Diagnostics
-open System.IO
-
-/// Z3 SMT-LIB2 verification via the `z3` CLI (declaratively installed:
-/// `tools/setup/manifests/{brew,apt}` → z3; winget on Windows). Bypasses
-/// the .NET wrapper, which has no osx-arm64 native
-/// binary, and talks to Z3 directly over stdin. Unlike TLC's finite-domain
-/// enumeration, this proves each identity over the full unbounded integer
-/// theory: UNSAT on the negated claim = proof over all integers.
-
-let private runZ3Output (smtlib: string) : string =
-    let psi = ProcessStartInfo(
-                "z3", "-in",
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false)
-    use p = Process.Start psi
-    p.StandardInput.Write smtlib
-    p.StandardInput.Close()
-    let stdout = p.StandardOutput.ReadToEnd()
-    p.WaitForExit()
-    stdout
-
-let private firstZ3Token (stdout: string) =
-    stdout.Split([| ' '; '\n'; '\r'; '\t' |], StringSplitOptions.RemoveEmptyEntries)
-    |> Array.tryHead
-
-let private runZ3 (smtlib: string) : bool =
-    let stdout = runZ3Output smtlib
-    // "unsat" means the claim holds.
-    firstZ3Token stdout = Some "unsat"
+open Zeta.Formal
 
 let private prove (name: string) (script: string) =
-    let unsat = runZ3 script
-    if unsat then
-        Console.WriteLine $"  [PROVEN]      {name}"
-    else
-        Console.WriteLine $"  [NOT PROVEN]  {name}"
+    try
+        let (v1, v2) = SolverHarness.crossCheck script
+        if v1 = Unsat && v2 = Unsat then
+            Console.WriteLine $"  [PROVEN]      {name}"
+        else
+            Console.WriteLine $"  [NOT PROVEN]  {name} (Z3: %A{v1}, CVC5: %A{v2})"
+    with ex ->
+        Console.WriteLine $"  [ERROR]       {name} cross-check failure: {ex.Message}"
 
 let private witness (name: string) (script: string) =
-    let stdout = runZ3Output script
-    if firstZ3Token stdout = Some "sat" then
-        Console.WriteLine $"  [WITNESS]     {name}"
-    else
-        Console.WriteLine $"  [NO WITNESS]  {name}"
+    try
+        let (v1, v2) = SolverHarness.crossCheck script
+        if v1 = Sat && v2 = Sat then
+            Console.WriteLine $"  [WITNESS]     {name}"
+        else
+            Console.WriteLine $"  [NO WITNESS]  {name} (Z3: %A{v1}, CVC5: %A{v2})"
+    with ex ->
+        Console.WriteLine $"  [ERROR]       {name} cross-check failure: {ex.Message}"
 
 
 [<EntryPoint>]
@@ -119,10 +95,10 @@ let main _ =
         "(declare-const w (_ BitVec 64))\n" +
         // Zero constant for i64.
         "(define-const zero64 (_ BitVec 64) (_ bv0 64))\n" +
-        // distinct(w) = ite(w >s 0, 1, 0)
-        "(define-fun distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
+        // is_distinct(w) = ite(w >s 0, 1, 0)
+        "(define-fun is_distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
         "  (ite (bvsgt x zero64) (_ bv1 64) (_ bv0 64)))\n" +
-        "(assert (not (= (distinct (distinct w)) (distinct w))))\n" +
+        "(assert (not (= (is_distinct (is_distinct w)) (is_distinct w))))\n" +
         "(check-sat)\n"
     prove "distinct idempotent (bit-vector 64)" distinctBv
 
@@ -135,7 +111,7 @@ let main _ =
         "(define-const zero64 (_ BitVec 64) (_ bv0 64))\n" +
         "(define-const one64  (_ BitVec 64) (_ bv1 64))\n" +
         "(define-const negone64 (_ BitVec 64) (bvneg one64))\n" +
-        "(define-fun distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
+        "(define-fun is_distinct ((x (_ BitVec 64))) (_ BitVec 64)\n" +
         "  (ite (bvsgt x zero64) one64 zero64))\n" +
         "(define-fun H ((i (_ BitVec 64)) (d (_ BitVec 64))) (_ BitVec 64)\n" +
         "  (ite (and (bvsgt i zero64) (bvsle (bvadd i d) zero64)) negone64\n" +
@@ -146,8 +122,8 @@ let main _ =
         "             (bvsle iw (_ bv1000000 64))\n" +
         "             (bvsle (bvneg (_ bv1000000 64)) dw)\n" +
         "             (bvsle dw (_ bv1000000 64))))\n" +
-        "(assert (not (= (distinct (bvadd iw dw))\n" +
-        "                (bvadd (distinct iw) (H iw dw)))))\n" +
+        "(assert (not (= (is_distinct (bvadd iw dw))\n" +
+        "                (bvadd (is_distinct iw) (H iw dw)))))\n" +
         "(check-sat)\n"
     prove "H function correctness (bit-vector, VLDB'23 §4)" hBv
 
@@ -349,7 +325,7 @@ let main _ =
     // AgendaAUnique reduces to A(t) AND NOT A(t) = false, so UNSAT was
     // guaranteed by the definition alone — no Z3 search required.
     let agendaMonotonicityUnderQualityThreshold =
-        "(declare-sort Trajectory)\n" +
+        "(declare-sort Trajectory 0)\n" +
         "(declare-fun Quality (Trajectory) Int)\n" +
         "(declare-const threshold_A Int)\n" +
         "(declare-const threshold_B Int)\n" +
@@ -382,7 +358,7 @@ let main _ =
     // reduces to A AND B AND NOT B = P AND NOT P — UNSAT from the law of
     // non-contradiction alone, no model-space search required.
     let agendaRangeDisjointness =
-        "(declare-sort Trajectory)\n" +
+        "(declare-sort Trajectory 0)\n" +
         "(declare-fun Quality (Trajectory) Int)\n" +
         "(declare-const lo_A Int)\n" +
         "(declare-const hi_A Int)\n" +
@@ -413,9 +389,9 @@ let main _ =
     //     theorem needs a richer model of private state, policy updates,
     //     agenda deltas, and membrane rules.
     let sharedTrajectoryDoesNotImplyCollapsedPersona =
-        "(declare-sort Trajectory)\n" +
-        "(declare-sort Input)\n" +
-        "(declare-sort Action)\n" +
+        "(declare-sort Trajectory 0)\n" +
+        "(declare-sort Input 0)\n" +
+        "(declare-sort Action 0)\n" +
         "(declare-const SharedT Trajectory)\n" +
         "(declare-const FutureInput Input)\n" +
         "(declare-const ActionA Action)\n" +
@@ -452,8 +428,8 @@ let main _ =
     let causalPowerWitness =
         // Sort for shared observable events. PrivateState modelled as Int
         // (an agent's integer-typed internal variable).
-        "(declare-sort SharedTrace)\n" +
-        "(declare-sort Action)\n" +
+        "(declare-sort SharedTrace 0)\n" +
+        "(declare-sort Action 0)\n" +
         // Two distinct private-state values for Agent A.
         "(declare-const stateA1 Int)\n" +
         "(declare-const stateA2 Int)\n" +
@@ -480,8 +456,8 @@ let main _ =
     //     uncollapsed. Proving non-collapse for a concrete agent requires
     //     a richer model with private-state update rules and membrane specs.
     let causalPowerFailsUnderCollapse =
-        "(declare-sort SharedTrace)\n" +
-        "(declare-sort Action)\n" +
+        "(declare-sort SharedTrace 0)\n" +
+        "(declare-sort Action 0)\n" +
         "(declare-const stateA1 Int)\n" +
         "(declare-const stateA2 Int)\n" +
         "(declare-const trace SharedTrace)\n" +

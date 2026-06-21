@@ -123,6 +123,15 @@ if [ -f "$BREW_MANIFEST" ]; then
 fi
 echo "✓ brew packages up to date"
 
+# Tap, trust, and install the official cvc5 cask (custom tap for macOS)
+if ! command -v cvc5 >/dev/null 2>&1; then
+  echo "↓ tapping and installing cvc5..."
+  brew tap cvc5/cvc5
+  brew trust cvc5/cvc5 || true
+  brew install --cask cvc5
+fi
+echo "✓ cvc5 installed"
+
 # ── 4. mise ─────────────────────────────────────────────────────────
 # Keep in sync with .mise.toml min_version and tools/setup/linux.sh MISE_PIN_VERSION.
 MISE_PIN_VERSION="2026.6.11"

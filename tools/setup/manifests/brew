@@ -93,3 +93,7 @@ gnupg  # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)
 # headscale server = cluster. See network/README "declared deps".
 headscale-cli  # CLI for our self-hosted Headscale control server (the server runs on the zetacluster)
 tailscale  # the client/daemon (tailscaled) — joins the Headscale-controlled mesh
+
+# E prover -- first-order ATP for the formal-verification portfolio (rung-3)
+eprover
+

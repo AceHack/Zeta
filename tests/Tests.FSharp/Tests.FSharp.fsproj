@@ -482,6 +482,7 @@
     <Compile Include="Plugin/Capabilities.Tests.fs" />
 
     <!-- Formal/ -->
+    <Compile Include="../../src/Core.FSharp.Z3Verify/SolverHarness.fs" />
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
