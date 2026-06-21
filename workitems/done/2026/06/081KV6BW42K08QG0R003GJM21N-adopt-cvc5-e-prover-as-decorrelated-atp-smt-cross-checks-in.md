@@ -1,7 +1,7 @@
 ---
 id: 081KV6BW42K08QG0R003GJM21N
 type: task
-state: backlog
+state: completed
 priority: P2
 slug: adopt-cvc5-e-prover-as-decorrelated-atp-smt-cross-checks-in
 title: "Adopt CVC5 + E prover as decorrelated ATP/SMT cross-checks in Soraya's portfolio (Z3 vs CVC5 agreement = BP-16 cross-check); Coq/Isabelle operator-available, NOT contributor-shared"
