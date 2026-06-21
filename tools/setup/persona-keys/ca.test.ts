@@ -5,8 +5,11 @@
 //
 // PURE-KEY MODEL (Aaron 2026-06-21): the device PUBLIC key signed here is a PURE machine key
 // (host-only label, read from the USER-INDEPENDENT registry `machines/<host>.pub`). THIS cert
-// is the ONLY place the (user × machine) pair is named: `principal=<user>` (`-n`) + a
-// `<user>@<host>` cert IDENTITY (`-I`). The machine key itself carries NO `user@`.
+// is the ONLY place the (user × machine) pair is named — but the pair lives in the PRINCIPAL,
+// not the Key ID: `principal=<user>` (`-n`) carries the user; the cert IDENTITY / Key ID (`-I`)
+// is the `<host>` ALONE (NOT `<user>@<host>` — that composite is the N×M smell, Aaron 2026-06-21).
+// One cert per machine (Key ID=host, principals=authorized users) ⇒ O(N+M). The machine key
+// itself also carries NO `user@`.
 //
 // SECURITY (matched to ca.ts invariants):
 //  * a test asserts NO module output ever matches /PRIVATE KEY/ (the private-leak guard);
@@ -220,7 +223,7 @@ test("cert --dry-run: signs NOTHING when CA + device key present, reports would-
     });
     expect(r.dryRun).toBe(true);
     expect(r.action).toBe("would-sign");
-    expect(r.certId).toBe("tester@mymac");
+    expect(r.certId).toBe("mymac"); // Key ID = machine ALONE (N+M); NOT "tester@mymac" (N×M)
     expect(r.principal).toBe("tester");
     expect(r.validity).toBe(DEFAULT_CERT_VALIDITY);
     expect(signCount.n).toBe(0); // nothing signed
@@ -419,11 +422,12 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     expect(existsSync(certRes.certPath)).toBe(true);
 
     // 4. Verify the cert with `ssh-keygen -L` — the (user × machine) binding lives HERE:
-    //    principal=<user> (-n) + a <user>@<host> identity (-I), signed over the PURE machine key.
+    //    principal=<user> (-n) + a <host> Key ID (-I) — NOT <user>@<host>, signed over the PURE machine key.
     const show = spawnSync("ssh-keygen", ["-L", "-f", certRes.certPath], { encoding: "utf8" });
     expect(show.status).toBe(0);
-    expect(show.stdout).toContain("tester@mymac"); // the cert identity (-I) — the pairing
-    expect(show.stdout).toContain("tester"); // the principal (-n) — trust anchored at the user
+    expect(show.stdout).toContain('Key ID: "mymac"'); // the cert identity (-I) = machine ALONE (N+M), NOT user@machine
+    expect(show.stdout).toContain("tester"); // the principal (-n) — the user×machine pairing lives HERE, not in the Key ID
+    expect(show.stdout).not.toContain("tester@mymac"); // guard: the N×M composite Key ID must NOT reappear
     // The cert file is PUBLIC — never carries a private marker.
     expect(readFileSync(certRes.certPath, "utf8")).not.toMatch(new RegExp(PRIV_MARKER));
   } finally {

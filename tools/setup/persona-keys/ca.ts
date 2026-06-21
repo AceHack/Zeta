@@ -281,7 +281,13 @@ export async function signMachineCert(
 ): Promise<CertResult> {
   const caPrivatePath = opts.home === undefined ? caPrivateKeyPath() : caPrivateKeyPath(opts.home);
   const validity = opts.validity ?? DEFAULT_CERT_VALIDITY;
-  const certId = `${opts.user}@${opts.machineId}`;
+  // Key ID names the certified SUBJECT = the machine key, so it is the machine id ALONE — NOT
+  // `user@machine`. A composite user×machine Key ID is the N×M smell (Aaron, 2026-06-21; same
+  // shape as the #8926 hybrid-key error): it would mint a distinct cert per (user, machine) pair
+  // → O(N×M) certs. The user binding lives in the PRINCIPAL (`-n`, below), so one cert per machine
+  // (Key ID = machine, principals = authorized user(s)) keeps it O(N+M). Multi-user on a shared
+  // box = re-sign the one machine cert with more principals (still one cert per machine).
+  const certId = opts.machineId;
   const outPath = certPath(opts.devicePubPath);
   const dryRun = opts.dryRun === true;
 
@@ -310,7 +316,7 @@ export async function signMachineCert(
   // BIOMETRIC GATE — fail-closed. A real sign consumes the CA private key; require approval.
   const biometric = await requireBiometric(
     opts.biometricAuth,
-    `Approve: sign cert for ${opts.user}@${opts.machineId} (principal=${opts.user})`,
+    `Approve: sign cert for machine ${opts.machineId} (principal=${opts.user})`,
   );
   if (!biometric.ok) {
     return { ...base, dryRun: false, action: "aborted-biometric", biometric };
